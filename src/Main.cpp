@@ -1,10 +1,11 @@
 #include <iostream>
-#include <graph/Dummy.hpp>
+#include <graph_analysis/Graph.hpp>
 
 int main(int argc, char** argv)
 {
-	graph::DummyClass dummyClass;
-	dummyClass.welcome();
+    graph_analysis::DirectedGraph graph;
 
-	return 0;
+    graph_analysis::DirectedGraph::Vertex vertex;
+
+    return 0;
 }
