@@ -1,0 +1,18 @@
+<package>
+  <description brief="A graph library for modeling and analysis">
+  This library allows wrapping and extension of existing graph library for modeling and analyis
+  </description>
+  <author>Thomas Roehr/thomas.roehr@dfki.de</author>
+  <license></license>
+  <url>http://www.rock-robotics.org</url>
+  <logo>http://</logo>
+  <depend package="base/cmake" />
+  <!--
+   To add any dependencies use the depend tag
+  <depend package="dummy-dependency-0" />
+	...
+  <depend package="dummy-dependency-n-1" />
+  <depend package="dummy-dependency-n" />
+  -->
+  <depend package="external/lemon" />
+</package>
