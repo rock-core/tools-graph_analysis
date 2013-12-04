@@ -6,6 +6,12 @@
 namespace graph_analysis
 {
 
+/**
+ * \brief A VertexProperty can be associated with a vertex to store additional data.
+ * \details For the purpose of storing data with a vertex, the storage type needs to inherit
+ * from this class
+ * \tparam VertexType The vertex type the property will be associated with
+ */
 template<typename VertexType>
 class VertexProperty
 {
@@ -17,7 +23,9 @@ public:
     virtual std::string getClassName() const { return "graph_analysis::VertexProperty"; }
 
     /**
-     * Set the corresponding vertex
+     * Set the corresponding vertex to allow reverse mapping from the property to the
+     * vertex
+     * \param vertex The vertex that this property is associated with
      */
     void setVertex(const VertexType& vertex) { mVertex = vertex; }
 
