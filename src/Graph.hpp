@@ -14,46 +14,10 @@ namespace graph_analysis
  * functionality
  */
 template<typename GraphType, typename VertexType, typename EdgeType>
-class Graph
+class BaseGraph
 {
 public:
-    typedef VertexType Vertex;
-    typedef EdgeType Edge;
-
-    /**
-     * Add a vertex
-     * \return the created vertex
-     */
-    Vertex addVertex() { return Vertex(); }
-
-    /**
-     * Add an edge
-     * \return the created edge
-     */
-    Edge addEdge(const VertexType& u, const VertexType& v) { return Edge(); }
-
-    /**
-     * Get access to the underlying graph
-     */
-    GraphType& raw() { return mGraph; }
-
-private:
-    GraphType mGraph;
-};
-
-/**
- * Template specialization for lemon's directed graph
- */
-template<typename VertexType, typename EdgeType>
-class Graph<lemon::ListDigraph, VertexType, EdgeType>
-{
-public:
-    /**
-     * Default constructor of the graph
-     */
-    Graph()
-        : mGraph(), mEdgePropertyMap(mGraph), mVertexPropertyMap(mGraph)
-    {}
+    virtual ~BaseGraph() {}
 
     typedef VertexType Vertex;
     typedef EdgeType Edge;
@@ -61,26 +25,89 @@ public:
     /**
      * Type definitions that allow adding task properties
      */
-    typedef typename graph_analysis::EdgeProperty<EdgeType> EdgePropertyType;
-    typedef typename graph_analysis::VertexProperty<VertexType> VertexPropertyType;
+    typedef graph_analysis::EdgeProperty<EdgeType> EdgePropertyType;
+    typedef graph_analysis::VertexProperty<VertexType> VertexPropertyType;
 
     typedef typename EdgePropertyType::Ptr EdgePropertyTypePtr;
     typedef typename VertexPropertyType::Ptr VertexPropertyTypePtr;
-
-    typedef lemon::ListDigraph::ArcMap< EdgePropertyTypePtr > EdgePropertyMap;
-    typedef lemon::ListDigraph::NodeMap< VertexPropertyTypePtr > VertexPropertyMap;
 
     /**
      * Add a vertex
      * \return the created vertex
      */
-    Vertex addVertex() { return mGraph.addNode(); }
+    virtual Vertex addVertex() = 0;
+
+    /**
+     * Assign a vertex property
+     */
+    virtual void assignVertexProperty(const Vertex& v, VertexPropertyTypePtr property) = 0;
+
+    /**
+     * Add an edge
+     * \return the created edge
+     */
+    virtual Edge addEdge(const Vertex& u, const Vertex& v) = 0;
+
+    /**
+     * Assign an edge property
+     */
+    virtual void assignEdgeProperty(const Edge& e, EdgePropertyTypePtr property) = 0;
+
+    /**
+     * Get the source vertex for this edge
+     * \return Pointer to the vertex data
+     */
+    virtual VertexPropertyTypePtr getSourceVertex(const Edge& e) const = 0;
+
+    /**
+     * Get the target vertex for this edge
+     * \return Pointer to the vertex data
+     */
+    virtual VertexPropertyTypePtr getTargetVertex(const Edge& e) const = 0;
+
+    /**
+     * Get access to the underlying graph
+     * \return the underlying graph instance
+     */
+    GraphType& raw() { return mGraph; }
+
+protected:
+    GraphType mGraph;
+};
+
+/**
+ * DirectedGraph based on lemon library
+ */
+class DirectedGraph : public BaseGraph<lemon::ListDigraph, lemon::ListDigraph::Node, lemon::ListDigraph::Arc>
+{
+public:
+    typedef BaseGraph<lemon::ListDigraph,lemon::ListDigraph::Node, lemon::ListDigraph::Arc> GraphType;
+
+    /**
+     * Default constructor of the graph
+     */
+    DirectedGraph()
+        : GraphType()
+        , mEdgePropertyMap(mGraph)
+        , mVertexPropertyMap(raw())
+    {}
+
+    typedef lemon::ListDigraph::ArcMap< GraphType::EdgePropertyTypePtr > EdgePropertyMap;
+    typedef lemon::ListDigraph::NodeMap< GraphType::VertexPropertyTypePtr > VertexPropertyMap;
+
+    typedef lemon::ListDigraph::Node VertexType;
+
+    /**
+     * Add a vertex
+     * \return the created vertex
+     */
+    virtual Vertex addVertex() { return mGraph.addNode(); }
 
     /**
      * Assign a vertex property
      */
     void assignVertexProperty(const Vertex& v, VertexPropertyTypePtr property)
-    { 
+    {
         mVertexPropertyMap[v] = property;
         property->setVertex(v);
     }
@@ -89,7 +116,7 @@ public:
      * Add an edge
      * \return the created edge
      */
-    Edge addEdge(const VertexType& u, const VertexType& v) { return mGraph.addArc(u,v); }
+    Edge addEdge(const Vertex& u, const Vertex& v) { return mGraph.addArc(u,v); }
 
     /**
      * Assign an edge property
@@ -97,30 +124,30 @@ public:
     void assignEdgeProperty(const Edge& e, EdgePropertyTypePtr property)
     {
         mEdgePropertyMap[e] = property;
-        property->setEdge(e); 
+        property->setEdge(e);
     }
 
     /**
      * Get the source vertex for this edge
      */
-    VertexPropertyTypePtr getSourceVertex(const Edge& e)
+    VertexPropertyTypePtr getSourceVertex(const Edge& e) const
     {
-        mVertexPropertyMap[ mGraph.source(e) ];
+        return mVertexPropertyMap[ mGraph.source(e) ];
     }
 
     /**
      * Get the target vertex for this edge
      */
-    VertexPropertyTypePtr getTargetVertex(const Edge& e)
+    VertexPropertyTypePtr getTargetVertex(const Edge& e) const
     {
-        mVertexPropertyMap[ mGraph.target(e) ];
+        return mVertexPropertyMap[ mGraph.target(e) ];
     }
 
     /**
      * Direct usage off operator= is disallowed in lemon, thus
      * need for explicit usage of copy functions
      */
-    Graph& operator=(const Graph& other)
+    DirectedGraph& operator=(const DirectedGraph& other)
     {
         lemon::digraphCopy(other.mGraph, this->mGraph).
             nodeMap(other.mVertexPropertyMap, this->mVertexPropertyMap).
@@ -129,20 +156,11 @@ public:
         return *this;
     }
 
-    /**
-     * Get raw instance of the graph, i.e. resolve to the low level library type
-     */
-    lemon::ListDigraph& raw() { return mGraph; }
-
 private:
-    lemon::ListDigraph mGraph;
-
     EdgePropertyMap mEdgePropertyMap;
     VertexPropertyMap mVertexPropertyMap;
 
 };
-
-typedef Graph<lemon::ListDigraph, lemon::ListDigraph::Node, lemon::ListDigraph::Arc> DirectedGraph;
 
 }
 #endif // GRAPH_ANALYSIS_GRAPH_HPP
