@@ -2,6 +2,7 @@ rock_library(graph_analysis
     SOURCES Graph.cpp
     HEADERS EdgeProperty.hpp
         Graph.hpp
+        GraphAnalysis.hpp
         VertexProperty.hpp
     DEPS_PKGCONFIG lemon
 )
