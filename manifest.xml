@@ -7,5 +7,6 @@
   <url>http://www.rock-robotics.org</url>
   <logo>http://</logo>
   <depend package="base/cmake" />
+  <depend package="boost" />
   <depend package="external/lemon" />
 </package>
