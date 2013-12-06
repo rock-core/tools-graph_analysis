@@ -1,6 +1,8 @@
 rock_library(graph_analysis
     SOURCES Graph.cpp
     HEADERS EdgeProperty.hpp
+        Filter.hpp
+        CommonFilter.hpp
         Graph.hpp
         GraphAnalysis.hpp
         lemon/Graph.hpp
