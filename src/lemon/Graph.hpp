@@ -5,9 +5,20 @@
 #include <lemon/adaptors.h>
 
 #include <graph_analysis/Graph.hpp>
+#include <base/logging.h>
 
 namespace graph_analysis {
 namespace lemon {
+
+class DirectedSubGraph : public BaseSubGraph< ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
+{
+public:
+    DirectedSubGraph(::lemon::ListDigraph& graph)
+        : BaseSubGraphType(new VertexFilterType(graph), new EdgeFilterType(graph))
+    {
+         setSubgraph( new GraphType(graph, getVertexFilter(), getEdgeFilter()) );
+    }
+};
 
 /**
  * \class DirectedGraph
@@ -17,6 +28,7 @@ class DirectedGraph : public BaseGraph< ::lemon::ListDigraph, ::lemon::ListDigra
 {
 public:
     typedef BaseGraphType::RawGraphType RawGraphType;
+    typedef DirectedSubGraph SubGraph;
 
     /**
      * \brief Default constructor of the graph
@@ -34,7 +46,6 @@ public:
     typedef ::lemon::ListDigraph::NodeMap< BaseGraphType::VertexPropertyTypePtr > VertexPropertyMap;
 
     typedef ::lemon::ListDigraph::Node VertexType;
-    typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> > SubGraph;
 
     /**
      * \brief Add a vertex
@@ -97,26 +108,33 @@ public:
         return *this;
     }
 
-    SubGraph applyFilters(Filter<VertexPropertyTypePtr>::Ptr vertexFilter, Filter<EdgePropertyTypePtr>::Ptr edgeFilter)
+    DirectedSubGraph applyFilters(Filter<VertexPropertyTypePtr>::Ptr vertexFilter, Filter<EdgePropertyTypePtr>::Ptr edgeFilter)
     {
-        ::lemon::ListDigraph::NodeMap<bool> nodeFilter(mGraph);
-        ::lemon::ListDigraph::ArcMap<bool> arcFilter(mGraph);
+        DirectedSubGraph subgraph(mGraph);
 
-        SubGraph subgraph(mGraph, nodeFilter, arcFilter);
-
-        for( ::lemon::ListDigraph::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
+        if(vertexFilter)
         {
-            if( vertexFilter->evaluate( mVertexPropertyMap[n] ) )
+            for( ::lemon::ListDigraph::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
             {
-                subgraph.disable(n);
+                if( vertexFilter->evaluate( mVertexPropertyMap[n] ) )
+                {
+                    subgraph.raw().disable(n);
+                } else {
+                    subgraph.raw().enable(n);
+                }
             }
         }
 
-        for( ::lemon::ListDigraph::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
+        if(edgeFilter)
         {
-            if( edgeFilter->evaluate( mEdgePropertyMap[a] ) )
+            for( ::lemon::ListDigraph::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
             {
-                subgraph.disable(a);
+                if( edgeFilter->evaluate( mEdgePropertyMap[a] ) )
+                {
+                    subgraph.raw().disable(a);
+                } else {
+                    subgraph.raw().enable(a);
+                }
             }
         }
 

@@ -5,6 +5,8 @@
 #include <graph_analysis/VertexProperty.hpp>
 #include <graph_analysis/Filter.hpp>
 
+#include <boost/shared_ptr.hpp>
+
 /**
  * The main namespace of this library
  */
@@ -87,6 +89,54 @@ protected:
     // The underlying graph instance
     GraphType mGraph;
 };
+
+template<typename SubGraphType, typename VertexFilter, typename EdgeFilter>
+class BaseSubGraph
+{
+public:
+    typedef SubGraphType GraphType;
+    typedef BaseSubGraph<SubGraphType, VertexFilter, EdgeFilter> BaseSubGraphType;
+
+    typedef VertexFilter VertexFilterType;
+    typedef EdgeFilter EdgeFilterType;
+
+    BaseSubGraph(VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
+    {
+        mpVertexFilter = boost::shared_ptr<VertexFilter>(vertexFilter);
+        mpEdgeFilter = boost::shared_ptr<EdgeFilter>(edgeFilter);
+    }
+
+    SubGraphType& raw()
+    {
+        assert(mpSubgraph);
+        return (*mpSubgraph);
+    }
+
+protected:
+    VertexFilter& getVertexFilter() const
+    {
+        assert(mpVertexFilter);
+        return *mpVertexFilter.get();
+    }
+
+    EdgeFilter& getEdgeFilter() const
+    {
+        assert(mpEdgeFilter);
+        return *mpEdgeFilter.get();
+    }
+
+    void setSubgraph(SubGraphType* subgraph)
+    {
+        assert(subgraph);
+        mpSubgraph = boost::shared_ptr<SubGraphType>(subgraph);
+    }
+
+    boost::shared_ptr<VertexFilter> mpVertexFilter;
+    boost::shared_ptr<EdgeFilter> mpEdgeFilter;
+
+    boost::shared_ptr<SubGraphType> mpSubgraph;
+};
+
 
 }
 #endif // GRAPH_ANALYSIS_GRAPH_HPP
