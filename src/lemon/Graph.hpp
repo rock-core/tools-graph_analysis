@@ -5,7 +5,7 @@
 #include <lemon/adaptors.h>
 
 #include <graph_analysis/Graph.hpp>
-#include <base/logging.h>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace lemon {
