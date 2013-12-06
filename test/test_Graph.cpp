@@ -1,6 +1,7 @@
 #include <boost/test/unit_test.hpp>
-#include <graph_analysis/LemonGraph.hpp>
+#include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/GraphView.hpp>
+#include <graph_analysis/CommonFilters.hpp>
 
 using namespace graph_analysis::lemon;
 

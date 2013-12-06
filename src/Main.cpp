@@ -1,6 +1,6 @@
 #include <iostream>
-#include <graph_analysis/LemonGraph.hpp>
-#include <graph_analysis/SnapGraph.hpp>
+#include <graph_analysis/lemon/Graph.hpp>
+#include <graph_analysis/snap/Graph.hpp>
 
 int main(int argc, char** argv)
 {
