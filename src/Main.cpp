@@ -1,11 +1,11 @@
 #include <iostream>
-#include <graph_analysis/Graph.hpp>
+#include <graph_analysis/LemonGraph.hpp>
 
 int main(int argc, char** argv)
 {
-    graph_analysis::DirectedGraph graph;
+    graph_analysis::lemon::DirectedGraph graph;
+    graph_analysis::lemon::DirectedGraph::Vertex vertex;
 
-    graph_analysis::DirectedGraph::Vertex vertex;
 
     return 0;
 }

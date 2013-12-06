@@ -3,6 +3,7 @@ rock_library(graph_analysis
     HEADERS EdgeProperty.hpp
         Graph.hpp
         GraphAnalysis.hpp
+        LemonGraph.hpp
         VertexProperty.hpp
     DEPS_PKGCONFIG lemon
 )
