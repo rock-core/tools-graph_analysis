@@ -30,7 +30,7 @@ public:
      */
     typename GraphType::SubGraph apply(GraphType& graph)
     {
-        graph.applyFilters(mVertexFilter, mEdgeFilter);
+        return graph.applyFilters(mVertexFilter, mEdgeFilter);
     }
 
 private:
