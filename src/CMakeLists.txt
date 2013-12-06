@@ -8,7 +8,7 @@ rock_library(graph_analysis
         lemon/Graph.hpp
         snap/Graph.hpp
         VertexProperty.hpp
-    DEPS_PKGCONFIG lemon snap
+    DEPS_PKGCONFIG lemon snap base-lib
 )
 
 rock_executable(graph_analysis_bin Main.cpp
