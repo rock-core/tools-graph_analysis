@@ -3,8 +3,8 @@ rock_library(graph_analysis
     HEADERS EdgeProperty.hpp
         Graph.hpp
         GraphAnalysis.hpp
-        LemonGraph.hpp
-        SnapGraph.hpp
+        lemon/Graph.hpp
+        snap/Graph.hpp
         VertexProperty.hpp
     DEPS_PKGCONFIG lemon snap
 )
