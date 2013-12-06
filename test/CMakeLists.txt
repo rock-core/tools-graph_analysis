@@ -1,3 +1,3 @@
-rock_testsuite(test suite.cpp
+rock_testsuite(test_graph suite.cpp
    test_Graph.cpp
    DEPS graph_analysis)
