@@ -18,12 +18,28 @@ public:
     /**
      * Add a vertex filter
      */
-    void setVertexFilter(VertexFilterType filter) { mVertexFilter = filter; }
+    void setVertexFilter(VertexFilterType filter)
+    {
+        if(filter)
+        {
+            mVertexFilter = filter;
+        } else {
+            throw std::runtime_error("GraphView: setVertexFilter called with null pointer");
+        }
+    }
 
     /**
      * Add an edge filter
      */
-    void setEdgeFilter(EdgeFilterType filter) { mEdgeFilter = filter; }
+    void setEdgeFilter(EdgeFilterType filter)
+    {
+        if(filter)
+        {
+            mEdgeFilter = filter;
+        } else {
+            throw std::runtime_error("GraphView: setEdgeFilter called with null pointer");
+        }
+    }
 
     /**
      * Apply the filter to the graph
