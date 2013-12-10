@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <stdint.h>
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
 
@@ -20,6 +21,10 @@ template<typename GraphType, typename VertexType>
 class VertexProperty
 {
 public:
+    VertexProperty()
+        : mId(msId++)
+    {}
+
     typedef boost::shared_ptr< VertexProperty<GraphType, VertexType> > Ptr;
     typedef std::map<const GraphType*, VertexType> GraphVertexMap;
     typedef std::vector<const GraphType*> GraphList;
@@ -27,6 +32,11 @@ public:
     // Get class name
     // \return class name
     virtual std::string getClassName() const { return "graph_analysis::VertexProperty"; }
+
+    /**
+     * Get property id
+     */
+    uint64_t getId() const { return mId; }
 
     /**
      * Add the vertex that corresponds to this propery in a given graph.
@@ -75,7 +85,13 @@ public:
 
 private:
     GraphVertexMap mGraphVertexMap;
+    uint64_t mId;
+
+    static uint64_t msId;
 };
+
+template<typename GraphType, typename VertexType>
+uint64_t VertexProperty<GraphType, VertexType>::msId = 0;
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_VERTEX_PROPERTY_HPP

@@ -2,8 +2,13 @@
 #define GRAPH_ANALYSIS_SNAP_GRAPH_HPP
 
 #include <map>
-#include <snap/snap-core/Snap.h>
 #include <graph_analysis/Graph.hpp>
+
+// Workaround for snap define
+#ifndef SIZE_MAX
+    #define SIZE_MAX 0xffffffff
+#endif
+#include <snap/snap-core/Snap.h>
 
 namespace graph_analysis {
 namespace snap {

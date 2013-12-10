@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <stdint.h>
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
 
@@ -19,6 +20,10 @@ template<typename GraphType, typename EdgeType>
 class EdgeProperty
 {
 public:
+    EdgeProperty()
+        : mId(msId++)
+    {}
+
     typedef boost::shared_ptr< EdgeProperty<GraphType, EdgeType> > Ptr;
     typedef std::map<const GraphType*, EdgeType> GraphEdgeMap;
     typedef std::vector<const GraphType*> GraphList;
@@ -26,6 +31,11 @@ public:
     // Get class name
     // \return class name
     virtual std::string getClassName() const { return "graph_analysis::EdgeProperty"; }
+
+    /**
+     * Get property id
+     */
+    uint64_t getId() const { return mId; }
 
     /**
      * Add the edge that corresponds to this propery in a given graph
@@ -75,8 +85,13 @@ public:
 
 private:
     GraphEdgeMap mGraphEdgeMap;
+    uint64_t mId;
 
+    static uint64_t msId;
 };
+
+template<typename GraphType, typename VertexType>
+uint64_t EdgeProperty<GraphType, VertexType>::msId = 0;
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_EDGE_PROPERTY_HPP
