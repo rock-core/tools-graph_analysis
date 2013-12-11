@@ -1,13 +1,14 @@
 rock_library(graph_analysis
     SOURCES Graph.cpp
-    HEADERS EdgeProperty.hpp
+        GraphElement.cpp
+    HEADERS Edge.hpp
         Filter.hpp
         CommonFilter.hpp
         Graph.hpp
         GraphAnalysis.hpp
         lemon/Graph.hpp
         snap/Graph.hpp
-        VertexProperty.hpp
+        Vertex.hpp
     DEPS_PKGCONFIG lemon snap base-lib
 )
 
