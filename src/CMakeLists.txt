@@ -7,7 +7,9 @@ rock_library(graph_analysis
         CommonFilter.hpp
         Graph.hpp
         GraphAnalysis.hpp
+        lemon/ArcIterator.hpp
         lemon/Graph.hpp
+        lemon/NodeIterator.hpp
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
