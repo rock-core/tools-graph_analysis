@@ -3,96 +3,144 @@
 
 #include <lemon/list_graph.h>
 #include <lemon/adaptors.h>
+#include <lemon/lgf_writer.h>
 
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/lemon/NodeIterator.hpp>
+#include <graph_analysis/lemon/ArcIterator.hpp>
 #include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace lemon {
 
-class DirectedSubGraph : public BaseSubGraph< ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
+typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> > SubGraph;
+
+class DirectedSubGraph : public TypedSubGraph< SubGraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
 {
 public:
     DirectedSubGraph(::lemon::ListDigraph& graph)
-        : BaseSubGraphType(new VertexFilterType(graph), new EdgeFilterType(graph))
+        : TypedSubGraph(new VertexFilterType(graph), new EdgeFilterType(graph))
     {
          setSubgraph( new GraphType(graph, getVertexFilter(), getEdgeFilter()) );
     }
 };
 
+
+
 /**
  * \class DirectedGraph
  * \brief Directed graph implementation based on lemon library
  */
-class DirectedGraph : public BaseGraph< ::lemon::ListDigraph, ::lemon::ListDigraph::Node, ::lemon::ListDigraph::Arc>
+class DirectedGraph : public TypedGraph< ::lemon::ListDigraph >
 {
 public:
-    typedef BaseGraphType::RawGraphType RawGraphType;
-    typedef DirectedSubGraph SubGraph;
-
     /**
      * \brief Default constructor of the graph
      */
     DirectedGraph()
-        : BaseGraphType()
-        , mEdgePropertyMap(mGraph)
-        , mVertexPropertyMap(raw())
+        : TypedGraph()
+        , mEdgeMap(raw())
+        , mVertexMap(raw())
     {}
 
-    typedef BaseGraphType::EdgePropertyType EdgeProperty;
-    typedef BaseGraphType::VertexPropertyType VertexProperty;
+    typedef GraphType::ArcMap< Edge::Ptr > EdgeMap;
+    typedef GraphType::NodeMap< Vertex::Ptr > VertexMap;
 
-    typedef ::lemon::ListDigraph::ArcMap< BaseGraphType::EdgePropertyTypePtr > EdgePropertyMap;
-    typedef ::lemon::ListDigraph::NodeMap< BaseGraphType::VertexPropertyTypePtr > VertexPropertyMap;
+    typedef GraphType::NodeMap<bool> VertexActivationMap;
+    typedef GraphType::ArcMap<bool> EdgeActivationMap;
 
-    typedef ::lemon::ListDigraph::Node VertexType;
+    // Register the DirecteSubGraph as official SubGraph
+    typedef DirectedSubGraph SubGraph;
+
+    friend class NodeIterator<DirectedGraph>;
+    friend class ArcIterator<DirectedGraph>;
 
     /**
      * \brief Add a vertex
      * \return the created vertex
      */
-    virtual Vertex addVertex() { return mGraph.addNode(); }
-
-    /**
-     * \brief Assign a vertex property
-     */
-    void assignVertexProperty(const Vertex& v, VertexPropertyTypePtr property)
+    virtual void addVertex(Vertex::Ptr vertex)
     {
-        mVertexPropertyMap[v] = property;
-        property->addVertex(this,v);
+        if(vertex->associated(getId()) )
+        {
+            throw std::runtime_error("lemon::Digraph: vertex already exists in this graph");
+        }
+
+        GraphType::Node node = mGraph.addNode();
+        int nodeId = mGraph.id(node);
+        vertex->associate(getId(), nodeId);
+        mVertexMap[node] = vertex;
     }
 
     /**
      * \brief Add an edge
      * \return the created edge
      */
-    Edge addEdge(const Vertex& u, const Vertex& v) { return mGraph.addArc(u,v); }
-
-    /**
-     * \brief Assign an edge property
-     */
-    void assignEdgeProperty(const Edge& e, EdgePropertyTypePtr property)
+    virtual void addEdge(Edge::Ptr edge)
     {
-        mEdgePropertyMap[e] = property;
-        property->addEdge(this, e);
+        if(edge->associated(getId()) )
+        {
+            throw std::runtime_error("lemon::Digraph: cannot add edge, since it already exists in this graph");
+        }
+
+        Vertex::Ptr source = edge->getSourceVertex();
+        Vertex::Ptr target = edge->getTargetVertex();
+        if(!source || !target)
+        {
+            throw std::runtime_error("lemon::Digraph: cannot add edge, since it has no source and/or target vertex specified");
+        }
+
+        GraphType::Node sourceNode = mGraph.nodeFromId( source->getId( getId() ));
+        GraphType::Node targetNode = mGraph.nodeFromId( target->getId( getId() ));
+
+        GraphType::Arc arc = mGraph.addArc(sourceNode, targetNode);
+        int arcId = mGraph.id(arc);
+        edge->associate(getId(), arcId);
+        mEdgeMap[arc] = edge;
     }
 
     /**
      * \brief Get the source vertex for this edge
      * \return Pointer to the vertex data
      */
-    VertexPropertyTypePtr getSourceVertex(const Edge& e) const
+    Vertex::Ptr getSourceVertex(Edge::Ptr e) const
     {
-        return mVertexPropertyMap[ mGraph.source(e) ];
+        GraphElementId edgeId = e->getId( getId() );
+        return mVertexMap[ mGraph.source( mGraph.arcFromId(edgeId)) ];
     }
 
     /**
      * \brief Get the target vertex for this edge
      * \return Pointer to the vertex data
      */
-    VertexPropertyTypePtr getTargetVertex(const Edge& e) const
+    Vertex::Ptr getTargetVertex(const Edge::Ptr& e) const
     {
-        return mVertexPropertyMap[ mGraph.target(e) ];
+        GraphElementId edgeId = e->getId( getId() );
+        return mVertexMap[ mGraph.target( mGraph.arcFromId(edgeId)) ];
+    }
+
+    void removeVertex(Vertex::Ptr vertex)
+    {
+        if(!vertex->associated(getId()) )
+        {
+            throw std::runtime_error("lemon::Digraph: vertex cannot be removed, since it does not exist in this graph");
+        }
+        int nodeId = vertex->getId( getId() );
+        GraphType::Node node = mGraph.nodeFromId(nodeId);
+        mGraph.erase(node);
+        vertex->deassociate(getId());
+    }
+
+    void removeEdge(Edge::Ptr edge)
+    {
+        if(!edge->associated(getId()) )
+        {
+            throw std::runtime_error("lemon::Digraph: edge cannot be removed, since it does not exist in this graph");
+        }
+        int edgeId = edge->getId( getId() );
+        GraphType::Arc arc = mGraph.arcFromId(edgeId);
+        mGraph.erase(arc);
+        edge->deassociate(getId());
     }
 
     /**
@@ -102,21 +150,21 @@ public:
     DirectedGraph& operator=(const DirectedGraph& other)
     {
         ::lemon::digraphCopy(other.mGraph, this->mGraph).
-            nodeMap(other.mVertexPropertyMap, this->mVertexPropertyMap).
-            arcMap(other.mEdgePropertyMap, this->mEdgePropertyMap);
+            nodeMap(other.mVertexMap, this->mVertexMap).
+            arcMap(other.mEdgeMap, this->mEdgeMap);
 
         return *this;
     }
 
-    DirectedSubGraph applyFilters(Filter<VertexPropertyTypePtr>::Ptr vertexFilter, Filter<EdgePropertyTypePtr>::Ptr edgeFilter)
+    DirectedSubGraph applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
     {
         DirectedSubGraph subgraph(mGraph);
 
         if(vertexFilter)
         {
-            for( ::lemon::ListDigraph::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
+            for( GraphType::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
             {
-                if( vertexFilter->evaluate( mVertexPropertyMap[n] ) )
+                if( vertexFilter->evaluate( mVertexMap[n] ) )
                 {
                     subgraph.raw().disable(n);
                 } else {
@@ -127,9 +175,9 @@ public:
 
         if(edgeFilter)
         {
-            for( ::lemon::ListDigraph::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
+            for( GraphType::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
             {
-                if( edgeFilter->evaluate( mEdgePropertyMap[a] ) )
+                if( edgeFilter->evaluate( mEdgeMap[a] ) )
                 {
                     subgraph.raw().disable(a);
                 } else {
@@ -141,11 +189,75 @@ public:
         return subgraph;
     }
 
+    void write(std::ostream& ostream = std::cout) const
+    {
+        // Workaround:
+        // operator<
+        // will be overloaded ambiguously due to using shared_ptr
+        // Use explicit conversion to string map first
+        typedef GraphType::ArcMap< std::string > EdgeStringMap;
+        typedef GraphType::NodeMap< std::string > VertexStringMap;
 
-private:
+        typedef GraphType::ArcMap< GraphElementId > EdgeIdMap;
+        typedef GraphType::NodeMap< GraphElementId > VertexIdMap;
+
+
+        EdgeStringMap edgeStringMap(mGraph);
+        VertexStringMap vertexStringMap(mGraph);
+        EdgeIdMap edgeIdMap(mGraph);
+        VertexIdMap vertexIdMap(mGraph);
+
+        for(GraphType::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
+        {
+            Edge::Ptr edge = mEdgeMap[a];
+            if(edge)
+            {
+                edgeStringMap[a] = edge->toString();
+                edgeIdMap[a] = boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() );
+            }
+        }
+
+        for(GraphType::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
+        {
+            Vertex::Ptr vertex = mVertexMap[n];
+            if(vertex)
+            {
+                vertexStringMap[n] = vertex->toString();
+                vertexIdMap[n] = boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() );
+            }
+        }
+
+        ::lemon::digraphWriter(mGraph, ostream).
+            arcMap("edges", edgeStringMap).
+            nodeMap("vertices", vertexStringMap).
+            arcMap("edgeId", edgeIdMap).
+            nodeMap("vertexId", vertexIdMap).
+            attribute("caption", "test").
+            run();
+    }
+
+    /**
+     * Get the vertex iterator for this implementation
+     */
+    VertexIterator::Ptr getVertexIterator()
+    {
+        graph_analysis::lemon::NodeIterator<DirectedGraph>* it = new graph_analysis::lemon::NodeIterator<DirectedGraph>(*this);
+        return VertexIterator::Ptr(it);
+    }
+
+    /**
+     * Get the edge iterator for this implementation
+     */
+    EdgeIterator::Ptr getEdgeIterator()
+    {
+        graph_analysis::lemon::ArcIterator<DirectedGraph>* it = new graph_analysis::lemon::ArcIterator<DirectedGraph>(*this);
+        return EdgeIterator::Ptr(it);
+    }
+
+protected:
     // Property maps to store data associated with vertices and edges
-    EdgePropertyMap mEdgePropertyMap;
-    VertexPropertyMap mVertexPropertyMap;
+    EdgeMap mEdgeMap;
+    VertexMap mVertexMap;
 };
 
 
