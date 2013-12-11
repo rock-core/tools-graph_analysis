@@ -61,37 +61,23 @@ public:
      */
     virtual void addVertex(Vertex::Ptr vertex)
     {
-        if(vertex->associated(getId()) )
-        {
-            throw std::runtime_error("lemon::Digraph: vertex already exists in this graph");
-        }
+        BaseGraph::addVertex(vertex);
 
         GraphType::Node node = mGraph.addNode();
         int nodeId = mGraph.id(node);
-        vertex->associate(getId(), nodeId);
         mVertexMap[node] = vertex;
+
+        vertex->associate(getId(), nodeId);
     }
 
     /**
      * \brief Add an edge
      * \return the created edge
      */
-    virtual void addEdge(Edge::Ptr edge)
+    void addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
     {
-        if(edge->associated(getId()) )
-        {
-            throw std::runtime_error("lemon::Digraph: cannot add edge, since it already exists in this graph");
-        }
-
-        Vertex::Ptr source = edge->getSourceVertex();
-        Vertex::Ptr target = edge->getTargetVertex();
-        if(!source || !target)
-        {
-            throw std::runtime_error("lemon::Digraph: cannot add edge, since it has no source and/or target vertex specified");
-        }
-
-        GraphType::Node sourceNode = mGraph.nodeFromId( source->getId( getId() ));
-        GraphType::Node targetNode = mGraph.nodeFromId( target->getId( getId() ));
+        GraphType::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
+        GraphType::Node targetNode = mGraph.nodeFromId( targetVertexId );
 
         GraphType::Arc arc = mGraph.addArc(sourceNode, targetNode);
         int arcId = mGraph.id(arc);
@@ -105,7 +91,7 @@ public:
      */
     Vertex::Ptr getSourceVertex(Edge::Ptr e) const
     {
-        GraphElementId edgeId = e->getId( getId() );
+        GraphElementId edgeId = getEdgeId(e);
         return mVertexMap[ mGraph.source( mGraph.arcFromId(edgeId)) ];
     }
 
@@ -115,32 +101,26 @@ public:
      */
     Vertex::Ptr getTargetVertex(const Edge::Ptr& e) const
     {
-        GraphElementId edgeId = e->getId( getId() );
+        GraphElementId edgeId = getEdgeId(e);
         return mVertexMap[ mGraph.target( mGraph.arcFromId(edgeId)) ];
     }
 
     void removeVertex(Vertex::Ptr vertex)
     {
-        if(!vertex->associated(getId()) )
-        {
-            throw std::runtime_error("lemon::Digraph: vertex cannot be removed, since it does not exist in this graph");
-        }
-        int nodeId = vertex->getId( getId() );
+        BaseGraph::removeVertex(vertex);
+
+        int nodeId = getVertexId( vertex );
         GraphType::Node node = mGraph.nodeFromId(nodeId);
         mGraph.erase(node);
-        vertex->deassociate(getId());
     }
 
     void removeEdge(Edge::Ptr edge)
     {
-        if(!edge->associated(getId()) )
-        {
-            throw std::runtime_error("lemon::Digraph: edge cannot be removed, since it does not exist in this graph");
-        }
-        int edgeId = edge->getId( getId() );
+        BaseGraph::removeEdge(edge);
+
+        int edgeId = getEdgeId(edge);
         GraphType::Arc arc = mGraph.arcFromId(edgeId);
         mGraph.erase(arc);
-        edge->deassociate(getId());
     }
 
     /**
@@ -213,7 +193,7 @@ public:
             if(edge)
             {
                 edgeStringMap[a] = edge->toString();
-                edgeIdMap[a] = boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() );
+                edgeIdMap[a] = getEdgeId(edge);
             }
         }
 
@@ -223,7 +203,7 @@ public:
             if(vertex)
             {
                 vertexStringMap[n] = vertex->toString();
-                vertexIdMap[n] = boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() );
+                vertexIdMap[n] = getVertexId(vertex); 
             }
         }
 
@@ -241,7 +221,7 @@ public:
      */
     VertexIterator::Ptr getVertexIterator()
     {
-        graph_analysis::lemon::NodeIterator<DirectedGraph>* it = new graph_analysis::lemon::NodeIterator<DirectedGraph>(*this);
+        NodeIterator<DirectedGraph>* it = new NodeIterator<DirectedGraph>(*this);
         return VertexIterator::Ptr(it);
     }
 
@@ -250,7 +230,7 @@ public:
      */
     EdgeIterator::Ptr getEdgeIterator()
     {
-        graph_analysis::lemon::ArcIterator<DirectedGraph>* it = new graph_analysis::lemon::ArcIterator<DirectedGraph>(*this);
+        ArcIterator<DirectedGraph>* it = new ArcIterator<DirectedGraph>(*this);
         return EdgeIterator::Ptr(it);
     }
 

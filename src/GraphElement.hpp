@@ -46,7 +46,7 @@ public:
     /**
      * Remove the edge that corresponds to a given graph
      */
-    void deassociate(GraphId graph) { mGraphElementMap.erase(graph); }
+    void disassociate(GraphId graph) { mGraphElementMap.erase(graph); }
 
     /**
      * Get id of this element within a given graph

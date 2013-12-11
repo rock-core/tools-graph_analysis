@@ -34,34 +34,47 @@ public:
 
     /**
      * \brief Add a vertex
+     * In order to reimplement, call the base function first
+     * BaseGraph::addVertex(v)
      */
-    virtual void addVertex(Vertex::Ptr vertex) = 0;
+    virtual void addVertex(Vertex::Ptr vertex);
+
+    /**
+     * \brief Get the vertex id for this graph
+     * \throw std::runtime_error if the vertex is not part of this graph
+     */
+    GraphElementId getVertexId(Vertex::Ptr vertex) const { return boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
 
     /**
      * \brief Remove vertex
+     * In order to reimplement, call the base function first
+     * BaseGraph::addVertex(v)
      */
-    virtual void removeVertex(Vertex::Ptr vertex) = 0;
+    virtual void removeVertex(Vertex::Ptr vertex);
 
     /**
      * \brief Add an edge
+     * Cannot be reimplemented directly, but see addEdge(Edge::Ptr, GraphElementId, GraphElementId)
      */
-    virtual void addEdge(Edge::Ptr edge) = 0;
+    void addEdge(Edge::Ptr edge);
 
     /**
-     * Remove and edge
+     * Remove an edge and disassociate from this graph
+     * In order to reimplement, call the base function first
+     * BaseGraph::addVertex(v)
      */
-    virtual void removeEdge(Edge::Ptr edge) = 0;
+    virtual void removeEdge(Edge::Ptr edge);
+
+    /**
+     * \brief Get the edge id for this graph
+     * \throw std::runtime_error if the edge is not part of this graph
+     */
+    GraphElementId getEdgeId(Edge::Ptr edge) const { return boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
 
     /**
      * Get the graph id
      */
     GraphId getId() const { return mId; }
-
-
-    /**
-     * Export graph to file
-     */
-    virtual void write(std::ostream& os = std::cout) const = 0;
 
     /**
      * Get the vertex iterator
@@ -72,6 +85,14 @@ public:
      * Get the node iterator
      */
     virtual EdgeIterator::Ptr getEdgeIterator() = 0;
+
+protected:
+    /**
+     * Add an add using source and target vertex on the internal
+     * graph representation
+     */
+    virtual void addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) = 0;
+
 
 private:
     GraphId mId;
@@ -119,7 +140,7 @@ public:
 
     /**
      * This default Constructor will not(!) initialize the underlying subgraph type, but
-     * only the given filters. 
+     * only the given filters.
      * Make sure that any class inheriting from this one properly initalizes the subgraph, i.e.
      * using setSubgraph
      *
