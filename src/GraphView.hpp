@@ -10,8 +10,6 @@ template<typename GraphType, typename VertexPropertyType, typename EdgePropertyT
 class GraphView
 {
 public:
-  //  GraphView();
-
     typedef typename Filter<VertexPropertyType>::Ptr VertexFilterType;
     typedef typename Filter<EdgePropertyType>::Ptr EdgeFilterType;
 
