@@ -6,9 +6,10 @@ rock_library(graph_analysis
     HEADERS Edge.hpp
         EdgeIterator.hpp
         Filter.hpp
-        CommonFilter.hpp
+        CommonFilters.hpp
         Graph.hpp
         GraphAnalysis.hpp
+        GraphElement.hpp
         GraphIO.hpp
         io/GexfWriter.hpp
         lemon/ArcIterator.hpp
