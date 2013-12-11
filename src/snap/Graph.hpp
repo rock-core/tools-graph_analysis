@@ -10,6 +10,9 @@
 #endif
 #include <snap/snap-core/Snap.h>
 
+#include <graph_analysis/snap/NodeIterator.hpp>
+#include <graph_analysis/snap/EdgeIterator.hpp>
+
 namespace graph_analysis {
 namespace snap {
 
@@ -17,20 +20,22 @@ namespace snap {
  * \class DirectedGraph
  * \brief Directed graph implementation based on lemon library
  */
-class DirectedGraph : public BaseGraph< PNEGraph, TInt, TInt>
+class DirectedGraph : public TypedGraph< PNEGraph >
 {
 public:
-    typedef BaseGraph< PNEGraph, TInt, TInt> GraphType;
-    typedef PNEGraph RawGraphType;
     typedef PNEGraph SubGraph;
 
-    typedef std::map<TInt, EdgePropertyTypePtr> EdgePropertyMap;
-    typedef std::map<TInt, VertexPropertyTypePtr> VertexPropertyMap;
+    typedef std::map<TInt, Edge::Ptr> EdgeMap;
+    typedef std::map<TInt, Vertex::Ptr> VertexMap;
+
+    friend class NodeIterator<DirectedGraph>;
+    friend class EdgeIterator<DirectedGraph>;
+
     /**
      * \brief Default constructor of the graph
      */
     DirectedGraph()
-        : GraphType()
+        : TypedGraph()
     {
         mGraph = TNEGraph::New();
     }
@@ -39,45 +44,37 @@ public:
      * \brief Add a vertex
      * \return the created vertex
      */
-    virtual Vertex addVertex() { return mGraph->AddNode(); }
-
-    /**
-     * \brief Assign a vertex property
-     */
-    void assignVertexProperty(const Vertex& v, VertexPropertyTypePtr property)
+    void addVertex(Vertex::Ptr vertex)
     {
-        mVertexPropertyMap[v] = property;
-        property->addVertex(this, v);
+        BaseGraph::addVertex(vertex);
+
+        TInt nodeId = mGraph->AddNode();
+        mVertexMap[nodeId] = vertex;
+
+        vertex->associate(getId(), nodeId);
     }
 
     /**
      * \brief Add an edge
      * \return an edge interator
      */
-    Edge addEdge(const Vertex& u, const Vertex& v) 
-    { 
-        return mGraph->AddEdge(u,v); 
-    }
-
-    /**
-     * \brief Assign an edge property
-     */
-    void assignEdgeProperty(const Edge& e, EdgePropertyTypePtr property)
+    void addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
     {
-        mEdgePropertyMap[e] = property;
-        property->addEdge(this, e);
+        TInt edgeId = mGraph->AddEdge(sourceVertexId,targetVertexId);
+        edge->associate(getId(), edgeId);
+        mEdgeMap[edgeId] = edge;
     }
 
     /**
      * \brief Get the source vertex for this edge
      * \return Pointer to the vertex data
      */
-    VertexPropertyTypePtr getSourceVertex(const Edge& e) const
+    Vertex::Ptr getSourceVertex(Edge::Ptr e) const
     {
-        TInt nodeId = mGraph->GetEI(e).GetSrcNId();
+        TInt nodeId = mGraph->GetEI( getEdgeId(e) ).GetSrcNId();
 
-        VertexPropertyMap::const_iterator cit = mVertexPropertyMap.find(nodeId);
-        if(cit != mVertexPropertyMap.end())
+        VertexMap::const_iterator cit = mVertexMap.find(nodeId);
+        if(cit != mVertexMap.end())
         {
             return cit->second;
         }
@@ -89,12 +86,12 @@ public:
      * \brief Get the target vertex for this edge
      * \return Pointer to the vertex data
      */
-    VertexPropertyTypePtr getTargetVertex(const Edge& e) const
+    Vertex::Ptr getTargetVertex(Edge::Ptr e) const
     {
-        TInt nodeId =  mGraph->GetEI(e).GetDstNId();
+        TInt nodeId = mGraph->GetEI( getEdgeId(e) ).GetDstNId();
 
-        VertexPropertyMap::const_iterator cit = mVertexPropertyMap.find(nodeId);
-        if(cit != mVertexPropertyMap.end())
+        VertexMap::const_iterator cit = mVertexMap.find(nodeId);
+        if(cit != mVertexMap.end())
         {
             return cit->second;
         }
@@ -102,16 +99,35 @@ public:
         throw std::runtime_error("SNAP: could not find target vertex for edge");
     }
 
-    SubGraph applyFilters(Filter<VertexPropertyTypePtr>::Ptr vertexFilter, Filter<EdgePropertyTypePtr>::Ptr edgeFilter)
+    SubGraph applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
     {
         SubGraph subgraph;
-        TSnap::GetSubGraph(mGraph, TIntV::GetV(0));
+        //TSnap::GetSubGraph(mGraph, TIntV::GetV(0));
 
         return subgraph;
     }
+
+    /**
+     * Get the vertex iterator for this implementation
+     */
+    VertexIterator::Ptr getVertexIterator()
+    {
+        NodeIterator<DirectedGraph>* it = new NodeIterator<DirectedGraph>(*this);
+        return VertexIterator::Ptr(it);
+    }
+
+    /**
+     * Get the edge iterator for this implementation
+     */
+    graph_analysis::EdgeIterator::Ptr getEdgeIterator()
+    {
+        EdgeIterator<DirectedGraph>* it = new EdgeIterator<DirectedGraph>(*this);
+        return graph_analysis::EdgeIterator::Ptr(it);
+    }
+
 private:
-    EdgePropertyMap mEdgePropertyMap;
-    VertexPropertyMap mVertexPropertyMap;
+    EdgeMap mEdgeMap;
+    VertexMap mVertexMap;
 };
 
 } // end namespace snap

@@ -8,7 +8,9 @@ rock_library(graph_analysis
         Graph.hpp
         GraphAnalysis.hpp
         lemon/Graph.hpp
+        snap/EdgeIterator.hpp
         snap/Graph.hpp
+        snap/NodeIterator.hpp
         Vertex.hpp
         VertexIterator.hpp
     DEPS_PKGCONFIG lemon snap base-lib
