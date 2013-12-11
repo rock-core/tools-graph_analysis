@@ -2,6 +2,7 @@ rock_library(graph_analysis
     SOURCES Graph.cpp
         GraphElement.cpp
     HEADERS Edge.hpp
+        EdgeIterator.hpp
         Filter.hpp
         CommonFilter.hpp
         Graph.hpp
@@ -9,6 +10,7 @@ rock_library(graph_analysis
         lemon/Graph.hpp
         snap/Graph.hpp
         Vertex.hpp
+        VertexIterator.hpp
     DEPS_PKGCONFIG lemon snap base-lib
 )
 
