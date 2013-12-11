@@ -3,7 +3,7 @@
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/CommonFilters.hpp>
 
-using namespace graph_analysis::lemon;
+using namespace graph_analysis;
 
 BOOST_AUTO_TEST_CASE(it_should_instanciate)
 {
@@ -11,35 +11,69 @@ BOOST_AUTO_TEST_CASE(it_should_instanciate)
 }
 
 
-BOOST_AUTO_TEST_CASE(it_should_allow_applying_a_view)
+BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
 {
-    DirectedGraph graph;
+    ::graph_analysis::lemon::DirectedGraph graph;
 
-    typedef DirectedGraph Graph;
-    typedef DirectedGraph::Vertex Vertex;
-    typedef DirectedGraph::Edge Edge;
+    Vertex::Ptr v0( new Vertex());
+    Vertex::Ptr v1( new Vertex());
 
-    typedef typename DirectedGraph::VertexPropertyType VertexData;
-    typedef DirectedGraph::EdgePropertyType EdgeData;
+    BOOST_REQUIRE_THROW( v0->getId(graph.getId()), std::runtime_error);
+    BOOST_REQUIRE_THROW( v1->getId(graph.getId()), std::runtime_error);
 
-    Vertex v0 = graph.addVertex();
-    Vertex v1 = graph.addVertex();
+    graph.addVertex(v0);
+    graph.addVertex(v1);
 
-    VertexData::Ptr vertexData0(new DirectedGraph::VertexProperty());
-    VertexData::Ptr vertexData1(new DirectedGraph::VertexProperty());
+    BOOST_REQUIRE_NO_THROW(v0->getId(graph.getId()));
+    BOOST_REQUIRE_NO_THROW(v1->getId(graph.getId()));
 
-    graph.assignVertexProperty(v0, vertexData0);
-    BOOST_REQUIRE_MESSAGE( v0 == vertexData0->getVertex(&graph), "Retrieve assigned vertex");
+    Edge::Ptr e0(new Edge());
+    BOOST_REQUIRE_THROW( e0->getId(graph.getId()), std::runtime_error);
+    BOOST_REQUIRE_THROW(graph.addEdge(e0), std::runtime_error);
 
-    graph.assignVertexProperty(v1, vertexData1);
-    BOOST_REQUIRE_MESSAGE( v1 == vertexData1->getVertex(&graph), "Retrieve assigned vertex");
+    e0->setSourceVertex(v0);
+    e0->setTargetVertex(v1);
+    BOOST_REQUIRE_NO_THROW(graph.addEdge(e0));
 
+    graph.write();
 
-    EdgeData::Ptr edgeData0(new DirectedGraph::EdgeProperty());
-    Edge e = graph.addEdge(v0,v1);
+    VertexIterator::Ptr nodeIt = graph.getVertexIterator();
+    while(nodeIt->next())
+    {
+        Vertex::Ptr vertex0 = nodeIt->current();
+        BOOST_REQUIRE_MESSAGE( vertex0->toString() != "", "Vertex: " << vertex0->toString() );
+    }
 
-    graph.assignEdgeProperty(e, edgeData0);
-    BOOST_REQUIRE_MESSAGE(e == edgeData0->getEdge(&graph), "Assigned edge can be retrieved");
+    EdgeIterator::Ptr edgeIt = graph.getEdgeIterator();
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge0 = edgeIt->current();
+        BOOST_REQUIRE_MESSAGE( edge0->toString() != "", "Edge: " << edge0->toString() );
+    }
+
+    // Set graph view
+    {
+        graph_analysis::GraphView< ::graph_analysis::lemon::DirectedGraph,Vertex::Ptr, Edge::Ptr> gv;
+        graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filter::PermitAll< Vertex::Ptr >() );
+        gv.setVertexFilter(filter);
+
+        ::graph_analysis::lemon::DirectedSubGraph subGraph = gv.apply(graph);
+        int subgraphCount = ::lemon::countNodes(subGraph.raw());
+        int graphCount = ::lemon::countNodes(graph.raw());
+        BOOST_REQUIRE_MESSAGE( subgraphCount == graphCount, "Subgraph contains all nodes after applying PermitAll filter: " << subgraphCount << " vs. " << graphCount);
+    }
+
+    {
+        graph_analysis::GraphView< ::graph_analysis::lemon::DirectedGraph, Vertex::Ptr, Edge::Ptr> gv;
+        graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filter::DenyAll< Vertex::Ptr >() );
+        gv.setVertexFilter(filter);
+
+        ::graph_analysis::lemon::DirectedSubGraph subGraph = gv.apply(graph);
+
+        int subgraphCount = ::lemon::countNodes(subGraph.raw());
+        BOOST_REQUIRE_MESSAGE( subgraphCount == 0, "Subgraph contains no nodes after applying DenyAll filter" << subgraphCount << " vs. 0 " );
+    }
+}
 
 
     // Set graph view
