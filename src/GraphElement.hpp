@@ -1,5 +1,5 @@
-#ifndef GRAPH_ANALYSIS_PROPERTY_HPP
-#define GRAPH_ANALYSIS_PROPERTY_HPP
+#ifndef GRAPH_ANALYSIS_GRAPH_ELEMENT_HPP
+#define GRAPH_ANALYSIS_GRAPH_ELEMENT_HPP
 
 #include <vector>
 #include <map>
@@ -63,4 +63,4 @@ protected:
 };
 
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_PROPERTY_HPP
+#endif // GRAPH_ANALYSIS_GRAPH_ELEMENT_HPP
