@@ -4,6 +4,8 @@
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/CommonFilters.hpp>
 
+#include <graph_analysis/GraphIO.hpp>
+
 using namespace graph_analysis;
 
 BOOST_AUTO_TEST_CASE(it_should_instanciate)
@@ -74,6 +76,8 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         int subgraphCount = ::lemon::countNodes(subGraph.raw());
         BOOST_REQUIRE_MESSAGE( subgraphCount == 0, "Subgraph contains no nodes after applying DenyAll filter" << subgraphCount << " vs. 0 " );
     }
+
+    io::GraphIO::write("testfile", graph, representation::GEXF);
 }
 
 BOOST_AUTO_TEST_CASE(it_should_work_for_snap)
