@@ -1,8 +1,9 @@
 #ifndef GRAPH_ANALYSIS_GRAPH_HPP
 #define GRAPH_ANALYSIS_GRAPH_HPP
 
-#include <graph_analysis/EdgeProperty.hpp>
-#include <graph_analysis/VertexProperty.hpp>
+#include <stdint.h>
+#include <graph_analysis/EdgeIterator.hpp>
+#include <graph_analysis/VertexIterator.hpp>
 #include <graph_analysis/Filter.hpp>
 
 #include <boost/shared_ptr.hpp>
@@ -16,84 +17,89 @@ namespace graph_analysis
 /**
  * \brief General Graph template that should be implemented to wrap specific graph library
  * functionality
- * \tparam GraphType The underlying graph type of the wrapped library
- * \tparam VertexType The underlying vertex type of the wrapped library
- * \tparam EdgeType The underlying edge type of the wrapped library
- *
+ * We assume than all graph implementation will rely and allow access to nodes and edges via
+ * integer
  */
-template<typename GraphType, typename VertexType, typename EdgeType>
 class BaseGraph
 {
 public:
+    BaseGraph()
+        : mId(msId++)
+    {}
+
     /**
      * \brief Default deconstructor
      */
     virtual ~BaseGraph() {}
 
-
-    // Exporting the typenames so that they can be accesses
-    // via BaseGraphType namespace
-    typedef VertexType Vertex;
-    typedef EdgeType Edge;
-    typedef BaseGraph<GraphType,VertexType,EdgeType> BaseGraphType;
-    typedef GraphType RawGraphType;
-
-    /**
-     * Type definitions that allow adding task properties
-     */
-    typedef graph_analysis::EdgeProperty<BaseGraphType, EdgeType> EdgePropertyType;
-    typedef graph_analysis::VertexProperty<BaseGraphType, VertexType> VertexPropertyType;
-
-    typedef typename EdgePropertyType::Ptr EdgePropertyTypePtr;
-    typedef typename VertexPropertyType::Ptr VertexPropertyTypePtr;
-
     /**
      * \brief Add a vertex
-     * \return the created vertex
      */
-    virtual Vertex addVertex() = 0;
+    virtual void addVertex(Vertex::Ptr vertex) = 0;
 
     /**
-     * \brief Assign a vertex property
+     * \brief Remove vertex
      */
-    virtual void assignVertexProperty(const Vertex& v, VertexPropertyTypePtr property) = 0;
+    virtual void removeVertex(Vertex::Ptr vertex) = 0;
 
     /**
      * \brief Add an edge
-     * \return the created edge
      */
-    virtual Edge addEdge(const Vertex& u, const Vertex& v) = 0;
+    virtual void addEdge(Edge::Ptr edge) = 0;
 
     /**
-     * \brief Assign an edge property
+     * Remove and edge
      */
-    virtual void assignEdgeProperty(const Edge& e, EdgePropertyTypePtr property) = 0;
+    virtual void removeEdge(Edge::Ptr edge) = 0;
 
     /**
-     * \brief Get the source vertex for this edge
-     * \return Pointer to the vertex data
+     * Get the graph id
      */
-    virtual VertexPropertyTypePtr getSourceVertex(const Edge& e) const = 0;
+    GraphId getId() const { return mId; }
+
 
     /**
-     * \brief Get the target vertex for this edge
-     * \return Pointer to the vertex data
+     * Export graph to file
      */
-    virtual VertexPropertyTypePtr getTargetVertex(const Edge& e) const = 0;
+    virtual void write(std::ostream& os = std::cout) const = 0;
 
     /**
-     * \brief Get access to the underlying graph
-     * \return the underlying graph instance
+     * Get the vertex iterator
+     */
+    virtual VertexIterator::Ptr getVertexIterator() = 0;
+
+    /**
+     * Get the node iterator
+     */
+    virtual EdgeIterator::Ptr getEdgeIterator() = 0;
+
+private:
+    GraphId mId;
+    static GraphId msId;
+};
+
+template<typename T>
+class TypedGraph : public BaseGraph
+{
+public:
+    TypedGraph()
+        : mGraph()
+    {}
+
+    typedef T GraphType;
+
+    /**
+     * Return underlying raw graph instance
      */
     GraphType& raw() { return mGraph; }
 
 protected:
-    // The underlying graph instance
     GraphType mGraph;
+
 };
 
 /**
- * \brief BaseSubGraph represent a wrapper for libraries that use an invidual datatype for subgraphs
+ * \brief TypedSubGraph represent a wrapper for libraries that use an invidual datatype for subgraphs
  * \details This wrapper guarantees that vertex filters and edgefilters won't be deallocated
  * as long as the subgraph is in use, e.g., for the lemon library the subgraph holds a reference to the main graph and only
  * associates filters -- but since the filters are added as references they need to be managed properly.
@@ -102,11 +108,11 @@ protected:
  * \tparam EdgeFilter the edge filter
  */
 template<typename SubGraphType, typename VertexFilter, typename EdgeFilter>
-class BaseSubGraph
+class TypedSubGraph
 {
 public:
     typedef SubGraphType GraphType;
-    typedef BaseSubGraph<SubGraphType, VertexFilter, EdgeFilter> BaseSubGraphType;
+    typedef TypedSubGraph<SubGraphType, VertexFilter, EdgeFilter> BaseSubGraphType;
 
     typedef VertexFilter VertexFilterType;
     typedef EdgeFilter EdgeFilterType;
@@ -120,7 +126,7 @@ public:
      * Ownership of all objects, i.e. filters and graph is transferred to this class, which internally
      * uses shared pointer to guarantee cleanup when necessary
      */
-    BaseSubGraph(VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
+    TypedSubGraph(VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
     {
         mpVertexFilter = boost::shared_ptr<VertexFilter>(vertexFilter);
         mpEdgeFilter = boost::shared_ptr<EdgeFilter>(edgeFilter);
