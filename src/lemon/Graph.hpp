@@ -87,6 +87,15 @@ public:
 
         return arcId;
     }
+
+    Vertex::Ptr getVertex(GraphElementId id) const
+    {
+        return mVertexMap[ mGraph.nodeFromId(id) ];
+    }
+
+    Edge::Ptr getEdge(GraphElementId id) const
+    {
+        return mEdgeMap[ mGraph.arcFromId(id) ];
     }
 
     /**

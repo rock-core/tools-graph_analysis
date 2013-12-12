@@ -46,6 +46,12 @@ public:
     GraphElementId getVertexId(Vertex::Ptr vertex) const { return boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
 
     /**
+     * \brief Get the vertex by id
+     * \return vertex
+     */
+    virtual Vertex::Ptr getVertex(GraphElementId id) const = 0;
+
+    /**
      * \brief Remove vertex
      * In order to reimplement, call the base function first
      * BaseGraph::addVertex(v)
@@ -70,6 +76,12 @@ public:
      * \throw std::runtime_error if the edge is not part of this graph
      */
     GraphElementId getEdgeId(Edge::Ptr edge) const { return boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
+
+    /**
+     * \brief Get the edge by id
+     * \return vertex
+     */
+    virtual Edge::Ptr getEdge(GraphElementId id) const = 0;
 
     /**
      * Get the graph id
