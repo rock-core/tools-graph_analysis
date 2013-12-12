@@ -4,6 +4,7 @@
 #include <lemon/list_graph.h>
 #include <lemon/adaptors.h>
 #include <lemon/lgf_writer.h>
+#include <lemon/connectivity.h>
 
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/lemon/NodeIterator.hpp>
@@ -265,6 +266,60 @@ public:
     {
         ArcIterator<DirectedGraph>* it = new ArcIterator<DirectedGraph>(*this);
         return EdgeIterator::Ptr(it);
+    }
+
+    DirectedGraph::SubGraph identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::SubGraph& subgraph)
+    {
+        ::lemon::Undirector<DirectedGraph::GraphType> undirected(graph.raw());
+        // Identify the components
+        GraphType::NodeMap<int> nodeMap(graph.raw(),false);
+        int componentCount = ::lemon::connectedComponents(undirected, nodeMap);
+
+        // Add a single vertex per identified component
+        // activate that node in the subgraph
+        Vertex::Ptr components[componentCount];
+        for(int i = 0; i < componentCount; ++i)
+        {
+            Vertex::Ptr vertex(new Vertex());
+            components[i] = vertex;
+
+            // Activate this node in the subgraph
+            // disabling all other will be in the next loop
+            GraphElementId id = graph.addVertex(vertex);
+            subgraph.raw().enable( graph.raw().nodeFromId( id ) );
+        }
+
+        if(componentCount > 0)
+        {
+            // Disable all nodes in the subgraph that are not representing a component
+            // Add an edge to relate vertices to components
+            for(DirectedSubGraph::GraphType::NodeIt n(subgraph.raw()); n != ::lemon::INVALID; ++n)
+            {
+                bool isComponentNode = false;
+                Vertex::Ptr sourceVertex = mVertexMap[n];
+                for(int a = 0; a < componentCount; ++a)
+                {
+                    if(sourceVertex->getUid() == components[a]->getUid())
+                    {
+                        isComponentNode = true;
+                    }
+                }
+
+                if(isComponentNode)
+                {
+                    continue;
+                }
+
+                Vertex::Ptr targetVertex = components[ nodeMap[n] ];
+                subgraph.raw().disable(n);
+                Edge::Ptr edge( new Edge(sourceVertex, targetVertex) );
+                graph.addEdge(edge);
+            }
+        } else {
+            LOG_DEBUG("no component found in graph");
+        }
+
+        return subgraph;
     }
 
 protected:
