@@ -153,7 +153,8 @@ public:
     {
         ::lemon::digraphCopy(other.mGraph, this->mGraph).
             nodeMap(other.mVertexMap, this->mVertexMap).
-            arcMap(other.mEdgeMap, this->mEdgeMap);
+            arcMap(other.mEdgeMap, this->mEdgeMap).
+            run();
 
         for( GraphType::NodeIt n(this->mGraph); n != ::lemon::INVALID; ++n)
         {

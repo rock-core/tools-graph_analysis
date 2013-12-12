@@ -56,6 +56,13 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
 
     graph.write();
 
+    int graphCount = ::lemon::countNodes(graph.raw());
+    BOOST_REQUIRE_MESSAGE( graphCount == 4, "Graph contains all nodes");
+
+    ::graph_analysis::lemon::DirectedGraph copiedGraph = graph;
+    int copiedGraphCount = ::lemon::countNodes(copiedGraph.raw());
+    BOOST_REQUIRE_MESSAGE( graphCount == copiedGraphCount, "Graph copy contains all nodes " << copiedGraphCount << " of " << graphCount);
+
     VertexIterator::Ptr nodeIt = graph.getVertexIterator();
     while(nodeIt->next())
     {
