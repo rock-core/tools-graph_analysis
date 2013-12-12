@@ -69,6 +69,28 @@ public:
         return edgeId;
     }
 
+    Vertex::Ptr getVertex(GraphElementId id) const
+    {
+        VertexMap::const_iterator cit = mVertexMap.find(id);
+        if(cit != mVertexMap.end())
+        {
+            return cit->second;
+        }
+
+        throw std::runtime_error("SNAP: no vertex in this graph with given id");
+    }
+
+    Edge::Ptr getEdge(GraphElementId id) const
+    {
+        EdgeMap::const_iterator cit = mEdgeMap.find(id);
+        if(cit != mEdgeMap.end())
+        {
+            return cit->second;
+        }
+
+        throw std::runtime_error("SNAP: no vertex in this graph with given id");
+    }
+
     /**
      * \brief Get the source vertex for this edge
      * \return Pointer to the vertex data
