@@ -1,6 +1,18 @@
 #include "GraphElement.hpp"
+#include <limits>
 
 namespace graph_analysis {
+
+GraphElementId GraphElement::msUid = 0;
+
+GraphElement::GraphElement()
+    : mUid(msUid++)
+{
+    if(msUid == std::numeric_limits<GraphElementId>::max() )
+    {
+        throw std::runtime_error("GraphElement: maximum of GraphElements reached");
+    }
+}
 
 /**
  * Get id of this element within a given graph

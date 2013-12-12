@@ -19,6 +19,10 @@ typedef std::vector<GraphId> GraphIdList;
 class GraphElement
 {
 public:
+    /**
+     * \brief Default constructor
+     */
+    GraphElement();
 
     typedef boost::shared_ptr< GraphElement > Ptr;
 
@@ -54,12 +58,20 @@ public:
     GraphElementId getId(GraphId graph) const;
 
     /**
+     * Get a unique id of this vertex
+     */
+    GraphElementId getUid() const { return mUid; }
+
+    /**
      * Get list of graph associations this element has
      */
     GraphIdList getGraphAssociations() const;
 
 protected:
     GraphElementMap mGraphElementMap;
+
+    GraphElementId mUid;
+    static GraphElementId msUid;
 };
 
 } // end namespace graph_analysis
