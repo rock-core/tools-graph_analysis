@@ -136,6 +136,14 @@ public:
         mGraph.erase(arc);
     }
 
+    DirectedGraph(const DirectedGraph& other)
+        : TypedGraph()
+        , mEdgeMap(raw())
+        , mVertexMap(raw())
+    {
+        *this = other;
+    }
+
     /**
      * \brief Direct usage off operator= is disallowed in lemon, thus
      * need for explicit usage of copy functions
@@ -145,6 +153,18 @@ public:
         ::lemon::digraphCopy(other.mGraph, this->mGraph).
             nodeMap(other.mVertexMap, this->mVertexMap).
             arcMap(other.mEdgeMap, this->mEdgeMap);
+
+        for( GraphType::NodeIt n(this->mGraph); n != ::lemon::INVALID; ++n)
+        {
+            Vertex::Ptr vertex = mVertexMap[n];
+            vertex->associate(this->getId(), this->mGraph.id(n));
+        }
+
+        for( GraphType::ArcIt a(this->mGraph); a != ::lemon::INVALID; ++a)
+        {
+            Edge::Ptr edge = mEdgeMap[a];
+            edge->associate(this->getId(), this->mGraph.id(a));
+        }
 
         return *this;
     }
