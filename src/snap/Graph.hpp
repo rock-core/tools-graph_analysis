@@ -44,7 +44,7 @@ public:
      * \brief Add a vertex
      * \return the created vertex
      */
-    void addVertex(Vertex::Ptr vertex)
+    GraphElementId addVertex(Vertex::Ptr vertex)
     {
         BaseGraph::addVertex(vertex);
 
@@ -52,17 +52,21 @@ public:
         mVertexMap[nodeId] = vertex;
 
         vertex->associate(getId(), nodeId);
+
+        return nodeId;
     }
 
     /**
      * \brief Add an edge
      * \return an edge interator
      */
-    void addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
+    GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
     {
         TInt edgeId = mGraph->AddEdge(sourceVertexId,targetVertexId);
         edge->associate(getId(), edgeId);
         mEdgeMap[edgeId] = edge;
+
+        return edgeId;
     }
 
     /**

@@ -59,7 +59,7 @@ public:
      * \brief Add a vertex
      * \return the created vertex
      */
-    virtual void addVertex(Vertex::Ptr vertex)
+    virtual GraphElementId addVertex(Vertex::Ptr vertex)
     {
         BaseGraph::addVertex(vertex);
 
@@ -68,13 +68,14 @@ public:
         mVertexMap[node] = vertex;
 
         vertex->associate(getId(), nodeId);
+        return nodeId;
     }
 
     /**
      * \brief Add an edge
      * \return the created edge
      */
-    void addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
+    GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
     {
         GraphType::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
         GraphType::Node targetNode = mGraph.nodeFromId( targetVertexId );
@@ -83,6 +84,9 @@ public:
         int arcId = mGraph.id(arc);
         edge->associate(getId(), arcId);
         mEdgeMap[arc] = edge;
+
+        return arcId;
+    }
     }
 
     /**

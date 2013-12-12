@@ -4,12 +4,14 @@ namespace graph_analysis {
 
 GraphId BaseGraph::msId = 0;
 
-void BaseGraph::addVertex(Vertex::Ptr vertex)
+GraphElementId BaseGraph::addVertex(Vertex::Ptr vertex)
 {
     if(vertex->associated(getId()) )
     {
         throw std::runtime_error("BaseGraph: vertex already exists in this graph");
     }
+
+    return 0;
 }
 
 void BaseGraph::removeVertex(Vertex::Ptr vertex)
@@ -21,7 +23,7 @@ void BaseGraph::removeVertex(Vertex::Ptr vertex)
     vertex->disassociate(getId());
 }
 
-void BaseGraph::addEdge(Edge::Ptr edge)
+GraphElementId BaseGraph::addEdge(Edge::Ptr edge)
 {
     if(edge->associated(getId()) )
     {
@@ -36,7 +38,7 @@ void BaseGraph::addEdge(Edge::Ptr edge)
     }
 
     try {
-        addEdgeInternal(edge, getVertexId(source), getVertexId(target));
+        return addEdgeInternal(edge, getVertexId(source), getVertexId(target));
     } catch(...)
     {
         edge->disassociate(getId());

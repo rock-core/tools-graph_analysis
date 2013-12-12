@@ -37,7 +37,7 @@ public:
      * In order to reimplement, call the base function first
      * BaseGraph::addVertex(v)
      */
-    virtual void addVertex(Vertex::Ptr vertex);
+    virtual GraphElementId addVertex(Vertex::Ptr vertex);
 
     /**
      * \brief Get the vertex id for this graph
@@ -56,7 +56,7 @@ public:
      * \brief Add an edge
      * Cannot be reimplemented directly, but see addEdge(Edge::Ptr, GraphElementId, GraphElementId)
      */
-    void addEdge(Edge::Ptr edge);
+    GraphElementId addEdge(Edge::Ptr edge);
 
     /**
      * Remove an edge and disassociate from this graph
@@ -91,7 +91,7 @@ protected:
      * Add an add using source and target vertex on the internal
      * graph representation
      */
-    virtual void addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) = 0;
+    virtual GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) = 0;
 
 
 private:
