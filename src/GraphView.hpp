@@ -47,6 +47,15 @@ public:
         return graph.applyFilters(mVertexFilter, mEdgeFilter);
     }
 
+    /**
+     * Creates a new graph that is disconnected and contains only nodes with incoming arcs
+     */
+    typename GraphType::SubGraph identifyConnectedComponents(GraphType& graph)
+    {
+        typename GraphType::SubGraph subgraph = graph.applyFilters(mVertexFilter, mEdgeFilter);
+        return graph.identifyConnectedComponents(graph, subgraph);
+    }
+
 private:
     VertexFilterType mVertexFilter;
     EdgeFilterType mEdgeFilter;
