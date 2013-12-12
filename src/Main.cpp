@@ -17,17 +17,21 @@ struct Benchmark
     base::Time startAddNodes;
     base::Time stopAddNodes;
 
+    base::Time startGetNodes;
+    base::Time stopGetNodes;
+
     base::Time startAddEdges;
     base::Time stopAddEdges;
 
     double costAddNodes() { return (stopAddNodes - startAddNodes).toSeconds() / numberOfNodes; }
-
+    double costGetNodes() { return (stopGetNodes - startGetNodes).toSeconds() / numberOfNodes; }
     double costAddEdges() { return (stopAddEdges - startAddEdges).toSeconds() / numberOfEdges; }
 
     void printReport()
     {
         std::cout << "Benchmark: " << label << std::endl;
         std::cout << "    add (p node): " << costAddNodes() << " s" << std::endl;
+        std::cout << "    get (p node): " << costGetNodes() << " s" << std::endl;
         std::cout << "    add (p edge): " << costAddEdges() << " s" << std::endl;
     }
 };
@@ -51,6 +55,13 @@ int main(int argc, char** argv)
             graph.addVertex( v );
         }
         lemonMark.stopAddNodes = base::Time::now();
+
+        lemonMark.startGetNodes = base::Time::now();
+        for(int i = 0; i < nodeMax; ++i)
+        {
+            graph.getVertex(i);
+        }
+        lemonMark.stopGetNodes = base::Time::now();
     }
     {
         graph_analysis::lemon::DirectedGraph graph;
@@ -63,6 +74,13 @@ int main(int argc, char** argv)
             rawGraph.addNode();
         }
         lemonRawMark.stopAddNodes = base::Time::now();
+
+        lemonRawMark.startGetNodes = base::Time::now();
+        for(int i = 0; i < nodeMax; ++i)
+        {
+            rawGraph.nodeFromId(i);
+        }
+        lemonRawMark.stopGetNodes = base::Time::now();
     }
 
 
@@ -77,6 +95,13 @@ int main(int argc, char** argv)
             graph.addVertex( v );
         }
         snapMark.stopAddNodes = base::Time::now();
+
+        snapMark.startGetNodes = base::Time::now();
+        for(int i = 0; i < nodeMax; ++i)
+        {
+            graph.getVertex(i);
+        }
+        snapMark.stopGetNodes = base::Time::now();
     }
 
     {
@@ -89,6 +114,13 @@ int main(int argc, char** argv)
             rawGraph->AddNode();
         }
         snapRawMark.stopAddNodes = base::Time::now();
+
+        snapRawMark.startGetNodes = base::Time::now();
+        for(int i = 0; i < nodeMax; ++i)
+        {
+            rawGraph->GetNI(i);
+        }
+        snapRawMark.stopGetNodes = base::Time::now();
     }
 
     lemonMark.printReport();
