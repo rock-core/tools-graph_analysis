@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_SNAP_GRAPH_HPP
 
 #include <map>
+#include <google/dense_hash_map>
 #include <graph_analysis/Graph.hpp>
 
 // Workaround for snap define
@@ -16,6 +17,22 @@
 namespace graph_analysis {
 namespace snap {
 
+struct TIntHash
+{
+    inline size_t operator()(const TInt& u) const
+    {
+        return u;
+    }
+};
+
+struct TIntEquals
+{
+    inline bool operator()(const TInt& u, const TInt& v) const
+    {
+        return u == v;
+    }
+};
+
 /**
  * \class DirectedGraph
  * \brief Directed graph implementation based on lemon library
@@ -25,8 +42,8 @@ class DirectedGraph : public TypedGraph< PNEGraph >
 public:
     typedef PNEGraph SubGraph;
 
-    typedef std::map<TInt, Edge::Ptr> EdgeMap;
-    typedef std::map<TInt, Vertex::Ptr> VertexMap;
+    typedef google::dense_hash_map<TInt, Edge::Ptr, TIntHash, TIntEquals> EdgeMap;
+    typedef google::dense_hash_map<TInt, Vertex::Ptr, TIntHash, TIntEquals> VertexMap;
 
     friend class NodeIterator<DirectedGraph>;
     friend class EdgeIterator<DirectedGraph>;
@@ -38,6 +55,8 @@ public:
         : TypedGraph()
     {
         mGraph = TNEGraph::New();
+        mEdgeMap.set_empty_key(-1);
+        mVertexMap.set_empty_key(-1);
     }
 
     /**
