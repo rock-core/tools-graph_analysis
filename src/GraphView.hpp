@@ -6,13 +6,13 @@
 namespace graph_analysis
 {
 
-template<typename GraphType, typename VertexPropertyType, typename EdgePropertyType>
+typedef typename Filter<Vertex::Ptr>::Ptr VertexFilterType;
+typedef typename Filter<Edge::Ptr>::Ptr EdgeFilterType;
+
+template<typename GraphType>
 class GraphView
 {
 public:
-    typedef typename Filter<VertexPropertyType>::Ptr VertexFilterType;
-    typedef typename Filter<EdgePropertyType>::Ptr EdgeFilterType;
-
     /**
      * Add a vertex filter
      */
