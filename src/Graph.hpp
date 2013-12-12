@@ -102,6 +102,7 @@ protected:
     /**
      * Add an add using source and target vertex on the internal
      * graph representation
+     * \return Element id of this node within this graph
      */
     virtual GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) = 0;
 
