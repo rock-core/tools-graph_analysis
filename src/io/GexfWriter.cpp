@@ -1,7 +1,8 @@
 #include "GexfWriter.hpp"
 
 #include <stdlib.h>
-#include <gexf/libgexf.h>
+#include <libgexf/gexf.h>
+#include <libgexf/filewriter.h>
 #include <boost/lexical_cast.hpp>
 
 namespace graph_analysis {
