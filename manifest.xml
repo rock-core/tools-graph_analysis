@@ -10,4 +10,6 @@
   <depend package="base/types" />
   <depend package="boost" />
   <depend package="external/lemon" />
+  <depend package="external/snap" />
+  <depend package="external/gexf" />
 </package>
