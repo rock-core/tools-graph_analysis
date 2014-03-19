@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' nodes representing components, while base graph has '" << ::lemon::countNodes( graph.raw()) << "' nodes overall" );
     }
 
-    io::GraphIO::write("testfile", graph, representation::GEXF);
+    io::GraphIO::write("testfile-lemon", graph, representation::GEXF);
 }
 
 BOOST_AUTO_TEST_CASE(it_should_work_for_snap)
@@ -141,8 +141,6 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_snap)
     e0->setTargetVertex(v1);
     BOOST_REQUIRE_NO_THROW(graph.addEdge(e0));
 
-    //graph.write();
-
     VertexIterator::Ptr nodeIt = graph.getVertexIterator();
     while(nodeIt->next())
     {
@@ -156,4 +154,6 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_snap)
         Edge::Ptr edge0 = edgeIt->current();
         BOOST_REQUIRE_MESSAGE( edge0->toString() != "", "Edge: " << edge0->toString() );
     }
+
+    io::GraphIO::write("testfile-snap", graph, representation::GEXF);
 }

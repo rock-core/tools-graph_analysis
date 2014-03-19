@@ -4,6 +4,8 @@
 #include <libgexf/gexf.h>
 #include <libgexf/filewriter.h>
 #include <boost/lexical_cast.hpp>
+#include <boost/xpressive/xpressive.hpp>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -13,8 +15,6 @@ void GexfWriter::write(const std::string& filename, const BaseGraph& graph) cons
     libgexf::GEXF gexf;
     libgexf::DirectedGraph& digraph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
-
-
 
     std::string classAttr = "0";
     data.addNodeAttributeColumn(classAttr, "class", "STRING");
@@ -45,9 +45,25 @@ void GexfWriter::write(const std::string& filename, const BaseGraph& graph) cons
     }
 
     libgexf::FileWriter writer;
-    std::string name = filename + ".gexf";
+    boost::xpressive::sregex regex = boost::xpressive::as_xpr(".gexf");
+    std::string replace = "";
+    std::string name = boost::xpressive::regex_replace(filename, regex, replace);
+
+    name = name + ".gexf";
     writer.init(name, &gexf);
     writer.write();
+
+    std::string formattedFile = name + ".formatted";
+    std::string command = "/usr/bin/xmllint --encode UTF-8 --format " + name + " > " + formattedFile;
+
+    LOG_INFO("Trying to format gexf using xmllint: '%s'", command.c_str());
+    if( system(command.c_str()) == 0 )
+    {
+        command = "mv " + formattedFile + " " + name;
+        system(command.c_str());
+    } else {
+        LOG_INFO("Gexf file '%s' written, but proper formatting failed -- make sure that xmllint is installed", name.c_str()); 
+    }
 }
 
 } // end namespace io
