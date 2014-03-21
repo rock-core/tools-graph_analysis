@@ -7,6 +7,7 @@ rock_library(graph_analysis
         EdgeIterator.hpp
         Filter.hpp
         CommonFilters.hpp
+        DirectedGraphInterface.hpp
         Graph.hpp
         GraphAnalysis.hpp
         GraphElement.hpp

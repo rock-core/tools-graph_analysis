@@ -32,7 +32,7 @@ protected:
      * \brief Set next edge
      * Should be applied by class implementing next()
      */
-    void setNext(Edge::Ptr vertex) { mEdge = vertex; }
+    void setNext(Edge::Ptr edge) { mEdge = edge; }
 
 private:
     Edge::Ptr mEdge;

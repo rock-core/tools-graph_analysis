@@ -7,6 +7,7 @@
 #include <lemon/connectivity.h>
 
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/DirectedGraphInterface.hpp>
 #include <graph_analysis/lemon/NodeIterator.hpp>
 #include <graph_analysis/lemon/ArcIterator.hpp>
 #include <base/Logging.hpp>
@@ -32,7 +33,7 @@ public:
  * \class DirectedGraph
  * \brief Directed graph implementation based on lemon library
  */
-class DirectedGraph : public TypedGraph< ::lemon::ListDigraph >
+class DirectedGraph : public TypedGraph< ::lemon::ListDigraph >, graph_analysis::DirectedGraphInterface
 {
 public:
     /**
@@ -55,6 +56,8 @@ public:
 
     friend class NodeIterator<DirectedGraph>;
     friend class ArcIterator<DirectedGraph>;
+    friend class InArcIterator<DirectedGraph>;
+    friend class OutArcIterator<DirectedGraph>;
 
     /**
      * \brief Add a vertex
@@ -266,6 +269,18 @@ public:
     EdgeIterator::Ptr getEdgeIterator()
     {
         ArcIterator<DirectedGraph>* it = new ArcIterator<DirectedGraph>(*this);
+        return EdgeIterator::Ptr(it);
+    }
+
+    EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex)
+    {
+        OutArcIterator<DirectedGraph>* it = new OutArcIterator<DirectedGraph>(*this, vertex);
+        return EdgeIterator::Ptr(it);
+    }
+
+    EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex)
+    {
+        InArcIterator<DirectedGraph>* it = new InArcIterator<DirectedGraph>(*this, vertex);
         return EdgeIterator::Ptr(it);
     }
 

@@ -20,7 +20,7 @@ namespace snap {
  * \class DirectedGraph
  * \brief Directed graph implementation based on lemon library
  */
-class DirectedGraph : public TypedGraph< PNEGraph >
+class DirectedGraph : public TypedGraph< PNEGraph >, graph_analysis::DirectedGraphInterface
 {
 public:
     typedef PNEGraph SubGraph;
@@ -30,6 +30,8 @@ public:
 
     friend class NodeIterator<DirectedGraph>;
     friend class EdgeIterator<DirectedGraph>;
+    friend class OutEdgeIterator<DirectedGraph>;
+    friend class InEdgeIterator<DirectedGraph>;
 
     /**
      * \brief Default constructor of the graph
@@ -148,6 +150,21 @@ public:
     graph_analysis::EdgeIterator::Ptr getEdgeIterator()
     {
         EdgeIterator<DirectedGraph>* it = new EdgeIterator<DirectedGraph>(*this);
+        return graph_analysis::EdgeIterator::Ptr(it);
+    }
+
+
+    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex)
+    {
+        TNEGraph::TNodeI nodeIterator = mGraph->GetNI(vertex->getId( getId() ) );
+        OutEdgeIterator<DirectedGraph>* it = new OutEdgeIterator<DirectedGraph>(*this, nodeIterator );
+        return graph_analysis::EdgeIterator::Ptr(it);
+    }
+
+    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex)
+    {
+        TNEGraph::TNodeI nodeIterator = mGraph->GetNI(vertex->getId( getId() ) );
+        InEdgeIterator<DirectedGraph>* it = new InEdgeIterator<DirectedGraph>(*this, nodeIterator );
         return graph_analysis::EdgeIterator::Ptr(it);
     }
 
