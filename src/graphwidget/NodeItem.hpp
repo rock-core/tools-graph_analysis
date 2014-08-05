@@ -45,6 +45,8 @@
 #include <QList>
 #include <graph_analysis/Vertex.hpp>
 
+#include <omviz/graphwidget/NodeTypeManager.hpp>
+
 namespace omviz {
 
 class EdgeItem;
@@ -78,6 +80,9 @@ private:
     graph_analysis::Vertex::Ptr mpVertex;
     QPointF mNewPos;
     GraphWidget* mpGraphWidget;
+
+    static NodeTypeManager msNodeTypeManager;
+    node::Type mNodeType;
 };
 
 } // end namespace omviz

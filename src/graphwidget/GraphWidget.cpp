@@ -54,7 +54,7 @@ GraphWidget::GraphWidget(QWidget *parent)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-200, -200, 400, 400);
+    //scene->setSceneRect(-200, -200, 400, 400);
     setScene(scene);
 
     setCacheMode(CacheBackground);
@@ -72,9 +72,14 @@ void GraphWidget::updateFromGraph()
     while(nodeIt->next())
     {
         graph_analysis::Vertex::Ptr vertex = nodeIt->current();
-        NodeItem* nodeItem = new NodeItem(this, vertex);
-        mNodeItemMap[vertex] = nodeItem;
+        if( mNodeItemMap.count(vertex))
+        {
+            continue;
+        }
 
+        NodeItem* nodeItem = new NodeItem(this, vertex);
+
+        mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
     }
 
@@ -82,6 +87,11 @@ void GraphWidget::updateFromGraph()
     while(edgeIt->next())
     {
         graph_analysis::Edge::Ptr edge = edgeIt->current();
+        if( mEdgeItemMap.count(edge))
+        {
+            continue;
+        }
+
         graph_analysis::Vertex::Ptr source = edge->getSourceVertex();
         graph_analysis::Vertex::Ptr target = edge->getTargetVertex();
 
@@ -173,37 +183,37 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
 {
     Q_UNUSED(rect);
 
-    // Shadow
+    //// Shadow
     QRectF sceneRect = this->sceneRect();
-    QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
-    QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
-    if (rightShadow.intersects(rect) || rightShadow.contains(rect))
-        painter->fillRect(rightShadow, Qt::darkGray);
-    if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
-        painter->fillRect(bottomShadow, Qt::darkGray);
+    //QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
+    //QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
+    //if (rightShadow.intersects(rect) || rightShadow.contains(rect))
+    //    painter->fillRect(rightShadow, Qt::darkGray);
+    //if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
+    //    painter->fillRect(bottomShadow, Qt::darkGray);
 
     // Fill
-    QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
-    gradient.setColorAt(0, Qt::white);
-    gradient.setColorAt(1, Qt::lightGray);
-    painter->fillRect(rect.intersected(sceneRect), gradient);
-    painter->setBrush(Qt::NoBrush);
-    painter->drawRect(sceneRect);
+    //QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
+    //gradient.setColorAt(0, Qt::white);
+    //gradient.setColorAt(1, Qt::lightGray);
+    //painter->fillRect(rect.intersected(sceneRect), gradient);
+    //painter->setBrush(Qt::NoBrush);
+    //painter->drawRect(sceneRect);
 
-    // Text
-    QRectF textRect(sceneRect.left() + 4, sceneRect.top() + 4,
-                    sceneRect.width() - 4, sceneRect.height() - 4);
-    QString message(tr("Click and drag the nodes around, and zoom with the mouse "
-                       "wheel or the '+' and '-' keys"));
+    //// Text
+    //QRectF textRect(sceneRect.left() + 4, sceneRect.top() + 4,
+    //                sceneRect.width() - 4, sceneRect.height() - 4);
+    //QString message(tr("Click and drag the nodes around, and zoom with the mouse "
+    //                   "wheel or the '+' and '-' keys"));
 
-    QFont font = painter->font();
-    font.setBold(true);
-    font.setPointSize(14);
-    painter->setFont(font);
-    painter->setPen(Qt::lightGray);
-    painter->drawText(textRect.translated(2, 2), message);
-    painter->setPen(Qt::black);
-    painter->drawText(textRect, message);
+    //QFont font = painter->font();
+    //font.setBold(true);
+    //font.setPointSize(14);
+    //painter->setFont(font);
+    //painter->setPen(Qt::lightGray);
+    //painter->drawText(textRect.translated(2, 2), message);
+    //painter->setPen(Qt::black);
+    //painter->drawText(textRect, message);
 }
 
 void GraphWidget::scaleView(qreal scaleFactor)

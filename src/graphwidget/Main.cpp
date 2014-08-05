@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-    GraphWidget *widget = new GraphWidget;
+    GraphWidget* widget = new GraphWidget;
 
     // Create vertices
     for(int i = 0; i < 10; ++i)
@@ -60,16 +60,15 @@ int main(int argc, char **argv)
         graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
         widget->addVertex(vertex);
     }
-
-    // Register nodes
+    // Register nodes -- otherwise edgesItemMap will remains empty
     widget->updateFromGraph();
 
     // Create edges between all
     GraphWidget::NodeItemMap::const_iterator ait = widget->nodeItemMap().begin();
-    GraphWidget::NodeItemMap::const_iterator bit = widget->nodeItemMap().begin();
 
     for(; ait != widget->nodeItemMap().end(); ++ait)
     {
+        GraphWidget::NodeItemMap::const_iterator bit = widget->nodeItemMap().begin();
         for(; bit != widget->nodeItemMap().end(); ++bit)
         {
             graph_analysis::Edge::Ptr edge(new graph_analysis::Edge());
@@ -81,6 +80,7 @@ int main(int argc, char **argv)
     }
 
     widget->updateFromGraph();
+    widget->shuffle();
 
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);

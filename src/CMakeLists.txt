@@ -2,9 +2,13 @@ rock_library(omviz
     SOURCES graphwidget/EdgeItem.cpp
       graphwidget/GraphWidget.cpp
       graphwidget/NodeItem.cpp
+      graphwidget/NodeTypeManager.cpp
+      graphwidget/graphitem/Simple.cpp
     HEADERS graphwidget/EdgeItem.hpp
       graphwidget/GraphWidget.hpp
       graphwidget/NodeItem.hpp
+      graphwidget/NodeTypeManager.hpp
+      graphwidget/graphitem/Simple.hpp
     MOC graphwidget/EdgeItem.hpp
       graphwidget/GraphWidget.hpp
       graphwidget/NodeItem.hpp
