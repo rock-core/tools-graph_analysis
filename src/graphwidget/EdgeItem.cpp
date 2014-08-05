@@ -42,74 +42,72 @@
 #include "NodeItem.hpp"
 
 #include <math.h>
-
 #include <QPainter>
+#include <base/Logging.hpp>
 
 static const double Pi = 3.14159265358979323846264338327950288419717;
 static double TwoPi = 2.0 * Pi;
 
 namespace omviz {
 
-EdgeItem::EdgeItem(NodeItem* sourceNode, NodeItem* destNode)
-    : arrowSize(10)
+EdgeItem::EdgeItem(NodeItem* sourceNode, NodeItem* targetNode)
+    : mSourceNodeItem(sourceNode)
+    , mTargetNodeItem(targetNode)
+    , mArrowSize(10)
 {
     setAcceptedMouseButtons(0);
-    source = sourceNode;
-    dest = destNode;
-    source->addEdge(this);
-    dest->addEdge(this);
     adjust();
 }
 
-NodeItem* EdgeItem::sourceNode() const
+NodeItem* EdgeItem::sourceNodeItem() const
 {
-    return source;
+    return mSourceNodeItem;
 }
 
-NodeItem* EdgeItem::destNode() const
+NodeItem* EdgeItem::targetNodeItem() const
 {
-    return dest;
+    return mTargetNodeItem;
 }
 
 void EdgeItem::adjust()
 {
-    if (!source || !dest)
+    if (!mSourceNodeItem || !mTargetNodeItem)
         return;
 
-    QLineF line(mapFromItem(source, 0, 0), mapFromItem(dest, 0, 0));
+    QLineF line(mapFromItem(mSourceNodeItem, 0, 0), mapFromItem(mTargetNodeItem, 0, 0));
     qreal length = line.length();
 
     prepareGeometryChange();
 
     if (length > qreal(20.)) {
         QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
-        sourcePoint = line.p1() + edgeOffset;
-        destPoint = line.p2() - edgeOffset;
+        mSourcePoint = line.p1() + edgeOffset;
+        mTargetPoint = line.p2() - edgeOffset;
     } else {
-        sourcePoint = destPoint = line.p1();
+        mSourcePoint = mTargetPoint = line.p1();
     }
 }
 
 QRectF EdgeItem::boundingRect() const
 {
-    if (!source || !dest)
+    if (!mSourceNodeItem || !mTargetNodeItem)
         return QRectF();
 
     qreal penWidth = 1;
-    qreal extra = (penWidth + arrowSize) / 2.0;
+    qreal extra = (penWidth + mArrowSize) / 2.0;
 
-    return QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
-                                      destPoint.y() - sourcePoint.y()))
+    return QRectF(mSourcePoint, QSizeF(mTargetPoint.x() - mSourcePoint.x(),
+                                      mTargetPoint.y() - mSourcePoint.y()))
         .normalized()
         .adjusted(-extra, -extra, extra, extra);
 }
 
 void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    if (!source || !dest)
+    if (!mSourceNodeItem || !mTargetNodeItem)
         return;
 
-    QLineF line(sourcePoint, destPoint);
+    QLineF line(mSourcePoint, mTargetPoint);
     if (qFuzzyCompare(line.length(), qreal(0.)))
         return;
 
@@ -122,14 +120,14 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     if (line.dy() >= 0)
         angle = TwoPi - angle;
 
-    QPointF sourceArrowP1 = sourcePoint + QPointF(sin(angle + Pi / 3) * arrowSize,
-                                                  cos(angle + Pi / 3) * arrowSize);
-    QPointF sourceArrowP2 = sourcePoint + QPointF(sin(angle + Pi - Pi / 3) * arrowSize,
-                                                  cos(angle + Pi - Pi / 3) * arrowSize);
-    QPointF destArrowP1 = destPoint + QPointF(sin(angle - Pi / 3) * arrowSize,
-                                              cos(angle - Pi / 3) * arrowSize);
-    QPointF destArrowP2 = destPoint + QPointF(sin(angle - Pi + Pi / 3) * arrowSize,
-                                              cos(angle - Pi + Pi / 3) * arrowSize);
+    QPointF sourceArrowP1 = mSourcePoint + QPointF(sin(angle + Pi / 3) * mArrowSize,
+                                                  cos(angle + Pi / 3) * mArrowSize);
+    QPointF sourceArrowP2 = mSourcePoint + QPointF(sin(angle + Pi - Pi / 3) * mArrowSize,
+                                                  cos(angle + Pi - Pi / 3) * mArrowSize);
+    QPointF destArrowP1 = mTargetPoint + QPointF(sin(angle - Pi / 3) * mArrowSize,
+                                              cos(angle - Pi / 3) * mArrowSize);
+    QPointF destArrowP2 = mTargetPoint + QPointF(sin(angle - Pi + Pi / 3) * mArrowSize,
+                                              cos(angle - Pi + Pi / 3) * mArrowSize);
 
     painter->setBrush(Qt::black);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);

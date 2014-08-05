@@ -52,15 +52,19 @@ class EdgeItem;
 class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
-
-    ::graph_analysis::lemon::DirectedGraph mGraph;
-    std::map<graph_analysis::Vertex::Ptr, NodeItem*> mNodeItemMap;
-
 public:
+    typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
+    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
+
     GraphWidget(QWidget *parent = 0);
 
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
+
+    NodeItemMap& nodeItemMap() { return mNodeItemMap; }
+    EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
+
+    ::graph_analysis::lemon::DirectedGraph& graph() { return mGraph; }
 
     void updateFromGraph();
 
@@ -82,8 +86,14 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    int timerId;
-    NodeItem *centerNode;
+    ::graph_analysis::lemon::DirectedGraph mGraph;
+
+    // Allow mapping from graph vertexes to nodes in the scene
+    NodeItemMap mNodeItemMap;
+    // Allow mapping from graph edges to edges in the scene
+    EdgeItemMap mEdgeItemMap;
+
+    int mTimerId;
 };
 
 } // end namespace omviz

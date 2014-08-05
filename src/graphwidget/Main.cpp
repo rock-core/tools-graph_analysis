@@ -54,8 +54,32 @@ int main(int argc, char **argv)
 
     GraphWidget *widget = new GraphWidget;
 
-    graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
-    widget->addVertex(vertex);
+    // Create vertices
+    for(int i = 0; i < 10; ++i)
+    {
+        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
+        widget->addVertex(vertex);
+    }
+
+    // Register nodes
+    widget->updateFromGraph();
+
+    // Create edges between all
+    GraphWidget::NodeItemMap::const_iterator ait = widget->nodeItemMap().begin();
+    GraphWidget::NodeItemMap::const_iterator bit = widget->nodeItemMap().begin();
+
+    for(; ait != widget->nodeItemMap().end(); ++ait)
+    {
+        for(; bit != widget->nodeItemMap().end(); ++bit)
+        {
+            graph_analysis::Edge::Ptr edge(new graph_analysis::Edge());
+            edge->setSourceVertex(ait->first);
+            edge->setTargetVertex(bit->first);
+
+            widget->addEdge(edge);
+        }
+    }
+
     widget->updateFromGraph();
 
     QMainWindow mainWindow;

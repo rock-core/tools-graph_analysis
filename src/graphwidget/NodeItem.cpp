@@ -50,8 +50,8 @@
 namespace omviz {
 
 NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : graph(graphWidget)
-    , mpVertex(vertex)
+    : mpVertex(vertex)
+    , mpGraphWidget(graphWidget)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
@@ -61,19 +61,13 @@ NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
 
 void NodeItem::addEdge(EdgeItem* edge)
 {
-    edgeList << edge;
     edge->adjust();
-}
-
-QList<EdgeItem* > NodeItem::edges() const
-{
-    return edgeList;
 }
 
 void NodeItem::calculateForces()
 {
     if (!scene() || scene()->mouseGrabberItem() == this) {
-        newPos = pos();
+        mNewPos = pos();
         return;
     }
 
@@ -96,13 +90,18 @@ void NodeItem::calculateForces()
     }
 
     // Now subtract all forces pulling items together
-    double weight = (edgeList.size() + 1) * 10;
-    foreach (EdgeItem* edge, edgeList) {
+
+    GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
+
+    double weight = (mpGraphWidget->edgeItemMap().size() + 1) * 10;
+    for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
+    {
+        EdgeItem* edge = it->second;
         QPointF vec;
-        if (edge->sourceNode() == this)
-            vec = mapToItem(edge->destNode(), 0, 0);
+        if (edge->sourceNodeItem() == this)
+            vec = mapToItem(edge->targetNodeItem(), 0, 0);
         else
-            vec = mapToItem(edge->sourceNode(), 0, 0);
+            vec = mapToItem(edge->sourceNodeItem(), 0, 0);
         xvel -= vec.x() / weight;
         yvel -= vec.y() / weight;
     }
@@ -111,17 +110,17 @@ void NodeItem::calculateForces()
         xvel = yvel = 0;
 
     QRectF sceneRect = scene()->sceneRect();
-    newPos = pos() + QPointF(xvel, yvel);
-    newPos.setX(qMin(qMax(newPos.x(), sceneRect.left() + 10), sceneRect.right() - 10));
-    newPos.setY(qMin(qMax(newPos.y(), sceneRect.top() + 10), sceneRect.bottom() - 10));
+    mNewPos = pos() + QPointF(xvel, yvel);
+    mNewPos.setX(qMin(qMax(mNewPos.x(), sceneRect.left() + 10), sceneRect.right() - 10));
+    mNewPos.setY(qMin(qMax(mNewPos.y(), sceneRect.top() + 10), sceneRect.bottom() - 10));
 }
 
 bool NodeItem::advance()
 {
-    if (newPos == pos())
+    if (mNewPos == pos())
         return false;
 
-    setPos(newPos);
+    setPos(mNewPos);
     return true;
 }
 
@@ -164,10 +163,16 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     switch (change) {
     case ItemPositionHasChanged:
-        foreach (EdgeItem* edge, edgeList)
+    {
+        GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
+        for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
+        {
+            EdgeItem* edge = it->second;
             edge->adjust();
-        graph->itemMoved();
+        }
+        mpGraphWidget->itemMoved();
         break;
+    }
     default:
         break;
     };

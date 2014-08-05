@@ -42,7 +42,6 @@
 #define OMVIZ_EDGEITEM_HPP
 
 #include <QGraphicsItem>
-//#include <graph_analysis/Edge.hpp>
 
 namespace omviz {
 
@@ -53,8 +52,8 @@ class EdgeItem : public QGraphicsItem
 public:
     EdgeItem(NodeItem* sourceNode, NodeItem* destNode);
 
-    NodeItem* sourceNode() const;
-    NodeItem* destNode() const;
+    NodeItem* sourceNodeItem() const;
+    NodeItem* targetNodeItem() const;
 
     void adjust();
 
@@ -63,14 +62,15 @@ public:
 
 protected:
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
 private:
-    NodeItem* source, *dest;
+    NodeItem* mSourceNodeItem;
+    NodeItem* mTargetNodeItem;
 
-    QPointF sourcePoint;
-    QPointF destPoint;
-    qreal arrowSize;
+    QPointF mSourcePoint;
+    QPointF mTargetPoint;
+    qreal mArrowSize;
 };
 
 }  // end namespace omviz

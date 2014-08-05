@@ -53,13 +53,10 @@ class QGraphicsSceneMouseEvent;
 
 class NodeItem : public QGraphicsItem
 {
-    graph_analysis::Vertex::Ptr mpVertex;
-
 public:
     NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
 
     void addEdge(EdgeItem* edgeItem);
-    QList<EdgeItem*> edges() const;
 
     enum { Type = UserType + 1 };
     int type() const { return Type; }
@@ -78,9 +75,9 @@ protected:
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
 
 private:
-    QList<EdgeItem*> edgeList;
-    QPointF newPos;
-    GraphWidget* graph;
+    graph_analysis::Vertex::Ptr mpVertex;
+    QPointF mNewPos;
+    GraphWidget* mpGraphWidget;
 };
 
 } // end namespace omviz
