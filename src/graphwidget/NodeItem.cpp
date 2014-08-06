@@ -47,19 +47,19 @@
 #include <QPainter>
 #include <QStyleOption>
 
-namespace omviz {
+#include <base/Logging.hpp>
 
-NodeTypeManager NodeItem::msNodeTypeManager;
+namespace omviz {
 
 NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     : mpVertex(vertex)
     , mpGraphWidget(graphWidget)
-    , mNodeType(vertex->getClassName())
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
+    setToolTip(QString(vertex->getClassName().c_str()));
 }
 
 void NodeItem::addEdge(EdgeItem* edge)
@@ -93,7 +93,6 @@ void NodeItem::calculateForces()
     }
 
     // Now subtract all forces pulling items together
-
     GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
 
     double weight = (mpGraphWidget->edgeItemMap().size() + 1) * 10;
@@ -125,21 +124,6 @@ bool NodeItem::advance()
 
     setPos(mNewPos);
     return true;
-}
-
-QRectF NodeItem::boundingRect() const
-{
-    return msNodeTypeManager.boundingRect(mNodeType);
-}
-
-QPainterPath NodeItem::shape() const
-{
-    return msNodeTypeManager.shape(mNodeType);
-}
-
-void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
-{
-    msNodeTypeManager.paint(painter, option, mNodeType);
 }
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -174,5 +158,16 @@ void NodeItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent *event)
     update();
     ::QGraphicsItem::mouseReleaseEvent(event);
 }
+
+void NodeItem::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
+{
+    update();
+    ::QGraphicsItem::mouseDoubleClickEvent(event);
+}
+
+//void NodeItem::keyPressEvent(::QKeyEvent* event)
+//{
+//    LOG_DEBUG_S << "KEY EVENT";
+//}
 
 } // end namespace omviz

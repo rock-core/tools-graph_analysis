@@ -77,10 +77,13 @@ void GraphWidget::updateFromGraph()
             continue;
         }
 
-        NodeItem* nodeItem = new NodeItem(this, vertex);
+        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+        LOG_DEBUG_S << "NUMBER OF CHILD ITEMS: " << nodeItem->childItems().size();
 
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
+
+        LOG_DEBUG_S << "NUMBER OF ITEMS: " << scene()->items().size();
     }
 
     graph_analysis::EdgeIterator::Ptr edgeIt = mGraph.getEdgeIterator();

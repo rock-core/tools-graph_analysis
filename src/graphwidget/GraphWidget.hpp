@@ -42,7 +42,7 @@
 #define GRAPHWIDGET_H
 
 #include <QGraphicsView>
-#include<graph_analysis/lemon/Graph.hpp>
+#include <graph_analysis/lemon/Graph.hpp>
 
 namespace omviz {
 
@@ -94,6 +94,7 @@ private:
     EdgeItemMap mEdgeItemMap;
 
     int mTimerId;
+
 };
 
 } // end namespace omviz

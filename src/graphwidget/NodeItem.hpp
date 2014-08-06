@@ -41,6 +41,7 @@
 #ifndef OMVIZ_NODEITEM_HPP
 #define OMVIZ_NODEITEM_HPP
 
+#include <QGraphicsItemGroup>
 #include <QGraphicsItem>
 #include <QList>
 #include <graph_analysis/Vertex.hpp>
@@ -53,10 +54,15 @@ class EdgeItem;
 class GraphWidget;
 class QGraphicsSceneMouseEvent;
 
-class NodeItem : public QGraphicsItem
+class NodeItem : public QGraphicsItem //QGraphicsItemGroup
 {
-public:
+protected:
     NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
+
+public:
+    NodeItem() {}
+
+    virtual ~NodeItem() {};
 
     void addEdge(EdgeItem* edgeItem);
 
@@ -66,25 +72,20 @@ public:
     void calculateForces();
     bool advance();
 
-    QRectF boundingRect() const;
-    QPainterPath shape() const;
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
-
-    static NodeTypeManager& nodeTypeManager() { return msNodeTypeManager; }
+    virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { throw std::runtime_error("omviz::NodeItem::createNewItem is not reimplemented"); }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
-    void mousePressEvent(::QGraphicsSceneMouseEvent* event);
-    void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
+    virtual void mousePressEvent(::QGraphicsSceneMouseEvent* event);
+    virtual void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
+    virtual void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
 
-private:
+//    virtual void keyPressEvent(QKeyEvent* event);
+
     graph_analysis::Vertex::Ptr mpVertex;
     QPointF mNewPos;
     GraphWidget* mpGraphWidget;
-
-    static NodeTypeManager msNodeTypeManager;
-    node::Type mNodeType;
 };
 
 } // end namespace omviz

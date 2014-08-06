@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     GraphWidget* widget = new GraphWidget;
 
     // Create vertices
-    for(int i = 0; i < 10; ++i)
+    for(int i = 0; i < 1; ++i)
     {
         graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
         widget->addVertex(vertex);
@@ -71,9 +71,9 @@ int main(int argc, char **argv)
     owl_om::IRI resourceClass = "http://qt-test/om#Resource";
     ontology->subclassOf(resourceClass,"TOP");
 
-    NodeItem::nodeTypeManager().registerVisualization(resourceClass.toString(), new graphitem::Resource());
+    NodeTypeManager::getInstance()->registerVisualization(resourceClass.toString(), new graphitem::Resource());
 
-    for(int i = 0; i < 10; ++i)
+    for(int i = 0; i < 1; ++i)
     {
         std::stringstream ss;
         ss << "http://qt-test/om#resource-instance-" << i;

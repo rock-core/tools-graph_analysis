@@ -25,7 +25,7 @@ NodeTypeManager::~NodeTypeManager()
     }
 }
 
-void NodeTypeManager::registerVisualization(const node::Type& type, QGraphicsItem* graphicsItem)
+void NodeTypeManager::registerVisualization(const node::Type& type, NodeItem* graphicsItem)
 {
     try {
         graphicsItemByType(type);
@@ -36,7 +36,7 @@ void NodeTypeManager::registerVisualization(const node::Type& type, QGraphicsIte
     }
 }
 
-QGraphicsItem* NodeTypeManager::graphicsItemByType(const node::Type& type)
+NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type)
 {
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
@@ -44,6 +44,11 @@ QGraphicsItem* NodeTypeManager::graphicsItemByType(const node::Type& type)
         throw std::invalid_argument("omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered");
     }
     return it->second;
+}
+
+NodeItem* NodeTypeManager::createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
+{
+    return graphicsItemByType(vertex->getClassName())->createNewItem(graphWidget, vertex);
 }
 
 void NodeTypeManager::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, const node::Type& type)

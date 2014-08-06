@@ -10,6 +10,7 @@ rock_library(omviz
       graphwidget/GraphWidget.hpp
       graphwidget/NodeItem.hpp
       graphwidget/NodeTypeManager.hpp
+      graphwidget/graphitem/Label.hpp
       graphwidget/graphitem/Simple.hpp
       graphwidget/graphitem/Resource.hpp
       IRINode.hpp
