@@ -56,11 +56,17 @@ protected:
         QGraphicsTextItem::mousePressEvent(event);
     }
 
-    //void keyPressEvent(::QKeyEvent* event)
-    //{
-    //    qDebug("KEYPRESS LABLE");
-    //    QGraphicsTextItem::keyPressEvent(event);
-    //}
+    void keyPressEvent(::QKeyEvent* event)
+    {
+        qDebug("KEYPRESS LABLE");
+        QGraphicsTextItem::keyPressEvent(event);
+    }
+
+    void focusOutEvent(QFocusEvent* event)
+    {
+        qDebug("Lost focus");
+        ::QGraphicsTextItem::focusOutEvent(event);
+    }
 
     QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
     {
