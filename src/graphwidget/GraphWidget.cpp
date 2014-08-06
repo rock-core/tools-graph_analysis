@@ -126,28 +126,29 @@ void GraphWidget::itemMoved()
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
-    case Qt::Key_Up:
-        break;
-    case Qt::Key_Down:
-        break;
-    case Qt::Key_Left:
-        break;
-    case Qt::Key_Right:
-        break;
-    case Qt::Key_Plus:
-        zoomIn();
-        break;
-    case Qt::Key_Minus:
-        zoomOut();
-        break;
-    case Qt::Key_Space:
-    case Qt::Key_Enter:
-        shuffle();
-        break;
-    default:
-        QGraphicsView::keyPressEvent(event);
-    }
+    //switch (event->key()) {
+    //case Qt::Key_Up:
+    //    break;
+    //case Qt::Key_Down:
+    //    break;
+    //case Qt::Key_Left:
+    //    break;
+    //case Qt::Key_Right:
+    //    break;
+    //case Qt::Key_Plus:
+    //    zoomIn();
+    //    break;
+    //case Qt::Key_Minus:
+    ////    zoomOut();
+    //    break;
+    //case Qt::Key_Space:
+    //case Qt::Key_Enter:
+    ////    shuffle();
+    //    break;
+    //default:
+    //}
+
+    QGraphicsView::keyPressEvent(event);
 }
 
 void GraphWidget::timerEvent(QTimerEvent *event)

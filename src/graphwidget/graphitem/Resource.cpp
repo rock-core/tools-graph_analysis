@@ -41,7 +41,6 @@ QPainterPath Resource::shape() const
 
 void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
-    mLabel->setTextInteractionFlags(Qt::NoTextInteraction);
     painter->setPen(Qt::NoPen);
     painter->setBrush(Qt::blue);
     //painter->drawEllipse(-7, -7, 20, 20);
