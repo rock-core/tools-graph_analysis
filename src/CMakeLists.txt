@@ -4,14 +4,16 @@ rock_library(omviz
       graphwidget/NodeItem.cpp
       graphwidget/NodeTypeManager.cpp
       graphwidget/graphitem/Simple.cpp
+      graphwidget/graphitem/Resource.cpp
+      IRINode.cpp
     HEADERS graphwidget/EdgeItem.hpp
       graphwidget/GraphWidget.hpp
       graphwidget/NodeItem.hpp
       graphwidget/NodeTypeManager.hpp
       graphwidget/graphitem/Simple.hpp
-    MOC graphwidget/EdgeItem.hpp
-      graphwidget/GraphWidget.hpp
-      graphwidget/NodeItem.hpp
+      graphwidget/graphitem/Resource.hpp
+      IRINode.hpp
+    MOC graphwidget/GraphWidget.hpp
     DEPS_PKGCONFIG graph_analysis owl_om
 )
 

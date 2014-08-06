@@ -45,6 +45,9 @@
 #include <QTime>
 #include <QMainWindow>
 
+#include <omviz/IRINode.hpp>
+#include <omviz/graphwidget/graphitem/Resource.hpp>
+
 int main(int argc, char **argv)
 {
     using namespace omviz;
@@ -60,6 +63,28 @@ int main(int argc, char **argv)
         graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
         widget->addVertex(vertex);
     }
+
+    //  = owl_om::Ontology::fromFile(argv[1]);
+    owl_om::Ontology::Ptr ontology(new owl_om::Ontology());
+
+
+    owl_om::IRI resourceClass = "http://qt-test/om#Resource";
+    ontology->subclassOf(resourceClass,"TOP");
+
+    NodeItem::nodeTypeManager().registerVisualization(resourceClass.toString(), new graphitem::Resource());
+
+    for(int i = 0; i < 10; ++i)
+    {
+        std::stringstream ss;
+        ss << "http://qt-test/om#resource-instance-" << i;
+        owl_om::IRI instance = ss.str();
+        ontology->instanceOf(instance, resourceClass);
+
+        omviz::IRINode::Ptr node(new IRINode(instance, ontology));
+        widget->addVertex(node);
+    }
+
+
     // Register nodes -- otherwise edgesItemMap will remains empty
     widget->updateFromGraph();
 

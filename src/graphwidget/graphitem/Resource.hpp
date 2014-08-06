@@ -1,5 +1,5 @@
-#ifndef OMVIZ_GRAPHWIDGET_GRAPHITEM_SIMPLE_HPP
-#define OMVIZ_GRAPHWIDGET_GRAPHITEM_SIMPLE_HPP
+#ifndef OMVIZ_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
+#define OMVIZ_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
 
 #include <omviz/graphwidget/NodeTypeManager.hpp>
 #include <QGraphicsItem>
@@ -7,7 +7,7 @@
 namespace omviz {
 namespace graphitem {
 
-class Simple : public QGraphicsItem
+class Resource : public QGraphicsItem
 {
 public:
     virtual QRectF boundingRect() const;
@@ -17,4 +17,4 @@ public:
 
 } // end namespace graphitem
 } // end namespace omviz
-#endif // OMVIZ_GRAPHWIDGET_GRAPHITEM_SIMPLE_HPP
+#endif // OMVIZ_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP

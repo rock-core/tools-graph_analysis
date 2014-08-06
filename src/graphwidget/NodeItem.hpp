@@ -70,6 +70,8 @@ public:
     QPainterPath shape() const;
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
+    static NodeTypeManager& nodeTypeManager() { return msNodeTypeManager; }
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
