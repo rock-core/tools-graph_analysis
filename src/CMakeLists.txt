@@ -35,3 +35,28 @@ rock_library(omviz_elasticnodes
 rock_executable(omviz_elasticnodes_bin elasticnodes/Main.cpp
     DEPS omviz_elasticnodes)
 
+QT4_ADD_RESOURCES(Resource_SOURCES diagramscene/diagramscene.qrc)
+
+rock_library(omviz_diagramscene
+    SOURCES 
+        diagramscene/arrow.cpp
+        diagramscene/diagramitem.cpp
+        diagramscene/diagramscene.cpp
+        diagramscene/diagramtextitem.cpp
+        diagramscene/mainwindow.cpp
+    HEADERS 
+        diagramscene/arrow.h
+        diagramscene/diagramitem.h
+        diagramscene/diagramscene.h
+        diagramscene/diagramtextitem.h
+        diagramscene/mainwindow.h
+    MOC 
+        diagramscene/diagramitem.h
+        diagramscene/diagramscene.h
+        diagramscene/diagramtextitem.h
+        diagramscene/mainwindow.h
+)
+
+rock_executable(omviz_diagramscene_bin diagramscene/main.cpp ${Resource_SOURCES}
+    DEPS omviz_diagramscene)
+
