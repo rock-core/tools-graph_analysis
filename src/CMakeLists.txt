@@ -7,6 +7,7 @@ rock_library(omviz
       graphwidget/graphitem/Simple.cpp
       graphwidget/graphitem/Resource.cpp
       graphwidget/graphitem/edges/Simple.cpp
+      graphwidget/GVGraph.cpp
       IRIEdge.cpp
       IRINode.cpp
     HEADERS graphwidget/EdgeItem.hpp
@@ -18,11 +19,13 @@ rock_library(omviz
       graphwidget/graphitem/Simple.hpp
       graphwidget/graphitem/Resource.hpp
       graphwidget/graphitem/edges/Simple.hpp
+      graphwidget/GVGraph.hpp
       IRIEdge.cpp
       IRINode.hpp
     MOC graphwidget/GraphWidget.hpp
     DEPS_PKGCONFIG graph_analysis owl_om
 )
+target_link_libraries(omviz gvc)
 
 rock_executable(omviz_bin graphwidget/Main.cpp
     DEPS omviz)
