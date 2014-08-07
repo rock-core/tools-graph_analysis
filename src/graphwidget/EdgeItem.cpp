@@ -140,4 +140,11 @@ QPainterPath EdgeItem::shape() const
     return ::QGraphicsItem::shape();
 }
 
+std::string EdgeItem::getId() const
+{
+    char buffer[512];
+    snprintf(buffer,512, "%p-%s",this, mpEdge->toString().c_str());
+    return std::string(buffer);
+}
+
 } // end namespace omviz

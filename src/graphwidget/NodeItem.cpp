@@ -160,6 +160,13 @@ void NodeItem::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
     ::QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
+std::string NodeItem::getId() const
+{
+    char buffer[512];
+    snprintf(buffer,512, "%p-%s",this, mpVertex->toString().c_str());
+    return std::string(buffer);
+}
+
 //void NodeItem::keyPressEvent(::QKeyEvent* event)
 //{
 //    LOG_DEBUG_S << "KEY EVENT";

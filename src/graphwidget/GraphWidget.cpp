@@ -52,6 +52,7 @@ namespace omviz {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
+    , mGVGraph("GVGraphWidget")
     , mTimerId(0)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
@@ -83,6 +84,8 @@ void GraphWidget::updateFromGraph()
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
+        mGVGraph.addNode(QString( nodeItem->getId().c_str()));
+        mGVNodeItemMap[nodeItem->getId()] = nodeItem;
     }
 
     graph_analysis::EdgeIterator::Ptr edgeIt = mGraph.getEdgeIterator();
@@ -105,6 +108,17 @@ void GraphWidget::updateFromGraph()
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
+
+        mGVGraph.addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
+    }
+
+    mGVGraph.applyLayout();
+
+    foreach(GVNode node, mGVGraph.nodes())
+    {
+        qDebug("Set pos %d/%d", node.centerPos.x(), node.centerPos.y() );
+        NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
+        nodeItem->setPos(node.centerPos);
     }
 }
 
@@ -126,7 +140,7 @@ void GraphWidget::itemMoved()
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    //switch (event->key()) {
+    switch (event->key()) {
     //case Qt::Key_Up:
     //    break;
     //case Qt::Key_Down:
@@ -141,12 +155,13 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     //case Qt::Key_Minus:
     ////    zoomOut();
     //    break;
-    //case Qt::Key_Space:
-    //case Qt::Key_Enter:
+    case Qt::Key_Space:
+    case Qt::Key_Enter:
+        updateFromGraph();
     ////    shuffle();
-    //    break;
+        break;
     //default:
-    //}
+    }
 
     QGraphicsView::keyPressEvent(event);
 }

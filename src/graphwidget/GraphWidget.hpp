@@ -43,6 +43,7 @@
 
 #include <QGraphicsView>
 #include <graph_analysis/lemon/Graph.hpp>
+#include <omviz/graphwidget/GVGraph.hpp>
 
 namespace omviz {
 
@@ -56,6 +57,8 @@ public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
+    typedef std::map<std::string, NodeItem*> GVNodeItemMap;
+
     GraphWidget(QWidget *parent = 0);
 
     void addVertex(graph_analysis::Vertex::Ptr vertex);
@@ -67,7 +70,6 @@ public:
     ::graph_analysis::lemon::DirectedGraph& graph() { return mGraph; }
 
     void updateFromGraph();
-
     void itemMoved();
 
 public slots:
@@ -87,6 +89,9 @@ protected:
 
 private:
     ::graph_analysis::lemon::DirectedGraph mGraph;
+
+    GVGraph mGVGraph;
+    GVNodeItemMap mGVNodeItemMap;
 
     // Allow mapping from graph vertexes to nodes in the scene
     NodeItemMap mNodeItemMap;

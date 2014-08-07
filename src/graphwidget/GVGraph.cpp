@@ -46,6 +46,11 @@ void GVGraph::addNode(const QString& name)
         removeNode(name);
 
     _nodes.insert(name, _agnode(_graph, name));
+
+    if(_nodes.size() == 1)
+    {
+        setRootNode(name);
+    }
 }
 
 void GVGraph::addNodes(const QStringList& names)
@@ -124,6 +129,8 @@ void GVGraph::applyLayout()
 {
     gvFreeLayout(_context, _graph);
     gvLayout(_context, _graph, "dot");
+
+    gvRenderFilename(_context, _graph,"dot","/tmp/dotfile.txt");
 }
 
 QRectF GVGraph::boundingRect() const
@@ -146,12 +153,14 @@ QList<GVNode> GVGraph::nodes() const
         //Set the name of the node
         object.name=node->name;
 
+        qDebug("X/Y => %.3f/%.3f",node->u.coord.x, node->u.coord.y);
+
         //Fetch the X coordinate, apply the DPI conversion rate (actual DPI / 72, used by dot)
-        qreal x=node->u.coord.x*(dpi/DotDefaultDPI);
+        qreal x=node->u.coord.x; //*(dpi/DotDefaultDPI);
 
         //Translate the Y coordinate from bottom-left to top-left corner
-        qreal y=(_graph->u.bb.UR.y - node->u.coord.y)*(dpi/DotDefaultDPI);
-        object.centerPos=QPoint(x, y);
+        qreal y=(_graph->u.bb.UR.y - node->u.coord.y); //*(dpi/DotDefaultDPI);
+        object.centerPos=QPoint(x*5, y*5);
 
         //Transform the width and height from inches to pixels
         object.height=node->u.height*dpi;
