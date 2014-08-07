@@ -62,11 +62,6 @@ NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     setToolTip(QString(vertex->getClassName().c_str()));
 }
 
-void NodeItem::addEdge(EdgeItem* edge)
-{
-    edge->adjust();
-}
-
 void NodeItem::calculateForces()
 {
     if (!scene() || scene()->mouseGrabberItem() == this) {

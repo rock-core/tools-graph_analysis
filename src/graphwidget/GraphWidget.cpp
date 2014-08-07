@@ -41,6 +41,8 @@
 #include "GraphWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
+#include "NodeTypeManager.hpp"
+#include "EdgeTypeManager.hpp"
 
 #include <math.h>
 #include <QKeyEvent>
@@ -77,13 +79,10 @@ void GraphWidget::updateFromGraph()
             continue;
         }
 
+        // Registering new node items
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
-        LOG_DEBUG_S << "NUMBER OF CHILD ITEMS: " << nodeItem->childItems().size();
-
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
-
-        LOG_DEBUG_S << "NUMBER OF ITEMS: " << scene()->items().size();
     }
 
     graph_analysis::EdgeIterator::Ptr edgeIt = mGraph.getEdgeIterator();
@@ -95,13 +94,14 @@ void GraphWidget::updateFromGraph()
             continue;
         }
 
+        // Registering new node edge items
         graph_analysis::Vertex::Ptr source = edge->getSourceVertex();
         graph_analysis::Vertex::Ptr target = edge->getTargetVertex();
 
         NodeItem* sourceNodeItem = mNodeItemMap[ source ]; 
         NodeItem* targetNodeItem = mNodeItemMap[ target ];
 
-        EdgeItem* edgeItem = new EdgeItem(sourceNodeItem, targetNodeItem);
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(sourceNodeItem, targetNodeItem, edge);
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
@@ -155,25 +155,25 @@ void GraphWidget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
 
-    QList<NodeItem* > nodes;
-    foreach (QGraphicsItem *item, scene()->items()) {
-        if (NodeItem* node = qgraphicsitem_cast<NodeItem* >(item))
-            nodes << node;
-    }
+    //QList<NodeItem* > nodes;
+    //foreach (QGraphicsItem *item, scene()->items()) {
+    //    if (NodeItem* node = qgraphicsitem_cast<NodeItem* >(item))
+    //        nodes << node;
+    //}
 
-    foreach (NodeItem* node, nodes)
-        node->calculateForces();
+    //foreach (NodeItem* node, nodes)
+    //    node->calculateForces();
 
-    bool itemsMoved = false;
-    foreach (NodeItem* node, nodes) {
-        if (node->advance())
-            itemsMoved = true;
-    }
+    //bool itemsMoved = false;
+    //foreach (NodeItem* node, nodes) {
+    //    if (node->advance())
+    //        itemsMoved = true;
+    //}
 
-    if (!itemsMoved) {
-        killTimer(mTimerId);
-        mTimerId = 0;
-    }
+    //if (!itemsMoved) {
+    //    killTimer(mTimerId);
+    //    mTimerId = 0;
+    //}
 }
 
 #ifndef QT_NO_WHEELEVENT

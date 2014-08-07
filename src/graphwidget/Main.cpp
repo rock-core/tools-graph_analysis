@@ -46,7 +46,9 @@
 #include <QMainWindow>
 
 #include <omviz/IRINode.hpp>
+#include <omviz/IRIEdge.hpp>
 #include <omviz/graphwidget/graphitem/Resource.hpp>
+#include <boost/foreach.hpp>
 
 int main(int argc, char **argv)
 {
@@ -64,46 +66,55 @@ int main(int argc, char **argv)
         widget->addVertex(vertex);
     }
 
-    //  = owl_om::Ontology::fromFile(argv[1]);
-    owl_om::Ontology::Ptr ontology(new owl_om::Ontology());
+    owl_om::Ontology::Ptr ontology;
 
-
-    owl_om::IRI resourceClass = "http://qt-test/om#Resource";
-    ontology->subclassOf(resourceClass,"TOP");
-
-    NodeTypeManager::getInstance()->registerVisualization(resourceClass.toString(), new graphitem::Resource());
-
-    for(int i = 0; i < 1; ++i)
+    if(argc == 2)
     {
-        std::stringstream ss;
-        ss << "http://qt-test/om#resource-instance-" << i;
-        owl_om::IRI instance = ss.str();
-        ontology->instanceOf(instance, resourceClass);
+        qDebug("Loading from file %s",argv[1]);
+        ontology = owl_om::Ontology::fromFile(argv[1]);
 
-        omviz::IRINode::Ptr node(new IRINode(instance, ontology));
-        widget->addVertex(node);
+    } else {
+        printf("Usage: %s <file>", argv[0]);
+        exit(-1);
     }
 
-
-    // Register nodes -- otherwise edgesItemMap will remains empty
-    widget->updateFromGraph();
-
-    // Create edges between all
-    GraphWidget::NodeItemMap::const_iterator ait = widget->nodeItemMap().begin();
-
-    for(; ait != widget->nodeItemMap().end(); ++ait)
+    // Create edges for all relations
     {
-        GraphWidget::NodeItemMap::const_iterator bit = widget->nodeItemMap().begin();
-        for(; bit != widget->nodeItemMap().end(); ++bit)
+        using namespace owl_om;
+        std::map<IRI, omviz::IRINode::Ptr> iriNodeMap;
         {
-            graph_analysis::Edge::Ptr edge(new graph_analysis::Edge());
-            edge->setSourceVertex(ait->first);
-            edge->setTargetVertex(bit->first);
+            owl_om::IRIList instances = ontology->allInstances();
+            BOOST_FOREACH(const owl_om::IRI& instance, instances)
+            {
+                omviz::IRINode::Ptr node(new IRINode(instance, ontology));
+                widget->addVertex(node);
 
-            widget->addEdge(edge);
+                iriNodeMap[instance] = node;
+            }
+        }
+
+        // Register nodes -- otherwise edgesItemMap will remains empty
+        widget->updateFromGraph();
+
+        IRIList instances = ontology->allInstances();
+        BOOST_FOREACH(const IRI& instance, instances)
+        {
+            IRIList objectProperties = ontology->allObjectProperties();
+            BOOST_FOREACH(const IRI& relation, objectProperties)
+            {
+                IRIList related = ontology->allRelatedInstances(instance, relation);
+                BOOST_FOREACH(const IRI& other, related)
+                {
+                    omviz::IRIEdge::Ptr edge(new IRIEdge(relation, ontology));
+                    // get IRINodes by IRI
+                    edge->setSourceVertex( iriNodeMap[instance] );
+                    edge->setTargetVertex( iriNodeMap[other] );
+
+                    widget->addEdge(edge);
+                }
+            }
         }
     }
-
     widget->updateFromGraph();
     widget->shuffle();
 

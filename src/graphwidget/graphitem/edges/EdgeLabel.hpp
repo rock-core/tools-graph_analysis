@@ -1,17 +1,17 @@
-#ifndef OMVIZ_GRAPHWIDGET_GRAPHITEM_LABEL_HPP
-#define OMVIZ_GRAPHWIDGET_GRAPHITEM_LABEL_HPP
+#ifndef OMVIZ_GRAPHWIDGET_GRAPHITEM_EDGES_EDGELABEL_HPP
+#define OMVIZ_GRAPHWIDGET_GRAPHITEM_EDGES_EDGELABEL_HPP
 
 #include <QGraphicsTextItem>
 #include <QTextCursor>
 
 namespace omviz {
-
 namespace graphitem {
+namespace edges {
 
-class Label : public QGraphicsTextItem
+class EdgeLabel : public QGraphicsTextItem
 {
 public:
-    Label(const std::string& label, QGraphicsItem* item)
+    EdgeLabel(const std::string& label, QGraphicsItem* item)
         : QGraphicsTextItem( QString(label.c_str()), item)
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
@@ -82,6 +82,7 @@ protected:
     }
 };
 
+} // end namespace edges
 } // end namespace graphitem
 } // end namespace omviz
-#endif // OMVIZ_GRAPHWIDGET_GRAPHITEM_LABEL_HPP
+#endif // OMVIZ_GRAPHWIDGET_GRAPHITEM_EDGES_EDGELABEL_HPP

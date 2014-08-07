@@ -1,18 +1,24 @@
 rock_library(omviz
     SOURCES graphwidget/EdgeItem.cpp
+      graphwidget/EdgeTypeManager.cpp
       graphwidget/GraphWidget.cpp
       graphwidget/NodeItem.cpp
       graphwidget/NodeTypeManager.cpp
       graphwidget/graphitem/Simple.cpp
       graphwidget/graphitem/Resource.cpp
+      graphwidget/graphitem/edges/Simple.cpp
+      IRIEdge.cpp
       IRINode.cpp
     HEADERS graphwidget/EdgeItem.hpp
+      graphwidget/EdgeTypeManager.hpp
       graphwidget/GraphWidget.hpp
       graphwidget/NodeItem.hpp
       graphwidget/NodeTypeManager.hpp
       graphwidget/graphitem/Label.hpp
       graphwidget/graphitem/Simple.hpp
       graphwidget/graphitem/Resource.hpp
+      graphwidget/graphitem/edges/Simple.hpp
+      IRIEdge.cpp
       IRINode.hpp
     MOC graphwidget/GraphWidget.hpp
     DEPS_PKGCONFIG graph_analysis owl_om

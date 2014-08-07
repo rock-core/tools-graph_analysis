@@ -46,15 +46,13 @@
 #include <QList>
 #include <graph_analysis/Vertex.hpp>
 
-#include <omviz/graphwidget/NodeTypeManager.hpp>
-
 namespace omviz {
 
 class EdgeItem;
 class GraphWidget;
 class QGraphicsSceneMouseEvent;
 
-class NodeItem : public QGraphicsItem //QGraphicsItemGroup
+class NodeItem : public QGraphicsItemGroup
 {
 protected:
     NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
@@ -63,8 +61,6 @@ public:
     NodeItem() {}
 
     virtual ~NodeItem() {};
-
-    void addEdge(EdgeItem* edgeItem);
 
     enum { Type = UserType + 1 };
     int type() const { return Type; }

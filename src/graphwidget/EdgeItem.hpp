@@ -42,35 +42,49 @@
 #define OMVIZ_EDGEITEM_HPP
 
 #include <QGraphicsItem>
+#include <QGraphicsItemGroup>
+#include <QPainter>
+#include <math.h>
+#include <graph_analysis/Edge.hpp>
 
 namespace omviz {
 
+class GraphWidget;
 class NodeItem;
 
-class EdgeItem : public QGraphicsItem
+class EdgeItem : public QGraphicsItemGroup
 {
 public:
-    EdgeItem(NodeItem* sourceNode, NodeItem* destNode);
+    EdgeItem() {}
+    ~EdgeItem() {}
+
+    EdgeItem(NodeItem* sourceNode, NodeItem* destNode, graph_analysis::Edge::Ptr edge);
 
     NodeItem* sourceNodeItem() const;
     NodeItem* targetNodeItem() const;
 
-    void adjust();
+    virtual EdgeItem* createNewItem(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("omviz::EdgeItem::createNewItem is not reimplemented"); }
+
+    virtual void adjust();
 
     enum { Type = UserType + 2 };
     int type() const { return Type; }
 
 protected:
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
+    virtual QRectF boundingRect() const;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
+    virtual QPainterPath shape() const;
 
-private:
-    NodeItem* mSourceNodeItem;
-    NodeItem* mTargetNodeItem;
+    NodeItem* mpSourceNodeItem;
+    NodeItem* mpTargetNodeItem;
+    graph_analysis::Edge::Ptr mpEdge;
 
     QPointF mSourcePoint;
     QPointF mTargetPoint;
     qreal mArrowSize;
+
+    static const double Pi;
+    static double TwoPi;
 };
 
 }  // end namespace omviz

@@ -4,15 +4,18 @@
 #include <QStyle>
 #include <QStyleOption>
 
+#include <boost/assign/list_of.hpp>
+#include <base/Logging.hpp>
 #include "graphitem/Simple.hpp"
+#include "graphitem/Resource.hpp"
 
 namespace omviz {
 
 NodeTypeManager::NodeTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
-        ("default", new graphitem::Simple())
-        ("graph_analysis::Vertex", new graphitem::Simple())
+        ("default", dynamic_cast<NodeItem*>(new graphitem::Resource()))
+        ("graph_analysis::Vertex", dynamic_cast<NodeItem*>(new graphitem::Simple()))
     ;
 }
 
@@ -41,32 +44,16 @@ NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type)
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
-        throw std::invalid_argument("omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered");
+        LOG_DEBUG_S << "omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
+        return mClassVisualizationMap["default"];
     }
+    
     return it->second;
 }
 
 NodeItem* NodeTypeManager::createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 {
     return graphicsItemByType(vertex->getClassName())->createNewItem(graphWidget, vertex);
-}
-
-void NodeTypeManager::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, const node::Type& type)
-{
-    QGraphicsItem* item = graphicsItemByType(type);
-    item->paint(painter, option);
-}
-
-QPainterPath NodeTypeManager::shape(const node::Type& type)
-{
-    QGraphicsItem* item = graphicsItemByType(type);
-    return item->shape();
-}
-
-QRectF NodeTypeManager::boundingRect(const node::Type& type)
-{
-    QGraphicsItem* item = graphicsItemByType(type);
-    return item->boundingRect();
 }
 
 }

@@ -20,6 +20,8 @@ public:
 
     std::string getClassName() const;
 
+    std::string toString() const { return mIri.getFragment(); }
+
 };
 
 } // end namespace omviz
