@@ -23,9 +23,10 @@ GVGraph::GVGraph(QString name, QFont font, qreal node_size) :
     setNodeAttribute("regular", "true");
 
     //Divide the wanted width by the DPI to get the value in points
-    QString nodePtsWidth("%1");
-    double d = _agget(_graph, "dpi", "96,0").toDouble();
-    nodePtsWidth.arg(node_size/d);
+    double d = getQGraphAttribute("dpi", "96,0").toDouble();
+    // format string %1
+    // http://qt-project.org/doc/qt-4.8/qstring.html#arg-20
+    QString nodePtsWidth = QString("%1").arg(node_size/d);
 
     //GV uses , instead of . for the separator in floats
     setNodeAttribute("width", nodePtsWidth.replace('.', ",").toStdString());
