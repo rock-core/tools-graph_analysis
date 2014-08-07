@@ -154,12 +154,15 @@ void GVGraph::setFont(QFont font)
     setEdgeAttribute("fontsize", QString("%1").arg(font.pointSizeF()).toStdString());
 }
 
-void GVGraph::applyLayout()
+void GVGraph::applyLayout(const std::string& layout)
 {
     gvFreeLayout(_context, _graph);
-    gvLayout(_context, _graph, "dot");
+    gvLayout(_context, _graph, layout.c_str());
+}
 
-    gvRenderFilename(_context, _graph,"dot","/tmp/dotfile.txt");
+void GVGraph::renderToFile(const std::string& filename, const std::string& layout)
+{
+    gvRenderFilename(_context, _graph, layout.c_str(), filename.c_str());
 }
 
 QRectF GVGraph::boundingRect() const

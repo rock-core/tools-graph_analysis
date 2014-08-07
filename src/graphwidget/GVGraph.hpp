@@ -82,7 +82,14 @@ public:
     /// Set the font to use in all the labels
     void setFont(QFont font);
 
-    void applyLayout();
+    /**
+     *  Apply a layout to the graph
+     *  layouts: circo, dot, fdp, neato, osage, sfdp, twopi
+     *  \see http://www.graphviz.org/Documentation.php for available layouts
+     */
+    void applyLayout(const std::string& layout = "circo");
+    void renderToFile(const std::string& filename, const std::string& layout = "dot");
+
     QRectF boundingRect() const;
     void setRootNode(const QString& name);
 
