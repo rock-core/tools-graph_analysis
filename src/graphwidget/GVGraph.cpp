@@ -11,16 +11,16 @@ GVGraph::GVGraph(QString name, QFont font, qreal node_size) :
         _graph(_agopen(name, AGDIGRAPHSTRICT)) // Strict directed graph, see libgraph doc
 {
     //Set graph attributes
-    _agset(_graph, "overlap", "prism");
-    _agset(_graph, "splines", "true");
-    _agset(_graph, "pad", "0,2");
-    _agset(_graph, "dpi", "96,0");
-    _agset(_graph, "nodesep", "0,4");
+    setGraphAttribute("overlap", "prism");
+    setGraphAttribute("splines", "true");
+    setGraphAttribute("pad", "0,2");
+    setGraphAttribute("dpi", "96,0");
+    setGraphAttribute("nodesep", "0,4");
 
     //Set default attributes for the future nodes
-    _agnodeattr(_graph, "fixedsize", "true");
-    _agnodeattr(_graph, "label", "");
-    _agnodeattr(_graph, "regular", "true");
+    setNodeAttribute("fixedsize", "true");
+    setNodeAttribute("label", "");
+    setNodeAttribute("regular", "true");
 
     //Divide the wanted width by the DPI to get the value in points
     QString nodePtsWidth("%1");
@@ -28,7 +28,7 @@ GVGraph::GVGraph(QString name, QFont font, qreal node_size) :
     nodePtsWidth.arg(node_size/d);
 
     //GV uses , instead of . for the separator in floats
-    _agnodeattr(_graph, "width", nodePtsWidth.replace('.', ","));
+    setNodeAttribute("width", nodePtsWidth.replace('.', ",").toStdString());
 
     setFont(font);
 }
@@ -38,6 +38,34 @@ GVGraph::~GVGraph()
     gvFreeLayout(_context, _graph);
     agclose(_graph);
     gvFreeContext(_context);
+}
+
+int GVGraph::setGraphAttribute(const std::string& name, const std::string& value)
+{
+    // Directly use agsafeset which always works, contrarily to agset
+    return agsafeset(_graph, const_cast<char *>(name.c_str()),
+                     const_cast<char *>(value.c_str()),
+                     const_cast<char *>(value.c_str()));
+}
+
+std::string GVGraph::getGraphAttribute(const std::string& name, const std::string& defaultValue) const
+{
+    std::string value = agget(_graph, const_cast<char *>(name.c_str()));
+    if(value.empty())
+    {
+        return defaultValue;
+    }
+    return value;
+}
+
+void GVGraph::setNodeAttribute(const std::string& name, const std::string& value)
+{
+    agnodeattr(_graph, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
+}
+
+void GVGraph::setEdgeAttribute(const std::string& name, const std::string& value)
+{
+    agedgeattr(_graph, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
 }
 
 void GVGraph::addNode(const QString& name)
@@ -84,7 +112,7 @@ void GVGraph::clearNodes()
 void GVGraph::setRootNode(const QString& name)
 {
     if(_nodes.contains(name))
-        _agset(_graph, "root", name);
+        setGraphAttribute("root", name.toStdString());
 }
 
 void GVGraph::addEdge(const QString &source, const QString &target)
@@ -115,14 +143,14 @@ void GVGraph::setFont(QFont font)
 {
     _font=font;
 
-    _agset(_graph, "fontname", font.family());
-    _agset(_graph, "fontsize", QString("%1").arg(font.pointSizeF()));
+    setGraphAttribute("fontname", font.family().toStdString());
+    setGraphAttribute("fontsize", QString("%1").arg(font.pointSizeF()).toStdString());
 
-    _agnodeattr(_graph, "fontname", font.family());
-    _agnodeattr(_graph, "fontsize", QString("%1").arg(font.pointSizeF()));
+    setNodeAttribute("fontname", font.family().toStdString());
+    setNodeAttribute("fontsize", QString("%1").arg(font.pointSizeF()).toStdString());
 
-    _agedgeattr(_graph, "fontname", font.family());
-    _agedgeattr(_graph, "fontsize", QString("%1").arg(font.pointSizeF()));
+    setEdgeAttribute("fontname", font.family().toStdString());
+    setEdgeAttribute("fontsize", QString("%1").arg(font.pointSizeF()).toStdString());
 }
 
 void GVGraph::applyLayout()
@@ -135,7 +163,7 @@ void GVGraph::applyLayout()
 
 QRectF GVGraph::boundingRect() const
 {
-    qreal dpi=_agget(_graph, "dpi", "96,0").toDouble();
+    qreal dpi= getQGraphAttribute("dpi", "96,0").toDouble();
     return QRectF(_graph->u.bb.LL.x*(dpi/DotDefaultDPI), _graph->u.bb.LL.y*(dpi/DotDefaultDPI),
                   _graph->u.bb.UR.x*(dpi/DotDefaultDPI), _graph->u.bb.UR.y*(dpi/DotDefaultDPI));
 }
@@ -143,7 +171,7 @@ QRectF GVGraph::boundingRect() const
 QList<GVNode> GVGraph::nodes() const
 {
     QList<GVNode> list;
-    qreal dpi=_agget(_graph, "dpi", "96,0").toDouble();
+    qreal dpi= getQGraphAttribute("dpi", "96,0").toDouble();
 
     for(QMap<QString, Agnode_t*>::const_iterator it=_nodes.begin(); it!=_nodes.end();++it)
     {
@@ -175,7 +203,7 @@ QList<GVNode> GVGraph::nodes() const
 QList<GVEdge> GVGraph::edges() const
 {
     QList<GVEdge> list;
-    qreal dpi=_agget(_graph, "dpi", "96,0").toDouble();
+    qreal dpi= getQGraphAttribute("dpi", "96,0").toDouble();
 
     for(QMap<QPair<QString, QString>, Agedge_t*>::const_iterator it=_edges.begin();
         it!=_edges.end();++it)

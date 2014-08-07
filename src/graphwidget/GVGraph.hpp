@@ -12,35 +12,6 @@ static inline Agraph_t* _agopen(QString name, int kind)
     return agopen(const_cast<char *>(qPrintable(name)), kind);
 }
 
-// Add an alternative value parameter to the method for getting an object's attribute
-static inline QString _agget(void *object, QString attr, QString alt=QString())
-{
-    QString str=agget(object, const_cast<char *>(qPrintable(attr)));
-
-    if(str==QString())
-        return alt;
-    else
-        return str;
-}
-
-// Directly use agsafeset which always works, contrarily to agset
-static inline int _agset(void *object, QString attr, QString value)
-{
-    return agsafeset(object, const_cast<char *>(qPrintable(attr)),
-                     const_cast<char *>(qPrintable(value)),
-                     const_cast<char *>(qPrintable(value)));
-}
-
-static inline Agsym_t* _agnodeattr(Agraph_t* graph, QString name, QString value)
-{
-    return agnodeattr(graph, const_cast<char*>(qPrintable(name)), const_cast<char*>(qPrintable(value)));
-}
-
-static inline Agsym_t* _agedgeattr(Agraph_t * g, QString name, QString value)
-{
-    return agedgeattr(g, const_cast<char*>(qPrintable(name)), const_cast<char*>(qPrintable(value)));
-}
-
 static inline Agnode_t* _agnode(Agraph_t* g, QString name)
 {
     return agnode(g, const_cast<char*>(qPrintable(name)));
@@ -90,6 +61,12 @@ public:
      */
     GVGraph(QString name, QFont font=QFont(), qreal node_size=50);
     ~GVGraph();
+
+    int setGraphAttribute(const std::string& name, const std::string& value);
+    std::string getGraphAttribute(const std::string& name, const std::string& defaultValue ="") const;
+    QString getQGraphAttribute(const QString& name, const QString& defaultValue ="") const { return QString( getGraphAttribute(name.toStdString(), defaultValue.toStdString()).c_str() ); }
+    void setNodeAttribute(const std::string& name, const std::string& value);
+    void setEdgeAttribute(const std::string& name, const std::string& value);
 
     /// Add and remove nodes
     void addNode(const QString& name);
