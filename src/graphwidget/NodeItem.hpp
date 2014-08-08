@@ -71,6 +71,7 @@ public:
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { throw std::runtime_error("omviz::NodeItem::createNewItem is not reimplemented"); }
 
     std::string getId() const;
+    graph_analysis::Vertex::Ptr getVertex() { return mpVertex; }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);

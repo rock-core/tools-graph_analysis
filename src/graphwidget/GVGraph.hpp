@@ -59,7 +59,7 @@ public:
      * \param font The font to use for the graph
      * \param node_size The size in pixels of each node
      */
-    GVGraph(QString name, QFont font=QFont(), qreal node_size=50);
+    GVGraph(QString name, QFont font=QFont(), double node_size = 0);
     ~GVGraph();
 
     int setGraphAttribute(const std::string& name, const std::string& value);
@@ -102,6 +102,9 @@ private:
     QFont _font;
     QMap<QString, Agnode_t*> _nodes;
     QMap< QPair<QString, QString>, Agedge_t*> _edges;
+
+    double mDPI;
+    double mScalingFactor;
 };
 
 } // end namespace omviz

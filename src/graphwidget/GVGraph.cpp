@@ -6,27 +6,31 @@ namespace omviz {
     while we display at 96 DPI on most operating systems. */
 const qreal GVGraph::DotDefaultDPI=72.0;
 
-GVGraph::GVGraph(QString name, QFont font, qreal node_size) :
+GVGraph::GVGraph(QString name, QFont font, double node_size) :
         _context(gvContext()),
         _graph(_agopen(name, AGDIGRAPHSTRICT)) // Strict directed graph, see libgraph doc
 {
     //Set graph attributes
-    setGraphAttribute("overlap", "prism");
-    setGraphAttribute("splines", "true");
+    setGraphAttribute("overlap", "false");
+    //setGraphAttribute("splines", "true");
     setGraphAttribute("pad", "0,2");
     setGraphAttribute("dpi", "96,0");
-    setGraphAttribute("nodesep", "0,4");
+    // Don't use node sep here, since it prevent outputting the exact position
+    // using dot layout
+    // setGraphAttribute("nodesep", "1");
 
     //Set default attributes for the future nodes
-    setNodeAttribute("fixedsize", "true");
-    setNodeAttribute("label", "");
-    setNodeAttribute("regular", "true");
+    setNodeAttribute("fixedsize", "false");
+    setNodeAttribute("shape","box");
+//    setNodeAttribute("regular", "true");
 
     //Divide the wanted width by the DPI to get the value in points
-    double d = getQGraphAttribute("dpi", "96,0").toDouble();
+    mDPI = getQGraphAttribute("dpi", "96,0").replace(',',".").toDouble();
+    mScalingFactor = (1.0*mDPI) / (1.0*DotDefaultDPI);
+
     // format string %1
     // http://qt-project.org/doc/qt-4.8/qstring.html#arg-20
-    QString nodePtsWidth = QString("%1").arg(node_size/d);
+    QString nodePtsWidth = QString("%1").arg( node_size/mDPI);
 
     //GV uses , instead of . for the separator in floats
     setNodeAttribute("width", nodePtsWidth.replace('.', ",").toStdString());
@@ -167,15 +171,13 @@ void GVGraph::renderToFile(const std::string& filename, const std::string& layou
 
 QRectF GVGraph::boundingRect() const
 {
-    qreal dpi= getQGraphAttribute("dpi", "96,0").toDouble();
-    return QRectF(_graph->u.bb.LL.x*(dpi/DotDefaultDPI), _graph->u.bb.LL.y*(dpi/DotDefaultDPI),
-                  _graph->u.bb.UR.x*(dpi/DotDefaultDPI), _graph->u.bb.UR.y*(dpi/DotDefaultDPI));
+    return QRectF(_graph->u.bb.LL.x*mScalingFactor, _graph->u.bb.LL.y*mScalingFactor,
+                  _graph->u.bb.UR.x*mScalingFactor, _graph->u.bb.UR.y*mScalingFactor);
 }
 
 QList<GVNode> GVGraph::nodes() const
 {
     QList<GVNode> list;
-    qreal dpi= getQGraphAttribute("dpi", "96,0").toDouble();
 
     for(QMap<QString, Agnode_t*>::const_iterator it=_nodes.begin(); it!=_nodes.end();++it)
     {
@@ -188,15 +190,15 @@ QList<GVNode> GVGraph::nodes() const
         qDebug("X/Y => %.3f/%.3f",node->u.coord.x, node->u.coord.y);
 
         //Fetch the X coordinate, apply the DPI conversion rate (actual DPI / 72, used by dot)
-        qreal x=node->u.coord.x; //*(dpi/DotDefaultDPI);
+        qreal x = node->u.coord.x*mScalingFactor;
 
         //Translate the Y coordinate from bottom-left to top-left corner
-        qreal y=(_graph->u.bb.UR.y - node->u.coord.y); //*(dpi/DotDefaultDPI);
-        object.centerPos=QPoint(x*5, y*5);
+        qreal y = (_graph->u.bb.UR.y - node->u.coord.y)*mScalingFactor;
+        object.centerPos=QPoint(x, y);
 
         //Transform the width and height from inches to pixels
-        object.height=node->u.height*dpi;
-        object.width=node->u.width*dpi;
+        object.height=node->u.height*mDPI;
+        object.width=node->u.width*mDPI;
 
         list << object;
     }
@@ -207,7 +209,6 @@ QList<GVNode> GVGraph::nodes() const
 QList<GVEdge> GVGraph::edges() const
 {
     QList<GVEdge> list;
-    qreal dpi= getQGraphAttribute("dpi", "96,0").toDouble();
 
     for(QMap<QPair<QString, QString>, Agedge_t*>::const_iterator it=_edges.begin();
         it!=_edges.end();++it)
@@ -227,28 +228,28 @@ QList<GVEdge> GVGraph::edges() const
             //If there is a starting point, draw a line from it to the first curve point
             if(edge->u.spl->list->sflag)
             {
-                object.path.moveTo(edge->u.spl->list->sp.x*(dpi/DotDefaultDPI),
-                             (_graph->u.bb.UR.y - edge->u.spl->list->sp.y)*(dpi/DotDefaultDPI));
-                object.path.lineTo(edge->u.spl->list->list[0].x*(dpi/DotDefaultDPI),
-                        (_graph->u.bb.UR.y - edge->u.spl->list->list[0].y)*(dpi/DotDefaultDPI));
+                object.path.moveTo(edge->u.spl->list->sp.x*mScalingFactor,
+                             (_graph->u.bb.UR.y - edge->u.spl->list->sp.y)*mScalingFactor);
+                object.path.lineTo(edge->u.spl->list->list[0].x*mScalingFactor,
+                        (_graph->u.bb.UR.y - edge->u.spl->list->list[0].y)*mScalingFactor);
             }
             else
-                object.path.moveTo(edge->u.spl->list->list[0].x*(dpi/DotDefaultDPI),
-                        (_graph->u.bb.UR.y - edge->u.spl->list->list[0].y)*(dpi/DotDefaultDPI));
+                object.path.moveTo(edge->u.spl->list->list[0].x*mScalingFactor,
+                        (_graph->u.bb.UR.y - edge->u.spl->list->list[0].y)*mScalingFactor);
 
             //Loop over the curve points
             for(int i=1; i<edge->u.spl->list->size; i+=3)
-                object.path.cubicTo(edge->u.spl->list->list[i].x*(dpi/DotDefaultDPI), 
-                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i].y)*(dpi/DotDefaultDPI),
-                      edge->u.spl->list->list[i+1].x*(dpi/DotDefaultDPI),
-                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i+1].y)*(dpi/DotDefaultDPI),
-                      edge->u.spl->list->list[i+2].x*(dpi/DotDefaultDPI),
-                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i+2].y)*(dpi/DotDefaultDPI));
+                object.path.cubicTo(edge->u.spl->list->list[i].x*mScalingFactor,
+                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i].y)*mScalingFactor,
+                      edge->u.spl->list->list[i+1].x*mScalingFactor,
+                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i+1].y)*mScalingFactor,
+                      edge->u.spl->list->list[i+2].x*mScalingFactor,
+                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i+2].y)*mScalingFactor);
 
             //If there is an ending point, draw a line to it
             if(edge->u.spl->list->eflag)
-                object.path.lineTo(edge->u.spl->list->ep.x*(dpi/DotDefaultDPI),
-                             (_graph->u.bb.UR.y - edge->u.spl->list->ep.y)*(dpi/DotDefaultDPI));
+                object.path.lineTo(edge->u.spl->list->ep.x*mScalingFactor,
+                             (_graph->u.bb.UR.y - edge->u.spl->list->ep.y)*mScalingFactor);
         }
 
         list << object;

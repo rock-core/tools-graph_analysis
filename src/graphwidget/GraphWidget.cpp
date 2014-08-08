@@ -119,6 +119,8 @@ void GraphWidget::updateFromGraph()
         qDebug("Set pos %d/%d", node.centerPos.x(), node.centerPos.y() );
         NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
         nodeItem->setPos(node.centerPos);
+        QPointF position = mapToScene(node.centerPos);
+        nodeItem->setPos(position.x(), position.y());
     }
 }
 

@@ -116,7 +116,7 @@ int main(int argc, char **argv)
         }
     }
     widget->updateFromGraph();
-    widget->shuffle();
+    //widget->shuffle();
 
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);
