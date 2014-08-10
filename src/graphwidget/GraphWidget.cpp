@@ -57,7 +57,6 @@ GraphWidget::GraphWidget(QWidget *parent)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    //scene->setSceneRect(-200, -200, 400, 400);
     setScene(scene);
 
     setCacheMode(CacheBackground);
