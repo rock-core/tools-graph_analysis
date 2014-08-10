@@ -44,6 +44,8 @@ struct GVEdge
 
     /// Path of the edge's line
     QPainterPath path;
+
+    QString getId() const { return source + "->" + target; }
 };
 
 /// An object containing a libgraph graph and its associated nodes and edges
