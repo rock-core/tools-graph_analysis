@@ -13,8 +13,8 @@ namespace graphitem {
 
 Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex)
-    , mBrushDefault(Qt::blue)
-    , mBrush(Qt::blue)
+    , mPen(Qt::blue)
+    , mPenDefault(Qt::blue)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
@@ -43,8 +43,13 @@ QPainterPath Resource::shape() const
 
 void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(mBrush);
+    // Drawing of border, with transparent background
+    painter->setPen(mPen);
+
+    // Draws fully filled item
+    //painter->setPen(Qt::NoPen);
+    //painter->setBrush(mPen.brush());
+
     //painter->drawEllipse(-7, -7, 20, 20);
     painter->drawRect(boundingRect()); //-7,-7,20,20);
 
@@ -83,7 +88,7 @@ void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
-    mBrush = QBrush(Qt::green);
+    mPen = QPen(Qt::green);
 
     QGraphicsItem::hoverEnterEvent(event);
 }
@@ -91,7 +96,7 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
-    mBrush = QBrush(mBrushDefault);
+    mPen = mPenDefault;
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

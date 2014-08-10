@@ -2,7 +2,7 @@
 #define OMVIZ_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
 
 #include <omviz/graphwidget/NodeItem.hpp>
-#include <QBrush>
+#include <QPen>
 
 namespace omviz {
 namespace graphitem {
@@ -36,8 +36,8 @@ protected:
 
 private:
     Label* mLabel;
-    QBrush mBrush;
-    QBrush mBrushDefault;
+    QPen mPen;
+    QPen mPenDefault;
 };
 
 } // end namespace graphitem
