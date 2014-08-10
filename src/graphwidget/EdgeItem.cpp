@@ -143,7 +143,7 @@ QPainterPath EdgeItem::shape() const
 std::string EdgeItem::getId() const
 {
     char buffer[512];
-    snprintf(buffer,512, "%p-%s",this, mpEdge->toString().c_str());
+    snprintf(buffer, 512, "%s->%s",mpSourceNodeItem->getId().c_str(), mpTargetNodeItem->getId().c_str());
     return std::string(buffer);
 }
 
