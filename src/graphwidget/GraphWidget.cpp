@@ -103,12 +103,17 @@ void GraphWidget::updateFromGraph()
         NodeItem* sourceNodeItem = mNodeItemMap[ source ]; 
         NodeItem* targetNodeItem = mNodeItemMap[ target ];
 
+        if(!sourceNodeItem || !targetNodeItem)
+        {
+            continue;
+        }
+
         EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(sourceNodeItem, targetNodeItem, edge);
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
-
         mGVGraph.addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
+        mGVEdgeItemMap[edgeItem->getId()] = edgeItem;
     }
 
     mGVGraph.applyLayout();
@@ -117,9 +122,18 @@ void GraphWidget::updateFromGraph()
     {
         qDebug("Set pos %d/%d", node.centerPos.x(), node.centerPos.y() );
         NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
-        nodeItem->setPos(node.centerPos);
-        QPointF position = mapToScene(node.centerPos);
+
+        //QPointF p = mapFromScene(nodeItem->pos());
+        QPointF p = nodeItem->pos();
+        QPointF scenePos = nodeItem->scenePos();
+        QPointF position = node.centerPos;
         nodeItem->setPos(position.x(), position.y());
+    }
+
+    foreach(GVEdge edge, mGVGraph.edges())
+    {
+        EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId().toStdString() ];
+        edgeItem->setPainterPath( edge.path );
     }
 }
 

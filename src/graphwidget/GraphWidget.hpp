@@ -58,6 +58,7 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
     typedef std::map<std::string, NodeItem*> GVNodeItemMap;
+    typedef std::map<std::string, EdgeItem*> GVEdgeItemMap;
 
     GraphWidget(QWidget *parent = 0);
 
@@ -90,9 +91,12 @@ protected:
 private:
     ::graph_analysis::lemon::DirectedGraph mGraph;
 
+    // Mapping with layout engine
     GVGraph mGVGraph;
     GVNodeItemMap mGVNodeItemMap;
+    GVEdgeItemMap mGVEdgeItemMap;
 
+    // Mapping with data model
     // Allow mapping from graph vertexes to nodes in the scene
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
