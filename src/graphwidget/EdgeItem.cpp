@@ -137,6 +137,7 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
 
 QPainterPath EdgeItem::shape() const 
 {
+    return mPainterPath;
     return ::QGraphicsItem::shape();
 }
 

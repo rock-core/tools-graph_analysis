@@ -72,6 +72,8 @@ public:
     enum { Type = UserType + 2 };
     int type() const { return Type; }
 
+    void setPainterPath(QPainterPath painterPath) { mPainterPath = painterPath; }
+
 protected:
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
@@ -87,6 +89,8 @@ protected:
 
     static const double Pi;
     static double TwoPi;
+
+    QPainterPath mPainterPath;
 };
 
 }  // end namespace omviz
