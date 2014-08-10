@@ -3,6 +3,8 @@
 
 #include <omviz/graphwidget/EdgeItem.hpp>
 #include <QPainterPath>
+#include <QColor>
+#include <QGraphicsLineItem>
 
 namespace omviz {
 namespace graphitem {
@@ -24,9 +26,15 @@ protected:
     virtual QPainterPath shape() const { return ::omviz::EdgeItem::shape(); }
     virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
 
+    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line);
+
+
     virtual EdgeItem* createNewItem(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { return new Simple(sourceNode, targetNode, edge); }
 
-    EdgeLabel* mLabel;
+    EdgeLabel* mpLabel;
+    QPen mPen;
+    QGraphicsLineItem* mpLine;
+    QPolygonF mArrowHead;
 
 };
 
