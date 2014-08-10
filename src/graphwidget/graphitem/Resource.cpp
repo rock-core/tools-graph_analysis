@@ -12,7 +12,9 @@ namespace omviz {
 namespace graphitem {
 
 Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : NodeItem(graphWidget, vertex) 
+    : NodeItem(graphWidget, vertex)
+    , mBrushDefault(Qt::blue)
+    , mBrush(Qt::blue)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
@@ -25,32 +27,26 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 
 QRectF Resource::boundingRect() const
 {
-    qreal adjust = 2;
-    QRectF boundingRect( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
-    
-    return childrenBoundingRect() | boundingRect;
+    //qreal adjust = 0;
+    //QRectF boundingRect( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+    //return childrenBoundingRect() | boundingRect;
+
+    return childrenBoundingRect();
 }
 
 QPainterPath Resource::shape() const
 {
     QPainterPath path;
-    //path.addEllipse(-10, -10, 20, 20);
-    path.addRect(-10, -10, 20, 20);
+    path.addRect(boundingRect());
     return path;
 }
 
 void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
     painter->setPen(Qt::NoPen);
-    painter->setBrush(Qt::blue);
+    painter->setBrush(mBrush);
     //painter->drawEllipse(-7, -7, 20, 20);
-    painter->drawRect(childrenBoundingRect()); //-7,-7,20,20);
-
-    //foreach(QGraphicsItem* child, childItems())
-    //{
-    //    child->paint(painter, option);
-    //}
-    //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
+    painter->drawRect(boundingRect()); //-7,-7,20,20);
 
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
@@ -70,7 +66,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 }
 
 
-void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event) 
+void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
     //mLabel->mouseEvent(event);
@@ -82,6 +78,21 @@ void Resource::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 }
 void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
+}
+
+void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
+    mBrush = QBrush(Qt::green);
+
+    QGraphicsItem::hoverEnterEvent(event);
+}
+
+void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
+    mBrush = QBrush(mBrushDefault);
+    QGraphicsItem::hoverLeaveEvent(event);
 }
 
 //void Resource::keyPressEvent(QKeyEvent* event)

@@ -2,6 +2,7 @@
 #define OMVIZ_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
 
 #include <omviz/graphwidget/NodeItem.hpp>
+#include <QBrush>
 
 namespace omviz {
 namespace graphitem {
@@ -26,11 +27,17 @@ protected:
     void mousePressEvent(::QGraphicsSceneMouseEvent* event);
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
 
+    //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
 //    void keyPressEvent(QKeyEvent* event);
 
 
 private:
     Label* mLabel;
+    QBrush mBrush;
+    QBrush mBrushDefault;
 };
 
 } // end namespace graphitem
