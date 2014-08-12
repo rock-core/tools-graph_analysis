@@ -50,6 +50,8 @@
 #include <omviz/graphwidget/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
 
+#include <owl_om/OrganizationModel.hpp>
+
 int main(int argc, char **argv)
 {
     using namespace omviz;
@@ -67,15 +69,28 @@ int main(int argc, char **argv)
     }
 
     owl_om::Ontology::Ptr ontology;
+    owl_om::OrganizationModel om;
 
     if(argc == 2)
     {
         qDebug("Loading from file %s",argv[1]);
-        ontology = owl_om::Ontology::fromFile(argv[1]);
+//        ontology = owl_om::Ontology::fromFile(argv[1]);
+        om = owl_om::OrganizationModel(argv[1]);
+        ontology = om.ontology();
 
     } else {
         printf("Usage: %s <file>", argv[0]);
         exit(-1);
+    }
+
+    // Create instances of models
+    using namespace owl_om;
+    using namespace owl_om::vocabulary;
+    {
+        om.createNewFromModel(OM::Actor(), OM::resolve("Sherpa"), true);
+        om.createNewFromModel(OM::Actor(), OM::resolve("CREX"), true);
+        om.createNewFromModel(OM::Actor(), OM::resolve("PayloadCamera"), true);
+        om.refresh();
     }
 
     // Create edges for all relations
@@ -86,6 +101,7 @@ int main(int argc, char **argv)
             owl_om::IRIList instances = ontology->allInstances();
             BOOST_FOREACH(const owl_om::IRI& instance, instances)
             {
+                qDebug("Instance -> %s", instance.toString().c_str());
                 omviz::IRINode::Ptr node(new IRINode(instance, ontology));
                 widget->addVertex(node);
 
