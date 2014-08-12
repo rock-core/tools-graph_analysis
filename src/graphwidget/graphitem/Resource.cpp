@@ -75,14 +75,17 @@ void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
     //mLabel->mouseEvent(event);
+    QGraphicsItem::mousePressEvent(event);
 }
 
 void Resource::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
+    QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

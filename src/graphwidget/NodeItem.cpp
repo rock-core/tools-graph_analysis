@@ -142,22 +142,14 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsItem::itemChange(change, value);
 }
 
-void NodeItem::mousePressEvent(::QGraphicsSceneMouseEvent *event)
+QPointF NodeItem::getCenterPosition() const
 {
-    update();
-    ::QGraphicsItem::mousePressEvent(event);
-}
+    QRectF rect = boundingRect();
+    QPointF position = pos();
 
-void NodeItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent *event)
-{
-    update();
-    ::QGraphicsItem::mouseReleaseEvent(event);
-}
-
-void NodeItem::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
-{
-    update();
-    ::QGraphicsItem::mouseDoubleClickEvent(event);
+    qreal width = rect.width()/2.0;
+    qreal height = rect.height()/2.0;
+    return QPointF( position.x() + width, position.y() + height);
 }
 
 std::string NodeItem::getId() const
@@ -166,10 +158,5 @@ std::string NodeItem::getId() const
     snprintf(buffer,512, "%p-%s",this, mpVertex->toString().c_str());
     return std::string(buffer);
 }
-
-//void NodeItem::keyPressEvent(::QKeyEvent* event)
-//{
-//    LOG_DEBUG_S << "KEY EVENT";
-//}
 
 } // end namespace omviz

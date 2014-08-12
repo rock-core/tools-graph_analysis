@@ -35,6 +35,7 @@ protected:
     QPen mPen;
     QGraphicsLineItem* mpLine;
     QPolygonF mArrowHead;
+    QLineF mLine;
 
 };
 

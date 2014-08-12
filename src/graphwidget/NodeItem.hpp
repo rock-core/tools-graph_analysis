@@ -68,6 +68,12 @@ public:
     void calculateForces();
     bool advance();
 
+    /**
+     * Get the center position of this node item
+     * The default implementation uses the boundingRect() and pos() to compute this information
+     * \return center position of this node item in the scene
+     */
+    virtual QPointF getCenterPosition() const;
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { throw std::runtime_error("omviz::NodeItem::createNewItem is not reimplemented"); }
 
     std::string getId() const;
@@ -76,16 +82,9 @@ public:
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
-    virtual void mousePressEvent(::QGraphicsSceneMouseEvent* event);
-    virtual void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
-    virtual void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
-
-//    virtual void keyPressEvent(QKeyEvent* event);
-
     graph_analysis::Vertex::Ptr mpVertex;
     QPointF mNewPos;
     GraphWidget* mpGraphWidget;
-
 };
 
 } // end namespace omviz

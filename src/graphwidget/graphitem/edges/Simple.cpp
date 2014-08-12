@@ -19,27 +19,21 @@ void Simple::adjust()
     if (!mpSourceNodeItem || !mpTargetNodeItem)
         return;
 
-    QLineF line(mapFromItem(mpSourceNodeItem, 0, 0), mapFromItem(mpTargetNodeItem, 0, 0));
-    qreal length = line.length();
-
     prepareGeometryChange();
 
-    {
-        mTargetPoint = mpTargetNodeItem->pos();
-        qreal width = mpTargetNodeItem->boundingRect().width()/2.0;
-        qreal height = mpTargetNodeItem->boundingRect().height()/2.0;
-        mTargetPoint = QPointF( mTargetPoint.x() + width, mTargetPoint.y() + height);
-    }
-
-    {
-        mSourcePoint = mpSourceNodeItem->pos();
-        qreal width = mpSourceNodeItem->boundingRect().width()/2.0;
-        qreal height = mpSourceNodeItem->boundingRect().height()/2.0;
-        mSourcePoint = QPointF( mSourcePoint.x() + width, mSourcePoint.y() + height);
-    }
+    // Compute center of nodes
+    mTargetPoint = mpTargetNodeItem->getCenterPosition();
+    mSourcePoint = mpSourceNodeItem->getCenterPosition();
 
     QPointF centerPos((mTargetPoint.x() - mSourcePoint.x())/2.0, (mTargetPoint.y() - mSourcePoint.y())/2.0);
-    mpLabel->setPos(centerPos);
+
+    QLineF line(mSourcePoint, mTargetPoint);
+    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line);
+    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line);
+
+    mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
+    mpLabel->setPos( mLine.pointAt(0.5) );
+
 }
 
 QRectF Simple::boundingRect() const
@@ -69,28 +63,24 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
         return;
     }
 
-    QLineF line(mSourcePoint, mTargetPoint);
-    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line);
-    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line);
-
-    QLineF boundedLine(intersectionPointWithSource, intersectionPointWithTarget);
-
     // Draw the line itself
     painter->setPen(mPen);
-    painter->drawLine(boundedLine);
+    painter->drawLine(mLine);
 
     // Draw the arrows
-    double angle = ::acos(boundedLine.dx() / boundedLine.length());
-    if (boundedLine.dy() >= 0)
+    double angle = ::acos(mLine.dx() / mLine.length());
+    if (mLine.dy() >= 0)
         angle = TwoPi - angle;
 
-    QPointF destArrowP1 = intersectionPointWithTarget + QPointF(sin(angle - Pi / 3) * mArrowSize,
+    QPointF targetIntersectionPoint = mLine.pointAt(1);
+
+    QPointF destArrowP1 = targetIntersectionPoint + QPointF(sin(angle - Pi / 3) * mArrowSize,
                                               cos(angle - Pi / 3) * mArrowSize);
-    QPointF destArrowP2 = intersectionPointWithTarget + QPointF(sin(angle - Pi + Pi / 3) * mArrowSize,
+    QPointF destArrowP2 = targetIntersectionPoint + QPointF(sin(angle - Pi + Pi / 3) * mArrowSize,
                                               cos(angle - Pi + Pi / 3) * mArrowSize);
 
     painter->setBrush(mPen.brush());
-    painter->drawPolygon(QPolygonF() << boundedLine.p2() << destArrowP1 << destArrowP2);
+    painter->drawPolygon(QPolygonF() << mLine.p2() << destArrowP1 << destArrowP2);
 }
 
 QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
@@ -121,11 +111,10 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
         if( intersectType == QLineF::BoundedIntersection)
         {
             // intersection found
-            qDebug("Intersection found: at %.3f / %.3f",intersectionPoint.x(), intersectionPoint.y());
+            // qDebug("Intersection found: at %.3f / %.3f",intersectionPoint.x(), intersectionPoint.y());
             break;
         } else {
             // no intersection fonuu
-            qDebug("No intersection found");
             p1 = p2;
         }
     }
