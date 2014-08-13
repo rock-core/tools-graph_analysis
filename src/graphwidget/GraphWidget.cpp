@@ -183,13 +183,16 @@ void GraphWidget::updateFromGraph()
         mGVGraph.addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
         mGVEdgeItemMap[edgeItem->getId()] = edgeItem;
     }
-
     mGVGraph.applyLayout();
 
     foreach(GVNode node, mGVGraph.nodes())
     {
-        qDebug("Set pos %d/%d", node.centerPos.x(), node.centerPos.y() );
         NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
+
+        if(!nodeItem)
+        {
+            LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
+        }
 
         //QPointF p = mapFromScene(nodeItem->pos());
         QPointF p = nodeItem->pos();
