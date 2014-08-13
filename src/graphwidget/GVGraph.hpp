@@ -80,6 +80,7 @@ public:
     void addEdge(const QString& source, const QString& target);
     void removeEdge(const QString& source, const QString& target);
     void removeEdge(const QPair<QString, QString>& key);
+    void clearEdges();
 
     /// Set the font to use in all the labels
     void setFont(QFont font);

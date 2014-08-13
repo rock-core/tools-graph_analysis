@@ -144,6 +144,14 @@ void GVGraph::removeEdge(const QPair<QString, QString>& key)
     }
 }
 
+void GVGraph::clearEdges()
+{
+    QList< QPair<QString, QString> > keys=_edges.keys();
+
+    for(int i=0; i < keys.size(); ++i)
+        removeEdge(keys.at(i));
+}
+
 void GVGraph::setFont(QFont font)
 {
     _font=font;

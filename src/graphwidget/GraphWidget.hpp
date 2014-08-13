@@ -70,6 +70,7 @@ public:
 
     ::graph_analysis::lemon::DirectedGraph& graph() { return mGraph; }
 
+    void clear();
     void updateFromGraph();
     void itemMoved();
 

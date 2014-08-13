@@ -109,9 +109,6 @@ int main(int argc, char **argv)
             }
         }
 
-        // Register nodes -- otherwise edgesItemMap will remains empty
-        widget->updateFromGraph();
-
         IRIList instances = ontology->allInstances();
         BOOST_FOREACH(const IRI& instance, instances)
         {

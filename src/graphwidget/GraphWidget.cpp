@@ -46,7 +46,11 @@
 
 #include <math.h>
 #include <QKeyEvent>
+#include <boost/regex.hpp>
 #include <base/Logging.hpp>
+#include <graph_analysis/GraphView.hpp>
+
+#include "filters/Filters.hpp"
 
 namespace omviz {
 
@@ -68,12 +72,53 @@ GraphWidget::GraphWidget(QWidget *parent)
     setWindowTitle(tr("Graphview"));
 }
 
+void GraphWidget::clear()
+{
+    mGVGraph.clearEdges();
+    mGVGraph.clearNodes();
+    mGVNodeItemMap.clear();
+    mGVEdgeItemMap.clear();
+    mNodeItemMap.clear();
+    mEdgeItemMap.clear();
+    scene()->clear();
+}
+
 void GraphWidget::updateFromGraph()
 {
+    using namespace graph_analysis;
+    namespace gl = graph_analysis::lemon;
+
+    // Setting up filtering
+    GraphView< gl::DirectedGraph > graphView;
+
+    // Enable all nodes and edges by default
+    Filter< Vertex::Ptr >::Ptr vertexAllFilter(new filter::PermitAll<Vertex::Ptr>());
+    graphView.setVertexFilter(vertexAllFilter);
+
+    Filter< Edge::Ptr >::Ptr edgeAllFilter(new filter::PermitAll<Edge::Ptr>());
+    graphView.setEdgeFilter(edgeAllFilter);
+
+    // Additional filtering
+    Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::VertexRegexFilter(".*Model.*") );
+    graphView.setVertexFilter(vertexFilter);
+
+    Filter< Edge::Ptr >::Ptr edgeFilter(new filters::EdgeRegexFilter(".*has.*", filters::CONTENT, true) );
+    graphView.setEdgeFilter(edgeFilter);
+
+    gl::DirectedSubGraph subGraph = graphView.apply(mGraph);
+    // End of setting up filters
+
     graph_analysis::VertexIterator::Ptr nodeIt = mGraph.getVertexIterator();
     while(nodeIt->next())
     {
         graph_analysis::Vertex::Ptr vertex = nodeIt->current();
+
+        // Check on active filter
+        if(!subGraph.enabled(vertex))
+        {
+            continue;
+        }
+
         if( mNodeItemMap.count(vertex))
         {
             continue;
@@ -82,6 +127,7 @@ void GraphWidget::updateFromGraph()
         // Registering new node items
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
         mNodeItemMap[vertex] = nodeItem;
+
         scene()->addItem(nodeItem);
         mGVGraph.addNode(QString( nodeItem->getId().c_str()));
         mGVNodeItemMap[nodeItem->getId()] = nodeItem;
@@ -91,6 +137,28 @@ void GraphWidget::updateFromGraph()
     while(edgeIt->next())
     {
         graph_analysis::Edge::Ptr edge = edgeIt->current();
+
+        // Check on active filter
+        if(!subGraph.enabled(edge))
+        {
+            continue;
+        }
+
+        //{
+        //    boost::regex filterRegex(".*modelledBy.*");
+        //    if(boost::regex_match(edge->toString(),filterRegex))
+        //    {
+        //        continue;
+        //    }
+        //}
+        //{
+        //    boost::regex filterRegex(".*dependsOn.*");
+        //    if(boost::regex_match(edge->toString(),filterRegex))
+        //    {
+        //        continue;
+        //    }
+        //}
+
         if( mEdgeItemMap.count(edge))
         {
             continue;
@@ -100,7 +168,7 @@ void GraphWidget::updateFromGraph()
         graph_analysis::Vertex::Ptr source = edge->getSourceVertex();
         graph_analysis::Vertex::Ptr target = edge->getTargetVertex();
 
-        NodeItem* sourceNodeItem = mNodeItemMap[ source ]; 
+        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
         NodeItem* targetNodeItem = mNodeItemMap[ target ];
 
         if(!sourceNodeItem || !targetNodeItem)
@@ -138,7 +206,7 @@ void GraphWidget::updateFromGraph()
 }
 
 void GraphWidget::addVertex(graph_analysis::Vertex::Ptr vertex)
-{ 
+{
     mGraph.addVertex(vertex);
 }
 
@@ -172,7 +240,11 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     //    break;
     case Qt::Key_Space:
     case Qt::Key_Enter:
-        updateFromGraph();
+        {
+            clear();
+            updateFromGraph();
+            update();
+        }
     ////    shuffle();
         break;
     //default:

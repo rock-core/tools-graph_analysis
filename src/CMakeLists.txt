@@ -1,3 +1,4 @@
+find_package(Boost REQUIRED regex)
 rock_library(omviz
     SOURCES graphwidget/EdgeItem.cpp
       graphwidget/EdgeTypeManager.cpp
@@ -15,6 +16,7 @@ rock_library(omviz
       graphwidget/GraphWidget.hpp
       graphwidget/NodeItem.hpp
       graphwidget/NodeTypeManager.hpp
+      graphwidget/filters/Filters.hpp
       graphwidget/graphitem/Label.hpp
       graphwidget/graphitem/Simple.hpp
       graphwidget/graphitem/Resource.hpp
@@ -24,6 +26,7 @@ rock_library(omviz
       IRINode.hpp
     MOC graphwidget/GraphWidget.hpp
     DEPS_PKGCONFIG graph_analysis owl_om
+    DEPS_PLAIN Boost_REGEX
 )
 target_link_libraries(omviz gvc)
 
