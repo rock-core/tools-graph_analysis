@@ -38,5 +38,14 @@ private:
     Vertex::Ptr mVertex;
 };
 
+class VertexIterable
+{
+public:
+    /**
+     * Get the vertex iterator
+     */
+    virtual VertexIterator::Ptr getVertexIterator() = 0;
+};
+
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_VERTEX_ITERATOR_HPP

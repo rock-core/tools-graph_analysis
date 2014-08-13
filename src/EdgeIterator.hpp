@@ -38,5 +38,13 @@ private:
     Edge::Ptr mEdge;
 };
 
+class EdgeIterable
+{
+public:
+    /**
+     * Get the node iterator
+     */
+    virtual EdgeIterator::Ptr getEdgeIterator() = 0;
+};
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_EDGE_ITERATOR_HPP

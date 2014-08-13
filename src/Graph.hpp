@@ -20,7 +20,7 @@ namespace graph_analysis
  * We assume than all graph implementation will rely and allow access to nodes and edges via
  * integer
  */
-class BaseGraph
+class BaseGraph : public VertexIterable, public EdgeIterable
 {
 public:
     BaseGraph()
@@ -87,16 +87,6 @@ public:
      * Get the graph id
      */
     GraphId getId() const { return mId; }
-
-    /**
-     * Get the vertex iterator
-     */
-    virtual VertexIterator::Ptr getVertexIterator() = 0;
-
-    /**
-     * Get the node iterator
-     */
-    virtual EdgeIterator::Ptr getEdgeIterator() = 0;
 
 protected:
     /**
