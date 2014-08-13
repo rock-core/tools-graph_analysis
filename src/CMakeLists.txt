@@ -3,6 +3,7 @@ rock_library(graph_analysis
         GraphElement.cpp
         GraphIO.cpp
         io/GexfWriter.cpp
+        lemon/Graph.cpp
     HEADERS Edge.hpp
         EdgeIterator.hpp
         Filter.hpp

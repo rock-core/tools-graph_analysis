@@ -166,6 +166,21 @@ public:
         return (*mpSubgraph);
     }
 
+    const SubGraphType& raw() const
+    {
+        assert(mpSubgraph);
+        return (*mpSubgraph);
+    }
+
+    virtual void enable(Vertex::Ptr vertex) = 0;
+    virtual void disable(Vertex::Ptr vertex) = 0;
+
+    virtual void enable(Edge::Ptr edge) = 0;
+    virtual void disable(Edge::Ptr edge) = 0;
+
+    virtual bool enabled(Vertex::Ptr vertex) const = 0;
+    virtual bool enabled(Edge::Ptr vertex) const = 0;
+
 protected:
     /**
      * Get vertex filter
