@@ -12,6 +12,7 @@ rock_library(graph_analysis
         GraphAnalysis.hpp
         GraphElement.hpp
         GraphIO.hpp
+        GraphView.hpp
         io/GexfWriter.hpp
         lemon/ArcIterator.hpp
         lemon/Graph.hpp
