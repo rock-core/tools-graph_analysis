@@ -7,16 +7,17 @@ namespace omviz {
 const qreal GVGraph::DotDefaultDPI=72.0;
 
 GVGraph::GVGraph(QString name, QFont font, double node_size) :
-        _context(gvContext()),
-        _graph(_agopen(name, AGDIGRAPHSTRICT)) // Strict directed graph, see libgraph doc
+        mpContext(gvContext()),
+        mpGraph(_agopen(name, AGDIGRAPHSTRICT)) // Strict directed graph, see libgraph doc
 {
     //Set graph attributes
     setGraphAttribute("overlap", "false");
     //setGraphAttribute("splines", "true");
     setGraphAttribute("pad", "0,2");
     setGraphAttribute("dpi", "96,0");
-    // Don't use node sep here, since it prevent outputting the exact position
-    // using dot layout
+
+    // Don't use node sep here, since it prevents outputting the exact position
+    // when using dot layout
     // setGraphAttribute("nodesep", "1");
 
     //Set default attributes for the future nodes
@@ -40,22 +41,22 @@ GVGraph::GVGraph(QString name, QFont font, double node_size) :
 
 GVGraph::~GVGraph()
 {
-    gvFreeLayout(_context, _graph);
-    agclose(_graph);
-    gvFreeContext(_context);
+    gvFreeLayout(mpContext, mpGraph);
+    agclose(mpGraph);
+    gvFreeContext(mpContext);
 }
 
 int GVGraph::setGraphAttribute(const std::string& name, const std::string& value)
 {
     // Directly use agsafeset which always works, contrarily to agset
-    return agsafeset(_graph, const_cast<char *>(name.c_str()),
+    return agsafeset(mpGraph, const_cast<char *>(name.c_str()),
                      const_cast<char *>(value.c_str()),
                      const_cast<char *>(value.c_str()));
 }
 
 std::string GVGraph::getGraphAttribute(const std::string& name, const std::string& defaultValue) const
 {
-    std::string value = agget(_graph, const_cast<char *>(name.c_str()));
+    std::string value = agget(mpGraph, const_cast<char *>(name.c_str()));
     if(value.empty())
     {
         return defaultValue;
@@ -65,22 +66,22 @@ std::string GVGraph::getGraphAttribute(const std::string& name, const std::strin
 
 void GVGraph::setNodeAttribute(const std::string& name, const std::string& value)
 {
-    agnodeattr(_graph, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
+    agnodeattr(mpGraph, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
 }
 
 void GVGraph::setEdgeAttribute(const std::string& name, const std::string& value)
 {
-    agedgeattr(_graph, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
+    agedgeattr(mpGraph, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
 }
 
 void GVGraph::addNode(const QString& name)
 {
-    if(_nodes.contains(name))
+    if(mNodes.contains(name))
         removeNode(name);
 
-    _nodes.insert(name, _agnode(_graph, name));
+    mNodes.insert(name, _agnode(mpGraph, name));
 
-    if(_nodes.size() == 1)
+    if(mNodes.size() == 1)
     {
         setRootNode(name);
     }
@@ -94,12 +95,12 @@ void GVGraph::addNodes(const QStringList& names)
 
 void GVGraph::removeNode(const QString& name)
 {
-    if(_nodes.contains(name))
+    if(mNodes.contains(name))
     {
-        agdelete(_graph, _nodes[name]);
-        _nodes.remove(name);
+        agdelete(mpGraph, mNodes[name]);
+        mNodes.remove(name);
 
-        QList<QPair<QString, QString> >keys=_edges.keys();
+        QList<QPair<QString, QString> >keys=mEdges.keys();
         for(int i=0; i<keys.size(); ++i)
             if(keys.at(i).first==name || keys.at(i).second==name)
                 removeEdge(keys.at(i));
@@ -108,7 +109,7 @@ void GVGraph::removeNode(const QString& name)
 
 void GVGraph::clearNodes()
 {
-    QList<QString> keys=_nodes.keys();
+    QList<QString> keys=mNodes.keys();
 
     for(int i=0; i<keys.size(); ++i)
         removeNode(keys.at(i));
@@ -116,17 +117,17 @@ void GVGraph::clearNodes()
 
 void GVGraph::setRootNode(const QString& name)
 {
-    if(_nodes.contains(name))
+    if(mNodes.contains(name))
         setGraphAttribute("root", name.toStdString());
 }
 
 void GVGraph::addEdge(const QString &source, const QString &target)
 {
-    if(_nodes.contains(source) && _nodes.contains(target))
+    if(mNodes.contains(source) && mNodes.contains(target))
     {
         QPair<QString, QString> key(source, target);
-        if(!_edges.contains(key))
-            _edges.insert(key, agedge(_graph, _nodes[source], _nodes[target]));
+        if(!mEdges.contains(key))
+            mEdges.insert(key, agedge(mpGraph, mNodes[source], mNodes[target]));
     }
 }
 
@@ -137,16 +138,16 @@ void GVGraph::removeEdge(const QString &source, const QString &target)
 
 void GVGraph::removeEdge(const QPair<QString, QString>& key)
 {
-    if(_edges.contains(key))
+    if(mEdges.contains(key))
     {
-        agdelete(_graph, _edges[key]);
-        _edges.remove(key);
+        agdelete(mpGraph, mEdges[key]);
+        mEdges.remove(key);
     }
 }
 
 void GVGraph::clearEdges()
 {
-    QList< QPair<QString, QString> > keys=_edges.keys();
+    QList< QPair<QString, QString> > keys=mEdges.keys();
 
     for(int i=0; i < keys.size(); ++i)
         removeEdge(keys.at(i));
@@ -154,7 +155,7 @@ void GVGraph::clearEdges()
 
 void GVGraph::setFont(QFont font)
 {
-    _font=font;
+    mFont=font;
 
     setGraphAttribute("fontname", font.family().toStdString());
     setGraphAttribute("fontsize", QString("%1").arg(font.pointSizeF()).toStdString());
@@ -168,40 +169,39 @@ void GVGraph::setFont(QFont font)
 
 void GVGraph::applyLayout(const std::string& layout)
 {
-    gvFreeLayout(_context, _graph);
-    gvLayout(_context, _graph, layout.c_str());
+    gvFreeLayout(mpContext, mpGraph);
+    gvLayout(mpContext, mpGraph, layout.c_str());
 }
 
 void GVGraph::renderToFile(const std::string& filename, const std::string& layout)
 {
-    gvRenderFilename(_context, _graph, layout.c_str(), filename.c_str());
+    gvRenderFilename(mpContext, mpGraph, layout.c_str(), filename.c_str());
 }
 
 QRectF GVGraph::boundingRect() const
 {
-    return QRectF(_graph->u.bb.LL.x*mScalingFactor, _graph->u.bb.LL.y*mScalingFactor,
-                  _graph->u.bb.UR.x*mScalingFactor, _graph->u.bb.UR.y*mScalingFactor);
+    return QRectF(mpGraph->u.bb.LL.x*mScalingFactor, mpGraph->u.bb.LL.y*mScalingFactor,
+                  mpGraph->u.bb.UR.x*mScalingFactor, mpGraph->u.bb.UR.y*mScalingFactor);
 }
 
 QList<GVNode> GVGraph::nodes() const
 {
     QList<GVNode> list;
 
-    for(QMap<QString, Agnode_t*>::const_iterator it=_nodes.begin(); it!=_nodes.end();++it)
+    QMap<QString, Agnode_t*>::const_iterator it = mNodes.begin();
+    for(; it != mNodes.end(); ++it)
     {
         Agnode_t *node=it.value();
         GVNode object;
 
         //Set the name of the node
-        object.name=node->name;
-
-        qDebug("X/Y => %.3f/%.3f",node->u.coord.x, node->u.coord.y);
+        object.name = node->name;
 
         //Fetch the X coordinate, apply the DPI conversion rate (actual DPI / 72, used by dot)
         qreal x = node->u.coord.x*mScalingFactor;
 
         //Translate the Y coordinate from bottom-left to top-left corner
-        qreal y = (_graph->u.bb.UR.y - node->u.coord.y)*mScalingFactor;
+        qreal y = (mpGraph->u.bb.UR.y - node->u.coord.y)*mScalingFactor;
         object.centerPos=QPoint(x, y);
 
         //Transform the width and height from inches to pixels
@@ -217,16 +217,15 @@ QList<GVNode> GVGraph::nodes() const
 QList<GVEdge> GVGraph::edges() const
 {
     QList<GVEdge> list;
-
-    for(QMap<QPair<QString, QString>, Agedge_t*>::const_iterator it=_edges.begin();
-        it!=_edges.end();++it)
+    QMap<QPair<QString, QString>, Agedge_t*>::const_iterator it = mEdges.begin();
+    for(; it != mEdges.end(); ++it)
     {
-        Agedge_t *edge=it.value();
+        Agedge_t* edge = it.value();
         GVEdge object;
 
         //Fill the source and target node names
-        object.source=edge->tail->name;
-        object.target=edge->head->name;
+        object.source = edge->tail->name;
+        object.target = edge->head->name;
 
         //Calculate the path from the spline (only one spline, as the graph is strict. If it
         //wasn't, we would have to iterate over the first list too)
@@ -237,27 +236,27 @@ QList<GVEdge> GVGraph::edges() const
             if(edge->u.spl->list->sflag)
             {
                 object.path.moveTo(edge->u.spl->list->sp.x*mScalingFactor,
-                             (_graph->u.bb.UR.y - edge->u.spl->list->sp.y)*mScalingFactor);
+                             (mpGraph->u.bb.UR.y - edge->u.spl->list->sp.y)*mScalingFactor);
                 object.path.lineTo(edge->u.spl->list->list[0].x*mScalingFactor,
-                        (_graph->u.bb.UR.y - edge->u.spl->list->list[0].y)*mScalingFactor);
+                        (mpGraph->u.bb.UR.y - edge->u.spl->list->list[0].y)*mScalingFactor);
             }
             else
                 object.path.moveTo(edge->u.spl->list->list[0].x*mScalingFactor,
-                        (_graph->u.bb.UR.y - edge->u.spl->list->list[0].y)*mScalingFactor);
+                        (mpGraph->u.bb.UR.y - edge->u.spl->list->list[0].y)*mScalingFactor);
 
             //Loop over the curve points
             for(int i=1; i<edge->u.spl->list->size; i+=3)
                 object.path.cubicTo(edge->u.spl->list->list[i].x*mScalingFactor,
-                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i].y)*mScalingFactor,
+                      (mpGraph->u.bb.UR.y - edge->u.spl->list->list[i].y)*mScalingFactor,
                       edge->u.spl->list->list[i+1].x*mScalingFactor,
-                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i+1].y)*mScalingFactor,
+                      (mpGraph->u.bb.UR.y - edge->u.spl->list->list[i+1].y)*mScalingFactor,
                       edge->u.spl->list->list[i+2].x*mScalingFactor,
-                      (_graph->u.bb.UR.y - edge->u.spl->list->list[i+2].y)*mScalingFactor);
+                      (mpGraph->u.bb.UR.y - edge->u.spl->list->list[i+2].y)*mScalingFactor);
 
             //If there is an ending point, draw a line to it
             if(edge->u.spl->list->eflag)
                 object.path.lineTo(edge->u.spl->list->ep.x*mScalingFactor,
-                             (_graph->u.bb.UR.y - edge->u.spl->list->ep.y)*mScalingFactor);
+                             (mpGraph->u.bb.UR.y - edge->u.spl->list->ep.y)*mScalingFactor);
         }
 
         list << object;

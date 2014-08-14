@@ -1,5 +1,5 @@
-#ifndef OMVIZ_GRAPHWIDGET_GVGRAPH_HPP
-#define OMVIZ_GRAPHWIDGET_GVGRAPH_HPP
+#ifndef OMVIZmpGraphWIDGET_GVGRAPH_HPP
+#define OMVIZmpGraphWIDGET_GVGRAPH_HPP
 
 #include <graphviz/gvc.h>
 #include <QFont>
@@ -20,7 +20,8 @@ static inline Agnode_t* _agnode(Agraph_t* g, QString name)
 namespace omviz {
 
 // A struct containing the information for a GVGraph's node
-// \see http://www.mupuf.org/blog/2010/07/08/how_to_use_graphviz_to_draw_graphs_in_a_qt_graphics_scene/
+// This implementation has been made based on Steve D. Lazaro's presentation on graphviz integration into qt
+// \see http://www.mupuf.org/blog/2010/07/08/how_to_usempGraphviz_to_drawmGraphs_in_a_qtmGraphics_scene/
 // \credits Steve D. Lazaro, 2010
 //
 struct GVNode
@@ -42,13 +43,23 @@ struct GVEdge
     QString source;
     QString target;
 
-    /// Path of the edge's line
+    /**
+     * \brief Path of the edge's line
+     * \return edge's path
+     */
     QPainterPath path;
 
+    /**
+     * Unique id for this edge based on source and target node names
+     * \return unique id
+     */
     QString getId() const { return source + "->" + target; }
 };
 
-/// An object containing a libgraph graph and its associated nodes and edges
+/**
+ * \class GVGraph
+ * \brief An object containing a libgraph graph and its associated nodes and edges
+ */
 class GVGraph
 {
 public:
@@ -64,10 +75,40 @@ public:
     GVGraph(QString name, QFont font=QFont(), double node_size = 0);
     ~GVGraph();
 
+    /**
+     * Set the graphviz based graph attribute by name and value
+     * \param name Name of attribute
+     * \param value Value for this attribute
+     * \return status
+     */
     int setGraphAttribute(const std::string& name, const std::string& value);
+
+    /**
+     * Get the graphviz based graph attribute
+     * \param name Name of attribute
+     * \param defaultValue The return value will be this if the attribute has not been set for the graph
+     * \return Current or default value for this attribute
+     */
     std::string getGraphAttribute(const std::string& name, const std::string& defaultValue ="") const;
+
+    /**
+     * Qt based version of getGraphAttribute
+     * \return Current or default value for the given attribute
+     */
     QString getQGraphAttribute(const QString& name, const QString& defaultValue ="") const { return QString( getGraphAttribute(name.toStdString(), defaultValue.toStdString()).c_str() ); }
+
+    /**
+     * Set a node attribute by name
+     * \param name Name of node's attribute
+     * \param value Value to set
+     */
     void setNodeAttribute(const std::string& name, const std::string& value);
+
+    /**
+     * Set a edge attribute by name
+     * \param name Name of edge's attribute
+     * \param value Value to set
+     */
     void setEdgeAttribute(const std::string& name, const std::string& value);
 
     /// Add and remove nodes
@@ -100,15 +141,17 @@ public:
     QList<GVEdge> edges() const;
 
 private:
-    GVC_t *_context;
-    Agraph_t *_graph;
-    QFont _font;
-    QMap<QString, Agnode_t*> _nodes;
-    QMap< QPair<QString, QString>, Agedge_t*> _edges;
+    GVC_t* mpContext;
+    Agraph_t* mpGraph;
+    QFont mFont;
+    QMap<QString, Agnode_t*> mNodes;
+    QMap< QPair<QString, QString>, Agedge_t*> mEdges;
 
+    /// DPI setting
     double mDPI;
+    /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
 };
 
 } // end namespace omviz
-#endif // OMVIZ_GRAPHWIDGET_GVGRAPH_HPP
+#endif // OMVIZmpGraphWIDGET_GVGRAPH_HPP
