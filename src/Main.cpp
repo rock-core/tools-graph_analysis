@@ -84,9 +84,17 @@ int main(int argc, char** argv)
         IRIList instances = ontology->allInstances();
         BOOST_FOREACH(const IRI& instance, instances)
         {
+
+            QList<QTreeWidgetItem *> items;
+
+            QTreeWidgetItem* iri = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(instance.toString().c_str())));
+
+
             IRIList objectProperties = ontology->allObjectProperties();
             BOOST_FOREACH(const IRI& relation, objectProperties)
             {
+                QTreeWidgetItem* relationItem = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(relation.toString().c_str())));
+
                 IRIList related = ontology->allRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
@@ -96,9 +104,29 @@ int main(int argc, char** argv)
                     edge->setTargetVertex( iriNodeMap[other] );
 
                     graphWidget->addEdge(edge);
+
+                    QTreeWidgetItem* otherItem = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(other.toString().c_str())));
+
+                    relationItem->addChild(otherItem);
+                }
+                if(relationItem->childCount() != 0)
+                {
+                    iri->addChild(relationItem);
                 }
             }
+
+            IRI className = ontology->typeOf(instance);
+            QTreeWidgetItem* typeOfLabel = new QTreeWidgetItem((QTreeWidget*) 0, QStringList( QString(RDF::type().toString().c_str())));
+            QTreeWidgetItem* iriClass = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(className.toString().c_str())));
+            typeOfLabel->addChild(iriClass);
+            iri->addChild(typeOfLabel);
+
+            items.append(iri);
+            omviz.treeWidget->insertTopLevelItems(0,items);
         }
+
+        // Adapt to contents: column index start with 0 as usual
+        omviz.treeWidget->resizeColumnToContents(0);
     }
     graphWidget->updateFromGraph();
 
