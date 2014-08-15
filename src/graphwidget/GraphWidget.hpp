@@ -50,6 +50,19 @@ namespace omviz {
 class NodeItem;
 class EdgeItem;
 
+/**
+ *
+ * \beginverbatim
+    GraphWidget* widget = new GraphWidget;
+
+    // Create vertices
+    for(int i = 0; i < 1; ++i)
+    {
+        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
+        widget->addVertex(vertex);
+    }
+ \endverbatim
+ */
 class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
@@ -79,6 +92,8 @@ public slots:
     void zoomIn();
     void zoomOut();
 
+    void setLayout(QString layoutName);
+
 protected:
     void keyPressEvent(QKeyEvent *event);
     void timerEvent(QTimerEvent *event);
@@ -104,6 +119,7 @@ private:
     EdgeItemMap mEdgeItemMap;
 
     int mTimerId;
+    QString mLayout;
 
 };
 

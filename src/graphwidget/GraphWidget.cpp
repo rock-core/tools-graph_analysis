@@ -58,6 +58,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mGVGraph("GVGraphWidget")
     , mTimerId(0)
+    , mLayout("dot")
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -98,12 +99,12 @@ void GraphWidget::updateFromGraph()
     Filter< Edge::Ptr >::Ptr edgeAllFilter(new filter::PermitAll<Edge::Ptr>());
     graphView.setEdgeFilter(edgeAllFilter);
 
-    // Additional filtering
-    Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::VertexRegexFilter(".*Model.*") );
-    graphView.setVertexFilter(vertexFilter);
+    //// Additional filtering
+    //Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::VertexRegexFilter(".*Model.*") );
+    //graphView.setVertexFilter(vertexFilter);
 
-    Filter< Edge::Ptr >::Ptr edgeFilter(new filters::EdgeRegexFilter(".*has.*", filters::CONTENT, true) );
-    graphView.setEdgeFilter(edgeFilter);
+    //Filter< Edge::Ptr >::Ptr edgeFilter(new filters::EdgeRegexFilter(".*has.*", filters::CONTENT, true) );
+    //graphView.setEdgeFilter(edgeFilter);
 
     gl::DirectedSubGraph subGraph = graphView.apply(mGraph);
     // End of setting up filters
@@ -144,21 +145,6 @@ void GraphWidget::updateFromGraph()
             continue;
         }
 
-        //{
-        //    boost::regex filterRegex(".*modelledBy.*");
-        //    if(boost::regex_match(edge->toString(),filterRegex))
-        //    {
-        //        continue;
-        //    }
-        //}
-        //{
-        //    boost::regex filterRegex(".*dependsOn.*");
-        //    if(boost::regex_match(edge->toString(),filterRegex))
-        //    {
-        //        continue;
-        //    }
-        //}
-
         if( mEdgeItemMap.count(edge))
         {
             continue;
@@ -183,28 +169,32 @@ void GraphWidget::updateFromGraph()
         mGVGraph.addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
         mGVEdgeItemMap[edgeItem->getId()] = edgeItem;
     }
-    mGVGraph.applyLayout();
 
-    foreach(GVNode node, mGVGraph.nodes())
+    if(mLayout.toLower() != "force")
     {
-        NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
+        mGVGraph.applyLayout(mLayout.toStdString());
 
-        if(!nodeItem)
+        foreach(GVNode node, mGVGraph.nodes())
         {
-            LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
+            NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
+
+            if(!nodeItem)
+            {
+                LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
+            }
+
+            //QPointF p = mapFromScene(nodeItem->pos());
+            QPointF p = nodeItem->pos();
+            QPointF scenePos = nodeItem->scenePos();
+            QPointF position = node.centerPos;
+            nodeItem->setPos(position.x(), position.y());
         }
 
-        //QPointF p = mapFromScene(nodeItem->pos());
-        QPointF p = nodeItem->pos();
-        QPointF scenePos = nodeItem->scenePos();
-        QPointF position = node.centerPos;
-        nodeItem->setPos(position.x(), position.y());
-    }
-
-    foreach(GVEdge edge, mGVGraph.edges())
-    {
-        EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId().toStdString() ];
-        edgeItem->setPainterPath( edge.path );
+        foreach(GVEdge edge, mGVGraph.edges())
+        {
+            EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId().toStdString() ];
+            edgeItem->setPainterPath( edge.path );
+        }
     }
 }
 
@@ -221,7 +211,9 @@ void GraphWidget::addEdge(graph_analysis::Edge::Ptr edge)
 void GraphWidget::itemMoved()
 {
     if (!mTimerId)
+    {
         mTimerId = startTimer(1000 / 25);
+    }
 }
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
@@ -260,25 +252,33 @@ void GraphWidget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
 
-    //QList<NodeItem* > nodes;
-    //foreach (QGraphicsItem *item, scene()->items()) {
-    //    if (NodeItem* node = qgraphicsitem_cast<NodeItem* >(item))
-    //        nodes << node;
-    //}
+    if(mLayout.toLower() == "force")
+    {
+        QList<NodeItem* > nodes;
+        foreach (QGraphicsItem *item, scene()->items())
+        {
+            if (NodeItem* node = qgraphicsitem_cast<NodeItem* >(item))
+            {
+                nodes << node;
+            }
+        }
 
-    //foreach (NodeItem* node, nodes)
-    //    node->calculateForces();
+        foreach (NodeItem* node, nodes)
+        {
+            node->calculateForces();
+        }
 
-    //bool itemsMoved = false;
-    //foreach (NodeItem* node, nodes) {
-    //    if (node->advance())
-    //        itemsMoved = true;
-    //}
+        bool itemsMoved = false;
+        foreach (NodeItem* node, nodes) {
+            if (node->advance())
+                itemsMoved = true;
+        }
 
-    //if (!itemsMoved) {
-    //    killTimer(mTimerId);
-    //    mTimerId = 0;
-    //}
+        if (!itemsMoved) {
+            killTimer(mTimerId);
+            mTimerId = 0;
+        }
+    }
 }
 
 #ifndef QT_NO_WHEELEVENT
@@ -350,6 +350,12 @@ void GraphWidget::zoomIn()
 void GraphWidget::zoomOut()
 {
     scaleView(1 / qreal(1.2));
+}
+
+void GraphWidget::setLayout(QString layoutName)
+{
+    mLayout = layoutName;
+    updateFromGraph();
 }
 
 } // end namespace omviz

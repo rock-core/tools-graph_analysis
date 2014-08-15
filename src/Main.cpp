@@ -130,5 +130,8 @@ int main(int argc, char** argv)
     }
     graphWidget->updateFromGraph();
 
+    //omviz.centralWidget->splitter->groupBox->groupBox_2->comboBox
+    QObject::connect(omviz.comboBox, SIGNAL(activated(QString)),  graphWidget, SLOT(setLayout(QString)));
+
     return app.exec();
 }
