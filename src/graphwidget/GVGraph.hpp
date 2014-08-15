@@ -151,6 +151,8 @@ private:
     double mDPI;
     /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
+
+    bool mAppliedLayout;
 };
 
 } // end namespace omviz

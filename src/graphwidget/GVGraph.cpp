@@ -6,9 +6,11 @@ namespace omviz {
     while we display at 96 DPI on most operating systems. */
 const qreal GVGraph::DotDefaultDPI=72.0;
 
-GVGraph::GVGraph(QString name, QFont font, double node_size) :
-        mpContext(gvContext()),
-        mpGraph(_agopen(name, AGDIGRAPHSTRICT)) // Strict directed graph, see libgraph doc
+GVGraph::GVGraph(QString name, QFont font, double node_size)
+    : mpContext(gvContext())
+    , mpGraph(_agopen(name, AGDIGRAPHSTRICT)) // Strict directed graph, see libgraph doc
+    , mAppliedLayout(false)
+
 {
     //Set graph attributes
     setGraphAttribute("overlap", "false");
@@ -41,7 +43,11 @@ GVGraph::GVGraph(QString name, QFont font, double node_size) :
 
 GVGraph::~GVGraph()
 {
-    gvFreeLayout(mpContext, mpGraph);
+    if(mAppliedLayout)
+    {
+        gvFreeLayout(mpContext, mpGraph);
+    }
+
     agclose(mpGraph);
     gvFreeContext(mpContext);
 }
@@ -169,6 +175,7 @@ void GVGraph::setFont(QFont font)
 
 void GVGraph::applyLayout(const std::string& layout)
 {
+    mAppliedLayout = true;
     gvFreeLayout(mpContext, mpGraph);
     gvLayout(mpContext, mpGraph, layout.c_str());
 }
