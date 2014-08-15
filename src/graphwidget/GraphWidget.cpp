@@ -56,14 +56,19 @@
 
 #include <graph_analysis/lemon/Graph.hpp>
 
+using namespace graph_analysis;
+namespace gl = graph_analysis::lemon;
+
 namespace omviz {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mpGVGraph(0)
     , mpGraph(0)
+    , mpGVGraph(0)
     , mTimerId(0)
     , mLayout("dot")
+    , mpVertexFilter(new Filter< Vertex::Ptr >())
+    , mpEdgeFilter(new Filter< Edge::Ptr >())
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -81,17 +86,25 @@ GraphWidget::GraphWidget(QWidget *parent)
     setWindowTitle(tr("Graphview"));
 
     reset();
+
+    using namespace graph_analysis;
+
+  //  mVertexFilter.add(Filter<Vertex::Ptr>::Ptr(new filters::PermitAll<Vertex::Ptr>()));
+  //  mEdgeFilter.add(Filter<Edge::Ptr>::Ptr(new filters::PermitAll<Edge::Ptr>()));
 }
 
-void GraphWidget::reset()
+void GraphWidget::reset(bool keepData)
 {
     clear();
 
     delete mpGVGraph;
     mpGVGraph = new GVGraph("GVGraphWidget");
 
-    delete mpGraph;
-    mpGraph = new ::graph_analysis::lemon::DirectedGraph();
+    if(!keepData)
+    {
+        delete mpGraph;
+        mpGraph = new gl::DirectedGraph();
+    }
 }
 
 void GraphWidget::clear()
@@ -111,33 +124,18 @@ void GraphWidget::clear()
 
 void GraphWidget::updateFromGraph()
 {
-    using namespace graph_analysis;
-    namespace gl = graph_analysis::lemon;
-
     // Setting up filtering
     GraphView< gl::DirectedGraph > graphView;
-
-    // Enable all nodes and edges by default
-    Filter< Vertex::Ptr >::Ptr vertexAllFilter(new filter::PermitAll<Vertex::Ptr>());
-    graphView.setVertexFilter(vertexAllFilter);
-
-    Filter< Edge::Ptr >::Ptr edgeAllFilter(new filter::PermitAll<Edge::Ptr>());
-    graphView.setEdgeFilter(edgeAllFilter);
-
-    //// Additional filtering
-    //Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::VertexRegexFilter(".*Model.*") );
-    //graphView.setVertexFilter(vertexFilter);
-
-    //Filter< Edge::Ptr >::Ptr edgeFilter(new filters::EdgeRegexFilter(".*has.*", filters::CONTENT, true) );
-    //graphView.setEdgeFilter(edgeFilter);
-
-    gl::DirectedSubGraph subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    graphView.setVertexFilter(mpVertexFilter);
+    graphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
 
-    graph_analysis::VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
+    gl::DirectedSubGraph subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+
+    VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
-        graph_analysis::Vertex::Ptr vertex = nodeIt->current();
+        Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
         if(!subGraph.enabled(vertex))
@@ -159,10 +157,10 @@ void GraphWidget::updateFromGraph()
         mGVNodeItemMap[nodeItem->getId()] = nodeItem;
     }
 
-    graph_analysis::EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
-        graph_analysis::Edge::Ptr edge = edgeIt->current();
+        Edge::Ptr edge = edgeIt->current();
 
         // Check on active filter
         if(!subGraph.enabled(edge))
@@ -176,8 +174,8 @@ void GraphWidget::updateFromGraph()
         }
 
         // Registering new node edge items
-        graph_analysis::Vertex::Ptr source = edge->getSourceVertex();
-        graph_analysis::Vertex::Ptr target = edge->getTargetVertex();
+        Vertex::Ptr source = edge->getSourceVertex();
+        Vertex::Ptr target = edge->getTargetVertex();
 
         NodeItem* sourceNodeItem = mNodeItemMap[ source ];
         NodeItem* targetNodeItem = mNodeItemMap[ target ];
@@ -223,12 +221,12 @@ void GraphWidget::updateFromGraph()
     }
 }
 
-void GraphWidget::addVertex(graph_analysis::Vertex::Ptr vertex)
+void GraphWidget::addVertex(Vertex::Ptr vertex)
 {
     mpGraph->addVertex(vertex);
 }
 
-void GraphWidget::addEdge(graph_analysis::Edge::Ptr edge)
+void GraphWidget::addEdge(Edge::Ptr edge)
 {
     mpGraph->addEdge(edge);
 }
@@ -261,7 +259,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Space:
     case Qt::Key_Enter:
         {
-            clear();
+            reset(true /*keepData*/);
             updateFromGraph();
             update();
         }
@@ -357,6 +355,31 @@ void GraphWidget::scaleView(qreal scaleFactor)
         return;
 
     scale(scaleFactor, scaleFactor);
+}
+
+int GraphWidget::addNodeFilter(Filter<Vertex::Ptr>::Ptr nodeFilter)
+{
+    return mpVertexFilter->add(nodeFilter);
+}
+
+int GraphWidget::addEdgeFilter(Filter<Edge::Ptr>::Ptr edgeFilter)
+{
+    return mpEdgeFilter->add(edgeFilter);
+}
+
+void GraphWidget::removeNodeFilter(int position)
+{
+    try {
+        mpVertexFilter->removeAt(position);
+    } catch(const std::runtime_error& e)
+    {
+        LOG_DEBUG_S << "Warning: " << e.what();
+    }
+}
+
+void GraphWidget::removeEdgeFilter(int position)
+{
+    mpEdgeFilter->removeAt(position);
 }
 
 void GraphWidget::shuffle()

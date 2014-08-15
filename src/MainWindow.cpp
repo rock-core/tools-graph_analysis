@@ -12,6 +12,11 @@
 #include <boost/foreach.hpp>
 
 #include <QFileDialog>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QDebug>
+
+#include <graph_analysis/filters/RegexFilters.hpp>
 
 namespace omviz {
 
@@ -30,6 +35,10 @@ MainWindow::MainWindow(QWidget* parent)
     // Setup signal/slots
     QObject::connect(mUiOmviz->comboBox, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
     QObject::connect(mUiOmviz->actionOpen, SIGNAL(triggered()), this, SLOT(loadOntology()));
+
+    QObject::connect(mUiOmviz->pushButton_addFilter, SIGNAL(pressed()), this, SLOT(addFilter()));
+    QObject::connect(mUiOmviz->pushButton_removeFilter, SIGNAL(pressed()), this, SLOT(removeFilter()));
+    QObject::connect(mUiOmviz->tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateNodeFilter(QTableWidgetItem*)));
 }
 
 MainWindow::~MainWindow()
@@ -134,7 +143,58 @@ void MainWindow::loadOntology()
         mUiOmviz->treeWidget->resizeColumnToContents(0);
     }
     mGraphWidget->updateFromGraph();
+}
 
+void MainWindow::addFilter()
+{
+    mUiOmviz->tableWidget->insertRow( mUiOmviz->tableWidget->rowCount() );
+}
+
+void MainWindow::activateNodeFilter(QTableWidgetItem* item)
+{
+    using namespace graph_analysis;
+
+    QTableWidget* table = mUiOmviz->tableWidget;
+
+    int column = table->column(item);
+    int row = table->row(item);
+
+    
+    QTableWidgetItem* contentRegexItem = table->item(0,row);
+    if(contentRegexItem)
+    {
+        QVariant contentRegex = contentRegexItem->data(Qt::DisplayRole);
+        Filter<Vertex::Ptr>::Ptr nodeFilter(
+                new filters::VertexRegexFilter(contentRegex.toString().toStdString()
+                    , filters::CONTENT
+                    , false));
+        
+        mGraphWidget->removeNodeFilter(row + 1);
+        mGraphWidget->addNodeFilter(nodeFilter);
+    }
+
+    QTableWidgetItem* classRegexItem = table->item(1,row);
+    if(classRegexItem)
+    {
+        QVariant classRegex = classRegexItem->data(Qt::DisplayRole);
+        Filter<Vertex::Ptr>::Ptr nodeFilter(
+                new graph_analysis::filters::VertexRegexFilter(
+                    classRegex.toString().toStdString()
+                    , filters::CLASS
+                    , false));
+        //mGraphWidget->addNodeFilter(nodeFilter);
+    }
+
+
+}
+
+void MainWindow::removeFilter()
+{
+    int rowId = mUiOmviz->tableWidget->currentRow(); 
+    mUiOmviz->tableWidget->removeRow(rowId);
+
+    // +1 here since the graphwidget used one additional permit all filter
+    mGraphWidget->removeNodeFilter( rowId + 1);
 
 }
 

@@ -43,6 +43,7 @@
 
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/Filter.hpp>
 
 namespace omviz {
 
@@ -83,10 +84,16 @@ public:
 
     ::graph_analysis::BaseGraph* graph() { return mpGraph; }
 
-    void reset();
+    void reset(bool keepData = false);
     void clear();
     void updateFromGraph();
     void itemMoved();
+
+    int addNodeFilter(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr nodeFilter);
+    int addEdgeFilter(graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr edgeFilter);
+
+    void removeNodeFilter(int position);
+    void removeEdgeFilter(int position);
 
 public slots:
     void shuffle();
@@ -106,10 +113,10 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    ::graph_analysis::BaseGraph* mpGraph;
+    graph_analysis::BaseGraph* mpGraph;
 
-    // Mapping with layout engine
     GVGraph* mpGVGraph;
+    // Mapping with layout engine
     GVNodeItemMap mGVNodeItemMap;
     GVEdgeItemMap mGVEdgeItemMap;
 
@@ -122,6 +129,8 @@ private:
     int mTimerId;
     QString mLayout;
 
+    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
+    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 };
 
 } // end namespace omviz

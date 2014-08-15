@@ -5,6 +5,8 @@
 #include <QDir>
 #include <owl_om/OrganizationModel.hpp>
 
+class QTableWidgetItem;
+
 namespace Ui
 {
     class Omviz;
@@ -25,6 +27,9 @@ public:
 
 private slots:
     void loadOntology();
+    void addFilter();
+    void activateNodeFilter(QTableWidgetItem* item);
+    void removeFilter();
 
 private:
     Ui::Omviz* mUiOmviz;
