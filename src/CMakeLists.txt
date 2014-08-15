@@ -1,14 +1,17 @@
 rock_library(graph_analysis
-    SOURCES Graph.cpp
+    SOURCES
+        Graph.cpp
         GraphElement.cpp
         GraphIO.cpp
         io/GexfWriter.cpp
         lemon/Graph.cpp
-    HEADERS Edge.hpp
+    HEADERS
+        DirectedGraphInterface.hpp
+        Edge.hpp
         EdgeIterator.hpp
         Filter.hpp
-        CommonFilters.hpp
-        DirectedGraphInterface.hpp
+        filters/CommonFilters.hpp
+        filters/RegexFilters.hpp
         Graph.hpp
         GraphAnalysis.hpp
         GraphElement.hpp
@@ -23,7 +26,8 @@ rock_library(graph_analysis
         snap/NodeIterator.hpp
         Vertex.hpp
         VertexIterator.hpp
-    DEPS_PKGCONFIG lemon snap base-lib gexf
+    DEPS_PKGCONFIG
+        lemon snap base-lib gexf
 )
 
 rock_executable(graph_analysis_bin Main.cpp

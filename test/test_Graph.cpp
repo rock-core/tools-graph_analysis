@@ -2,7 +2,7 @@
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/snap/Graph.hpp>
 #include <graph_analysis/GraphView.hpp>
-#include <graph_analysis/CommonFilters.hpp>
+#include <graph_analysis/filters/CommonFilters.hpp>
 
 #include <graph_analysis/GraphIO.hpp>
 
