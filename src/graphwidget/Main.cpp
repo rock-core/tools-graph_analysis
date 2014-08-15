@@ -61,13 +61,6 @@ int main(int argc, char **argv)
 
     GraphWidget* widget = new GraphWidget;
 
-    // Create vertices
-    for(int i = 0; i < 1; ++i)
-    {
-        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
-        widget->addVertex(vertex);
-    }
-
     owl_om::Ontology::Ptr ontology;
     owl_om::OrganizationModel om;
 
