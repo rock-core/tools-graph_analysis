@@ -1,8 +1,10 @@
-#ifndef GRAPH_ANALYSIS_FILTERS_FILTERS_HPP
-#define GRAPH_ANALYSIS_FILTERS_FILTERS_HPP
+#ifndef GRAPH_ANALYSIS_FILTERS_REGEX_FILTER_HPP
+#define GRAPH_ANALYSIS_FILTERS_REGEX_FILTER_HPP
 
+#include <boost/regex.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
 
+namespace graph_analysis {
 namespace filters {
 
 enum Type { CONTENT = 0, CLASS };
@@ -71,9 +73,6 @@ public:
     {}
 };
 
-
-
-
 } // end namespace filters
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_FILTERS_FILTERS_HPP
+#endif // GRAPH_ANALYSIS_FILTERS_REGEX_FILTER_HPP

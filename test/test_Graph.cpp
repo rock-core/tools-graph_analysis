@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
     // Set graph view
     {
         graph_analysis::GraphView< ::graph_analysis::lemon::DirectedGraph > gv;
-        graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filter::PermitAll< Vertex::Ptr >() );
+        graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
         gv.setVertexFilter(filter);
 
         ::graph_analysis::lemon::DirectedSubGraph subGraph = gv.apply(graph);
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
 
     {
         graph_analysis::GraphView< ::graph_analysis::lemon::DirectedGraph> gv;
-        graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filter::DenyAll< Vertex::Ptr >() );
+        graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::DenyAll< Vertex::Ptr >() );
         gv.setVertexFilter(filter);
 
         ::graph_analysis::lemon::DirectedSubGraph subGraph = gv.apply(graph);
@@ -102,10 +102,10 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
 
     {
         graph_analysis::GraphView< ::graph_analysis::lemon::DirectedGraph> gv;
-        graph_analysis::Filter< Vertex::Ptr >::Ptr vertexFilter(new graph_analysis::filter::PermitAll< Vertex::Ptr >() );
+        graph_analysis::Filter< Vertex::Ptr >::Ptr vertexFilter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
         gv.setVertexFilter(vertexFilter);
 
-        graph_analysis::Filter< Edge::Ptr >::Ptr edgeFilter(new graph_analysis::filter::PermitAll< Edge::Ptr >() );
+        graph_analysis::Filter< Edge::Ptr >::Ptr edgeFilter(new graph_analysis::filters::PermitAll< Edge::Ptr >() );
         gv.setEdgeFilter(edgeFilter);
 
 

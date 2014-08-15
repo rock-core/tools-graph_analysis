@@ -29,15 +29,35 @@ public:
 
     /**
      * Add a filter
+     * \return position of filter
      */
-    void add(FilterType::Ptr filter)
+    int add(FilterType::Ptr filter)
     {
         if(filter)
         {
             mFilters.push_back(filter);
+            return mFilters.size() - 1;
         } else {
             throw std::runtime_error("Filter: cannot add a null object as filter");
         }
+    }
+
+    void removeAt(int position)
+    {
+        if(position > mFilters.size() -1)
+        {
+            throw std::runtime_error("Filter: cannot remove filter. Position outside of current list");
+        }
+        FilterList list;
+        for(int i = 0; i < mFilters.size(); ++i)
+        {
+            if(i != position)
+            {
+                list.push_back(mFilters[i]);
+            }
+        }
+        mFilters = list;
+        //mFilters.erase(mFilters.begin() + position);
     }
 
     /**

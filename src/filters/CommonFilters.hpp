@@ -4,7 +4,7 @@
 #include <graph_analysis/Filter.hpp>
 
 namespace graph_analysis {
-namespace filter {
+namespace filters {
 
 /**
  * Filter all items
