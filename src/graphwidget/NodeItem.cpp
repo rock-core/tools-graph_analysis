@@ -123,20 +123,21 @@ bool NodeItem::advance()
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    switch (change) {
-    case ItemPositionHasChanged:
+    switch (change)
     {
-        GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
-        for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
+        case ItemPositionHasChanged:
         {
-            EdgeItem* edge = it->second;
-            edge->adjust();
+            GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
+            for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
+            {
+                EdgeItem* edge = it->second;
+                edge->adjust();
+            }
+            mpGraphWidget->itemMoved();
+            break;
         }
-        mpGraphWidget->itemMoved();
-        break;
-    }
-    default:
-        break;
+        default:
+            break;
     };
 
     return QGraphicsItem::itemChange(change, value);
