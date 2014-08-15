@@ -42,13 +42,13 @@
 #define GRAPHWIDGET_H
 
 #include <QGraphicsView>
-#include <graph_analysis/lemon/Graph.hpp>
-#include <omviz/graphwidget/GVGraph.hpp>
+#include <graph_analysis/Graph.hpp>
 
 namespace omviz {
 
 class NodeItem;
 class EdgeItem;
+class GVGraph;
 
 /**
  *
@@ -81,8 +81,9 @@ public:
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    ::graph_analysis::lemon::DirectedGraph& graph() { return mGraph; }
+    ::graph_analysis::BaseGraph* graph() { return mpGraph; }
 
+    void reset();
     void clear();
     void updateFromGraph();
     void itemMoved();
@@ -105,10 +106,10 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    ::graph_analysis::lemon::DirectedGraph mGraph;
+    ::graph_analysis::BaseGraph* mpGraph;
 
     // Mapping with layout engine
-    GVGraph mGVGraph;
+    GVGraph* mpGVGraph;
     GVNodeItemMap mGVNodeItemMap;
     GVEdgeItemMap mGVEdgeItemMap;
 

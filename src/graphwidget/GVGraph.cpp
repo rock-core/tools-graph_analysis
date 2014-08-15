@@ -175,9 +175,19 @@ void GVGraph::setFont(QFont font)
 
 void GVGraph::applyLayout(const std::string& layout)
 {
-    mAppliedLayout = true;
-    gvFreeLayout(mpContext, mpGraph);
+    if(mNodes.empty())
+    {
+        return;
+    }
+
+    if(mAppliedLayout)
+    {
+        gvFreeLayout(mpContext, mpGraph);
+    }
+
     gvLayout(mpContext, mpGraph, layout.c_str());
+    mAppliedLayout = true;
+
 }
 
 void GVGraph::renderToFile(const std::string& filename, const std::string& layout)

@@ -46,20 +46,28 @@
 
 #include <math.h>
 #include <QKeyEvent>
+#include <QTime>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
 #include <graph_analysis/GraphView.hpp>
 
+#include "GVGraph.hpp"
 #include "filters/Filters.hpp"
+
+#include <graph_analysis/lemon/Graph.hpp>
 
 namespace omviz {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mGVGraph("GVGraphWidget")
+    , mpGVGraph(0)
+    , mpGraph(0)
     , mTimerId(0)
     , mLayout("dot")
 {
+    // Add seed for force layout
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(scene);
@@ -71,12 +79,29 @@ GraphWidget::GraphWidget(QWidget *parent)
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("Graphview"));
+
+    reset();
+}
+
+void GraphWidget::reset()
+{
+    clear();
+
+    delete mpGVGraph;
+    mpGVGraph = new GVGraph("GVGraphWidget");
+
+    delete mpGraph;
+    mpGraph = new ::graph_analysis::lemon::DirectedGraph();
 }
 
 void GraphWidget::clear()
 {
-    mGVGraph.clearEdges();
-    mGVGraph.clearNodes();
+    if(mpGVGraph)
+    {
+        mpGVGraph->clearEdges();
+        mpGVGraph->clearNodes();
+    }
+
     mGVNodeItemMap.clear();
     mGVEdgeItemMap.clear();
     mNodeItemMap.clear();
@@ -106,10 +131,10 @@ void GraphWidget::updateFromGraph()
     //Filter< Edge::Ptr >::Ptr edgeFilter(new filters::EdgeRegexFilter(".*has.*", filters::CONTENT, true) );
     //graphView.setEdgeFilter(edgeFilter);
 
-    gl::DirectedSubGraph subGraph = graphView.apply(mGraph);
+    gl::DirectedSubGraph subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
     // End of setting up filters
 
-    graph_analysis::VertexIterator::Ptr nodeIt = mGraph.getVertexIterator();
+    graph_analysis::VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         graph_analysis::Vertex::Ptr vertex = nodeIt->current();
@@ -130,11 +155,11 @@ void GraphWidget::updateFromGraph()
         mNodeItemMap[vertex] = nodeItem;
 
         scene()->addItem(nodeItem);
-        mGVGraph.addNode(QString( nodeItem->getId().c_str()));
+        mpGVGraph->addNode(QString( nodeItem->getId().c_str()));
         mGVNodeItemMap[nodeItem->getId()] = nodeItem;
     }
 
-    graph_analysis::EdgeIterator::Ptr edgeIt = mGraph.getEdgeIterator();
+    graph_analysis::EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
         graph_analysis::Edge::Ptr edge = edgeIt->current();
@@ -166,15 +191,15 @@ void GraphWidget::updateFromGraph()
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
-        mGVGraph.addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
+        mpGVGraph->addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
         mGVEdgeItemMap[edgeItem->getId()] = edgeItem;
     }
 
     if(mLayout.toLower() != "force")
     {
-        mGVGraph.applyLayout(mLayout.toStdString());
+        mpGVGraph->applyLayout(mLayout.toStdString());
 
-        foreach(GVNode node, mGVGraph.nodes())
+        foreach(GVNode node, mpGVGraph->nodes())
         {
             NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
 
@@ -190,7 +215,7 @@ void GraphWidget::updateFromGraph()
             nodeItem->setPos(position.x(), position.y());
         }
 
-        foreach(GVEdge edge, mGVGraph.edges())
+        foreach(GVEdge edge, mpGVGraph->edges())
         {
             EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId().toStdString() ];
             edgeItem->setPainterPath( edge.path );
@@ -200,12 +225,12 @@ void GraphWidget::updateFromGraph()
 
 void GraphWidget::addVertex(graph_analysis::Vertex::Ptr vertex)
 {
-    mGraph.addVertex(vertex);
+    mpGraph->addVertex(vertex);
 }
 
 void GraphWidget::addEdge(graph_analysis::Edge::Ptr edge)
 {
-    mGraph.addEdge(edge);
+    mpGraph->addEdge(edge);
 }
 
 void GraphWidget::itemMoved()

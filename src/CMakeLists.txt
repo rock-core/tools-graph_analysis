@@ -12,6 +12,7 @@ rock_library(omviz
       graphwidget/GVGraph.cpp
       IRIEdge.cpp
       IRINode.cpp
+      MainWindow.cpp
     HEADERS graphwidget/EdgeItem.hpp
       graphwidget/EdgeTypeManager.hpp
       graphwidget/GraphWidget.hpp
@@ -25,7 +26,9 @@ rock_library(omviz
       graphwidget/GVGraph.hpp
       IRIEdge.cpp
       IRINode.hpp
+      MainWindow.hpp
     MOC graphwidget/GraphWidget.hpp
+        MainWindow.hpp
     DEPS_PKGCONFIG graph_analysis owl_om
     DEPS_PLAIN Boost_REGEX
     UI omviz.ui
