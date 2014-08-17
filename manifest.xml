@@ -9,4 +9,5 @@
   <depend package="base/cmake" />
   <depend package="famos/owl_om" />
   <depend package="famos/graph_analysis" />
+  <depend package="graphviz" />
 </package>
