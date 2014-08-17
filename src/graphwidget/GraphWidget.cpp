@@ -67,8 +67,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGVGraph(0)
     , mTimerId(0)
     , mLayout("dot")
-    , mpVertexFilter(new Filter< Vertex::Ptr >())
-    , mpEdgeFilter(new Filter< Edge::Ptr >())
+    , mpVertexFilter(new graph_analysis::filters::PermitAll< graph_analysis::Vertex::Ptr>())
+    , mpEdgeFilter(new graph_analysis::filters::PermitAll< graph_analysis::Edge::Ptr >())
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -87,10 +87,6 @@ GraphWidget::GraphWidget(QWidget *parent)
 
     reset();
 
-    using namespace graph_analysis;
-
-  //  mVertexFilter.add(Filter<Vertex::Ptr>::Ptr(new filters::PermitAll<Vertex::Ptr>()));
-  //  mEdgeFilter.add(Filter<Edge::Ptr>::Ptr(new filters::PermitAll<Edge::Ptr>()));
 }
 
 void GraphWidget::reset(bool keepData)
@@ -373,13 +369,18 @@ void GraphWidget::removeNodeFilter(int position)
         mpVertexFilter->removeAt(position);
     } catch(const std::runtime_error& e)
     {
-        LOG_DEBUG_S << "Warning: " << e.what();
+        LOG_DEBUG_S << "Warning: removeNodeFilter at '" << position << "': " << e.what();
     }
 }
 
 void GraphWidget::removeEdgeFilter(int position)
 {
-    mpEdgeFilter->removeAt(position);
+    try {
+        mpEdgeFilter->removeAt(position);
+    } catch(const std::runtime_error& e)
+    {
+        LOG_DEBUG_S << "Warning: removeEdgeFilter at '" << position << "': " << e.what();
+    }
 }
 
 void GraphWidget::shuffle()

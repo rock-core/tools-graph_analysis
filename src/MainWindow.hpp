@@ -29,6 +29,8 @@ private slots:
     void loadOntology();
     void addFilter();
     void activateNodeFilter(QTableWidgetItem* item);
+    void activateEdgeFilter(QTableWidgetItem* item);
+
     void removeFilter();
 
 private:

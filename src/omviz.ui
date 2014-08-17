@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1260</width>
+    <width>1286</width>
     <height>640</height>
    </rect>
   </property>
@@ -23,8 +23,8 @@
       <widget class="QTreeWidget" name="treeWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>1</horstretch>
-         <verstretch>1</verstretch>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="autoExpandDelay">
@@ -57,7 +57,7 @@
       <widget class="QTabWidget" name="tabWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>6</horstretch>
+         <horstretch>4</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -78,9 +78,12 @@
       <widget class="QGroupBox" name="groupBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>1</horstretch>
+         <horstretch>2</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
        </property>
        <property name="title">
         <string>Properties</string>
@@ -88,79 +91,145 @@
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QGroupBox" name="groupBox_4">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>1</verstretch>
-           </sizepolicy>
+       <widget class="QGroupBox" name="groupBox_Layout">
+        <property name="geometry">
+         <rect>
+          <x>17</x>
+          <y>25</y>
+          <width>258</width>
+          <height>94</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="title">
+         <string>Layout</string>
+        </property>
+        <widget class="QComboBox" name="comboBox_Layout">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>20</y>
+           <width>131</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <item>
+          <property name="text">
+           <string>dot</string>
           </property>
-          <property name="title">
-           <string>Layout</string>
+         </item>
+         <item>
+          <property name="text">
+           <string>circo</string>
           </property>
-          <widget class="QComboBox" name="comboBox">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>20</y>
-             <width>131</width>
-             <height>21</height>
-            </rect>
+         </item>
+         <item>
+          <property name="text">
+           <string>fdp</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>neato</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>osage</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>sfdp</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>twopi</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>force</string>
+          </property>
+         </item>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>80</y>
+          <width>291</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Filters</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>70</x>
+          <y>510</y>
+          <width>178</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="pushButton_addFilter">
+           <property name="text">
+            <string>+</string>
            </property>
-           <item>
-            <property name="text">
-             <string>dot</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>circo</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>fdp</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>neato</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>osage</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>sfdp</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>twopi</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>force</string>
-            </property>
-           </item>
           </widget>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_3">
-          <property name="title">
-           <string>Filters</string>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_removeFilter">
+           <property name="text">
+            <string>-</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QTabWidget" name="tabWidget_Filters">
+        <property name="geometry">
+         <rect>
+          <x>18</x>
+          <y>110</y>
+          <width>251</width>
+          <height>381</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="tab_NodesFilter">
+         <attribute name="title">
+          <string>Nodes</string>
+         </attribute>
+         <widget class="QTableWidget" name="tableWidget_NodesFilter">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>251</width>
+            <height>351</height>
+           </rect>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="tableWidget">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -184,37 +253,67 @@
            </property>
           </column>
          </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="pushButton_addFilter">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_removeFilter">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+        </widget>
+        <widget class="QWidget" name="tab_EdgesFilter">
+         <attribute name="title">
+          <string>Edges</string>
+         </attribute>
+         <widget class="QTableWidget" name="tableWidget_EdgesFilter">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>251</width>
+            <height>351</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>4</verstretch>
+           </sizepolicy>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Regex</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+         </widget>
+        </widget>
+       </widget>
       </widget>
      </widget>
     </item>
    </layout>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1281</width>
+      <height>601</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2"/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1260</width>
+     <width>1286</width>
      <height>23</height>
     </rect>
    </property>

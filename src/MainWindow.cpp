@@ -33,12 +33,13 @@ MainWindow::MainWindow(QWidget* parent)
     mUiOmviz->tabWidget->addTab(mGraphWidget, "GraphView");
 
     // Setup signal/slots
-    QObject::connect(mUiOmviz->comboBox, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
+    QObject::connect(mUiOmviz->comboBox_Layout, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
     QObject::connect(mUiOmviz->actionOpen, SIGNAL(triggered()), this, SLOT(loadOntology()));
 
     QObject::connect(mUiOmviz->pushButton_addFilter, SIGNAL(pressed()), this, SLOT(addFilter()));
     QObject::connect(mUiOmviz->pushButton_removeFilter, SIGNAL(pressed()), this, SLOT(removeFilter()));
-    QObject::connect(mUiOmviz->tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateNodeFilter(QTableWidgetItem*)));
+    QObject::connect(mUiOmviz->tableWidget_NodesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateNodeFilter(QTableWidgetItem*)));
+    QObject::connect(mUiOmviz->tableWidget_EdgesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateEdgeFilter(QTableWidgetItem*)));
 }
 
 MainWindow::~MainWindow()
@@ -147,18 +148,28 @@ void MainWindow::loadOntology()
 
 void MainWindow::addFilter()
 {
-    mUiOmviz->tableWidget->insertRow( mUiOmviz->tableWidget->rowCount() );
+    QTableWidget* edgesFilter = mUiOmviz->tableWidget_EdgesFilter;
+    QTableWidget* nodesFilter = mUiOmviz->tableWidget_NodesFilter;
+
+    if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(edgesFilter->parent()))
+    {
+        edgesFilter->insertRow( edgesFilter->rowCount() );
+    } else if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(nodesFilter->parent()))
+    {
+        nodesFilter->insertRow(nodesFilter->rowCount() );
+    } else {
+        // nothing to do
+    }
 }
 
 void MainWindow::activateNodeFilter(QTableWidgetItem* item)
 {
     using namespace graph_analysis;
 
-    QTableWidget* table = mUiOmviz->tableWidget;
+    QTableWidget* table = mUiOmviz->tableWidget_NodesFilter;
 
     int column = table->column(item);
     int row = table->row(item);
-
     
     QTableWidgetItem* contentRegexItem = table->item(0,row);
     if(contentRegexItem)
@@ -169,7 +180,7 @@ void MainWindow::activateNodeFilter(QTableWidgetItem* item)
                     , filters::CONTENT
                     , false));
         
-        mGraphWidget->removeNodeFilter(row + 1);
+        mGraphWidget->removeNodeFilter(row);
         mGraphWidget->addNodeFilter(nodeFilter);
     }
 
@@ -188,14 +199,89 @@ void MainWindow::activateNodeFilter(QTableWidgetItem* item)
 
 }
 
+void MainWindow::activateEdgeFilter(QTableWidgetItem* item)
+{
+    using namespace graph_analysis;
+
+    QTableWidget* table = mUiOmviz->tableWidget_EdgesFilter;
+
+    int column = table->column(item);
+    int row = table->row(item);
+
+    
+    QTableWidgetItem* contentRegexItem = table->item(0,row);
+    if(contentRegexItem)
+    {
+        try {
+            QVariant contentRegex = contentRegexItem->data(Qt::DisplayRole);
+            Filter<Edge::Ptr>::Ptr edgeFilter(
+                    new filters::EdgeRegexFilter(contentRegex.toString().toStdString()
+                        , filters::CONTENT
+                        , false));
+            
+            mGraphWidget->removeEdgeFilter(row);
+            mGraphWidget->addEdgeFilter(edgeFilter);
+
+            // Set default graph information for that field
+            contentRegexItem->setBackground( QBrush());
+            contentRegexItem->setToolTip( QString("Regex filter") );
+        } catch(const boost::regex_error& e)
+        {
+            // Handle regex error and display
+            LOG_WARN_S << "REGEX error: " << e.what();
+            contentRegexItem->setToolTip( QString(e.what()) );
+            contentRegexItem->setBackground( QBrush(Qt::red));
+        }
+    }
+    mGraphWidget->update();
+
+    QTableWidgetItem* classRegexItem = table->item(1,row);
+    if(classRegexItem)
+    {
+        QVariant classRegex = classRegexItem->data(Qt::DisplayRole);
+        Filter<Edge::Ptr>::Ptr edgeFilter(
+                new graph_analysis::filters::EdgeRegexFilter(
+                    classRegex.toString().toStdString()
+                    , filters::CLASS
+                    , false));
+        //mGraphWidget->addNodeFilter(nodeFilter);
+    }
+
+
+}
+
 void MainWindow::removeFilter()
 {
-    int rowId = mUiOmviz->tableWidget->currentRow(); 
-    mUiOmviz->tableWidget->removeRow(rowId);
+    QTableWidget* edgesFilter = mUiOmviz->tableWidget_EdgesFilter;
+    QTableWidget* nodesFilter = mUiOmviz->tableWidget_NodesFilter;
 
-    // +1 here since the graphwidget used one additional permit all filter
-    mGraphWidget->removeNodeFilter( rowId + 1);
+    if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(edgesFilter->parent()))
+    {
+        int rowId = edgesFilter->currentRow(); 
+        LOG_DEBUG_S << "Remove edge filter at e: " << rowId;
+        edgesFilter->removeRow(rowId);
 
+        // +1 here since the graphwidget used one additional permit all filter
+        if(rowId >= 0)
+        {
+            LOG_DEBUG_S << "Remove edge filter at: " << rowId;
+            mGraphWidget->removeEdgeFilter(rowId);
+        }
+    } else if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(nodesFilter->parent()))
+    {
+        int rowId = nodesFilter->currentRow(); 
+        LOG_DEBUG_S << "Remove node filter at e: " << rowId;
+        nodesFilter->removeRow(rowId);
+
+        // +1 here since the graphwidget used one additional permit all filter
+        if(rowId >= 0)
+        {
+            LOG_DEBUG_S << "Remove node filter at: " << rowId;
+            mGraphWidget->removeNodeFilter(rowId);
+        }
+    } else {
+        // nothing to do
+    }
 }
 
 
