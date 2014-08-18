@@ -12,7 +12,7 @@ namespace filters {
 template<typename FilterObject>
 class DenyAll : public Filter<FilterObject>
 {
-    std::string getName() { return "graph_analysis::filter::DenyAll"; }
+    virtual std::string getName() const { return "graph_analysis::filter::DenyAll"; }
     virtual bool apply(FilterObject o ) { return true; }
 };
 
@@ -22,7 +22,7 @@ class DenyAll : public Filter<FilterObject>
 template<typename FilterObject>
 class PermitAll : public Filter<FilterObject>
 {
-    std::string getName() { return "graph_analysis::filter::PermitAll"; }
+    virtual std::string getName() const { return "graph_analysis::filter::PermitAll"; }
     virtual bool apply(FilterObject o ) { return false; }
 };
 

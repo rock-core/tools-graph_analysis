@@ -2,12 +2,12 @@
 #define GRAPH_ANALYSIS_FILTERS_REGEX_FILTER_HPP
 
 #include <boost/regex.hpp>
+#include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/Edge.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
 
 namespace graph_analysis {
 namespace filters {
-
-enum Type { CONTENT = 0, CLASS };
 
 /**
  * RegexFilter provides the basic functionality to match Vertex or Edge content or class labels
@@ -16,6 +16,7 @@ enum Type { CONTENT = 0, CLASS };
 template<typename T>
 class RegexFilter : public graph_analysis::Filter<T>
 {
+protected:
     boost::regex mRegex;
     Type mType;
     bool mInverted;
@@ -27,7 +28,7 @@ public:
         , mInverted(invert)
     {}
 
-    std::string getName() { return "omviz::filters::GraphElementFilter"; }
+    virtual std::string getName() const { return "graph_analysis::filters::RegexFilter: '" + mRegex.str() + "'"; }
 
     virtual bool apply(T element)
     {
@@ -41,7 +42,7 @@ public:
                 result = regex_match(element->getClassName(), mRegex);
                 break;
             default:
-                throw std::runtime_error("omviz::filters::GraphElementFilter unknown filter type provided");
+                throw std::runtime_error("graph_analysis::filters::RegexFilter unknown filter type provided");
         }
 
         if(mInverted)
@@ -63,14 +64,22 @@ public:
     VertexRegexFilter(const std::string& regex, Type type = CONTENT, bool invert = false)
         : RegexFilter< ::graph_analysis::Vertex::Ptr>( regex, type, invert )
     {}
+
+    virtual std::string getName() const { return "graph_analysis::filters::VertexRegexFilter: '" + mRegex.str() + "'"; }
 };
 
+/**
+ * \class EdgeRegexFilter
+ * \brief Filter to sort out edges
+ */
 class EdgeRegexFilter : public RegexFilter< ::graph_analysis::Edge::Ptr >
 {
 public:
     EdgeRegexFilter(const std::string& regex, Type type = CONTENT, bool invert = false)
         : RegexFilter< ::graph_analysis::Edge::Ptr>( regex, type, invert )
     {}
+
+    virtual std::string getName() const { return "graph_analysis::filters::EdgeRegexFilter: '" + mRegex.str() + "'"; }
 };
 
 } // end namespace filters

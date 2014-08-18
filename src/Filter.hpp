@@ -1,11 +1,19 @@
 #ifndef GRAPH_ANALYSIS_FILTER_HPP
 #define GRAPH_ANALYSIS_FILTER_HPP
 
+#include <map>
 #include <vector>
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
 
 namespace graph_analysis {
+
+namespace filters {
+
+enum Type { CONTENT = 0, CLASS };
+extern std::map<Type, std::string> TypeTxt;
+extern std::map<std::string, Type> TxtType;
+} // end namespace filters
 
 /**
  * Allow definition of a filter per object type
@@ -22,21 +30,49 @@ public:
 
     typedef std::vector< FilterType::Ptr > FilterList;
 
+    virtual ~Filter() {}
+
     /**
      * \brief Get Name of the filter
+     * \return name of the filter
      */
-    std::string getName() const { return "graph_analysis::Filter"; }
+    virtual std::string getName() const { return "graph_analysis::Filter"; }
+
+    /**
+     * Replace a filter at a certain position
+     * \param filter Filter to replace the existing one with
+     * \param position Position of the filter that should be replaced
+     * \throws std::out_of_range if the position does not exist
+     */
+    int replace(FilterType::Ptr filter, int position = -1)
+    {
+        if(position > -1)
+        {
+            // trigger out of range exception if position does not exist
+            FilterType::Ptr filterAtPosition = mFilters.at(position);
+            removeAt(position);
+        }
+        return add(filter, position);
+    }
 
     /**
      * Add a filter
+     * \param filter Filter to  add
+     * \param position Position of the filter
      * \return position of filter
      */
-    int add(FilterType::Ptr filter)
+    int add(FilterType::Ptr filter, int position = -1)
     {
         if(filter)
         {
-            mFilters.push_back(filter);
-            return mFilters.size() - 1;
+            if(position > -1)
+            {
+                mFilters.insert(mFilters.begin() + position, filter);
+                return position;
+            } else {
+                mFilters.push_back(filter);
+                return mFilters.size() - 1;
+            }
         } else {
             throw std::runtime_error("Filter: cannot add a null object as filter");
         }
@@ -61,10 +97,14 @@ public:
     }
 
     /**
-     * \brief Apply all filters
+     * \brief Apply all filters, i.e. root filter and children
+     * to the filter object
+     * \param o FilterObject, i.e. target that requires evaluation
+     * \return True if this item is matched by any of the filters, false otherwise
      */
     bool evaluate(FilterObject o)
     {
+
         // Check for main filter
         if( apply(o) )
         {
@@ -74,9 +114,10 @@ public:
         typename FilterList::const_iterator cit = mFilters.begin();
         for(; cit != mFilters.end(); ++cit)
         {
+
             FilterType::Ptr filter = *cit;
             assert(filter);
-            if( filter->apply(o) )
+            if( filter->evaluate(o) )
             {
                 return true;
             }
@@ -85,7 +126,9 @@ public:
     }
 
     /**
-     * \brief Apply the filter to the target object
+     * \brief Apply only the main filter to the target object
+     * \param o Filter object, i.e. target object to apply the filter on
+     * \return True, if the main filter matches the target/filter object, false otherwise
      */
     virtual bool apply(FilterObject o) { return false; }
 

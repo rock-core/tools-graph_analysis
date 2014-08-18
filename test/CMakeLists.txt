@@ -1,3 +1,4 @@
 rock_testsuite(test_graph suite.cpp
-   test_Graph.cpp
-   DEPS graph_analysis)
+    test_Filters.cpp
+    test_Graph.cpp
+    DEPS graph_analysis)
