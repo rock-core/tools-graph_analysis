@@ -15,6 +15,7 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QDebug>
+#include <QSignalMapper>
 
 #include <graph_analysis/filters/RegexFilters.hpp>
 
@@ -76,8 +77,8 @@ void MainWindow::loadOntology()
     Ontology::Ptr ontology = mOrganizationModel.ontology();
 
     {
-        mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("Sherpa"), true);
-        mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("CREX"), true);
+        //mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("Sherpa"), true);
+        //mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("CREX"), true);
         //om.createNewFromModel(OM::Actor(), OM::resolve("PayloadCamera"), true);
         mOrganizationModel.refresh();
     }
@@ -167,6 +168,7 @@ void MainWindow::addFilter()
         return;
     }
 
+    LOG_DEBUG_S << "Added row at: " << activeTable->rowCount();
 
     int row = activeTable->rowCount();
     activeTable->blockSignals(true);
@@ -176,21 +178,24 @@ void MainWindow::addFilter()
     QTableWidgetItem* regexItem = new QTableWidgetItem();
     activeTable->setItem(row, 0, regexItem);
 
-    //QTableWidgetItem* typeItem = new QTableWidgetItem();
     QComboBox* combo = new QComboBox();
-    //typeItem->setFlags( typeItem->flags() & ~Qt::ItemIsEditable);
-    //typeItem->setData(Qt::DisplayRole, QString( filters::TypeTxt[ filters::CONTENT].c_str() ) );
-    combo->addItem(QString( filters::TypeTxt[ filters::CONTENT] ));
-    combo->addItem(QString( filters::TypeTxt[ filters::CLASS] ));
 
-    activeTable->setItem(row, 1, combo); 
+    QSignalMapper* signalMapper = new QSignalMapper(this);
+    QObject::connect(combo, SIGNAL(currentIndexChanged(int)), signalMapper, SLOT(map()));
+    signalMapper->setMapping(combo, row);
+
+    combo->addItem(QString( filters::TypeTxt[ filters::CONTENT].c_str() ));
+    combo->addItem(QString( filters::TypeTxt[ filters::CLASS].c_str() ));
+    activeTable->setCellWidget(row, 1, combo);
 
     if(activeTable == edgesFilter)
     {
         activateEdgeFilter(regexItem);
+        connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(activateEdgeFilter(int)));
     } else if(activeTable == nodesFilter)
     {
         activateNodeFilter(regexItem);
+        connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(activateNodeFilter(int)));
     }
     activeTable->blockSignals(false);
 }
@@ -199,71 +204,67 @@ void MainWindow::activateNodeFilter(QTableWidgetItem* item)
 {
     if(item)
     {
-        LOG_DEBUG_S << "Activate node filter";
         QTableWidget* table = mUiOmviz->tableWidget_NodesFilter;
 
         // Check the field next to this one
         int row = table->row(item);
         int column = table->column(item);
 
-        //QTableWidgetItem* classTypeItem = table->item(row, column + 1);
-        //if(classTypeItem)
-        //{
-        //    std::string typeName = classTypeItem->data(Qt::DisplayRole).toString().toStdString();
-        //    filters::Type type = filters::TxtType[ typeName ];
+        QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
+        if(classTypeSelection)
+        {
+            std::string typeName = classTypeSelection->currentText().toStdString();
+            filters::Type type = filters::TxtType[ typeName ];
 
-        //    QVariant regex = item->data(Qt::DisplayRole);
-        //    Filter<Vertex::Ptr>::Ptr nodeFilter(
-        //            new filters::VertexRegexFilter(regex.toString().toStdString()
-        //                , type
-        //                , false));
-        //    try {
-        //        mGraphWidget->replaceNodeFilter(nodeFilter, row);
+            QVariant regex = item->data(Qt::DisplayRole);
+            Filter<Vertex::Ptr>::Ptr nodeFilter(
+                    new filters::VertexRegexFilter(regex.toString().toStdString()
+                        , type
+                        , false));
 
-        //    } catch(const std::out_of_range& e)
-        //    {
-        //        mGraphWidget->addNodeFilter(nodeFilter);
-        //    }
-        //}
+            LOG_DEBUG_S << "Activate node filter: " << nodeFilter->getName();
+            try {
+                mGraphWidget->replaceNodeFilter(nodeFilter, row);
+
+            } catch(const std::out_of_range& e)
+            {
+                mGraphWidget->addNodeFilter(nodeFilter);
+            }
+        }
     }
+    mGraphWidget->update();
 }
 
 void MainWindow::activateEdgeFilter(QTableWidgetItem* item)
 {
-    using namespace graph_analysis;
-
-    QTableWidget* table = mUiOmviz->tableWidget_EdgesFilter;
-    int contentColumnIndex = 0;
-    int classColumnIndex = 1;
-
-    int column = table->column(item);
-    int row = table->row(item);
-
-    QTableWidgetItem* contentRegexItem = table->item(row, contentColumnIndex);
-    if(contentRegexItem)
+    if(item)
     {
-        try {
-            QVariant contentRegex = contentRegexItem->data(Qt::DisplayRole);
+        QTableWidget* table = mUiOmviz->tableWidget_EdgesFilter;
+
+        // Check the field next to this one
+        int row = table->row(item);
+        int column = table->column(item);
+
+        QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
+        if(classTypeSelection)
+        {
+            std::string typeName = classTypeSelection->currentText().toStdString();
+            filters::Type type = filters::TxtType[ typeName ];
+
+            QVariant regex = item->data(Qt::DisplayRole);
             Filter<Edge::Ptr>::Ptr edgeFilter(
-                    new filters::EdgeRegexFilter(contentRegex.toString().toStdString()
-                        , filters::CONTENT
+                    new filters::EdgeRegexFilter(regex.toString().toStdString()
+                        , type
                         , false));
-           
+
+            LOG_DEBUG_S << "Activate edge filter: " << edgeFilter->getName();
             try {
                 mGraphWidget->replaceEdgeFilter(edgeFilter, row);
+
             } catch(const std::out_of_range& e)
             {
                 mGraphWidget->addEdgeFilter(edgeFilter);
             }
-
-            // Set default graph information for that field
-            contentRegexItem->setBackground( QBrush());
-            contentRegexItem->setToolTip( QString("Regex filter") );
-        } catch(const boost::regex_error& e)
-        {
-            // Handle regex error and display
-            contentRegexItem->setToolTip( QString(e.what()) );
-            contentRegexItem->setBackground( QBrush(Qt::red));
         }
     }
     mGraphWidget->update();
@@ -276,7 +277,7 @@ void MainWindow::removeFilter()
 
     if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(edgesFilter->parent()))
     {
-        int rowId = edgesFilter->currentRow(); 
+        int rowId = edgesFilter->currentRow();
         LOG_DEBUG_S << "Remove edge filter at e: " << rowId;
         edgesFilter->removeRow(rowId);
 
@@ -288,7 +289,7 @@ void MainWindow::removeFilter()
         }
     } else if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(nodesFilter->parent()))
     {
-        int rowId = nodesFilter->currentRow(); 
+        int rowId = nodesFilter->currentRow();
         LOG_DEBUG_S << "Remove node filter at e: " << rowId;
         nodesFilter->removeRow(rowId);
 
@@ -304,6 +305,15 @@ void MainWindow::removeFilter()
 }
 
 
+void MainWindow::activateNodeFilter(int row)
+{
+    activateNodeFilter(mUiOmviz->tableWidget_NodesFilter->item(row,0));
+}
+
+void MainWindow::activateEdgeFilter(int row)
+{
+    activateEdgeFilter(mUiOmviz->tableWidget_EdgesFilter->item(row,0));
+}
 
 
 
