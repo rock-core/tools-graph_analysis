@@ -383,6 +383,16 @@ void GraphWidget::removeEdgeFilter(int position)
     }
 }
 
+int GraphWidget::replaceNodeFilter(Filter<Vertex::Ptr>::Ptr nodeFilter, int position)
+{
+    return mpVertexFilter->replace(nodeFilter, position);
+}
+
+int GraphWidget::replaceEdgeFilter(Filter<Edge::Ptr>::Ptr edgeFilter, int position)
+{
+    return mpEdgeFilter->replace(edgeFilter, position);
+}
+
 void GraphWidget::shuffle()
 {
     foreach (QGraphicsItem *item, scene()->items()) {

@@ -95,6 +95,9 @@ public:
     void removeNodeFilter(int position);
     void removeEdgeFilter(int position);
 
+    int replaceNodeFilter(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr nodeFilter, int position);
+    int replaceEdgeFilter(graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr edgeFilter, int position);
+
 public slots:
     void shuffle();
     void zoomIn();
