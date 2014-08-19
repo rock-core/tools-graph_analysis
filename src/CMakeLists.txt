@@ -31,7 +31,8 @@ rock_library(omviz
         MainWindow.hpp
     DEPS_PKGCONFIG graph_analysis owl_om
     DEPS_PLAIN Boost_REGEX
-    UI omviz.ui
+    UI
+        ui/omviz.ui
 )
 target_link_libraries(omviz gvc)
 
