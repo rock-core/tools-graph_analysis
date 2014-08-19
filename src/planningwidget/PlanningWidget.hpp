@@ -26,11 +26,21 @@ public:
     ~PlanningWidget();
 
     void populate(const owl_om::OrganizationModel& model);
+    /**
+     * Use internal status to refresh view
+     */
+
+public slots:
+    void addProblemItem();
+
+    void repopulate();
+
 protected:
 
     void populateDomainView(QTreeWidget* domainView, const pddl_planner::representation::Domain& domain);
     void populateProblemView(QTreeWidget* problemView, const pddl_planner::representation::Problem& problem);
     void populateSolutionsView(QTreeWidget* problemView, const pddl_planner::PlanCandidates& planCandidates);
+
 
 private:
     QTreeWidgetItem* createWidgetItem(const std::string& label);
@@ -39,10 +49,13 @@ private:
     QTreeWidgetItem* createTypesWidgetItem(const pddl_planner::representation::TypeList& types, const std::string& label);
     QTreeWidgetItem* createTypedItemListWidgetItem(const pddl_planner::representation::TypedItemList& typedItems, const std::string& label);
     QTreeWidgetItem* createPredicateListWidgetItem(const pddl_planner::representation::PredicateList& predicates, const std::string& label);
-    QTreeWidgetItem* createArgumentListWidgetItem(const pddl_planner::representation::ArgumentList& arguments, const std::string& label);
+    QTreeWidgetItem* createExpressionListWidgetItem(const pddl_planner::representation::ExpressionList& expressionList, const std::string& label);
 
     Ui::PlanningWidget* mUiPlanningWidget;
     owl_om::PDDLExporter mExporter;
+
+    pddl_planner::representation::Domain mDomain;
+    pddl_planner::representation::Problem mProblem;
 };
 
 } // end namespace omiz
