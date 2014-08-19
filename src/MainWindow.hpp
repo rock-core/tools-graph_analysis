@@ -16,14 +16,17 @@ namespace omviz
 {
 
 class GraphWidget;
+class PlanningWidget;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-        MainWindow(QWidget* parent = 0);
-        ~MainWindow();
+    MainWindow(QWidget* parent = 0);
+    ~MainWindow();
+
+    void organizationModelChanged();
 
 private slots:
     void loadOntology();
@@ -42,6 +45,7 @@ private:
     owl_om::OrganizationModel mOrganizationModel;
 
     GraphWidget* mGraphWidget;
+    PlanningWidget* mPlanningWidget;
 };
 
 } // end namespace omviz

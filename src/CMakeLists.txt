@@ -10,6 +10,7 @@ rock_library(omviz
       graphwidget/graphitem/Resource.cpp
       graphwidget/graphitem/edges/Simple.cpp
       graphwidget/GVGraph.cpp
+      planningwidget/PlanningWidget.cpp
       IRIEdge.cpp
       IRINode.cpp
       MainWindow.cpp
@@ -24,15 +25,19 @@ rock_library(omviz
       graphwidget/graphitem/Resource.hpp
       graphwidget/graphitem/edges/Simple.hpp
       graphwidget/GVGraph.hpp
+      planningwidget/PlanningWidget.hpp
       IRIEdge.cpp
       IRINode.hpp
       MainWindow.hpp
-    MOC graphwidget/GraphWidget.hpp
+    MOC
         MainWindow.hpp
+        graphwidget/GraphWidget.hpp
+        planningwidget/PlanningWidget.hpp
     DEPS_PKGCONFIG graph_analysis owl_om
     DEPS_PLAIN Boost_REGEX
     UI
         ui/omviz.ui
+        ui/planning_widget.ui
 )
 target_link_libraries(omviz gvc)
 

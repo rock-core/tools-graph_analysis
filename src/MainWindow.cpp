@@ -18,6 +18,7 @@
 #include <QSignalMapper>
 
 #include <graph_analysis/filters/RegexFilters.hpp>
+#include "planningwidget/PlanningWidget.hpp"
 
 using namespace graph_analysis;
 
@@ -35,6 +36,9 @@ MainWindow::MainWindow(QWidget* parent)
     mUiOmviz->tabWidget->clear();
     mUiOmviz->tabWidget->addTab(mGraphWidget, "GraphView");
 
+    mPlanningWidget = new omviz::PlanningWidget();
+    mUiOmviz->tabWidget->addTab(mPlanningWidget, "Planning");
+
     // Setup signal/slots
     QObject::connect(mUiOmviz->comboBox_Layout, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
     QObject::connect(mUiOmviz->actionOpen, SIGNAL(triggered()), this, SLOT(loadOntology()));
@@ -51,6 +55,11 @@ MainWindow::~MainWindow()
     mUiOmviz = NULL;
 }
 
+void MainWindow::organizationModelChanged()
+{
+    mPlanningWidget->populate(mOrganizationModel);
+}
+
 void MainWindow::loadOntology()
 {
 
@@ -58,6 +67,7 @@ void MainWindow::loadOntology()
 
     try {
         mOrganizationModel = owl_om::OrganizationModel(filename.toStdString());
+        organizationModelChanged();
     } catch(const std::runtime_error& e)
     {
         qDebug("Loading from file %s failed",filename.toStdString().c_str());
