@@ -104,6 +104,12 @@ void PlanningWidget::addProblemItem()
         mProblem.addObject(constant);
     }
 
+    std::string status = dialog.getStatusExpression();
+    if(!status.empty())
+    {
+        mProblem.addInitialStatus( pddl_planner::representation::Expression::fromString(status) );
+    }
+
     repopulate();
 }
 

@@ -1,8 +1,28 @@
 #include "PlanningProblemDialog.hpp"
 #include "ui_planning_problem_dialog.h"
 #include <boost/foreach.hpp>
+#include <base/Logging.hpp>
+#include <QPalette>
 
 namespace omviz {
+
+ExpressionValidator::ExpressionValidator(QObject* parent)
+    : QValidator(parent)
+{}
+
+ExpressionValidator::~ExpressionValidator()
+{}
+
+QValidator::State ExpressionValidator::validate(QString& input, int& pos) const
+{
+    try {
+        pddl_planner::representation::Expression::fromString(input.toStdString());
+        return QValidator::Acceptable;
+    } catch(const std::exception& e)
+    {
+        return QValidator::Invalid;
+    }
+}
 
 PlanningProblemDialog::PlanningProblemDialog(QWidget* parent, Qt::WindowFlags flags)
     : QDialog(parent, flags)
@@ -11,6 +31,7 @@ PlanningProblemDialog::PlanningProblemDialog(QWidget* parent, Qt::WindowFlags fl
     mUi->setupUi(this);
 
     connect(mUi->buttonBox, SIGNAL(accepted()), this, SLOT(checkAndStoreValues()));
+    connect(mUi->lineEdit_InitialStatus, SIGNAL(textChanged(const QString&)), this, SLOT(checkStatusExpression(const QString&)));
 }
 
 PlanningProblemDialog::~PlanningProblemDialog()
@@ -34,11 +55,28 @@ void PlanningProblemDialog::checkAndStoreValues()
     {
         mObject = pddl_planner::representation::TypedItem(objectLabel.toStdString(), objectType.toStdString());
     }
+}
 
-    if(mUi->lineEdit_InitialStatus)
+void PlanningProblemDialog::checkStatusExpression(const QString& input)
+{
+    QLineEdit* lineEdit = mUi->lineEdit_InitialStatus;
+
+    LOG_DEBUG_S << "Check status expression for " << input.toStdString();
+    try {
+        pddl_planner::representation::Expression::fromString( input.toStdString());
+        mStatus = input.toStdString();
+        QPalette pallete = lineEdit->palette();
+        pallete.setBrush(QPalette::Text, QBrush(Qt::black));
+        lineEdit->setPalette(pallete);
+
+    } catch(const std::exception& e)
     {
-        //m
+        QPalette pallete = lineEdit->palette();
+        pallete.setBrush(QPalette::Text, QBrush(Qt::red));
+        lineEdit->setPalette(pallete);
+        lineEdit->setToolTip(e.what());
     }
+    mUi->lineEdit_InitialStatus->update();
 }
 
 } // end namespace omviz
