@@ -12,13 +12,16 @@
 #include <boost/foreach.hpp>
 
 #include <QFileDialog>
+#include <QTreeWidget>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QDebug>
 #include <QSignalMapper>
+#include <QHBoxLayout>
 
 #include <graph_analysis/filters/RegexFilters.hpp>
 #include "planningwidget/PlanningWidget.hpp"
+#include "organizationmodelwidget/OrganizationModelWidget.hpp"
 
 using namespace graph_analysis;
 
@@ -32,21 +35,28 @@ MainWindow::MainWindow(QWidget* parent)
     this->show();
 
     // Setup pane
-    mGraphWidget = new omviz::GraphWidget();
+    mGraphWidget = new GraphWidget();
     mUiOmviz->tabWidget->clear();
     mUiOmviz->tabWidget->addTab(mGraphWidget, "GraphView");
 
-    mPlanningWidget = new omviz::PlanningWidget();
+    mPlanningWidget = new PlanningWidget();
     mUiOmviz->tabWidget->addTab(mPlanningWidget, "Planning");
 
     // Setup signal/slots
-    QObject::connect(mUiOmviz->comboBox_Layout, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
-    QObject::connect(mUiOmviz->actionOpen, SIGNAL(triggered()), this, SLOT(loadOntology()));
+    connect(mUiOmviz->comboBox_Layout, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
+    connect(mUiOmviz->actionOpen, SIGNAL(triggered()), this, SLOT(loadOntology()));
 
-    QObject::connect(mUiOmviz->pushButton_addFilter, SIGNAL(pressed()), this, SLOT(addFilter()));
-    QObject::connect(mUiOmviz->pushButton_removeFilter, SIGNAL(pressed()), this, SLOT(removeFilter()));
-    QObject::connect(mUiOmviz->tableWidget_NodesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateNodeFilter(QTableWidgetItem*)));
-    QObject::connect(mUiOmviz->tableWidget_EdgesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateEdgeFilter(QTableWidgetItem*)));
+    connect(mUiOmviz->pushButton_addFilter, SIGNAL(pressed()), this, SLOT(addFilter()));
+    connect(mUiOmviz->pushButton_removeFilter, SIGNAL(pressed()), this, SLOT(removeFilter()));
+    connect(mUiOmviz->tableWidget_NodesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateNodeFilter(QTableWidgetItem*)));
+    connect(mUiOmviz->tableWidget_EdgesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateEdgeFilter(QTableWidgetItem*)));
+
+    // Setup organization model widget as part of standard view
+    mOrganizationModelWidget = new OrganizationModelWidget();
+    mOrganizationModelWidget->show();
+    //mOrganizationModel->setLayout(new QHBoxLayout);
+    mUiOmviz->dockWidget_Left->setWidget(mOrganizationModelWidget);
+    connect(mOrganizationModelWidget, SIGNAL(modelChanged()), this, SLOT(organizationModelChanged()));
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +68,9 @@ MainWindow::~MainWindow()
 void MainWindow::organizationModelChanged()
 {
     mPlanningWidget->populate(mpOrganizationModel);
+    mOrganizationModelWidget->setModel(mpOrganizationModel);
+    mOrganizationModelWidget->updateFromModel();
+    updateFromModel();
 }
 
 void MainWindow::loadOntology()
@@ -73,14 +86,13 @@ void MainWindow::loadOntology()
         qDebug("Loading from file %s failed",filename.toStdString().c_str());
         return;
     }
-
     qDebug("Loading from file %s succeeded",filename.toStdString().c_str());
+}
 
-
+void MainWindow::updateFromModel()
+{
     // Create instances of models
     using namespace owl_om;
-    using namespace owl_om::vocabulary;
-
     // Prepare graph widget to load new ontology
     mGraphWidget->reset();
 
@@ -112,12 +124,6 @@ void MainWindow::loadOntology()
         IRIList instances = ontology->allInstances();
         BOOST_FOREACH(const IRI& instance, instances)
         {
-
-            QList<QTreeWidgetItem *> items;
-
-            QTreeWidgetItem* iri = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(instance.toString().c_str())));
-
-
             IRIList objectProperties = ontology->allObjectProperties();
             BOOST_FOREACH(const IRI& relation, objectProperties)
             {
@@ -132,29 +138,9 @@ void MainWindow::loadOntology()
                     edge->setTargetVertex( iriNodeMap[other] );
 
                     mGraphWidget->addEdge(edge);
-
-                    QTreeWidgetItem* otherItem = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(other.toString().c_str())));
-
-                    relationItem->addChild(otherItem);
-                }
-                if(relationItem->childCount() != 0)
-                {
-                    iri->addChild(relationItem);
                 }
             }
-
-            IRI className = ontology->typeOf(instance);
-            QTreeWidgetItem* typeOfLabel = new QTreeWidgetItem((QTreeWidget*) 0, QStringList( QString(RDF::type().toString().c_str())));
-            QTreeWidgetItem* iriClass = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(className.toString().c_str())));
-            typeOfLabel->addChild(iriClass);
-            iri->addChild(typeOfLabel);
-
-            items.append(iri);
-            mUiOmviz->treeWidget->insertTopLevelItems(0,items);
         }
-
-        // Adapt to contents: column index start with 0 as usual
-        mUiOmviz->treeWidget->resizeColumnToContents(0);
     }
     mGraphWidget->updateFromGraph();
 }

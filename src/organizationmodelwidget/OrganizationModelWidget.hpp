@@ -1,0 +1,45 @@
+#ifndef OMVIZ_ORGANIZATIONMODELWIDGET_ORGANIZATION_MODEL_WIDGET_HPP
+#define OMVIZ_ORGANIZATIONMODELWIDGET_ORGANIZATION_MODEL_WIDGET_HPP
+
+#include <QTabWidget>
+#include <owl_om/OrganizationModel.hpp>
+
+class QTreeWidget;
+class QTreeWidgetItem;
+
+namespace Ui
+{
+    class OrganizationModelWidget;
+}
+
+namespace omviz
+{
+
+class OrganizationModelWidget : public QTabWidget
+{
+    Q_OBJECT
+
+public:
+    OrganizationModelWidget(QWidget* parent = 0);
+    ~OrganizationModelWidget();
+
+    void setModel(owl_om::OrganizationModel::Ptr organizationModel) { mpOrganizationModel = organizationModel; }
+
+signals:
+    void modelChanged();
+
+public slots:
+    void updateFromModel();
+    void refresh();
+    void createNewFromModel();
+
+private:
+    QTreeWidgetItem* createWidgetItem(const std::string& label);
+    void updateTreeWidget(QTreeWidget* treeWidget, const owl_om::IRI& modelType = owl_om::IRI(), bool directInstances = false);
+
+    owl_om::OrganizationModel::Ptr mpOrganizationModel;
+    Ui::OrganizationModelWidget* mUi;
+};
+
+} // end namespace omviz
+#endif // OMVIZ_ORGANIZATIONMODELWIDGET_ORGANIZATION_MODEL_WIDGET_HPP

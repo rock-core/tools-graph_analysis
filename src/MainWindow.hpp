@@ -6,6 +6,7 @@
 #include <owl_om/OrganizationModel.hpp>
 
 class QTableWidgetItem;
+class QTreeWidget;
 
 namespace Ui
 {
@@ -17,6 +18,7 @@ namespace omviz
 
 class GraphWidget;
 class PlanningWidget;
+class OrganizationModelWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -26,9 +28,9 @@ public:
     MainWindow(QWidget* parent = 0);
     ~MainWindow();
 
+private slots:
     void organizationModelChanged();
 
-private slots:
     void loadOntology();
     void addFilter();
     void activateNodeFilter(QTableWidgetItem* item);
@@ -39,6 +41,7 @@ private slots:
     void activateEdgeFilter(int row);
 
     void removeFilter();
+    void updateFromModel();
 
 private:
     Ui::Omviz* mUiOmviz;
@@ -46,6 +49,7 @@ private:
 
     GraphWidget* mGraphWidget;
     PlanningWidget* mPlanningWidget;
+    OrganizationModelWidget* mOrganizationModelWidget;
 };
 
 } // end namespace omviz
