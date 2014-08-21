@@ -67,9 +67,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::organizationModelChanged()
 {
-    mPlanningWidget->populate(mpOrganizationModel);
+    // First retrieve update of organization model widget
+    // since here inference takes place
     mOrganizationModelWidget->setModel(mpOrganizationModel);
     mOrganizationModelWidget->updateFromModel();
+
+    // Perform consumer / view updates afterwards
+    mPlanningWidget->populate(mpOrganizationModel);
     updateFromModel();
 }
 

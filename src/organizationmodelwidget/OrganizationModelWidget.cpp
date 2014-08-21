@@ -93,7 +93,7 @@ void OrganizationModelWidget::refresh()
     if(mpOrganizationModel)
     {
         mpOrganizationModel->refresh();
-        updateFromModel();
+        emit modelChanged();
     }
 }
 
