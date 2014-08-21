@@ -42,7 +42,7 @@ private slots:
 
 private:
     Ui::Omviz* mUiOmviz;
-    owl_om::OrganizationModel mOrganizationModel;
+    owl_om::OrganizationModel::Ptr mpOrganizationModel;
 
     GraphWidget* mGraphWidget;
     PlanningWidget* mPlanningWidget;

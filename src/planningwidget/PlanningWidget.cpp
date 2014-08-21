@@ -2,6 +2,10 @@
 #include "ui_planning_widget.h"
 
 #include <QTreeWidgetItem>
+#include <QMenu>
+#include <QFileDialog>
+#include <QTextStream>
+
 #include <boost/foreach.hpp>
 #include "PlanningProblemDialog.hpp"
 
@@ -21,6 +25,9 @@ PlanningWidget::PlanningWidget(QWidget* parent)
     connect(mUiPlanningWidget->textEdit_Goal, SIGNAL(textChanged()), this, SLOT(checkGoalExpression()));
     connect(mUiPlanningWidget->buttonBox_Goal, SIGNAL(accepted()), this, SLOT(plan()));
     connect(mUiPlanningWidget->buttonBox_Goal, SIGNAL(clicked(QAbstractButton*)), this, SLOT(plan()));
+
+    connect(mUiPlanningWidget->treeWidget_PDDLDomain, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(contextMenuDomain(const QPoint&)));
+    connect(mUiPlanningWidget->treeWidget_PDDLProblem, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(contextMenuProblem(const QPoint&)));
 }
 
 PlanningWidget::~PlanningWidget()
@@ -29,10 +36,10 @@ PlanningWidget::~PlanningWidget()
     mUiPlanningWidget = NULL;
 }
 
-void PlanningWidget::populate(const owl_om::OrganizationModel& model)
+void PlanningWidget::populate(owl_om::OrganizationModel::Ptr model)
 {
-    mDomain = mExporter.toDomain(model);
-    mProblem = mExporter.toProblem(model);
+    mDomain = mExporter.toDomain(*model);
+    mProblem = mExporter.toProblem(*model);
 
     repopulate();
 }
@@ -50,7 +57,7 @@ void PlanningWidget::checkGoalExpression()
 
     LOG_DEBUG_S << "Check goal expression for " << goalText.toStdString();
     try {
-        pddl_planner::representation::Expression mGoal = pddl_planner::representation::Expression::fromString( goalText.toStdString());
+        mGoal = pddl_planner::representation::Expression::fromString( goalText.toStdString());
         QPalette pallete = textEdit->palette();
         pallete.setBrush(QPalette::Text, QBrush(Qt::black));
         textEdit->setPalette(pallete);
@@ -67,11 +74,63 @@ void PlanningWidget::checkGoalExpression()
 
 void PlanningWidget::plan()
 {
-    LOG_DEBUG_S << "PLAN towards goal" << mGoal.toLISP();
     mProblem.setGoal(mGoal);
-    pddl_planner::PlanCandidates candidates = mPlanning.plan(mDomain, mProblem, mPlannerName);
-    LOG_DEBUG_S << "PLAN towards goal" << mGoal.toLISP() << " result: " << candidates.toString();
-    populateSolutionsView(mUiPlanningWidget->treeWidget_Solutions, candidates);
+    try {
+        pddl_planner::PlanCandidates candidates = mPlanning.plan(mDomain, mProblem, mPlannerName);
+        LOG_DEBUG_S << "Planning towards goal" << mGoal.toLISP() << " result: " << candidates.toString();
+        populateSolutionsView(mUiPlanningWidget->treeWidget_Solutions, candidates);
+    } catch(const pddl_planner::PlanGenerationException& e)
+    {
+        LOG_WARN_S << "Planning failed: " << e.what();
+    }
+}
+
+void PlanningWidget::contextMenuDomain(const QPoint& position)
+{
+    QMenu* menu = new QMenu("Save to file", this);
+    QAction* action = menu->addAction("Save domain file");
+
+    QPoint displayPosition = mUiPlanningWidget->treeWidget_PDDLDomain->mapToGlobal(position);
+    QAction* selectedAction = menu->exec(displayPosition);
+    if(selectedAction)
+    {
+        if(selectedAction == action)
+        {
+            QString filename = QFileDialog::getSaveFileName(this, "Save to file", ".pddl");
+            saveToFile(filename, QString(mDomain.toLISP().c_str()));
+        }
+    }
+}
+void PlanningWidget::contextMenuProblem(const QPoint& position)
+{
+    QMenu* menu = new QMenu("Save to file", this);
+    QAction* action = menu->addAction("Save problem file");
+
+    QPoint displayPosition = mUiPlanningWidget->treeWidget_PDDLProblem->mapToGlobal(position);
+    QAction* selectedAction = menu->exec(displayPosition);
+    if(selectedAction)
+    {
+        if(selectedAction == action)
+        {
+            QString filename = QFileDialog::getSaveFileName(this, "Save to file", ".pddl");
+            saveToFile(filename, QString(mProblem.toLISP().c_str()));
+        }
+    }
+}
+
+void PlanningWidget::saveToFile(const QString& filename, const QString& data)
+{
+    if(filename == QString(""))
+    {
+        return;
+    }
+
+    QFile f(filename);
+    if( f.open(QIODevice::WriteOnly))
+    {
+        QTextStream fout(&f);
+        fout << data;
+    }
 }
 
 void PlanningWidget::populateDomainView(QTreeWidget* domainView, const pddl_planner::representation::Domain& domain)
@@ -154,21 +213,22 @@ void PlanningWidget::addProblemItem()
 {
     PlanningProblemDialog dialog(this);
     dialog.setTypeList( mDomain.types );
-    dialog.exec();
-
-    pddl_planner::representation::Constant constant = dialog.getObject();
-    if(constant.label != "")
+    if( dialog.exec() )
     {
-        mProblem.addObject(constant);
-    }
+        pddl_planner::representation::Constant constant = dialog.getObject();
+        if(constant.label != "")
+        {
+            mProblem.addObject(constant);
+        }
 
-    std::string status = dialog.getStatusExpression();
-    if(!status.empty())
-    {
-        mProblem.addInitialStatus( pddl_planner::representation::Expression::fromString(status) );
-    }
+        std::string status = dialog.getStatusExpression();
+        if(!status.empty())
+        {
+            mProblem.addInitialStatus( pddl_planner::representation::Expression::fromString(status) );
+        }
 
-    repopulate();
+        repopulate();
+    }
 }
 
 

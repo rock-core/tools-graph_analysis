@@ -57,7 +57,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::organizationModelChanged()
 {
-    mPlanningWidget->populate(mOrganizationModel);
+    mPlanningWidget->populate(mpOrganizationModel);
 }
 
 void MainWindow::loadOntology()
@@ -66,7 +66,7 @@ void MainWindow::loadOntology()
     QString filename = QFileDialog::getOpenFileName(this, "Open organization model", QDir::currentPath(), "OWL Based Model (*.owl)");
 
     try {
-        mOrganizationModel = owl_om::OrganizationModel(filename.toStdString());
+        mpOrganizationModel = owl_om::OrganizationModel::Ptr( new owl_om::OrganizationModel(filename.toStdString()));
         organizationModelChanged();
     } catch(const std::runtime_error& e)
     {
@@ -84,13 +84,13 @@ void MainWindow::loadOntology()
     // Prepare graph widget to load new ontology
     mGraphWidget->reset();
 
-    Ontology::Ptr ontology = mOrganizationModel.ontology();
+    Ontology::Ptr ontology = mpOrganizationModel->ontology();
 
     {
         //mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("Sherpa"), true);
         //mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("CREX"), true);
         //om.createNewFromModel(OM::Actor(), OM::resolve("PayloadCamera"), true);
-        mOrganizationModel.refresh();
+        mpOrganizationModel->refresh();
     }
 
     // Create edges for all relations

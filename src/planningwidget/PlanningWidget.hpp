@@ -25,7 +25,7 @@ public:
     PlanningWidget(QWidget* parent = 0);
     ~PlanningWidget();
 
-    void populate(const owl_om::OrganizationModel& model);
+    void populate(owl_om::OrganizationModel::Ptr model);
     /**
      * Use internal status to refresh view
      */
@@ -36,6 +36,9 @@ public slots:
     void checkGoalExpression();
     void plan();
 
+    void contextMenuDomain(const QPoint&);
+    void contextMenuProblem(const QPoint&);
+
 protected:
 
     void populateDomainView(QTreeWidget* domainView, const pddl_planner::representation::Domain& domain);
@@ -44,6 +47,9 @@ protected:
 
 
 private:
+
+    void saveToFile(const QString& filename, const QString& data);
+
     QTreeWidgetItem* createWidgetItem(const std::string& label);
     QTreeWidgetItem* createActionsWidgetItem(const pddl_planner::representation::ActionList& actions);
     QTreeWidgetItem* createActionWidgetItem(const pddl_planner::representation::Action& action);
