@@ -70,6 +70,9 @@
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <widget class="QTreeWidget" name="treeWidget_PDDLProblem">
+             <property name="contextMenuPolicy">
+              <enum>Qt::CustomContextMenu</enum>
+             </property>
              <column>
               <property name="text">
                <string/>
