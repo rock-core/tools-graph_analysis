@@ -227,18 +227,27 @@ void MainWindow::activateNodeFilter(QTableWidgetItem* item)
             filters::Type type = filters::TxtType[ typeName ];
 
             QVariant regex = item->data(Qt::DisplayRole);
-            Filter<Vertex::Ptr>::Ptr nodeFilter(
-                    new filters::VertexRegexFilter(regex.toString().toStdString()
-                        , type
-                        , false));
-
-            LOG_DEBUG_S << "Activate node filter: " << nodeFilter->getName();
             try {
-                mGraphWidget->replaceNodeFilter(nodeFilter, row);
+                Filter<Vertex::Ptr>::Ptr nodeFilter(
+                        new filters::VertexRegexFilter(regex.toString().toStdString()
+                            , type
+                            , false));
 
-            } catch(const std::out_of_range& e)
+                LOG_DEBUG_S << "Activate node filter: " << nodeFilter->getName();
+                try {
+                    mGraphWidget->replaceNodeFilter(nodeFilter, row);
+
+                } catch(const std::out_of_range& e)
+                {
+                    mGraphWidget->addNodeFilter(nodeFilter);
+                }
+
+                item->setForeground(QBrush());
+                item->setToolTip(QString("Regex filter"));
+            } catch(const boost::regex_error& e)
             {
-                mGraphWidget->addNodeFilter(nodeFilter);
+                item->setForeground(QBrush(Qt::red));
+                item->setToolTip(QString(e.what()));
             }
         }
     }
@@ -262,18 +271,27 @@ void MainWindow::activateEdgeFilter(QTableWidgetItem* item)
             filters::Type type = filters::TxtType[ typeName ];
 
             QVariant regex = item->data(Qt::DisplayRole);
-            Filter<Edge::Ptr>::Ptr edgeFilter(
-                    new filters::EdgeRegexFilter(regex.toString().toStdString()
-                        , type
-                        , false));
-
-            LOG_DEBUG_S << "Activate edge filter: " << edgeFilter->getName();
             try {
-                mGraphWidget->replaceEdgeFilter(edgeFilter, row);
+                Filter<Edge::Ptr>::Ptr edgeFilter(
+                        new filters::EdgeRegexFilter(regex.toString().toStdString()
+                            , type
+                            , false));
 
-            } catch(const std::out_of_range& e)
+                LOG_DEBUG_S << "Activate edge filter: " << edgeFilter->getName();
+                try {
+                    mGraphWidget->replaceEdgeFilter(edgeFilter, row);
+
+                } catch(const std::out_of_range& e)
+                {
+                    mGraphWidget->addEdgeFilter(edgeFilter);
+                }
+
+                item->setForeground(QBrush());
+                item->setToolTip(QString("Regex filter"));
+            } catch(const boost::regex_error& e)
             {
-                mGraphWidget->addEdgeFilter(edgeFilter);
+                item->setForeground(QBrush(Qt::red));
+                item->setToolTip(QString(e.what()));
             }
         }
     }
