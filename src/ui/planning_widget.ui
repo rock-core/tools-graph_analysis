@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>245</width>
+    <width>348</width>
     <height>597</height>
    </rect>
   </property>
@@ -184,10 +184,8 @@
         </widget>
        </item>
       </layout>
-      <zorder>tabWidget_Planning</zorder>
-      <zorder>buttonBox</zorder>
      </widget>
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="groupBox_Goal">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -202,7 +200,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QTextEdit" name="textEdit">
+        <widget class="QTextEdit" name="textEdit_Goal">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -233,7 +231,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QDialogButtonBox" name="buttonBox">
+           <widget class="QDialogButtonBox" name="buttonBox_Goal">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>

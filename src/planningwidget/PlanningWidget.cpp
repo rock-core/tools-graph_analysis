@@ -12,11 +12,15 @@ PlanningWidget::PlanningWidget(QWidget* parent)
     , mUiPlanningWidget( new Ui::PlanningWidget)
     , mDomain("default-domain")
     , mProblem("default-problem", mDomain)
+    , mPlannerName("LAMA")
 {
     mUiPlanningWidget->setupUi(this);
     this->show();
 
     connect(mUiPlanningWidget->pushButton_ProblemAddItem, SIGNAL(clicked()), this, SLOT(addProblemItem()));
+    connect(mUiPlanningWidget->textEdit_Goal, SIGNAL(textChanged()), this, SLOT(checkGoalExpression()));
+    connect(mUiPlanningWidget->buttonBox_Goal, SIGNAL(accepted()), this, SLOT(plan()));
+    connect(mUiPlanningWidget->buttonBox_Goal, SIGNAL(clicked(QAbstractButton*)), this, SLOT(plan()));
 }
 
 PlanningWidget::~PlanningWidget()
@@ -39,6 +43,36 @@ void PlanningWidget::repopulate()
     populateProblemView(mUiPlanningWidget->treeWidget_PDDLProblem, mProblem);
 }
 
+void PlanningWidget::checkGoalExpression()
+{
+    QTextEdit* textEdit = mUiPlanningWidget->textEdit_Goal;
+    QString goalText = textEdit->toPlainText();
+
+    LOG_DEBUG_S << "Check goal expression for " << goalText.toStdString();
+    try {
+        pddl_planner::representation::Expression mGoal = pddl_planner::representation::Expression::fromString( goalText.toStdString());
+        QPalette pallete = textEdit->palette();
+        pallete.setBrush(QPalette::Text, QBrush(Qt::black));
+        textEdit->setPalette(pallete);
+
+    } catch(const std::exception& e)
+    {
+        QPalette pallete = textEdit->palette();
+        pallete.setBrush(QPalette::Text, QBrush(Qt::red));
+        textEdit->setPalette(pallete);
+        textEdit->setToolTip(e.what());
+    }
+    textEdit->update();
+}
+
+void PlanningWidget::plan()
+{
+    LOG_DEBUG_S << "PLAN towards goal" << mGoal.toLISP();
+    mProblem.setGoal(mGoal);
+    pddl_planner::PlanCandidates candidates = mPlanning.plan(mDomain, mProblem, mPlannerName);
+    LOG_DEBUG_S << "PLAN towards goal" << mGoal.toLISP() << " result: " << candidates.toString();
+    populateSolutionsView(mUiPlanningWidget->treeWidget_Solutions, candidates);
+}
 
 void PlanningWidget::populateDomainView(QTreeWidget* domainView, const pddl_planner::representation::Domain& domain)
 {
@@ -88,8 +122,32 @@ void PlanningWidget::populateProblemView(QTreeWidget* problemView, const pddl_pl
     problemLabel->addChild(statusWidgetItem);
 }
 
-void PlanningWidget::populateSolutionsView(QTreeWidget* problemView, const pddl_planner::PlanCandidates& planCandidates)
+void PlanningWidget::populateSolutionsView(QTreeWidget* solutionsView, const pddl_planner::PlanCandidates& candidates)
 {
+
+    solutionsView->clear();
+    QTreeWidgetItem* plansWidgetItem = createWidgetItem("plans");
+    solutionsView->insertTopLevelItem(0, plansWidgetItem);
+
+    if(candidates.plans.empty())
+    {
+        return;
+    }
+
+    int count = 0;
+    using namespace pddl_planner;
+    BOOST_FOREACH(const Plan& candidate, candidates.plans)
+    {
+        std::stringstream ss;
+        ss << "candidate #" << count++;
+        QTreeWidgetItem* planWidgetItem = createWidgetItem(ss.str());
+        BOOST_FOREACH(const Action& action, candidate.action_sequence)
+        {
+            QTreeWidgetItem* actionWidgetItem = createWidgetItem(action.toString());
+            planWidgetItem->addChild(actionWidgetItem);
+        }
+        plansWidgetItem->addChild(planWidgetItem);
+    }
 }
 
 void PlanningWidget::addProblemItem()

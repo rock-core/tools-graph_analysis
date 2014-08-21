@@ -32,14 +32,15 @@ public:
 
 public slots:
     void addProblemItem();
-
     void repopulate();
+    void checkGoalExpression();
+    void plan();
 
 protected:
 
     void populateDomainView(QTreeWidget* domainView, const pddl_planner::representation::Domain& domain);
     void populateProblemView(QTreeWidget* problemView, const pddl_planner::representation::Problem& problem);
-    void populateSolutionsView(QTreeWidget* problemView, const pddl_planner::PlanCandidates& planCandidates);
+    void populateSolutionsView(QTreeWidget* solutionsView, const pddl_planner::PlanCandidates& planCandidates);
 
 
 private:
@@ -56,6 +57,9 @@ private:
 
     pddl_planner::representation::Domain mDomain;
     pddl_planner::representation::Problem mProblem;
+    pddl_planner::representation::Expression mGoal;
+    pddl_planner::Planning mPlanning;
+    std::string mPlannerName;
 };
 
 } // end namespace omiz

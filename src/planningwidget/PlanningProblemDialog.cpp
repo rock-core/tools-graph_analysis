@@ -76,7 +76,7 @@ void PlanningProblemDialog::checkStatusExpression(const QString& input)
         lineEdit->setPalette(pallete);
         lineEdit->setToolTip(e.what());
     }
-    mUi->lineEdit_InitialStatus->update();
+    lineEdit->update();
 }
 
 } // end namespace omviz
