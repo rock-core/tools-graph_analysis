@@ -151,7 +151,7 @@
            </sizepolicy>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab_NodesFilter">
            <attribute name="title">
@@ -180,6 +180,17 @@
               <column>
                <property name="text">
                 <string>Type</string>
+               </property>
+               <property name="textAlignment">
+                <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Invert</string>
+               </property>
+               <property name="textAlignment">
+                <set>AlignHCenter|AlignVCenter|AlignCenter</set>
                </property>
               </column>
              </widget>
@@ -213,6 +224,11 @@
               <column>
                <property name="text">
                 <string>Type</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Invert</string>
                </property>
               </column>
              </widget>

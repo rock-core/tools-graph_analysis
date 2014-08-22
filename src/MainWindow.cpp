@@ -18,6 +18,7 @@
 #include <QDebug>
 #include <QSignalMapper>
 #include <QHBoxLayout>
+#include <QCheckBox>
 
 #include <graph_analysis/filters/RegexFilters.hpp>
 #include "planningwidget/PlanningWidget.hpp"
@@ -167,6 +168,7 @@ void MainWindow::addFilter()
     QTableWidgetItem* regexItem = new QTableWidgetItem();
     activeTable->setItem(row, 0, regexItem);
 
+    // Create combo box to select CONTENT/CLASS
     QComboBox* combo = new QComboBox();
 
     QSignalMapper* signalMapper = new QSignalMapper(this);
@@ -176,6 +178,12 @@ void MainWindow::addFilter()
     combo->addItem(QString( filters::TypeTxt[ filters::CONTENT].c_str() ));
     combo->addItem(QString( filters::TypeTxt[ filters::CLASS].c_str() ));
     activeTable->setCellWidget(row, 1, combo);
+
+    // Create checkbox to select inversion
+    QCheckBox* checkbox = new QCheckBox();
+    activeTable->setCellWidget(row, 2, checkbox);
+    QObject::connect(checkbox, SIGNAL(stateChanged(int)), signalMapper, SLOT(map()));
+    signalMapper->setMapping(checkbox, row);
 
     if(activeTable == edgesFilter)
     {
@@ -200,6 +208,7 @@ void MainWindow::activateNodeFilter(QTableWidgetItem* item)
         int column = table->column(item);
 
         QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
+        QCheckBox* inversionSelection = dynamic_cast<QCheckBox*>( table->cellWidget(row, column + 2));
         if(classTypeSelection)
         {
             std::string typeName = classTypeSelection->currentText().toStdString();
@@ -207,10 +216,16 @@ void MainWindow::activateNodeFilter(QTableWidgetItem* item)
 
             QVariant regex = item->data(Qt::DisplayRole);
             try {
+                bool invert = false;
+                if(inversionSelection->checkState() == Qt::Checked)
+                {
+                    invert = true;
+                }
+
                 Filter<Vertex::Ptr>::Ptr nodeFilter(
                         new filters::VertexRegexFilter(regex.toString().toStdString()
                             , type
-                            , false));
+                            , invert));
 
                 LOG_DEBUG_S << "Activate node filter: " << nodeFilter->getName();
                 try {
@@ -229,6 +244,8 @@ void MainWindow::activateNodeFilter(QTableWidgetItem* item)
                 item->setToolTip(QString(e.what()));
             }
         }
+        table->resizeColumnToContents(1);
+        table->resizeColumnToContents(2);
     }
     mGraphWidget->update();
 }
@@ -244,6 +261,7 @@ void MainWindow::activateEdgeFilter(QTableWidgetItem* item)
         int column = table->column(item);
 
         QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
+        QCheckBox* inversionSelection = dynamic_cast<QCheckBox*>( table->cellWidget(row, column + 2));
         if(classTypeSelection)
         {
             std::string typeName = classTypeSelection->currentText().toStdString();
@@ -251,10 +269,16 @@ void MainWindow::activateEdgeFilter(QTableWidgetItem* item)
 
             QVariant regex = item->data(Qt::DisplayRole);
             try {
+                bool invert = false;
+                if(inversionSelection->checkState() == Qt::Checked)
+                {
+                    invert = true;
+                }
+
                 Filter<Edge::Ptr>::Ptr edgeFilter(
                         new filters::EdgeRegexFilter(regex.toString().toStdString()
                             , type
-                            , false));
+                            , invert));
 
                 LOG_DEBUG_S << "Activate edge filter: " << edgeFilter->getName();
                 try {
