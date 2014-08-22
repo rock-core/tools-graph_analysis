@@ -5,6 +5,7 @@
 #include <vector>
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
+#include <graph_analysis/Edge.hpp>
 
 namespace graph_analysis {
 
@@ -37,6 +38,12 @@ public:
      * \return name of the filter
      */
     virtual std::string getName() const { return "graph_analysis::Filter"; }
+
+    /**
+     * \brief Get string representation of filter
+     * \return name by default
+     */
+    virtual std::string toString() const { return getName(); }
 
     /**
      * Replace a filter at a certain position
@@ -102,7 +109,7 @@ public:
      * \param o FilterObject, i.e. target that requires evaluation
      * \return True if this item is matched by any of the filters, false otherwise
      */
-    bool evaluate(FilterObject o)
+    bool evaluate(FilterObject o) const
     {
 
         // Check for main filter
@@ -125,15 +132,25 @@ public:
         return false;
     }
 
+    virtual bool filterTarget(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterTarget is not implemented"); }
+    virtual bool filterSource(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterSource is not implemented"); }
+
     /**
      * \brief Apply only the main filter to the target object
      * \param o Filter object, i.e. target object to apply the filter on
      * \return True, if the main filter matches the target/filter object, false otherwise
      */
-    virtual bool apply(FilterObject o) { return false; }
+    virtual bool apply(FilterObject o) const { return false; }
 
 private:
     FilterList mFilters;
+};
+
+class EdgeFilter : public Filter< graph_analysis::Edge::Ptr >
+{
+public:
+    virtual bool filterTarget(graph_analysis::Edge::Ptr e) const { return false; }
+    virtual bool filterSource(graph_analysis::Edge::Ptr e) const { return true; }
 };
 
 } // end namespace graph_analysis

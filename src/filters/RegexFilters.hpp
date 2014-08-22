@@ -28,9 +28,21 @@ public:
         , mInverted(invert)
     {}
 
-    virtual std::string getName() const { return "graph_analysis::filters::RegexFilter: '" + mRegex.str() + "'"; }
+    virtual std::string getName() const { return "graph_analysis::filters::RegexFilter: '" + toString() + "'"; }
 
-    virtual bool apply(T element)
+    virtual std::string toString() const
+    {
+        std::string txt = mRegex.str() + "/" + TypeTxt[mType] + "/";
+        if(mInverted)
+        {
+            txt += "inverted";
+        } else {
+            txt += "not-inverted";
+        }
+        return txt;
+    }
+
+    virtual bool apply(T element) const
     {
         bool result = false;
         switch(mType)
@@ -65,7 +77,7 @@ public:
         : RegexFilter< ::graph_analysis::Vertex::Ptr>( regex, type, invert )
     {}
 
-    virtual std::string getName() const { return "graph_analysis::filters::VertexRegexFilter: '" + mRegex.str() + "'"; }
+    virtual std::string getName() const { return "graph_analysis::filters::VertexRegexFilter: '" + toString() + "'"; }
 };
 
 /**
@@ -79,7 +91,44 @@ public:
         : RegexFilter< ::graph_analysis::Edge::Ptr>( regex, type, invert )
     {}
 
-    virtual std::string getName() const { return "graph_analysis::filters::EdgeRegexFilter: '" + mRegex.str() + "'"; }
+    virtual std::string getName() const { return "graph_analysis::filters::EdgeRegexFilter: '" + toString() + "'"; }
+};
+
+class CombinedEdgeRegexFilter : public EdgeRegexFilter
+{
+public:
+    CombinedEdgeRegexFilter(VertexRegexFilter sourceNodeFilter, EdgeRegexFilter edgeFilter, VertexRegexFilter targetNodeFilter)
+        : EdgeRegexFilter( edgeFilter )
+        , mSourceNodeFilter(sourceNodeFilter)
+        , mTargetNodeFilter(targetNodeFilter)
+    {
+    }
+
+    virtual ~CombinedEdgeRegexFilter() {}
+
+    virtual std::string getName() const { return "graph_analysis::filters::EdgeFilter: '" + toString(); }
+
+    virtual std::string toString() const
+    {
+        std::string txt = "source node filter: " + mSourceNodeFilter.toString() + ", ";
+        txt += "edge: " + EdgeRegexFilter::toString() + ", ";
+        txt += "target node filter: " + mTargetNodeFilter.toString() + ", ";
+        return txt;
+    }
+
+    virtual bool filterSource(graph_analysis::Edge::Ptr e) const
+    {
+        return mSourceNodeFilter.apply( e->getSourceVertex() );
+    }
+
+    virtual bool filterTarget(graph_analysis::Edge::Ptr e) const
+    {
+        return mTargetNodeFilter.apply( e->getTargetVertex() );
+    }
+
+private:
+    VertexRegexFilter mSourceNodeFilter;
+    VertexRegexFilter mTargetNodeFilter;
 };
 
 } // end namespace filters
