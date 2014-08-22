@@ -44,7 +44,7 @@ NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type)
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
-        LOG_DEBUG_S << "omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
+        // LOG_DEBUG_S << "omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
         return mClassVisualizationMap["default"];
     }
     

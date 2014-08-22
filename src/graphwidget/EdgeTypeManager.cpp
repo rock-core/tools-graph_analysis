@@ -42,7 +42,7 @@ EdgeItem* EdgeTypeManager::graphicsItemByType(const edge::Type& type)
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
-        LOG_DEBUG_S << "omviz::EdgeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
+        //LOG_DEBUG_S << "omviz::EdgeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
         return mClassVisualizationMap["default"];
     }
     
