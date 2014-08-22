@@ -59,19 +59,37 @@ void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const ow
         IRIList objectProperties = ontology->allObjectProperties();
         BOOST_FOREACH(const IRI& relation, objectProperties)
         {
-            QTreeWidgetItem* relationItem = createWidgetItem(relation.toString());
-
-            IRIList related = ontology->allRelatedInstances(instance, relation);
-            BOOST_FOREACH(const IRI& other, related)
             {
-                QTreeWidgetItem* otherItem = createWidgetItem(other.toString());
-                relationItem->addChild(otherItem);
+                QTreeWidgetItem* relationItem = createWidgetItem(relation.toString());
+
+                IRIList related = ontology->allRelatedInstances(instance, relation);
+                BOOST_FOREACH(const IRI& other, related)
+                {
+                    QTreeWidgetItem* otherItem = createWidgetItem(other.toString());
+                    relationItem->addChild(otherItem);
+                }
+                if(relationItem->childCount() != 0)
+                {
+                    iri->addChild(relationItem);
+                }
             }
 
-            if(relationItem->childCount() != 0)
             {
-                iri->addChild(relationItem);
+                QTreeWidgetItem* relationItem = createWidgetItem("-" + relation.toString());
+
+                IRIList related = ontology->allInverseRelatedInstances(instance, relation);
+                BOOST_FOREACH(const IRI& other, related)
+                {
+                    QTreeWidgetItem* otherItem = createWidgetItem(other.toString());
+                    relationItem->addChild(otherItem);
+                }
+                if(relationItem->childCount() != 0)
+                {
+                    iri->addChild(relationItem);
+                }
             }
+
+
         }
 
         IRI className = ontology->typeOf(instance);

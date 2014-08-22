@@ -131,8 +131,6 @@ void MainWindow::updateFromModel()
             IRIList objectProperties = ontology->allObjectProperties();
             BOOST_FOREACH(const IRI& relation, objectProperties)
             {
-                QTreeWidgetItem* relationItem = new QTreeWidgetItem((QTreeWidget*) 0, QStringList(QString("%1").arg(relation.toString().c_str())));
-
                 IRIList related = ontology->allRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
