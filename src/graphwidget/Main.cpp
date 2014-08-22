@@ -94,7 +94,6 @@ int main(int argc, char **argv)
             owl_om::IRIList instances = ontology->allInstances();
             BOOST_FOREACH(const owl_om::IRI& instance, instances)
             {
-                qDebug("Instance -> %s", instance.toString().c_str());
                 omviz::IRINode::Ptr node(new IRINode(instance, ontology));
                 widget->addVertex(node);
 

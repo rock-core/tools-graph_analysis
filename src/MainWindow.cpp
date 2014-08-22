@@ -54,7 +54,6 @@ MainWindow::MainWindow(QWidget* parent)
     // Setup organization model widget as part of standard view
     mOrganizationModelWidget = new OrganizationModelWidget();
     mOrganizationModelWidget->show();
-    //mOrganizationModel->setLayout(new QHBoxLayout);
     mUiOmviz->dockWidget_Left->setWidget(mOrganizationModelWidget);
     connect(mOrganizationModelWidget, SIGNAL(modelChanged()), this, SLOT(organizationModelChanged()));
 }
@@ -102,13 +101,6 @@ void MainWindow::updateFromModel()
 
     Ontology::Ptr ontology = mpOrganizationModel->ontology();
 
-    {
-        //mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("Sherpa"), true);
-        //mOrganizationModel.createNewFromModel(OM::Actor(), OM::resolve("CREX"), true);
-        //om.createNewFromModel(OM::Actor(), OM::resolve("PayloadCamera"), true);
-        mpOrganizationModel->refresh();
-    }
-
     // Create edges for all relations
     {
         using namespace owl_om;
@@ -117,7 +109,6 @@ void MainWindow::updateFromModel()
             owl_om::IRIList instances = ontology->allInstances();
             BOOST_FOREACH(const owl_om::IRI& instance, instances)
             {
-                qDebug("Instance -> %s", instance.toString().c_str());
                 omviz::IRINode::Ptr node(new IRINode(instance, ontology));
                 mGraphWidget->addVertex(node);
 
