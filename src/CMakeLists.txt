@@ -3,6 +3,7 @@ find_package(Boost REQUIRED regex)
 rock_library(omviz
     SOURCES
       filterwidget/AddRegexFilterDialog.cpp
+      filterwidget/FilterWidget.cpp
       graphwidget/EdgeItem.cpp
       graphwidget/EdgeTypeManager.cpp
       graphwidget/GraphWidget.cpp
@@ -20,8 +21,10 @@ rock_library(omviz
       IRIEdge.cpp
       IRINode.cpp
       MainWindow.cpp
+      Utils.cpp
     HEADERS
       filterwidget/AddRegexFilterDialog.hpp
+      filterwidget/FilterWidget.hpp
       graphwidget/EdgeItem.hpp
       graphwidget/EdgeTypeManager.hpp
       graphwidget/GraphWidget.hpp
@@ -41,9 +44,11 @@ rock_library(omviz
       IRIEdge.cpp
       IRINode.hpp
       MainWindow.hpp
+      Utils.hpp
     MOC
         MainWindow.hpp
         filterwidget/AddRegexFilterDialog.hpp
+        filterwidget/FilterWidget.hpp
         graphwidget/GraphWidget.hpp
         planningwidget/PlanningWidget.hpp
         planningwidget/PlanningProblemDialog.hpp
@@ -55,6 +60,7 @@ rock_library(omviz
     UI
         ui/add_actor_dialog.ui
         ui/add_regex_filter_dialog.ui
+        ui/filter_widget.ui
         ui/omviz.ui
         ui/organization_model_widget.ui
         ui/planning_problem_dialog.ui

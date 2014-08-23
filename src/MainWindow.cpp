@@ -24,6 +24,7 @@
 #include "planningwidget/PlanningWidget.hpp"
 #include "organizationmodelwidget/OrganizationModelWidget.hpp"
 #include "propertieswidget/PropertiesWidget.hpp"
+#include "filterwidget/FilterWidget.hpp"
 
 using namespace graph_analysis;
 
@@ -65,6 +66,11 @@ MainWindow::MainWindow(QWidget* parent)
     mPropertiesWidget->show();
     mUiOmviz->dockWidget_RightTop->setWidget(mPropertiesWidget);
     connect(mPropertiesWidget, SIGNAL(layoutChanged(const QString&)), mGraphWidget, SLOT(setLayout(const QString&)));
+
+    // RightBottom dock widget
+    mFilterWidget = new FilterWidget();
+    mFilterWidget->show();
+    mUiOmviz->dockWidget_RightBottom->setWidget(mFilterWidget);
 }
 
 MainWindow::~MainWindow()

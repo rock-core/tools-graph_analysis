@@ -30,6 +30,8 @@ public:
     AddRegexFilterDialog(QWidget* parent = 0, Qt::WindowFlags flags = 0);
     ~AddRegexFilterDialog();
 
+    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr getEdgeFilter() { return mpFilter; }
+
 
 private slots:
     void checkAndStoreValues();

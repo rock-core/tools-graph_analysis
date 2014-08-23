@@ -20,6 +20,7 @@ class GraphWidget;
 class PlanningWidget;
 class OrganizationModelWidget;
 class PropertiesWidget;
+class FilterWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -52,6 +53,7 @@ private:
     PlanningWidget* mPlanningWidget;
     OrganizationModelWidget* mOrganizationModelWidget;
     PropertiesWidget* mPropertiesWidget;
+    FilterWidget* mFilterWidget;
 };
 
 } // end namespace omviz

@@ -14,11 +14,11 @@ AddRegexFilterDialog::AddRegexFilterDialog(QWidget* parent, Qt::WindowFlags flag
 {
     mUi->setupUi(this);
 
-    connect(mUi->lineEdit_Regex_SourceNode, SIGNAL(textChanged(const QString&)), this, SIGNAL(checkAndStoreValues));
-    connect(mUi->lineEdit_Regex_TargetNode, SIGNAL(textChanged(const QString&)), this, SIGNAL(checkAndStoreValues));
-    connect(mUi->lineEdit_Regex_Edge, SIGNAL(textChanged(const QString&)), this, SIGNAL(checkAndStoreValues));
+    connect(mUi->lineEdit_Regex_SourceNode, SIGNAL(textChanged(const QString&)), this, SLOT(checkAndStoreValues()));
+    connect(mUi->lineEdit_Regex_TargetNode, SIGNAL(textChanged(const QString&)), this, SLOT(checkAndStoreValues()));
+    connect(mUi->lineEdit_Regex_Edge, SIGNAL(textChanged(const QString&)), this, SLOT(checkAndStoreValues()));
 
-    connect(mUi->buttonBox, SIGNAL(accepted()), this, SIGNAL(checkAndStoreValues()));
+    connect(mUi->buttonBox, SIGNAL(accepted()), this, SLOT(checkAndStoreValues()));
 }
 
 AddRegexFilterDialog::~AddRegexFilterDialog()
@@ -30,15 +30,17 @@ RegexFilterData AddRegexFilterDialog::getFilterData(QLineEdit* lineEdit, QComboB
 {
     RegexFilterData data;
     QPalette palette = lineEdit->palette();
-    try {
-        data.regex = lineEdit->text().toStdString();
-        data.type = graph_analysis::filters::TxtType[ comboBox->currentText().toStdString() ];
+    data.regex = lineEdit->text().toStdString();
+    data.type = graph_analysis::filters::TxtType[ comboBox->currentText().toStdString() ];
 
-        data.invert = false;
-        if(checkBox->checkState() == Qt::Checked)
-        {
-            data.invert = true;
-        }
+    data.invert = false;
+    if(checkBox->checkState() == Qt::Checked)
+    {
+        data.invert = true;
+    }
+
+    try {
+        boost::regex testRegex(data.regex);
         palette.setColor(QPalette::Text, Qt::black);
         lineEdit->setPalette(palette);
         lineEdit->setToolTip(QString("Valid filter expression"));
@@ -111,7 +113,7 @@ void AddRegexFilterDialog::checkAndStoreValues()
                 , dataEdge.type
                 , dataEdge.invert);
 
-    mpFilter = Filter<Edge::Ptr>::Ptr( new filters::CombinedEdgeRegexFilter(targetNodeFilter, edgeFilter, sourceNodeFilter));
+    mpFilter = Filter<Edge::Ptr>::Ptr( new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
 }
 
 } // end namespace omviz
