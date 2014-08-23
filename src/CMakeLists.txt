@@ -1,7 +1,9 @@
 find_package(Boost REQUIRED regex)
 
 rock_library(omviz
-    SOURCES graphwidget/EdgeItem.cpp
+    SOURCES
+      filterwidget/AddRegexFilterDialog.cpp
+      graphwidget/EdgeItem.cpp
       graphwidget/EdgeTypeManager.cpp
       graphwidget/GraphWidget.cpp
       graphwidget/NodeItem.cpp
@@ -17,7 +19,9 @@ rock_library(omviz
       IRIEdge.cpp
       IRINode.cpp
       MainWindow.cpp
-    HEADERS graphwidget/EdgeItem.hpp
+    HEADERS
+      filterwidget/AddRegexFilterDialog.hpp
+      graphwidget/EdgeItem.hpp
       graphwidget/EdgeTypeManager.hpp
       graphwidget/GraphWidget.hpp
       graphwidget/NodeItem.hpp
@@ -37,6 +41,7 @@ rock_library(omviz
       MainWindow.hpp
     MOC
         MainWindow.hpp
+        filterwidget/AddRegexFilterDialog.hpp
         graphwidget/GraphWidget.hpp
         planningwidget/PlanningWidget.hpp
         planningwidget/PlanningProblemDialog.hpp
@@ -46,6 +51,7 @@ rock_library(omviz
     DEPS_PLAIN Boost_REGEX
     UI
         ui/add_actor_dialog.ui
+        ui/add_regex_filter_dialog.ui
         ui/omviz.ui
         ui/organization_model_widget.ui
         ui/planning_problem_dialog.ui
@@ -76,19 +82,19 @@ rock_executable(omviz_elasticnodes_bin elasticnodes/Main.cpp
 QT4_ADD_RESOURCES(Resource_SOURCES diagramscene/diagramscene.qrc)
 
 rock_library(omviz_diagramscene
-    SOURCES 
+    SOURCES
         diagramscene/arrow.cpp
         diagramscene/diagramitem.cpp
         diagramscene/diagramscene.cpp
         diagramscene/diagramtextitem.cpp
         diagramscene/mainwindow.cpp
-    HEADERS 
+    HEADERS
         diagramscene/arrow.h
         diagramscene/diagramitem.h
         diagramscene/diagramscene.h
         diagramscene/diagramtextitem.h
         diagramscene/mainwindow.h
-    MOC 
+    MOC
         diagramscene/diagramitem.h
         diagramscene/diagramscene.h
         diagramscene/diagramtextitem.h
