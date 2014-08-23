@@ -16,6 +16,7 @@ rock_library(omviz
       planningwidget/PlanningProblemDialog.cpp
       organizationmodelwidget/OrganizationModelWidget.cpp
       organizationmodelwidget/AddActorDialog.cpp
+      propertieswidget/PropertiesWidget.cpp
       IRIEdge.cpp
       IRINode.cpp
       MainWindow.cpp
@@ -36,6 +37,7 @@ rock_library(omviz
       planningwidget/PlanningProblemDialog.hpp
       organizationmodelwidget/OrganizationModelWidget.hpp
       organizationmodelwidget/AddActorDialog.hpp
+      propertieswidget/PropertiesWidget.hpp
       IRIEdge.cpp
       IRINode.hpp
       MainWindow.hpp
@@ -47,6 +49,7 @@ rock_library(omviz
         planningwidget/PlanningProblemDialog.hpp
         organizationmodelwidget/OrganizationModelWidget.hpp
         organizationmodelwidget/AddActorDialog.hpp
+        propertieswidget/PropertiesWidget.hpp
     DEPS_PKGCONFIG graph_analysis owl_om
     DEPS_PLAIN Boost_REGEX
     UI
@@ -56,6 +59,7 @@ rock_library(omviz
         ui/organization_model_widget.ui
         ui/planning_problem_dialog.ui
         ui/planning_widget.ui
+        ui/properties_widget.ui
 )
 target_link_libraries(omviz gvc)
 

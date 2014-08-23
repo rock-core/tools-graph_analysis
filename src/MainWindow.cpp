@@ -23,6 +23,7 @@
 #include <graph_analysis/filters/RegexFilters.hpp>
 #include "planningwidget/PlanningWidget.hpp"
 #include "organizationmodelwidget/OrganizationModelWidget.hpp"
+#include "propertieswidget/PropertiesWidget.hpp"
 
 using namespace graph_analysis;
 
@@ -44,19 +45,26 @@ MainWindow::MainWindow(QWidget* parent)
     mUiOmviz->tabWidget->addTab(mPlanningWidget, "Planning");
 
     // Setup signal/slots
-    connect(mUiOmviz->comboBox_Layout, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
+    //connect(mUiOmviz->comboBox_Layout, SIGNAL(activated(QString)),  mGraphWidget, SLOT(setLayout(QString)));
     connect(mUiOmviz->actionOpen, SIGNAL(triggered()), this, SLOT(loadOntology()));
 
-    connect(mUiOmviz->pushButton_addFilter, SIGNAL(pressed()), this, SLOT(addFilter()));
-    connect(mUiOmviz->pushButton_removeFilter, SIGNAL(pressed()), this, SLOT(removeFilter()));
-    connect(mUiOmviz->tableWidget_NodesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateNodeFilter(QTableWidgetItem*)));
-    connect(mUiOmviz->tableWidget_EdgesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateEdgeFilter(QTableWidgetItem*)));
+    //connect(mUiOmviz->pushButton_addFilter, SIGNAL(pressed()), this, SLOT(addFilter()));
+    //connect(mUiOmviz->pushButton_removeFilter, SIGNAL(pressed()), this, SLOT(removeFilter()));
+    //connect(mUiOmviz->tableWidget_NodesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateNodeFilter(QTableWidgetItem*)));
+    //connect(mUiOmviz->tableWidget_EdgesFilter, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(activateEdgeFilter(QTableWidgetItem*)));
 
-    // Setup organization model widget as part of standard view
+    // Setup standard view by populating dock widgets
+    // Left dock widget
     mOrganizationModelWidget = new OrganizationModelWidget();
     mOrganizationModelWidget->show();
     mUiOmviz->dockWidget_Left->setWidget(mOrganizationModelWidget);
     connect(mOrganizationModelWidget, SIGNAL(modelChanged()), this, SLOT(organizationModelChanged()));
+
+    // RightTop dock widget
+    mPropertiesWidget = new PropertiesWidget();
+    mPropertiesWidget->show();
+    mUiOmviz->dockWidget_RightTop->setWidget(mPropertiesWidget);
+    connect(mPropertiesWidget, SIGNAL(layoutChanged(const QString&)), mGraphWidget, SLOT(setLayout(const QString&)));
 }
 
 MainWindow::~MainWindow()
@@ -141,209 +149,209 @@ void MainWindow::updateFromModel()
 
 void MainWindow::addFilter()
 {
-    QTableWidget* edgesFilter = mUiOmviz->tableWidget_EdgesFilter;
-    QTableWidget* nodesFilter = mUiOmviz->tableWidget_NodesFilter;
+   // QTableWidget* edgesFilter = mUiOmviz->tableWidget_EdgesFilter;
+   // QTableWidget* nodesFilter = mUiOmviz->tableWidget_NodesFilter;
 
-    QTableWidget* activeTable = 0;
+   // QTableWidget* activeTable = 0;
 
-    if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(edgesFilter->parent()))
-    {
-        activeTable = edgesFilter;
-    } else if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(nodesFilter->parent()))
-    {
-        activeTable = nodesFilter;
-    } else {
-        LOG_DEBUG_S << "Not added any filter";
-        // nothing to do
-        return;
-    }
+   // if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(edgesFilter->parent()))
+   // {
+   //     activeTable = edgesFilter;
+   // } else if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(nodesFilter->parent()))
+   // {
+   //     activeTable = nodesFilter;
+   // } else {
+   //     LOG_DEBUG_S << "Not added any filter";
+   //     // nothing to do
+   //     return;
+   // }
 
-    LOG_DEBUG_S << "Added row at: " << activeTable->rowCount();
+   // LOG_DEBUG_S << "Added row at: " << activeTable->rowCount();
 
-    int row = activeTable->rowCount();
-    activeTable->blockSignals(true);
-    activeTable->insertRow(row);
+   // int row = activeTable->rowCount();
+   // activeTable->blockSignals(true);
+   // activeTable->insertRow(row);
 
-    // Create regex item
-    QTableWidgetItem* regexItem = new QTableWidgetItem();
-    activeTable->setItem(row, 0, regexItem);
+   // // Create regex item
+   // QTableWidgetItem* regexItem = new QTableWidgetItem();
+   // activeTable->setItem(row, 0, regexItem);
 
-    // Create combo box to select CONTENT/CLASS
-    QComboBox* combo = new QComboBox();
+   // // Create combo box to select CONTENT/CLASS
+   // QComboBox* combo = new QComboBox();
 
-    QSignalMapper* signalMapper = new QSignalMapper(this);
-    QObject::connect(combo, SIGNAL(currentIndexChanged(int)), signalMapper, SLOT(map()));
-    signalMapper->setMapping(combo, row);
+   // QSignalMapper* signalMapper = new QSignalMapper(this);
+   // QObject::connect(combo, SIGNAL(currentIndexChanged(int)), signalMapper, SLOT(map()));
+   // signalMapper->setMapping(combo, row);
 
-    combo->addItem(QString( filters::TypeTxt[ filters::CONTENT].c_str() ));
-    combo->addItem(QString( filters::TypeTxt[ filters::CLASS].c_str() ));
-    activeTable->setCellWidget(row, 1, combo);
+   // combo->addItem(QString( filters::TypeTxt[ filters::CONTENT].c_str() ));
+   // combo->addItem(QString( filters::TypeTxt[ filters::CLASS].c_str() ));
+   // activeTable->setCellWidget(row, 1, combo);
 
-    // Create checkbox to select inversion
-    QCheckBox* checkbox = new QCheckBox();
-    activeTable->setCellWidget(row, 2, checkbox);
-    QObject::connect(checkbox, SIGNAL(stateChanged(int)), signalMapper, SLOT(map()));
-    signalMapper->setMapping(checkbox, row);
+   // // Create checkbox to select inversion
+   // QCheckBox* checkbox = new QCheckBox();
+   // activeTable->setCellWidget(row, 2, checkbox);
+   // QObject::connect(checkbox, SIGNAL(stateChanged(int)), signalMapper, SLOT(map()));
+   // signalMapper->setMapping(checkbox, row);
 
-    if(activeTable == edgesFilter)
-    {
-        activateEdgeFilter(regexItem);
-        connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(activateEdgeFilter(int)));
-    } else if(activeTable == nodesFilter)
-    {
-        activateNodeFilter(regexItem);
-        connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(activateNodeFilter(int)));
-    }
-    activeTable->blockSignals(false);
+   // if(activeTable == edgesFilter)
+   // {
+   //     activateEdgeFilter(regexItem);
+   //     connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(activateEdgeFilter(int)));
+   // } else if(activeTable == nodesFilter)
+   // {
+   //     activateNodeFilter(regexItem);
+   //     connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(activateNodeFilter(int)));
+   // }
+   // activeTable->blockSignals(false);
 }
 
 void MainWindow::activateNodeFilter(QTableWidgetItem* item)
 {
-    if(item)
-    {
-        QTableWidget* table = mUiOmviz->tableWidget_NodesFilter;
+    //if(item)
+    //{
+    //    QTableWidget* table = mUiOmviz->tableWidget_NodesFilter;
 
-        // Check the field next to this one
-        int row = table->row(item);
-        int column = table->column(item);
+    //    // Check the field next to this one
+    //    int row = table->row(item);
+    //    int column = table->column(item);
 
-        QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
-        QCheckBox* inversionSelection = dynamic_cast<QCheckBox*>( table->cellWidget(row, column + 2));
-        if(classTypeSelection)
-        {
-            std::string typeName = classTypeSelection->currentText().toStdString();
-            filters::Type type = filters::TxtType[ typeName ];
+    //    QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
+    //    QCheckBox* inversionSelection = dynamic_cast<QCheckBox*>( table->cellWidget(row, column + 2));
+    //    if(classTypeSelection)
+    //    {
+    //        std::string typeName = classTypeSelection->currentText().toStdString();
+    //        filters::Type type = filters::TxtType[ typeName ];
 
-            QVariant regex = item->data(Qt::DisplayRole);
-            try {
-                bool invert = false;
-                if(inversionSelection->checkState() == Qt::Checked)
-                {
-                    invert = true;
-                }
+    //        QVariant regex = item->data(Qt::DisplayRole);
+    //        try {
+    //            bool invert = false;
+    //            if(inversionSelection->checkState() == Qt::Checked)
+    //            {
+    //                invert = true;
+    //            }
 
-                Filter<Vertex::Ptr>::Ptr nodeFilter(
-                        new filters::VertexRegexFilter(regex.toString().toStdString()
-                            , type
-                            , invert));
+    //            Filter<Vertex::Ptr>::Ptr nodeFilter(
+    //                    new filters::VertexRegexFilter(regex.toString().toStdString()
+    //                        , type
+    //                        , invert));
 
-                LOG_DEBUG_S << "Activate node filter: " << nodeFilter->getName();
-                try {
-                    mGraphWidget->replaceNodeFilter(nodeFilter, row);
+    //            LOG_DEBUG_S << "Activate node filter: " << nodeFilter->getName();
+    //            try {
+    //                mGraphWidget->replaceNodeFilter(nodeFilter, row);
 
-                } catch(const std::out_of_range& e)
-                {
-                    mGraphWidget->addNodeFilter(nodeFilter);
-                }
+    //            } catch(const std::out_of_range& e)
+    //            {
+    //                mGraphWidget->addNodeFilter(nodeFilter);
+    //            }
 
-                item->setForeground(QBrush());
-                item->setToolTip(QString("Regex filter"));
-            } catch(const boost::regex_error& e)
-            {
-                item->setForeground(QBrush(Qt::red));
-                item->setToolTip(QString(e.what()));
-            }
-        }
-        table->resizeColumnToContents(1);
-        table->resizeColumnToContents(2);
-    }
-    mGraphWidget->update();
+    //            item->setForeground(QBrush());
+    //            item->setToolTip(QString("Regex filter"));
+    //        } catch(const boost::regex_error& e)
+    //        {
+    //            item->setForeground(QBrush(Qt::red));
+    //            item->setToolTip(QString(e.what()));
+    //        }
+    //    }
+    //    table->resizeColumnToContents(1);
+    //    table->resizeColumnToContents(2);
+    //}
+    //mGraphWidget->update();
 }
 
 void MainWindow::activateEdgeFilter(QTableWidgetItem* item)
 {
-    if(item)
-    {
-        QTableWidget* table = mUiOmviz->tableWidget_EdgesFilter;
+    //if(item)
+    //{
+    //    QTableWidget* table = mUiOmviz->tableWidget_EdgesFilter;
 
-        // Check the field next to this one
-        int row = table->row(item);
-        int column = table->column(item);
+    //    // Check the field next to this one
+    //    int row = table->row(item);
+    //    int column = table->column(item);
 
-        QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
-        QCheckBox* inversionSelection = dynamic_cast<QCheckBox*>( table->cellWidget(row, column + 2));
-        if(classTypeSelection)
-        {
-            std::string typeName = classTypeSelection->currentText().toStdString();
-            filters::Type type = filters::TxtType[ typeName ];
+    //    QComboBox* classTypeSelection = dynamic_cast<QComboBox*>( table->cellWidget(row, column + 1) );
+    //    QCheckBox* inversionSelection = dynamic_cast<QCheckBox*>( table->cellWidget(row, column + 2));
+    //    if(classTypeSelection)
+    //    {
+    //        std::string typeName = classTypeSelection->currentText().toStdString();
+    //        filters::Type type = filters::TxtType[ typeName ];
 
-            QVariant regex = item->data(Qt::DisplayRole);
-            try {
-                bool invert = false;
-                if(inversionSelection->checkState() == Qt::Checked)
-                {
-                    invert = true;
-                }
+    //        QVariant regex = item->data(Qt::DisplayRole);
+    //        try {
+    //            bool invert = false;
+    //            if(inversionSelection->checkState() == Qt::Checked)
+    //            {
+    //                invert = true;
+    //            }
 
-                Filter<Edge::Ptr>::Ptr edgeFilter(
-                        new filters::EdgeRegexFilter(regex.toString().toStdString()
-                            , type
-                            , invert));
+    //            Filter<Edge::Ptr>::Ptr edgeFilter(
+    //                    new filters::EdgeRegexFilter(regex.toString().toStdString()
+    //                        , type
+    //                        , invert));
 
-                LOG_DEBUG_S << "Activate edge filter: " << edgeFilter->getName();
-                try {
-                    mGraphWidget->replaceEdgeFilter(edgeFilter, row);
+    //            LOG_DEBUG_S << "Activate edge filter: " << edgeFilter->getName();
+    //            try {
+    //                mGraphWidget->replaceEdgeFilter(edgeFilter, row);
 
-                } catch(const std::out_of_range& e)
-                {
-                    mGraphWidget->addEdgeFilter(edgeFilter);
-                }
+    //            } catch(const std::out_of_range& e)
+    //            {
+    //                mGraphWidget->addEdgeFilter(edgeFilter);
+    //            }
 
-                item->setForeground(QBrush());
-                item->setToolTip(QString("Regex filter"));
-            } catch(const boost::regex_error& e)
-            {
-                item->setForeground(QBrush(Qt::red));
-                item->setToolTip(QString(e.what()));
-            }
-        }
-    }
-    mGraphWidget->update();
+    //            item->setForeground(QBrush());
+    //            item->setToolTip(QString("Regex filter"));
+    //        } catch(const boost::regex_error& e)
+    //        {
+    //            item->setForeground(QBrush(Qt::red));
+    //            item->setToolTip(QString(e.what()));
+    //        }
+    //    }
+    //}
+    //mGraphWidget->update();
 }
 
 void MainWindow::removeFilter()
 {
-    QTableWidget* edgesFilter = mUiOmviz->tableWidget_EdgesFilter;
-    QTableWidget* nodesFilter = mUiOmviz->tableWidget_NodesFilter;
+    //QTableWidget* edgesFilter = mUiOmviz->tableWidget_EdgesFilter;
+    //QTableWidget* nodesFilter = mUiOmviz->tableWidget_NodesFilter;
 
-    if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(edgesFilter->parent()))
-    {
-        int rowId = edgesFilter->currentRow();
-        LOG_DEBUG_S << "Remove edge filter at e: " << rowId;
-        edgesFilter->removeRow(rowId);
+    //if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(edgesFilter->parent()))
+    //{
+    //    int rowId = edgesFilter->currentRow();
+    //    LOG_DEBUG_S << "Remove edge filter at e: " << rowId;
+    //    edgesFilter->removeRow(rowId);
 
-        // +1 here since the graphwidget used one additional permit all filter
-        if(rowId >= 0)
-        {
-            LOG_DEBUG_S << "Remove edge filter at: " << rowId;
-            mGraphWidget->removeEdgeFilter(rowId);
-        }
-    } else if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(nodesFilter->parent()))
-    {
-        int rowId = nodesFilter->currentRow();
-        LOG_DEBUG_S << "Remove node filter at e: " << rowId;
-        nodesFilter->removeRow(rowId);
+    //    // +1 here since the graphwidget used one additional permit all filter
+    //    if(rowId >= 0)
+    //    {
+    //        LOG_DEBUG_S << "Remove edge filter at: " << rowId;
+    //        mGraphWidget->removeEdgeFilter(rowId);
+    //    }
+    //} else if(mUiOmviz->tabWidget_Filters->currentWidget() == dynamic_cast<QWidget*>(nodesFilter->parent()))
+    //{
+    //    int rowId = nodesFilter->currentRow();
+    //    LOG_DEBUG_S << "Remove node filter at e: " << rowId;
+    //    nodesFilter->removeRow(rowId);
 
-        // +1 here since the graphwidget used one additional permit all filter
-        if(rowId >= 0)
-        {
-            LOG_DEBUG_S << "Remove node filter at: " << rowId;
-            mGraphWidget->removeNodeFilter(rowId);
-        }
-    } else {
-        // nothing to do
-    }
+    //    // +1 here since the graphwidget used one additional permit all filter
+    //    if(rowId >= 0)
+    //    {
+    //        LOG_DEBUG_S << "Remove node filter at: " << rowId;
+    //        mGraphWidget->removeNodeFilter(rowId);
+    //    }
+    //} else {
+    //    // nothing to do
+    //}
 }
 
 
 void MainWindow::activateNodeFilter(int row)
 {
-    activateNodeFilter(mUiOmviz->tableWidget_NodesFilter->item(row,0));
+    //activateNodeFilter(mUiOmviz->tableWidget_NodesFilter->item(row,0));
 }
 
 void MainWindow::activateEdgeFilter(int row)
 {
-    activateEdgeFilter(mUiOmviz->tableWidget_EdgesFilter->item(row,0));
+    //activateEdgeFilter(mUiOmviz->tableWidget_EdgesFilter->item(row,0));
 }
 
 

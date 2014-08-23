@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1086</width>
-    <height>723</height>
+    <width>1482</width>
+    <height>930</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Omviz -- Analyzing Multi-Robot Organizations</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QSplitter" name="splitter_2">
       <property name="orientation">
@@ -27,7 +27,7 @@
        <widget class="QTabWidget" name="tabWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>8</horstretch>
+          <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
@@ -36,12 +36,7 @@
         </property>
         <widget class="QWidget" name="tab_5">
          <attribute name="title">
-          <string>Tab 1</string>
-         </attribute>
-        </widget>
-        <widget class="QWidget" name="tab_6">
-         <attribute name="title">
-          <string>Tab 2</string>
+          <string>Main</string>
          </attribute>
         </widget>
        </widget>
@@ -54,208 +49,7 @@
           <string>Console</string>
          </attribute>
         </widget>
-        <widget class="QWidget" name="tab_Extra">
-         <attribute name="title">
-          <string>Tab 2</string>
-         </attribute>
-        </widget>
        </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox">
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="title">
-        <string>Properties</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QGroupBox" name="groupBox_Layout">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>1</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Layout</string>
-          </property>
-          <widget class="QComboBox" name="comboBox_Layout">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>20</y>
-             <width>131</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <item>
-            <property name="text">
-             <string>dot</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>circo</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>fdp</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>neato</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>osage</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>sfdp</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>twopi</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>force</string>
-            </property>
-           </item>
-          </widget>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_3">
-          <property name="title">
-           <string>Filters</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTabWidget" name="tabWidget_Filters">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>5</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <widget class="QWidget" name="tab_NodesFilter">
-           <attribute name="title">
-            <string>Nodes</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <widget class="QTableWidget" name="tableWidget_NodesFilter">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>4</verstretch>
-               </sizepolicy>
-              </property>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>false</bool>
-              </attribute>
-              <column>
-               <property name="text">
-                <string>Regex</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Type</string>
-               </property>
-               <property name="textAlignment">
-                <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Invert</string>
-               </property>
-               <property name="textAlignment">
-                <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-               </property>
-              </column>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_EdgesFilter">
-           <attribute name="title">
-            <string>Edges</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
-             <widget class="QTableWidget" name="tableWidget_EdgesFilter">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>4</verstretch>
-               </sizepolicy>
-              </property>
-              <attribute name="horizontalHeaderStretchLastSection">
-               <bool>true</bool>
-              </attribute>
-              <attribute name="verticalHeaderStretchLastSection">
-               <bool>false</bool>
-              </attribute>
-              <column>
-               <property name="text">
-                <string>Regex</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Type</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Invert</string>
-               </property>
-              </column>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QPushButton" name="pushButton_addFilter">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_removeFilter">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
       </widget>
      </widget>
     </item>
@@ -266,7 +60,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1086</width>
+     <width>1482</width>
      <height>23</height>
     </rect>
    </property>
@@ -295,10 +89,52 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockWidget_Left">
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>41</height>
+    </size>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_RightTop">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>2</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>41</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_RightBottom">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+     <horstretch>2</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>41</height>
+    </size>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
