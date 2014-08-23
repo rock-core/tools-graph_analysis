@@ -14,6 +14,9 @@ class DenyAll : public Filter<FilterObject>
 {
     virtual std::string getName() const { return "graph_analysis::filter::DenyAll"; }
     virtual bool apply(FilterObject o ) const { return true; }
+
+    bool filterTarget(FilterObject o) const { return false; }
+    bool filterSource(FilterObject o) const { return false; }
 };
 
 /**
@@ -24,6 +27,9 @@ class PermitAll : public Filter<FilterObject>
 {
     virtual std::string getName() const { return "graph_analysis::filter::PermitAll"; }
     virtual bool apply(FilterObject o ) const { return false; }
+
+    bool filterTarget(FilterObject o) const { return false; }
+    bool filterSource(FilterObject o) const { return false; }
 };
 
 } // end namespace filter

@@ -132,8 +132,8 @@ public:
         return false;
     }
 
-    virtual bool filterTarget(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterTarget is not implemented"); }
-    virtual bool filterSource(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterSource is not implemented"); }
+    virtual bool filterTarget(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterTarget is not implemented for: " + toString()); }
+    virtual bool filterSource(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterSource is not implemented for: " + toString()); }
 
     /**
      * \brief Apply only the main filter to the target object
