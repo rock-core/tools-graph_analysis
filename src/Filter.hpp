@@ -63,6 +63,14 @@ public:
     }
 
     /**
+     * Clears the list of additional filters that have been added to this filter
+     */
+    void clear()
+    {
+        mFilters.clear();
+    }
+
+    /**
      * Add a filter
      * \param filter Filter to  add
      * \param position Position of the filter
