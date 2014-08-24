@@ -72,7 +72,7 @@ public:
 
     /**
      * Add a filter
-     * \param filter Filter to  add
+     * \param filter Filter to add
      * \param position Position of the filter
      * \return position of filter
      */

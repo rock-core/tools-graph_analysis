@@ -5,6 +5,7 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/Edge.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace filters {
@@ -118,11 +119,13 @@ public:
 
     virtual bool filterSource(graph_analysis::Edge::Ptr e) const
     {
+        LOG_DEBUG_S << "FILTER source of edge";
         return mSourceNodeFilter.apply( e->getSourceVertex() );
     }
 
     virtual bool filterTarget(graph_analysis::Edge::Ptr e) const
     {
+        LOG_DEBUG_S << "FILTER target of edge";
         return mTargetNodeFilter.apply( e->getTargetVertex() );
     }
 

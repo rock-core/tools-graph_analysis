@@ -189,6 +189,7 @@ DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilt
             Edge::Ptr edge = mEdgeMap[a];
             if( edgeFilter->evaluate(edge) )
             {
+                LOG_DEBUG_S << "FILTER EDGE" << edgeFilter->toString();
                 subgraph.raw().disable(a);
             } else {
                 subgraph.raw().enable(a);
@@ -197,6 +198,7 @@ DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilt
             // Check whether we should filter the target and source node
             if( edgeFilter->filterTarget(edge))
             {
+                LOG_DEBUG_S << "FILTER TARGET";
                 subgraph.raw().disable( mGraph.target(a));
             } else {
                 subgraph.raw().enable( mGraph.target(a));
@@ -204,6 +206,7 @@ DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilt
 
             if( edgeFilter->filterSource(edge))
             {
+                LOG_DEBUG_S << "FILTER SOURCE";
                 subgraph.raw().disable( mGraph.source(a));
             } else {
                 subgraph.raw().enable( mGraph.source(a));
