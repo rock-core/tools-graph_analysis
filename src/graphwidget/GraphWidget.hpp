@@ -89,14 +89,8 @@ public:
     void updateFromGraph();
     void itemMoved();
 
-    int addNodeFilter(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr nodeFilter);
-    int addEdgeFilter(graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr edgeFilter);
-
-    void removeNodeFilter(int position);
-    void removeEdgeFilter(int position);
-
-    int replaceNodeFilter(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr nodeFilter, int position);
-    int replaceEdgeFilter(graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr edgeFilter, int position);
+    int setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
+    int setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
 public slots:
     void shuffle();

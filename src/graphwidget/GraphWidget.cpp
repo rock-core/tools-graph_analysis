@@ -55,6 +55,7 @@
 #include "filters/Filters.hpp"
 
 #include <graph_analysis/lemon/Graph.hpp>
+#include <boost/foreach.hpp>
 
 using namespace graph_analysis;
 namespace gl = graph_analysis::lemon;
@@ -353,44 +354,24 @@ void GraphWidget::scaleView(qreal scaleFactor)
     scale(scaleFactor, scaleFactor);
 }
 
-int GraphWidget::addNodeFilter(Filter<Vertex::Ptr>::Ptr nodeFilter)
+int GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
 {
-    return mpVertexFilter->add(nodeFilter);
-}
+    mpVertexFilter->clear();
 
-int GraphWidget::addEdgeFilter(Filter<Edge::Ptr>::Ptr edgeFilter)
-{
-    return mpEdgeFilter->add(edgeFilter);
-}
-
-void GraphWidget::removeNodeFilter(int position)
-{
-    try {
-        mpVertexFilter->removeAt(position);
-    } catch(const std::runtime_error& e)
+    BOOST_FOREACH(Filter<Vertex::Ptr>::Ptr filter, filters)
     {
-        LOG_DEBUG_S << "Warning: removeNodeFilter at '" << position << "': " << e.what();
+        mpVertexFilter->add(filter);
     }
 }
 
-void GraphWidget::removeEdgeFilter(int position)
+int GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
 {
-    try {
-        mpEdgeFilter->removeAt(position);
-    } catch(const std::runtime_error& e)
+    mpEdgeFilter->clear();
+
+    BOOST_FOREACH(Filter<Edge::Ptr>::Ptr filter, filters)
     {
-        LOG_DEBUG_S << "Warning: removeEdgeFilter at '" << position << "': " << e.what();
+        mpEdgeFilter->add(filter);
     }
-}
-
-int GraphWidget::replaceNodeFilter(Filter<Vertex::Ptr>::Ptr nodeFilter, int position)
-{
-    return mpVertexFilter->replace(nodeFilter, position);
-}
-
-int GraphWidget::replaceEdgeFilter(Filter<Edge::Ptr>::Ptr edgeFilter, int position)
-{
-    return mpEdgeFilter->replace(edgeFilter, position);
 }
 
 void GraphWidget::shuffle()

@@ -34,15 +34,7 @@ private slots:
     void organizationModelChanged();
 
     void loadOntology();
-    void addFilter();
-    void activateNodeFilter(QTableWidgetItem* item);
-    void activateEdgeFilter(QTableWidgetItem* item);
-
-    // Allow using QSignalMapper
-    void activateNodeFilter(int row);
-    void activateEdgeFilter(int row);
-
-    void removeFilter();
+    void updateFilters();
     void updateFromModel();
 
 private:
