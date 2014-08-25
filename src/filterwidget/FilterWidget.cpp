@@ -67,7 +67,7 @@ void FilterWidget::addEdgeFilter()
     if( dialog.exec() )
     {
         Filter<graph_analysis::Edge::Ptr>::Ptr filter = dialog.getEdgeFilter();
-        LOG_DEBUG_S << "Edge filter added";
+        LOG_DEBUG_S << "Edge filter added: " << filter->toString();
        
         QTreeWidgetItem* filterItem = Utils::createTreeWidgetItem(filter->toString());
         mUi->treeWidget_Filters->insertTopLevelItem(0, filterItem);
@@ -91,7 +91,7 @@ void FilterWidget::removeEdgeFilter()
 
         emit updated();
     } else {
-        throw std::runtime_error("omviz::FilterWidget::removeEdgeFilter: could not remove filter -- item does not exist");
+        LOG_DEBUG_S << "omviz::FilterWidget::removeEdgeFilter: could not remove filter -- item does not exist";
     }
 }
 
