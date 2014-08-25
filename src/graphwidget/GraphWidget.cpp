@@ -52,7 +52,7 @@
 #include <graph_analysis/GraphView.hpp>
 
 #include "GVGraph.hpp"
-#include "filters/Filters.hpp"
+#include <graph_analysis/Filter.hpp>
 
 #include <graph_analysis/lemon/Graph.hpp>
 #include <boost/foreach.hpp>
@@ -68,8 +68,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGVGraph(0)
     , mTimerId(0)
     , mLayout("dot")
-    , mpVertexFilter(new graph_analysis::filters::PermitAll< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new graph_analysis::filters::PermitAll< graph_analysis::Edge::Ptr >())
+    , mpVertexFilter(new graph_analysis::Filter< graph_analysis::Vertex::Ptr>())
+    , mpEdgeFilter(new graph_analysis::EdgeContextFilter)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -354,7 +354,7 @@ void GraphWidget::scaleView(qreal scaleFactor)
     scale(scaleFactor, scaleFactor);
 }
 
-int GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
+void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
 {
     mpVertexFilter->clear();
 
@@ -364,7 +364,7 @@ int GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
     }
 }
 
-int GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
+void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
 {
     mpEdgeFilter->clear();
 
