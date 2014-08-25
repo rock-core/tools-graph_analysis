@@ -107,6 +107,10 @@ public:
      * need for explicit usage of copy functions
      */
     DirectedGraph& operator=(const DirectedGraph& other);
+
+    /**
+     * Filters in this context are permissive, i.e. they mark what to show
+     */
     DirectedSubGraph applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
 
     void write(std::ostream& ostream = std::cout) const;

@@ -13,30 +13,30 @@ BOOST_AUTO_TEST_CASE(it_should_filter_with_regex)
 
     {
         Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
-        BOOST_REQUIRE_MESSAGE( filter->evaluate(v0) == false, "Permit all filter should not apply any");
+        BOOST_REQUIRE_MESSAGE( filter->permit(v0) == true, "Permit all filter should permit all");
 
         filters::VertexRegexFilter::Ptr contentFilter(new filters::VertexRegexFilter(".*graph_analysis::.*", filters::CONTENT, false));
         filter->add(contentFilter);
 
-        BOOST_REQUIRE_MESSAGE(filter->evaluate(v0), "Content filter: '" << contentFilter->getName() << "' should filter: " << v0->toString());
+        BOOST_REQUIRE_MESSAGE(filter->permit(v0), "Content filter: '" << contentFilter->getName() << "' should filter: " << v0->toString());
     }
 
     {
         Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
-        BOOST_REQUIRE_MESSAGE( filter->evaluate(v0) == false, "Permit all filter should not apply any");
+        BOOST_REQUIRE_MESSAGE( filter->permit(v0) == true, "Permit all filter should permit all");
 
         filters::VertexRegexFilter::Ptr contentFilter0(new filters::VertexRegexFilter(".*dummy.*", filters::CONTENT, false));
         filters::VertexRegexFilter::Ptr contentFilter1(new filters::VertexRegexFilter("graph_analysis.*", filters::CONTENT, false));
         filter->add(contentFilter0);
         filter->add(contentFilter1);
 
-        BOOST_REQUIRE_MESSAGE(filter->evaluate(v0), "Content filter should filter");
+        BOOST_REQUIRE_MESSAGE(filter->permit(v0), "Content filter should permit");
     }
     {
         EdgeContextFilter::Ptr filter( new graph_analysis::filters::PermitAll< Edge::Ptr >());
-        BOOST_REQUIRE_MESSAGE( filter->evaluate(e0) == false, "Permit all filter should not apply to any edge");
-        BOOST_REQUIRE_MESSAGE( filter->filterTarget(e0) == false, "Permit all filter should not apply to any edge's target node");
-        BOOST_REQUIRE_MESSAGE( filter->filterSource(e0) == false, "Permit all filter should not apply to any edge's source node");
+        BOOST_REQUIRE_MESSAGE( filter->permit(e0) == true, "Permit all filter should no apply to any edge");
+        BOOST_REQUIRE_MESSAGE( filter->permitTarget(e0) == true, "Permit all filter should apply to any edge's target node");
+        BOOST_REQUIRE_MESSAGE( filter->permitSource(e0) == true, "Permit all filter should apply to any edge's source node");
     }
 
     {
@@ -44,11 +44,11 @@ BOOST_AUTO_TEST_CASE(it_should_filter_with_regex)
         filters::VertexRegexFilter nodeFilter;
 
         Filter< Edge::Ptr >::Ptr filter(new filters::CombinedEdgeRegexFilter(nodeFilter, edgeFilter, nodeFilter));
-        BOOST_REQUIRE_MESSAGE( !filter->evaluate(e0), "Edge filter should not filter");
+        BOOST_REQUIRE_MESSAGE( !filter->permit(e0), "Edge filter should not permit");
 
         filters::CombinedEdgeRegexFilter::Ptr combinedFilter = boost::dynamic_pointer_cast<filters::CombinedEdgeRegexFilter>(filter);
-        BOOST_REQUIRE_MESSAGE( !combinedFilter->filterTarget(e0), "Target vertex should not be filtered");
-        BOOST_REQUIRE_MESSAGE( !combinedFilter->filterSource(e0), "Target vertex should not be filtered");
+        BOOST_REQUIRE_MESSAGE( !combinedFilter->permitTarget(e0), "Target vertex should not be permitted");
+        BOOST_REQUIRE_MESSAGE( !combinedFilter->permitSource(e0), "Source vertex should not be permitted");
     }
 
     {
@@ -56,11 +56,11 @@ BOOST_AUTO_TEST_CASE(it_should_filter_with_regex)
         filters::VertexRegexFilter nodeFilter(".*");
 
         Filter< Edge::Ptr >::Ptr filter(new filters::CombinedEdgeRegexFilter(nodeFilter, edgeFilter, nodeFilter));
-        BOOST_REQUIRE_MESSAGE( filter->evaluate(e0), "Edge filter should filter");
+        BOOST_REQUIRE_MESSAGE( filter->permit(e0), "Edge filter should permit");
 
         EdgeContextFilter::Ptr combinedFilter = boost::dynamic_pointer_cast<filters::CombinedEdgeRegexFilter>(filter);
-        BOOST_REQUIRE_MESSAGE( combinedFilter->filterTarget(e0), "Target vertex should be filtered");
-        BOOST_REQUIRE_MESSAGE( combinedFilter->filterSource(e0), "Target vertex should be filtered");
+        BOOST_REQUIRE_MESSAGE( combinedFilter->permitTarget(e0), "Target vertex should be permitted");
+        BOOST_REQUIRE_MESSAGE( combinedFilter->permitSource(e0), "Source vertex should be permitted");
     }
 
 }

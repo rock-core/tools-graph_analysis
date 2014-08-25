@@ -41,6 +41,9 @@ public:
 
     /**
      * Apply the filter to the graph
+     * \brief By default all edges and nodes will be disabled, the operator serves
+     * to chain an edgefilter which is applied first, and a vertex filter that follows
+     * so that filters activate certain type of edges and nodes
      */
     typename GraphType::SubGraph apply(GraphType& graph)
     {

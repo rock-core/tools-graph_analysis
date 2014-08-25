@@ -15,7 +15,7 @@ std::map<std::string, Type> TxtType = boost::assign::map_list_of
 } // end namespace filters
 
 
-bool EdgeContextFilter::filterTarget(graph_analysis::Edge::Ptr e) const
+bool EdgeContextFilter::permitTarget(graph_analysis::Edge::Ptr e) const
 {
     if(evaluateTarget(e))
     {
@@ -26,7 +26,7 @@ bool EdgeContextFilter::filterTarget(graph_analysis::Edge::Ptr e) const
     for(; cit != mFilters.end(); ++cit)
     {
         Ptr edgeFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(*cit);
-        if(edgeFilter && edgeFilter->evaluateTarget(e) )
+        if(edgeFilter && edgeFilter->permitTarget(e) )
         {
             return true;
         }
@@ -34,7 +34,7 @@ bool EdgeContextFilter::filterTarget(graph_analysis::Edge::Ptr e) const
     return false;
 }
 
-bool EdgeContextFilter::filterSource(graph_analysis::Edge::Ptr e) const
+bool EdgeContextFilter::permitSource(graph_analysis::Edge::Ptr e) const
 {
     if(evaluateSource(e))
     {
@@ -45,7 +45,7 @@ bool EdgeContextFilter::filterSource(graph_analysis::Edge::Ptr e) const
     for(; cit != mFilters.end(); ++cit)
     {
         Ptr edgeFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(*cit);
-        if(edgeFilter && edgeFilter->evaluateSource(e) )
+        if(edgeFilter && edgeFilter->permitSource(e) )
         {
             return true;
         }

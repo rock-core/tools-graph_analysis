@@ -10,6 +10,7 @@
 namespace graph_analysis {
 namespace filters {
 
+enum Operator { AND = 0, OR };
 enum Type { CONTENT = 0, CLASS };
 extern std::map<Type, std::string> TypeTxt;
 extern std::map<std::string, Type> TxtType;
@@ -114,29 +115,54 @@ public:
      * \brief Apply all filters, i.e. root filter and children
      * to the filter object
      * \param o FilterObject, i.e. target that requires evaluation
-     * \return True if this item is matched by any of the filters, false otherwise
+     * \param op Chain the subfilter using and or
+     * \return True if this item is matched and permitted by any of the filters, false otherwise
      */
-    bool evaluate(FilterObject o) const
+    bool permit(FilterObject o, filters::Operator op = filters::OR) const
     {
 
-        // Check for main filter
-        if( apply(o) )
-        {
-            return true;
-        }
+        bool result = apply(o);
 
         typename FilterList::const_iterator cit = mFilters.begin();
-        for(; cit != mFilters.end(); ++cit)
+        if(op == filters::OR)
         {
-
-            FilterType::Ptr filter = *cit;
-            assert(filter);
-            if( filter->evaluate(o) )
+            if(result)
             {
                 return true;
             }
+
+            for(; cit != mFilters.end(); ++cit)
+            {
+
+                FilterType::Ptr filter = *cit;
+                assert(filter);
+                if(filter->permit(o))
+                {
+                    return true;
+                }
+            }
+            result = false;
+
+        } else if(op == filters::AND)
+        {
+            if(!result)
+            {
+                return false;
+            }
+
+            for(; cit != mFilters.end(); ++cit)
+            {
+                FilterType::Ptr filter = *cit;
+                assert(filter);
+                // filter should be set to true here, otherwise false
+                // will be returned
+                if(!filter->permit(o))
+                {
+                    return false;
+                }
+            }
         }
-        return false;
+        return result;
     }
 
     /**
@@ -173,7 +199,7 @@ public:
 
     /**
      * \brief Evaluated the target of the edge
-     * \return True if it should be filtered, false otherwise
+     * \return True if it should be permitted, false otherwise
      */
     virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return false; }
 
@@ -181,11 +207,11 @@ public:
      * \brief Use this and associated subfilters, to check if this target should be filtered
      * \return True, if the target vertex of given edge should be filtered, false otherwise
      */
-    bool filterTarget(graph_analysis::Edge::Ptr e) const;
+    bool permitTarget(graph_analysis::Edge::Ptr e) const;
 
     /**
      * \brief Evaluated the source vertex of the edge
-     * \return True if it should be filtered, false otherwise
+     * \return True if it should be permitted, false otherwise
      */
     virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return false; }
 
@@ -193,7 +219,7 @@ public:
      * \brief Use this and associated subfilters, to check if this edge's source vertex should be filtered
      * \return True, if the source vertex of given edge should be filtered, false otherwise
      */
-    bool filterSource(graph_analysis::Edge::Ptr e) const;
+    bool permitSource(graph_analysis::Edge::Ptr e) const;
 };
 
 } // end namespace graph_analysis
