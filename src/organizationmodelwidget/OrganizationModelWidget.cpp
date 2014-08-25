@@ -2,6 +2,7 @@
 #include "ui_organization_model_widget.h"
 #include <boost/foreach.hpp>
 #include "AddActorDialog.hpp"
+#include <omviz/Utils.hpp>
 
 namespace omviz
 {
@@ -10,12 +11,17 @@ OrganizationModelWidget::OrganizationModelWidget(QWidget* parent)
     : QTabWidget(parent)
     , mpOrganizationModel()
     , mUi(new Ui::OrganizationModelWidget())
+    , mCurrentWidgetItem(0)
 {
     mUi->setupUi(this);
     this->show();
 
     connect(mUi->pushButton_AddActor, SIGNAL(clicked()), this, SLOT(createNewFromModel()));
     connect(mUi->pushButton_Refresh, SIGNAL(clicked()), this, SLOT(refresh()));
+
+    connect(mUi->treeWidget_Plain, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(itemClicked(QTreeWidgetItem*, int)));
+    connect(mUi->treeWidget_AtomicActors, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(itemClicked(QTreeWidgetItem*, int)));
+    connect(mUi->treeWidget_CompositeActors, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(itemClicked(QTreeWidgetItem*, int)));
 }
 
 OrganizationModelWidget::~OrganizationModelWidget()
@@ -48,24 +54,26 @@ void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const ow
     }
 
     LOG_DEBUG_S << "Update: instances #" << instances.size();
+    QTreeWidgetItem* ontologyWidgetItem = Utils::createTreeWidgetItem("organization model");
+    treeWidget->insertTopLevelItem(0, ontologyWidgetItem);
 
     BOOST_FOREACH(const IRI& instance, instances)
     {
 
         QList<QTreeWidgetItem *> items;
 
-        QTreeWidgetItem* iri = createWidgetItem(instance.toString());
+        QTreeWidgetItem* iri = Utils::createTreeWidgetItem(instance.getFragment(), instance.toString());
 
         IRIList objectProperties = ontology->allObjectProperties();
         BOOST_FOREACH(const IRI& relation, objectProperties)
         {
             {
-                QTreeWidgetItem* relationItem = createWidgetItem(relation.toString());
+                QTreeWidgetItem* relationItem = Utils::createTreeWidgetItem(relation.getFragment(), relation.toString());
 
                 IRIList related = ontology->allRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
-                    QTreeWidgetItem* otherItem = createWidgetItem(other.toString());
+                    QTreeWidgetItem* otherItem = Utils::createTreeWidgetItem(other.getFragment(), other.toString());
                     relationItem->addChild(otherItem);
                 }
                 if(relationItem->childCount() != 0)
@@ -75,12 +83,12 @@ void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const ow
             }
 
             {
-                QTreeWidgetItem* relationItem = createWidgetItem("-" + relation.toString());
+                QTreeWidgetItem* relationItem = Utils::createTreeWidgetItem("-" + relation.getFragment(), "-" + relation.toString());
 
                 IRIList related = ontology->allInverseRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
-                    QTreeWidgetItem* otherItem = createWidgetItem(other.toString());
+                    QTreeWidgetItem* otherItem = Utils::createTreeWidgetItem(other.getFragment(), other.toString());
                     relationItem->addChild(otherItem);
                 }
                 if(relationItem->childCount() != 0)
@@ -89,17 +97,16 @@ void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const ow
                 }
             }
 
-
         }
 
         IRI className = ontology->typeOf(instance);
-        QTreeWidgetItem* typeOfLabel = createWidgetItem( owl_om::vocabulary::RDF::type().toString());
-        QTreeWidgetItem* iriClass = createWidgetItem(className.toString());
+        QTreeWidgetItem* typeOfLabel = Utils::createTreeWidgetItem(owl_om::vocabulary::RDF::type().getFragment(), owl_om::vocabulary::RDF::type().toString());
+        QTreeWidgetItem* iriClass = Utils::createTreeWidgetItem(className.getFragment(), className.toString());
         typeOfLabel->addChild(iriClass);
         iri->addChild(typeOfLabel);
 
         items.append(iri);
-        treeWidget->insertTopLevelItems(0,items);
+        ontologyWidgetItem->addChildren(items);
     }
 
     // Adapt to contents: column index start with 0 as usual
@@ -134,9 +141,32 @@ void OrganizationModelWidget::createNewFromModel()
     }
 }
 
-QTreeWidgetItem* OrganizationModelWidget::createWidgetItem(const std::string& label)
+void OrganizationModelWidget::itemClicked(QTreeWidgetItem* item, int column)
 {
-    return new QTreeWidgetItem( (QTreeWidget*) 0, QStringList(QString("%1").arg(label.c_str())) );
+    LOG_DEBUG_S << "Item active: " << item->data(0, Qt::DisplayRole).toString().toStdString();
+    mCurrentWidgetItem = item;
+
+    QTreeWidgetItem* parentInstanceItem = getParentInstance(item);
+    QString itemDataParent = parentInstanceItem->data(0, Qt::ToolTipRole).toString();
+    QString currentItemData = item->data(0, Qt::ToolTipRole).toString();
+
+    LOG_DEBUG_S << "Current selection changed: " << itemDataParent.toStdString();
+    emit currentSelectionChanged(itemDataParent, currentItemData);
+}
+
+QTreeWidgetItem* OrganizationModelWidget::getParentInstance(QTreeWidgetItem* item)
+{
+    if(!item->parent())
+    {
+        // top level root selected
+        return item;
+    } else if(!item->parent()->parent())
+    {
+        // second level root selected
+        return item;
+    } else {
+        return getParentInstance(item->parent());
+    }
 }
 
 } // end namespace omviz

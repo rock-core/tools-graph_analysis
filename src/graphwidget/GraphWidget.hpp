@@ -98,6 +98,7 @@ public slots:
     void zoomOut();
 
     void setLayout(QString layoutName);
+    void refresh();
 
 protected:
     void keyPressEvent(QKeyEvent *event);

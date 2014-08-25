@@ -11,7 +11,7 @@ namespace omviz
 class Utils
 {
 public:
-    static QTreeWidgetItem* createTreeWidgetItem(const std::string& label);
+    static QTreeWidgetItem* createTreeWidgetItem(const std::string& label, const std::string& data = "");
 };
 
 } // end namespace omviz

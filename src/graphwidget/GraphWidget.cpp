@@ -118,6 +118,12 @@ void GraphWidget::clear()
     mEdgeItemMap.clear();
     scene()->clear();
 }
+void GraphWidget::refresh()
+{
+    reset(true /*keepData*/);
+    updateFromGraph();
+    update();
+}
 
 void GraphWidget::updateFromGraph()
 {

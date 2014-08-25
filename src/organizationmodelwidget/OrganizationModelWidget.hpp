@@ -27,18 +27,25 @@ public:
 
 signals:
     void modelChanged();
+    // The item that is currently selected changed
+    void currentSelectionChanged(QString itemDataParent, QString itemDataSelection);
 
 public slots:
     void updateFromModel();
     void refresh();
     void createNewFromModel();
+    void itemClicked(QTreeWidgetItem* item, int column);
 
 private:
     QTreeWidgetItem* createWidgetItem(const std::string& label);
     void updateTreeWidget(QTreeWidget* treeWidget, const owl_om::IRI& modelType = owl_om::IRI(), bool directInstances = false);
 
+    QTreeWidgetItem* getParentInstance(QTreeWidgetItem* item);
+
     owl_om::OrganizationModel::Ptr mpOrganizationModel;
     Ui::OrganizationModelWidget* mUi;
+
+    QTreeWidgetItem* mCurrentWidgetItem;
 };
 
 } // end namespace omviz

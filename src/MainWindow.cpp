@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget* parent)
     mOrganizationModelWidget->show();
     mUiOmviz->dockWidget_Left->setWidget(mOrganizationModelWidget);
     connect(mOrganizationModelWidget, SIGNAL(modelChanged()), this, SLOT(organizationModelChanged()));
+    connect(mOrganizationModelWidget, SIGNAL(currentSelectionChanged(QString, QString)), this, SLOT(organizationModelSelectionChanged(QString, QString)));
 
     // RightTop dock widget
     mPropertiesWidget = new PropertiesWidget();
@@ -149,12 +150,36 @@ void MainWindow::updateFromModel()
     mGraphWidget->updateFromGraph();
 }
 
+void MainWindow::organizationModelSelectionChanged(QString parentItem, QString currentItem)
+{
+    std::string regex;
+    if(parentItem == QString(""))
+    {
+        regex = ".*";
+    } else {
+        regex = ".*" + owl_om::IRI(parentItem.toStdString()).getFragment() + ".*";
+    }
+
+    filters::VertexRegexFilter sourceNodeFilter(regex);
+    filters::VertexRegexFilter targetNodeFilter(".*");
+    filters::EdgeRegexFilter edgeFilter(".*");
+    EdgeContextFilter::Ptr filter( new filters::CombinedEdgeRegexFilter( sourceNodeFilter, edgeFilter, targetNodeFilter ));
+    std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
+    edgeFilters.push_back(filter);
+
+    LOG_DEBUG_S << "FILTER is: " << filter->toString();
+
+    mGraphWidget->setNodeFilters( mFilterWidget->getNodeFilters() );
+    mGraphWidget->setEdgeFilters(edgeFilters);
+    mGraphWidget->refresh();
+}
+
 void MainWindow::updateFilters()
 {
     mGraphWidget->setNodeFilters( mFilterWidget->getNodeFilters() );
     mGraphWidget->setEdgeFilters( mFilterWidget->getEdgeFilters() );
 
-    mGraphWidget->update();
+    mGraphWidget->refresh();
 }
 
 } // end namespace omviz

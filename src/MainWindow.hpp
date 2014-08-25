@@ -32,6 +32,7 @@ public:
 
 private slots:
     void organizationModelChanged();
+    void organizationModelSelectionChanged(QString parentItem, QString currentItem);
 
     void loadOntology();
     void updateFilters();
