@@ -8,7 +8,6 @@
 #include <graph_analysis/Edge.hpp>
 
 namespace graph_analysis {
-
 namespace filters {
 
 enum Type { CONTENT = 0, CLASS };
@@ -140,9 +139,6 @@ public:
         return false;
     }
 
-    virtual bool filterTarget(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterTarget is not implemented for: " + toString()); }
-    virtual bool filterSource(graph_analysis::Edge::Ptr e) const { throw std::runtime_error("graph_analysis::Filter::filterSource is not implemented for: " + toString()); }
-
     /**
      * \brief Apply only the main filter to the target object
      * \param o Filter object, i.e. target object to apply the filter on
@@ -150,16 +146,38 @@ public:
      */
     virtual bool apply(FilterObject o) const { return false; }
 
-private:
+protected:
     FilterList mFilters;
 };
 
-class EdgeFilter : public Filter< graph_analysis::Edge::Ptr >
+/**
+ * Interface definition for an edge context filter
+ * which allows to define whether the target / source node of a specific edge should be filtered
+ */
+class EdgeContextFilter : public Filter<graph_analysis::Edge::Ptr>
 {
 public:
-    virtual bool filterTarget(graph_analysis::Edge::Ptr e) const { return false; }
-    virtual bool filterSource(graph_analysis::Edge::Ptr e) const { return true; }
-};
+    typedef boost::shared_ptr<EdgeContextFilter> Ptr;
+
+    /**
+     * \brief Get Name of the filter
+     * \return name of the filter
+     */
+    virtual std::string getName() const { return "graph_analysis::EdgeContextFilter"; }
+
+    /**
+     * \brief Get string representation of filter
+     * \return name by default
+     */
+    virtual std::string toString() const { return getName(); }
+
+
+    virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return false; }
+    bool filterTarget(graph_analysis::Edge::Ptr e) const;
+
+    virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return false; }
+    bool filterSource(graph_analysis::Edge::Ptr e) const;
+}; 
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_FILTER_HPP

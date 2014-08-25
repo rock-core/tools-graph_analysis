@@ -187,29 +187,28 @@ DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilt
         for( GraphType::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
         {
             Edge::Ptr edge = mEdgeMap[a];
+
+            // By default enable all edges
+            subgraph.raw().enable(a);
+
+            EdgeContextFilter::Ptr contextFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(edgeFilter);
             if( edgeFilter->evaluate(edge) )
             {
-                LOG_DEBUG_S << "FILTER EDGE" << edgeFilter->toString();
-                subgraph.raw().disable(a);
-            } else {
-                subgraph.raw().enable(a);
-            }
+                // A context filter should apply to source / target nodes -- no need to filter this edge specifically then
+                if(contextFilter)
+                {
+                    if(contextFilter->filterTarget(edge))
+                    {
+                        subgraph.raw().disable( mGraph.target(a));
+                    }
 
-            // Check whether we should filter the target and source node
-            if( edgeFilter->filterTarget(edge))
-            {
-                LOG_DEBUG_S << "FILTER TARGET";
-                subgraph.raw().disable( mGraph.target(a));
-            } else {
-                subgraph.raw().enable( mGraph.target(a));
-            }
-
-            if( edgeFilter->filterSource(edge))
-            {
-                LOG_DEBUG_S << "FILTER SOURCE";
-                subgraph.raw().disable( mGraph.source(a));
-            } else {
-                subgraph.raw().enable( mGraph.source(a));
+                    if(contextFilter->filterSource(edge))
+                    {
+                        subgraph.raw().disable( mGraph.source(a));
+                    }
+                } else {
+                    subgraph.raw().disable(a);
+                }
             }
         }
     }

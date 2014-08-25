@@ -14,9 +14,17 @@ class DenyAll : public Filter<FilterObject>
 {
     virtual std::string getName() const { return "graph_analysis::filter::DenyAll"; }
     virtual bool apply(FilterObject o ) const { return true; }
+};
 
-    bool filterTarget(FilterObject o) const { return false; }
-    bool filterSource(FilterObject o) const { return false; }
+/**
+ * Filter edges
+ * \brief Inherits from edge context filter to make sure any subfilters of type EdgeContextFilter are properly applied
+ */
+template<>
+class DenyAll<graph_analysis::Edge::Ptr> : public EdgeContextFilter
+{
+    virtual std::string getName() const { return "graph_analysis::filter::DenyAll (Edges)"; }
+    virtual bool apply(graph_analysis::Edge::Ptr e) const { return true; }
 };
 
 /**
@@ -27,9 +35,17 @@ class PermitAll : public Filter<FilterObject>
 {
     virtual std::string getName() const { return "graph_analysis::filter::PermitAll"; }
     virtual bool apply(FilterObject o ) const { return false; }
+};
 
-    bool filterTarget(FilterObject o) const { return false; }
-    bool filterSource(FilterObject o) const { return false; }
+/**
+ * Filter that permits all edges
+ * \brief Inherits from edge context filter to make sure any subfilters of type EdgeContextFilter are properly applied
+ */
+template<>
+class PermitAll<graph_analysis::Edge::Ptr> : public EdgeContextFilter
+{
+    virtual std::string getName() const { return "graph_analysis::filter::PermitAll (Edges)"; }
+    virtual bool apply(graph_analysis::Edge::Ptr e) const { return false; }
 };
 
 } // end namespace filter

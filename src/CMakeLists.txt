@@ -2,6 +2,7 @@ find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
         Filter.cpp
+        filters/RegexFilters.cpp
         Graph.cpp
         GraphElement.cpp
         GraphIO.cpp
