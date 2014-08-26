@@ -38,6 +38,7 @@ public slots:
 
     void contextMenuDomain(const QPoint&);
     void contextMenuProblem(const QPoint&);
+    void saveAllToDirectory(const QString& directory) const;
 
 protected:
 
@@ -48,7 +49,7 @@ protected:
 
 private:
 
-    void saveToFile(const QString& filename, const QString& data);
+    void saveToFile(const QString& filename, const QString& data) const;
 
     QTreeWidgetItem* createWidgetItem(const std::string& label);
     QTreeWidgetItem* createActionsWidgetItem(const pddl_planner::representation::ActionList& actions);
@@ -64,6 +65,7 @@ private:
     pddl_planner::representation::Domain mDomain;
     pddl_planner::representation::Problem mProblem;
     pddl_planner::representation::Expression mGoal;
+    pddl_planner::PlanCandidates mCandidates;
     pddl_planner::Planning mPlanning;
     std::string mPlannerName;
 };

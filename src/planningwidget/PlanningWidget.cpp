@@ -61,7 +61,7 @@ void PlanningWidget::checkGoalExpression()
         QPalette pallete = textEdit->palette();
         pallete.setBrush(QPalette::Text, QBrush(Qt::black));
         textEdit->setPalette(pallete);
-
+        textEdit->setToolTip("This is a valid expression");
     } catch(const std::exception& e)
     {
         QPalette pallete = textEdit->palette();
@@ -76,9 +76,9 @@ void PlanningWidget::plan()
 {
     mProblem.setGoal(mGoal);
     try {
-        pddl_planner::PlanCandidates candidates = mPlanning.plan(mDomain, mProblem, mPlannerName);
-        LOG_DEBUG_S << "Planning towards goal" << mGoal.toLISP() << " result: " << candidates.toString();
-        populateSolutionsView(mUiPlanningWidget->treeWidget_Solutions, candidates);
+        mCandidates = mPlanning.plan(mDomain, mProblem, mPlannerName);
+        LOG_DEBUG_S << "Planning towards goal" << mGoal.toLISP() << " result: " << mCandidates.toString();
+        populateSolutionsView(mUiPlanningWidget->treeWidget_Solutions, mCandidates);
     } catch(const pddl_planner::PlanGenerationException& e)
     {
         LOG_WARN_S << "Planning failed: " << e.what();
@@ -88,37 +88,47 @@ void PlanningWidget::plan()
 void PlanningWidget::contextMenuDomain(const QPoint& position)
 {
     QMenu* menu = new QMenu("Save to file", this);
-    QAction* action = menu->addAction("Save domain file");
+    QAction* saveDomainAction = menu->addAction("Save domain file as ...");
+    QAction* saveAllAction = menu->addAction("Save all planning files under ...");
 
     QPoint displayPosition = mUiPlanningWidget->treeWidget_PDDLDomain->mapToGlobal(position);
     QAction* selectedAction = menu->exec(displayPosition);
     if(selectedAction)
     {
-        if(selectedAction == action)
+        if(selectedAction == saveDomainAction)
         {
             QString filename = QFileDialog::getSaveFileName(this, "Save to file", ".pddl");
             saveToFile(filename, QString(mDomain.toLISP().c_str()));
+        } else if(selectedAction == saveAllAction)
+        {
+            QString dirname = QFileDialog::getExistingDirectory(this, "Save planning files under ...", ".");
+            saveAllToDirectory(dirname);
         }
     }
 }
 void PlanningWidget::contextMenuProblem(const QPoint& position)
 {
     QMenu* menu = new QMenu("Save to file", this);
-    QAction* action = menu->addAction("Save problem file");
+    QAction* saveProblemAction = menu->addAction("Save problem file as ...");
+    QAction* saveAllAction = menu->addAction("Save all planning files under ...");
 
     QPoint displayPosition = mUiPlanningWidget->treeWidget_PDDLProblem->mapToGlobal(position);
     QAction* selectedAction = menu->exec(displayPosition);
     if(selectedAction)
     {
-        if(selectedAction == action)
+        if(selectedAction == saveProblemAction)
         {
             QString filename = QFileDialog::getSaveFileName(this, "Save to file", ".pddl");
             saveToFile(filename, QString(mProblem.toLISP().c_str()));
+        } else if(selectedAction == saveAllAction)
+        {
+            QString dirname = QFileDialog::getExistingDirectory(this, "Save planning files under ...", ".");
+            saveAllToDirectory(dirname);
         }
     }
 }
 
-void PlanningWidget::saveToFile(const QString& filename, const QString& data)
+void PlanningWidget::saveToFile(const QString& filename, const QString& data) const
 {
     if(filename == QString(""))
     {
@@ -131,6 +141,26 @@ void PlanningWidget::saveToFile(const QString& filename, const QString& data)
         QTextStream fout(&f);
         fout << data;
     }
+}
+
+void PlanningWidget::saveAllToDirectory(const QString& directory) const
+{
+    if(directory == QString(""))
+    {
+        return;
+    }
+
+    QString domainFilename = directory;
+    domainFilename.append("/").append("domain.pddl");
+    QString problemFilename = directory;
+    problemFilename.append("/").append("problem.pddl");
+
+    QString solutionFilename = directory;
+    solutionFilename.append("/").append("solution.pddl");
+
+    saveToFile(domainFilename, QString(mDomain.toLISP().c_str()));
+    saveToFile(problemFilename, QString(mProblem.toLISP().c_str()));
+    saveToFile(solutionFilename, QString(mCandidates.toString().c_str()));
 }
 
 void PlanningWidget::populateDomainView(QTreeWidget* domainView, const pddl_planner::representation::Domain& domain)
@@ -183,7 +213,6 @@ void PlanningWidget::populateProblemView(QTreeWidget* problemView, const pddl_pl
 
 void PlanningWidget::populateSolutionsView(QTreeWidget* solutionsView, const pddl_planner::PlanCandidates& candidates)
 {
-
     solutionsView->clear();
     QTreeWidgetItem* plansWidgetItem = createWidgetItem("plans");
     solutionsView->insertTopLevelItem(0, plansWidgetItem);
