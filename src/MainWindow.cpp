@@ -25,6 +25,7 @@
 #include "organizationmodelwidget/OrganizationModelWidget.hpp"
 #include "propertieswidget/PropertiesWidget.hpp"
 #include "filterwidget/FilterWidget.hpp"
+#include "Utils.hpp"
 
 using namespace graph_analysis;
 
@@ -157,7 +158,7 @@ void MainWindow::organizationModelSelectionChanged(QString parentItem, QString c
     {
         regex = ".*";
     } else {
-        regex = ".*" + owl_om::IRI(parentItem.toStdString()).getFragment() + ".*";
+        regex = Utils::escapeString( owl_om::IRI(parentItem.toStdString()).getFragment() );
     }
 
     filters::VertexRegexFilter sourceNodeFilter(regex);

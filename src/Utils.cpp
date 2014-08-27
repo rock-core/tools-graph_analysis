@@ -1,5 +1,6 @@
 #include "Utils.hpp"
 #include <QTreeWidget>
+#include <boost/algorithm/string.hpp>
 
 namespace omviz
 {
@@ -13,6 +14,17 @@ QTreeWidgetItem* Utils::createTreeWidgetItem(const std::string& label, const std
         item->setData(0, Qt::ToolTipRole, value);
     }
     return item;
+}
+
+std::string Utils::escapeString(const std::string& value)
+{
+    std::string txt = value;
+    boost::replace_all(txt, "/","\\/");
+    boost::replace_all(txt, "[","\\[");
+    boost::replace_all(txt, "]","\\]");
+    boost::replace_all(txt, "+","\\+");
+    boost::replace_all(txt, "*","\\*");
+    return txt;
 }
 
 }
