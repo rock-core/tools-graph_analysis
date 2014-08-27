@@ -47,6 +47,7 @@
 #include <math.h>
 #include <QKeyEvent>
 #include <QTime>
+#include <QApplication>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
 #include <graph_analysis/GraphView.hpp>
@@ -56,6 +57,7 @@
 
 #include <graph_analysis/lemon/Graph.hpp>
 #include <boost/foreach.hpp>
+#include <base/Time.hpp>
 
 using namespace graph_analysis;
 namespace gl = graph_analysis::lemon;
@@ -198,7 +200,14 @@ void GraphWidget::updateFromGraph()
 
     if(mLayout.toLower() != "force")
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
+        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
+        base::Time start = base::Time::now();
         mpGVGraph->applyLayout(mLayout.toStdString());
+        base::Time delay = base::Time::now() - start;
+        QApplication::restoreOverrideCursor();
+        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
 
         foreach(GVNode node, mpGVGraph->nodes())
         {
@@ -261,11 +270,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     //    break;
     case Qt::Key_Space:
     case Qt::Key_Enter:
-        {
-            reset(true /*keepData*/);
-            updateFromGraph();
-            update();
-        }
+            refresh();
     ////    shuffle();
         break;
     //default:

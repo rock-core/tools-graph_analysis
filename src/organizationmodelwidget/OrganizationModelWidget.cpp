@@ -1,7 +1,10 @@
 #include "OrganizationModelWidget.hpp"
 #include "ui_organization_model_widget.h"
-#include <boost/foreach.hpp>
 #include "AddActorDialog.hpp"
+
+#include <QApplication>
+#include <boost/foreach.hpp>
+#include <base/Time.hpp>
 #include <omviz/Utils.hpp>
 
 namespace omviz
@@ -117,7 +120,13 @@ void OrganizationModelWidget::refresh()
 {
     if(mpOrganizationModel)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        LOG_WARN_S << "Organization model going to be refreshed. Upper instance bound at: " << mpOrganizationModel->upperCombinationBound(); 
+        LOG_INFO_S << "Please wait ...";
         mpOrganizationModel->refresh();
+        QApplication::restoreOverrideCursor();
+        LOG_WARN_S << "Organization model updated.";
+        LOG_WARN_S << mpOrganizationModel->getStatistics().toString();
         emit modelChanged();
     }
 }
@@ -134,8 +143,8 @@ void OrganizationModelWidget::createNewFromModel()
 
         if( dialog.exec())
         {
-            IRI instance = mpOrganizationModel->createNewFromModel(vocabulary::OM::Actor(), dialog.getModel().toString(), true /* create dependant resources */);
-            LOG_DEBUG_S << "Created new actor: " << instance;
+            IRI instance = mpOrganizationModel->createNewFromModel(dialog.getModel().toString(), true /* create dependant resources */);
+            LOG_DEBUG_S << "Created new model instance: " << instance << " of type: " << mpOrganizationModel->ontology()->typeOf(instance);
             emit modelChanged();
         }
     }
