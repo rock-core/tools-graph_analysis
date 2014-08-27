@@ -80,9 +80,9 @@ int main(int argc, char **argv)
     using namespace owl_om;
     using namespace owl_om::vocabulary;
     {
-        om.createNewFromModel(OM::Actor(), OM::resolve("Sherpa"), true);
-        om.createNewFromModel(OM::Actor(), OM::resolve("CREX"), true);
-        om.createNewFromModel(OM::Actor(), OM::resolve("PayloadCamera"), true);
+        om.createNewFromModel(OM::resolve("Sherpa"), true);
+        om.createNewFromModel(OM::resolve("CREX"), true);
+        om.createNewFromModel(OM::resolve("PayloadCamera"), true);
         om.refresh();
     }
 
