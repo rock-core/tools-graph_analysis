@@ -126,7 +126,7 @@ void OrganizationModelWidget::refresh()
         mpOrganizationModel->refresh();
         QApplication::restoreOverrideCursor();
         LOG_WARN_S << "Organization model updated.";
-        LOG_WARN_S << mpOrganizationModel->getStatistics().toString();
+        LOG_WARN_S << mpOrganizationModel->getStatistics();
         emit modelChanged();
     }
 }
