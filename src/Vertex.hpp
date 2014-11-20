@@ -16,6 +16,10 @@ class Vertex : public GraphElement
 {
 public:
 
+    Vertex();
+
+    Vertex(const std::string& name);
+
     typedef boost::shared_ptr< Vertex > Ptr;
 
     // Get class name
@@ -23,9 +27,12 @@ public:
     virtual std::string getClassName() const { return "graph_analysis::Vertex"; }
 
     /**
-     * Convert element to String
+     * Convert element to string
      */
-    virtual std::string toString() const { return getClassName(); }
+    virtual std::string toString() const;
+
+protected:
+    std::string mName;
 };
 
 } // end namespace graph_analysis
