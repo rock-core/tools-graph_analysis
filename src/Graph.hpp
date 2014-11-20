@@ -17,8 +17,8 @@ namespace graph_analysis
 /**
  * \brief General Graph template that should be implemented to wrap specific graph library
  * functionality
- * We assume than all graph implementation will rely and allow access to nodes and edges via
- * integer
+ * We assume that all graph implementations will rely and allow access to nodes and edges via
+ * integers
  */
 class BaseGraph : public VertexIterable, public EdgeIterable
 {
