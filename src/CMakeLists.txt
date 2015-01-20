@@ -1,6 +1,7 @@
 find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
+        algorithms/CorrelationClustering.cpp
         Edge.cpp
         Filter.cpp
         filters/RegexFilters.cpp
@@ -12,6 +13,7 @@ rock_library(graph_analysis
         Vertex.cpp
         WeightedEdge.cpp
     HEADERS
+        algorithms/CorrelationClustering.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
         EdgeIterator.hpp
@@ -23,7 +25,6 @@ rock_library(graph_analysis
         GraphElement.hpp
         GraphIO.hpp
         GraphView.hpp
-        algorithms/CorrelationClustering.hpp
         io/GexfWriter.hpp
         lemon/ArcIterator.hpp
         lemon/Graph.hpp
