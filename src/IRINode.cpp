@@ -1,8 +1,11 @@
 #include "IRINode.hpp"
+#include <owl_om/owlapi/model/OWLOntologyAsk.hpp>
+
+using namespace owlapi::model;
 
 namespace omviz {
 
-IRINode::IRINode(const owl_om::IRI& iri, owl_om::Ontology::Ptr ontology)
+IRINode::IRINode(const IRI& iri, OWLOntology::Ptr ontology)
     : mIri(iri)
     , mpOntology(ontology)
 {
@@ -15,7 +18,8 @@ IRINode::IRINode(const owl_om::IRI& iri, owl_om::Ontology::Ptr ontology)
 std::string IRINode::getClassName() const
 {
     try {
-        owl_om::IRI iri = mpOntology->typeOf(mIri);
+        OWLOntologyAsk ask(mpOntology);
+        IRI iri = ask.typeOf(mIri);
         return iri.toString();
     } catch(const std::runtime_error& e)
     {

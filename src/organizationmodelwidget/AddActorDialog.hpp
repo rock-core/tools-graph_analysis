@@ -19,10 +19,10 @@ public:
     AddActorDialog(QWidget* parent = 0, Qt::WindowFlags flags = 0);
     ~AddActorDialog();
 
-    void setModelList(const owl_om::IRIList& iriList);
+    void setModelList(const owlapi::model::IRIList& iriList);
 
- //   owl_om::IRI getInstance() const { return mInstance; }
-    owl_om::IRI getModel() const { return mModel; }
+ //   owlapi::model::IRI getInstance() const { return mInstance; }
+    owlapi::model::IRI getModel() const { return mModel; }
 
 public slots:
     void checkAndStoreValues();
@@ -30,8 +30,8 @@ public slots:
 private: 
     Ui::AddActorDialog* mUi;
 
-  //  owl_om::IRI mInstance;
-    owl_om::IRI mModel;
+  //  owlapi::model::IRI mInstance;
+    owlapi::model::IRI mModel;
 };
 
 } // end namespace omviz

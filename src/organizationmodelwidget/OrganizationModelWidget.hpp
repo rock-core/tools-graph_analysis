@@ -38,7 +38,7 @@ public slots:
 
 private:
     QTreeWidgetItem* createWidgetItem(const std::string& label);
-    void updateTreeWidget(QTreeWidget* treeWidget, const owl_om::IRI& modelType = owl_om::IRI(), bool directInstances = false);
+    void updateTreeWidget(QTreeWidget* treeWidget, const owlapi::model::IRI& modelType = owlapi::model::IRI(), bool directInstances = false);
 
     QTreeWidgetItem* getParentInstance(QTreeWidgetItem* item);
 

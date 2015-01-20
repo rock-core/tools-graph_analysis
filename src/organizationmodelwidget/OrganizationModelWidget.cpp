@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
+#include <base/Logging.hpp>
 #include <omviz/Utils.hpp>
 
 namespace omviz
@@ -36,24 +37,26 @@ OrganizationModelWidget::~OrganizationModelWidget()
 void OrganizationModelWidget::updateFromModel()
 { 
     using namespace owl_om;
-    using namespace owl_om::vocabulary;
+    using namespace owlapi::vocabulary;
 
     updateTreeWidget(mUi->treeWidget_Plain);
     updateTreeWidget(mUi->treeWidget_AtomicActors, OM::Actor(), true/*directInstances only*/);
     updateTreeWidget(mUi->treeWidget_CompositeActors, OM::CompositeActor(), true/*directInstances only*/);
 }
 
-void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const owl_om::IRI& modelType, bool directInstances)
+void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const owlapi::model::IRI& modelType, bool directInstances)
 {
-    treeWidget->clear();
     using namespace owl_om;
-    Ontology::Ptr ontology = mpOrganizationModel->ontology();
+    using namespace owlapi::model;
+
+    treeWidget->clear();
+    OWLOntologyAsk ask( mpOrganizationModel->ontology() );
     IRIList instances;
     if(modelType.empty())
     {
-        instances = ontology->allInstances();
+        instances = ask.allInstances();
     } else {
-        instances = ontology->allInstancesOf(modelType, directInstances);
+        instances = ask.allInstancesOf(modelType, directInstances);
     }
 
     LOG_DEBUG_S << "Update: instances #" << instances.size();
@@ -67,13 +70,13 @@ void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const ow
 
         QTreeWidgetItem* iri = Utils::createTreeWidgetItem(instance.getFragment(), instance.toString());
 
-        IRIList objectProperties = ontology->allObjectProperties();
+        IRIList objectProperties = ask.allObjectProperties();
         BOOST_FOREACH(const IRI& relation, objectProperties)
         {
             {
                 QTreeWidgetItem* relationItem = Utils::createTreeWidgetItem(relation.getFragment(), relation.toString());
 
-                IRIList related = ontology->allRelatedInstances(instance, relation);
+                IRIList related = ask.allRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
                     QTreeWidgetItem* otherItem = Utils::createTreeWidgetItem(other.getFragment(), other.toString());
@@ -88,7 +91,7 @@ void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const ow
             {
                 QTreeWidgetItem* relationItem = Utils::createTreeWidgetItem("-" + relation.getFragment(), "-" + relation.toString());
 
-                IRIList related = ontology->allInverseRelatedInstances(instance, relation);
+                IRIList related = ask.allInverseRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
                     QTreeWidgetItem* otherItem = Utils::createTreeWidgetItem(other.getFragment(), other.toString());
@@ -102,8 +105,8 @@ void OrganizationModelWidget::updateTreeWidget(QTreeWidget* treeWidget, const ow
 
         }
 
-        IRI className = ontology->typeOf(instance);
-        QTreeWidgetItem* typeOfLabel = Utils::createTreeWidgetItem(owl_om::vocabulary::RDF::type().getFragment(), owl_om::vocabulary::RDF::type().toString());
+        IRI className = ask.typeOf(instance);
+        QTreeWidgetItem* typeOfLabel = Utils::createTreeWidgetItem(owlapi::vocabulary::RDF::type().getFragment(), owlapi::vocabulary::RDF::type().toString());
         QTreeWidgetItem* iriClass = Utils::createTreeWidgetItem(className.getFragment(), className.toString());
         typeOfLabel->addChild(iriClass);
         iri->addChild(typeOfLabel);
@@ -121,12 +124,13 @@ void OrganizationModelWidget::refresh()
     if(mpOrganizationModel)
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
-        LOG_WARN_S << "Organization model going to be refreshed. Upper instance bound at: " << mpOrganizationModel->upperCombinationBound(); 
-        LOG_INFO_S << "Please wait ...";
-        mpOrganizationModel->refresh();
-        QApplication::restoreOverrideCursor();
-        LOG_WARN_S << "Organization model updated.";
-        LOG_WARN_S << mpOrganizationModel->getStatistics();
+        LOG_WARN_S << "Organization model code disabled";
+        //LOG_WARN_S << "Organization model going to be refreshed. Upper instance bound at: " << mpOrganizationModel->upperCombinationBound(); 
+        //LOG_INFO_S << "Please wait ...";
+        //mpOrganizationModel->refresh();
+        //QApplication::restoreOverrideCursor();
+        //LOG_WARN_S << "Organization model updated.";
+        //LOG_WARN_S << mpOrganizationModel->getStatistics();
         emit modelChanged();
     }
 }
@@ -134,17 +138,21 @@ void OrganizationModelWidget::refresh()
 void OrganizationModelWidget::createNewFromModel()
 {
     using namespace owl_om;
+    using namespace owlapi::model;
 
     if(mpOrganizationModel)
     {
         AddActorDialog dialog(this);
-        IRIList actorModels = mpOrganizationModel->ontology()->allInstancesOf(vocabulary::OM::ActorModel(), true);
+        OWLOntologyAsk ask(mpOrganizationModel->ontology());
+        IRIList actorModels = ask.allInstancesOf(owlapi::vocabulary::OM::ActorModel(), true);
         dialog.setModelList(actorModels);
 
         if( dialog.exec())
         {
-            IRI instance = mpOrganizationModel->createNewFromModel(dialog.getModel().toString(), true /* create dependant resources */);
-            LOG_DEBUG_S << "Created new model instance: " << instance << " of type: " << mpOrganizationModel->ontology()->typeOf(instance);
+
+            LOG_WARN_S << "OrganizationModelWidget code disabled";
+            //IRI instance = mpOrganizationModel->createNewFromModel(dialog.getModel().toString(), true /* create dependant resources */);
+            // LOG_DEBUG_S << "Created new model instance: " << instance << " of type: " << ask.typeOf(instance);
             emit modelChanged();
         }
     }

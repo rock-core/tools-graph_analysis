@@ -7,6 +7,7 @@
 #include <QTextStream>
 
 #include <boost/foreach.hpp>
+#include <base/Logging.hpp>
 #include "PlanningProblemDialog.hpp"
 
 namespace omviz {

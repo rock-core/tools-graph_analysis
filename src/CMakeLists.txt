@@ -55,7 +55,7 @@ rock_library(omviz
         organizationmodelwidget/OrganizationModelWidget.hpp
         organizationmodelwidget/AddActorDialog.hpp
         propertieswidget/PropertiesWidget.hpp
-    DEPS_PKGCONFIG graph_analysis owl_om
+    DEPS_PKGCONFIG graph_analysis owl_om owlapi
     DEPS_PLAIN Boost_REGEX
     UI
         ui/add_actor_dialog.ui

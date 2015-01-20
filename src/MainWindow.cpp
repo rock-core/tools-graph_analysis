@@ -108,19 +108,21 @@ void MainWindow::loadOntology()
 void MainWindow::updateFromModel()
 {
     // Create instances of models
-    using namespace owl_om;
+    using namespace owlapi::model;
+
     // Prepare graph widget to load new ontology
     mGraphWidget->reset();
 
-    Ontology::Ptr ontology = mpOrganizationModel->ontology();
+    OWLOntology::Ptr ontology = mpOrganizationModel->ontology();
+    OWLOntologyAsk ask(ontology);
 
     // Create edges for all relations
     {
         using namespace owl_om;
         std::map<IRI, omviz::IRINode::Ptr> iriNodeMap;
         {
-            owl_om::IRIList instances = ontology->allInstances();
-            BOOST_FOREACH(const owl_om::IRI& instance, instances)
+            IRIList instances = ask.allInstances();
+            BOOST_FOREACH(const IRI& instance, instances)
             {
                 omviz::IRINode::Ptr node(new IRINode(instance, ontology));
                 mGraphWidget->addVertex(node);
@@ -129,13 +131,13 @@ void MainWindow::updateFromModel()
             }
         }
 
-        IRIList instances = ontology->allInstances();
+        IRIList instances = ask.allInstances();
         BOOST_FOREACH(const IRI& instance, instances)
         {
-            IRIList objectProperties = ontology->allObjectProperties();
+            IRIList objectProperties = ask.allObjectProperties();
             BOOST_FOREACH(const IRI& relation, objectProperties)
             {
-                IRIList related = ontology->allRelatedInstances(instance, relation);
+                IRIList related = ask.allRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
                     omviz::IRIEdge::Ptr edge(new IRIEdge(relation, ontology));
@@ -158,7 +160,7 @@ void MainWindow::organizationModelSelectionChanged(QString parentItem, QString c
     {
         regex = ".*";
     } else {
-        regex = Utils::escapeString( owl_om::IRI(parentItem.toStdString()).getFragment() );
+        regex = Utils::escapeString( owlapi::model::IRI(parentItem.toStdString()).getFragment() );
     }
 
     filters::VertexRegexFilter sourceNodeFilter(regex);

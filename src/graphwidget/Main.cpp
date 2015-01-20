@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
     GraphWidget* widget = new GraphWidget;
 
-    owl_om::Ontology::Ptr ontology;
+    owlapi::model::OWLOntology::Ptr ontology;
     owl_om::OrganizationModel om;
 
     if(argc == 2)
@@ -78,21 +78,23 @@ int main(int argc, char **argv)
 
     // Create instances of models
     using namespace owl_om;
-    using namespace owl_om::vocabulary;
-    {
-        om.createNewFromModel(OM::resolve("Sherpa"), true);
-        om.createNewFromModel(OM::resolve("CREX"), true);
-        om.createNewFromModel(OM::resolve("PayloadCamera"), true);
-        om.refresh();
-    }
+    // TODO: SCHOKO remove code
+    //using namespace owlapi::vocabulary;
+    //{
+    //    om.createNewFromModel(OM::resolve("Sherpa"), true);
+    //    om.createNewFromModel(OM::resolve("CREX"), true);
+    //    om.createNewFromModel(OM::resolve("PayloadCamera"), true);
+    //    om.refresh();
+    //}
 
     // Create edges for all relations
     {
-        using namespace owl_om;
+        using namespace owlapi::model;
+        OWLOntologyAsk ask(ontology);
         std::map<IRI, omviz::IRINode::Ptr> iriNodeMap;
         {
-            owl_om::IRIList instances = ontology->allInstances();
-            BOOST_FOREACH(const owl_om::IRI& instance, instances)
+            IRIList instances = ask.allInstances();
+            BOOST_FOREACH(const IRI& instance, instances)
             {
                 omviz::IRINode::Ptr node(new IRINode(instance, ontology));
                 widget->addVertex(node);
@@ -101,13 +103,13 @@ int main(int argc, char **argv)
             }
         }
 
-        IRIList instances = ontology->allInstances();
+        IRIList instances = ask.allInstances();
         BOOST_FOREACH(const IRI& instance, instances)
         {
-            IRIList objectProperties = ontology->allObjectProperties();
+            IRIList objectProperties = ask.allObjectProperties();
             BOOST_FOREACH(const IRI& relation, objectProperties)
             {
-                IRIList related = ontology->allRelatedInstances(instance, relation);
+                IRIList related = ask.allRelatedInstances(instance, relation);
                 BOOST_FOREACH(const IRI& other, related)
                 {
                     omviz::IRIEdge::Ptr edge(new IRIEdge(relation, ontology));

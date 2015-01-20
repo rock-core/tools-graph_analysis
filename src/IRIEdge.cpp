@@ -1,8 +1,10 @@
 #include "IRIEdge.hpp"
 
+using namespace owlapi::model;
+
 namespace omviz {
 
-IRIEdge::IRIEdge(const owl_om::IRI& iri, owl_om::Ontology::Ptr ontology)
+IRIEdge::IRIEdge(const IRI& iri, OWLOntology::Ptr ontology)
     : mIri(iri)
     , mpOntology(ontology)
 {

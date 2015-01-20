@@ -20,9 +20,9 @@ AddActorDialog::~AddActorDialog()
     delete mUi;
 }
 
-void AddActorDialog::setModelList(const owl_om::IRIList& iriList)
+void AddActorDialog::setModelList(const owlapi::model::IRIList& iriList)
 {
-    BOOST_FOREACH(const owl_om::IRI& iri, iriList)
+    BOOST_FOREACH(const owlapi::model::IRI& iri, iriList)
     {
         mUi->comboBox_Models->addItem( QString( iri.getFragment().c_str()) );
     }
@@ -34,8 +34,8 @@ void AddActorDialog::checkAndStoreValues()
     QString modelType = mUi->comboBox_Models->currentText();
     if( /*modelLabel != QString("") && */ modelType != QString(""))
     {
-        //mInstance = owl_om::vocabulary::OM::resolve(modelLabel.toStdString());
-        mModel = owl_om::vocabulary::OM::resolve(modelType.toStdString());
+        //mInstance = owlapi::vocabulary::OM::resolve(modelLabel.toStdString());
+        mModel = owlapi::vocabulary::OM::resolve(modelType.toStdString());
     }
 }
 
