@@ -1,20 +1,34 @@
-#ifndef OMVIZmpGraphWIDGET_GVGRAPH_HPP
-#define OMVIZmpGraphWIDGET_GVGRAPH_HPP
+#ifndef OMVIZ_GRAPHWIDGET_GVGRAPH_HPP
+#define OMVIZ_GRAPHWIDGET_GVGRAPH_HPP
 
 #include <graphviz/gvc.h>
 #include <QFont>
 #include <QGraphicsItem>
 
+// http://graphviz.org/doc/libguide/libguide.pdf
 // The agopen method for opening a graph
+//
 // AGRAPH, AGDIGRAPH, AGRAPHSTRICT, AGDIGRAPHSTRICT
-static inline Agraph_t* _agopen(QString name, int kind)
+// version >= 2.36
+// Agundirected, Agstrictundirected, Agdirected, Agstrictdirected
+static inline Agraph_t* _agopen(QString name, Agdesc_t kind)
 {
-    return agopen(const_cast<char *>(qPrintable(name)), kind);
+    // extern Agraph_t *agopen(char *name, Agdesc_t desc, Agdisc_t * disc);
+    // first arg: graph
+    // second arg: type of graph
+    // third arg: (optional) referenc to functions for reading, memory, etc. -- 
+    //    0 for default
+    return agopen(const_cast<char *>(qPrintable(name)), kind, 0);
 }
 
 static inline Agnode_t* _agnode(Agraph_t* g, QString name)
 {
-    return agnode(g, const_cast<char*>(qPrintable(name)));
+    return agnode(g, const_cast<char*>(qPrintable(name)), true);
+}
+
+static inline Agedge_t* _agedge(Agraph_t* g, Agnode_t* node0, Agnode_t* node1, QString name, bool create)
+{
+    return agedge(g, node0, node1, const_cast<char*>(qPrintable(name)), create);
 }
 
 namespace omviz {
@@ -118,7 +132,7 @@ public:
     void clearNodes();
 
     /// Add and remove edges
-    void addEdge(const QString& source, const QString& target);
+    void addEdge(const QString& source, const QString& target, const QString& label = "");
     void removeEdge(const QString& source, const QString& target);
     void removeEdge(const QPair<QString, QString>& key);
     void clearEdges();
@@ -156,4 +170,4 @@ private:
 };
 
 } // end namespace omviz
-#endif // OMVIZmpGraphWIDGET_GVGRAPH_HPP
+#endif // OMVIZ_GRAPHWIDGET_GVGRAPH_HPP
