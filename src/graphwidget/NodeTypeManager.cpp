@@ -15,7 +15,8 @@ NodeTypeManager::NodeTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
         ("default", dynamic_cast<NodeItem*>(new graphitem::Resource()))
-        ("graph_analysis::Vertex", dynamic_cast<NodeItem*>(new graphitem::Simple()))
+        // Change behaviour and appearance of edge if needed
+        // ("graph_analysis::Vertex", dynamic_cast<NodeItem*>(new graphitem::Simple()))
     ;
 }
 
@@ -44,10 +45,11 @@ NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type)
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
-        // LOG_DEBUG_S << "omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
+        LOG_DEBUG_S << "omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
         return mClassVisualizationMap["default"];
     }
-    
+
+    LOG_DEBUG_S << "omviz::NodeTypeManager::graphicsItemByType: type '" + type + "' registered.";
     return it->second;
 }
 

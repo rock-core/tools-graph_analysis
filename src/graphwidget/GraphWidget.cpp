@@ -71,7 +71,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mTimerId(0)
     , mLayout("dot")
     , mpVertexFilter(new graph_analysis::Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new graph_analysis::EdgeContextFilter)
+    , mpEdgeFilter(new graph_analysis::EdgeContextFilter())
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));

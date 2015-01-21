@@ -45,12 +45,8 @@
 #include <QTime>
 #include <QMainWindow>
 
-#include <omviz/IRINode.hpp>
-#include <omviz/IRIEdge.hpp>
 #include <omviz/graphwidget/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
-
-#include <owl_om/OrganizationModel.hpp>
 
 int main(int argc, char **argv)
 {
@@ -60,70 +56,21 @@ int main(int argc, char **argv)
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     GraphWidget* widget = new GraphWidget;
+    widget->reset();
 
-    owlapi::model::OWLOntology::Ptr ontology;
-    owl_om::OrganizationModel om;
+    graph_analysis::Vertex::Ptr v0(new graph_analysis::Vertex());
+    graph_analysis::Vertex::Ptr v1(new graph_analysis::Vertex());
+    graph_analysis::Edge::Ptr edge(new graph_analysis::Edge());
 
-    if(argc == 2)
-    {
-        qDebug("Loading from file %s",argv[1]);
-//        ontology = owl_om::Ontology::fromFile(argv[1]);
-        om = owl_om::OrganizationModel(argv[1]);
-        ontology = om.ontology();
+    edge->setSourceVertex(v0);
+    edge->setTargetVertex(v1);
 
-    } else {
-        printf("Usage: %s <file>", argv[0]);
-        exit(-1);
-    }
+    widget->addVertex(v0);
+    widget->addVertex(v1);
+    widget->addEdge(edge);
 
-    // Create instances of models
-    using namespace owl_om;
-    // TODO: SCHOKO remove code
-    //using namespace owlapi::vocabulary;
-    //{
-    //    om.createNewFromModel(OM::resolve("Sherpa"), true);
-    //    om.createNewFromModel(OM::resolve("CREX"), true);
-    //    om.createNewFromModel(OM::resolve("PayloadCamera"), true);
-    //    om.refresh();
-    //}
-
-    // Create edges for all relations
-    {
-        using namespace owlapi::model;
-        OWLOntologyAsk ask(ontology);
-        std::map<IRI, omviz::IRINode::Ptr> iriNodeMap;
-        {
-            IRIList instances = ask.allInstances();
-            BOOST_FOREACH(const IRI& instance, instances)
-            {
-                omviz::IRINode::Ptr node(new IRINode(instance, ontology));
-                widget->addVertex(node);
-
-                iriNodeMap[instance] = node;
-            }
-        }
-
-        IRIList instances = ask.allInstances();
-        BOOST_FOREACH(const IRI& instance, instances)
-        {
-            IRIList objectProperties = ask.allObjectProperties();
-            BOOST_FOREACH(const IRI& relation, objectProperties)
-            {
-                IRIList related = ask.allRelatedInstances(instance, relation);
-                BOOST_FOREACH(const IRI& other, related)
-                {
-                    omviz::IRIEdge::Ptr edge(new IRIEdge(relation, ontology));
-                    // get IRINodes by IRI
-                    edge->setSourceVertex( iriNodeMap[instance] );
-                    edge->setTargetVertex( iriNodeMap[other] );
-
-                    widget->addEdge(edge);
-                }
-            }
-        }
-    }
     widget->updateFromGraph();
-    //widget->shuffle();
+    widget->shuffle();
 
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);

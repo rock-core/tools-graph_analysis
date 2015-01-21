@@ -31,11 +31,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void organizationModelChanged();
-    void organizationModelSelectionChanged(QString parentItem, QString currentItem);
-
-    void loadOntology();
-    void updateFilters();
     void updateFromModel();
 
 private:
@@ -43,10 +38,6 @@ private:
     owl_om::OrganizationModel::Ptr mpOrganizationModel;
 
     GraphWidget* mGraphWidget;
-    PlanningWidget* mPlanningWidget;
-    OrganizationModelWidget* mOrganizationModelWidget;
-    PropertiesWidget* mPropertiesWidget;
-    FilterWidget* mFilterWidget;
 };
 
 } // end namespace omviz
