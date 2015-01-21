@@ -39,3 +39,40 @@ rock_executable(graph_analysis_bin Main.cpp
     DEPS graph_analysis
     DEPS_PLAIN rt)
 
+rock_library(graph_analysis_gui
+    SOURCES
+      gui/EdgeItem.cpp
+      gui/EdgeTypeManager.cpp
+      gui/GraphWidget.cpp
+      gui/NodeItem.cpp
+      gui/NodeTypeManager.cpp
+      gui/graphitem/Simple.cpp
+      gui/graphitem/Resource.cpp
+      gui/graphitem/edges/Simple.cpp
+      gui/GVGraph.cpp
+      #Utils.cpp
+    HEADERS
+      gui/EdgeItem.hpp
+      gui/EdgeTypeManager.hpp
+      gui/GraphWidget.hpp
+      gui/NodeItem.hpp
+      gui/NodeTypeManager.hpp
+      gui/filters/Filters.hpp
+      gui/graphitem/Label.hpp
+      gui/graphitem/Simple.hpp
+      gui/graphitem/Resource.hpp
+      gui/graphitem/edges/Simple.hpp
+      gui/GVGraph.hpp
+      #Utils.hpp
+    MOC
+        gui/GraphWidget.hpp
+    DEPS graph_analysis
+    DEPS_PLAIN Boost_REGEX
+    UI
+        gui/graph_analysis_gui.ui
+)
+target_link_libraries(graph_analysis_gui gvc)
+rock_executable(graph_analysis_gui-bin gui/Main.cpp
+    DEPS graph_analysis_gui)
+
+
