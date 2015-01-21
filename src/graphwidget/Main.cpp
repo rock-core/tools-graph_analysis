@@ -47,6 +47,7 @@
 
 #include <omviz/graphwidget/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
+#include <graph_analysis/filters/RegexFilters.hpp>
 
 int main(int argc, char **argv)
 {
@@ -58,9 +59,19 @@ int main(int argc, char **argv)
     GraphWidget* widget = new GraphWidget;
     widget->reset();
 
-    graph_analysis::Vertex::Ptr v0(new graph_analysis::Vertex());
-    graph_analysis::Vertex::Ptr v1(new graph_analysis::Vertex());
-    graph_analysis::Edge::Ptr edge(new graph_analysis::Edge());
+    using namespace graph_analysis;
+
+    filters::VertexRegexFilter sourceNodeFilter(".*");
+    filters::VertexRegexFilter targetNodeFilter(".*");
+    filters::EdgeRegexFilter edgeFilter(".*");
+
+    EdgeContextFilter::Ptr filter(new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
+    std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
+    edgeFilters.push_back(filter);
+
+    Vertex::Ptr v0(new Vertex());
+    Vertex::Ptr v1(new Vertex());
+    Edge::Ptr edge(new Edge());
 
     edge->setSourceVertex(v0);
     edge->setTargetVertex(v1);
@@ -69,8 +80,8 @@ int main(int argc, char **argv)
     widget->addVertex(v1);
     widget->addEdge(edge);
 
+    widget->setEdgeFilters(edgeFilters);
     widget->updateFromGraph();
-    widget->shuffle();
 
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);
