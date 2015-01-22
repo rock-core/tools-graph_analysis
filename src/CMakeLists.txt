@@ -57,7 +57,6 @@ rock_library(graph_analysis_gui
       gui/GraphWidget.hpp
       gui/NodeItem.hpp
       gui/NodeTypeManager.hpp
-      gui/filters/Filters.hpp
       gui/graphitem/Label.hpp
       gui/graphitem/Simple.hpp
       gui/graphitem/Resource.hpp
