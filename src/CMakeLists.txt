@@ -1,6 +1,8 @@
 find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
+        algorithms/CorrelationClustering.cpp
+        Edge.cpp
         Filter.cpp
         filters/RegexFilters.cpp
         Graph.cpp
@@ -8,7 +10,10 @@ rock_library(graph_analysis
         GraphIO.cpp
         io/GexfWriter.cpp
         lemon/Graph.cpp
+        Vertex.cpp
+        WeightedEdge.cpp
     HEADERS
+        algorithms/CorrelationClustering.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
         EdgeIterator.hpp
@@ -29,11 +34,13 @@ rock_library(graph_analysis
         snap/NodeIterator.hpp
         Vertex.hpp
         VertexIterator.hpp
+        WeightedEdge.hpp
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf
+        lemon snap base-lib gexf numeric
     DEPS_PLAIN
         Boost_REGEX
 )
+target_link_libraries(graph_analysis glpk)
 
 rock_executable(graph_analysis_bin Main.cpp
     DEPS graph_analysis
@@ -72,7 +79,7 @@ rock_library(graph_analysis_gui
         gui/graph_analysis_gui.ui
 )
 target_link_libraries(graph_analysis_gui gvc)
+
 rock_executable(graph_analysis_gui-bin gui/Main.cpp
     DEPS graph_analysis_gui)
-
 

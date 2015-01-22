@@ -7,34 +7,27 @@
 namespace graph_analysis {
 
 /**
- * \brief A EdgeProperty can be associated with a edge to store additional data.
- * \details For the purpose of storing data with a edge, the storage type needs to inherit
- * from this class
- * \tparam GraphType The GraphType the edge belongs to
- * \tparam EdgeType The edge type the property will be associated with
+ * \brief An Edge represents the link between two vertices
+ * \details For the purpose of storing data in a edge, the storage type needs to be defined by inheriting
+ * from this class, some default implementations exists
  */
 class Edge : public GraphElement
 {
 public:
-    Edge()
-        : GraphElement()
-    {}
-
-    Edge(Vertex::Ptr source, Vertex::Ptr target)
-        : mSourceVertex(source)
-        , mTargetVertex(target)
-    {}
+    Edge();
+    Edge(Vertex::Ptr source, Vertex::Ptr target);
 
     typedef boost::shared_ptr< Edge > Ptr;
 
     // Get class name
     // \return class name
-    virtual std::string getClassName() const { return "graph_analysis::EdgeProperty"; }
+    virtual std::string getClassName() const;
 
     /**
-     * Convert element to String
+     * Convert element to string
+     * \return string representation of edge
      */
-    virtual std::string toString() const { return getClassName(); }
+    virtual std::string toString() const;
 
     /**
      * Get the source vertex
@@ -62,4 +55,4 @@ private:
 };
 
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_EDGE_PROPERTY_HPP
+#endif // GRAPH_ANALYSIS_EDGE_HPP
