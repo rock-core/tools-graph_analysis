@@ -12,6 +12,15 @@
 namespace graph_analysis {
 namespace algorithms {
 
+typedef boost::function1<double, Edge::Ptr> EdgeWeightFunction;
+
+struct Ball
+{
+    graph_analysis::BaseGraph::Ptr graph;
+    double radius;
+    double volume;
+};
+
 /**
  * \details
  * This is an implementation of the correlation clustering as described in:
@@ -22,13 +31,13 @@ namespace algorithms {
  * as label <+>/<-> to describe similarity.
  *
  * To solve the resulting integer program the GLPK (GNU Linear Programming Kit) is used
+ * \verbatim
+ \endverbatim
  *
  */
-typedef boost::function1<double, Edge::Ptr> EdgeWeightFunction;
-
 class CorrelationClustering
 {
-    graph_analysis::BaseGraph* mpGraph;
+    graph_analysis::BaseGraph::Ptr mpGraph;
     EdgeWeightFunction mEdgeWeightFunction;
 
     std::map<Edge::Ptr, double> mEdgeActivation;
@@ -37,14 +46,18 @@ class CorrelationClustering
     glp_prob* mpProblem;
     size_t mTotalNumberOfColumns;
 
+    double mInitialVolume;
+    double mConstant;
+
     void prepare();
     void solve();
-    void round();
 
 public:
-    CorrelationClustering(BaseGraph* graph, EdgeWeightFunction weightfunction);
+    CorrelationClustering(BaseGraph::Ptr graph, EdgeWeightFunction weightfunction);
 
     static std::string toString(const std::map<Edge::Ptr, double>& solution);
+
+    void round();
 
     /**
      * Get the edge activation after performing the correlation clustering
@@ -52,6 +65,26 @@ public:
      * in the original algorithm
      */
     std::map<Edge::Ptr, double> getEdgeActivation() const { return mEdgeActivation; }
+
+    /**
+     * Compute cut for the set of nodes in ball which is part of the overall
+     * graph
+     * \details
+     * "The cut of a set S of nodes, denoted by cut(S) is the weight of the
+     * positive edges with exactly one endpoint in S.[..] The cur of a ball is
+     * the cut induced by the set of vertices included in the ball."
+     */
+    double cut(Ball ball);
+
+    double volume(Ball ball);
+
+   /**
+    * \details
+    * "A ball B(u,r) of radius r around node u consists of all nodes v such that
+    * x_uv <=r, the subgraph induced by these nodes, and the fraction
+    * (r-x_uv)/x_vw of edges (v,w) with only edpoint v \in B(u,r)"
+    */
+    Ball createBall(Vertex::Ptr vertex, double radius);
 };
 
 } // end namespace algorithms
