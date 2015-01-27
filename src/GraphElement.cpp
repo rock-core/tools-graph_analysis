@@ -1,5 +1,6 @@
 #include "GraphElement.hpp"
 #include <limits>
+#include <sstream>
 
 namespace graph_analysis {
 
@@ -17,15 +18,17 @@ GraphElement::GraphElement()
 /**
  * Get id of this element within a given graph
  */
-GraphElementId GraphElement::getId(GraphId graph) const
+GraphElementId GraphElement::getId(GraphId graphId) const
 {
-    typename GraphElementMap::const_iterator cit = mGraphElementMap.find(graph);
+    typename GraphElementMap::const_iterator cit = mGraphElementMap.find(graphId);
     if( cit != mGraphElementMap.end())
     {
         return cit->second;
     }
 
-    throw std::runtime_error("GraphElement: this graph element is not part of the given graph");
+    std::stringstream ss;
+    ss << "GraphElement: this graph element is not part of the given graph (id:" << graphId << ")";
+    throw std::runtime_error(ss.str());
 }
 
 GraphIdList GraphElement::getGraphAssociations() const

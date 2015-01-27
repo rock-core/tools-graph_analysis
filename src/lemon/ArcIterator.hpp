@@ -86,6 +86,42 @@ protected:
 
 };
 
+
+template<typename T>
+class InOutArcIterator : public EdgeIterator
+{
+public:
+    InOutArcIterator(T& graph, Vertex::Ptr vertex)
+        : mGraph(graph)
+        , mInArcIterator(graph, vertex)
+        , mOutArcIterator(graph, vertex)
+    {}
+
+    bool next()
+    {
+        if(mInArcIterator.next())
+        {
+            setNext( mInArcIterator.current() );
+            return true;
+        }
+
+        if(mOutArcIterator.next())
+        {
+            setNext( mOutArcIterator.current() );
+            return true;
+        }
+
+        return false;
+    }
+
+
+protected:
+    T& mGraph;
+    InArcIterator<T> mInArcIterator;
+    OutArcIterator<T> mOutArcIterator;
+};
+
+
 } // end namespace lemon
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_LEMON_ARC_ITERATOR_HPP

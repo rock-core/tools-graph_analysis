@@ -5,7 +5,7 @@ rock_library(graph_analysis
         Edge.cpp
         Filter.cpp
         filters/RegexFilters.cpp
-        Graph.cpp
+        BaseGraph.cpp
         GraphElement.cpp
         GraphIO.cpp
         gui/EdgeItem.cpp
@@ -29,6 +29,7 @@ rock_library(graph_analysis
         Filter.hpp
         filters/CommonFilters.hpp
         filters/RegexFilters.hpp
+        BaseGraph.hpp
         Graph.hpp
         GraphAnalysis.hpp
         GraphElement.hpp
@@ -51,6 +52,8 @@ rock_library(graph_analysis
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
+        TypedGraph.hpp
+        TypedSubGraph.hpp
         Vertex.hpp
         VertexIterator.hpp
         WeightedEdge.hpp

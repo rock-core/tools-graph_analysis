@@ -3,6 +3,16 @@
 namespace graph_analysis {
 namespace lemon {
 
+BaseGraph::Ptr DirectedGraph::copy()
+{
+    return boost::shared_ptr<BaseGraph>(new DirectedGraph(*this));
+}
+
+BaseGraph::Ptr DirectedGraph::cleanCopy()
+{
+    return boost::shared_ptr<BaseGraph>(new DirectedGraph());
+}
+
 DirectedSubGraph::DirectedSubGraph(DirectedGraph& graph)
     : TypedSubGraph(new VertexFilterType(graph.raw()), new EdgeFilterType(graph.raw()))
     , mGraph(graph)
@@ -123,18 +133,20 @@ Vertex::Ptr DirectedGraph::getTargetVertex(const Edge::Ptr& e) const
 
 void DirectedGraph::removeVertex(Vertex::Ptr vertex)
 {
+    int nodeId = getVertexId( vertex );
+
     BaseGraph::removeVertex(vertex);
 
-    int nodeId = getVertexId( vertex );
     GraphType::Node node = mGraph.nodeFromId(nodeId);
     mGraph.erase(node);
 }
 
 void DirectedGraph::removeEdge(Edge::Ptr edge)
 {
+    int edgeId = getEdgeId(edge);
+
     BaseGraph::removeEdge(edge);
 
-    int edgeId = getEdgeId(edge);
     GraphType::Arc arc = mGraph.arcFromId(edgeId);
     mGraph.erase(arc);
 }
@@ -237,7 +249,7 @@ void DirectedGraph::write(std::ostream& ostream) const
         if(vertex)
         {
             vertexStringMap[n] = vertex->toString();
-            vertexIdMap[n] = getVertexId(vertex); 
+            vertexIdMap[n] = getVertexId(vertex);
         }
     }
 
@@ -259,6 +271,12 @@ VertexIterator::Ptr DirectedGraph::getVertexIterator()
 EdgeIterator::Ptr DirectedGraph::getEdgeIterator()
 {
     ArcIterator<DirectedGraph>* it = new ArcIterator<DirectedGraph>(*this);
+    return EdgeIterator::Ptr(it);
+}
+
+EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex)
+{
+    InOutArcIterator<DirectedGraph>* it = new InOutArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
 }
 
@@ -326,6 +344,11 @@ DirectedGraph::SubGraph DirectedGraph::identifyConnectedComponents(DirectedGraph
     }
 
     return subgraph;
+}
+
+uint64_t DirectedGraph::getNodeCount()
+{
+    return ::lemon::countNodes( raw() );
 }
 
 } // end namespace lemon

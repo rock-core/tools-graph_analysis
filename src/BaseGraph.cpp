@@ -1,4 +1,4 @@
-#include "Graph.hpp"
+#include "BaseGraph.hpp"
 
 namespace graph_analysis {
 
@@ -32,9 +32,24 @@ GraphElementId BaseGraph::addEdge(Edge::Ptr edge)
 
     Vertex::Ptr source = edge->getSourceVertex();
     Vertex::Ptr target = edge->getTargetVertex();
+
     if(!source || !target)
     {
         throw std::runtime_error("BaseGraph: cannot add edge, since it has no source and/or target vertex specified");
+    } else {
+        try {
+            addVertex(source);
+        } catch(const std::runtime_error& e)
+        {
+            // vertex already part of the graph
+        }
+
+        try {
+            addVertex(target);
+        } catch(const std::runtime_error& e)
+        {
+            // vertex already part of the graph
+        }
     }
 
     try {
@@ -53,6 +68,29 @@ void BaseGraph::removeEdge(Edge::Ptr edge)
         throw std::runtime_error("BaseGraph: edge cannot be removed, since it does not exist in this graph");
     }
     edge->disassociate(getId());
+}
+
+bool BaseGraph::contains(Edge::Ptr edge) const
+{
+    try {
+        getEdgeId(edge);
+        return true;
+    } catch(const std::runtime_error& e)
+    {
+        return false;
+    }
+}
+
+bool BaseGraph::contains(Vertex::Ptr vertex) const
+{
+    try {
+        getVertexId(vertex);
+        return true;
+    } catch(const std::runtime_error& e)
+    {
+        return false;
+    }
+
 }
 
 }

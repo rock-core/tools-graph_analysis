@@ -8,11 +8,76 @@
 
 using namespace graph_analysis;
 
-BOOST_AUTO_TEST_CASE(it_should_instanciate)
+BOOST_AUTO_TEST_SUITE(lemon)
+
+BOOST_AUTO_TEST_CASE(it_should_add_remove_edges_and_vertices)
 {
     graph_analysis::lemon::DirectedGraph graph;
+
+    Vertex::Ptr v0( new Vertex());
+    Vertex::Ptr v1( new Vertex());
+
+    Edge::Ptr e0(new Edge());
+    e0->setSourceVertex(v0);
+    e0->setTargetVertex(v1);
+
+    BOOST_REQUIRE_NO_THROW(graph.addEdge(e0));
+    BOOST_REQUIRE_THROW(graph.addVertex(v0), std::runtime_error);
+    BOOST_REQUIRE_THROW(graph.addVertex(v1), std::runtime_error);
+
+    int vertexCount = ::lemon::countNodes(graph.raw());
+    BOOST_REQUIRE_MESSAGE(vertexCount = 2, "Auto adding of vertices via edges");
+
+    BOOST_REQUIRE_NO_THROW(graph.removeEdge(e0));
+    BOOST_REQUIRE_NO_THROW(graph.removeVertex(v0));
+    BOOST_REQUIRE_NO_THROW(graph.removeVertex(v1));
+
+    vertexCount = ::lemon::countNodes(graph.raw());
+    BOOST_REQUIRE_MESSAGE(vertexCount = 0, "Removed vertices");
 }
 
+BOOST_AUTO_TEST_CASE(it_should_iterate_over_vertices_and_edges)
+{
+    using namespace graph_analysis;
+
+    graph_analysis::lemon::DirectedGraph graph;
+
+    Vertex::Ptr v0( new Vertex());
+    Vertex::Ptr v1( new Vertex());
+
+    Edge::Ptr e0(new Edge());
+    e0->setSourceVertex(v0);
+    e0->setTargetVertex(v1);
+
+    Edge::Ptr e1(new Edge());
+    e1->setSourceVertex(v1);
+    e1->setTargetVertex(v0);
+
+    graph.addEdge(e0);
+    graph.addEdge(e1);
+
+    {
+        EdgeIterator::Ptr edgeIt  = graph.getEdgeIterator(v0);
+        int count = 0;
+        while(edgeIt->next())
+        {
+            Edge::Ptr edge = edgeIt->current();
+            count++;
+        }
+        BOOST_REQUIRE_MESSAGE(count == 2, "In and outgoing edges should sum up to 2");
+    }
+    {
+        EdgeIterator::Ptr edgeIt  = graph.getEdgeIterator(v1);
+        int count = 0;
+        while(edgeIt->next())
+        {
+            Edge::Ptr edge = edgeIt->current();
+            count++;
+        }
+        BOOST_REQUIRE_MESSAGE(count == 2, "In and outgoing edges should sum up to 2");
+    }
+
+}
 
 BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
 {
@@ -117,6 +182,12 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
     io::GraphIO::write("testfile-lemon", graph, representation::GEXF);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
+
+
+
+BOOST_AUTO_TEST_SUITE(snap)
+
 BOOST_AUTO_TEST_CASE(it_should_work_for_snap)
 {
     ::graph_analysis::snap::DirectedGraph graph;
@@ -157,3 +228,5 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_snap)
 
     io::GraphIO::write("testfile-snap", graph, representation::GEXF);
 }
+
+BOOST_AUTO_TEST_SUITE_END()

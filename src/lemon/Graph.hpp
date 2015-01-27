@@ -50,6 +50,16 @@ public:
      */
     DirectedGraph();
 
+    /**
+     * Copy the graph
+     */
+    BaseGraph::Ptr copy();
+
+    /**
+     * Copy the graph
+     */
+    BaseGraph::Ptr cleanCopy();
+
     typedef GraphType::ArcMap< Edge::Ptr > EdgeMap;
     typedef GraphType::NodeMap< Vertex::Ptr > VertexMap;
 
@@ -125,10 +135,14 @@ public:
      */
     EdgeIterator::Ptr getEdgeIterator();
 
+    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+
     EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
     EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
 
     DirectedGraph::SubGraph identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::SubGraph& subgraph);
+
+    uint64_t getNodeCount();
 
 protected:
     // Property maps to store data associated with vertices and edges
