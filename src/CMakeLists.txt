@@ -2,6 +2,7 @@ find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
         algorithms/CorrelationClustering.cpp
+        algorithms/FloydWarshall.cpp
         Edge.cpp
         Filter.cpp
         filters/RegexFilters.cpp
@@ -23,6 +24,8 @@ rock_library(graph_analysis
         WeightedEdge.cpp
     HEADERS
         algorithms/CorrelationClustering.hpp
+        algorithms/DistanceMatrix.hpp
+        algorithms/FloydWarshall.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
         EdgeIterator.hpp

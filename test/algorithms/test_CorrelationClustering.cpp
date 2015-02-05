@@ -8,7 +8,7 @@
 using namespace graph_analysis::algorithms;
 using namespace graph_analysis;
 
-BOOST_AUTO_TEST_SUITE(correlation_clustering)
+BOOST_AUTO_TEST_SUITE(algorithms_correlation_clustering)
 
 double getWeight(Edge::Ptr edge)
 {
