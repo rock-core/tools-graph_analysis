@@ -11,11 +11,18 @@ namespace algorithms {
 
 typedef boost::function1<double, Edge::Ptr> EdgeWeightFunction;
 
+/**
+ * \brief Implements Floyd-Warshall algorithm
+ * \param control exception throwing when a negative cycle is detected
+ * \throw by default std::runtime_error when a negative cycle has been detected
+ * \see "The Floyd–Warshall algorithm on graphs with negative cycles" (Stefan
+ * Hougardy, 2010)
+ */
 class FloydWarshall
 {
     static double getDistanceLazy(DistanceMatrix& distanceMatrix, Vertex::Ptr i, Vertex::Ptr k);
 public:
-    static DistanceMatrix allShortestPath(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction);
+    static DistanceMatrix allShortestPath(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle = true);
 };
 
 } // end namespace algorithms

@@ -70,6 +70,45 @@ void BaseGraph::removeEdge(Edge::Ptr edge)
     edge->disassociate(getId());
 }
 
+std::vector<Edge::Ptr> BaseGraph::getEdges(Vertex::Ptr source, Vertex::Ptr target)
+{
+    std::vector<Edge::Ptr> edges;
+    EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        if(edge->getTargetVertex() == target)
+        {
+            edges.push_back(edge);
+        }
+    }
+
+    return edges;
+}
+
+
+std::vector<Vertex::Ptr> BaseGraph::getAllVertices()
+{
+    std::vector<Vertex::Ptr> vertices;
+    VertexIterator::Ptr vertexIt = getVertexIterator();
+    while(vertexIt->next())
+    {
+        vertices.push_back( vertexIt->current() );
+    }
+    return vertices;
+}
+
+std::vector<Edge::Ptr> BaseGraph::getAllEdges()
+{
+    std::vector<Edge::Ptr> edges;
+    EdgeIterator::Ptr edgeIt = getEdgeIterator();
+    while(edgeIt->next())
+    {
+        edges.push_back( edgeIt->current() );
+    }
+    return edges;
+}
+
 bool BaseGraph::contains(Edge::Ptr edge) const
 {
     try {

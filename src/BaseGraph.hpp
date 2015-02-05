@@ -37,7 +37,7 @@ public:
 
     /**
      * \brief Add a vertex
-     * \details 
+     * \details
      * The base implementation does not add the vertex to the graph, but checks only if the
      * vertex is already associated with the graph.
      * Reimplement for the specific graph implementation and call the base function first, i.e.
@@ -105,6 +105,12 @@ public:
     virtual Edge::Ptr getEdge(GraphElementId id) const = 0;
 
     /**
+     * \brief Get edge by given vertices
+     * \return vertex
+     */
+    virtual std::vector<Edge::Ptr> getEdges(Vertex::Ptr source, Vertex::Ptr target);
+
+    /**
      * Get the graph id
      */
     GraphId getId() const { return mId; }
@@ -129,6 +135,20 @@ public:
      * \return the edge iterator
      */
     virtual EdgeIterator::Ptr getEdgeIterator() = 0;
+
+    /**
+     * Retrieve all vertices
+     * This default implementation uses the iterator, thus requires O(|vertices|)
+     * \return all vertices in the graph
+     */
+    virtual std::vector<Vertex::Ptr> getAllVertices();
+
+    /**
+     * Retrieve all edges
+     * The default implementation uses the iterator, thus requires O(|edges|)
+     * \return all edges in the graph
+     */
+    virtual std::vector<Edge::Ptr> getAllEdges();
 
     /**
      * Get iterator over all edges (in/out) from the given vertex
