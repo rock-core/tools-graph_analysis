@@ -54,7 +54,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph& graph) cons
     writer.write();
 
     std::string formattedFile = name + ".formatted";
-    std::string command = "/usr/bin/xmllint --encode UTF-8 --format " + name + " > " + formattedFile;
+    std::string command = "`which xmllint` --encode UTF-8 --format " + name + " > " + formattedFile;
 
     LOG_INFO("Trying to format gexf using xmllint: '%s'", command.c_str());
     if( system(command.c_str()) == 0 )
