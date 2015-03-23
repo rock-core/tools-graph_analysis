@@ -18,7 +18,7 @@ double FloydWarshall::getDistanceLazy(DistanceMatrix& distanceMatrix, Vertex::Pt
     return distanceIK;
 }
 
-DistanceMatrix FloydWarshall::allShortestPath(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle)
+DistanceMatrix FloydWarshall::allShortestPaths(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle)
 {
     DistanceMatrix distanceMatrix;
 
@@ -60,7 +60,7 @@ DistanceMatrix FloydWarshall::allShortestPath(BaseGraph::Ptr graph, EdgeWeightFu
                 {
                     if(detectNegativeCycle && j == k && transitiveDistanceJK < 0)
                     {
-                        throw std::runtime_error("graph_analysis::algorithms::FloydWarshall::allShortestPath: negative cycle detected");
+                        throw std::runtime_error("graph_analysis::algorithms::FloydWarshall::allShortestPaths: negative cycle detected");
                     } else {
                         distanceMatrix[ std::pair<Vertex::Ptr, Vertex::Ptr>(j,k) ] = transitiveDistanceJK;
                     }

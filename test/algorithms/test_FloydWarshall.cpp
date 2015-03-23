@@ -41,9 +41,9 @@ BOOST_AUTO_TEST_CASE(all_shortest_path)
     graph->addEdge(e1);
     graph->addEdge(e2);
 
-    BOOST_REQUIRE_NO_THROW(FloydWarshall::allShortestPath(graph, getWeight));
+    BOOST_REQUIRE_NO_THROW(FloydWarshall::allShortestPaths(graph, getWeight));
 
-    DistanceMatrix distanceMatrix = FloydWarshall::allShortestPath(graph, getWeight); 
+    DistanceMatrix distanceMatrix = FloydWarshall::allShortestPaths(graph, getWeight);
     double distance02 = distanceMatrix[std::pair<Vertex::Ptr, Vertex::Ptr>(v0,v2)];
     BOOST_REQUIRE_MESSAGE( distance02 == 40.0, "Shortest distance between v0 and v2 should be 40");
 
@@ -57,6 +57,6 @@ BOOST_AUTO_TEST_CASE(all_shortest_path)
     e3->setTargetVertex(v0);
     graph->addEdge(e3);
 
-    BOOST_REQUIRE_THROW(FloydWarshall::allShortestPath(graph, getWeight), std::runtime_error);
+    BOOST_REQUIRE_THROW(FloydWarshall::allShortestPaths(graph, getWeight), std::runtime_error);
 }
 BOOST_AUTO_TEST_SUITE_END()

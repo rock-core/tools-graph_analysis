@@ -22,7 +22,7 @@ class FloydWarshall
 {
     static double getDistanceLazy(DistanceMatrix& distanceMatrix, Vertex::Ptr i, Vertex::Ptr k);
 public:
-    static DistanceMatrix allShortestPath(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle = true);
+    static DistanceMatrix allShortestPaths(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle = true);
 };
 
 } // end namespace algorithms
