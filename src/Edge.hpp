@@ -17,6 +17,8 @@ public:
     Edge();
     Edge(Vertex::Ptr source, Vertex::Ptr target);
 
+    virtual ~Edge() {}
+
     typedef boost::shared_ptr< Edge > Ptr;
 
     // Get class name

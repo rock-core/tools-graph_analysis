@@ -18,6 +18,8 @@ public:
 
     Vertex();
 
+    virtual ~Vertex() {}
+
     Vertex(const std::string& name);
 
     typedef boost::shared_ptr< Vertex > Ptr;

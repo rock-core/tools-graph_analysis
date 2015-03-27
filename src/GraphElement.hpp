@@ -24,6 +24,8 @@ public:
      */
     GraphElement();
 
+    virtual ~GraphElement() {};
+
     typedef boost::shared_ptr< GraphElement > Ptr;
 
     // Get class name
