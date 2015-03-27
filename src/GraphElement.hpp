@@ -38,14 +38,14 @@ public:
     virtual std::string toString() const { return getClassName(); }
 
     /**
-     * Test whether this property has been associated with
+     * Test whether this element has been associated with
      * an edge or node
      */
     bool associated(GraphId graph) const { return mGraphElementMap.count(graph); }
 
     /**
      * Add the element to a corresponding graph
-     * This allows reverse mapping from the property to the graphs it belongs to
+     * This allows reverse mapping from the element to the graphs it belongs to
      */
     void associate(GraphId graph, GraphElementId elementId) { mGraphElementMap[graph] = elementId; }
 
