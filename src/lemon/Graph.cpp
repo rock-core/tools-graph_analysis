@@ -189,13 +189,13 @@ DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilt
         {
             // By default edges are disabled
             Edge::Ptr edge = mEdgeMap[a];
-            if( edgeFilter->permit(edge) )
+            if( edgeFilter->permits(edge) )
             {
                 // A context filter should apply to source / target nodes -- no need to filter this edge specifically then
                 if(contextFilter)
                 {
-                    bool filterTarget = contextFilter->permitTarget(edge);
-                    bool filterSource = contextFilter->permitSource(edge);
+                    bool filterTarget = contextFilter->permitsTarget(edge);
+                    bool filterSource = contextFilter->permitsSource(edge);
 
                     if(filterSource && filterTarget)
                     {
@@ -212,7 +212,7 @@ DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilt
     {
         for( GraphType::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
         {
-            if( vertexFilter->permit( mVertexMap[n] ) )
+            if( vertexFilter->permits( mVertexMap[n] ) )
             {
                 subgraph.raw().enable(n);
             }
