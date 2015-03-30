@@ -14,10 +14,12 @@ BaseGraph::Ptr DirectedGraph::cleanCopy()
 }
 
 DirectedSubGraph::DirectedSubGraph(DirectedGraph& graph)
-    : TypedSubGraph(new VertexFilterType(graph.raw()), new EdgeFilterType(graph.raw()))
+    : TypedSubGraph(graph, new VertexFilterType(graph.raw()), new EdgeFilterType(graph.raw()))
     , mGraph(graph)
 {
-     setSubgraph( new GraphType(graph.raw(), getVertexFilter(), getEdgeFilter()) );
+    // GraphType refers to the given subgraph
+    // needs to be explicetly set
+    setSubgraph( new GraphType(graph.raw(), getVertexFilter(), getEdgeFilter()) );
 }
 
 void DirectedSubGraph::enable(Vertex::Ptr vertex)
@@ -180,44 +182,8 @@ DirectedGraph& DirectedGraph::operator=(const DirectedGraph& other)
 DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
 {
     DirectedSubGraph subgraph(*this);
+    subgraph.applyFilters(vertexFilter, edgeFilter);
 
-    if(edgeFilter)
-    {
-        EdgeContextFilter::Ptr contextFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(edgeFilter);
-
-        for( GraphType::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
-        {
-            // By default edges are disabled
-            Edge::Ptr edge = mEdgeMap[a];
-            if( edgeFilter->permits(edge) )
-            {
-                // A context filter should apply to source / target nodes -- no need to filter this edge specifically then
-                if(contextFilter)
-                {
-                    bool filterTarget = contextFilter->permitsTarget(edge);
-                    bool filterSource = contextFilter->permitsSource(edge);
-
-                    if(filterSource && filterTarget)
-                    {
-                        subgraph.raw().enable( mGraph.target(a));
-                        subgraph.raw().enable( mGraph.source(a));
-                        subgraph.raw().enable(a);
-                    }
-                }
-            }
-        }
-    }
-
-    if(vertexFilter)
-    {
-        for( GraphType::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
-        {
-            if( vertexFilter->permits( mVertexMap[n] ) )
-            {
-                subgraph.raw().enable(n);
-            }
-        }
-    }
     return subgraph;
 }
 

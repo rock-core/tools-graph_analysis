@@ -35,8 +35,12 @@ public:
      *
      * Ownership of all objects, i.e. filters and graph is transferred to this class, which internally
      * uses shared pointer to guarantee cleanup when necessary
+     *
+     * Classes that inherit from TypedSubGraph need to be explictly call
+     * setSubgraph to link to the underlying SubGraph implementation
      */
-    TypedSubGraph(VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
+    TypedSubGraph(BaseGraph& graph, VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
+        : mBaseGraph(graph)
     {
         mpVertexFilter = boost::shared_ptr<VertexFilter>(vertexFilter);
         mpEdgeFilter = boost::shared_ptr<EdgeFilter>(edgeFilter);
@@ -98,7 +102,56 @@ public:
      */
     virtual bool enabled(Edge::Ptr vertex) const = 0;
 
+    /**
+     * Apply filters to this subgraph
+     */
+    void applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
+    {
+        if(edgeFilter)
+        {
+            EdgeContextFilter::Ptr contextFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(edgeFilter);
+
+            EdgeIterator::Ptr edgeIterator = mBaseGraph.getEdgeIterator();
+
+            while(edgeIterator->next())
+            {
+                // By default edges are disabled
+                Edge::Ptr edge = edgeIterator->current();
+                if( edgeFilter->permits(edge) )
+                {
+                    // A context filter should apply to source / target nodes -- no need to filter this edge specifically then
+                    if(contextFilter)
+                    {
+                        bool filterTarget = contextFilter->permitsTarget(edge);
+                        bool filterSource = contextFilter->permitsSource(edge);
+
+                        if(filterSource && filterTarget)
+                        {
+                            enable(edge);
+                        }
+                    }
+                }
+            }
+        }
+
+        if(vertexFilter)
+        {
+            VertexIterator::Ptr vertexIterator = mBaseGraph.getVertexIterator();
+            while(vertexIterator->next())
+            {
+                Vertex::Ptr vertex = vertexIterator->current();
+                if( vertexFilter->permits(vertex) )
+                {
+                    enable(vertex);
+                }
+            }
+        }
+    }
+
 protected:
+
+    BaseGraph& getBaseGraph() { return mBaseGraph; }
+
     /**
      * Get vertex filter
      * \return reference to vertex filter
@@ -133,6 +186,8 @@ protected:
     boost::shared_ptr<EdgeFilter> mpEdgeFilter;
 
     boost::shared_ptr<SubGraphType> mpSubgraph;
+
+    BaseGraph& mBaseGraph;
 };
 
 } // end namespace graph_analysis
