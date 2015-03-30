@@ -20,11 +20,12 @@ class DirectedGraph;
 typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> > SubGraph;
 
 /**
- * A subgraph provide a subset of an existing graph
+ * A subgraph that provides a subset of an existing graph
  */
 class DirectedSubGraph : public TypedSubGraph< SubGraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
 {
     DirectedGraph& mGraph;
+
 public:
     DirectedSubGraph(DirectedGraph& graph);
 
@@ -72,7 +73,7 @@ public:
     typedef GraphType::ArcMap< GraphElementId > EdgeIdMap;
     typedef GraphType::NodeMap< GraphElementId > VertexIdMap;
 
-    // Register the DirecteSubGraph as official SubGraph
+    // Register the DirectedSubGraph as official SubGraph
     typedef DirectedSubGraph SubGraph;
 
     friend class NodeIterator<DirectedGraph>;
