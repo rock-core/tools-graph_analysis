@@ -11,10 +11,17 @@ namespace percolation {
 class EdgePercolation : public Percolation
 {
 public:
-    EdgePercolation(BaseGraph* graph);
+    EdgePercolation(DirectedGraph* graph);
 
-    virtual void markAsPresent(GraphElementId id);
-    virtual void markAsNotPresent(GraphElementId id);
+    /**
+     * Mark an edge as present
+     */
+    virtual void markAsOccupied(Edge::Ptr edge);
+
+    /**
+     * Mark an edge as not occupied
+     */
+    virtual void markAsNotOccupied(Edge::Ptr edge);
 
 };
 
