@@ -26,14 +26,14 @@ BOOST_AUTO_TEST_CASE(it_should_add_remove_edges_and_vertices)
     BOOST_REQUIRE_THROW(graph.addVertex(v1), std::runtime_error);
 
     int vertexCount = ::lemon::countNodes(graph.raw());
-    BOOST_REQUIRE_MESSAGE(vertexCount = 2, "Auto adding of vertices via edges");
+    BOOST_REQUIRE_MESSAGE(vertexCount == 2, "Auto adding of vertices via edges: expected 2 vertices but was " << vertexCount);
 
     BOOST_REQUIRE_NO_THROW(graph.removeEdge(e0));
     BOOST_REQUIRE_NO_THROW(graph.removeVertex(v0));
     BOOST_REQUIRE_NO_THROW(graph.removeVertex(v1));
 
     vertexCount = ::lemon::countNodes(graph.raw());
-    BOOST_REQUIRE_MESSAGE(vertexCount = 0, "Removed vertices");
+    BOOST_REQUIRE_MESSAGE(vertexCount == 0, "Removed vertices: expected 0 but was " << vertexCount);
 }
 
 BOOST_AUTO_TEST_CASE(it_should_iterate_over_vertices_and_edges)

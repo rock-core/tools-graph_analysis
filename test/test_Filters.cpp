@@ -3,6 +3,8 @@
 
 using namespace graph_analysis;
 
+BOOST_AUTO_TEST_SUITE(filters_test)
+
 BOOST_AUTO_TEST_CASE(it_should_filter_with_regex)
 {
     Vertex::Ptr v0( new Vertex());
@@ -62,5 +64,6 @@ BOOST_AUTO_TEST_CASE(it_should_filter_with_regex)
         BOOST_REQUIRE_MESSAGE( combinedFilter->permitsTarget(e0), "Target vertex should be permitted");
         BOOST_REQUIRE_MESSAGE( combinedFilter->permitsSource(e0), "Source vertex should be permitted");
     }
-
 }
+
+BOOST_AUTO_TEST_SUITE_END()
