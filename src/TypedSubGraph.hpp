@@ -9,7 +9,7 @@
 namespace graph_analysis {
 
 /**
- * \brief TypedSubGraph represent a wrapper for libraries that use an invidual datatype for subgraphs
+ * \brief SubGraph represent a wrapper for libraries that use an invidual datatype for subgraphs
  * \details This wrapper guarantees that vertex filters and edgefilters won't be deallocated
  * as long as the subgraph is in use, e.g., for the lemon library the subgraph holds a reference to the main graph and only
  * associates filters -- but since the filters are added as references they need to be managed properly.
@@ -58,13 +58,44 @@ public:
         return (*mpSubgraph);
     }
 
+    /**
+     * Enable the given vertex
+     * \param vertex Vertex that is part of the underlying main graph and should
+     * also be part of the subgraph
+     */
     virtual void enable(Vertex::Ptr vertex) = 0;
+
+    /**
+     * Disable the given vertex
+     * \param vertex Vertex that is part of the underlying main graph and should
+     * not(!) be part of the subgraph
+     */
     virtual void disable(Vertex::Ptr vertex) = 0;
 
+    /**
+     * Enable the given edge
+     * \param edge Edge that is part of the underlying main graph and should
+     * be part of the subgraph
+     */
     virtual void enable(Edge::Ptr edge) = 0;
+
+    /**
+     * Disable the given edge
+     * \param edge Edge that is part of the underlying main graph and should
+     * not be part of the subgraph
+     */
     virtual void disable(Edge::Ptr edge) = 0;
 
+    /**
+     * Test if a vertex is enabled
+     * \return True if vertex is enabled, false otherwise
+     */
     virtual bool enabled(Vertex::Ptr vertex) const = 0;
+
+    /**
+     * Test if an edge is enabled
+     * \return True if edge is enabled, false otherwise
+     */
     virtual bool enabled(Edge::Ptr vertex) const = 0;
 
 protected:
