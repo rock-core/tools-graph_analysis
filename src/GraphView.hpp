@@ -50,16 +50,6 @@ public:
         return graph.applyFilters(mVertexFilter, mEdgeFilter);
     }
 
-    /**
-     * Creates a new graph that is disconnected and contains only nodes with incoming arcs
-     */
-    SubGraph::Ptr identifyConnectedComponents(GraphType& graph)
-    {
-        SubGraph::Ptr subgraph = graph.applyFilters(mVertexFilter, mEdgeFilter);
-        BaseGraph::Ptr filteredGraph = subgraph->toBaseGraph();
-        return filteredGraph->identifyConnectedComponents();
-    }
-
 private:
     VertexFilterType mVertexFilter;
     EdgeFilterType mEdgeFilter;
