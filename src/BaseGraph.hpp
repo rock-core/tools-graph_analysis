@@ -18,7 +18,7 @@ namespace graph_analysis
 /**
  * \brief General Graph template that should be implemented to wrap specific graph library
  * functionality
- * We assume that all graph implementations will rely and allow access to nodes and edges via
+ * We assume that all graph implementations will rely and allow access to vertices and edges via
  * integers
  */
 class BaseGraph : public VertexIterable, public EdgeIterable, public Algorithms
@@ -27,9 +27,7 @@ public:
 
     typedef boost::shared_ptr<BaseGraph> Ptr;
 
-    BaseGraph()
-        : mId(msId++)
-    {}
+    BaseGraph();
 
     /**
      * \brief Default deconstructor
@@ -116,8 +114,10 @@ public:
      */
     GraphId getId() const { return mId; }
 
-    virtual uint64_t getNodeCount() { throw std::runtime_error("BaseGraph::getNodeCount: not implemented"); }
-
+    /**
+     * Create a copy of this graph
+     * \return pointer to the copy of this graph
+     */
     virtual BaseGraph::Ptr copy() { throw std::runtime_error("BaseGraph::copy: not implemented"); }
 
     /**
@@ -157,11 +157,22 @@ public:
      */
     virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) { throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
 
+    /**
+     * Get subgraph
+     */
+    virtual SubGraph::Ptr getSubGraph() { throw std::runtime_error("BaseGraph::getSubGraph: not implemented"); }
+
+    /**
+     * Apply filters to base graph
+     * \return subgraph with filters applied
+     */
+    SubGraph::Ptr applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
+
 protected:
     /**
      * Add an add using source and target vertex on the internal
      * graph representation
-     * \return Element id of this node within this graph
+     * \return Element id of this edge within this graph
      */
     virtual GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) = 0;
 

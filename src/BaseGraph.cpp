@@ -4,6 +4,10 @@ namespace graph_analysis {
 
 GraphId BaseGraph::msId = 0;
 
+BaseGraph::BaseGraph()
+    : mId(msId++)
+{}
+
 GraphElementId BaseGraph::addVertex(Vertex::Ptr vertex)
 {
     if(vertex->associated(getId()) )
