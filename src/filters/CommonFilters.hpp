@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_COMMON_FILTERS_HPP
 
 #include <graph_analysis/Filter.hpp>
+#include <graph_analysis/filters/EdgeContextFilter.hpp>
 
 namespace graph_analysis {
 namespace filters {

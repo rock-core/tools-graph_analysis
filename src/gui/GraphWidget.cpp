@@ -54,6 +54,7 @@
 
 #include "GVGraph.hpp"
 #include <graph_analysis/Filter.hpp>
+#include <graph_analysis/filters/EdgeContextFilter.hpp>
 
 #include <graph_analysis/lemon/Graph.hpp>
 #include <boost/foreach.hpp>
@@ -71,8 +72,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGVGraph(0)
     , mTimerId(0)
     , mLayout("dot")
-    , mpVertexFilter(new graph_analysis::Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new graph_analysis::EdgeContextFilter())
+    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
+    , mpEdgeFilter(new filters::EdgeContextFilter())
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));

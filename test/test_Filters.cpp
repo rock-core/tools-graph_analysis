@@ -1,4 +1,5 @@
 #include <boost/test/unit_test.hpp>
+#include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
 
 using namespace graph_analysis;
@@ -35,7 +36,7 @@ BOOST_AUTO_TEST_CASE(it_should_filter_with_regex)
         BOOST_REQUIRE_MESSAGE(filter->permits(v0), "Content filter should permit");
     }
     {
-        EdgeContextFilter::Ptr filter( new graph_analysis::filters::PermitAll< Edge::Ptr >());
+        filters::EdgeContextFilter::Ptr filter( new graph_analysis::filters::PermitAll< Edge::Ptr >());
         BOOST_REQUIRE_MESSAGE( filter->permits(e0) == true, "Permit all filter should no apply to any edge");
         BOOST_REQUIRE_MESSAGE( filter->permitsTarget(e0) == true, "Permit all filter should apply to any edge's target node");
         BOOST_REQUIRE_MESSAGE( filter->permitsSource(e0) == true, "Permit all filter should apply to any edge's source node");
@@ -60,7 +61,7 @@ BOOST_AUTO_TEST_CASE(it_should_filter_with_regex)
         Filter< Edge::Ptr >::Ptr filter(new filters::CombinedEdgeRegexFilter(nodeFilter, edgeFilter, nodeFilter));
         BOOST_REQUIRE_MESSAGE( filter->permits(e0), "Edge filter should permit");
 
-        EdgeContextFilter::Ptr combinedFilter = boost::dynamic_pointer_cast<filters::CombinedEdgeRegexFilter>(filter);
+        filters::EdgeContextFilter::Ptr combinedFilter = boost::dynamic_pointer_cast<filters::CombinedEdgeRegexFilter>(filter);
         BOOST_REQUIRE_MESSAGE( combinedFilter->permitsTarget(e0), "Target vertex should be permitted");
         BOOST_REQUIRE_MESSAGE( combinedFilter->permitsSource(e0), "Source vertex should be permitted");
     }

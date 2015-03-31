@@ -5,6 +5,7 @@ rock_library(graph_analysis
         algorithms/FloydWarshall.cpp
         Edge.cpp
         Filter.cpp
+        filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
         BaseGraph.cpp
         GraphElement.cpp
@@ -31,6 +32,7 @@ rock_library(graph_analysis
         EdgeIterator.hpp
         Filter.hpp
         filters/CommonFilters.hpp
+        filters/EdgeContextFilter.hpp
         filters/RegexFilters.hpp
         BaseGraph.hpp
         Graph.hpp

@@ -185,51 +185,5 @@ protected:
     FilterList mFilters;
 };
 
-/**
- * Interface definition for an edge context filter
- * which allows to define whether the target / source node of a specific edge should be filtered
- */
-class EdgeContextFilter : public Filter<graph_analysis::Edge::Ptr>
-{
-public:
-    typedef boost::shared_ptr<EdgeContextFilter> Ptr;
-
-    /**
-     * \brief Get Name of the filter
-     * \return name of the filter
-     */
-    virtual std::string getName() const { return "graph_analysis::EdgeContextFilter"; }
-
-    /**
-     * \brief Get string representation of filter
-     * \return name by default
-     */
-    virtual std::string toString() const { return getName(); }
-
-    /**
-     * \brief Evaluated the target of the edge
-     * \return True if it should be permitted, false otherwise
-     */
-    virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return false; }
-
-    /**
-     * \brief Use this and associated subfilters, to check if this target should be filtered
-     * \return True, if the target vertex of given edge should be filtered, false otherwise
-     */
-    bool permitsTarget(graph_analysis::Edge::Ptr e) const;
-
-    /**
-     * \brief Evaluated the source vertex of the edge
-     * \return True if it should be permitted, false otherwise
-     */
-    virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return false; }
-
-    /**
-     * \brief Use this and associated subfilters, to check if this edge's source vertex should be filtered
-     * \return True, if the source vertex of given edge should be filtered, false otherwise
-     */
-    bool permitsSource(graph_analysis::Edge::Ptr e) const;
-};
-
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_FILTER_HPP
