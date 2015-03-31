@@ -1,20 +1,23 @@
 #ifndef GRAPH_ANALYSIS_SUB_GRAPH_HPP
 #define GRAPH_ANALYSIS_SUB_GRAPH_HPP
 
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/Edge.hpp>
+#include <boost/shared_ptr.hpp>
+#include <graph_analysis/VertexIterator.hpp>
+#include <graph_analysis/EdgeIterator.hpp>
 #include <graph_analysis/Filter.hpp>
 
 namespace graph_analysis {
 
 class BaseGraph;
 
-class SubGraph
+class SubGraph : public VertexIterable, public EdgeIterable
 {
     BaseGraph* mpBaseGraph;
 
 public:
     SubGraph(BaseGraph* graph);
+
+    typedef boost::shared_ptr<SubGraph> Ptr;
 
     /**
      * Enable the given vertex
@@ -54,12 +57,42 @@ public:
      * Test if an edge is enabled
      * \return True if edge is enabled, false otherwise
      */
-    virtual bool enabled(Edge::Ptr vertex) const = 0;
+    virtual bool enabled(Edge::Ptr edge) const = 0;
+
+    /**
+     * Test if a vertex is disabled
+     * \return True if vertex is disable, false otherwise
+     */
+    bool disabled(Vertex::Ptr vertex) const { return !enabled(vertex); }
+
+    /**
+     * Test if an edge is disabled
+     * \return True if edge is disabled, false otherwise
+     */
+    bool disabled(Edge::Ptr edge) const { return !enabled(edge); }
 
     /**
      * Apply filters to this subgraph
      */
     void applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
+
+    /**
+     * Convert the subgraph into a base graph by copying only the enabled nodes
+     * and edges
+     */
+    virtual boost::shared_ptr<BaseGraph> toBaseGraph();
+
+    /**
+     * Get the iterator over all vertices in this subgraph
+     * \return the egde iterator
+     */
+    VertexIterator::Ptr getVertexIterator();
+
+    /**
+     * Get iterator over all edge in this subgraph
+     * \return the edge iterator
+     */
+    EdgeIterator::Ptr getEdgeIterator();
 
 protected:
     BaseGraph* getBaseGraph();
