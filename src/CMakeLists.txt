@@ -4,6 +4,7 @@ rock_library(graph_analysis
         algorithms/CorrelationClustering.cpp
         algorithms/FloydWarshall.cpp
         Edge.cpp
+        EdgeIterator.cpp
         Filter.cpp
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
@@ -23,6 +24,7 @@ rock_library(graph_analysis
         lemon/Graph.cpp
         SubGraph.cpp
         Vertex.cpp
+        VertexIterator.cpp
         WeightedEdge.cpp
     HEADERS
         algorithms/CorrelationClustering.hpp

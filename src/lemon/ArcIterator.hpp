@@ -18,10 +18,15 @@ public:
 
     bool next()
     {
-        if( mArcIt != ::lemon::INVALID )
+        while( mArcIt != ::lemon::INVALID )
         {
-            setNext( mGraph.mEdgeMap[mArcIt] );
+            Edge::Ptr edge = mGraph.mEdgeMap[mArcIt];
             ++mArcIt;
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             return true;
         }
         return false;
@@ -44,10 +49,15 @@ public:
 
     bool next()
     {
-        if( mOutArcIt != ::lemon::INVALID )
+        while( mOutArcIt != ::lemon::INVALID )
         {
-            setNext( mGraph.mEdgeMap[mOutArcIt] );
+            Edge::Ptr edge = mGraph.mEdgeMap[mOutArcIt];
             ++mOutArcIt;
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             return true;
         }
         return false;
@@ -71,9 +81,14 @@ public:
 
     bool next()
     {
-        if( mInArcIt != ::lemon::INVALID )
+        while( mInArcIt != ::lemon::INVALID )
         {
-            setNext( mGraph.mEdgeMap[mInArcIt] );
+            Edge::Ptr edge = mGraph.mEdgeMap[mInArcIt];
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             ++mInArcIt;
             return true;
         }

@@ -1,6 +1,7 @@
 #ifndef GRAPH_ANALYSIS_EDGE_ITERATOR_HPP
 #define GRAPH_ANALYSIS_EDGE_ITERATOR_HPP
 
+#include <boost/function.hpp>
 #include <graph_analysis/Edge.hpp>
 
 namespace graph_analysis {
@@ -12,8 +13,12 @@ namespace graph_analysis {
  */
 class EdgeIterator
 {
+    // Allow for usage of skip function
+    friend class SubGraph;
+
 public:
     typedef boost::shared_ptr<EdgeIterator> Ptr;
+    typedef boost::function1<bool, Edge::Ptr> SkipFunction;
 
     /**
      * \brief Test if there is a next item and if it is then updates
@@ -29,13 +34,26 @@ public:
 
 protected:
     /**
+     * \brief Check if edge should be skipped
+     * \return True if edge should be skipped, false otherwise
+     */
+    bool skip(Edge::Ptr edge) const;
+
+    /**
      * \brief Set next edge
      * Should be applied by class implementing next()
      */
     void setNext(Edge::Ptr edge) { mEdge = edge; }
 
+    /**
+     * Allows to add a skip function -- e.g. for the SubGraph which
+     * provides a 'view' onto the BaseGraph
+     */
+    void setSkipFunction(SkipFunction skipFunction) { mSkipFunction = skipFunction; }
+
 private:
     Edge::Ptr mEdge;
+    SkipFunction mSkipFunction;
 };
 
 class EdgeIterable
@@ -45,6 +63,11 @@ public:
      * Get the node iterator
      */
     virtual EdgeIterator::Ptr getEdgeIterator() = 0;
+
+    /**
+     * Get edge count
+     */
+    virtual uint64_t getEdgeCount();
 };
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_EDGE_ITERATOR_HPP
