@@ -1,5 +1,4 @@
 #include "CorrelationClustering.hpp"
-#include <graph_analysis/lemon/Graph.hpp>
 #include <base/Logging.hpp>
 
 namespace graph_analysis {
@@ -296,7 +295,7 @@ void CorrelationClustering::round()
 
     // A graph which can be manipulated
     LOG_INFO_S << "Create copy";
-    graph_analysis::BaseGraph::Ptr graph = mpGraph->copy();
+    BaseGraph::Ptr graph = mpGraph->copy();
 
     LOG_INFO_S << "Setup ball";
     while(true)

@@ -16,7 +16,7 @@ typedef boost::function1<double, Edge::Ptr> EdgeWeightFunction;
 
 struct Ball
 {
-    graph_analysis::BaseGraph::Ptr graph;
+    BaseGraph::Ptr graph;
     double radius;
     double volume;
 };
@@ -37,7 +37,7 @@ struct Ball
  */
 class CorrelationClustering
 {
-    graph_analysis::BaseGraph::Ptr mpGraph;
+    BaseGraph::Ptr mpGraph;
     EdgeWeightFunction mEdgeWeightFunction;
 
     std::map<Edge::Ptr, double> mEdgeActivation;
