@@ -28,7 +28,7 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::NodeIt mNodeIt;
+    typename T::graph_t::NodeIt mNodeIt;
 
 };
 

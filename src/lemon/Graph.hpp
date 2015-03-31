@@ -17,12 +17,12 @@ namespace lemon {
 
 class DirectedGraph;
 
-typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> > SubGraph;
+typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> > SubGraphLemon;
 
 /**
  * A subgraph that provides a subset of an existing graph
  */
-class DirectedSubGraph : public TypedSubGraph< SubGraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
+class DirectedSubGraph : public SubGraphImpl< SubGraphLemon, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
 {
     DirectedGraph& mGraph;
 
@@ -61,20 +61,20 @@ public:
      */
     BaseGraph::Ptr cleanCopy();
 
-    typedef GraphType::ArcMap< Edge::Ptr > EdgeMap;
-    typedef GraphType::NodeMap< Vertex::Ptr > VertexMap;
+    typedef graph_t::ArcMap< Edge::Ptr > EdgeMap;
+    typedef graph_t::NodeMap< Vertex::Ptr > VertexMap;
 
-    typedef GraphType::NodeMap<bool> VertexActivationMap;
-    typedef GraphType::ArcMap<bool> EdgeActivationMap;
+    typedef graph_t::NodeMap<bool> VertexActivationMap;
+    typedef graph_t::ArcMap<bool> EdgeActivationMap;
 
-    typedef GraphType::ArcMap< std::string > EdgeStringMap;
-    typedef GraphType::NodeMap< std::string > VertexStringMap;
+    typedef graph_t::ArcMap< std::string > EdgeStringMap;
+    typedef graph_t::NodeMap< std::string > VertexStringMap;
 
-    typedef GraphType::ArcMap< GraphElementId > EdgeIdMap;
-    typedef GraphType::NodeMap< GraphElementId > VertexIdMap;
+    typedef graph_t::ArcMap< GraphElementId > EdgeIdMap;
+    typedef graph_t::NodeMap< GraphElementId > VertexIdMap;
 
-    // Register the DirectedSubGraph as official SubGraph
-    typedef DirectedSubGraph SubGraph;
+    // Register the DirectedSubGraph as subgraph type
+    typedef DirectedSubGraph subgraph_t;
 
     friend class NodeIterator<DirectedGraph>;
     friend class ArcIterator<DirectedGraph>;
@@ -122,7 +122,7 @@ public:
     /**
      * Filters in this context are permissive, i.e. they mark what to show
      */
-    DirectedSubGraph applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
+    subgraph_t applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
 
     void write(std::ostream& ostream = std::cout) const;
 
@@ -141,7 +141,7 @@ public:
     EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
     EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
 
-    DirectedGraph::SubGraph identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::SubGraph& subgraph);
+    subgraph_t identifyConnectedComponents(DirectedGraph& graph, subgraph_t& subgraph);
 
     uint64_t getNodeCount();
 

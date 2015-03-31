@@ -29,7 +29,7 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::ArcIt mArcIt;
+    typename T::graph_t::ArcIt mArcIt;
 
 };
 
@@ -55,7 +55,7 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::OutArcIt mOutArcIt;
+    typename T::graph_t::OutArcIt mOutArcIt;
 
 };
 
@@ -82,7 +82,7 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::InArcIt mInArcIt;
+    typename T::graph_t::InArcIt mInArcIt;
 
 };
 

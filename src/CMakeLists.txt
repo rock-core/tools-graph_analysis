@@ -21,6 +21,7 @@ rock_library(graph_analysis
         gui/GVGraph.cpp
         io/GexfWriter.cpp
         lemon/Graph.cpp
+        SubGraph.cpp
         Vertex.cpp
         WeightedEdge.cpp
     HEADERS
@@ -57,6 +58,7 @@ rock_library(graph_analysis
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
+        SubGraph.hpp
         TypedGraph.hpp
         TypedSubGraph.hpp
         Vertex.hpp

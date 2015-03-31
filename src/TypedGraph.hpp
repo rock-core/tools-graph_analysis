@@ -11,15 +11,15 @@ public:
         : mGraph()
     {}
 
-    typedef T GraphType;
+    typedef T graph_t;
 
     /**
      * Return underlying raw graph instance
      */
-    GraphType& raw() { return mGraph; }
+    graph_t& raw() { return mGraph; }
 
 protected:
-    GraphType mGraph;
+    graph_t mGraph;
 
 };
 

@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         gv.setEdgeFilter(edgeFilter);
 
 
-        ::graph_analysis::lemon::DirectedGraph::SubGraph componentGraph = gv.identifyConnectedComponents(graph);
+        ::graph_analysis::lemon::DirectedGraph::subgraph_t componentGraph = gv.identifyConnectedComponents(graph);
         int componentNumber = ::lemon::countNodes( componentGraph.raw() );
         BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' nodes representing components, while base graph has '" << ::lemon::countNodes( graph.raw()) << "' nodes overall" );
     }

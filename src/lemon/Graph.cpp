@@ -14,12 +14,12 @@ BaseGraph::Ptr DirectedGraph::cleanCopy()
 }
 
 DirectedSubGraph::DirectedSubGraph(DirectedGraph& graph)
-    : TypedSubGraph(graph, new VertexFilterType(graph.raw()), new EdgeFilterType(graph.raw()))
+    : SubGraphImpl(&graph, new vertex_filter_t(graph.raw()), new edge_filter_t(graph.raw()))
     , mGraph(graph)
 {
-    // GraphType refers to the given subgraph
+    // graph_t refers to the given subgraph
     // needs to be explicetly set
-    setSubgraph( new GraphType(graph.raw(), getVertexFilter(), getEdgeFilter()) );
+    setSubgraph( new graph_t(graph.raw(), getVertexFilter(), getEdgeFilter()) );
 }
 
 void DirectedSubGraph::enable(Vertex::Ptr vertex)
@@ -90,7 +90,7 @@ GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
 {
     BaseGraph::addVertex(vertex);
 
-    GraphType::Node node = mGraph.addNode();
+    graph_t::Node node = mGraph.addNode();
     int nodeId = mGraph.id(node);
     mVertexMap[node] = vertex;
 
@@ -100,10 +100,10 @@ GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
 
 GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
-    GraphType::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
-    GraphType::Node targetNode = mGraph.nodeFromId( targetVertexId );
+    graph_t::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
+    graph_t::Node targetNode = mGraph.nodeFromId( targetVertexId );
 
-    GraphType::Arc arc = mGraph.addArc(sourceNode, targetNode);
+    graph_t::Arc arc = mGraph.addArc(sourceNode, targetNode);
     int arcId = mGraph.id(arc);
     edge->associate(getId(), arcId);
     mEdgeMap[arc] = edge;
@@ -139,7 +139,7 @@ void DirectedGraph::removeVertex(Vertex::Ptr vertex)
 
     BaseGraph::removeVertex(vertex);
 
-    GraphType::Node node = mGraph.nodeFromId(nodeId);
+    graph_t::Node node = mGraph.nodeFromId(nodeId);
     mGraph.erase(node);
 }
 
@@ -149,7 +149,7 @@ void DirectedGraph::removeEdge(Edge::Ptr edge)
 
     BaseGraph::removeEdge(edge);
 
-    GraphType::Arc arc = mGraph.arcFromId(edgeId);
+    graph_t::Arc arc = mGraph.arcFromId(edgeId);
     mGraph.erase(arc);
 }
 
@@ -164,13 +164,13 @@ DirectedGraph& DirectedGraph::operator=(const DirectedGraph& other)
         arcMap(other.mEdgeMap, this->mEdgeMap).
         run();
 
-    for( GraphType::NodeIt n(this->mGraph); n != ::lemon::INVALID; ++n)
+    for( graph_t::NodeIt n(this->mGraph); n != ::lemon::INVALID; ++n)
     {
         Vertex::Ptr vertex = mVertexMap[n];
         vertex->associate(this->getId(), this->mGraph.id(n));
     }
 
-    for( GraphType::ArcIt a(this->mGraph); a != ::lemon::INVALID; ++a)
+    for( graph_t::ArcIt a(this->mGraph); a != ::lemon::INVALID; ++a)
     {
         Edge::Ptr edge = mEdgeMap[a];
         edge->associate(this->getId(), this->mGraph.id(a));
@@ -199,7 +199,7 @@ void DirectedGraph::write(std::ostream& ostream) const
     EdgeIdMap edgeIdMap(mGraph);
     VertexIdMap vertexIdMap(mGraph);
 
-    for(GraphType::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
+    for(graph_t::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
     {
         Edge::Ptr edge = mEdgeMap[a];
         if(edge)
@@ -209,7 +209,7 @@ void DirectedGraph::write(std::ostream& ostream) const
         }
     }
 
-    for(GraphType::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
+    for(graph_t::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
     {
         Vertex::Ptr vertex = mVertexMap[n];
         if(vertex)
@@ -258,11 +258,11 @@ EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex)
     return EdgeIterator::Ptr(it);
 }
 
-DirectedGraph::SubGraph DirectedGraph::identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::SubGraph& subgraph)
+DirectedGraph::subgraph_t DirectedGraph::identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::subgraph_t& subgraph)
 {
-    ::lemon::Undirector<DirectedGraph::GraphType> undirected(graph.raw());
+    ::lemon::Undirector<DirectedGraph::graph_t> undirected(graph.raw());
     // Identify the components
-    GraphType::NodeMap<int> nodeMap(graph.raw(),false);
+    graph_t::NodeMap<int> nodeMap(graph.raw(),false);
     int componentCount = ::lemon::connectedComponents(undirected, nodeMap);
 
     // Add a single vertex per identified component
@@ -283,7 +283,7 @@ DirectedGraph::SubGraph DirectedGraph::identifyConnectedComponents(DirectedGraph
     {
         // Disable all nodes in the subgraph that are not representing a component
         // Add an edge to relate vertices to components
-        for(DirectedSubGraph::GraphType::NodeIt n(subgraph.raw()); n != ::lemon::INVALID; ++n)
+        for(DirectedSubGraph::graph_t::NodeIt n(subgraph.raw()); n != ::lemon::INVALID; ++n)
         {
             bool isComponentNode = false;
             Vertex::Ptr sourceVertex = mVertexMap[n];
