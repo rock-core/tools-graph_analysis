@@ -120,11 +120,6 @@ public:
      */
     DirectedGraph& operator=(const DirectedGraph& other);
 
-    /**
-     * Filters in this context are permissive, i.e. they mark what to show
-     */
-    subgraph_t applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
-
     void write(std::ostream& ostream = std::cout) const;
 
     /**
@@ -142,9 +137,13 @@ public:
     EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
     EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
 
-    subgraph_t identifyConnectedComponents(DirectedGraph& graph, subgraph_t& subgraph);
+    SubGraph::Ptr identifyConnectedComponents();
 
-    uint64_t getNodeCount();
+    /**
+     * Get the subgraph -- by default all vertices and edges of the
+     * base graph are available (enabled)
+     */
+    SubGraph::Ptr getSubGraph();
 
 protected:
     // Property maps to store data associated with vertices and edges

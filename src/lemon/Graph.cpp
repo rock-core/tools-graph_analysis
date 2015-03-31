@@ -1,4 +1,5 @@
 #include "Graph.hpp"
+#include <graph_analysis/filters/CommonFilters.hpp>
 
 namespace graph_analysis {
 namespace lemon {
@@ -34,8 +35,14 @@ void DirectedSubGraph::disable(Vertex::Ptr vertex)
 {
     GraphElementId graphElementId = vertex->getId( mGraph.getId() );
     ::lemon::ListDigraph::Node node = mGraph.raw().nodeFromId( graphElementId );
-
     raw().disable(node);
+
+    EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator(vertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        disable(edge);
+    }
 }
 
 
@@ -179,14 +186,6 @@ DirectedGraph& DirectedGraph::operator=(const DirectedGraph& other)
     return *this;
 }
 
-DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
-{
-    DirectedSubGraph subgraph(*this);
-    subgraph.applyFilters(vertexFilter, edgeFilter);
-
-    return subgraph;
-}
-
 void DirectedGraph::write(std::ostream& ostream) const
 {
     // Workaround:
@@ -258,13 +257,15 @@ EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex)
     return EdgeIterator::Ptr(it);
 }
 
-DirectedGraph::subgraph_t DirectedGraph::identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::subgraph_t& subgraph)
+SubGraph::Ptr DirectedGraph::identifyConnectedComponents()
 {
+    DirectedGraph graph(*this);
+    SubGraph::Ptr subgraph = graph.getSubGraph();
+
     ::lemon::Undirector<DirectedGraph::graph_t> undirected(graph.raw());
     // Identify the components
     graph_t::NodeMap<int> nodeMap(graph.raw(),false);
     int componentCount = ::lemon::connectedComponents(undirected, nodeMap);
-
     // Add a single vertex per identified component
     // activate that node in the subgraph
     Vertex::Ptr components[componentCount];
@@ -275,23 +276,25 @@ DirectedGraph::subgraph_t DirectedGraph::identifyConnectedComponents(DirectedGra
 
         // Activate this node in the subgraph
         // disabling all other will be in the next loop
-        GraphElementId id = graph.addVertex(vertex);
-        subgraph.raw().enable( graph.raw().nodeFromId( id ) );
+        graph.addVertex(vertex);
+        subgraph->enable( vertex );
     }
 
     if(componentCount > 0)
     {
         // Disable all nodes in the subgraph that are not representing a component
-        // Add an edge to relate vertices to components
-        for(DirectedSubGraph::graph_t::NodeIt n(subgraph.raw()); n != ::lemon::INVALID; ++n)
+        VertexIterator::Ptr vertexIterator = subgraph->getVertexIterator();
+        while(vertexIterator->next())
         {
+            Vertex::Ptr sourceVertex = vertexIterator->current();
+
             bool isComponentNode = false;
-            Vertex::Ptr sourceVertex = mVertexMap[n];
             for(int a = 0; a < componentCount; ++a)
             {
                 if(sourceVertex->getUid() == components[a]->getUid())
                 {
                     isComponentNode = true;
+                    break;
                 }
             }
 
@@ -300,8 +303,11 @@ DirectedGraph::subgraph_t DirectedGraph::identifyConnectedComponents(DirectedGra
                 continue;
             }
 
-            Vertex::Ptr targetVertex = components[ nodeMap[n] ];
-            subgraph.raw().disable(n);
+            graph_t::Node node = graph.raw().nodeFromId( sourceVertex->getId(graph.getId()) );
+            Vertex::Ptr targetVertex = components[ nodeMap[node] ];
+            subgraph->disable(sourceVertex);
+
+            // Add an edge to relate vertices to their components
             Edge::Ptr edge( new Edge(sourceVertex, targetVertex) );
             graph.addEdge(edge);
         }
@@ -312,9 +318,16 @@ DirectedGraph::subgraph_t DirectedGraph::identifyConnectedComponents(DirectedGra
     return subgraph;
 }
 
-uint64_t DirectedGraph::getNodeCount()
+SubGraph::Ptr DirectedGraph::getSubGraph()
 {
-    return ::lemon::countNodes( raw() );
+    SubGraph::Ptr subgraph(new subgraph_t(*this));
+
+    // Enable all nodes and edges by default
+    Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::PermitAll< Vertex::Ptr >() );
+    Filter< Edge::Ptr >::Ptr edgeFilter(new filters::PermitAll< Edge::Ptr >() );
+
+    subgraph->applyFilters(vertexFilter, edgeFilter);
+    return subgraph;
 }
 
 } // end namespace lemon
