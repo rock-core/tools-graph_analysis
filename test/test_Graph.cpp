@@ -27,6 +27,8 @@ BOOST_AUTO_TEST_CASE(it_should_add_remove_edges_and_vertices)
 
     int vertexCount = ::lemon::countNodes(graph.raw());
     BOOST_REQUIRE_MESSAGE(vertexCount == 2, "Auto adding of vertices via edges: expected 2 vertices but was " << vertexCount);
+    BOOST_REQUIRE_MESSAGE(graph.getVertexCount() == 2, "Count nodes: expected 2 vertices but was " << vertexCount);
+    BOOST_REQUIRE_MESSAGE(graph.getEdgeCount() == 1, "Count edges: expected 1 edge but was " << vertexCount);
 
     BOOST_REQUIRE_NO_THROW(graph.removeEdge(e0));
     BOOST_REQUIRE_NO_THROW(graph.removeVertex(v0));
@@ -34,6 +36,7 @@ BOOST_AUTO_TEST_CASE(it_should_add_remove_edges_and_vertices)
 
     vertexCount = ::lemon::countNodes(graph.raw());
     BOOST_REQUIRE_MESSAGE(vertexCount == 0, "Removed vertices: expected 0 but was " << vertexCount);
+    BOOST_REQUIRE_MESSAGE(graph.getVertexCount() == 0, "Removed vertices: expected 0 but was " << vertexCount);
 }
 
 BOOST_AUTO_TEST_CASE(it_should_iterate_over_vertices_and_edges)
@@ -148,8 +151,8 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
         gv.setVertexFilter(filter);
 
-        ::graph_analysis::lemon::DirectedSubGraph subGraph = gv.apply(graph);
-        int subgraphCount = ::lemon::countNodes(subGraph.raw());
+        graph_analysis::SubGraph::Ptr subGraph = gv.apply(graph);
+        int subgraphCount = subGraph->getVertexCount();
         int graphCount = ::lemon::countNodes(graph.raw());
         BOOST_REQUIRE_MESSAGE( subgraphCount == graphCount, "Subgraph contains all nodes after applying PermitAll filter: '" << subgraphCount << "' vs. '" << graphCount << "'");
     }
@@ -159,9 +162,8 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::DenyAll< Vertex::Ptr >() );
         gv.setVertexFilter(filter);
 
-        ::graph_analysis::lemon::DirectedSubGraph subGraph = gv.apply(graph);
-
-        int subgraphCount = ::lemon::countNodes(subGraph.raw());
+        graph_analysis::SubGraph::Ptr subGraph = gv.apply(graph);
+        int subgraphCount = subGraph->getVertexCount();
         BOOST_REQUIRE_MESSAGE( subgraphCount == 0, "Subgraph contains no nodes after applying DenyAll filter '" << subgraphCount << "' vs. '0'" );
     }
 
@@ -174,9 +176,9 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         gv.setEdgeFilter(edgeFilter);
 
 
-        ::graph_analysis::lemon::DirectedGraph::subgraph_t componentGraph = gv.identifyConnectedComponents(graph);
-        int componentNumber = ::lemon::countNodes( componentGraph.raw() );
-        BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' nodes representing components, while base graph has '" << ::lemon::countNodes( graph.raw()) << "' nodes overall" );
+        graph_analysis::SubGraph::Ptr subgraph = gv.identifyConnectedComponents(graph);
+        int componentNumber = subgraph->getVertexCount();
+        BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' vertices representing components, while base graph has '" << graph.getVertexCount() << "' vertices overall" );
     }
 
     io::GraphIO::write("testfile-lemon", graph, representation::GEXF);
