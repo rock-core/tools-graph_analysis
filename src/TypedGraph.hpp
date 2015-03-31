@@ -18,6 +18,8 @@ public:
      */
     graph_t& raw() { return mGraph; }
 
+    const graph_t& raw() const { return mGraph; }
+
 protected:
     graph_t mGraph;
 
