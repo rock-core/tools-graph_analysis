@@ -137,6 +137,9 @@ public:
     EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
     EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
 
+    /**
+     * Identifies the connected components
+     */
     SubGraph::Ptr identifyConnectedComponents();
 
     /**

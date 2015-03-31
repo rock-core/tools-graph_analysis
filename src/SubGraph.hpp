@@ -24,40 +24,40 @@ public:
      * \param vertex Vertex that is part of the underlying main graph and should
      * also be part of the subgraph
      */
-    virtual void enable(Vertex::Ptr vertex) = 0;
+    virtual void enable(Vertex::Ptr vertex) { throw std::runtime_error("graph_analysis::SubGraph::enable(Vertex::Ptr) not implemented"); }
 
     /**
      * Disable the given vertex
      * \param vertex Vertex that is part of the underlying main graph and should
      * not(!) be part of the subgraph
      */
-    virtual void disable(Vertex::Ptr vertex) = 0;
+    virtual void disable(Vertex::Ptr vertex) { throw std::runtime_error("graph_analysis::SubGraph::disable(Vertex::Ptr) not implemented"); }
 
     /**
      * Enable the given edge
      * \param edge Edge that is part of the underlying main graph and should
      * be part of the subgraph
      */
-    virtual void enable(Edge::Ptr edge) = 0;
+    virtual void enable(Edge::Ptr edge) { throw std::runtime_error("graph_analysis::SubGraph::enable(Edge::Ptr) not implemented"); }
 
     /**
      * Disable the given edge
      * \param edge Edge that is part of the underlying main graph and should
      * not be part of the subgraph
      */
-    virtual void disable(Edge::Ptr edge) = 0;
+    virtual void disable(Edge::Ptr edge) { throw std::runtime_error("graph_analysis::SubGraph::disable(Edge::Ptr) not implemented"); }
 
     /**
      * Test if a vertex is enabled
      * \return True if vertex is enabled, false otherwise
      */
-    virtual bool enabled(Vertex::Ptr vertex) const = 0;
+    virtual bool enabled(Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::SubGraph::enabled(Vertex::Ptr) not implemented"); }
 
     /**
      * Test if an edge is enabled
      * \return True if edge is enabled, false otherwise
      */
-    virtual bool enabled(Edge::Ptr edge) const = 0;
+    virtual bool enabled(Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::SubGraph::enabled(Edge::Ptr) not implemented"); }
 
     /**
      * Test if a vertex is disabled
@@ -86,13 +86,13 @@ public:
      * Get the iterator over all vertices in this subgraph
      * \return the egde iterator
      */
-    VertexIterator::Ptr getVertexIterator();
+    virtual VertexIterator::Ptr getVertexIterator();
 
     /**
      * Get iterator over all edge in this subgraph
      * \return the edge iterator
      */
-    EdgeIterator::Ptr getEdgeIterator();
+    virtual EdgeIterator::Ptr getEdgeIterator();
 
 protected:
     BaseGraph* getBaseGraph();

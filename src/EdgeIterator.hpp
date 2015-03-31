@@ -62,7 +62,7 @@ public:
     /**
      * Get the node iterator
      */
-    virtual EdgeIterator::Ptr getEdgeIterator() = 0;
+    virtual EdgeIterator::Ptr getEdgeIterator() { throw std::runtime_error("EdgeIterable::getEdgeIterator not implemented"); }
 
     /**
      * Get edge count

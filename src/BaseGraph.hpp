@@ -57,7 +57,7 @@ public:
      * \brief Get the vertex by id
      * \return vertex
      */
-    virtual Vertex::Ptr getVertex(GraphElementId id) const = 0;
+    virtual Vertex::Ptr getVertex(GraphElementId id) const { throw std::runtime_error("graph_analysis::BaseGraph::getVertex has not been implemented"); }
 
     /**
      * \brief Remove vertex
@@ -129,13 +129,13 @@ public:
      * Get the iterator over all vertices in this graph
      * \return the vertex iterator
      */
-    virtual VertexIterator::Ptr getVertexIterator() = 0;
+    virtual VertexIterator::Ptr getVertexIterator() { throw std::runtime_error("graph_analysis::BaseGraph::getVertexIterator has not been implemented"); }
 
     /**
      * Get iterator over all edges in this graph
      * \return the edge iterator
      */
-    virtual EdgeIterator::Ptr getEdgeIterator() = 0;
+    virtual EdgeIterator::Ptr getEdgeIterator() { throw std::runtime_error("graph_analysis::BaseGraph::getEdgeIterator has not been implemented"); }
 
     /**
      * Retrieve all vertices

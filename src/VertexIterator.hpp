@@ -61,7 +61,7 @@ public:
     /**
      * Get the vertex iterator
      */
-    virtual VertexIterator::Ptr getVertexIterator() = 0;
+    virtual VertexIterator::Ptr getVertexIterator() { throw std::runtime_error("VertexIterable::getVertexIterator not implemented"); }
 
     /**
      * Get vertex count
