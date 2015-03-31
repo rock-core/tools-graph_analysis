@@ -129,7 +129,16 @@ bool BaseGraph::contains(Vertex::Ptr vertex) const
     {
         return false;
     }
+}
 
+/**
+ * Apply filters to base graph
+ */
+SubGraph::Ptr BaseGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
+{
+    SubGraph::Ptr subGraph = getSubGraph();
+    subGraph->applyFilters(vertexFilter, edgeFilter);
+    return subGraph;
 }
 
 }

@@ -382,7 +382,7 @@ void CorrelationClustering::round()
                 Vertex::Ptr vertex = vertexIt->current();
                 graph->removeVertex(vertex);
             }
-            LOG_INFO_S << "Iteration done: " << graph->getNodeCount() << " nodes left";
+            LOG_INFO_S << "Iteration done: " << graph->getVertexCount() << " nodes left";
         } else {
             LOG_INFO_S << "Graph is empty -- algorithm done";
             // graph is empty
@@ -401,7 +401,7 @@ CorrelationClustering::CorrelationClustering(BaseGraph::Ptr graph, EdgeWeightFun
     // Prevent premature use of radius in volume(S)
     ball.radius = 1;
 
-    uint64_t nodeCount = graph->getNodeCount();
+    uint64_t nodeCount = graph->getVertexCount();
     mConstant = 2.01* log(nodeCount + 1);
     mInitialVolume = volume(ball) / (nodeCount*1.0);
 

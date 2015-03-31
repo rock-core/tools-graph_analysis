@@ -137,7 +137,7 @@ void GraphWidget::updateFromGraph()
     graphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
 
-    gl::DirectedSubGraph subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
 
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
@@ -145,7 +145,7 @@ void GraphWidget::updateFromGraph()
         Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
-        if(!subGraph.enabled(vertex))
+        if(!subGraph->enabled(vertex))
         {
             continue;
         }
@@ -170,7 +170,7 @@ void GraphWidget::updateFromGraph()
         Edge::Ptr edge = edgeIt->current();
 
         // Check on active filter
-        if(!subGraph.enabled(edge))
+        if(!subGraph->enabled(edge))
         {
             continue;
         }

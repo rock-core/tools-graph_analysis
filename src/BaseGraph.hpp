@@ -2,11 +2,12 @@
 #define GRAPH_ANALYSIS_BASE_GRAPH_HPP
 
 #include <stdint.h>
+#include <boost/shared_ptr.hpp>
 #include <graph_analysis/EdgeIterator.hpp>
 #include <graph_analysis/VertexIterator.hpp>
 #include <graph_analysis/Filter.hpp>
-
-#include <boost/shared_ptr.hpp>
+#include <graph_analysis/SubGraph.hpp>
+#include <graph_analysis/Algorithms.hpp>
 
 /**
  * The main namespace of this library
@@ -20,7 +21,7 @@ namespace graph_analysis
  * We assume that all graph implementations will rely and allow access to nodes and edges via
  * integers
  */
-class BaseGraph : public VertexIterable, public EdgeIterable
+class BaseGraph : public VertexIterable, public EdgeIterable, public Algorithms
 {
 public:
 
