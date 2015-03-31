@@ -7,6 +7,7 @@
 #include <lemon/connectivity.h>
 
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/SubGraphImpl.hpp>
 #include <graph_analysis/DirectedGraphInterface.hpp>
 #include <graph_analysis/lemon/NodeIterator.hpp>
 #include <graph_analysis/lemon/ArcIterator.hpp>

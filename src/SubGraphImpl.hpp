@@ -20,7 +20,6 @@ class SubGraphImpl : public SubGraph
 {
 public:
     typedef SubGraphType graph_t;
-    typedef SubGraphImpl<SubGraphType, VertexFilter, EdgeFilter> BaseSubGraphType;
 
     typedef VertexFilter vertex_filter_t;
     typedef EdgeFilter edge_filter_t;
