@@ -23,7 +23,6 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
 
         while(edgeIterator->next())
         {
-            // By default edges are disabled
             Edge::Ptr edge = edgeIterator->current();
             if( edgeFilter->permits(edge) )
             {
@@ -38,6 +37,8 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
                         enable(edge);
                     }
                 }
+            } else {
+                disable(edge);
             }
         }
     }
@@ -51,6 +52,8 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
             if( vertexFilter->permits(vertex) )
             {
                 enable(vertex);
+            } else {
+                disable(vertex);
             }
         }
     }
