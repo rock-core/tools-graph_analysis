@@ -56,7 +56,17 @@
  e0->setSourceVertex(v0);
  e0->setTargetVertex(v1);
 
- int vertexCount = ::lemon::countNodes(graph.raw());
+ graph.add(e0);
+
+ int vertexCount = graph.getVertexCount();
+ int vertexCountInternal = ::lemon::countNodes(graph.raw());
+
+ VertexIterator::Ptr vertexIt = graph.getVertexIterator();
+ while(vertexIt->next())
+ {
+    Vertex::Ptr vertex = vertexIt->current();
+    printf("Vertex: %s\n", vertex->toString().c_str());
+ }
 
  EdgeIterator::Ptr edgeIt = graph.getEdgeIterator();
  while(edgeIt->next())
