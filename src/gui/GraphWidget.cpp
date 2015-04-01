@@ -54,6 +54,7 @@
 
 #include "GVGraph.hpp"
 #include <graph_analysis/Filter.hpp>
+#include <graph_analysis/filters/EdgeContextFilter.hpp>
 
 #include <graph_analysis/lemon/Graph.hpp>
 #include <boost/foreach.hpp>
@@ -71,8 +72,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGVGraph(0)
     , mTimerId(0)
     , mLayout("dot")
-    , mpVertexFilter(new graph_analysis::Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new graph_analysis::EdgeContextFilter())
+    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
+    , mpEdgeFilter(new filters::EdgeContextFilter())
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -136,7 +137,7 @@ void GraphWidget::updateFromGraph()
     graphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
 
-    gl::DirectedSubGraph subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
 
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
@@ -144,7 +145,7 @@ void GraphWidget::updateFromGraph()
         Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
-        if(!subGraph.enabled(vertex))
+        if(!subGraph->enabled(vertex))
         {
             continue;
         }
@@ -169,7 +170,7 @@ void GraphWidget::updateFromGraph()
         Edge::Ptr edge = edgeIt->current();
 
         // Check on active filter
-        if(!subGraph.enabled(edge))
+        if(!subGraph->enabled(edge))
         {
             continue;
         }

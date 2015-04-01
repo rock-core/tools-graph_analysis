@@ -36,24 +36,44 @@
  * In the course of developement we might see that including additional libraries leads to an overcomplicated
  * wrapping infrastructure.
  * The goal however it to maintain a consistent and capable high-level interface abstraction in order to allow graph modeling and analysis.
- *
+*
  * \section Examples
  \verbatim
  #include <graph_analysis/GraphAnalysis.hpp>
  ...
  using namespace graph_analysis;
 
- class MyVertex : VertexProperty<DirectedGraph::Vertex>
+ class MyVertex : Vertex
  {
+     std::string getClassName() const { return "MyVertex"; }
  };
 
- graph_analysis::DirectedGraph graph;
- Vertex v = graph.addVertex();
+ graph_analysis::lemon::DirectedGraph graph;
+ Vertex::Ptr v0(new MyVertex());
+ Vertex::Ptr v1(new MyVertex());
 
- VertexProperty<DirectedGraph::Vertex>::Ptr vertexProperty(new MyVertex);
+ Edge::Ptr e0(new Edge());
+ e0->setSourceVertex(v0);
+ e0->setTargetVertex(v1);
 
- graph.assignVertexProperty(v, vertexProperty);
+ int vertexCount = ::lemon::countNodes(graph.raw());
+
+ EdgeIterator::Ptr edgeIt = graph.getEdgeIterator();
+ while(edgeIt->next())
+ {
+    Edge::Ptr edge = edgeIt->current();
+    printf("Edge: %s\n", edge->toString().c_str());
+ }
+
  \endverbatim
+ */
+
+/**
+ * \namespace graph_analysis
+ * \brief Main namespace of the graph analyis library
+ *
+ * \namespace algorithms
+ * \brief Algorithms implementations that rely on the (wrapper) interface of this library
  */
 #include <graph_analysis/Graph.hpp>
 

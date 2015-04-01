@@ -2,12 +2,13 @@
 #define GRAPH_ANALYSIS_COMMON_FILTERS_HPP
 
 #include <graph_analysis/Filter.hpp>
+#include <graph_analysis/filters/EdgeContextFilter.hpp>
 
 namespace graph_analysis {
 namespace filters {
 
 /**
- * Filter all items
+ * Filter out all items
  */
 template<typename FilterObject>
 class DenyAll : public Filter<FilterObject>
@@ -17,7 +18,7 @@ class DenyAll : public Filter<FilterObject>
 };
 
 /**
- * Filter edges
+ * Filter out all edges
  * \brief Inherits from edge context filter to make sure any subfilters of type EdgeContextFilter are properly applied
  */
 template<>

@@ -17,10 +17,15 @@ public:
 
     bool next()
     {
-        if( mNodeIt != ::lemon::INVALID )
+        while( mNodeIt != ::lemon::INVALID)
         {
-            setNext( mGraph.mVertexMap[mNodeIt] );
+            Vertex::Ptr vertex = mGraph.mVertexMap[mNodeIt];
             ++mNodeIt;
+            if(skip(vertex))
+            {
+                continue;
+            }
+            setNext(vertex);
             return true;
         }
         return false;
@@ -28,7 +33,7 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::NodeIt mNodeIt;
+    typename T::graph_t::NodeIt mNodeIt;
 
 };
 
