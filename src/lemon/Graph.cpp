@@ -67,7 +67,6 @@ bool DirectedSubGraph::enabled(Vertex::Ptr vertex) const
     GraphElementId graphElementId = vertex->getId( mGraph.getId() );
     ::lemon::ListDigraph::Node n = mGraph.raw().nodeFromId( graphElementId );
     bool status = raw().status(n);
-    LOG_DEBUG_S << "Vertex " << vertex->toString() << " has status : " << status;
     return status;
 }
 
