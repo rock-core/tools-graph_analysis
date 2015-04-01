@@ -72,6 +72,26 @@ public:
     bool disabled(Edge::Ptr edge) const { return !enabled(edge); }
 
     /**
+     * Enable all vertices
+     */
+    void enableAllVertices();
+
+    /**
+     * Enable all edges
+     */
+    void enableAllEdges();
+
+    /**
+     * Disable all vertices
+     */
+    void disableAllVertices();
+
+    /**
+     * Disable all edges
+     */
+    void disableAllEdges();
+
+    /**
      * Apply filters to this subgraph
      */
     void applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
