@@ -3,18 +3,20 @@
 
 #include <map>
 #include <stdint.h>
-#include <gsl/gsl_rng.h>
 #include <graph_analysis/GraphElement.hpp>
 
 namespace graph_analysis {
 namespace percolation {
+    class RandomNumberGenerator;
+
 namespace strategies {
 
 /**
- * \details
- * You can use the environoment variable GSL_RNG_SEED to set the seed, and 
- * GSL_RNG_TYPE to set the random generator, e.g., ranlxs0, cmrg, mrg or taus
- * \see https://www.gnu.org/software/gsl/manual/html_node/Random-number-generator-algorithms.html#Random-number-generator-algorithms
+ * \class RandomDraw
+ * \brief Randomly draws items from a given set, based on given
+ * probability densities. Uses RandomNumberGenerator internally, see
+ * RandomNumberGenerator for parametrization of seed and algorithms
+ * \see RandomNumberGenerator
  */
 class RandomDraw
 {
@@ -25,8 +27,7 @@ class RandomDraw
     /// has been remove
     bool mUpdated;
     mutable double mProbabilityDensitySum;
-    uint32_t mSeed;
-    gsl_rng* mRandomNumberGenerator;
+    RandomNumberGenerator* mRandomNumberGenerator;
 
 public:
     /**

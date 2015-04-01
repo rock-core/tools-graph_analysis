@@ -33,7 +33,7 @@ public:
      * Apply a strategy for percolation, i.e., simulating the removal of nodes
      * \return the current subgraph
      */
-    SubGraph::Ptr triggerRemoval(Strategy::Ptr strategy);
+    SubGraph::Ptr apply(Strategy::Ptr strategy);
 };
 
 } // end namespace percolation

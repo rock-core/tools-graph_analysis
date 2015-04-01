@@ -23,7 +23,10 @@ rock_library(graph_analysis
         io/GexfWriter.cpp
         lemon/Graph.cpp
         Percolation.cpp
+        percolation/RandomNumberGenerator.cpp
         percolation/strategies/RandomDraw.cpp
+        percolation/strategies/UniformRandomEdgeRemoval.cpp
+        percolation/strategies/UniformRandomVertexRemoval.cpp
         SubGraph.cpp
         Vertex.cpp
         VertexIterator.cpp
@@ -60,7 +63,10 @@ rock_library(graph_analysis
         lemon/Graph.hpp
         lemon/NodeIterator.hpp
         Percolation.hpp
+        percolation/RandomNumberGenerator.hpp
         percolation/strategies/RandomDraw.hpp
+        percolation/strategies/UniformRandomEdgeRemoval.hpp
+        percolation/strategies/UniformRandomVertexRemoval.hpp
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp

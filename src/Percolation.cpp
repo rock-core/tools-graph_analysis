@@ -8,7 +8,13 @@ Percolation::Percolation(BaseGraph::Ptr graph)
     , mpSubGraph(graph->getSubGraph())
 {}
 
-SubGraph::Ptr Percolation::triggerRemoval(Strategy::Ptr strategy)
+void Percolation::reset()
+{
+    mpSubGraph->enableAllVertices();
+    mpSubGraph->enableAllEdges();
+}
+
+SubGraph::Ptr Percolation::apply(Strategy::Ptr strategy)
 {
     strategy->apply(mpSubGraph);
     return mpSubGraph;

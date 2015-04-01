@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <base/Logging.hpp>
+#include <graph_analysis/percolation/RandomNumberGenerator.hpp>
 
 namespace graph_analysis {
 namespace percolation {
@@ -11,31 +12,13 @@ namespace strategies {
 RandomDraw::RandomDraw(uint32_t seed)
     : mUpdated(false)
     , mProbabilityDensitySum(0.0)
-    , mSeed(seed)
+    , mRandomNumberGenerator(new RandomNumberGenerator(seed))
 {
-    // https://www.gnu.org/software/gsl/manual/html_node/Random-number-generator-algorithms.html#Random-number-generator-algorithms
-
-    // https://www.gnu.org/software/gsl/manual/html_node/Random-number-environment-variables.html#Random-number-environment-variables
-    // via environment variable GSL_RNG_TYPE, default is gsl_rng_mt19937
-    gsl_rng_env_setup();
-
-    mRandomNumberGenerator = gsl_rng_alloc(gsl_rng_default);
-    if(!seed)
-    {
-        // take the one from the environment / the default one
-        mSeed = gsl_rng_default_seed;
-    } else {
-        mSeed = seed;
-    }
-    gsl_rng_set(mRandomNumberGenerator, seed);
-
-    LOG_DEBUG_S << "Using random number generator: " << gsl_rng_name(mRandomNumberGenerator);
-    LOG_DEBUG_S << "Using seed: " << mSeed;
 }
 
 RandomDraw::~RandomDraw()
 {
-    gsl_rng_free( mRandomNumberGenerator );
+    delete mRandomNumberGenerator;
 }
 
 void RandomDraw::setProbabilityDensity(GraphElementId id, double density)
@@ -111,7 +94,7 @@ GraphElementId RandomDraw::drawItem() const
     }
 
     // Get the random number in the range (0,1) excluding both 0.0 and 1.0
-    double randomNumber = gsl_rng_uniform_pos(mRandomNumberGenerator);
+    double randomNumber = mRandomNumberGenerator->getUniformPositiveNumber();
     randomNumber *= probabilityDensitySum;
 
     double currentDensity = 0.0;
