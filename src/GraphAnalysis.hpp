@@ -40,6 +40,7 @@
  * \section Examples
  \verbatim
  #include <graph_analysis/GraphAnalysis.hpp>
+ #include <graph_analysis/lemon/Graph.hpp>
  ...
  using namespace graph_analysis;
 
