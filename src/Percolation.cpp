@@ -5,12 +5,12 @@ namespace percolation {
 
 Percolation::Percolation(BaseGraph::Ptr graph)
     : mpGraph(graph)
-    , mpSubGraph(graph.getSubGraph())
+    , mpSubGraph(graph->getSubGraph())
 {}
 
-SubGraph::Ptr Percolation::triggerRemoval(const Strategy& strategy)
+SubGraph::Ptr Percolation::triggerRemoval(Strategy::Ptr strategy)
 {
-    strategy.apply(mpSubGraph);
+    strategy->apply(mpSubGraph);
     return mpSubGraph;
 }
 

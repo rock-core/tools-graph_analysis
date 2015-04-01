@@ -22,6 +22,8 @@ rock_library(graph_analysis
         gui/GVGraph.cpp
         io/GexfWriter.cpp
         lemon/Graph.cpp
+        Percolation.cpp
+        percolation/strategies/RandomDraw.cpp
         SubGraph.cpp
         Vertex.cpp
         VertexIterator.cpp
@@ -57,6 +59,8 @@ rock_library(graph_analysis
         lemon/ArcIterator.hpp
         lemon/Graph.hpp
         lemon/NodeIterator.hpp
+        Percolation.hpp
+        percolation/strategies/RandomDraw.hpp
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
@@ -67,7 +71,7 @@ rock_library(graph_analysis
         VertexIterator.hpp
         WeightedEdge.hpp
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf numeric
+        lemon snap base-lib gexf numeric gsl
     DEPS_PLAIN
         Boost_REGEX
     MOC

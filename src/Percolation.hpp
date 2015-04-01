@@ -7,6 +7,8 @@
  *        disappear from the graph
  */
 
+#include <graph_analysis/BaseGraph.hpp>
+#include <graph_analysis/SubGraph.hpp>
 #include <graph_analysis/percolation/Strategy.hpp>
 
 namespace graph_analysis {
@@ -20,7 +22,7 @@ class Percolation
 public:
     Percolation(BaseGraph::Ptr graph);
 
-    virtual ~Percolation();
+    virtual ~Percolation() {}
 
     /**
      * Reset the percolation state of the graph

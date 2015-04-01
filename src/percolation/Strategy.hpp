@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_PERCOLATION_STRATEGY_HPP
 #define GRAPH_ANALYSIS_PERCOLATION_STRATEGY_HPP
 
-#include <boost/shared_ptr>
+#include <boost/shared_ptr.hpp>
 #include <graph_analysis/SubGraph.hpp>
 
 namespace graph_analysis {
