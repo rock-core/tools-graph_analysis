@@ -83,7 +83,7 @@ public:
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    ::graph_analysis::BaseGraph* graph() { return mpGraph; }
+    ::graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
 
     void reset(bool keepData = false);
     void clear();
@@ -112,7 +112,7 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    graph_analysis::BaseGraph* mpGraph;
+    graph_analysis::BaseGraph::Ptr mpGraph;
 
     GVGraph* mpGVGraph;
     // Mapping with layout engine

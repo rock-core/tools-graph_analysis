@@ -68,7 +68,7 @@ namespace gui {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mpGraph(0)
+    , mpGraph()
     , mpGVGraph(0)
     , mTimerId(0)
     , mLayout("dot")
@@ -103,8 +103,7 @@ void GraphWidget::reset(bool keepData)
 
     if(!keepData)
     {
-        delete mpGraph;
-        mpGraph = new gl::DirectedGraph();
+        mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     }
 }
 
@@ -132,12 +131,12 @@ void GraphWidget::refresh()
 void GraphWidget::updateFromGraph()
 {
     // Setting up filtering
-    GraphView< gl::DirectedGraph > graphView;
+    GraphView graphView;
     graphView.setVertexFilter(mpVertexFilter);
     graphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
 
-    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    SubGraph::Ptr subGraph = graphView.apply(mpGraph);
 
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
