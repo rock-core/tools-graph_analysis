@@ -12,10 +12,12 @@ class BaseGraph;
 
 class SubGraph : public VertexIterable, public EdgeIterable
 {
-    BaseGraph* mpBaseGraph;
+    boost::shared_ptr<BaseGraph> mpBaseGraph;
 
 public:
-    SubGraph(BaseGraph* graph);
+    SubGraph(boost::shared_ptr<BaseGraph> graph);
+
+    virtual ~SubGraph() {}
 
     typedef boost::shared_ptr<SubGraph> Ptr;
 
@@ -115,7 +117,7 @@ public:
     virtual EdgeIterator::Ptr getEdgeIterator();
 
 protected:
-    BaseGraph* getBaseGraph();
+    boost::shared_ptr<BaseGraph> getBaseGraph();
 };
 
 } // end namespace graph_analysis

@@ -7,7 +7,7 @@
 
 namespace graph_analysis {
 
-SubGraph::SubGraph(BaseGraph* baseGraph)
+SubGraph::SubGraph(BaseGraph::Ptr baseGraph)
     : mpBaseGraph(baseGraph)
 {}
 
@@ -88,7 +88,7 @@ BaseGraph::Ptr SubGraph::toBaseGraph()
     return graph;
 }
 
-BaseGraph* SubGraph::getBaseGraph()
+BaseGraph::Ptr SubGraph::getBaseGraph()
 {
     return mpBaseGraph;
 }
