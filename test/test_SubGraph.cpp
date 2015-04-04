@@ -1,5 +1,5 @@
 #include <boost/test/unit_test.hpp>
-#include <graph_analysis/lemon/Graph.hpp>
+#include <graph_analysis/BaseGraph.hpp>
 
 using namespace graph_analysis;
 
@@ -7,7 +7,7 @@ BOOST_AUTO_TEST_SUITE(subgraph_test_suite)
 
 BOOST_AUTO_TEST_CASE(create_sub_graph)
 {
-    graph_analysis::lemon::DirectedGraph graph;
+    BaseGraph::Ptr graph = BaseGraph::getInstance(BaseGraph::LEMON_DIRECTED_GRAPH);
 
     Vertex::Ptr v0( new Vertex());
     Vertex::Ptr v1( new Vertex());
@@ -16,10 +16,10 @@ BOOST_AUTO_TEST_CASE(create_sub_graph)
     e0->setSourceVertex(v0);
     e0->setTargetVertex(v1);
 
-    graph.addEdge(e0);
+    graph->addEdge(e0);
 
     {
-        SubGraph::Ptr subgraph = graph.getSubGraph();
+        SubGraph::Ptr subgraph = BaseGraph::getSubGraph(graph);
         {
             VertexIterator::Ptr vertexIterator = subgraph->getVertexIterator();
             int count = 0;
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(create_sub_graph)
     }
 
     {
-        SubGraph::Ptr subgraph = graph.getSubGraph();
+        SubGraph::Ptr subgraph = BaseGraph::getSubGraph(graph);
         subgraph->disable(e0);
         {
             VertexIterator::Ptr vertexIterator = subgraph->getVertexIterator();
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(create_sub_graph)
         }
     }
     {
-        SubGraph::Ptr subgraph = graph.getSubGraph();
+        SubGraph::Ptr subgraph = BaseGraph::getSubGraph(graph);
         subgraph->disable(v0);
         {
             VertexIterator::Ptr vertexIterator = subgraph->getVertexIterator();
