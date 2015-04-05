@@ -106,19 +106,19 @@ int main(int argc, char** argv)
 
     {
         graph_analysis::snap::DirectedGraph graph;
-        PNEGraph& rawGraph  = graph.raw();
+        graph_analysis::snap::DirectedGraph::graph_t& rawGraph  = graph.raw();
         snapRawMark.numberOfNodes = nodeMax;
         snapRawMark.startAddNodes = base::Time::now();
         for(int i = 0; i < nodeMax; ++i)
         {
-            rawGraph->AddNode();
+            rawGraph.AddNode();
         }
         snapRawMark.stopAddNodes = base::Time::now();
 
         snapRawMark.startGetNodes = base::Time::now();
         for(int i = 0; i < nodeMax; ++i)
         {
-            rawGraph->GetNI(i);
+            rawGraph.GetNI(i);
         }
         snapRawMark.stopGetNodes = base::Time::now();
     }
