@@ -1,12 +1,46 @@
 #include "BaseGraph.hpp"
+#include <sstream>
+#include <boost/assign.hpp>
+#include <base/Logging.hpp>
+#include <graph_analysis/lemon/Graph.hpp>
+#include <graph_analysis/snap/DirectedGraph.hpp>
 
 namespace graph_analysis {
 
 GraphId BaseGraph::msId = 0;
 
-BaseGraph::BaseGraph()
+std::map<BaseGraph::ImplementationType, std::string> BaseGraph::ImplementationTypeTxt = boost::assign::map_list_of
+    (LEMON_DIRECTED_GRAPH, "Lemon Directed Graph")
+    (SNAP_DIRECTED_GRAPH, "SNAP Directed Graph")
+    ;
+
+BaseGraph::BaseGraph(ImplementationType type)
     : mId(msId++)
+    , mImplementationType(type)
 {}
+
+
+BaseGraph::Ptr BaseGraph::getInstance(ImplementationType type)
+{
+   BaseGraph::Ptr baseGraph;
+   switch(type)
+   {
+       case LEMON_DIRECTED_GRAPH:
+           return BaseGraph::Ptr(new graph_analysis::lemon::DirectedGraph());
+       case SNAP_DIRECTED_GRAPH:
+           return BaseGraph::Ptr(new graph_analysis::snap::DirectedGraph());
+       default:
+           std::stringstream ss;
+           ss << type;
+           throw std::invalid_argument("BaseGraph::getInstance: requested instanciation of unknown \
+                   implementation type: " + ss.str());
+   }
+}
+
+SubGraph::Ptr BaseGraph::getSubGraph(Ptr graph)
+{
+    return graph->createSubGraph(graph);
+}
 
 GraphElementId BaseGraph::addVertex(Vertex::Ptr vertex)
 {
@@ -138,11 +172,40 @@ bool BaseGraph::contains(Vertex::Ptr vertex) const
 /**
  * Apply filters to base graph
  */
-SubGraph::Ptr BaseGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
+SubGraph::Ptr BaseGraph::applyFilters(BaseGraph::Ptr graph, Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
 {
-    SubGraph::Ptr subGraph = getSubGraph();
+    LOG_DEBUG_S << "Applying filters";
+    SubGraph::Ptr subGraph = BaseGraph::getSubGraph(graph);
+    LOG_DEBUG_S << "Got subgraph";
     subGraph->applyFilters(vertexFilter, edgeFilter);
+    LOG_DEBUG_S << "return subgraph";
     return subGraph;
+}
+
+
+void BaseGraph::clear()
+{
+    while(true)
+    {
+        EdgeIterator::Ptr edgeIterator = getEdgeIterator();
+        if(edgeIterator->next())
+        {
+            removeEdge(edgeIterator->current());
+        } else {
+            break;
+        }
+    }
+
+    while(true)
+    {
+        VertexIterator::Ptr vertexIterator = getVertexIterator();
+        if(vertexIterator->next())
+        {
+            removeVertex(vertexIterator->current());
+        } else {
+            break;
+        }
+    }
 }
 
 }

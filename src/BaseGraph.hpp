@@ -24,15 +24,24 @@ namespace graph_analysis
 class BaseGraph : public VertexIterable, public EdgeIterable, public Algorithms
 {
 public:
+    enum ImplementationType { LEMON_DIRECTED_GRAPH, SNAP_DIRECTED_GRAPH, IMPLEMENTATION_TYPE_END };
+    static std::map<ImplementationType, std::string> ImplementationTypeTxt;
 
     typedef boost::shared_ptr<BaseGraph> Ptr;
 
-    BaseGraph();
+    BaseGraph(ImplementationType type);
 
     /**
      * \brief Default deconstructor
      */
     virtual ~BaseGraph() {}
+
+    static Ptr getInstance(ImplementationType type);
+
+    static SubGraph::Ptr getSubGraph(Ptr graph);
+
+    ImplementationType getImplementationType() const { return mImplementationType; }
+    std::string getImplementationTypeName() const { return ImplementationTypeTxt[mImplementationType]; }
 
     /**
      * \brief Add a vertex
@@ -101,7 +110,7 @@ public:
      * \brief Get the edge by id
      * \return vertex
      */
-    virtual Edge::Ptr getEdge(GraphElementId id) const = 0;
+    virtual Edge::Ptr getEdge(GraphElementId id) const { throw std::runtime_error("BaseGraph::getEdge: not implemented"); }
 
     /**
      * \brief Get edge by given vertices
@@ -158,28 +167,34 @@ public:
     virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) { throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
 
     /**
-     * Get subgraph
-     */
-    virtual SubGraph::Ptr getSubGraph() { throw std::runtime_error("BaseGraph::getSubGraph: not implemented"); }
-
-    /**
      * Apply filters to base graph
      * \return subgraph with filters applied
      */
-    SubGraph::Ptr applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
+    static SubGraph::Ptr applyFilters(Ptr graph, Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
+
+    /**
+     * Clear the graph from all nodes and edges
+     */
+    void clear();
 
 protected:
     /**
-     * Add an add using source and target vertex on the internal
+     * Add an edge using source and target vertex on the internal
      * graph representation
      * \return Element id of this edge within this graph
      */
-    virtual GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) = 0;
+    virtual GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) { throw std::runtime_error("BaseGraph::addEdgeInternal: not implemented"); }
 
+    /**
+     * Create subgraph of the given baseGraph
+     * \param baseGraph BaseGraph that this subgraph is related to
+     */
+    virtual SubGraph::Ptr createSubGraph(Ptr baseGraph) { throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
 
 private:
     GraphId mId;
     static GraphId msId;
+    ImplementationType mImplementationType;
 };
 
 } // end namespace graph_analysis
