@@ -92,7 +92,9 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
         BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
         BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
 
-        for(int i = 0; i < 1000; ++i)
+        int numberOfEdges = 1000;
+
+        for(int i = 0; i < numberOfEdges; ++i)
         {
             Vertex::Ptr v0( new Vertex());
             Vertex::Ptr v1( new Vertex());
@@ -111,11 +113,16 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
             percolation::Strategy::Ptr strategy(new UniformRandomEdgeRemoval(occupationProbability));
 
             percolation::Percolation percolation(graph);
-            SubGraph::Ptr subgraph = percolation.apply(strategy);
+            {
+                SubGraph::Ptr subgraph = percolation.getSubGraph();
+                BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() == numberOfEdges, "Number of edges of subgraph should be same as basegraph: expected " << graph->getEdgeCount() << ", got " << subgraph->getEdgeCount());
+            }
+            percolation::EventList events = percolation.apply(strategy);
+            SubGraph::Ptr subgraph = percolation.getSubGraph();
 
             BOOST_REQUIRE_MESSAGE(subgraph->getVertexCount() == graph->getVertexCount(), "Subgraph vertex count: expected " << graph->getVertexCount() << " but got " << subgraph->getVertexCount()); 
-
             BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() == graph->getEdgeCount(), "Subgraph edge count: expected " << graph->getEdgeCount() << " but got " << subgraph->getEdgeCount()); 
+            BOOST_REQUIRE_MESSAGE(events.size() == 0, "Subgraph: expected no removal event, got: " << events.size());
         }
 
         {
@@ -123,11 +130,16 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
             percolation::Strategy::Ptr strategy(new UniformRandomEdgeRemoval(occupationProbability));
 
             percolation::Percolation percolation(graph);
-            SubGraph::Ptr subgraph = percolation.apply(strategy);
+            {
+                SubGraph::Ptr subgraph = percolation.getSubGraph();
+                BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() == numberOfEdges, "Number of edges of subgraph should be same as basegraph: expected " << graph->getEdgeCount() << ", got " << subgraph->getEdgeCount());
+            }
+            percolation::EventList events = percolation.apply(strategy);
+            SubGraph::Ptr subgraph = percolation.getSubGraph();
 
             BOOST_REQUIRE_MESSAGE(subgraph->getVertexCount() == graph->getVertexCount(), "Subgraph vertex count: expected " << graph->getVertexCount() << " but got " << subgraph->getVertexCount()); 
-
             BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() == 0, "Subgraph edge count: expected 0 but got " << subgraph->getEdgeCount()); 
+            BOOST_REQUIRE_MESSAGE(events.size() == numberOfEdges, "Subgraph: expected " << numberOfEdges << " removal events, got: " << events.size());
         }
 
         {
@@ -135,11 +147,17 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
             percolation::Strategy::Ptr strategy(new UniformRandomEdgeRemoval(occupationProbability));
 
             percolation::Percolation percolation(graph);
-            SubGraph::Ptr subgraph = percolation.apply(strategy);
+            {
+                SubGraph::Ptr subgraph = percolation.getSubGraph();
+                BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() == numberOfEdges, "Number of edges of subgraph should be same as basegraph: expected " << graph->getEdgeCount() << ", got " << subgraph->getEdgeCount());
+            }
+
+            percolation::EventList events = percolation.apply(strategy);
+            SubGraph::Ptr subgraph = percolation.getSubGraph();
 
             BOOST_REQUIRE_MESSAGE(subgraph->getVertexCount() == graph->getVertexCount(), "Subgraph vertex count: expected " << graph->getVertexCount() << " but got " << subgraph->getVertexCount()); 
-
             BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() < graph->getEdgeCount()*0.7, "Subgraph edge count: expected less than " << graph->getEdgeCount()*0.7 << " but got " << subgraph->getEdgeCount()); 
+            BOOST_REQUIRE_MESSAGE(events.size() > numberOfEdges*0.4, "Subgraph: expected " << numberOfEdges*0.4 << " removal events, got: " << events.size());
         }
     }
 }
@@ -147,7 +165,8 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
 BOOST_AUTO_TEST_CASE(random_uniform_vertex_removal)
 {
     BaseGraph::Ptr graph(new graph_analysis::lemon::DirectedGraph());
-    for(int i = 0; i < 1000; ++i)
+    int numberOfEdges = 1000;
+    for(int i = 0; i < numberOfEdges; ++i)
     {
         Vertex::Ptr v0( new Vertex());
         Vertex::Ptr v1( new Vertex());
@@ -166,11 +185,12 @@ BOOST_AUTO_TEST_CASE(random_uniform_vertex_removal)
         percolation::Strategy::Ptr strategy(new UniformRandomVertexRemoval(occupationProbability));
 
         percolation::Percolation percolation(graph);
-        SubGraph::Ptr subgraph = percolation.apply(strategy);
+        percolation::EventList events = percolation.apply(strategy);
+        SubGraph::Ptr subgraph = percolation.getSubGraph();
 
         BOOST_REQUIRE_MESSAGE(subgraph->getVertexCount() == graph->getVertexCount(), "Subgraph vertex count: expected " << graph->getVertexCount() << " but got " << subgraph->getVertexCount()); 
-
         BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() == graph->getEdgeCount(), "Subgraph edge count: expected " << graph->getEdgeCount() << " but got " << subgraph->getEdgeCount()); 
+        BOOST_REQUIRE_MESSAGE(events.size() == 0, "SubGraph vertex count: expected 0 removal events, got " << events.size());
     }
 
     {
@@ -178,11 +198,12 @@ BOOST_AUTO_TEST_CASE(random_uniform_vertex_removal)
         percolation::Strategy::Ptr strategy(new UniformRandomVertexRemoval(occupationProbability));
 
         percolation::Percolation percolation(graph);
-        SubGraph::Ptr subgraph = percolation.apply(strategy);
+        percolation::EventList events = percolation.apply(strategy);
+        SubGraph::Ptr subgraph = percolation.getSubGraph();
 
         BOOST_REQUIRE_MESSAGE(subgraph->getVertexCount() == 0, "Subgraph vertex count: expected 0 but got " << subgraph->getVertexCount()); 
-
         BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() == 0, "Subgraph edge count: expected 0 but got " << subgraph->getEdgeCount()); 
+        BOOST_REQUIRE_MESSAGE(events.size() == numberOfEdges*2, "SubGraph vertex count: expected " << numberOfEdges << " removal events, got " << events.size());
     }
 
     {
@@ -190,11 +211,12 @@ BOOST_AUTO_TEST_CASE(random_uniform_vertex_removal)
         percolation::Strategy::Ptr strategy(new UniformRandomVertexRemoval(occupationProbability));
 
         percolation::Percolation percolation(graph);
-        SubGraph::Ptr subgraph = percolation.apply(strategy);
+        percolation::EventList events = percolation.apply(strategy);
+        SubGraph::Ptr subgraph = percolation.getSubGraph();
 
         BOOST_REQUIRE_MESSAGE(subgraph->getVertexCount() < graph->getVertexCount()*0.7, "Subgraph vertex count: expected less than " << graph->getVertexCount()*0.7 << " but got " << subgraph->getVertexCount()); 
-
         BOOST_REQUIRE_MESSAGE(subgraph->getEdgeCount() < graph->getEdgeCount()*0.7, "Subgraph edge count: expected less than " << graph->getEdgeCount()*0.7 << " but got " << subgraph->getEdgeCount()); 
+        BOOST_REQUIRE_MESSAGE(events.size() > (numberOfEdges*2*0.4), "SubGraph vertex count: expected " << (numberOfEdges*2*0.4) << " removal events, got " << events.size());
     }
 }
 

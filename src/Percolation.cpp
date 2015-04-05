@@ -5,7 +5,7 @@ namespace percolation {
 
 Percolation::Percolation(BaseGraph::Ptr graph)
     : mpGraph(graph)
-    , mpSubGraph(graph->getSubGraph())
+    , mpSubGraph(BaseGraph::getSubGraph(graph))
 {}
 
 void Percolation::reset()
@@ -14,10 +14,9 @@ void Percolation::reset()
     mpSubGraph->enableAllEdges();
 }
 
-SubGraph::Ptr Percolation::apply(Strategy::Ptr strategy)
+EventList Percolation::apply(Strategy::Ptr strategy)
 {
-    strategy->apply(mpSubGraph);
-    return mpSubGraph;
+    return strategy->apply(mpSubGraph);
 }
 
 } // end percolation

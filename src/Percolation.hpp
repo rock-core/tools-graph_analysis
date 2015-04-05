@@ -33,7 +33,13 @@ public:
      * Apply a strategy for percolation, i.e., simulating the removal of nodes
      * \return the current subgraph
      */
-    SubGraph::Ptr apply(Strategy::Ptr strategy);
+    EventList apply(Strategy::Ptr strategy);
+
+    /**
+     * Get the current subgraph
+     * \return subgraph
+     */
+    SubGraph::Ptr getSubGraph() { return mpSubGraph; }
 };
 
 } // end namespace percolation
