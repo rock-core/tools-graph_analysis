@@ -21,12 +21,16 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.cpp
         gui/GVGraph.cpp
         io/GexfWriter.cpp
-        lemon/Graph.cpp
+        lemon/DirectedGraph.cpp
+        lemon/DirectedSubGraph.cpp
         Percolation.cpp
+        percolation/Event.cpp
         percolation/RandomNumberGenerator.cpp
         percolation/strategies/RandomDraw.cpp
         percolation/strategies/UniformRandomEdgeRemoval.cpp
         percolation/strategies/UniformRandomVertexRemoval.cpp
+        snap/DirectedSubGraph.cpp
+        snap/DirectedGraph.cpp
         SubGraph.cpp
         Vertex.cpp
         VertexIterator.cpp
@@ -60,13 +64,18 @@ rock_library(graph_analysis
         gui/GVGraph.hpp
         io/GexfWriter.hpp
         lemon/ArcIterator.hpp
+        lemon/DirectedGraph.hpp
+        lemon/DirectedSubGraph.hpp
         lemon/Graph.hpp
         lemon/NodeIterator.hpp
         Percolation.hpp
+        percolation/Event.hpp
         percolation/RandomNumberGenerator.hpp
         percolation/strategies/RandomDraw.hpp
         percolation/strategies/UniformRandomEdgeRemoval.hpp
         percolation/strategies/UniformRandomVertexRemoval.hpp
+        snap/DirectedSubGraph.hpp
+        snap/DirectedGraph.hpp
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
@@ -95,4 +104,3 @@ rock_executable(graph_analysis-bm Main.cpp
 rock_executable(graph_analysis-gui gui/Main.cpp
     DEPS graph_analysis
     NOINSTALL)
-
