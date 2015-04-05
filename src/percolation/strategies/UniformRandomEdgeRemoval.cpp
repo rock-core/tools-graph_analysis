@@ -11,8 +11,10 @@ UniformRandomEdgeRemoval::UniformRandomEdgeRemoval(double occupationProbability,
 {
 }
 
-void UniformRandomEdgeRemoval::apply(SubGraph::Ptr subgraph)
+EventList UniformRandomEdgeRemoval::apply(SubGraph::Ptr subgraph)
 {
+    EventList eventList;
+
     mDisabled.clear();
 
     EdgeIterator::Ptr edgeIterator = subgraph->getEdgeIterator();
@@ -26,8 +28,13 @@ void UniformRandomEdgeRemoval::apply(SubGraph::Ptr subgraph)
         } else {
             subgraph->disable(edge);
             mDisabled.push_back(edge);
+
+            Event event(Event::REMOVE_EDGE, edge);
+            eventList.push_back(event);
         }
     }
+
+    return eventList;
 }
 
 } // end namespace strategies

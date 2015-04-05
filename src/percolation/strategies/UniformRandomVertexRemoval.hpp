@@ -18,7 +18,7 @@ class UniformRandomVertexRemoval : public Strategy
 public:
     UniformRandomVertexRemoval(double occupationProbability, uint32_t seed = 0);
 
-    void apply(SubGraph::Ptr subgraph);
+    EventList apply(SubGraph::Ptr subgraph);
 
     std::vector<Vertex::Ptr> getDisabledVertices() const { return mDisabled; }
 };

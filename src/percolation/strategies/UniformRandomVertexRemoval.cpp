@@ -11,8 +11,9 @@ UniformRandomVertexRemoval::UniformRandomVertexRemoval(double occupationProbabil
 {
 }
 
-void UniformRandomVertexRemoval::apply(SubGraph::Ptr subgraph)
+EventList UniformRandomVertexRemoval::apply(SubGraph::Ptr subgraph)
 {
+    EventList eventList;
     mDisabled.clear();
 
     VertexIterator::Ptr vertexIterator = subgraph->getVertexIterator();
@@ -26,8 +27,13 @@ void UniformRandomVertexRemoval::apply(SubGraph::Ptr subgraph)
         } else {
             subgraph->disable(vertex);
             mDisabled.push_back(vertex);
+
+            Event event(Event::REMOVE_VERTEX, vertex);
+            eventList.push_back(event);
         }
     }
+
+    return eventList;
 }
 
 } // end namespace strategies

@@ -3,6 +3,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <graph_analysis/SubGraph.hpp>
+#include <graph_analysis/percolation/Event.hpp>
 
 namespace graph_analysis {
 namespace percolation {
@@ -14,8 +15,9 @@ public:
 
     /**
      * Apply strategy to given subgraph
+     * \return List of change events that have been applied to the graph
      */
-    virtual void apply(SubGraph::Ptr subgraph) { throw std::runtime_error("graph_analysis::percolation::Strategy::apply has not been implemented"); }
+    virtual EventList apply(SubGraph::Ptr subgraph) { throw std::runtime_error("graph_analysis::percolation::Strategy::apply has not been implemented"); }
 };
 
 } // end namespace percolation
