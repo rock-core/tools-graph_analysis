@@ -147,22 +147,24 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
 
     // Set graph view
     {
-        graph_analysis::GraphView< ::graph_analysis::lemon::DirectedGraph > gv;
+        BaseGraph::Ptr baseGraph = graph.copy();
+        graph_analysis::GraphView gv;
         graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
         gv.setVertexFilter(filter);
 
-        graph_analysis::SubGraph::Ptr subGraph = gv.apply(graph);
+        graph_analysis::SubGraph::Ptr subGraph = gv.apply(baseGraph);
         int subgraphCount = subGraph->getVertexCount();
-        int graphCount = ::lemon::countNodes(graph.raw());
+        int graphCount = baseGraph->getVertexCount();
         BOOST_REQUIRE_MESSAGE( subgraphCount == graphCount, "Subgraph contains all nodes after applying PermitAll filter: '" << subgraphCount << "' vs. '" << graphCount << "'");
     }
 
     {
-        graph_analysis::GraphView< ::graph_analysis::lemon::DirectedGraph> gv;
+        BaseGraph::Ptr baseGraph = graph.copy();
+        graph_analysis::GraphView gv;
         graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::DenyAll< Vertex::Ptr >() );
         gv.setVertexFilter(filter);
 
-        graph_analysis::SubGraph::Ptr subGraph = gv.apply(graph);
+        graph_analysis::SubGraph::Ptr subGraph = gv.apply(baseGraph);
         int subgraphCount = subGraph->getVertexCount();
         BOOST_REQUIRE_MESSAGE( subgraphCount == 0, "Subgraph contains no nodes after applying DenyAll filter '" << subgraphCount << "' expected '0'" );
     }
@@ -175,7 +177,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         //graph_analysis::Filter< Edge::Ptr >::Ptr edgeFilter(new graph_analysis::filters::PermitAll< Edge::Ptr >() );
         //subgraph->applyFilters(vertexFilter, edgeFilter);
 
-        graph_analysis::SubGraph::Ptr subgraph = baseGraph->identifyConnectedComponents();
+        graph_analysis::SubGraph::Ptr subgraph = baseGraph->identifyConnectedComponents(baseGraph);
 
         int componentNumber = subgraph->getVertexCount();
         BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' vertices representing components, while base graph has '" << baseGraph->getVertexCount() << "' vertices overall" );
@@ -185,7 +187,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         baseGraph->addEdge(e0);
         baseGraph->addEdge(e1);
 
-        graph_analysis::SubGraph::Ptr subgraph = baseGraph->getSubGraph();
+        graph_analysis::SubGraph::Ptr subgraph = BaseGraph::getSubGraph(baseGraph);
 
         graph_analysis::Filter< Vertex::Ptr >::Ptr vertexFilter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
         graph_analysis::Filter< Edge::Ptr >::Ptr edgeFilter(new graph_analysis::filters::PermitAll< Edge::Ptr >() );
@@ -194,7 +196,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         BaseGraph::Ptr baseGraphCopy = subgraph->toBaseGraph();
 
 
-        subgraph = baseGraphCopy->identifyConnectedComponents();
+        subgraph = baseGraphCopy->identifyConnectedComponents(baseGraphCopy);
 
         int componentNumber = subgraph->getVertexCount();
         BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' vertices representing components, while base graph has '" << baseGraphCopy->getVertexCount() << "' vertices overall" );
