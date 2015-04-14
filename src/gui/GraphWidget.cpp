@@ -93,6 +93,11 @@ GraphWidget::GraphWidget(QWidget *parent)
 
 }
 
+void GraphWidget::toFile(const std::string &filename)
+{
+    mpGVGraph->renderToFile(filename, mLayout.toStdString());
+}
+
 void GraphWidget::reset(bool keepData)
 {
     clear();

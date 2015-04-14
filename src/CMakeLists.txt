@@ -67,6 +67,7 @@ rock_library(graph_analysis_gui
         gui/GraphWidget.hpp
     DEPS graph_analysis
     DEPS_PLAIN Boost_REGEX
+    DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
 )

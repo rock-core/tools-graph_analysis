@@ -16,7 +16,7 @@ static inline Agraph_t* _agopen(QString name, Agdesc_t kind)
     // extern Agraph_t *agopen(char *name, Agdesc_t desc, Agdisc_t * disc);
     // first arg: graph
     // second arg: type of graph
-    // third arg: (optional) referenc to functions for reading, memory, etc. -- 
+    // third arg: (optional) reference to functions for reading, memory, etc. -- 
     //    0 for default
     return agopen(const_cast<char *>(qPrintable(name)), kind, 0);
 }
