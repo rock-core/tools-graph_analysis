@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     filters::VertexRegexFilter targetNodeFilter(".*");
     filters::EdgeRegexFilter edgeFilter(".*");
 
-    EdgeContextFilter::Ptr filter(new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
+    filters::EdgeContextFilter::Ptr filter(new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
     std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
     edgeFilters.push_back(filter);
 

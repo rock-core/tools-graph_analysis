@@ -10,14 +10,18 @@
 namespace graph_analysis {
 namespace filters {
 
+/// Operator 
 enum Operator { AND = 0, OR };
+/// Filters can operator on content or class information
 enum Type { CONTENT = 0, CLASS };
 extern std::map<Type, std::string> TypeTxt;
 extern std::map<std::string, Type> TxtType;
+
 } // end namespace filters
 
 /**
- * Allow definition of a filter per object type
+ * Allow definition of a filter per object type.
+ * Object type should inherit from Vertex or Edge
  *
  * This filter class allows bagging of multiple individual filters into a single
  * filter object
@@ -31,6 +35,9 @@ public:
 
     typedef std::vector< FilterType::Ptr > FilterList;
 
+    /**
+     * Deconstructor
+     */
     virtual ~Filter() {}
 
     /**
@@ -46,9 +53,11 @@ public:
     virtual std::string toString() const { return getName(); }
 
     /**
-     * Replace a filter at a certain position
+     * Replace a filter at a certain position in the internally kept filter list
+     * This might be needed to update a filter
      * \param filter Filter to replace the existing one with
-     * \param position Position of the filter that should be replaced
+     * \param position Position of the filter that should be replaced, if
+     * position -1 is given the filter is added without replacing another
      * \throws std::out_of_range if the position does not exist
      */
     int replace(FilterType::Ptr filter, int position = -1)
@@ -108,17 +117,17 @@ public:
             }
         }
         mFilters = list;
-        //mFilters.erase(mFilters.begin() + position);
     }
 
     /**
      * \brief Apply all filters, i.e. root filter and children
-     * to the filter object
+     * to the filter object, i.e., test whether filter permits filter object
      * \param o FilterObject, i.e. target that requires evaluation
-     * \param op Chain the subfilter using and or
+     * \param op Chain the subfilter dis/con-junctively using available
+     * operators OR and AND
      * \return True if this item is matched and permitted by any of the filters, false otherwise
      */
-    bool permit(FilterObject o, filters::Operator op = filters::OR) const
+    bool permits(FilterObject o, filters::Operator op = filters::OR) const
     {
 
         bool result = apply(o);
@@ -136,7 +145,7 @@ public:
 
                 FilterType::Ptr filter = *cit;
                 assert(filter);
-                if(filter->permit(o))
+                if(filter->permits(o))
                 {
                     return true;
                 }
@@ -156,7 +165,7 @@ public:
                 assert(filter);
                 // filter should be set to true here, otherwise false
                 // will be returned
-                if(!filter->permit(o))
+                if(!filter->permits(o))
                 {
                     return false;
                 }
@@ -174,52 +183,6 @@ public:
 
 protected:
     FilterList mFilters;
-};
-
-/**
- * Interface definition for an edge context filter
- * which allows to define whether the target / source node of a specific edge should be filtered
- */
-class EdgeContextFilter : public Filter<graph_analysis::Edge::Ptr>
-{
-public:
-    typedef boost::shared_ptr<EdgeContextFilter> Ptr;
-
-    /**
-     * \brief Get Name of the filter
-     * \return name of the filter
-     */
-    virtual std::string getName() const { return "graph_analysis::EdgeContextFilter"; }
-
-    /**
-     * \brief Get string representation of filter
-     * \return name by default
-     */
-    virtual std::string toString() const { return getName(); }
-
-    /**
-     * \brief Evaluated the target of the edge
-     * \return True if it should be permitted, false otherwise
-     */
-    virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return false; }
-
-    /**
-     * \brief Use this and associated subfilters, to check if this target should be filtered
-     * \return True, if the target vertex of given edge should be filtered, false otherwise
-     */
-    bool permitTarget(graph_analysis::Edge::Ptr e) const;
-
-    /**
-     * \brief Evaluated the source vertex of the edge
-     * \return True if it should be permitted, false otherwise
-     */
-    virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return false; }
-
-    /**
-     * \brief Use this and associated subfilters, to check if this edge's source vertex should be filtered
-     * \return True, if the source vertex of given edge should be filtered, false otherwise
-     */
-    bool permitSource(graph_analysis::Edge::Ptr e) const;
 };
 
 } // end namespace graph_analysis

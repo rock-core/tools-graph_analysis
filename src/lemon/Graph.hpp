@@ -7,6 +7,7 @@
 #include <lemon/connectivity.h>
 
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/SubGraphImpl.hpp>
 #include <graph_analysis/DirectedGraphInterface.hpp>
 #include <graph_analysis/lemon/NodeIterator.hpp>
 #include <graph_analysis/lemon/ArcIterator.hpp>
@@ -17,14 +18,15 @@ namespace lemon {
 
 class DirectedGraph;
 
-typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> > SubGraph;
+typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> > SubGraphLemon;
 
 /**
- * A subgraph provide a subset of an existing graph
+ * A subgraph that provides a subset of an existing graph
  */
-class DirectedSubGraph : public TypedSubGraph< SubGraph, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
+class DirectedSubGraph : public SubGraphImpl< SubGraphLemon, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
 {
     DirectedGraph& mGraph;
+
 public:
     DirectedSubGraph(DirectedGraph& graph);
 
@@ -50,20 +52,30 @@ public:
      */
     DirectedGraph();
 
-    typedef GraphType::ArcMap< Edge::Ptr > EdgeMap;
-    typedef GraphType::NodeMap< Vertex::Ptr > VertexMap;
+    /**
+     * Copy the graph
+     */
+    BaseGraph::Ptr copy();
 
-    typedef GraphType::NodeMap<bool> VertexActivationMap;
-    typedef GraphType::ArcMap<bool> EdgeActivationMap;
+    /**
+     * Copy the graph
+     */
+    BaseGraph::Ptr cleanCopy();
 
-    typedef GraphType::ArcMap< std::string > EdgeStringMap;
-    typedef GraphType::NodeMap< std::string > VertexStringMap;
+    typedef graph_t::ArcMap< Edge::Ptr > EdgeMap;
+    typedef graph_t::NodeMap< Vertex::Ptr > VertexMap;
 
-    typedef GraphType::ArcMap< GraphElementId > EdgeIdMap;
-    typedef GraphType::NodeMap< GraphElementId > VertexIdMap;
+    typedef graph_t::NodeMap<bool> VertexActivationMap;
+    typedef graph_t::ArcMap<bool> EdgeActivationMap;
 
-    // Register the DirecteSubGraph as official SubGraph
-    typedef DirectedSubGraph SubGraph;
+    typedef graph_t::ArcMap< std::string > EdgeStringMap;
+    typedef graph_t::NodeMap< std::string > VertexStringMap;
+
+    typedef graph_t::ArcMap< GraphElementId > EdgeIdMap;
+    typedef graph_t::NodeMap< GraphElementId > VertexIdMap;
+
+    // Register the DirectedSubGraph as subgraph type
+    typedef DirectedSubGraph subgraph_t;
 
     friend class NodeIterator<DirectedGraph>;
     friend class ArcIterator<DirectedGraph>;
@@ -108,11 +120,6 @@ public:
      */
     DirectedGraph& operator=(const DirectedGraph& other);
 
-    /**
-     * Filters in this context are permissive, i.e. they mark what to show
-     */
-    DirectedSubGraph applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
-
     void write(std::ostream& ostream = std::cout) const;
 
     /**
@@ -125,10 +132,21 @@ public:
      */
     EdgeIterator::Ptr getEdgeIterator();
 
+    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+
     EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
     EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
 
-    DirectedGraph::SubGraph identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::SubGraph& subgraph);
+    /**
+     * Identifies the connected components
+     */
+    SubGraph::Ptr identifyConnectedComponents();
+
+    /**
+     * Get the subgraph -- by default all vertices and edges of the
+     * base graph are available (enabled)
+     */
+    SubGraph::Ptr getSubGraph();
 
 protected:
     // Property maps to store data associated with vertices and edges

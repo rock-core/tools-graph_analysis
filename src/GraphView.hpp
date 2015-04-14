@@ -45,18 +45,9 @@ public:
      * to chain an edgefilter which is applied first, and a vertex filter that follows
      * so that filters activate certain type of edges and nodes
      */
-    typename GraphType::SubGraph apply(GraphType& graph)
+    SubGraph::Ptr apply(GraphType& graph)
     {
         return graph.applyFilters(mVertexFilter, mEdgeFilter);
-    }
-
-    /**
-     * Creates a new graph that is disconnected and contains only nodes with incoming arcs
-     */
-    typename GraphType::SubGraph identifyConnectedComponents(GraphType& graph)
-    {
-        typename GraphType::SubGraph subgraph = graph.applyFilters(mVertexFilter, mEdgeFilter);
-        return graph.identifyConnectedComponents(graph, subgraph);
     }
 
 private:

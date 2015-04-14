@@ -18,10 +18,15 @@ public:
 
     bool next()
     {
-        if( mArcIt != ::lemon::INVALID )
+        while( mArcIt != ::lemon::INVALID )
         {
-            setNext( mGraph.mEdgeMap[mArcIt] );
+            Edge::Ptr edge = mGraph.mEdgeMap[mArcIt];
             ++mArcIt;
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             return true;
         }
         return false;
@@ -29,7 +34,7 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::ArcIt mArcIt;
+    typename T::graph_t::ArcIt mArcIt;
 
 };
 
@@ -44,10 +49,15 @@ public:
 
     bool next()
     {
-        if( mOutArcIt != ::lemon::INVALID )
+        while( mOutArcIt != ::lemon::INVALID )
         {
-            setNext( mGraph.mEdgeMap[mOutArcIt] );
+            Edge::Ptr edge = mGraph.mEdgeMap[mOutArcIt];
             ++mOutArcIt;
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             return true;
         }
         return false;
@@ -55,7 +65,7 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::OutArcIt mOutArcIt;
+    typename T::graph_t::OutArcIt mOutArcIt;
 
 };
 
@@ -71,9 +81,14 @@ public:
 
     bool next()
     {
-        if( mInArcIt != ::lemon::INVALID )
+        while( mInArcIt != ::lemon::INVALID )
         {
-            setNext( mGraph.mEdgeMap[mInArcIt] );
+            Edge::Ptr edge = mGraph.mEdgeMap[mInArcIt];
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             ++mInArcIt;
             return true;
         }
@@ -82,9 +97,45 @@ public:
 
 protected:
     T& mGraph;
-    typename T::GraphType::InArcIt mInArcIt;
+    typename T::graph_t::InArcIt mInArcIt;
 
 };
+
+
+template<typename T>
+class InOutArcIterator : public EdgeIterator
+{
+public:
+    InOutArcIterator(T& graph, Vertex::Ptr vertex)
+        : mGraph(graph)
+        , mInArcIterator(graph, vertex)
+        , mOutArcIterator(graph, vertex)
+    {}
+
+    bool next()
+    {
+        if(mInArcIterator.next())
+        {
+            setNext( mInArcIterator.current() );
+            return true;
+        }
+
+        if(mOutArcIterator.next())
+        {
+            setNext( mOutArcIterator.current() );
+            return true;
+        }
+
+        return false;
+    }
+
+
+protected:
+    T& mGraph;
+    InArcIterator<T> mInArcIterator;
+    OutArcIterator<T> mOutArcIterator;
+};
+
 
 } // end namespace lemon
 } // end namespace graph_analysis

@@ -1,13 +1,26 @@
 #include "Graph.hpp"
+#include <graph_analysis/filters/CommonFilters.hpp>
 
 namespace graph_analysis {
 namespace lemon {
 
+BaseGraph::Ptr DirectedGraph::copy()
+{
+    return boost::shared_ptr<BaseGraph>(new DirectedGraph(*this));
+}
+
+BaseGraph::Ptr DirectedGraph::cleanCopy()
+{
+    return boost::shared_ptr<BaseGraph>(new DirectedGraph());
+}
+
 DirectedSubGraph::DirectedSubGraph(DirectedGraph& graph)
-    : TypedSubGraph(new VertexFilterType(graph.raw()), new EdgeFilterType(graph.raw()))
+    : SubGraphImpl(&graph, new vertex_filter_t(graph.raw()), new edge_filter_t(graph.raw()))
     , mGraph(graph)
 {
-     setSubgraph( new GraphType(graph.raw(), getVertexFilter(), getEdgeFilter()) );
+    // graph_t refers to the given subgraph
+    // needs to be explicetly set
+    setSubgraph( new graph_t(graph.raw(), getVertexFilter(), getEdgeFilter()) );
 }
 
 void DirectedSubGraph::enable(Vertex::Ptr vertex)
@@ -22,8 +35,14 @@ void DirectedSubGraph::disable(Vertex::Ptr vertex)
 {
     GraphElementId graphElementId = vertex->getId( mGraph.getId() );
     ::lemon::ListDigraph::Node node = mGraph.raw().nodeFromId( graphElementId );
-
     raw().disable(node);
+
+    EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator(vertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        disable(edge);
+    }
 }
 
 
@@ -78,7 +97,7 @@ GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
 {
     BaseGraph::addVertex(vertex);
 
-    GraphType::Node node = mGraph.addNode();
+    graph_t::Node node = mGraph.addNode();
     int nodeId = mGraph.id(node);
     mVertexMap[node] = vertex;
 
@@ -88,10 +107,10 @@ GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
 
 GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
-    GraphType::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
-    GraphType::Node targetNode = mGraph.nodeFromId( targetVertexId );
+    graph_t::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
+    graph_t::Node targetNode = mGraph.nodeFromId( targetVertexId );
 
-    GraphType::Arc arc = mGraph.addArc(sourceNode, targetNode);
+    graph_t::Arc arc = mGraph.addArc(sourceNode, targetNode);
     int arcId = mGraph.id(arc);
     edge->associate(getId(), arcId);
     mEdgeMap[arc] = edge;
@@ -123,19 +142,21 @@ Vertex::Ptr DirectedGraph::getTargetVertex(const Edge::Ptr& e) const
 
 void DirectedGraph::removeVertex(Vertex::Ptr vertex)
 {
+    int nodeId = getVertexId( vertex );
+
     BaseGraph::removeVertex(vertex);
 
-    int nodeId = getVertexId( vertex );
-    GraphType::Node node = mGraph.nodeFromId(nodeId);
+    graph_t::Node node = mGraph.nodeFromId(nodeId);
     mGraph.erase(node);
 }
 
 void DirectedGraph::removeEdge(Edge::Ptr edge)
 {
+    int edgeId = getEdgeId(edge);
+
     BaseGraph::removeEdge(edge);
 
-    int edgeId = getEdgeId(edge);
-    GraphType::Arc arc = mGraph.arcFromId(edgeId);
+    graph_t::Arc arc = mGraph.arcFromId(edgeId);
     mGraph.erase(arc);
 }
 
@@ -150,63 +171,19 @@ DirectedGraph& DirectedGraph::operator=(const DirectedGraph& other)
         arcMap(other.mEdgeMap, this->mEdgeMap).
         run();
 
-    for( GraphType::NodeIt n(this->mGraph); n != ::lemon::INVALID; ++n)
+    for( graph_t::NodeIt n(this->mGraph); n != ::lemon::INVALID; ++n)
     {
         Vertex::Ptr vertex = mVertexMap[n];
         vertex->associate(this->getId(), this->mGraph.id(n));
     }
 
-    for( GraphType::ArcIt a(this->mGraph); a != ::lemon::INVALID; ++a)
+    for( graph_t::ArcIt a(this->mGraph); a != ::lemon::INVALID; ++a)
     {
         Edge::Ptr edge = mEdgeMap[a];
         edge->associate(this->getId(), this->mGraph.id(a));
     }
 
     return *this;
-}
-
-DirectedSubGraph DirectedGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
-{
-    DirectedSubGraph subgraph(*this);
-
-    if(edgeFilter)
-    {
-        EdgeContextFilter::Ptr contextFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(edgeFilter);
-
-        for( GraphType::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
-        {
-            // By default edges are disabled
-            Edge::Ptr edge = mEdgeMap[a];
-            if( edgeFilter->permit(edge) )
-            {
-                // A context filter should apply to source / target nodes -- no need to filter this edge specifically then
-                if(contextFilter)
-                {
-                    bool filterTarget = contextFilter->permitTarget(edge);
-                    bool filterSource = contextFilter->permitSource(edge);
-
-                    if(filterSource && filterTarget)
-                    {
-                        subgraph.raw().enable( mGraph.target(a));
-                        subgraph.raw().enable( mGraph.source(a));
-                        subgraph.raw().enable(a);
-                    }
-                }
-            }
-        }
-    }
-
-    if(vertexFilter)
-    {
-        for( GraphType::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
-        {
-            if( vertexFilter->permit( mVertexMap[n] ) )
-            {
-                subgraph.raw().enable(n);
-            }
-        }
-    }
-    return subgraph;
 }
 
 void DirectedGraph::write(std::ostream& ostream) const
@@ -221,7 +198,7 @@ void DirectedGraph::write(std::ostream& ostream) const
     EdgeIdMap edgeIdMap(mGraph);
     VertexIdMap vertexIdMap(mGraph);
 
-    for(GraphType::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
+    for(graph_t::ArcIt a(mGraph); a != ::lemon::INVALID; ++a)
     {
         Edge::Ptr edge = mEdgeMap[a];
         if(edge)
@@ -231,13 +208,13 @@ void DirectedGraph::write(std::ostream& ostream) const
         }
     }
 
-    for(GraphType::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
+    for(graph_t::NodeIt n(mGraph); n != ::lemon::INVALID; ++n)
     {
         Vertex::Ptr vertex = mVertexMap[n];
         if(vertex)
         {
             vertexStringMap[n] = vertex->toString();
-            vertexIdMap[n] = getVertexId(vertex); 
+            vertexIdMap[n] = getVertexId(vertex);
         }
     }
 
@@ -262,6 +239,12 @@ EdgeIterator::Ptr DirectedGraph::getEdgeIterator()
     return EdgeIterator::Ptr(it);
 }
 
+EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex)
+{
+    InOutArcIterator<DirectedGraph>* it = new InOutArcIterator<DirectedGraph>(*this, vertex);
+    return EdgeIterator::Ptr(it);
+}
+
 EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex)
 {
     OutArcIterator<DirectedGraph>* it = new OutArcIterator<DirectedGraph>(*this, vertex);
@@ -274,13 +257,14 @@ EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex)
     return EdgeIterator::Ptr(it);
 }
 
-DirectedGraph::SubGraph DirectedGraph::identifyConnectedComponents(DirectedGraph& graph, DirectedGraph::SubGraph& subgraph)
+SubGraph::Ptr DirectedGraph::identifyConnectedComponents()
 {
-    ::lemon::Undirector<DirectedGraph::GraphType> undirected(graph.raw());
-    // Identify the components
-    GraphType::NodeMap<int> nodeMap(graph.raw(),false);
-    int componentCount = ::lemon::connectedComponents(undirected, nodeMap);
+    SubGraph::Ptr subgraph = getSubGraph();
 
+    ::lemon::Undirector<DirectedGraph::graph_t> undirected(raw());
+    // Identify the components
+    graph_t::NodeMap<int> nodeMap(raw(),false);
+    int componentCount = ::lemon::connectedComponents(undirected, nodeMap);
     // Add a single vertex per identified component
     // activate that node in the subgraph
     Vertex::Ptr components[componentCount];
@@ -291,23 +275,25 @@ DirectedGraph::SubGraph DirectedGraph::identifyConnectedComponents(DirectedGraph
 
         // Activate this node in the subgraph
         // disabling all other will be in the next loop
-        GraphElementId id = graph.addVertex(vertex);
-        subgraph.raw().enable( graph.raw().nodeFromId( id ) );
+        addVertex(vertex);
+        subgraph->enable( vertex );
     }
 
     if(componentCount > 0)
     {
         // Disable all nodes in the subgraph that are not representing a component
-        // Add an edge to relate vertices to components
-        for(DirectedSubGraph::GraphType::NodeIt n(subgraph.raw()); n != ::lemon::INVALID; ++n)
+        VertexIterator::Ptr vertexIterator = subgraph->getVertexIterator();
+        while(vertexIterator->next())
         {
+            Vertex::Ptr sourceVertex = vertexIterator->current();
+
             bool isComponentNode = false;
-            Vertex::Ptr sourceVertex = mVertexMap[n];
             for(int a = 0; a < componentCount; ++a)
             {
                 if(sourceVertex->getUid() == components[a]->getUid())
                 {
                     isComponentNode = true;
+                    break;
                 }
             }
 
@@ -316,15 +302,30 @@ DirectedGraph::SubGraph DirectedGraph::identifyConnectedComponents(DirectedGraph
                 continue;
             }
 
-            Vertex::Ptr targetVertex = components[ nodeMap[n] ];
-            subgraph.raw().disable(n);
+            graph_t::Node node = raw().nodeFromId( sourceVertex->getId(getId()) );
+            Vertex::Ptr targetVertex = components[ nodeMap[node] ];
+            subgraph->disable(sourceVertex);
+
+            // Add an edge to relate vertices to their components
             Edge::Ptr edge( new Edge(sourceVertex, targetVertex) );
-            graph.addEdge(edge);
+            addEdge(edge);
         }
     } else {
         LOG_DEBUG("no component found in graph");
     }
 
+    return subgraph;
+}
+
+SubGraph::Ptr DirectedGraph::getSubGraph()
+{
+    SubGraph::Ptr subgraph(new subgraph_t(*this));
+
+    // Enable all nodes and edges by default
+    Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::PermitAll< Vertex::Ptr >() );
+    Filter< Edge::Ptr >::Ptr edgeFilter(new filters::PermitAll< Edge::Ptr >() );
+
+    subgraph->applyFilters(vertexFilter, edgeFilter);
     return subgraph;
 }
 
