@@ -134,7 +134,7 @@ int main(int argc, char **argv)
         break;
     }
 
-    widget->setEdgeFilters(edgeFilters);
+//    widget->setEdgeFilters(edgeFilters);
     widget->updateFromGraph();
     widget->setLayout(QString(LAYOUT));
 #ifdef RENDER

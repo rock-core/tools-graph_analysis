@@ -103,12 +103,12 @@ void GraphWidget::reset(bool keepData)
 {
     clear();
 
-    delete mpGVGraph;
+    if(mpGVGraph)delete mpGVGraph;
     mpGVGraph = new GVGraph("GVGraphWidget");
 
     if(!keepData)
     {
-        delete mpGraph;
+        if(mpGraph)delete mpGraph;
         mpGraph = new gl::DirectedGraph();
     }
 }

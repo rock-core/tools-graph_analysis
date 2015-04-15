@@ -21,6 +21,7 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.cpp
         gui/GVGraph.cpp
         io/GexfWriter.cpp
+        io/GraphvizWriter.cpp
         lemon/Graph.cpp
         SubGraph.cpp
         Vertex.cpp
@@ -54,6 +55,7 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.hpp
         gui/GVGraph.hpp
         io/GexfWriter.hpp
+        io/GraphvizWriter.hpp
         lemon/ArcIterator.hpp
         lemon/Graph.hpp
         lemon/NodeIterator.hpp
@@ -62,7 +64,7 @@ rock_library(graph_analysis
         snap/NodeIterator.hpp
         SubGraph.hpp
         TypedGraph.hpp
-        TypedSubGraph.hpp
+#        TypedSubGraph.hpp
         Vertex.hpp
         VertexIterator.hpp
         WeightedEdge.hpp
@@ -72,7 +74,6 @@ rock_library(graph_analysis
         Boost_REGEX
     MOC
         gui/GraphWidget.hpp
-    DEPS graph_analysis
     DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui
     UI
