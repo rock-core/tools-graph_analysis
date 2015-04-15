@@ -12,9 +12,9 @@ GraphvizWriter::~GraphvizWriter()
 {
     if(mpGVGraph)delete mpGVGraph;
 }
-void GraphvizWriter::write(const std::string& filename, const BaseGraph& graph) const
+void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
 {
-    VertexIterator::Ptr nodeIt = graph.getVertexIterator();
+    VertexIterator::Ptr nodeIt = graph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
@@ -23,7 +23,7 @@ void GraphvizWriter::write(const std::string& filename, const BaseGraph& graph) 
         mpGVGraph->addNode(QString(nodeItem->getId().c_str()));
     }
 
-    EdgeIterator::Ptr edgeIt = graph.getEdgeIterator();
+    EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();

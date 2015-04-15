@@ -20,7 +20,7 @@ class GraphvizWriter : public Writer
     public:
     GraphvizWriter(const std::string &layout = "dot");
     ~GraphvizWriter();
-    void write(const std::string& filename, const BaseGraph& graph) const;
+    void write(const std::string& filename, BaseGraph* graph);
 };
 
 } // end namespace io
