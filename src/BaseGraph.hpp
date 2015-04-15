@@ -119,6 +119,28 @@ public:
     virtual std::vector<Edge::Ptr> getEdges(Vertex::Ptr source, Vertex::Ptr target);
 
     /**
+     * \brief Get edges by given vertices and return only edges of a given type
+     * Type should be a subclass of Edge!!
+     * If boost::dynamic_pointer_cast returns null pointer, object is not added
+     */
+    template<typename T>
+    std::vector< boost::shared_ptr<T> > getEdges(Vertex::Ptr source, Vertex::Ptr target)
+    {
+        std::vector< boost::shared_ptr<T> > edges;
+        EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
+        while(edgeIt->next())
+        {
+            boost::shared_ptr<T> edge = boost::dynamic_pointer_cast<T>( edgeIt->current() );
+            if(edge && edge->getTargetVertex() == target)
+            {
+                edges.push_back(edge);
+            }
+        }
+
+        return edges;
+    }
+
+    /**
      * Get the graph id
      */
     GraphId getId() const { return mId; }
