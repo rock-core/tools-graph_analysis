@@ -16,6 +16,8 @@ public:
 
     WeightedEdge(Vertex::Ptr source, Vertex::Ptr target, double weight = 0.0);
 
+    virtual ~WeightedEdge() {}
+
     typedef boost::shared_ptr< WeightedEdge > Ptr;
 
     // Get class name
