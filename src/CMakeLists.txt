@@ -36,6 +36,7 @@ rock_library(graph_analysis
         VertexIterator.cpp
         WeightedEdge.cpp
     HEADERS
+        Algorithms.hpp
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
         algorithms/FloydWarshall.hpp
@@ -80,8 +81,8 @@ rock_library(graph_analysis
         snap/Graph.hpp
         snap/NodeIterator.hpp
         SubGraph.hpp
+        SubGraphImpl.hpp
         TypedGraph.hpp
-        TypedSubGraph.hpp
         Vertex.hpp
         VertexIterator.hpp
         WeightedEdge.hpp
