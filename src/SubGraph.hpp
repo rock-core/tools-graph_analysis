@@ -116,6 +116,12 @@ public:
      */
     virtual EdgeIterator::Ptr getEdgeIterator();
 
+    /**
+     * Get iterator over all edges that are starting a vertex
+     * \return the edge iterator
+     */
+    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+
 protected:
     boost::shared_ptr<BaseGraph> getBaseGraph();
 };

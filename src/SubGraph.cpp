@@ -138,4 +138,17 @@ EdgeIterator::Ptr SubGraph::getEdgeIterator()
     return edgeIt;
 }
 
+EdgeIterator::Ptr SubGraph::getEdgeIterator(Vertex::Ptr vertex)
+{
+    if(disabled(vertex))
+    {
+        throw std::invalid_argument("graph_analysis::SubGraph::getEdgeIterator: cannot get iterator for a disabled vertex, use BaseGraph instance instead");
+    }
+
+    EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator(vertex);
+    EdgeIterator::SkipFunction skipFunction( boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
+    edgeIt->setSkipFunction(skipFunction);
+    return edgeIt;
+}
+
 } // end namespace graph_analysis
