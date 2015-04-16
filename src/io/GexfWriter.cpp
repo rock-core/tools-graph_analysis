@@ -60,7 +60,10 @@ void GexfWriter::write(const std::string& filename, const BaseGraph& graph) cons
     if( system(command.c_str()) == 0 )
     {
         command = "mv " + formattedFile + " " + name;
-        system(command.c_str());
+        if( system(command.c_str()) )
+        {
+            throw std::runtime_error("graph_analysis::io::GexfWriter::write: Failed to rename file after performing xmlling");
+        }
     } else {
         LOG_INFO("Gexf file '%s' written, but proper formatting failed -- make sure that xmllint is installed", name.c_str()); 
     }
