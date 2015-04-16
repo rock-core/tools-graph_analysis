@@ -47,6 +47,26 @@ GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sou
     return arcId;
 }
 
+DirectedGraph::graph_t::Node DirectedGraph::getNode(Vertex::Ptr vertex) const
+{
+    return mGraph.nodeFromId(vertex->getId(this->getId()));
+}
+
+DirectedGraph::graph_t::Arc DirectedGraph::getArc(Edge::Ptr edge) const
+{
+    return mGraph.arcFromId(edge->getId(this->getId()));
+}
+
+Vertex::Ptr DirectedGraph::getVertex(DirectedGraph::graph_t::Node node) const
+{
+    return getVertex( mGraph.id(node) );
+}
+
+Edge::Ptr DirectedGraph::getEdge(DirectedGraph::graph_t::Arc arc) const
+{
+    return getEdge( mGraph.id(arc) );
+}
+
 Vertex::Ptr DirectedGraph::getVertex(GraphElementId id) const
 {
     return mVertexMap[ mGraph.nodeFromId(id) ];

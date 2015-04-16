@@ -71,6 +71,15 @@ public:
      */
     GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
 
+    /**
+     * Translate between wrapper and native formats
+     */
+    graph_t::Node getNode(Vertex::Ptr vertex) const;
+    graph_t::Arc getArc(Edge::Ptr edge) const;
+
+    Vertex::Ptr getVertex(graph_t::Node node) const;
+    Edge::Ptr getEdge(graph_t::Arc arc) const;
+
     Vertex::Ptr getVertex(GraphElementId id) const;
     Edge::Ptr getEdge(GraphElementId id) const;
 
