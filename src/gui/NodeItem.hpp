@@ -79,6 +79,7 @@ public:
 
     std::string getId() const;
     graph_analysis::Vertex::Ptr getVertex() { return mpVertex; }
+    void setVertex(graph_analysis::Vertex::Ptr vertex) { mpVertex = vertex; }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
