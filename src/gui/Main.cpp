@@ -123,6 +123,11 @@ int main(int argc, char **argv)
             widget->addVertex(v2);
             widget->addVertex(v3);
             widget->addVertex(v4);
+            widget->enableVertex(v0);
+            widget->enableVertex(v1);
+            widget->enableVertex(v2);
+            widget->enableVertex(v3);
+            widget->enableVertex(v4);
 
             widget->addEdge(edge0);
             widget->addEdge(edge1);
@@ -131,6 +136,13 @@ int main(int argc, char **argv)
             widget->addEdge(edge4);
             widget->addEdge(edge5);
             widget->addEdge(edge6);
+            widget->enableEdge(edge0);
+            widget->enableEdge(edge1);
+            widget->enableEdge(edge2);
+            widget->enableEdge(edge3);
+            widget->enableEdge(edge4);
+            widget->enableEdge(edge5);
+            widget->enableEdge(edge6);
         break;
     }
 

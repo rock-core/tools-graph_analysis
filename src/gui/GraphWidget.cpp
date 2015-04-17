@@ -50,18 +50,15 @@
 #include <QApplication>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
-#include <graph_analysis/GraphView.hpp>
 
 #include "GVGraph.hpp"
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 
-#include <graph_analysis/lemon/Graph.hpp>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
 
 using namespace graph_analysis;
-namespace gl = graph_analysis::lemon;
 
 namespace graph_analysis {
 namespace gui {
