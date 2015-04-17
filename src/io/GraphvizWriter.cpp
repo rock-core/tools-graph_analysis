@@ -7,10 +7,12 @@ namespace io {
 GraphvizWriter::GraphvizWriter(const std::string &layout) : mLayout(layout)
 {
     mpGVGraph = new graph_analysis::gui::GVGraph("GraphvizWriter");
+    mpDummyWidget = new graph_analysis::gui::GraphWidget();
 }
 GraphvizWriter::~GraphvizWriter()
 {
     if(mpGVGraph)delete mpGVGraph;
+    if(mpDummyWidget)delete mpDummyWidget;
 }
 void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
 {
@@ -20,14 +22,14 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
     {
         Vertex::Ptr vertex = nodeIt->current();
         // Registering new node items
-        graph_analysis::gui::NodeItem* nodeItem = graph_analysis::gui::NodeTypeManager::getInstance()->createItem(NULL, vertex);
+        graph_analysis::gui::NodeItem* nodeItem = graph_analysis::gui::NodeTypeManager::getInstance()->createItem(mpDummyWidget, vertex);
         mpGVGraph->addNode(QString(nodeItem->getId().c_str()));
         mNodeItemMap[vertex] = nodeItem;
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz nodes");
 
     LOG_INFO("GraphvizWriter: Formatting Graphviz edges");
-    EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
+ /*   EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();
@@ -50,6 +52,7 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
     LOG_INFO("GraphvizWriter: rendering GVGraph to file \"%s\" by layout \"%s\"", filename.c_str(), mLayout.c_str());
     mpGVGraph->renderToFile(filename, mLayout);
     LOG_INFO("GraphvizWriter: done rendering GVGraph to file \"%s\"", filename.c_str());
+     */
 }
 
 } // end namespace io

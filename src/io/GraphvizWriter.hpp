@@ -9,6 +9,7 @@
 
 #include <graph_analysis/GraphIO.hpp>
 #include <graph_analysis/gui/GVGraph.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -21,6 +22,8 @@ class GraphvizWriter : public Writer
     NodeItemMap mNodeItemMap;
     graph_analysis::gui::GVGraph* mpGVGraph;
     std::string mLayout;
+    // dummy GraphWidget instance
+    graph_analysis::gui::GraphWidget* mpDummyWidget;
 public:
     GraphvizWriter(const std::string &layout = "dot");
     ~GraphvizWriter();
