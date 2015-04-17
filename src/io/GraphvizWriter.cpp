@@ -49,6 +49,8 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz edges");
 
+    LOG_INFO("GraphvizWriter: Applying default layout such that GVGraph context is not empty");
+    mpGVGraph->applyLayout();
     LOG_INFO("GraphvizWriter: rendering GVGraph to file \"%s\" by layout \"%s\"", filename.c_str(), mLayout.c_str());
     mpGVGraph->renderToFile(filename, mLayout);
     LOG_INFO("GraphvizWriter: done rendering GVGraph to file \"%s\"", filename.c_str());
