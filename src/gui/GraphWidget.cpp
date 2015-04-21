@@ -131,6 +131,30 @@ void GraphWidget::refresh()
     update();
 }
 
+void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex) { 
+    
+// Setting up filtering
+GraphView< gl::DirectedGraph > graphView;
+graphView.setVertexFilter(mpVertexFilter);
+graphView.setEdgeFilter(mpEdgeFilter);
+// End of setting up filters
+
+    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    subGraph->enable(vertex); 
+}
+void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge) { 
+    
+// Setting up filtering
+GraphView< gl::DirectedGraph > graphView;
+graphView.setVertexFilter(mpVertexFilter);
+graphView.setEdgeFilter(mpEdgeFilter);
+// End of setting up filters
+
+    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    subGraph->enable(edge); 
+}
+
+
 void GraphWidget::updateFromGraph()
 {
     // Setting up filtering

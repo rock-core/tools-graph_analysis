@@ -73,6 +73,7 @@ int main(int argc, char **argv)
     filters::EdgeContextFilter::Ptr filter(new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
     std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
     edgeFilters.push_back(filter);
+    widget->setEdgeFilters(edgeFilters);
 
 
     int testNo = TESTNO;
@@ -146,7 +147,6 @@ int main(int argc, char **argv)
         break;
     }
 
-    widget->setEdgeFilters(edgeFilters);
     widget->updateFromGraph();
     widget->setLayout(QString(LAYOUT));
 #ifdef RENDER

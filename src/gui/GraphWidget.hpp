@@ -87,28 +87,8 @@ public:
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    void enableVertex(graph_analysis::Vertex::Ptr vertex) { 
-        
-    // Setting up filtering
-    GraphView< gl::DirectedGraph > graphView;
-    graphView.setVertexFilter(mpVertexFilter);
-    graphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
-
-        SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
-        subGraph->enable(vertex); 
-    }
-    void enableEdge(graph_analysis::Edge::Ptr edge) { 
-        
-    // Setting up filtering
-    GraphView< gl::DirectedGraph > graphView;
-    graphView.setVertexFilter(mpVertexFilter);
-    graphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
-
-        SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
-        subGraph->enable(edge); 
-    }
+    void enableVertex(graph_analysis::Vertex::Ptr vertex);
+    void enableEdge(graph_analysis::Edge::Ptr edge);
 
     ::graph_analysis::BaseGraph* graph() { return mpGraph; }
 
