@@ -70,8 +70,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpGraph(0)
     , mpGVGraph(0)
-    , mTimerId(0)
     , mFiltered(false)
+    , mTimerId(0)
     , mScaleFactor(SCALING_FACTOR)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
@@ -270,9 +270,9 @@ void GraphWidget::updateFromGraph()
                 LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
             }
 
-            //QPointF p = mapFromScene(nodeItem->pos());
-            QPointF p = nodeItem->pos();
-            QPointF scenePos = nodeItem->scenePos();
+//            QPointF p = mapFromScene(nodeItem->pos());
+//            QPointF p = nodeItem->pos();
+//            QPointF scenePos = nodeItem->scenePos();
             QPointF position = node.centerPos;
             nodeItem->setPos(mScaleFactor * position.x(), mScaleFactor * position.y());
         }
@@ -376,7 +376,7 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     Q_UNUSED(rect);
 
     //// Shadow
-    QRectF sceneRect = this->sceneRect();
+//    QRectF sceneRect = this->sceneRect();
     //QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
     //QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
     //if (rightShadow.intersects(rect) || rightShadow.contains(rect))
