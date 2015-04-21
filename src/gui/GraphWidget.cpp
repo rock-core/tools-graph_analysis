@@ -57,7 +57,7 @@
 
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-#define DEBUG
+//#define DEBUG
 using namespace graph_analysis;
 
 namespace graph_analysis {
@@ -86,9 +86,12 @@ GraphWidget::GraphWidget(QWidget *parent)
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("Graphview"));
+    // Setting up filtering
+    mGraphView.setVertexFilter(mpVertexFilter);
+    mGraphView.setEdgeFilter(mpEdgeFilter);
+    // End of setting up filters
 
     reset();
-
 }
 
 void GraphWidget::toFile(const std::string &filename)
@@ -133,64 +136,40 @@ void GraphWidget::refresh()
 
 void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
-// Setting up filtering
-GraphView< gl::DirectedGraph > graphView;
-graphView.setVertexFilter(mpVertexFilter);
-graphView.setEdgeFilter(mpEdgeFilter);
-// End of setting up filters
-
-    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
-
 #ifdef DEBUG
-    std::cout << "Enabling a vertex of filtering value: " << subGraph->enabled(vertex) << "\n";
+    std::cout << "Enabling a vertex of filtering value: " << mpSubGraph->enabled(vertex) << "\n";
 #endif
 
-    subGraph->enable(vertex);
+    mpSubGraph->enable(vertex);
 #ifdef DEBUG
-    std::cout << "Enabled the vertex; NOW of filtering value: " << subGraph->enabled(vertex) << "\n\n";
+    std::cout << "Enabled the vertex; NOW of filtering value: " << mpSubGraph->enabled(vertex) << "\n\n";
 #endif
 }
 void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 {
-// Setting up filtering
-GraphView< gl::DirectedGraph > graphView;
-graphView.setVertexFilter(mpVertexFilter);
-graphView.setEdgeFilter(mpEdgeFilter);
-// End of setting up filters
-
-    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
-
 #ifdef DEBUG
-    std::cout << "Enabling an edge of filtering value: " << subGraph->enabled(edge) << "\n";
+    std::cout << "Enabling an edge of filtering value: " << mpSubGraph->enabled(edge) << "\n";
 #endif
 
-    subGraph->enable(edge);
+    mpSubGraph->enable(edge);
 #ifdef DEBUG
-    std::cout << "Enabled the edge; NOW of filtering value: " << subGraph->enabled(edge) << "\n\n";
+    std::cout << "Enabled the edge; NOW of filtering value: " << mpSubGraph->enabled(edge) << "\n\n";
 #endif
 }
 
 
 void GraphWidget::updateFromGraph()
 {
-    // Setting up filtering
-    GraphView< gl::DirectedGraph > graphView;
-    graphView.setVertexFilter(mpVertexFilter);
-    graphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
-
-    SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
-
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
-        if(!subGraph->enabled(vertex))
+        if(!mpSubGraph->enabled(vertex))
         {
 #ifdef DEBUG
-    std::cout << "Filtered out a vertex of filtering value: " << subGraph->enabled(vertex) << "\n\n";
+    std::cout << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex) << "\n\n";
 #endif
             continue;
         }
@@ -215,10 +194,10 @@ void GraphWidget::updateFromGraph()
         Edge::Ptr edge = edgeIt->current();
 
         // Check on active filter
-        if(!subGraph->enabled(edge))
+        if(!mpSubGraph->enabled(edge))
         {
 #ifdef DEBUG
-    std::cout << "Filtered out an edge of filtering value: " << subGraph->enabled(edge) << "\n\n";
+    std::cout << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge) << "\n\n";
 #endif
             continue;
         }
@@ -423,6 +402,8 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
     {
         mpVertexFilter->add(filter);
     }
+    mGraphView.setVertexFilter(mpVertexFilter);
+    mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
 }
 
 void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
@@ -433,6 +414,8 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
     {
         mpEdgeFilter->add(filter);
     }
+    mGraphView.setEdgeFilter(mpEdgeFilter);
+    mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
 }
 
 void GraphWidget::shuffle()

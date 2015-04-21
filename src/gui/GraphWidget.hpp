@@ -125,6 +125,9 @@ private:
     // Mapping with layout engine
     GVNodeItemMap mGVNodeItemMap;
     GVEdgeItemMap mGVEdgeItemMap;
+    // Supports filtering functionality
+    GraphView< gl::DirectedGraph > mGraphView;
+    SubGraph::Ptr mpSubGraph;
 
     // Mapping with data model
     // Allow mapping from graph vertexes to nodes in the scene
