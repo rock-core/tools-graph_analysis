@@ -47,6 +47,8 @@
 #include <math.h>
 #include <QKeyEvent>
 #include <QTime>
+#include <QMenu>
+#include <QAction>
 #include <QApplication>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
@@ -83,6 +85,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     setScene(scene);
 
     setCacheMode(CacheBackground);
+    setContextMenuPolicy(Qt::CustomContextMenu);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
@@ -94,7 +97,23 @@ GraphWidget::GraphWidget(QWidget *parent)
     mGraphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
 
+
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), 
+        this, SLOT(ShowContextMenu(const QPoint &)));
+
     reset();
+}
+
+
+void GraphWidget::ShowContextMenu(const QPoint &pos)
+{
+    QMenu contextMenu(tr("Context menu"), this);
+
+    QAction actionRefresh("Refresh", this);
+    connect(&actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
+    contextMenu.addAction(&actionRefresh);
+
+    contextMenu.exec(mapToGlobal(pos));
 }
 
 void GraphWidget::toFile(const std::string &filename)
