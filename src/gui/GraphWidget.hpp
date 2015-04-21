@@ -100,6 +100,9 @@ public:
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
     void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
+    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; } 
+    double  getScaleFactor () const { return mScaleFactor; }
+
 public slots:
     void shuffle();
     void zoomIn();
@@ -137,6 +140,8 @@ private:
     EdgeItemMap mEdgeItemMap;
 
     int mTimerId;
+    /// if |mScaleFactor| > 1.0, it makes edges longer; it makes them shorter otherwise ||| if negative, it rotates the graph 180 degrees
+    double mScaleFactor;
     QString mLayout;
 
     graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;

@@ -58,6 +58,7 @@
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
 //#define DEBUG
+#define SCALING_FACTOR 1.4
 using namespace graph_analysis;
 
 namespace graph_analysis {
@@ -69,6 +70,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGVGraph(0)
     , mTimerId(0)
     , mFiltered(false)
+    , mScaleFactor(SCALING_FACTOR)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
@@ -253,7 +255,7 @@ void GraphWidget::updateFromGraph()
             QPointF p = nodeItem->pos();
             QPointF scenePos = nodeItem->scenePos();
             QPointF position = node.centerPos;
-            nodeItem->setPos(position.x(), position.y());
+            nodeItem->setPos(mScaleFactor * position.x(), mScaleFactor * position.y());
         }
 
         foreach(GVEdge edge, mpGVGraph->edges())
