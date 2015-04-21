@@ -57,7 +57,7 @@
 
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-
+#define DEBUG
 using namespace graph_analysis;
 
 namespace graph_analysis {
@@ -131,8 +131,8 @@ void GraphWidget::refresh()
     update();
 }
 
-void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex) { 
-    
+void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
+{
 // Setting up filtering
 GraphView< gl::DirectedGraph > graphView;
 graphView.setVertexFilter(mpVertexFilter);
@@ -140,10 +140,18 @@ graphView.setEdgeFilter(mpEdgeFilter);
 // End of setting up filters
 
     SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
-    subGraph->enable(vertex); 
+
+#ifdef DEBUG
+    std::cout << "Enabling a vertex of filtering value: " << subGraph->enabled(vertex) << "\n";
+#endif
+
+    subGraph->enable(vertex);
+#ifdef DEBUG
+    std::cout << "Enabled the vertex; NOW of filtering value: " << subGraph->enabled(vertex) << "\n\n";
+#endif
 }
-void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge) { 
-    
+void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
+{
 // Setting up filtering
 GraphView< gl::DirectedGraph > graphView;
 graphView.setVertexFilter(mpVertexFilter);
@@ -151,7 +159,15 @@ graphView.setEdgeFilter(mpEdgeFilter);
 // End of setting up filters
 
     SubGraph::Ptr subGraph = graphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
-    subGraph->enable(edge); 
+
+#ifdef DEBUG
+    std::cout << "Enabling an edge of filtering value: " << subGraph->enabled(edge) << "\n";
+#endif
+
+    subGraph->enable(edge);
+#ifdef DEBUG
+    std::cout << "Enabled the edge; NOW of filtering value: " << subGraph->enabled(edge) << "\n\n";
+#endif
 }
 
 
@@ -173,6 +189,9 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(!subGraph->enabled(vertex))
         {
+#ifdef DEBUG
+    std::cout << "Filtered out a vertex of filtering value: " << subGraph->enabled(vertex) << "\n\n";
+#endif
             continue;
         }
 
@@ -198,6 +217,9 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(!subGraph->enabled(edge))
         {
+#ifdef DEBUG
+    std::cout << "Filtered out an edge of filtering value: " << subGraph->enabled(edge) << "\n\n";
+#endif
             continue;
         }
 
