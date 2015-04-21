@@ -90,12 +90,12 @@ int main(int argc, char **argv)
             Vertex::Ptr v3(new Vertex("v3"));
             Vertex::Ptr v4(new Vertex("v4"));
             
-            Edge::Ptr edge0(new Edge());
-            Edge::Ptr edge1(new Edge());
-            Edge::Ptr edge2(new Edge());
-            Edge::Ptr edge3(new Edge());
-            Edge::Ptr edge4(new Edge());
-            Edge::Ptr edge5(new Edge());
+            Edge::Ptr edge0(new Edge("edge0"));
+            Edge::Ptr edge1(new Edge("edge1"));
+            Edge::Ptr edge2(new Edge("edge2"));
+            Edge::Ptr edge3(new Edge("edge3"));
+            Edge::Ptr edge4(new Edge("edge4"));
+            Edge::Ptr edge5(new Edge("edge5"));
 
             edge0->setSourceVertex(v0);
             edge0->setTargetVertex(v1);

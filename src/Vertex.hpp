@@ -31,6 +31,11 @@ public:
      */
     std::string toString() const;
 
+    /// setter method for mLabel
+    void setLabel(const std::string &label) { mLabel = label; }
+    /// getter method for mLabel
+    std::string getLabel() const { return mLabel; }
+
 protected:
     std::string mLabel;
 };

@@ -14,8 +14,8 @@ namespace graph_analysis {
 class Edge : public GraphElement
 {
 public:
-    Edge();
-    Edge(Vertex::Ptr source, Vertex::Ptr target);
+    Edge(const std::string& label = "");
+    Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label = "");
 
     virtual ~Edge() {}
 
@@ -51,9 +51,15 @@ public:
      */
     void setTargetVertex(Vertex::Ptr target) { mTargetVertex = target; }
 
+    /// setter method for mLabel
+    void setLabel(const std::string &label) { mLabel = label; }
+    /// getter method for mLabel
+    std::string getLabel() const { return mLabel; }
+
 private:
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
+    std::string mLabel;
 };
 
 } // end namespace graph_analysis
