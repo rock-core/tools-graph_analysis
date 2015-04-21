@@ -50,6 +50,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QApplication>
+#include <QSignalMapper>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
 
@@ -104,15 +105,43 @@ GraphWidget::GraphWidget(QWidget *parent)
     reset();
 }
 
+void GraphWidget::addNodeAdhoc(QObject *pos)
+{
+    graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
+    addVertex(vertex);
+    enableVertex(vertex);
+    // Registering the new node item
+    NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+    QPoint *position = (QPoint *)pos;
+    nodeItem->setPos((double) position->x(), (double) position->y());
+    mNodeItemMap[vertex] = nodeItem;
+
+    scene()->addItem(nodeItem);
+//    update();
+}
 
 void GraphWidget::ShowContextMenu(const QPoint &pos)
 {
+    QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
-
-    QAction actionRefresh("Refresh", this);
-    connect(&actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
-    contextMenu.addAction(&actionRefresh);
-
+    QSignalMapper* signalMapper = new QSignalMapper(this);
+//    {
+        QAction actionAddNode("Add Node", this);
+        connect(&actionAddNode, SIGNAL(triggered()), signalMapper, SLOT(map()));
+        contextMenu.addAction(&actionAddNode);
+        signalMapper->setMapping(&actionAddNode, (QObject*)&position);
+        connect(signalMapper, SIGNAL(mapped(QObject*)), this, SLOT(addNodeAdhoc(QObject*)));
+//    }
+//    {
+        QAction actionRefresh("Refresh", this);
+        connect(&actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
+        contextMenu.addAction(&actionRefresh);
+//    }
+//    {
+        QAction actionShuffle("Shuffle", this);
+        connect(&actionShuffle, SIGNAL(triggered()), this, SLOT(shuffle()));
+        contextMenu.addAction(&actionShuffle);
+//    }
     contextMenu.exec(mapToGlobal(pos));
 }
 

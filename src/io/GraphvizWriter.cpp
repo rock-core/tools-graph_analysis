@@ -44,7 +44,6 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
         {
             continue;
         }
-        graph_analysis::gui::EdgeItem* edgeItem = new graph_analysis::gui::EdgeItem(sourceNodeItem, targetNodeItem, edge);
         mpGVGraph->addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz edges");

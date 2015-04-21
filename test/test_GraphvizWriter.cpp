@@ -50,6 +50,4 @@ BOOST_AUTO_TEST_CASE(it_should_output_dot_file_of_4Node_CompleteGraph)
     io::GraphvizWriter* writer = new io::GraphvizWriter();
     writer->write(FILENAME, graph);
     BOOST_REQUIRE_MESSAGE(true, "Rendering completed. Please manually check a complete graph with 4-nodes is contained in file " << FILENAME);
-
-    delete writer;
 }
