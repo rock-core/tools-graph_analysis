@@ -84,11 +84,11 @@ int main(int argc, char **argv)
              * Test 1.:
              * -------
              */
-            Vertex::Ptr v0(new Vertex());
-            Vertex::Ptr v1(new Vertex());
-            Vertex::Ptr v2(new Vertex());
-            Vertex::Ptr v3(new Vertex());
-            Vertex::Ptr v4(new Vertex());
+            Vertex::Ptr v0(new Vertex("v0"));
+            Vertex::Ptr v1(new Vertex("v1"));
+            Vertex::Ptr v2(new Vertex("v2"));
+            Vertex::Ptr v3(new Vertex("v3"));
+            Vertex::Ptr v4(new Vertex("v4"));
             
             Edge::Ptr edge0(new Edge());
             Edge::Ptr edge1(new Edge());
@@ -96,7 +96,6 @@ int main(int argc, char **argv)
             Edge::Ptr edge3(new Edge());
             Edge::Ptr edge4(new Edge());
             Edge::Ptr edge5(new Edge());
-            Edge::Ptr edge6(new Edge());
 
             edge0->setSourceVertex(v0);
             edge0->setTargetVertex(v1);
@@ -114,10 +113,7 @@ int main(int argc, char **argv)
             edge4->setTargetVertex(v3);
 
             edge5->setSourceVertex(v3);
-            edge5->setTargetVertex(v0);
-
-            edge6->setSourceVertex(v3);
-            edge6->setTargetVertex(v4);
+            edge5->setTargetVertex(v4);
 
             widget->addVertex(v0);
             widget->addVertex(v1);
@@ -136,14 +132,12 @@ int main(int argc, char **argv)
             widget->addEdge(edge3);
             widget->addEdge(edge4);
             widget->addEdge(edge5);
-            widget->addEdge(edge6);
             widget->enableEdge(edge0);
             widget->enableEdge(edge1);
             widget->enableEdge(edge2);
             widget->enableEdge(edge3);
             widget->enableEdge(edge4);
             widget->enableEdge(edge5);
-            widget->enableEdge(edge6);
         break;
     }
 

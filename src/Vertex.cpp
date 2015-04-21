@@ -2,18 +2,15 @@
 
 namespace graph_analysis {
 
-Vertex::Vertex()
-{}
-
-Vertex::Vertex(const std::string& name)
-    : mName(name)
+Vertex::Vertex(const std::string& label)
+    : mLabel(label)
 {}
 
 std::string Vertex::toString() const
 {
-    if(!mName.empty())
+    if(!mLabel.empty())
     {
-        return mName;
+        return mLabel;
     } else {
         return getClassName();
     }

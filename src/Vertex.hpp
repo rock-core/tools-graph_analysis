@@ -16,11 +16,9 @@ class Vertex : public GraphElement
 {
 public:
 
-    Vertex();
-
     virtual ~Vertex() {}
 
-    Vertex(const std::string& name);
+    Vertex(const std::string& label = "");
 
     typedef boost::shared_ptr< Vertex > Ptr;
 
@@ -31,10 +29,10 @@ public:
     /**
      * Convert element to string
      */
-    virtual std::string toString() const;
+    std::string toString() const;
 
 protected:
-    std::string mName;
+    std::string mLabel;
 };
 
 } // end namespace graph_analysis
