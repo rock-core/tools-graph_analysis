@@ -94,7 +94,7 @@ public:
 
     void reset(bool keepData = false);
     void clear();
-    void updateFromGraph();
+    void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
 
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
@@ -128,6 +128,7 @@ private:
     // Supports filtering functionality
     GraphView< gl::DirectedGraph > mGraphView;
     SubGraph::Ptr mpSubGraph;
+    bool mFiltered;
 
     // Mapping with data model
     // Allow mapping from graph vertexes to nodes in the scene

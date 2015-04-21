@@ -68,6 +68,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGraph(0)
     , mpGVGraph(0)
     , mTimerId(0)
+    , mFiltered(false)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
@@ -115,6 +116,7 @@ void GraphWidget::reset(bool keepData)
 
 void GraphWidget::clear()
 {
+    // TO-DO: add filtering clearing
     if(mpGVGraph)
     {
         mpGVGraph->clearEdges();
@@ -166,7 +168,7 @@ void GraphWidget::updateFromGraph()
         Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
-        if(!mpSubGraph->enabled(vertex))
+        if(mFiltered && !mpSubGraph->enabled(vertex))
         {
 #ifdef DEBUG
     std::cout << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex) << "\n\n";
@@ -194,7 +196,7 @@ void GraphWidget::updateFromGraph()
         Edge::Ptr edge = edgeIt->current();
 
         // Check on active filter
-        if(!mpSubGraph->enabled(edge))
+        if(mFiltered && !mpSubGraph->enabled(edge))
         {
 #ifdef DEBUG
     std::cout << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge) << "\n\n";
@@ -403,7 +405,11 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
         mpVertexFilter->add(filter);
     }
     mGraphView.setVertexFilter(mpVertexFilter);
-    mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    if(!mFiltered)
+    {
+        mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+        mFiltered = true;
+    }
 }
 
 void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
@@ -415,7 +421,11 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
         mpEdgeFilter->add(filter);
     }
     mGraphView.setEdgeFilter(mpEdgeFilter);
-    mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+    if(!mFiltered)
+    {
+        mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+        mFiltered = true;
+    }
 }
 
 void GraphWidget::shuffle()
