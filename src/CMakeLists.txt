@@ -21,6 +21,7 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.cpp
         gui/GVGraph.cpp
         io/GexfWriter.cpp
+        io/GraphvizWriter.cpp
         lemon/DirectedGraph.cpp
         lemon/DirectedSubGraph.cpp
         Percolation.cpp
@@ -64,6 +65,7 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.hpp
         gui/GVGraph.hpp
         io/GexfWriter.hpp
+        io/GraphvizWriter.hpp
         lemon/ArcIterator.hpp
         lemon/DirectedGraph.hpp
         lemon/DirectedSubGraph.hpp
@@ -92,6 +94,8 @@ rock_library(graph_analysis
         Boost_REGEX
     MOC
         gui/GraphWidget.hpp
+    DEPS_PLAIN Boost_REGEX
+    DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
 )

@@ -48,6 +48,11 @@
 #include <graph_analysis/gui/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
+#define TESTNO 1
+//#define RENDER
+
+//  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
+#define LAYOUT "dot"
 
 int main(int argc, char **argv)
 {
@@ -68,21 +73,79 @@ int main(int argc, char **argv)
     filters::EdgeContextFilter::Ptr filter(new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
     std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
     edgeFilters.push_back(filter);
-
-    Vertex::Ptr v0(new Vertex());
-    Vertex::Ptr v1(new Vertex());
-    Edge::Ptr edge(new Edge());
-
-    edge->setSourceVertex(v0);
-    edge->setTargetVertex(v1);
-
-    widget->addVertex(v0);
-    widget->addVertex(v1);
-    widget->addEdge(edge);
-
     widget->setEdgeFilters(edgeFilters);
-    widget->updateFromGraph();
 
+
+    int testNo = TESTNO;
+    switch(testNo)
+    {
+        case 1:
+            /*
+             * Test 1.:
+             * -------
+             */
+            Vertex::Ptr v0(new Vertex("v0"));
+            Vertex::Ptr v1(new Vertex("v1"));
+            Vertex::Ptr v2(new Vertex("v2"));
+            Vertex::Ptr v3(new Vertex("v3"));
+            Vertex::Ptr v4(new Vertex("v4"));
+            
+            Edge::Ptr edge0(new Edge("edge0"));
+            Edge::Ptr edge1(new Edge("edge1"));
+            Edge::Ptr edge2(new Edge("edge2"));
+            Edge::Ptr edge3(new Edge("edge3"));
+            Edge::Ptr edge4(new Edge("edge4"));
+            Edge::Ptr edge5(new Edge("edge5"));
+
+            edge0->setSourceVertex(v0);
+            edge0->setTargetVertex(v1);
+
+            edge1->setSourceVertex(v0);
+            edge1->setTargetVertex(v3);
+
+            edge2->setSourceVertex(v1);
+            edge2->setTargetVertex(v2);
+
+            edge3->setSourceVertex(v1);
+            edge3->setTargetVertex(v4);
+
+            edge4->setSourceVertex(v2);
+            edge4->setTargetVertex(v3);
+
+            edge5->setSourceVertex(v3);
+            edge5->setTargetVertex(v4);
+
+            widget->addVertex(v0);
+            widget->addVertex(v1);
+            widget->addVertex(v2);
+            widget->addVertex(v3);
+            widget->addVertex(v4);
+            widget->enableVertex(v0);
+            widget->enableVertex(v1);
+            widget->enableVertex(v2);
+            widget->enableVertex(v3);
+            widget->enableVertex(v4);
+
+            widget->addEdge(edge0);
+            widget->addEdge(edge1);
+            widget->addEdge(edge2);
+            widget->addEdge(edge3);
+            widget->addEdge(edge4);
+            widget->addEdge(edge5);
+            widget->enableEdge(edge0);
+            widget->enableEdge(edge1);
+            widget->enableEdge(edge2);
+            widget->enableEdge(edge3);
+            widget->enableEdge(edge4);
+            widget->enableEdge(edge5);
+        break;
+    }
+
+    widget->updateFromGraph();
+    widget->setLayout(QString(LAYOUT));
+#ifdef RENDER
+    widget->toFile("graph.dot");
+#endif
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);
 

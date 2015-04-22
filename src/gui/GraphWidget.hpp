@@ -44,7 +44,10 @@
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
+#include <graph_analysis/GraphView.hpp>
+#include <graph_analysis/lemon/Graph.hpp>
 
+namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
 namespace gui {
 
@@ -79,24 +82,33 @@ public:
 
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
+    void toFile(const std::string &filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    ::graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
+    void enableVertex(graph_analysis::Vertex::Ptr vertex);
+    void enableEdge(graph_analysis::Edge::Ptr edge);
+
+    graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
 
     void reset(bool keepData = false);
     void clear();
-    void updateFromGraph();
+    void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
 
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
     void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
+    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; } 
+    double  getScaleFactor () const { return mScaleFactor; }
+
 public slots:
     void shuffle();
     void zoomIn();
     void zoomOut();
+    void addNodeAdhoc(QObject *pos);
+    void ShowContextMenu(const QPoint &pos);
 
     void setLayout(QString layoutName);
     void refresh();
@@ -118,6 +130,10 @@ private:
     // Mapping with layout engine
     GVNodeItemMap mGVNodeItemMap;
     GVEdgeItemMap mGVEdgeItemMap;
+    // Supports filtering functionality
+    GraphView mGraphView;
+    SubGraph::Ptr mpSubGraph;
+    bool mFiltered;
 
     // Mapping with data model
     // Allow mapping from graph vertexes to nodes in the scene
@@ -126,6 +142,8 @@ private:
     EdgeItemMap mEdgeItemMap;
 
     int mTimerId;
+    /// if |mScaleFactor| > 1.0, it makes edges longer; it makes them shorter otherwise ||| if negative, it rotates the graph 180 degrees
+    double mScaleFactor;
     QString mLayout;
 
     graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;

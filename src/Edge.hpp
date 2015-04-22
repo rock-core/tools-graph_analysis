@@ -14,8 +14,8 @@ namespace graph_analysis {
 class Edge : public GraphElement
 {
 public:
-    Edge();
-    Edge(Vertex::Ptr source, Vertex::Ptr target);
+    Edge(const std::string& label = "");
+    Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label = "");
 
     virtual ~Edge() {}
 
@@ -51,7 +51,6 @@ public:
      */
     void setTargetVertex(Vertex::Ptr target) { mTargetVertex = target; }
 
-
     /**
      * Get all involved vertices for two edges
      * \return all distinct vertices of two edges
@@ -64,9 +63,20 @@ public:
      */
     static bool areMeeting(Edge::Ptr e0, Edge::Ptr e1);
 
+    /**
+     * Set edge label
+     */
+    void setLabel(const std::string &label) { mLabel = label; }
+
+    /**
+     * Get label
+     */ 
+    std::string getLabel() const { return mLabel; }
+
 private:
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
+    std::string mLabel;
 };
 
 } // end namespace graph_analysis

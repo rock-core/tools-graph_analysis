@@ -47,21 +47,21 @@
 #include <math.h>
 #include <QKeyEvent>
 #include <QTime>
+#include <QMenu>
+#include <QAction>
 #include <QApplication>
+#include <QSignalMapper>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
-#include <graph_analysis/GraphView.hpp>
 
 #include "GVGraph.hpp"
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 
-#include <graph_analysis/lemon/Graph.hpp>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-
+#define SCALING_FACTOR 1.4
 using namespace graph_analysis;
-namespace gl = graph_analysis::lemon;
 
 namespace graph_analysis {
 namespace gui {
@@ -70,7 +70,9 @@ GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpGraph()
     , mpGVGraph(0)
+    , mFiltered(false)
     , mTimerId(0)
+    , mScaleFactor(SCALING_FACTOR)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
@@ -83,22 +85,75 @@ GraphWidget::GraphWidget(QWidget *parent)
     setScene(scene);
 
     setCacheMode(CacheBackground);
+    setContextMenuPolicy(Qt::CustomContextMenu);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("Graphview"));
+    // Setting up filtering
+    mGraphView.setVertexFilter(mpVertexFilter);
+    mGraphView.setEdgeFilter(mpEdgeFilter);
+    // End of setting up filters
+
+
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), 
+        this, SLOT(ShowContextMenu(const QPoint &)));
 
     reset();
+}
 
+void GraphWidget::addNodeAdhoc(QObject *pos)
+{
+    graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
+    addVertex(vertex);
+    enableVertex(vertex);
+    // Registering the new node item
+    NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+    QPoint *position = (QPoint *)pos;
+    nodeItem->setPos((double) position->x(), (double) position->y());
+    mNodeItemMap[vertex] = nodeItem;
+
+    scene()->addItem(nodeItem);
+//    update();
+}
+
+void GraphWidget::ShowContextMenu(const QPoint &pos)
+{
+    QPoint position = mapTo(this, pos);
+    QMenu contextMenu(tr("Context menu"), this);
+    QSignalMapper* signalMapper = new QSignalMapper(this);
+//    {
+        QAction actionAddNode("Add Node", this);
+        connect(&actionAddNode, SIGNAL(triggered()), signalMapper, SLOT(map()));
+        contextMenu.addAction(&actionAddNode);
+        signalMapper->setMapping(&actionAddNode, (QObject*)&position);
+        connect(signalMapper, SIGNAL(mapped(QObject*)), this, SLOT(addNodeAdhoc(QObject*)));
+//    }
+//    {
+        QAction actionRefresh("Refresh", this);
+        connect(&actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
+        contextMenu.addAction(&actionRefresh);
+//    }
+//    {
+        QAction actionShuffle("Shuffle", this);
+        connect(&actionShuffle, SIGNAL(triggered()), this, SLOT(shuffle()));
+        contextMenu.addAction(&actionShuffle);
+//    }
+    contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::toFile(const std::string &filename)
+{
+    mpGVGraph->renderToFile(filename, mLayout.toStdString());
 }
 
 void GraphWidget::reset(bool keepData)
 {
     clear();
 
-    delete mpGVGraph;
+    if(mpGVGraph)delete mpGVGraph;
     mpGVGraph = new GVGraph("GVGraphWidget");
 
     if(!keepData)
@@ -109,6 +164,7 @@ void GraphWidget::reset(bool keepData)
 
 void GraphWidget::clear()
 {
+    // TO-DO: add filtering clearing
     if(mpGVGraph)
     {
         mpGVGraph->clearEdges();
@@ -128,24 +184,30 @@ void GraphWidget::refresh()
     update();
 }
 
+void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
+{
+    LOG_DEBUG_S << "Enabling a vertex of filtering value: " << mpSubGraph->enabled(vertex);
+    mpSubGraph->enable(vertex);
+    LOG_DEBUG_S << "Enabled the vertex; NOW of filtering value: " << mpSubGraph->enabled(vertex);
+}
+void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
+{
+    LOG_DEBUG_S << "Enabling an edge of filtering value: " << mpSubGraph->enabled(edge);
+    mpSubGraph->enable(edge);
+    LOG_DEBUG_S << "Enabled the edge; NOW of filtering value: " << mpSubGraph->enabled(edge);
+}
+
 void GraphWidget::updateFromGraph()
 {
-    // Setting up filtering
-    GraphView graphView;
-    graphView.setVertexFilter(mpVertexFilter);
-    graphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
-
-    SubGraph::Ptr subGraph = graphView.apply(mpGraph);
-
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
-        if(!subGraph->enabled(vertex))
+        if(mFiltered && !mpSubGraph->enabled(vertex))
         {
+            LOG_DEBUG_S << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex);
             continue;
         }
 
@@ -169,8 +231,9 @@ void GraphWidget::updateFromGraph()
         Edge::Ptr edge = edgeIt->current();
 
         // Check on active filter
-        if(!subGraph->enabled(edge))
+        if(mFiltered && !mpSubGraph->enabled(edge))
         {
+            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
             continue;
         }
 
@@ -219,11 +282,11 @@ void GraphWidget::updateFromGraph()
                 LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
             }
 
-            //QPointF p = mapFromScene(nodeItem->pos());
-            QPointF p = nodeItem->pos();
-            QPointF scenePos = nodeItem->scenePos();
+//            QPointF p = mapFromScene(nodeItem->pos());
+//            QPointF p = nodeItem->pos();
+//            QPointF scenePos = nodeItem->scenePos();
             QPointF position = node.centerPos;
-            nodeItem->setPos(position.x(), position.y());
+            nodeItem->setPos(mScaleFactor * position.x(), mScaleFactor * position.y());
         }
 
         foreach(GVEdge edge, mpGVGraph->edges())
@@ -325,7 +388,7 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     Q_UNUSED(rect);
 
     //// Shadow
-    QRectF sceneRect = this->sceneRect();
+//    QRectF sceneRect = this->sceneRect();
     //QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
     //QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
     //if (rightShadow.intersects(rect) || rightShadow.contains(rect))
@@ -374,6 +437,12 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
     {
         mpVertexFilter->add(filter);
     }
+    mGraphView.setVertexFilter(mpVertexFilter);
+    if(!mFiltered)
+    {
+        mpSubGraph = mGraphView.apply(mpGraph);
+        mFiltered = true;
+    }
 }
 
 void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
@@ -383,6 +452,12 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
     BOOST_FOREACH(Filter<Edge::Ptr>::Ptr filter, filters)
     {
         mpEdgeFilter->add(filter);
+    }
+    mGraphView.setEdgeFilter(mpEdgeFilter);
+    if(!mFiltered)
+    {
+        mpSubGraph = mGraphView.apply(mpGraph);
+        mFiltered = true;
     }
 }
 

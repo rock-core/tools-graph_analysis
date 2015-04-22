@@ -215,6 +215,10 @@ void GVGraph::applyLayout(const std::string& layout)
 
 void GVGraph::renderToFile(const std::string& filename, const std::string& layout)
 {
+    if(!mAppliedLayout)
+    {
+        applyLayout();
+    }
     gvRenderFilename(mpContext, mpGraph, layout.c_str(), filename.c_str());
 }
 
