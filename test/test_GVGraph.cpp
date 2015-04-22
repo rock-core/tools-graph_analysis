@@ -3,6 +3,8 @@
 
 using namespace graph_analysis;
 
+BOOST_AUTO_TEST_SUITE(graphviz)
+
 /*
  * Note:
  * ----
@@ -10,7 +12,7 @@ using namespace graph_analysis;
  * These tests imply that clearNodes() shall not be called before clearEdges() -> otherwise exceptions are raised internally
  */
 
-BOOST_AUTO_TEST_CASE(it_should_clear_edges_and_nodes)
+BOOST_AUTO_TEST_CASE(clear_edges_and_nodes)
 {
     graph_analysis::gui::GVGraph graph("GVGraphWidget");
     graph.addNode(QString("1"));
@@ -30,7 +32,7 @@ BOOST_AUTO_TEST_CASE(it_should_clear_edges_and_nodes)
     graph.clearNodes();
 }
 
-BOOST_AUTO_TEST_CASE(it_should_clear_nodes_and_edges)
+BOOST_AUTO_TEST_CASE(clear_nodes_and_edges)
 {
     graph_analysis::gui::GVGraph graph("GVGraphWidget");
     graph.addNode(QString("1"));
@@ -50,7 +52,7 @@ BOOST_AUTO_TEST_CASE(it_should_clear_nodes_and_edges)
     graph.clearEdges();
 }
 
-BOOST_AUTO_TEST_CASE(it_should_clear_nodes)
+BOOST_AUTO_TEST_CASE(clear_nodes)
 {
     graph_analysis::gui::GVGraph graph("GVGraphWidget");
     graph.addNode(QString("1"));
@@ -68,7 +70,7 @@ BOOST_AUTO_TEST_CASE(it_should_clear_nodes)
     graph.clearNodes();
 }
 
-BOOST_AUTO_TEST_CASE(it_should_clear_edges)
+BOOST_AUTO_TEST_CASE(clear_edges)
 {
     graph_analysis::gui::GVGraph graph("GVGraphWidget");
     graph.addNode(QString("1"));
@@ -85,3 +87,5 @@ BOOST_AUTO_TEST_CASE(it_should_clear_edges)
     BOOST_TEST_MESSAGE("it_should_clear_edges: graph.clearEdges()");
     graph.clearEdges();
 }
+
+BOOST_AUTO_TEST_SUITE_END()
