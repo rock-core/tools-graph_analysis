@@ -108,18 +108,19 @@ public:
 
     /**
      * \brief Get the edge by id
-     * \return vertex
+     * \return Edge with given id
      */
     virtual Edge::Ptr getEdge(GraphElementId id) const { throw std::runtime_error("BaseGraph::getEdge: not implemented"); }
 
     /**
      * \brief Get edge by given vertices
-     * \return vertex
+     * \return List of edges that start a source and end at target
      */
     virtual std::vector<Edge::Ptr> getEdges(Vertex::Ptr source, Vertex::Ptr target);
 
     /**
      * \brief Get edges by given vertices and return only edges of a given type
+     * that end at target
      * Type should be a subclass of Edge!!
      * If boost::dynamic_pointer_cast returns null pointer, object is not added
      */
