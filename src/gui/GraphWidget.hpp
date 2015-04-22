@@ -118,6 +118,7 @@ public slots:
 
     void setLayout(QString layoutName);
     void refresh();
+    void changeSelectedVertexLabel();
 
 protected:
     void keyPressEvent(QKeyEvent *event);

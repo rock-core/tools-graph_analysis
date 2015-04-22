@@ -45,11 +45,13 @@
 #include "EdgeTypeManager.hpp"
 
 #include <math.h>
-#include <QKeyEvent>
+#include <QDir>
 #include <QTime>
 #include <QMenu>
 #include <QAction>
+#include <QKeyEvent>
 #include <QApplication>
+#include <QInputDialog>
 #include <QSignalMapper>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
@@ -125,8 +127,16 @@ void GraphWidget::showContextMenu(const QPoint &pos)
 {
     QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
-    QSignalMapper* signalMapper = new QSignalMapper(this);
 //    {
+        QAction actionChangeLabel("Change Label", this);
+        connect(&actionChangeLabel, SIGNAL(triggered()), this, SLOT(changeSelectedVertexLabel()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionChangeLabel);
+        }
+//    }
+//    {
+        QSignalMapper* signalMapper = new QSignalMapper(this);
         QAction actionAddNode("Add Node", this);
         connect(&actionAddNode, SIGNAL(triggered()), signalMapper, SLOT(map()));
         contextMenu.addAction(&actionAddNode);
@@ -144,6 +154,20 @@ void GraphWidget::showContextMenu(const QPoint &pos)
         contextMenu.addAction(&actionShuffle);
 //    }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::changeSelectedVertexLabel()
+{
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Input Node Label"),
+                                         tr("New Label:"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+    if (ok && !label.isEmpty())
+    {
+        mpSelectedVertex->setLabel(label.toStdString());
+        NodeItem* nodeItem = mNodeItemMap[mpSelectedVertex];
+        nodeItem->updateLabel();
+    }
 }
 
 void GraphWidget::toFile(const std::string &filename)
@@ -189,15 +213,15 @@ void GraphWidget::refresh()
 
 void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
-    LOG_DEBUG("Enabling a vertex of filtering value: %b", mpSubGraph->enabled(vertex));
+    LOG_DEBUG("Enabling a vertex of filtering value: %d", mpSubGraph->enabled(vertex));
     mpSubGraph->enable(vertex);
-    LOG_DEBUG("Enabled the vertex; NOW of filtering value: %b", mpSubGraph->enabled(vertex));
+    LOG_DEBUG("Enabled the vertex; NOW of filtering value: %d", mpSubGraph->enabled(vertex));
 }
 void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 {
-    LOG_DEBUG("Enabling an edge of filtering value: %b", mpSubGraph->enabled(edge));
+    LOG_DEBUG("Enabling an edge of filtering value: %d", mpSubGraph->enabled(edge));
     mpSubGraph->enable(edge);
-    LOG_DEBUG("Enabled the edge; NOW of filtering value: %b", mpSubGraph->enabled(edge));
+    LOG_DEBUG("Enabled the edge; NOW of filtering value: %d", mpSubGraph->enabled(edge));
 }
 
 
@@ -211,7 +235,7 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
-            LOG_DEBUG("Filtered out a vertex of filtering value: %b", mpSubGraph->enabled(vertex));
+            LOG_DEBUG("Filtered out a vertex of filtering value: %d", mpSubGraph->enabled(vertex));
             continue;
         }
 
@@ -237,7 +261,7 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(edge))
         {
-            LOG_DEBUG("Filtered out an edge of filtering value: %b", mpSubGraph->enabled(edge));
+            LOG_DEBUG("Filtered out an edge of filtering value: %d", mpSubGraph->enabled(edge));
             continue;
         }
 

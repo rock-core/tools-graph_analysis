@@ -26,6 +26,20 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     //mLabel->setZValue(-100.0);
 }
 
+void Resource::changeLabel(const std::string &label)
+{
+    delete mLabel;
+    mpVertex->setLabel(label);
+    mLabel = new Label(mpVertex->toString(), this);
+}
+
+void Resource::updateLabel()
+{
+    delete mLabel;
+    mLabel = new Label(mpVertex->toString(), this);
+    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+}
+
 QRectF Resource::boundingRect() const
 {
     //qreal adjust = 0;
@@ -96,6 +110,7 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
     mpGraphWidget->setSelectedVertex(mpVertex);
     mpGraphWidget->setVertexSelected(true);
+    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
 
     QGraphicsItem::hoverEnterEvent(event);
 }
@@ -105,6 +120,7 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
     mPen = mPenDefault;
     mpGraphWidget->setVertexSelected(false);
+    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
