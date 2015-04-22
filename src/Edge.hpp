@@ -51,6 +51,19 @@ public:
      */
     void setTargetVertex(Vertex::Ptr target) { mTargetVertex = target; }
 
+
+    /**
+     * Get all involved vertices for two edges
+     * \return all distinct vertices of two edges
+     */
+    static std::vector<Vertex::Ptr> getInvolvedVertices(Edge::Ptr e0, Edge::Ptr e1);
+
+    /**
+     * Check if two edges meet at a vertex
+     * \return true if edges meet at least one vertex
+     */
+    static bool areMeeting(Edge::Ptr e0, Edge::Ptr e1);
+
 private:
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
