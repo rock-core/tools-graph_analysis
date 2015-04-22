@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
 
 #include <graph_analysis/gui/NodeItem.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 #include <QPen>
 
 namespace graph_analysis {

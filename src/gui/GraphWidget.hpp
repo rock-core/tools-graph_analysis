@@ -103,12 +103,18 @@ public:
     void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; } 
     double  getScaleFactor () const { return mScaleFactor; }
 
+    void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
+    graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
+
+    void setVertexSelected (bool selected) { mVertexSelected = selected; }
+    bool getVertexSelected () { return mVertexSelected; }
+
 public slots:
     void shuffle();
     void zoomIn();
     void zoomOut();
     void addNodeAdhoc(QObject *pos);
-    void ShowContextMenu(const QPoint &pos);
+    void showContextMenu(const QPoint &pos);
 
     void setLayout(QString layoutName);
     void refresh();
@@ -148,6 +154,9 @@ private:
 
     graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
+
+    graph_analysis::Vertex::Ptr mpSelectedVertex;
+    bool mVertexSelected;
 };
 
 } // end namespace gui

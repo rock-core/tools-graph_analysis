@@ -94,6 +94,9 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
     mPen = QPen(Qt::green);
 
+    mpGraphWidget->setSelectedVertex(mpVertex);
+    mpGraphWidget->setVertexSelected(true);
+
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -101,6 +104,7 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
     mPen = mPenDefault;
+    mpGraphWidget->setVertexSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

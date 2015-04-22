@@ -60,8 +60,8 @@
 
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-//#define DEBUG
-#define SCALING_FACTOR 1.4
+
+#define DEFAULT_SCALING_FACTOR 1.4
 using namespace graph_analysis;
 
 namespace graph_analysis {
@@ -73,10 +73,11 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGVGraph(0)
     , mFiltered(false)
     , mTimerId(0)
-    , mScaleFactor(SCALING_FACTOR)
+    , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
+    , mVertexSelected(false)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -100,7 +101,7 @@ GraphWidget::GraphWidget(QWidget *parent)
 
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), 
-        this, SLOT(ShowContextMenu(const QPoint &)));
+        this, SLOT(showContextMenu(const QPoint &)));
 
     reset();
 }
@@ -120,7 +121,7 @@ void GraphWidget::addNodeAdhoc(QObject *pos)
 //    update();
 }
 
-void GraphWidget::ShowContextMenu(const QPoint &pos)
+void GraphWidget::showContextMenu(const QPoint &pos)
 {
     QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
@@ -188,25 +189,15 @@ void GraphWidget::refresh()
 
 void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
-#ifdef DEBUG
-    std::cout << "Enabling a vertex of filtering value: " << mpSubGraph->enabled(vertex) << "\n";
-#endif
-
+    LOG_DEBUG("Enabling a vertex of filtering value: %b", mpSubGraph->enabled(vertex));
     mpSubGraph->enable(vertex);
-#ifdef DEBUG
-    std::cout << "Enabled the vertex; NOW of filtering value: " << mpSubGraph->enabled(vertex) << "\n\n";
-#endif
+    LOG_DEBUG("Enabled the vertex; NOW of filtering value: %b", mpSubGraph->enabled(vertex));
 }
 void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 {
-#ifdef DEBUG
-    std::cout << "Enabling an edge of filtering value: " << mpSubGraph->enabled(edge) << "\n";
-#endif
-
+    LOG_DEBUG("Enabling an edge of filtering value: %b", mpSubGraph->enabled(edge));
     mpSubGraph->enable(edge);
-#ifdef DEBUG
-    std::cout << "Enabled the edge; NOW of filtering value: " << mpSubGraph->enabled(edge) << "\n\n";
-#endif
+    LOG_DEBUG("Enabled the edge; NOW of filtering value: %b", mpSubGraph->enabled(edge));
 }
 
 
@@ -220,9 +211,7 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
-#ifdef DEBUG
-    std::cout << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex) << "\n\n";
-#endif
+            LOG_DEBUG("Filtered out a vertex of filtering value: %b", mpSubGraph->enabled(vertex));
             continue;
         }
 
@@ -248,9 +237,7 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(edge))
         {
-#ifdef DEBUG
-    std::cout << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge) << "\n\n";
-#endif
+            LOG_DEBUG("Filtered out an edge of filtering value: %b", mpSubGraph->enabled(edge));
             continue;
         }
 
@@ -334,7 +321,8 @@ void GraphWidget::itemMoved()
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
+    switch (event->key()) 
+    {
     //case Qt::Key_Up:
     //    break;
     //case Qt::Key_Down:
@@ -381,12 +369,14 @@ void GraphWidget::timerEvent(QTimerEvent *event)
         }
 
         bool itemsMoved = false;
-        foreach (NodeItem* node, nodes) {
+        foreach (NodeItem* node, nodes)
+        {
             if (node->advance())
                 itemsMoved = true;
         }
 
-        if (!itemsMoved) {
+        if (!itemsMoved)
+        {
             killTimer(mTimerId);
             mTimerId = 0;
         }
@@ -480,7 +470,8 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
 
 void GraphWidget::shuffle()
 {
-    foreach (QGraphicsItem *item, scene()->items()) {
+    foreach (QGraphicsItem *item, scene()->items())
+    {
         if (qgraphicsitem_cast<NodeItem* >(item))
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }

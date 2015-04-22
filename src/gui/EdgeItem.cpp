@@ -81,7 +81,8 @@ void EdgeItem::adjust()
 
     prepareGeometryChange();
 
-    if (length > qreal(20.)) {
+    if (length > qreal(20.))
+    {
         QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
         mSourcePoint = line.p1() + edgeOffset;
         mTargetPoint = line.p2() - edgeOffset;
