@@ -3,6 +3,7 @@ rock_library(graph_analysis
     SOURCES
         algorithms/CorrelationClustering.cpp
         algorithms/FloydWarshall.cpp
+        boost_graph/DirectedGraph.cpp
         Edge.cpp
         EdgeIterable.cpp
         EdgeIterator.cpp
@@ -42,6 +43,7 @@ rock_library(graph_analysis
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
         algorithms/FloydWarshall.hpp
+        boost_graph/DirectedGraph.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
         EdgeIterable.hpp
