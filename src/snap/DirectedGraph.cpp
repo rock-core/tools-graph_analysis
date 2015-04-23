@@ -106,18 +106,21 @@ graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator()
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex)
+{
+    InOutEdgeIterator<DirectedGraph>* it = new InOutEdgeIterator<DirectedGraph>(*this, vertex);
+    return graph_analysis::EdgeIterator::Ptr(it);
+}
 
 graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex)
 {
-    graph_t::TNodeI nodeIterator = mGraph.GetNI(vertex->getId( getId() ) );
-    OutEdgeIterator<DirectedGraph>* it = new OutEdgeIterator<DirectedGraph>(*this, nodeIterator );
+    OutEdgeIterator<DirectedGraph>* it = new OutEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
 graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex)
 {
-    graph_t::TNodeI nodeIterator = mGraph.GetNI(vertex->getId( getId() ) );
-    InEdgeIterator<DirectedGraph>* it = new InEdgeIterator<DirectedGraph>(*this, nodeIterator );
+    InEdgeIterator<DirectedGraph>* it = new InEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 

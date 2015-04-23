@@ -41,10 +41,10 @@ template<typename T>
 class OutEdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    OutEdgeIterator(T& graph, typename T::graph_t::TNodeI nodeIterator)
+    OutEdgeIterator(T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mCurrentIndex(0)
-        , mNodeIt(nodeIterator)
+        , mNodeIt(mGraph.raw().GetNI( mGraph.getVertexId(vertex)) )
     {}
 
     bool next()
@@ -74,10 +74,10 @@ template<typename T>
 class InEdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    InEdgeIterator(T& graph, typename T::graph_t::TNodeI nodeIterator)
+    InEdgeIterator(T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mCurrentIndex(0)
-        , mNodeIt(nodeIterator)
+        , mNodeIt(mGraph.raw().GetNI( mGraph.getVertexId(vertex)) )
     {}
 
     bool next()
@@ -102,6 +102,41 @@ protected:
     int mCurrentIndex;
     typename T::graph_t::TNodeI mNodeIt;
 };
+
+template<typename T>
+class InOutEdgeIterator : public graph_analysis::EdgeIterator
+{
+public:
+    InOutEdgeIterator(T& graph, Vertex::Ptr vertex)
+        : mGraph(graph)
+        , mInEdgeIterator(graph, vertex)
+        , mOutEdgeIterator(graph, vertex)
+    {}
+
+    bool next()
+    {
+        if(mInEdgeIterator.next())
+        {
+            setNext( mInEdgeIterator.current() );
+            return true;
+        }
+
+        if(mOutEdgeIterator.next())
+        {
+            setNext( mOutEdgeIterator.current() );
+            return true;
+        }
+
+        return false;
+    }
+
+
+protected:
+    T& mGraph;
+    InEdgeIterator<T> mInEdgeIterator;
+    OutEdgeIterator<T> mOutEdgeIterator;
+};
+
 } // end namespace snap
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_SNAP_EDGE_ITERATOR_HPP

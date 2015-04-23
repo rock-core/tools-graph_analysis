@@ -113,6 +113,8 @@ public:
      */
     graph_analysis::EdgeIterator::Ptr getEdgeIterator();
 
+    graph_analysis::EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+
     graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
 
     graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
