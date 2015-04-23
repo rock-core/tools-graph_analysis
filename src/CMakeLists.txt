@@ -104,7 +104,7 @@ else()
 endif()
 set_target_properties(graph_analysis PROPERTIES LINK_FLAGS ${graph_analysis-linker_flags})
 
-rock_executable(graph_analysis-bm Main.cpp
+rock_executable(graph_analysis-bm Benchmark.cpp
     DEPS graph_analysis
     DEPS_PLAIN rt
     NOINSTALL)
