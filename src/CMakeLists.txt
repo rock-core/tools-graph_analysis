@@ -4,6 +4,7 @@ rock_library(graph_analysis
         algorithms/CorrelationClustering.cpp
         algorithms/FloydWarshall.cpp
         Edge.cpp
+        EdgeIterable.cpp
         EdgeIterator.cpp
         Filter.cpp
         filters/EdgeContextFilter.cpp
@@ -33,6 +34,7 @@ rock_library(graph_analysis
         snap/DirectedGraph.cpp
         SubGraph.cpp
         Vertex.cpp
+        VertexIterable.cpp
         VertexIterator.cpp
         WeightedEdge.cpp
     HEADERS
@@ -42,6 +44,7 @@ rock_library(graph_analysis
         algorithms/FloydWarshall.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
+        EdgeIterable.hpp
         EdgeIterator.hpp
         Filter.hpp
         filters/CommonFilters.hpp
@@ -84,6 +87,7 @@ rock_library(graph_analysis
         SubGraphImpl.hpp
         TypedGraph.hpp
         Vertex.hpp
+        VertexIterable.hpp
         VertexIterator.hpp
         WeightedEdge.hpp
     DEPS_PKGCONFIG

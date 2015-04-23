@@ -2,8 +2,8 @@
 #define GRAPH_ANALYSIS_SUB_GRAPH_HPP
 
 #include <boost/shared_ptr.hpp>
-#include <graph_analysis/VertexIterator.hpp>
-#include <graph_analysis/EdgeIterator.hpp>
+#include <graph_analysis/VertexIterable.hpp>
+#include <graph_analysis/EdgeIterable.hpp>
 #include <graph_analysis/Filter.hpp>
 
 namespace graph_analysis {
