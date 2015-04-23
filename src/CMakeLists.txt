@@ -96,6 +96,13 @@ rock_library(graph_analysis
         gui/graph_analysis_gui.ui
 )
 target_link_libraries(graph_analysis glpk gvc)
+get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)
+if(graph_analysis-linker_flags)
+    set(graph_analysis-linker_flags "${graph_analysis-linker_flags} -Wl,--exclude-libs=libsnap.a" )
+else()
+    set(graph_analysis-linker_flags "-Wl,--exclude-libs=libsnap.a" )
+endif()
+set_target_properties(graph_analysis PROPERTIES LINK_FLAGS ${graph_analysis-linker_flags})
 
 rock_executable(graph_analysis-bm Main.cpp
     DEPS graph_analysis
