@@ -13,6 +13,7 @@
   <depend package="external/lemon" />
   <depend package="external/snap" />
   <depend package="external/gexf" />
+  <depend package="graphviz" />
   <depend package="glpk" />
   <depend package="gsl" />
   <depend package="libxml2-utils" optional="1"/>
