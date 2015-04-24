@@ -46,6 +46,8 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
+//#include <boost/thread/mutex.hpp> // no need to: SLOT calls are executed sequentially
+    // more details @ http://doc.qt.io/qt-4.8/threads-qobject.html#signals-and-slots-across-threads
 
 namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
@@ -161,6 +163,7 @@ private:
     graph_analysis::Vertex::Ptr mpSelectedVertex;
     graph_analysis::Vertex::Ptr mpStartVertex;
     graph_analysis::Vertex::Ptr mpEndVertex;
+
     bool mVertexSelected;
     bool mEdgeStartVertex;
     bool mEdgeEndVertex;
