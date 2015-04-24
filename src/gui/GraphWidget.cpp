@@ -80,6 +80,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
+    , mEdgeStartVertex(false)
+    , mEdgeEndVertex(false)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -111,7 +113,7 @@ GraphWidget::GraphWidget(QWidget *parent)
 void GraphWidget::addNodeAdhoc(QObject *pos)
 {
     graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
-    addVertex(vertex);
+    mpGraph->addVertex(vertex);
     enableVertex(vertex);
     // Registering the new node item
     NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
@@ -136,6 +138,22 @@ void GraphWidget::showContextMenu(const QPoint &pos)
         }
 //    }
 //    {
+        QAction actionStartNewEdgeHere("Start New Edge Here", this);
+        connect(&actionStartNewEdgeHere, SIGNAL(triggered()), this, SLOT(startNewEdgeHere()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionStartNewEdgeHere);
+        }
+//    }
+//    {
+        QAction actionEndNewEdgeHere("End New Edge Here", this);
+        connect(&actionEndNewEdgeHere, SIGNAL(triggered()), this, SLOT(endNewEdgeHere()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionEndNewEdgeHere);
+        }
+//    }
+//    {
         QSignalMapper* signalMapper = new QSignalMapper(this);
         QAction actionAddNode("Add Node", this);
         connect(&actionAddNode, SIGNAL(triggered()), signalMapper, SLOT(map()));
@@ -154,6 +172,84 @@ void GraphWidget::showContextMenu(const QPoint &pos)
         contextMenu.addAction(&actionShuffle);
 //    }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::startNewEdgeHere()
+{
+    mpStartVertex = mpSelectedVertex;
+    mEdgeStartVertex = true;
+    if(mEdgeStartVertex && mEdgeEndVertex)
+    {
+        bool ok;
+        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
+                                             tr("New Edge Label:"), QLineEdit::Normal,
+                                             QDir::home().dirName(), &ok);
+        if (ok && !label.isEmpty())
+        {
+            Edge::Ptr edge(new Edge(label.toStdString()));
+            edge->setSourceVertex(mpStartVertex);
+            edge->setTargetVertex(mpEndVertex);
+            mpGraph->addEdge(edge);
+            enableEdge(edge);
+            // Registering new node edge items
+            Vertex::Ptr source = edge->getSourceVertex();
+            Vertex::Ptr target = edge->getTargetVertex();
+
+            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+            NodeItem* targetNodeItem = mNodeItemMap[ target ];
+
+            if(sourceNodeItem && targetNodeItem)
+            {
+                EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(sourceNodeItem, targetNodeItem, edge);
+                mEdgeItemMap[edge] = edgeItem;
+
+                scene()->addItem(edgeItem);
+                sourceNodeItem->updateLabel();
+                targetNodeItem->updateLabel();
+            }
+        }
+        mEdgeStartVertex    = false;
+        mEdgeEndVertex      = false;
+    }
+}
+
+void GraphWidget::endNewEdgeHere()
+{
+    mpEndVertex = mpSelectedVertex;
+    mEdgeEndVertex = true;
+    if(mEdgeStartVertex && mEdgeEndVertex)
+    {
+        bool ok;
+        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
+                                             tr("New Edge Label:"), QLineEdit::Normal,
+                                             QDir::home().dirName(), &ok);
+        if (ok && !label.isEmpty())
+        {
+            Edge::Ptr edge(new Edge(label.toStdString()));
+            edge->setSourceVertex(mpStartVertex);
+            edge->setTargetVertex(mpEndVertex);
+            mpGraph->addEdge(edge);
+            enableEdge(edge);
+            // Registering new node edge items
+            Vertex::Ptr source = edge->getSourceVertex();
+            Vertex::Ptr target = edge->getTargetVertex();
+
+            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+            NodeItem* targetNodeItem = mNodeItemMap[ target ];
+
+            if(sourceNodeItem && targetNodeItem)
+            {
+                EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(sourceNodeItem, targetNodeItem, edge);
+                mEdgeItemMap[edge] = edgeItem;
+
+                scene()->addItem(edgeItem);
+                sourceNodeItem->updateLabel();
+                targetNodeItem->updateLabel();
+            }
+        }
+        mEdgeStartVertex    = false;
+        mEdgeEndVertex      = false;
+    }
 }
 
 void GraphWidget::changeSelectedVertexLabel()

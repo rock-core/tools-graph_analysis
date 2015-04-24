@@ -119,6 +119,8 @@ public slots:
     void setLayout(QString layoutName);
     void refresh();
     void changeSelectedVertexLabel();
+    void startNewEdgeHere();
+    void endNewEdgeHere();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -157,7 +159,11 @@ private:
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
     graph_analysis::Vertex::Ptr mpSelectedVertex;
+    graph_analysis::Vertex::Ptr mpStartVertex;
+    graph_analysis::Vertex::Ptr mpEndVertex;
     bool mVertexSelected;
+    bool mEdgeStartVertex;
+    bool mEdgeEndVertex;
 };
 
 } // end namespace gui
