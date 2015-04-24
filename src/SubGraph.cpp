@@ -3,15 +3,17 @@
 #include <boost/bind.hpp>
 #include <graph_analysis/BaseGraph.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
+#include <graph_analysis/filters/CommonFilters.hpp>
 
 namespace graph_analysis {
 
-SubGraph::SubGraph(BaseGraph* baseGraph)
+SubGraph::SubGraph(BaseGraph::Ptr baseGraph)
     : mpBaseGraph(baseGraph)
 {}
 
 /**
- * Apply filters to this subgraph
+ * Apply filters to this subgraph, pass filters::Filter<Vertex::Ptr>::Null() or
+ * filters::Filter<Edge::Ptr>::Null() to skip filter for vertices or nodes
  */
 void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
 {
@@ -86,9 +88,33 @@ BaseGraph::Ptr SubGraph::toBaseGraph()
     return graph;
 }
 
-BaseGraph* SubGraph::getBaseGraph()
+BaseGraph::Ptr SubGraph::getBaseGraph()
 {
     return mpBaseGraph;
+}
+
+void SubGraph::enableAllVertices()
+{
+    Filter<Vertex::Ptr>::Ptr vertexFilter(new filters::PermitAll< Vertex::Ptr >() );
+    applyFilters(vertexFilter, Filter<Edge::Ptr>::Null());
+}
+
+void SubGraph::enableAllEdges()
+{
+    Filter<Edge::Ptr>::Ptr edgeFilter(new filters::PermitAll< Edge::Ptr >() );
+    applyFilters(Filter<Vertex::Ptr>::Null(), edgeFilter);
+}
+
+void SubGraph::disableAllVertices()
+{
+    Filter<Vertex::Ptr>::Ptr vertexFilter(new filters::DenyAll< Vertex::Ptr >() );
+    applyFilters(vertexFilter, Filter<Edge::Ptr>::Null());
+}
+
+void SubGraph::disableAllEdges()
+{
+    Filter<Edge::Ptr>::Ptr edgeFilter(new filters::DenyAll< Edge::Ptr >() );
+    applyFilters(Filter<Vertex::Ptr>::Null(), edgeFilter);
 }
 
 VertexIterator::Ptr SubGraph::getVertexIterator()
@@ -107,6 +133,19 @@ EdgeIterator::Ptr SubGraph::getEdgeIterator()
     EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator();
     // Need to explicitely cast skip function to disambiguate (
     // disable(Vertex::Ptr) vs. disable(Edge::Ptr)
+    EdgeIterator::SkipFunction skipFunction( boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
+    edgeIt->setSkipFunction(skipFunction);
+    return edgeIt;
+}
+
+EdgeIterator::Ptr SubGraph::getEdgeIterator(Vertex::Ptr vertex)
+{
+    if(disabled(vertex))
+    {
+        throw std::invalid_argument("graph_analysis::SubGraph::getEdgeIterator: cannot get iterator for a disabled vertex, use BaseGraph instance instead");
+    }
+
+    EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator(vertex);
     EdgeIterator::SkipFunction skipFunction( boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
     edgeIt->setSkipFunction(skipFunction);
     return edgeIt;

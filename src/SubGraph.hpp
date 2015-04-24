@@ -12,10 +12,12 @@ class BaseGraph;
 
 class SubGraph : public VertexIterable, public EdgeIterable
 {
-    BaseGraph* mpBaseGraph;
+    boost::shared_ptr<BaseGraph> mpBaseGraph;
 
 public:
-    SubGraph(BaseGraph* graph);
+    SubGraph(boost::shared_ptr<BaseGraph> graph);
+
+    virtual ~SubGraph() {}
 
     typedef boost::shared_ptr<SubGraph> Ptr;
 
@@ -72,6 +74,26 @@ public:
     bool disabled(Edge::Ptr edge) const { return !enabled(edge); }
 
     /**
+     * Enable all vertices
+     */
+    void enableAllVertices();
+
+    /**
+     * Enable all edges
+     */
+    void enableAllEdges();
+
+    /**
+     * Disable all vertices
+     */
+    void disableAllVertices();
+
+    /**
+     * Disable all edges
+     */
+    void disableAllEdges();
+
+    /**
      * Apply filters to this subgraph
      */
     void applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
@@ -94,8 +116,14 @@ public:
      */
     virtual EdgeIterator::Ptr getEdgeIterator();
 
+    /**
+     * Get iterator over all edges that are starting a vertex
+     * \return the edge iterator
+     */
+    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+
 protected:
-    BaseGraph* getBaseGraph();
+    boost::shared_ptr<BaseGraph> getBaseGraph();
 };
 
 } // end namespace graph_analysis

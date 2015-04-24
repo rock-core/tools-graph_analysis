@@ -20,6 +20,8 @@ public:
     typedef boost::shared_ptr<VertexIterator> Ptr;
     typedef boost::function1<bool, Vertex::Ptr> SkipFunction;
 
+    virtual ~VertexIterator() {}
+
     /**
      * \brief Test if there is a next item and if it is then updates
      * the current to next
@@ -58,6 +60,8 @@ private:
 class VertexIterable
 {
 public:
+    virtual ~VertexIterable() {}
+
     /**
      * Get the vertex iterator
      */

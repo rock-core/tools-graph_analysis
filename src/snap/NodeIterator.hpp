@@ -12,15 +12,20 @@ class NodeIterator : public VertexIterator
 public:
     NodeIterator(T& graph)
         : mGraph(graph)
-        , mNodeIt(graph.raw()->BegNI())
+        , mNodeIt(graph.raw().BegNI())
     {}
 
     bool next()
     {
-        if( mNodeIt != mGraph.raw()->EndNI() )
+        while( mNodeIt != mGraph.raw().EndNI() )
         {
-            setNext( mGraph.mVertexMap[mNodeIt.GetId()] );
+            Vertex::Ptr vertex = mGraph.getVertex(mNodeIt.GetId());
             mNodeIt++;
+            if(skip(vertex))
+            {
+                continue;
+            }
+            setNext(vertex);
             return true;
         }
         return false;
@@ -28,7 +33,7 @@ public:
 
 protected:
     T& mGraph;
-    typename TNEGraph::TNodeI mNodeIt;
+    typename T::graph_t::TNodeI mNodeIt;
 
 };
 

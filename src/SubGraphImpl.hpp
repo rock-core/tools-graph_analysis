@@ -15,7 +15,7 @@ namespace graph_analysis {
  * \tparam VertexFilter the vertex filter
  * \tparam EdgeFilter the edge filter
  */
-template<typename SubGraphType, typename VertexFilter, typename EdgeFilter>
+template<typename SubGraphType, typename VertexFilter = std::map<Vertex::Ptr, bool> , typename EdgeFilter = std::map<Edge::Ptr, bool> >
 class SubGraphImpl : public SubGraph
 {
 public:
@@ -33,15 +33,21 @@ public:
      * Ownership of all objects, i.e. filters and graph is transferred to this class, which internally
      * uses shared pointer to guarantee cleanup when necessary
      *
-     * Classes that inherit from TypedSubGraph need to be explictly call
+     * Classes that inherit from TypedSubGraph need to explictly call
      * setSubgraph to link to the underlying SubGraph implementation
      */
-    SubGraphImpl(BaseGraph* graph, VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
+    SubGraphImpl(boost::shared_ptr<BaseGraph> graph, VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
         : SubGraph(graph)
     {
         mpVertexFilter = boost::shared_ptr<VertexFilter>(vertexFilter);
         mpEdgeFilter = boost::shared_ptr<EdgeFilter>(edgeFilter);
     }
+
+    SubGraphImpl(boost::shared_ptr<BaseGraph> graph)
+        : SubGraph(graph)
+    {}
+
+    virtual ~SubGraphImpl() {}
 
     /**
      * Retrieve the raw subgraph type. Use with care since this object's memory might
@@ -82,6 +88,7 @@ protected:
 
     /**
      * Set the subgraph
+     * Method to allow application of implementation specific subgraph constructors
      * \param pointer to subgraph
      */
     void setSubgraph(graph_t* subgraph)

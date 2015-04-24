@@ -6,11 +6,14 @@
 namespace graph_analysis {
 
 class SubGraph;
+class BaseGraph;
 
 class Algorithms
 {
 public:
-    virtual boost::shared_ptr<SubGraph> identifyConnectedComponents() { throw std::runtime_error("graph_analysis::Algorithms::identifyConnectedComponents has not been implemented"); }
+    virtual ~Algorithms() {}
+
+    virtual boost::shared_ptr<SubGraph> identifyConnectedComponents(boost::shared_ptr<BaseGraph> baseGraph) { throw std::runtime_error("graph_analysis::Algorithms::identifyConnectedComponents has not been implemented"); }
 };
 
 } // end namespace graph_analysis

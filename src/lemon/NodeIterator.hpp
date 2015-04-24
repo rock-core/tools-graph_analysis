@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_LEMON_NODE_ITERATOR_HPP
 
 #include <graph_analysis/VertexIterator.hpp>
+#include <lemon/core.h>
 
 namespace graph_analysis {
 namespace lemon {

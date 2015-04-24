@@ -92,7 +92,7 @@ public:
     void enableVertex(graph_analysis::Vertex::Ptr vertex);
     void enableEdge(graph_analysis::Edge::Ptr edge);
 
-    ::graph_analysis::BaseGraph* graph() { return mpGraph; }
+    graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
 
     void reset(bool keepData = false);
     void clear();
@@ -135,14 +135,14 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    graph_analysis::BaseGraph* mpGraph;
+    graph_analysis::BaseGraph::Ptr mpGraph;
 
     GVGraph* mpGVGraph;
     // Mapping with layout engine
     GVNodeItemMap mGVNodeItemMap;
     GVEdgeItemMap mGVEdgeItemMap;
     // Supports filtering functionality
-    GraphView< gl::DirectedGraph > mGraphView;
+    GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;
     bool mFiltered;
 

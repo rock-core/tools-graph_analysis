@@ -181,6 +181,11 @@ public:
      */
     virtual bool apply(FilterObject o) const { return false; }
 
+    /**
+     * Return Null Filter
+     */
+    static Ptr Null() { return Ptr(); }
+
 protected:
     FilterList mFilters;
 };

@@ -1,97 +1,26 @@
-#include "Graph.hpp"
+#include "DirectedGraph.hpp"
+#include <base/Logging.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
 
 namespace graph_analysis {
 namespace lemon {
 
-BaseGraph::Ptr DirectedGraph::copy()
-{
-    return boost::shared_ptr<BaseGraph>(new DirectedGraph(*this));
-}
-
-BaseGraph::Ptr DirectedGraph::cleanCopy()
-{
-    return boost::shared_ptr<BaseGraph>(new DirectedGraph());
-}
-
-DirectedSubGraph::DirectedSubGraph(DirectedGraph& graph)
-    : SubGraphImpl(&graph, new vertex_filter_t(graph.raw()), new edge_filter_t(graph.raw()))
-    , mGraph(graph)
-{
-    // graph_t refers to the given subgraph
-    // needs to be explicetly set
-    setSubgraph( new graph_t(graph.raw(), getVertexFilter(), getEdgeFilter()) );
-}
-
-void DirectedSubGraph::enable(Vertex::Ptr vertex)
-{
-    GraphElementId graphElementId = vertex->getId( mGraph.getId() );
-    ::lemon::ListDigraph::Node n = mGraph.raw().nodeFromId( graphElementId );
-
-    raw().enable(n);
-}
-
-void DirectedSubGraph::disable(Vertex::Ptr vertex)
-{
-    GraphElementId graphElementId = vertex->getId( mGraph.getId() );
-    ::lemon::ListDigraph::Node node = mGraph.raw().nodeFromId( graphElementId );
-    raw().disable(node);
-
-    EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator(vertex);
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-        disable(edge);
-    }
-}
-
-
-void DirectedSubGraph::enable(Edge::Ptr edge)
-{
-    GraphElementId graphElementId = edge->getId( mGraph.getId() );
-    ::lemon::ListDigraph::Arc arc = mGraph.raw().arcFromId( graphElementId );
-
-    raw().enable(arc);
-}
-
-void DirectedSubGraph::disable(Edge::Ptr edge)
-{
-    GraphElementId graphElementId = edge->getId( mGraph.getId() );
-    ::lemon::ListDigraph::Arc arc = mGraph.raw().arcFromId( graphElementId );
-
-    raw().disable(arc);
-}
-
-bool DirectedSubGraph::enabled(Vertex::Ptr vertex) const
-{
-    GraphElementId graphElementId = vertex->getId( mGraph.getId() );
-    ::lemon::ListDigraph::Node n = mGraph.raw().nodeFromId( graphElementId );
-    bool status = raw().status(n);
-    LOG_DEBUG_S << "Vertex " << vertex->toString() << " has status : " << status;
-    return status;
-}
-
-bool DirectedSubGraph::enabled(Edge::Ptr edge) const
-{
-    GraphElementId graphElementId = edge->getId( mGraph.getId() );
-    ::lemon::ListDigraph::Arc arc = mGraph.raw().arcFromId( graphElementId );
-    return raw().status(arc);
-}
-
-
 DirectedGraph::DirectedGraph()
-    : TypedGraph()
+    : TypedGraph(LEMON_DIRECTED_GRAPH)
     , mEdgeMap(raw())
     , mVertexMap(raw())
 {}
 
 DirectedGraph::DirectedGraph(const DirectedGraph& other)
-    : TypedGraph()
+    : TypedGraph(LEMON_DIRECTED_GRAPH)
     , mEdgeMap(raw())
     , mVertexMap(raw())
 {
     *this = other;
 }
+
+DirectedGraph::~DirectedGraph()
+{}
 
 GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
 {
@@ -116,6 +45,26 @@ GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sou
     mEdgeMap[arc] = edge;
 
     return arcId;
+}
+
+DirectedGraph::graph_t::Node DirectedGraph::getNode(Vertex::Ptr vertex) const
+{
+    return mGraph.nodeFromId(vertex->getId(this->getId()));
+}
+
+DirectedGraph::graph_t::Arc DirectedGraph::getArc(Edge::Ptr edge) const
+{
+    return mGraph.arcFromId(edge->getId(this->getId()));
+}
+
+Vertex::Ptr DirectedGraph::getVertex(DirectedGraph::graph_t::Node node) const
+{
+    return getVertex( mGraph.id(node) );
+}
+
+Edge::Ptr DirectedGraph::getEdge(DirectedGraph::graph_t::Arc arc) const
+{
+    return getEdge( mGraph.id(arc) );
 }
 
 Vertex::Ptr DirectedGraph::getVertex(GraphElementId id) const
@@ -257,9 +206,9 @@ EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex)
     return EdgeIterator::Ptr(it);
 }
 
-SubGraph::Ptr DirectedGraph::identifyConnectedComponents()
+SubGraph::Ptr DirectedGraph::identifyConnectedComponents(BaseGraph::Ptr baseGraph)
 {
-    SubGraph::Ptr subgraph = getSubGraph();
+    SubGraph::Ptr subgraph = createSubGraph(baseGraph);
 
     ::lemon::Undirector<DirectedGraph::graph_t> undirected(raw());
     // Identify the components
@@ -317,16 +266,30 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents()
     return subgraph;
 }
 
-SubGraph::Ptr DirectedGraph::getSubGraph()
+SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph)
 {
-    SubGraph::Ptr subgraph(new subgraph_t(*this));
+    DirectedGraph::Ptr directedGraph = boost::dynamic_pointer_cast<DirectedGraph>(baseGraph);
+    if(!directedGraph)
+    {
+        throw std::invalid_argument("graph_analysis::lemon::DirectedGraph::createSubGraph: base graph could not be cast to DirectedGraph");
+    }
 
+    SubGraph::Ptr subgraph(new DirectedSubGraph(directedGraph));
     // Enable all nodes and edges by default
     Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::PermitAll< Vertex::Ptr >() );
     Filter< Edge::Ptr >::Ptr edgeFilter(new filters::PermitAll< Edge::Ptr >() );
-
     subgraph->applyFilters(vertexFilter, edgeFilter);
+
     return subgraph;
+}
+BaseGraph::Ptr DirectedGraph::copy()
+{
+    return boost::shared_ptr<BaseGraph>(new DirectedGraph(*this));
+}
+
+BaseGraph::Ptr DirectedGraph::cleanCopy()
+{
+    return boost::shared_ptr<BaseGraph>(new DirectedGraph());
 }
 
 } // end namespace lemon

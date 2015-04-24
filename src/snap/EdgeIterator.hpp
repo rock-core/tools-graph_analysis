@@ -12,15 +12,20 @@ class EdgeIterator : public graph_analysis::EdgeIterator
 public:
     EdgeIterator(T& graph)
         : mGraph(graph)
-        , mEdgeIt(graph.raw()->BegEI())
+        , mEdgeIt(graph.raw().BegEI())
     {}
 
     bool next()
     {
-        if( mEdgeIt != mGraph.raw()->EndEI() )
+        while( mEdgeIt != mGraph.raw().EndEI() )
         {
-            setNext( mGraph.mEdgeMap[mEdgeIt.GetId()] );
+            Edge::Ptr edge = mGraph.getEdge(mEdgeIt.GetId());
             mEdgeIt++;
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             return true;
         }
         return false;
@@ -28,7 +33,7 @@ public:
 
 protected:
     T& mGraph;
-    typename TNEGraph::TEdgeI mEdgeIt;
+    typename T::graph_t::TEdgeI mEdgeIt;
 
 };
 
@@ -36,7 +41,7 @@ template<typename T>
 class OutEdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    OutEdgeIterator(T& graph, TNEGraph::TNodeI nodeIterator)
+    OutEdgeIterator(T& graph, typename T::graph_t::TNodeI nodeIterator)
         : mGraph(graph)
         , mCurrentIndex(0)
         , mNodeIt(nodeIterator)
@@ -44,11 +49,16 @@ public:
 
     bool next()
     {
-        if( mCurrentIndex != mNodeIt.GetOutDeg())
+        while( mCurrentIndex != mNodeIt.GetOutDeg())
         {
-            TNEGraph::TEdgeI edgeIt = mGraph.raw()->GetEI(mNodeIt.GetId(), mNodeIt.GetOutNId(mCurrentIndex));
-            setNext( mGraph.mEdgeMap[ edgeIt.GetId() ] );
+            typename T::graph_t::TEdgeI edgeIt = mGraph.raw().GetEI(mNodeIt.GetId(), mNodeIt.GetOutNId(mCurrentIndex));
+            Edge::Ptr edge = mGraph.getEdge(edgeIt.GetId());
             ++mCurrentIndex;
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext(edge);
             return true;
         }
         return false;
@@ -57,14 +67,14 @@ public:
 protected:
     T& mGraph;
     int mCurrentIndex;
-    typename TNEGraph::TNodeI mNodeIt;
+    typename T::graph_t::TNodeI mNodeIt;
 };
 
 template<typename T>
 class InEdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    InEdgeIterator(T& graph, TNEGraph::TNodeI nodeIterator)
+    InEdgeIterator(T& graph, typename T::graph_t::TNodeI nodeIterator)
         : mGraph(graph)
         , mCurrentIndex(0)
         , mNodeIt(nodeIterator)
@@ -72,11 +82,16 @@ public:
 
     bool next()
     {
-        if( mCurrentIndex != mNodeIt.GetInDeg())
+        while( mCurrentIndex != mNodeIt.GetInDeg())
         {
-            TNEGraph::TEdgeI edgeIt = mGraph.raw()->GetEI(mNodeIt.GetId(), mNodeIt.GetInNId(mCurrentIndex));
-            setNext( mGraph.mEdgeMap[edgeIt.GetId()] );
+            typename T::graph_t::TEdgeI edgeIt = mGraph.raw().GetEI(mNodeIt.GetId(), mNodeIt.GetInNId(mCurrentIndex));
+            Edge::Ptr edge = mGraph.getEdge(edgeIt.GetId());
             ++mCurrentIndex;
+            if(skip(edge))
+            {
+                continue;
+            }
+            setNext( edge );
             return true;
         }
         return false;
@@ -85,7 +100,7 @@ public:
 protected:
     T& mGraph;
     int mCurrentIndex;
-    typename TNEGraph::TNodeI mNodeIt;
+    typename T::graph_t::TNodeI mNodeIt;
 };
 } // end namespace snap
 } // end namespace graph_analysis

@@ -20,6 +20,8 @@ public:
     typedef boost::shared_ptr<EdgeIterator> Ptr;
     typedef boost::function1<bool, Edge::Ptr> SkipFunction;
 
+    virtual ~EdgeIterator() {}
+
     /**
      * \brief Test if there is a next item and if it is then updates
      * the current to next
@@ -59,6 +61,8 @@ private:
 class EdgeIterable
 {
 public:
+    virtual ~EdgeIterable() {}
+
     /**
      * Get the node iterator
      */

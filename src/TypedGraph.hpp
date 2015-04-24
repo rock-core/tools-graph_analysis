@@ -1,15 +1,19 @@
 #ifndef GRAPH_ANALYSIS_TYPED_GRAPH_HPP
 #define GRAPH_ANALYSIS_TYPED_GRAPH_HPP
 
+#include <graph_analysis/BaseGraph.hpp>
+
 namespace graph_analysis {
 
 template<typename T>
 class TypedGraph : public BaseGraph
 {
 public:
-    TypedGraph()
-        : mGraph()
+    TypedGraph(ImplementationType type)
+        : BaseGraph(type)
     {}
+
+    virtual ~TypedGraph() {};
 
     typedef T graph_t;
 

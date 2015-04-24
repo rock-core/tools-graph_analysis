@@ -62,8 +62,8 @@
 
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-
 #define DEFAULT_SCALING_FACTOR 1.4
+
 using namespace graph_analysis;
 
 namespace graph_analysis {
@@ -71,7 +71,7 @@ namespace gui {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mpGraph(0)
+    , mpGraph()
     , mpGVGraph(0)
     , mFiltered(false)
     , mTimerId(0)
@@ -280,8 +280,7 @@ void GraphWidget::reset(bool keepData)
 
     if(!keepData)
     {
-        if(mpGraph)delete mpGraph;
-        mpGraph = new gl::DirectedGraph();
+        mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     }
 }
 
@@ -309,17 +308,16 @@ void GraphWidget::refresh()
 
 void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
-    LOG_DEBUG("Enabling a vertex of filtering value: %d", mpSubGraph->enabled(vertex));
+    LOG_DEBUG_S << "Enabling a vertex of filtering value: " << mpSubGraph->enabled(vertex);
     mpSubGraph->enable(vertex);
-    LOG_DEBUG("Enabled the vertex; NOW of filtering value: %d", mpSubGraph->enabled(vertex));
+    LOG_DEBUG_S << "Enabled the vertex; NOW of filtering value: " << mpSubGraph->enabled(vertex);
 }
 void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 {
-    LOG_DEBUG("Enabling an edge of filtering value: %d", mpSubGraph->enabled(edge));
+    LOG_DEBUG_S << "Enabling an edge of filtering value: " << mpSubGraph->enabled(edge);
     mpSubGraph->enable(edge);
-    LOG_DEBUG("Enabled the edge; NOW of filtering value: %d", mpSubGraph->enabled(edge));
+    LOG_DEBUG_S << "Enabled the edge; NOW of filtering value: " << mpSubGraph->enabled(edge);
 }
-
 
 void GraphWidget::updateFromGraph()
 {
@@ -331,7 +329,7 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
-            LOG_DEBUG("Filtered out a vertex of filtering value: %d", mpSubGraph->enabled(vertex));
+            LOG_DEBUG_S << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex);
             continue;
         }
 
@@ -357,7 +355,7 @@ void GraphWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(edge))
         {
-            LOG_DEBUG("Filtered out an edge of filtering value: %d", mpSubGraph->enabled(edge));
+            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
             continue;
         }
 
@@ -567,7 +565,7 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
     mGraphView.setVertexFilter(mpVertexFilter);
     if(!mFiltered)
     {
-        mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+        mpSubGraph = mGraphView.apply(mpGraph);
         mFiltered = true;
     }
 }
@@ -583,7 +581,7 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
     mGraphView.setEdgeFilter(mpEdgeFilter);
     if(!mFiltered)
     {
-        mpSubGraph = mGraphView.apply(*dynamic_cast<gl::DirectedGraph*>(mpGraph));
+        mpSubGraph = mGraphView.apply(mpGraph);
         mFiltered = true;
     }
 }

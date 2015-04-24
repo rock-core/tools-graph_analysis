@@ -112,17 +112,21 @@ void GVGraph::removeNode(const QString& name)
 {
     if(mNodes.contains(name))
     {
-        agdelete(mpGraph, mNodes[name]);
-        mNodes.remove(name);
-
-        QList<QPair<QString, QString> >keys=mEdges.keys();
+        QList<QPair<QString, QString> > keys = mEdges.keys();
         for(int i=0; i<keys.size(); ++i)
         {
-            if(keys.at(i).first==name || keys.at(i).second==name)
+            QString sourceNodeName = keys.at(i).first;
+            QString targetNodeName = keys.at(i).second;
+
+            if( sourceNodeName == name || targetNodeName == name)
             {
                 removeEdge(keys.at(i));
             }
         }
+
+        agdelnode(mpGraph, mNodes[name]);
+        mNodes.remove(name);
+
     }
 }
 
@@ -167,7 +171,7 @@ void GVGraph::removeEdge(const QPair<QString, QString>& key)
 {
     if(mEdges.contains(key))
     {
-        agdelete(mpGraph, mEdges[key]);
+        agdeledge(mpGraph, mEdges[key]);
         mEdges.remove(key);
     }
 }

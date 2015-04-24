@@ -9,7 +9,6 @@ namespace graph_analysis
 typedef typename Filter<Vertex::Ptr>::Ptr VertexFilterType;
 typedef typename Filter<Edge::Ptr>::Ptr EdgeFilterType;
 
-template<typename GraphType>
 class GraphView
 {
 public:
@@ -45,9 +44,13 @@ public:
      * to chain an edgefilter which is applied first, and a vertex filter that follows
      * so that filters activate certain type of edges and nodes
      */
-    SubGraph::Ptr apply(GraphType& graph)
+    SubGraph::Ptr apply(BaseGraph::Ptr graph)
     {
-        return graph.applyFilters(mVertexFilter, mEdgeFilter);
+        if(!graph)
+        {
+            throw std::invalid_argument("graph_analysis::GraphView::apply cannot apply view to NULL pointer");
+        }
+        return BaseGraph::applyFilters(graph, mVertexFilter, mEdgeFilter);
     }
 
 private:
