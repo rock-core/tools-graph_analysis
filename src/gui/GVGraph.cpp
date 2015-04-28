@@ -7,6 +7,23 @@ namespace gui {
 /*! Dot uses a 72 DPI value for converting it's position coordinates from points to pixels
     while we display at 96 DPI on most operating systems. */
 const qreal GVGraph::DotDefaultDPI=72.0;
+std::set<std::string> GVGraph::msRegisteredLayouts;
+
+void GVGraph::registerLayouts()
+{
+    //Registering "circo", "dot", "fdp", "neato", "nop", "nop1", "nop2", "osage", "patchwork", "sfdp", "twopi"
+    GVGraph::msRegisteredLayouts.insert("circo");
+    GVGraph::msRegisteredLayouts.insert("dot");
+    GVGraph::msRegisteredLayouts.insert("fdp");
+    GVGraph::msRegisteredLayouts.insert("neato");
+    GVGraph::msRegisteredLayouts.insert("nop");
+    GVGraph::msRegisteredLayouts.insert("nop1");
+    GVGraph::msRegisteredLayouts.insert("nop2");
+    GVGraph::msRegisteredLayouts.insert("osage");
+    GVGraph::msRegisteredLayouts.insert("patchwork");
+    GVGraph::msRegisteredLayouts.insert("sfdp");
+    GVGraph::msRegisteredLayouts.insert("twopi");
+}
 
 GVGraph::GVGraph(QString name, QFont font, double node_size)
     : mpContext(gvContext())
@@ -41,6 +58,10 @@ GVGraph::GVGraph(QString name, QFont font, double node_size)
     setNodeAttribute("width", nodePtsWidth.replace('.', ",").toStdString());
 
     setFont(font);
+    if(GVGraph::msRegisteredLayouts.empty())
+    {
+        GVGraph::registerLayouts();
+    }
 }
 
 GVGraph::~GVGraph()

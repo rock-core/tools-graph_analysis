@@ -123,6 +123,7 @@ public slots:
     void changeSelectedVertexLabel();
     void startNewEdgeHere();
     void endNewEdgeHere();
+    void changeLayout();
 
 protected:
     void keyPressEvent(QKeyEvent *event);

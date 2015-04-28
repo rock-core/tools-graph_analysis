@@ -45,11 +45,13 @@
 #include "EdgeTypeManager.hpp"
 
 #include <math.h>
+#include <sstream>
 #include <QDir>
 #include <QTime>
 #include <QMenu>
 #include <QAction>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QApplication>
 #include <QInputDialog>
 #include <QSignalMapper>
@@ -171,7 +173,45 @@ void GraphWidget::showContextMenu(const QPoint &pos)
         connect(&actionShuffle, SIGNAL(triggered()), this, SLOT(shuffle()));
         contextMenu.addAction(&actionShuffle);
 //    }
+//    {
+        QAction actionLayout("Change Layout", this);
+        connect(&actionLayout, SIGNAL(triggered()), this, SLOT(changeLayout()));
+        contextMenu.addAction(&actionLayout);
+//    }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::changeLayout()
+{
+    bool ok;
+    QString layout = QInputDialog::getText(this, tr("Input New Layout"),
+                                         tr("Layout [circo, dot, fdp, neato, osage, sfdp, twopi]:"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+    if (ok && !layout.isEmpty())
+    {
+        std::string desiredLayout = layout.toStdString();
+        std::set<std::string> layouts = GVGraph::getRegisteredLayouts();
+        if(layouts.end() == layouts.find(desiredLayout))
+        {
+            QMessageBox::StandardButton reply;
+            /*
+            Error: Layout type: "two" not recognized. Use one of: circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
+             */
+            std::stringstream errorMessage;
+            errorMessage << "Error: Layout type: \"" << desiredLayout << "\" not recognized. Use one of: ";
+            std::set<std::string>::iterator it = layouts.begin();
+            for(; layouts.end() != it; ++it)
+            {
+                errorMessage << *it << ' ';
+            }
+            reply = QMessageBox::critical(this, QString("Layouting Error"), QString(errorMessage.str().c_str()));
+        }
+        else
+        {
+            reset(true /*keepData*/);
+            setLayout(QString(desiredLayout.c_str()));
+        }
+    }
 }
 
 void GraphWidget::startNewEdgeHere()
