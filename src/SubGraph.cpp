@@ -63,7 +63,7 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
 
 BaseGraph::Ptr SubGraph::toBaseGraph()
 {
-    BaseGraph::Ptr graph = mpBaseGraph->cleanCopy();
+    BaseGraph::Ptr graph = mpBaseGraph->newInstance();
 
     VertexIterator::Ptr vertexIterator = mpBaseGraph->getVertexIterator();
 
@@ -88,7 +88,7 @@ BaseGraph::Ptr SubGraph::toBaseGraph()
     return graph;
 }
 
-BaseGraph::Ptr SubGraph::getBaseGraph()
+BaseGraph::Ptr SubGraph::getBaseGraph() const
 {
     return mpBaseGraph;
 }
@@ -117,7 +117,7 @@ void SubGraph::disableAllEdges()
     applyFilters(Filter<Vertex::Ptr>::Null(), edgeFilter);
 }
 
-VertexIterator::Ptr SubGraph::getVertexIterator()
+VertexIterator::Ptr SubGraph::getVertexIterator() const
 {
     VertexIterator::Ptr vertexIt = getBaseGraph()->getVertexIterator();
     // Need to explicitely cast skip function to disambiguate (
@@ -128,7 +128,7 @@ VertexIterator::Ptr SubGraph::getVertexIterator()
 }
 
 
-EdgeIterator::Ptr SubGraph::getEdgeIterator()
+EdgeIterator::Ptr SubGraph::getEdgeIterator() const
 {
     EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator();
     // Need to explicitely cast skip function to disambiguate (
@@ -138,7 +138,7 @@ EdgeIterator::Ptr SubGraph::getEdgeIterator()
     return edgeIt;
 }
 
-EdgeIterator::Ptr SubGraph::getEdgeIterator(Vertex::Ptr vertex)
+EdgeIterator::Ptr SubGraph::getEdgeIterator(Vertex::Ptr vertex) const
 {
     if(disabled(vertex))
     {

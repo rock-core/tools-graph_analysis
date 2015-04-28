@@ -13,12 +13,12 @@ public:
     /**
      * Get the node iterator
      */
-    virtual EdgeIterator::Ptr getEdgeIterator() { throw std::runtime_error("EdgeIterable::getEdgeIterator not implemented"); }
+    virtual EdgeIterator::Ptr getEdgeIterator() const { throw std::runtime_error("EdgeIterable::getEdgeIterator not implemented"); }
 
     /**
      * Get edge count
      */
-    virtual uint64_t getEdgeCount();
+    virtual uint64_t getEdgeCount() const;
 };
 
 } // end namespace graph_analysis

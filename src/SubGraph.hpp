@@ -108,22 +108,22 @@ public:
      * Get the iterator over all vertices in this subgraph
      * \return the egde iterator
      */
-    virtual VertexIterator::Ptr getVertexIterator();
+    virtual VertexIterator::Ptr getVertexIterator() const;
 
     /**
      * Get iterator over all edge in this subgraph
      * \return the edge iterator
      */
-    virtual EdgeIterator::Ptr getEdgeIterator();
+    virtual EdgeIterator::Ptr getEdgeIterator() const;
 
     /**
      * Get iterator over all edges that are starting a vertex
      * \return the edge iterator
      */
-    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
 
 protected:
-    boost::shared_ptr<BaseGraph> getBaseGraph();
+    boost::shared_ptr<BaseGraph> getBaseGraph() const;
 };
 
 } // end namespace graph_analysis

@@ -209,7 +209,7 @@ double CorrelationClustering::volume(Ball ball)
 Ball CorrelationClustering::createBall(Vertex::Ptr vertex, double radius)
 {
     Ball ball;
-    ball.graph = mpGraph->cleanCopy();
+    ball.graph = mpGraph->newInstance();
     ball.radius = radius;
 
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(vertex);
@@ -309,7 +309,7 @@ void CorrelationClustering::round()
             Vertex::Ptr vertex = vit->current();
             // 2. Set radius to 0 and initialize the ball
             Ball ball;
-            ball.graph = graph->cleanCopy();
+            ball.graph = graph->newInstance();
             ball.graph->addVertex(vertex);
             ball.radius = 0;
 

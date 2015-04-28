@@ -116,7 +116,7 @@ public:
      * \brief Get edge by given vertices
      * \return List of edges that start a source and end at target
      */
-    virtual std::vector<Edge::Ptr> getEdges(Vertex::Ptr source, Vertex::Ptr target);
+    virtual std::vector<Edge::Ptr> getEdges(Vertex::Ptr source, Vertex::Ptr target) const;
 
     /**
      * \brief Get edges by given vertices and return only edges of a given type
@@ -125,7 +125,7 @@ public:
      * If boost::dynamic_pointer_cast returns null pointer, object is not added
      */
     template<typename T>
-    std::vector< boost::shared_ptr<T> > getEdges(Vertex::Ptr source, Vertex::Ptr target)
+    std::vector< boost::shared_ptr<T> > getEdges(Vertex::Ptr source, Vertex::Ptr target) const
     {
         std::vector< boost::shared_ptr<T> > edges;
         EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
@@ -150,44 +150,46 @@ public:
      * Create a copy of this graph
      * \return pointer to the copy of this graph
      */
-    virtual BaseGraph::Ptr copy() { throw std::runtime_error("BaseGraph::copy: not implemented"); }
+    virtual BaseGraph::Ptr copy() const { throw std::runtime_error("BaseGraph::copy: not implemented"); }
+
+    BaseGraph::Ptr clone() const;
 
     /**
      * Allow to create an instance of the same type of graph
      */
-    virtual BaseGraph::Ptr cleanCopy() { throw std::runtime_error("BaseGraph::createInstance: not implemented"); }
+    virtual BaseGraph::Ptr newInstance() const { throw std::runtime_error("BaseGraph::newInstance: not implemented"); }
 
     /**
      * Get the iterator over all vertices in this graph
      * \return the vertex iterator
      */
-    virtual VertexIterator::Ptr getVertexIterator() { throw std::runtime_error("graph_analysis::BaseGraph::getVertexIterator has not been implemented"); }
+    virtual VertexIterator::Ptr getVertexIterator() const { throw std::runtime_error("graph_analysis::BaseGraph::getVertexIterator has not been implemented"); }
 
     /**
      * Get iterator over all edges in this graph
      * \return the edge iterator
      */
-    virtual EdgeIterator::Ptr getEdgeIterator() { throw std::runtime_error("graph_analysis::BaseGraph::getEdgeIterator has not been implemented"); }
+    virtual EdgeIterator::Ptr getEdgeIterator() const { throw std::runtime_error("graph_analysis::BaseGraph::getEdgeIterator has not been implemented"); }
 
     /**
      * Retrieve all vertices
      * This default implementation uses the iterator, thus requires O(|vertices|)
      * \return all vertices in the graph
      */
-    virtual std::vector<Vertex::Ptr> getAllVertices();
+    virtual std::vector<Vertex::Ptr> getAllVertices() const;
 
     /**
      * Retrieve all edges
      * The default implementation uses the iterator, thus requires O(|edges|)
      * \return all edges in the graph
      */
-    virtual std::vector<Edge::Ptr> getAllEdges();
+    virtual std::vector<Edge::Ptr> getAllEdges() const;
 
     /**
      * Get iterator over all edges (in/out) from the given vertex
      * \return EdgeIterator over all edges of this vertex
      */
-    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) { throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
+    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const { throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
 
     /**
      * Apply filters to base graph
@@ -212,7 +214,7 @@ protected:
      * Create subgraph of the given baseGraph
      * \param baseGraph BaseGraph that this subgraph is related to
      */
-    virtual SubGraph::Ptr createSubGraph(Ptr baseGraph) { throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
+    virtual SubGraph::Ptr createSubGraph(Ptr baseGraph) const { throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
 
 private:
     GraphId mId;

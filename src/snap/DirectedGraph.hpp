@@ -64,7 +64,9 @@ public:
 
     DirectedGraph(const DirectedGraph& other);
 
-    BaseGraph::Ptr copy();
+    BaseGraph::Ptr copy() const;
+
+    BaseGraph::Ptr newInstance() const;
 
     /**
      * \brief Add a vertex
@@ -106,20 +108,20 @@ public:
     /**
      * Get the vertex iterator for this implementation
      */
-    VertexIterator::Ptr getVertexIterator();
+    VertexIterator::Ptr getVertexIterator() const;
 
     /**
      * Get the edge iterator for this implementation
      */
-    graph_analysis::EdgeIterator::Ptr getEdgeIterator();
+    graph_analysis::EdgeIterator::Ptr getEdgeIterator() const;
 
-    graph_analysis::EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+    graph_analysis::EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
 
-    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
+    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const;
 
-    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
+    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const;
 
-    SubGraph::Ptr createSubGraph(BaseGraph::Ptr baseGraph);
+    SubGraph::Ptr createSubGraph(BaseGraph::Ptr baseGraph) const;
 };
 
 } // end namespace snap

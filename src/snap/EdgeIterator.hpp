@@ -10,7 +10,7 @@ template<typename T>
 class EdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    EdgeIterator(T& graph)
+    EdgeIterator(const T& graph)
         : mGraph(graph)
         , mEdgeIt(graph.raw().BegEI())
     {}
@@ -32,7 +32,7 @@ public:
     }
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     typename T::graph_t::TEdgeI mEdgeIt;
 
 };
@@ -41,7 +41,7 @@ template<typename T>
 class OutEdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    OutEdgeIterator(T& graph, Vertex::Ptr vertex)
+    OutEdgeIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mCurrentIndex(0)
         , mNodeIt(mGraph.raw().GetNI( mGraph.getVertexId(vertex)) )
@@ -65,7 +65,7 @@ public:
     }
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     int mCurrentIndex;
     typename T::graph_t::TNodeI mNodeIt;
 };
@@ -74,7 +74,7 @@ template<typename T>
 class InEdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    InEdgeIterator(T& graph, Vertex::Ptr vertex)
+    InEdgeIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mCurrentIndex(0)
         , mNodeIt(mGraph.raw().GetNI( mGraph.getVertexId(vertex)) )
@@ -98,7 +98,7 @@ public:
     }
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     int mCurrentIndex;
     typename T::graph_t::TNodeI mNodeIt;
 };
@@ -107,7 +107,7 @@ template<typename T>
 class InOutEdgeIterator : public graph_analysis::EdgeIterator
 {
 public:
-    InOutEdgeIterator(T& graph, Vertex::Ptr vertex)
+    InOutEdgeIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mInEdgeIterator(graph, vertex)
         , mOutEdgeIterator(graph, vertex)
@@ -132,7 +132,7 @@ public:
 
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     InEdgeIterator<T> mInEdgeIterator;
     OutEdgeIterator<T> mOutEdgeIterator;
 };

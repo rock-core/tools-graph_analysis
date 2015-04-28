@@ -11,12 +11,12 @@ namespace boost_graph {
 GraphElementId DirectedGraph::msNewVertexId = 0;
 GraphElementId DirectedGraph::msNewEdgeId = 0;
 
-BaseGraph::Ptr DirectedGraph::copy()
+BaseGraph::Ptr DirectedGraph::copy() const
 {
     return BaseGraph::Ptr(new DirectedGraph(*this));
 }
 
-BaseGraph::Ptr DirectedGraph::cleanCopy()
+BaseGraph::Ptr DirectedGraph::newInstance() const
 {
     return BaseGraph::Ptr(new DirectedGraph());
 }
@@ -117,22 +117,27 @@ void DirectedGraph::removeEdge(Edge::Ptr edge)
     boost::remove_edge(edgeDescriptor, mGraph);
 }
 
-VertexIterator::Ptr DirectedGraph::getVertexIterator()
+VertexIterator::Ptr DirectedGraph::getVertexIterator() const
 {
     NodeIterator<DirectedGraph>* it = new NodeIterator<DirectedGraph>(*this);
     return VertexIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getEdgeIterator()
+EdgeIterator::Ptr DirectedGraph::getEdgeIterator() const
 {
     ArcIterator<DirectedGraph>* it = new ArcIterator<DirectedGraph>(*this);
     return EdgeIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex)
+EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex) const
 {
     InOutArcIterator<DirectedGraph>* it = new InOutArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
+}
+
+SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph) const
+{
+    throw std::runtime_error("graph_analysis::boost_graph::DirectedGraph::createSubGraph not implemented");
 }
 
 } // end namespace boost_graph

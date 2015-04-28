@@ -2,7 +2,7 @@
 
 namespace graph_analysis {
 
-uint64_t EdgeIterable::getEdgeCount()
+uint64_t EdgeIterable::getEdgeCount() const
 {
     uint64_t count = 0;
     EdgeIterator::Ptr edgeIt = getEdgeIterator();

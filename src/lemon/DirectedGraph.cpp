@@ -176,31 +176,31 @@ void DirectedGraph::write(std::ostream& ostream) const
         run();
 }
 
-VertexIterator::Ptr DirectedGraph::getVertexIterator()
+VertexIterator::Ptr DirectedGraph::getVertexIterator() const
 {
     NodeIterator<DirectedGraph>* it = new NodeIterator<DirectedGraph>(*this);
     return VertexIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getEdgeIterator()
+EdgeIterator::Ptr DirectedGraph::getEdgeIterator() const
 {
     ArcIterator<DirectedGraph>* it = new ArcIterator<DirectedGraph>(*this);
     return EdgeIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex)
+EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex) const
 {
     InOutArcIterator<DirectedGraph>* it = new InOutArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex)
+EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex) const
 {
     OutArcIterator<DirectedGraph>* it = new OutArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex)
+EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex) const
 {
     InArcIterator<DirectedGraph>* it = new InArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
@@ -266,7 +266,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(BaseGraph::Ptr baseGrap
     return subgraph;
 }
 
-SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph)
+SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph) const
 {
     DirectedGraph::Ptr directedGraph = boost::dynamic_pointer_cast<DirectedGraph>(baseGraph);
     if(!directedGraph)
@@ -282,12 +282,13 @@ SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph)
 
     return subgraph;
 }
-BaseGraph::Ptr DirectedGraph::copy()
+
+BaseGraph::Ptr DirectedGraph::copy() const
 {
     return boost::shared_ptr<BaseGraph>(new DirectedGraph(*this));
 }
 
-BaseGraph::Ptr DirectedGraph::cleanCopy()
+BaseGraph::Ptr DirectedGraph::newInstance() const
 {
     return boost::shared_ptr<BaseGraph>(new DirectedGraph());
 }

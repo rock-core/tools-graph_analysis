@@ -44,8 +44,8 @@ public:
     DirectedGraph();
     virtual ~DirectedGraph();
 
-    BaseGraph::Ptr copy();
-    BaseGraph::Ptr cleanCopy();
+    BaseGraph::Ptr copy() const;
+    BaseGraph::Ptr newInstance() const;
 
     typedef std::map<GraphElementId, VertexDescriptor> VertexMap;
     typedef std::map<GraphElementId, EdgeDescriptor> EdgeMap;
@@ -75,17 +75,17 @@ public:
     /**
      * Get the vertex iterator for this implementation
      */
-    VertexIterator::Ptr getVertexIterator();
+    VertexIterator::Ptr getVertexIterator() const;
 
     /**
      * Get the edge iterator for this implementation
      */
-    EdgeIterator::Ptr getEdgeIterator();
+    EdgeIterator::Ptr getEdgeIterator() const;
 
     /**
      * Get EdgeIterator
      */
-    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
 
     //graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
     //graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
@@ -99,7 +99,7 @@ public:
      * Get the subgraph -- by default all vertices and edges of the
      * base graph are available (enabled)
      */
-    SubGraph::Ptr getSubGraph();
+    SubGraph::Ptr createSubGraph(BaseGraph::Ptr baseGraph) const;
 
 protected:
     // Property maps to store data associated with vertices and edges

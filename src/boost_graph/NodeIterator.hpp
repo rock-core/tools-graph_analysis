@@ -10,7 +10,7 @@ template<typename T>
 class NodeIterator : public VertexIterator
 {
 public:
-    NodeIterator(T& graph)
+    NodeIterator(const T& graph)
         : mGraph(graph)
     {
         boost::tie(mStart, mEnd) = boost::vertices(mGraph.raw());
@@ -34,7 +34,7 @@ public:
         return false;
     }
 private:
-    T& mGraph;
+    const T& mGraph;
 
     VertexIteratorImpl mCurrent;
     VertexIteratorImpl mStart;

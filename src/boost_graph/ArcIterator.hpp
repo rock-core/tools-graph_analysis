@@ -14,7 +14,7 @@ class ArcIterator : public EdgeIterator
     typedef typename boost::graph_traits< typename T::graph_t >::edge_descriptor EdgeDescriptor;
 
 public:
-    ArcIterator(T& graph)
+    ArcIterator(const T& graph)
         : mGraph(graph)
     {
         boost::tie(mStart, mEnd) = boost::edges(mGraph.raw());
@@ -43,7 +43,7 @@ private:
     EdgeIteratorImpl mStart;
     EdgeIteratorImpl mEnd;
 
-    T& mGraph;
+    const T& mGraph;
 };
 
 template<typename T>
@@ -54,11 +54,16 @@ class OutArcIterator : public EdgeIterator
     typedef typename boost::graph_traits< typename T::graph_t >::vertex_descriptor VertexDescriptor;
 
 public:
-    OutArcIterator(T& graph, Vertex::Ptr vertex)
+    OutArcIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
     {
         GraphElementId id = mGraph.getVertexId(vertex);
-        VertexDescriptor vertexDescriptor = mGraph.mVertexMap[id];
+        typename T::VertexMap::const_iterator cit = mGraph.mVertexMap.find(id);
+        if(cit == mGraph.mVertexMap.end())
+        {
+            throw std::invalid_argument("graph_analysis::boost_graph::OutArcIterator: '" + vertex->toString() + "' is not part of this graph");
+        }
+        VertexDescriptor vertexDescriptor = cit->second;
         boost::tie(mStart, mEnd) = boost::out_edges(vertexDescriptor, mGraph.raw());
         mCurrent = mStart;
     }
@@ -85,7 +90,7 @@ private:
     EdgeIteratorImpl mStart;
     EdgeIteratorImpl mEnd;
 
-    T& mGraph;
+    const T& mGraph;
 };
 
 template<typename T>
@@ -96,11 +101,16 @@ class InArcIterator : public EdgeIterator
     typedef typename boost::graph_traits< typename T::graph_t >::vertex_descriptor VertexDescriptor;
 
 public:
-    InArcIterator(T& graph, Vertex::Ptr vertex)
+    InArcIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
     {
         GraphElementId id = mGraph.getVertexId(vertex);
-        VertexDescriptor vertexDescriptor = mGraph.mVertexMap[id];
+        typename T::VertexMap::const_iterator cit = mGraph.mVertexMap.find(id);
+        if(cit == mGraph.mVertexMap.end())
+        {
+            throw std::invalid_argument("graph_analysis::boost_graph::InArcIterator: '" + vertex->toString() + "' is not part of this graph");
+        }
+        VertexDescriptor vertexDescriptor = cit->second;
         boost::tie(mStart, mEnd) = boost::in_edges(vertexDescriptor, mGraph.raw());
         mCurrent = mStart;
     }
@@ -127,14 +137,14 @@ private:
     EdgeIteratorImpl mStart;
     EdgeIteratorImpl mEnd;
 
-    T& mGraph;
+    const T& mGraph;
 };
 
 template<typename T>
 class InOutArcIterator : public EdgeIterator
 {
 public:
-    InOutArcIterator(T& graph, Vertex::Ptr vertex)
+    InOutArcIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mInArcIterator(graph, vertex)
         , mOutArcIterator(graph, vertex)
@@ -159,7 +169,7 @@ public:
 
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     InArcIterator<T> mInArcIterator;
     OutArcIterator<T> mOutArcIterator;
 };

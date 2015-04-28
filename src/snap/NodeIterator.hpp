@@ -10,7 +10,7 @@ template<typename T>
 class NodeIterator : public VertexIterator
 {
 public:
-    NodeIterator(T& graph)
+    NodeIterator(const T& graph)
         : mGraph(graph)
         , mNodeIt(graph.raw().BegNI())
     {}
@@ -32,7 +32,7 @@ public:
     }
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     typename T::graph_t::TNodeI mNodeIt;
 
 };

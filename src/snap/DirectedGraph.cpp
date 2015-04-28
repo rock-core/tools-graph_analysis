@@ -12,7 +12,7 @@ DirectedGraph::DirectedGraph()
 DirectedGraph::~DirectedGraph()
 {}
 
-BaseGraph::Ptr DirectedGraph::copy()
+BaseGraph::Ptr DirectedGraph::copy() const
 {
     // TODO: use snap internal copy
     BaseGraph::Ptr baseGraph(new DirectedGraph());
@@ -23,6 +23,11 @@ BaseGraph::Ptr DirectedGraph::copy()
         baseGraph->addEdge(edgeIt->current());
     }
     return baseGraph;
+}
+
+BaseGraph::Ptr DirectedGraph::newInstance() const
+{
+    return BaseGraph::Ptr(new DirectedGraph());
 }
 
 GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
@@ -91,7 +96,7 @@ Vertex::Ptr DirectedGraph::getTargetVertex(Edge::Ptr e) const
 /**
  * Get the vertex iterator for this implementation
  */
-VertexIterator::Ptr DirectedGraph::getVertexIterator()
+VertexIterator::Ptr DirectedGraph::getVertexIterator() const
 {
     NodeIterator<DirectedGraph>* it = new NodeIterator<DirectedGraph>(*this);
     return VertexIterator::Ptr(it);
@@ -100,31 +105,31 @@ VertexIterator::Ptr DirectedGraph::getVertexIterator()
 /**
  * Get the edge iterator for this implementation
  */
-graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator()
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator() const
 {
     EdgeIterator<DirectedGraph>* it = new EdgeIterator<DirectedGraph>(*this);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex)
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex) const
 {
     InOutEdgeIterator<DirectedGraph>* it = new InOutEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex)
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex) const
 {
     OutEdgeIterator<DirectedGraph>* it = new OutEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex)
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex) const
 {
     InEdgeIterator<DirectedGraph>* it = new InEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph)
+SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph) const
 {
     // Enable all nodes and edges
     BaseGraph::Ptr graphCopy = baseGraph->copy();

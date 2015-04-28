@@ -112,7 +112,7 @@ void BaseGraph::removeEdge(Edge::Ptr edge)
     edge->disassociate(getId());
 }
 
-std::vector<Edge::Ptr> BaseGraph::getEdges(Vertex::Ptr source, Vertex::Ptr target)
+std::vector<Edge::Ptr> BaseGraph::getEdges(Vertex::Ptr source, Vertex::Ptr target) const
 {
     std::vector<Edge::Ptr> edges;
     EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
@@ -129,7 +129,7 @@ std::vector<Edge::Ptr> BaseGraph::getEdges(Vertex::Ptr source, Vertex::Ptr targe
 }
 
 
-std::vector<Vertex::Ptr> BaseGraph::getAllVertices()
+std::vector<Vertex::Ptr> BaseGraph::getAllVertices() const
 {
     std::vector<Vertex::Ptr> vertices;
     VertexIterator::Ptr vertexIt = getVertexIterator();
@@ -140,7 +140,7 @@ std::vector<Vertex::Ptr> BaseGraph::getAllVertices()
     return vertices;
 }
 
-std::vector<Edge::Ptr> BaseGraph::getAllEdges()
+std::vector<Edge::Ptr> BaseGraph::getAllEdges() const
 {
     std::vector<Edge::Ptr> edges;
     EdgeIterator::Ptr edgeIt = getEdgeIterator();

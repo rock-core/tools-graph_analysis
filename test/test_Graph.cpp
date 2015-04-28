@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         BOOST_REQUIRE_MESSAGE( subgraphCount == 0, "Subgraph contains no nodes after applying DenyAll filter '" << subgraphCount << "' expected '0'" );
     }
     {
-        BaseGraph::Ptr baseGraph = graph.cleanCopy();
+        BaseGraph::Ptr baseGraph = graph.newInstance();
         baseGraph->addEdge(e0);
         baseGraph->addEdge(e1);
 
@@ -264,7 +264,7 @@ BOOST_AUTO_TEST_CASE(it_should_work_for_lemon)
         BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' vertices representing components, while base graph has '" << baseGraph->getVertexCount() << "' vertices overall" );
     }
     {
-        BaseGraph::Ptr baseGraph = graph.cleanCopy();
+        BaseGraph::Ptr baseGraph = graph.newInstance();
         baseGraph->addEdge(e0);
         baseGraph->addEdge(e1);
 

@@ -11,7 +11,7 @@ template<typename T>
 class ArcIterator : public EdgeIterator
 {
 public:
-    ArcIterator(T& graph)
+    ArcIterator(const T& graph)
         : mGraph(graph)
         , mArcIt(graph.raw())
     {}
@@ -33,7 +33,7 @@ public:
     }
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     typename T::graph_t::ArcIt mArcIt;
 
 };
@@ -42,7 +42,7 @@ template<typename T>
 class OutArcIterator : public EdgeIterator
 {
 public:
-    OutArcIterator(T& graph, Vertex::Ptr vertex)
+    OutArcIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mOutArcIt(graph.raw(), graph.raw().nodeFromId( vertex->getId(graph.getId())))
     {}
@@ -64,7 +64,7 @@ public:
     }
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     typename T::graph_t::OutArcIt mOutArcIt;
 
 };
@@ -74,7 +74,7 @@ template<typename T>
 class InArcIterator : public EdgeIterator
 {
 public:
-    InArcIterator(T& graph, Vertex::Ptr vertex)
+    InArcIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mInArcIt(graph.raw(), graph.raw().nodeFromId( vertex->getId(graph.getId())))
     {}
@@ -96,7 +96,7 @@ public:
     }
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     typename T::graph_t::InArcIt mInArcIt;
 
 };
@@ -106,7 +106,7 @@ template<typename T>
 class InOutArcIterator : public EdgeIterator
 {
 public:
-    InOutArcIterator(T& graph, Vertex::Ptr vertex)
+    InOutArcIterator(const T& graph, Vertex::Ptr vertex)
         : mGraph(graph)
         , mInArcIterator(graph, vertex)
         , mOutArcIterator(graph, vertex)
@@ -131,7 +131,7 @@ public:
 
 
 protected:
-    T& mGraph;
+    const T& mGraph;
     InArcIterator<T> mInArcIterator;
     OutArcIterator<T> mOutArcIterator;
 };

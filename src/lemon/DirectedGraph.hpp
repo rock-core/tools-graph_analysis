@@ -32,12 +32,12 @@ public:
     /**
      * Copy the graph
      */
-    BaseGraph::Ptr copy();
+    BaseGraph::Ptr copy() const;
 
     /**
-     * Copy the graph
+     * Create new instance of this graph
      */
-    BaseGraph::Ptr cleanCopy();
+    BaseGraph::Ptr newInstance() const;
 
     typedef graph_t::ArcMap< Edge::Ptr > EdgeMap;
     typedef graph_t::NodeMap< Vertex::Ptr > VertexMap;
@@ -111,17 +111,17 @@ public:
     /**
      * Get the vertex iterator for this implementation
      */
-    VertexIterator::Ptr getVertexIterator();
+    VertexIterator::Ptr getVertexIterator() const;
 
     /**
      * Get the edge iterator for this implementation
      */
-    EdgeIterator::Ptr getEdgeIterator();
+    EdgeIterator::Ptr getEdgeIterator() const;
 
-    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex);
+    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
 
-    EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
-    EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
+    EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const;
+    EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const;
 
     /**
      * Identifies the connected components
@@ -137,7 +137,7 @@ protected:
      * Get the subgraph -- by default all vertices and edges of the
      * base graph are available (enabled)
      */
-    SubGraph::Ptr createSubGraph(BaseGraph::Ptr graph);
+    SubGraph::Ptr createSubGraph(BaseGraph::Ptr graph) const;
 };
 
 } // end namespace lemon
