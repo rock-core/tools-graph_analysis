@@ -124,6 +124,7 @@ public slots:
     void startNewEdgeHere();
     void endNewEdgeHere();
     void changeLayout();
+    void removeSelectedVertex();
 
 protected:
     void keyPressEvent(QKeyEvent *event);

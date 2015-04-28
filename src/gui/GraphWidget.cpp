@@ -127,6 +127,19 @@ void GraphWidget::addNodeAdhoc(QObject *pos)
 //    update();
 }
 
+void GraphWidget::removeSelectedVertex()
+{
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(mpSelectedVertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        scene()->removeItem(mEdgeItemMap[edge]);
+        mpGraph->removeEdge(edge);
+    }
+    scene()->removeItem(mNodeItemMap[mpSelectedVertex]);
+    mpGraph->removeVertex(mpSelectedVertex);
+}
+
 void GraphWidget::showContextMenu(const QPoint &pos)
 {
     QPoint position = mapTo(this, pos);
@@ -137,6 +150,14 @@ void GraphWidget::showContextMenu(const QPoint &pos)
         if(mVertexSelected)
         {
             contextMenu.addAction(&actionChangeLabel);
+        }
+//    }
+//    {
+        QAction actionRemoveNode("Remove This Node", this);
+        connect(&actionRemoveNode, SIGNAL(triggered()), this, SLOT(removeSelectedVertex()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionRemoveNode);
         }
 //    }
 //    {
