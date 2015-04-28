@@ -46,6 +46,7 @@
 #include <QPainter>
 #include <math.h>
 #include <graph_analysis/Edge.hpp>
+#include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -59,12 +60,12 @@ public:
     EdgeItem() {}
     ~EdgeItem() {}
 
-    EdgeItem(NodeItem* sourceNode, NodeItem* destNode, graph_analysis::Edge::Ptr edge);
+    EdgeItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* destNode, graph_analysis::Edge::Ptr edge);
 
     NodeItem* sourceNodeItem() const;
     NodeItem* targetNodeItem() const;
 
-    virtual EdgeItem* createNewItem(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem is not reimplemented"); }
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem is not reimplemented"); }
 
     virtual void adjust();
 
@@ -74,12 +75,14 @@ public:
     int type() const { return Type; }
 
     void setPainterPath(QPainterPath painterPath) { mPainterPath = painterPath; }
+    virtual graphitem::edges::EdgeLabel* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
 
 protected:
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
     virtual QPainterPath shape() const;
 
+    GraphWidget* mpGraphWidget;
     NodeItem* mpSourceNodeItem;
     NodeItem* mpTargetNodeItem;
     graph_analysis::Edge::Ptr mpEdge;

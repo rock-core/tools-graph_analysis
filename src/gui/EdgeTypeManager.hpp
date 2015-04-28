@@ -38,7 +38,7 @@ public:
     // takes ownership of graphicsItem
     void registerVisualization(const edge::Type& type, EdgeItem* graphicsItem);
 
-    EdgeItem* createItem(NodeItem* sourceNode, NodeItem* destNode, graph_analysis::Edge::Ptr edge);
+    EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* destNode, graph_analysis::Edge::Ptr edge);
 };
 
 } // end namespace gui

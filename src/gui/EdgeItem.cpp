@@ -51,8 +51,9 @@ double graph_analysis::gui::EdgeItem::TwoPi = 2.0 * Pi;
 namespace graph_analysis {
 namespace gui {
 
-EdgeItem::EdgeItem(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
-    : mpSourceNodeItem(sourceNode)
+EdgeItem::EdgeItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
+    : mpGraphWidget(graphWidget)
+    , mpSourceNodeItem(sourceNode)
     , mpTargetNodeItem(targetNode)
     , mpEdge(edge)
     , mArrowSize(10)

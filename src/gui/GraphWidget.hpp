@@ -111,6 +111,12 @@ public:
     void setVertexSelected (bool selected) { mVertexSelected = selected; }
     bool getVertexSelected () { return mVertexSelected; }
 
+    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge= selectedEdge; }
+    graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
+
+    void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
+    bool getEdgeSelected () { return mEdgeSelected; }
+
 public slots:
     void shuffle();
     void zoomIn();
@@ -125,6 +131,8 @@ public slots:
     void endNewEdgeHere();
     void changeLayout();
     void removeSelectedVertex();
+    void changeSelectedEdgeLabel();
+    void removeSelectedEdge();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -163,10 +171,12 @@ private:
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
     graph_analysis::Vertex::Ptr mpSelectedVertex;
+    graph_analysis::Edge::Ptr mpSelectedEdge;
     graph_analysis::Vertex::Ptr mpStartVertex;
     graph_analysis::Vertex::Ptr mpEndVertex;
 
     bool mVertexSelected;
+    bool mEdgeSelected;
     bool mEdgeStartVertex;
     bool mEdgeEndVertex;
 };
