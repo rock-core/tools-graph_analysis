@@ -5,16 +5,20 @@ namespace graph_analysis {
 namespace io {
 
 GraphvizWriter::GraphvizWriter(const std::string &layout) : mLayout(layout)
-{
-    mpGVGraph = new graph_analysis::gui::GVGraph("GraphvizWriter");
-}
+{}
+
 GraphvizWriter::~GraphvizWriter()
+{}
+
+void GraphvizWriter::write(const std::string& filename, const BaseGraph& graph) const
 {
-    if(mpGVGraph)delete mpGVGraph;
-}
-void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
-{
-    VertexIterator::Ptr nodeIt = graph->getVertexIterator();
+    graph_analysis::gui::GVGraph gvGraph("GraphvizGraph");
+
+    typedef std::map<graph_analysis::Vertex::Ptr, graph_analysis::gui::NodeItem*> NodeItemMap;
+    // Allow mapping from graph vertexes to nodes in the scene
+    NodeItemMap nodeItemMap;
+
+    VertexIterator::Ptr nodeIt = graph.getVertexIterator();
     LOG_INFO("GraphvizWriter: Formatting Graphviz nodes");
     while(nodeIt->next())
     {
@@ -22,14 +26,14 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
         // Registering new node items
         graph_analysis::gui::NodeItem* nodeItem = new graph_analysis::gui::NodeItem();
         nodeItem->setVertex(vertex);
-        std::string uniqueLabel = vertex->toPrefixedString(graph->getId());
-        mpGVGraph->addNode(QString( uniqueLabel.c_str() ) );
-        mNodeItemMap[vertex] = nodeItem;
+        std::string uniqueLabel = vertex->toPrefixedString(graph.getId());
+        gvGraph.addNode(QString( uniqueLabel.c_str() ) );
+        nodeItemMap[vertex] = nodeItem;
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz nodes");
 
     LOG_INFO("GraphvizWriter: Formatting Graphviz edges");
-    EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
+    EdgeIterator::Ptr edgeIt = graph.getEdgeIterator();
 
     while(edgeIt->next())
     {
@@ -37,24 +41,24 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
         // Registering new node edge items
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
-        std::string uniqueSourceLabel = source->toPrefixedString(graph->getId());
-        std::string uniqueTargetLabel = target->toPrefixedString(graph->getId());
+        std::string uniqueSourceLabel = source->toPrefixedString(graph.getId());
+        std::string uniqueTargetLabel = target->toPrefixedString(graph.getId());
 
-        graph_analysis::gui::NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-        graph_analysis::gui::NodeItem* targetNodeItem = mNodeItemMap[ target ];
+        graph_analysis::gui::NodeItem* sourceNodeItem = nodeItemMap[ source ];
+        graph_analysis::gui::NodeItem* targetNodeItem = nodeItemMap[ target ];
 
         if(!sourceNodeItem || !targetNodeItem)
         {
             continue;
         }
-        mpGVGraph->addEdge(QString( uniqueSourceLabel.c_str()), QString( uniqueTargetLabel.c_str()));
+        gvGraph.addEdge(QString( uniqueSourceLabel.c_str()), QString( uniqueTargetLabel.c_str()));
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz edges");
 
     LOG_INFO("GraphvizWriter: Applying default layout such that GVGraph context is not empty");
-    mpGVGraph->applyLayout();
+    gvGraph.applyLayout();
     LOG_INFO("GraphvizWriter: rendering GVGraph to file \"%s\" by layout \"%s\"", filename.c_str(), mLayout.c_str());
-    mpGVGraph->renderToFile(filename, mLayout);
+    gvGraph.renderToFile(filename, mLayout);
     LOG_INFO("GraphvizWriter: done rendering GVGraph to file \"%s\"", filename.c_str());
 }
 

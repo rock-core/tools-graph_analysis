@@ -16,16 +16,11 @@ namespace io {
 
 class GraphvizWriter : public Writer
 {
-    
-    typedef std::map<graph_analysis::Vertex::Ptr, graph_analysis::gui::NodeItem*> NodeItemMap;
-    // Allow mapping from graph vertexes to nodes in the scene
-    NodeItemMap mNodeItemMap;
-    graph_analysis::gui::GVGraph* mpGVGraph;
     std::string mLayout;
 public:
     GraphvizWriter(const std::string &layout = "dot");
     ~GraphvizWriter();
-    void write(const std::string& filename, BaseGraph* graph);
+    void write(const std::string& filename, const BaseGraph& graph) const;
 };
 
 } // end namespace io

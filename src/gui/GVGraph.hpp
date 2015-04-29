@@ -83,8 +83,7 @@ public:
     /// Default DPI value used by dot (which uses points instead of pixels for coordinates)
     static const qreal DotDefaultDPI;
 
-    static void registerLayouts();
-    static std::set<std::string> getRegisteredLayouts() { return msRegisteredLayouts; }
+    static std::set<std::string> getSupportedLayouts() { return msSupportedLayouts; }
 
 
     /*!
@@ -172,7 +171,7 @@ private:
     /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
     bool mAppliedLayout;
-    static std::set<std::string> msRegisteredLayouts;
+    static std::set<std::string> msSupportedLayouts;
 };
 
 } // end namespace gui

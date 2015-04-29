@@ -5,13 +5,17 @@
 #include "io/GexfWriter.hpp"
 #include "io/GexfReader.hpp"
 
+#include "io/GraphvizWriter.hpp"
+
 namespace graph_analysis {
 namespace representation {
 
 std::map<Type, std::string> TypeTxt = boost::assign::map_list_of
     (UNKNOWN, "UNKNOWN")
     (GEXF, "GEXF")
-    (LEMON, "LEMON");
+    (LEMON, "LEMON")
+    (GRAPHVIZ, "GRAPHVIZ")
+    ;
 
 } // end namespace representation
 
@@ -19,10 +23,13 @@ namespace io {
 
 
 GraphIO::WriterMap GraphIO::msWriters = boost::assign::map_list_of
-    (representation::GEXF, Writer::Ptr( new GexfWriter()));
+    (representation::GEXF, Writer::Ptr( new GexfWriter()))
+    (representation::GRAPHVIZ, Writer::Ptr( new GraphvizWriter()))
+    ;
 
 GraphIO::ReaderMap GraphIO::msReaders = boost::assign::map_list_of
-    (representation::GEXF, Reader::Ptr( new GexfReader()));
+    (representation::GEXF, Reader::Ptr( new GexfReader()))
+    ;
 
 void GraphIO::write(const std::string& filename, const BaseGraph& graph, representation::Type format)
 {

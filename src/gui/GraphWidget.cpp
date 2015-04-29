@@ -263,7 +263,7 @@ void GraphWidget::changeLayout()
     if (ok && !layout.isEmpty())
     {
         std::string desiredLayout = layout.toStdString();
-        std::set<std::string> layouts = GVGraph::getRegisteredLayouts();
+        std::set<std::string> layouts = GVGraph::getSupportedLayouts();
         if(layouts.end() == layouts.find(desiredLayout))
         {
             QMessageBox::StandardButton reply;
