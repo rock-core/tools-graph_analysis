@@ -46,10 +46,21 @@
 
  class MyVertex : Vertex
  {
+ public:
+     MyVertex(const std::string& attr)
+         : mAttribute(attr)
+     {}
+
      std::string getClassName() const { return "MyVertex"; }
+     std::string toString() const { return getClassName() + " " + mAttribute; }
+ protected:
+     /// To allow for cloning of graphs using deep copy
+     Vertex* getClone() const { return new MyVertex(*this); }
+ private:
+     std::string mAttribute;
  };
 
- graph_analysis::lemon::DirectedGraph graph;
+ BaseGraph::Ptr graph = BaseGraph::getInstance(BaseGraph::LEMON_DIRECTED_GRAPH);
  Vertex::Ptr v0(new MyVertex());
  Vertex::Ptr v1(new MyVertex());
 
@@ -57,19 +68,19 @@
  e0->setSourceVertex(v0);
  e0->setTargetVertex(v1);
 
- graph.add(e0);
+ graph->add(e0);
 
- int vertexCount = graph.getVertexCount();
+ int vertexCount = graph->getVertexCount();
  int vertexCountInternal = ::lemon::countNodes(graph.raw());
 
- VertexIterator::Ptr vertexIt = graph.getVertexIterator();
+ VertexIterator::Ptr vertexIt = graph->getVertexIterator();
  while(vertexIt->next())
  {
     Vertex::Ptr vertex = vertexIt->current();
     printf("Vertex: %s\n", vertex->toString().c_str());
  }
 
- EdgeIterator::Ptr edgeIt = graph.getEdgeIterator();
+ EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
  while(edgeIt->next())
  {
     Edge::Ptr edge = edgeIt->current();

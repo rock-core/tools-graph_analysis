@@ -29,6 +29,9 @@ public:
 
     typedef boost::shared_ptr<BaseGraph> Ptr;
 
+    /**
+     * Default constructor for a graph
+     */
     BaseGraph(ImplementationType type);
 
     /**
@@ -36,11 +39,51 @@ public:
      */
     virtual ~BaseGraph() {}
 
+    /**
+     * Get a graph instance of the given implementation type
+     * \return Ptr to new instance
+     */
     static Ptr getInstance(ImplementationType type);
 
+    /**
+     * Create a copy of this graph
+     * The copy of the graph and this graph will still share the same set of
+     * edges and vertices.
+     * If you require complete separation consider calling clone
+     * \return pointer to the copy of this graph
+     */
+    virtual BaseGraph::Ptr copy() const { throw std::runtime_error("BaseGraph::copy: not implemented"); }
+
+    /**
+     * Clone the graph, i.e. provides a deep copy of this graph so that
+     * this graph and the clone do not share any references
+     */
+    BaseGraph::Ptr clone() const;
+
+    /**
+     * Allow to create an instance of the same type of graph
+     */
+    virtual BaseGraph::Ptr newInstance() const { throw std::runtime_error("BaseGraph::newInstance: not implemented"); }
+
+
+    /**
+     * Get the subgraph for a graph. 
+     * To support this feature implementation have to provide
+     * an implementation of BaseGraph::createSubGraph
+     * \see createSubGraph
+     */
     static SubGraph::Ptr getSubGraph(Ptr graph);
 
+    /**
+     * Get the implementation type of this graph object
+     * \return implementation type
+     */
     ImplementationType getImplementationType() const { return mImplementationType; }
+
+    /**
+     * Get the implementation type as string
+     * \return Stringified implementation type
+     */
     std::string getImplementationTypeName() const { return ImplementationTypeTxt[mImplementationType]; }
 
     /**
@@ -143,21 +186,9 @@ public:
 
     /**
      * Get the graph id
+     * \return id
      */
     GraphId getId() const { return mId; }
-
-    /**
-     * Create a copy of this graph
-     * \return pointer to the copy of this graph
-     */
-    virtual BaseGraph::Ptr copy() const { throw std::runtime_error("BaseGraph::copy: not implemented"); }
-
-    BaseGraph::Ptr clone() const;
-
-    /**
-     * Allow to create an instance of the same type of graph
-     */
-    virtual BaseGraph::Ptr newInstance() const { throw std::runtime_error("BaseGraph::newInstance: not implemented"); }
 
     /**
      * Get the iterator over all vertices in this graph

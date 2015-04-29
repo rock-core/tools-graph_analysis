@@ -9,6 +9,13 @@ Vertex::Vertex(const std::string& name)
     : mName(name)
 {}
 
+Vertex::Ptr Vertex::clone() const
+{
+    Vertex::Ptr vertex( getClone());
+    vertex->disassociateFromAll();
+    return vertex;
+}
+
 std::string Vertex::toString() const
 {
     if(!mName.empty())

@@ -41,6 +41,49 @@ BaseGraph::Ptr BaseGraph::getInstance(ImplementationType type)
    }
 }
 
+BaseGraph::Ptr BaseGraph::clone() const
+{
+    std::map<Vertex::Ptr, Vertex::Ptr> current2Clone;
+
+    BaseGraph::Ptr g_clone = this->newInstance();
+    VertexIterator::Ptr vertexIterator = getVertexIterator();
+    while(vertexIterator->next())
+    {
+        Vertex::Ptr v = vertexIterator->current();
+        Vertex::Ptr v_clone = v->clone();
+
+        g_clone->addVertex(v_clone);
+        current2Clone[v] = v_clone;
+    }
+
+    EdgeIterator::Ptr edgeIterator = getEdgeIterator();
+    while(edgeIterator->next())
+    {
+        Edge::Ptr e = edgeIterator->current();
+        Edge::Ptr e_clone = e->clone();
+        std::map<Vertex::Ptr, Vertex::Ptr>::const_iterator vit;
+
+        vit = current2Clone.find(e->getSourceVertex());
+        if(vit != current2Clone.end())
+        {
+            e_clone->setSourceVertex(vit->second);
+        } else {
+            throw std::runtime_error("graph_analysis::BaseGraph::clone: could not find mapped source vertex -- internal error");
+        }
+
+        vit = current2Clone.find(e->getTargetVertex());
+        if(vit != current2Clone.end())
+        {
+            e_clone->setTargetVertex(vit->second);
+        } else {
+            throw std::runtime_error("graph_analysis::BaseGraph::clone: could not find mapped target vertex -- internal error");
+        }
+        g_clone->addEdge(e_clone);
+    }
+
+    return g_clone;
+}
+
 SubGraph::Ptr BaseGraph::getSubGraph(Ptr graph)
 {
     return graph->createSubGraph(graph);

@@ -14,12 +14,19 @@ namespace graph_analysis {
 class Edge : public GraphElement
 {
 public:
+    typedef boost::shared_ptr< Edge > Ptr;
+
     Edge();
+
     Edge(Vertex::Ptr source, Vertex::Ptr target);
 
     virtual ~Edge() {}
 
-    typedef boost::shared_ptr< Edge > Ptr;
+    /**
+     * Clone this edge -- the returned edge will have no
+     * graph association
+     */
+    Edge::Ptr clone() const;
 
     // Get class name
     // \return class name
@@ -51,7 +58,6 @@ public:
      */
     void setTargetVertex(Vertex::Ptr target) { mTargetVertex = target; }
 
-
     /**
      * Get all involved vertices for two edges
      * \return all distinct vertices of two edges
@@ -64,7 +70,12 @@ public:
      */
     static bool areMeeting(Edge::Ptr e0, Edge::Ptr e1);
 
-private:
+protected:
+    /**
+     * Get instance of an edge
+     */
+    virtual Edge* getClone() const { return new Edge(*this); }
+
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
 };

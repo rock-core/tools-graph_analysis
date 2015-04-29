@@ -12,13 +12,13 @@ namespace graph_analysis {
 class WeightedEdge : public Edge
 {
 public:
+    typedef boost::shared_ptr< WeightedEdge > Ptr;
+
     WeightedEdge(double weight = 0.0);
 
     WeightedEdge(Vertex::Ptr source, Vertex::Ptr target, double weight = 0.0);
 
     virtual ~WeightedEdge() {}
-
-    typedef boost::shared_ptr< WeightedEdge > Ptr;
 
     // Get class name
     // \return class name
@@ -33,7 +33,9 @@ public:
 
     double getWeight() const { return mWeight; }
 
-private:
+protected:
+    virtual Edge* getClone() const { return new WeightedEdge(*this); }
+
     double mWeight;
 };
 

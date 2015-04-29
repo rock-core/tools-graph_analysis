@@ -42,6 +42,38 @@ BOOST_AUTO_TEST_CASE(add_remove_egdes_and_vertices)
     }
 }
 
+BOOST_AUTO_TEST_CASE(clone)
+{
+    for(int i = BaseGraph::BOOST_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)
+    {
+        BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
+        BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
+
+        Vertex::Ptr v0( new Vertex());
+        Vertex::Ptr v1( new Vertex());
+
+        Edge::Ptr e0(new Edge());
+        e0->setSourceVertex(v0);
+        e0->setTargetVertex(v1);
+
+        BOOST_REQUIRE_NO_THROW(graph->addEdge(e0));
+        BOOST_REQUIRE_THROW(graph->addVertex(v0), std::runtime_error);
+        BOOST_REQUIRE_THROW(graph->addVertex(v1), std::runtime_error);
+
+        BaseGraph::Ptr graph_clone = graph->clone();
+
+        BOOST_REQUIRE_MESSAGE(graph->getVertexCount() == graph_clone->getVertexCount(), "Graph and clone have same number of vertices");
+        BOOST_REQUIRE_MESSAGE(graph->getEdgeCount() == graph_clone->getEdgeCount(), "Graph and clone have same number of edges");
+
+        VertexIterator::Ptr vertexIterator = graph->getVertexIterator();
+        while(vertexIterator->next())
+        {
+            Vertex::Ptr vertex = vertexIterator->current();
+            BOOST_REQUIRE_MESSAGE( !graph_clone->contains(vertex), "Graph clone does not contain vertex of originating graph");
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(iterator_over_edges_and_vertices)
 {
     using namespace graph_analysis;

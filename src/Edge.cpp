@@ -11,6 +11,13 @@ Edge::Edge(Vertex::Ptr source, Vertex::Ptr target)
     , mTargetVertex(target)
 {}
 
+Edge::Ptr Edge::clone() const
+{
+    Edge::Ptr edge( getClone() );
+    edge->disassociateFromAll();
+    return edge;
+}
+
 std::string Edge::getClassName() const
 {
     return "graph_analysis::Edge";

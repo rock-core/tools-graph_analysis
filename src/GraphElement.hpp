@@ -70,6 +70,8 @@ public:
     GraphIdList getGraphAssociations() const;
 
 protected:
+    void disassociateFromAll() { mGraphElementMap.clear(); }
+
     GraphElementMap mGraphElementMap;
 
     GraphElementId mUid;

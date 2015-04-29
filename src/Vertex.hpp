@@ -15,6 +15,7 @@ namespace graph_analysis
 class Vertex : public GraphElement
 {
 public:
+    typedef boost::shared_ptr< Vertex > Ptr;
 
     Vertex();
 
@@ -22,7 +23,12 @@ public:
 
     Vertex(const std::string& name);
 
-    typedef boost::shared_ptr< Vertex > Ptr;
+    /**
+     * Clone this vertex -- the returned vertex will have no
+     * graph association
+     */
+    Vertex::Ptr clone() const;
+
 
     // Get class name
     // \return class name
@@ -34,6 +40,11 @@ public:
     virtual std::string toString() const;
 
 protected:
+    /**
+     * Create a copy of this vertex
+     */
+    virtual Vertex* getClone() const { return new Vertex(*this); }
+
     std::string mName;
 };
 
