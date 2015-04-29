@@ -15,13 +15,14 @@ rock_library(graph_analysis
         GraphIO.cpp
         gui/EdgeItem.cpp
         gui/EdgeTypeManager.cpp
+        gui/graphitem/edges/Simple.cpp
+        gui/graphitem/Resource.cpp
+        gui/graphitem/Simple.cpp
         gui/GraphWidget.cpp
+        gui/GVGraph.cpp
+        gui/Main.cpp
         gui/NodeItem.cpp
         gui/NodeTypeManager.cpp
-        gui/graphitem/Simple.cpp
-        gui/graphitem/Resource.cpp
-        gui/graphitem/edges/Simple.cpp
-        gui/GVGraph.cpp
         io/GexfWriter.cpp
         io/GraphvizWriter.cpp
         lemon/DirectedGraph.cpp
@@ -61,14 +62,15 @@ rock_library(graph_analysis
         GraphView.hpp
         gui/EdgeItem.hpp
         gui/EdgeTypeManager.hpp
+        gui/graphitem/edges/EdgeLabel.hpp
+        gui/graphitem/edges/Simple.hpp
+        gui/graphitem/Label.hpp
+        gui/graphitem/Resource.hpp
+        gui/graphitem/Simple.hpp
         gui/GraphWidget.hpp
+        gui/GVGraph.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
-        gui/graphitem/Label.hpp
-        gui/graphitem/Simple.hpp
-        gui/graphitem/Resource.hpp
-        gui/graphitem/edges/Simple.hpp
-        gui/GVGraph.hpp
         io/GexfWriter.hpp
         io/GraphvizWriter.hpp
         lemon/ArcIterator.hpp
