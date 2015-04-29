@@ -37,23 +37,11 @@ public:
      */
     std::string toString() const;
 
-    /**
-     * Set the vertex label
-     */
-    void setLabel(const std::string &label) { mLabel = label; }
-
-    /**
-     * Get the vertex label
-     */
-    const std::string& getLabel() const { return mLabel; }
-
 protected:
     /**
      * Create a copy of this vertex
      */
     virtual Vertex* getClone() const { return new Vertex(*this); }
-
-    std::string mLabel;
 };
 
 } // end namespace graph_analysis

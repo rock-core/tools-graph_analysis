@@ -3,7 +3,7 @@
 namespace graph_analysis {
 
 Vertex::Vertex(const std::string& label)
-    : mLabel(label)
+    : GraphElement(label)
 {}
 
 Vertex::Ptr Vertex::clone() const

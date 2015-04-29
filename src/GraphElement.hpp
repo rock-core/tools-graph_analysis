@@ -22,11 +22,22 @@ public:
     /**
      * \brief Default constructor
      */
-    GraphElement();
+    GraphElement(const std::string& label = "");
 
     virtual ~GraphElement() {};
 
     typedef boost::shared_ptr< GraphElement > Ptr;
+
+    /**
+     * Set a label
+     */
+    void setLabel(const std::string &label) { mLabel = label; }
+
+    /**
+     * Get label
+     */
+    const std::string& getLabel() const { return mLabel; }
+
 
     // Get class name
     // \return class name
@@ -81,6 +92,8 @@ protected:
 
     GraphElementId mUid;
     static GraphElementId msUid;
+
+    std::string mLabel;
 };
 
 } // end namespace graph_analysis
