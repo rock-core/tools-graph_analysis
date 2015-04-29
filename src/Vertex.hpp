@@ -29,6 +29,15 @@ public:
      */
     Vertex::Ptr clone() const;
 
+    /**
+     * Set the name of the vertex
+     */
+    void setName(const std::string& name) { mName = name; }
+
+    /**
+     * Get the name of the vertex
+     */
+    const std::string& getName() const { return mName; }
 
     // Get class name
     // \return class name
