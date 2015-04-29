@@ -13,13 +13,13 @@ public:
     /**
      * Get the vertex iterator
      */
-    virtual VertexIterator::Ptr getVertexIterator() { throw std::runtime_error("VertexIterable::getVertexIterator not implemented"); }
+    virtual VertexIterator::Ptr getVertexIterator() const { throw std::runtime_error("VertexIterable::getVertexIterator not implemented"); }
 
     /**
      * Get vertex count
      * Will require O(n)
      */
-    virtual uint64_t getVertexCount();
+    virtual uint64_t getVertexCount() const;
 };
 
 } // end namespace graph_analysis

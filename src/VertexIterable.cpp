@@ -5,7 +5,7 @@ namespace graph_analysis {
 VertexIterable::~VertexIterable()
 {}
 
-uint64_t VertexIterable::getVertexCount()
+uint64_t VertexIterable::getVertexCount() const
 {
     uint64_t count = 0;
     VertexIterator::Ptr vertexIt = getVertexIterator();
