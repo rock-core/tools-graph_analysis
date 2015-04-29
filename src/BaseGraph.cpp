@@ -11,9 +11,9 @@ namespace graph_analysis {
 GraphId BaseGraph::msId = 0;
 
 std::map<BaseGraph::ImplementationType, std::string> BaseGraph::ImplementationTypeTxt = boost::assign::map_list_of
-    (BOOST_DIRECTED_GRAPH, "Boost Directed Graph")
-    (LEMON_DIRECTED_GRAPH, "Lemon Directed Graph")
-    (SNAP_DIRECTED_GRAPH, "SNAP Directed Graph")
+    (BOOST_DIRECTED_GRAPH, "boost_graph::DirectedGraph")
+    (LEMON_DIRECTED_GRAPH, "lemon::DirectedGraph")
+    (SNAP_DIRECTED_GRAPH, "snap::DirectedGraph")
     ;
 
 BaseGraph::BaseGraph(ImplementationType type)
