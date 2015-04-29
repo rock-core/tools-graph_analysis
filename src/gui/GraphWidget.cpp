@@ -299,30 +299,36 @@ void GraphWidget::startNewEdgeHere()
                                              QDir::home().dirName(), &ok);
         if (ok && !label.isEmpty())
         {
-            Edge::Ptr edge(new Edge(label.toStdString()));
-            edge->setSourceVertex(mpStartVertex);
-            edge->setTargetVertex(mpEndVertex);
-            mpGraph->addEdge(edge);
-            enableEdge(edge);
-            // Registering new node edge items
-            Vertex::Ptr source = edge->getSourceVertex();
-            Vertex::Ptr target = edge->getTargetVertex();
-
-            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-            NodeItem* targetNodeItem = mNodeItemMap[ target ];
-
-            if(sourceNodeItem && targetNodeItem)
-            {
-                EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
-                mEdgeItemMap[edge] = edgeItem;
-
-                scene()->addItem(edgeItem);
-                sourceNodeItem->updateLabel();
-                targetNodeItem->updateLabel();
-            }
+            spawnEdge(label.toStdString());
         }
         mEdgeStartVertex    = false;
         mEdgeEndVertex      = false;
+    }
+}
+
+void GraphWidget::spawnEdge(const std::string &label)
+{
+    Edge::Ptr edge(new Edge());
+    edge->setSourceVertex(mpStartVertex);
+    edge->setTargetVertex(mpEndVertex);
+    mpGraph->addEdge(edge);
+    enableEdge(edge);
+    // Registering new node edge items
+    Vertex::Ptr source = edge->getSourceVertex();
+    Vertex::Ptr target = edge->getTargetVertex();
+
+    NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+    NodeItem* targetNodeItem = mNodeItemMap[ target ];
+
+    if(sourceNodeItem && targetNodeItem)
+    {
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
+        mEdgeItemMap[edge] = edgeItem;
+        graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
+        edgeLabel->setPlainText(QString(label.c_str()));
+
+        scene()->addItem(edgeItem);
+        edgeItem->adjust();
     }
 }
 
@@ -338,27 +344,7 @@ void GraphWidget::endNewEdgeHere()
                                              QDir::home().dirName(), &ok);
         if (ok && !label.isEmpty())
         {
-            Edge::Ptr edge(new Edge(label.toStdString()));
-            edge->setSourceVertex(mpStartVertex);
-            edge->setTargetVertex(mpEndVertex);
-            mpGraph->addEdge(edge);
-            enableEdge(edge);
-            // Registering new node edge items
-            Vertex::Ptr source = edge->getSourceVertex();
-            Vertex::Ptr target = edge->getTargetVertex();
-
-            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-            NodeItem* targetNodeItem = mNodeItemMap[ target ];
-
-            if(sourceNodeItem && targetNodeItem)
-            {
-                EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
-                mEdgeItemMap[edge] = edgeItem;
-
-                scene()->addItem(edgeItem);
-                sourceNodeItem->updateLabel();
-                targetNodeItem->updateLabel();
-            }
+            spawnEdge(label.toStdString());
         }
         mEdgeStartVertex    = false;
         mEdgeEndVertex      = false;

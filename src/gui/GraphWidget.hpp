@@ -145,6 +145,8 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
+    void spawnEdge(const std::string &label);
+
     graph_analysis::BaseGraph::Ptr mpGraph;
 
     GVGraph* mpGVGraph;
