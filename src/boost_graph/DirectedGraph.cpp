@@ -69,6 +69,30 @@ Vertex::Ptr DirectedGraph::getVertex(GraphElementId id) const
     throw std::invalid_argument("graph_analysis::boost::DirectedGraph::getVertex with id '" + ss.str() +"' does not exist");
 }
 
+VertexDescriptor DirectedGraph::getVertexDescriptor(Vertex::Ptr vertex) const
+{
+    GraphElementId id = getVertexId(vertex);
+    std::map<GraphElementId, VertexDescriptor>::const_iterator cit = mVertexMap.find(id);
+    if(cit != mVertexMap.end())
+    {
+        return cit->second;
+    }
+    throw std::invalid_argument("graph_analysis::boost::DirectedGraph::getVertexDescriptor for vertex " + vertex->toString() + " could no be retrieved.");
+}
+
+EdgeDescriptor DirectedGraph::getEdgeDescriptor(Edge::Ptr edge) const
+{
+    GraphElementId id = getEdgeId(edge);
+    std::map<GraphElementId, EdgeDescriptor>::const_iterator cit = mEdgeMap.find(id);
+    if(cit != mEdgeMap.end())
+    {
+        return cit->second;
+    }
+    throw std::invalid_argument("graph_analysis::boost::DirectedGraph::getEdgeDescriptor for vertex " + edge->toString() + " could no be retrieved.");
+}
+
+
+
 GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
     GraphElementId newEdgeId = msNewEdgeId++;

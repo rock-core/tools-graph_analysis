@@ -65,6 +65,18 @@ public:
     Vertex::Ptr getVertex(GraphElementId id) const;
     Edge::Ptr getEdge(GraphElementId id) const;
 
+    /**
+     * Map wrapper type to internal vertex descriptor
+     * \return vertex descriptor
+     */
+    VertexDescriptor getVertexDescriptor(Vertex::Ptr vertex) const;
+
+    /**
+     * Map wrapper type to internal edge descriptor
+     * \return edge descriptor
+     */
+    EdgeDescriptor getEdgeDescriptor(Edge::Ptr edge) const;
+
     void removeVertex(Vertex::Ptr vertex);
     void removeEdge(Edge::Ptr edge);
 
