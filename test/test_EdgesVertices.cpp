@@ -14,9 +14,9 @@ BOOST_AUTO_TEST_CASE(clone)
     Vertex::Ptr vertex0( new Vertex(name));
     Vertex::Ptr vertex0_clone = vertex0->clone();
 
-    BOOST_REQUIRE_MESSAGE(vertex0->getName() == vertex0_clone->getName(), "Vertex clone has same name after cloning");
-    vertex0_clone->setName("otherName");
-    BOOST_REQUIRE_MESSAGE(vertex0->getName() != vertex0_clone->getName(), "Vertex clone has different name");
+    BOOST_REQUIRE_MESSAGE(vertex0->getLabel() == vertex0_clone->getLabel(), "Vertex clone has same name after cloning");
+    vertex0_clone->setLabel("otherLabel");
+    BOOST_REQUIRE_MESSAGE(vertex0->getLabel() != vertex0_clone->getLabel(), "Vertex clone has different name");
 
 
     double weight = 10.0;

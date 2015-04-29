@@ -44,7 +44,12 @@
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
+#include <graph_analysis/GraphView.hpp>
+#include <graph_analysis/lemon/Graph.hpp>
+//#include <boost/thread/mutex.hpp> // no need to: SLOT calls are executed sequentially
+    // more details @ http://doc.qt.io/qt-4.8/threads-qobject.html#signals-and-slots-across-threads
 
+namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
 namespace gui {
 
@@ -79,27 +84,55 @@ public:
 
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
+    void toFile(const std::string &filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    ::graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
+    void enableVertex(graph_analysis::Vertex::Ptr vertex);
+    void enableEdge(graph_analysis::Edge::Ptr edge);
+
+    graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
 
     void reset(bool keepData = false);
     void clear();
-    void updateFromGraph();
+    void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
 
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
     void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
+    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; } 
+    double  getScaleFactor () const { return mScaleFactor; }
+
+    void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
+    graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
+
+    void setVertexSelected (bool selected) { mVertexSelected = selected; }
+    bool getVertexSelected () { return mVertexSelected; }
+
+    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge= selectedEdge; }
+    graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
+
+    void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
+    bool getEdgeSelected () { return mEdgeSelected; }
+
 public slots:
     void shuffle();
     void zoomIn();
     void zoomOut();
+    void addNodeAdhoc(QObject *pos);
+    void showContextMenu(const QPoint &pos);
 
     void setLayout(QString layoutName);
     void refresh();
+    void changeSelectedVertexLabel();
+    void startNewEdgeHere();
+    void endNewEdgeHere();
+    void changeLayout();
+    void removeSelectedVertex();
+    void changeSelectedEdgeLabel();
+    void removeSelectedEdge();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -112,12 +145,18 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
+    void spawnEdge(const std::string &label);
+
     graph_analysis::BaseGraph::Ptr mpGraph;
 
     GVGraph* mpGVGraph;
     // Mapping with layout engine
     GVNodeItemMap mGVNodeItemMap;
     GVEdgeItemMap mGVEdgeItemMap;
+    // Supports filtering functionality
+    GraphView mGraphView;
+    SubGraph::Ptr mpSubGraph;
+    bool mFiltered;
 
     // Mapping with data model
     // Allow mapping from graph vertexes to nodes in the scene
@@ -126,10 +165,22 @@ private:
     EdgeItemMap mEdgeItemMap;
 
     int mTimerId;
+    /// if |mScaleFactor| > 1.0, it makes edges longer; it makes them shorter otherwise ||| if negative, it rotates the graph 180 degrees
+    double mScaleFactor;
     QString mLayout;
 
     graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
+
+    graph_analysis::Vertex::Ptr mpSelectedVertex;
+    graph_analysis::Edge::Ptr mpSelectedEdge;
+    graph_analysis::Vertex::Ptr mpStartVertex;
+    graph_analysis::Vertex::Ptr mpEndVertex;
+
+    bool mVertexSelected;
+    bool mEdgeSelected;
+    bool mEdgeStartVertex;
+    bool mEdgeEndVertex;
 };
 
 } // end namespace gui

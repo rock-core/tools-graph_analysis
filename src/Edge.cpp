@@ -2,13 +2,15 @@
 
 namespace graph_analysis {
 
-Edge::Edge()
+Edge::Edge(const std::string& label)
     : GraphElement()
+    , mLabel(label)
 {}
 
-Edge::Edge(Vertex::Ptr source, Vertex::Ptr target)
+Edge::Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label)
     : mSourceVertex(source)
     , mTargetVertex(target)
+    , mLabel(label)
 {}
 
 Edge::Ptr Edge::clone() const
@@ -26,7 +28,7 @@ std::string Edge::getClassName() const
 std::string Edge::toString() const
 {
     std::stringstream ss;
-    ss << getClassName() << ":";
+    ss << (mLabel.empty() ? getClassName() : mLabel) << ":";
     if(mSourceVertex)
     {
         ss << mSourceVertex->toString();

@@ -45,23 +45,29 @@
 #include "EdgeTypeManager.hpp"
 
 #include <math.h>
-#include <QKeyEvent>
+#include <sstream>
+#include <QDir>
 #include <QTime>
+#include <QMenu>
+#include <QAction>
+#include <QKeyEvent>
+#include <QMessageBox>
 #include <QApplication>
+#include <QInputDialog>
+#include <QSignalMapper>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
-#include <graph_analysis/GraphView.hpp>
 
 #include "GVGraph.hpp"
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
+#include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
-#include <graph_analysis/lemon/Graph.hpp>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
+#define DEFAULT_SCALING_FACTOR 1.4
 
 using namespace graph_analysis;
-namespace gl = graph_analysis::lemon;
 
 namespace graph_analysis {
 namespace gui {
@@ -70,10 +76,16 @@ GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpGraph()
     , mpGVGraph(0)
+    , mFiltered(false)
     , mTimerId(0)
+    , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
+    , mVertexSelected(false)
+    , mEdgeSelected(false)
+    , mEdgeStartVertex(false)
+    , mEdgeEndVertex(false)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -83,22 +95,272 @@ GraphWidget::GraphWidget(QWidget *parent)
     setScene(scene);
 
     setCacheMode(CacheBackground);
+    setContextMenuPolicy(Qt::CustomContextMenu);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("Graphview"));
+    // Setting up filtering
+    mGraphView.setVertexFilter(mpVertexFilter);
+    mGraphView.setEdgeFilter(mpEdgeFilter);
+    // End of setting up filters
+
+
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), 
+        this, SLOT(showContextMenu(const QPoint &)));
 
     reset();
+}
 
+void GraphWidget::showContextMenu(const QPoint &pos)
+{
+    QPoint position = mapTo(this, pos);
+    QMenu contextMenu(tr("Context menu"), this);
+//    {
+        QAction actionChangeEdgeLabel("Change Selected Edge Label", this);
+        connect(&actionChangeEdgeLabel, SIGNAL(triggered()), this, SLOT(changeSelectedEdgeLabel()));
+        if(mEdgeSelected)
+        {
+            contextMenu.addAction(&actionChangeEdgeLabel);
+        }
+//    }
+//    {
+        QAction actionRemoveEdge("Remove Selected Edge", this);
+        connect(&actionRemoveEdge, SIGNAL(triggered()), this, SLOT(removeSelectedEdge()));
+        if(mEdgeSelected)
+        {
+            contextMenu.addAction(&actionRemoveEdge);
+        }
+//    }
+//    {
+        QAction actionChangeLabel("Change Selected Node Label", this);
+        connect(&actionChangeLabel, SIGNAL(triggered()), this, SLOT(changeSelectedVertexLabel()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionChangeLabel);
+        }
+//    }
+//    {
+        QAction actionRemoveNode("Remove Selected Node", this);
+        connect(&actionRemoveNode, SIGNAL(triggered()), this, SLOT(removeSelectedVertex()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionRemoveNode);
+        }
+//    }
+//    {
+        QAction actionStartNewEdgeHere("Start New Edge Here", this);
+        connect(&actionStartNewEdgeHere, SIGNAL(triggered()), this, SLOT(startNewEdgeHere()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionStartNewEdgeHere);
+        }
+//    }
+//    {
+        QAction actionEndNewEdgeHere("End New Edge Here", this);
+        connect(&actionEndNewEdgeHere, SIGNAL(triggered()), this, SLOT(endNewEdgeHere()));
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionEndNewEdgeHere);
+        }
+//    }
+//    {
+        QSignalMapper* signalMapper = new QSignalMapper(this);
+        QAction actionAddNode("Add Node", this);
+        connect(&actionAddNode, SIGNAL(triggered()), signalMapper, SLOT(map()));
+        contextMenu.addAction(&actionAddNode);
+        signalMapper->setMapping(&actionAddNode, (QObject*)&position);
+        connect(signalMapper, SIGNAL(mapped(QObject*)), this, SLOT(addNodeAdhoc(QObject*)));
+//    }
+//    {
+        QAction actionRefresh("Refresh", this);
+        connect(&actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
+        contextMenu.addAction(&actionRefresh);
+//    }
+//    {
+        QAction actionShuffle("Shuffle", this);
+        connect(&actionShuffle, SIGNAL(triggered()), this, SLOT(shuffle()));
+        contextMenu.addAction(&actionShuffle);
+//    }
+//    {
+        QAction actionLayout("Change Layout", this);
+        connect(&actionLayout, SIGNAL(triggered()), this, SLOT(changeLayout()));
+        contextMenu.addAction(&actionLayout);
+//    }
+    contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::addNodeAdhoc(QObject *pos)
+{
+    graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
+    mpGraph->addVertex(vertex);
+    enableVertex(vertex);
+    // Registering the new node item
+    NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+    QPoint *position = (QPoint *)pos;
+    nodeItem->setPos((double) position->x(), (double) position->y());
+    mNodeItemMap[vertex] = nodeItem;
+
+    scene()->addItem(nodeItem);
+//    update();
+}
+
+void GraphWidget::changeSelectedVertexLabel()
+{
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Input Node Label"),
+                                         tr("New Label:"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+    if (ok && !label.isEmpty())
+    {
+        mpSelectedVertex->setLabel(label.toStdString());
+        NodeItem* nodeItem = mNodeItemMap[mpSelectedVertex];
+        nodeItem->updateLabel();
+    }
+}
+
+void GraphWidget::changeSelectedEdgeLabel()
+{
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Input Edge Label"),
+                                         tr("New Label:"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+    if (ok && !label.isEmpty())
+    {
+        EdgeItem* edge = mEdgeItemMap[mpSelectedEdge];
+        graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
+        edgeLabel->setPlainText(QString(label.toStdString().c_str()));
+    }
+}
+
+void GraphWidget::removeSelectedEdge()
+{
+    scene()->removeItem(mEdgeItemMap[mpSelectedEdge]);
+    mpGraph->removeEdge(mpSelectedEdge);
+}
+
+void GraphWidget::removeSelectedVertex()
+{
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(mpSelectedVertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        scene()->removeItem(mEdgeItemMap[edge]);
+        mpGraph->removeEdge(edge);
+    }
+    scene()->removeItem(mNodeItemMap[mpSelectedVertex]);
+    mpGraph->removeVertex(mpSelectedVertex);
+}
+
+void GraphWidget::changeLayout()
+{
+    bool ok;
+    QString layout = QInputDialog::getText(this, tr("Input New Layout"),
+                                         tr("Layout [circo, dot, fdp, neato, osage, sfdp, twopi]:"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+    if (ok && !layout.isEmpty())
+    {
+        std::string desiredLayout = layout.toStdString();
+        std::set<std::string> layouts = GVGraph::getRegisteredLayouts();
+        if(layouts.end() == layouts.find(desiredLayout))
+        {
+            QMessageBox::StandardButton reply;
+            /*
+            Error: Layout type: "two" not recognized. Use one of: circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
+             */
+            std::stringstream errorMessage;
+            errorMessage << "Error: Layout type: \"" << desiredLayout << "\" not recognized. Use one of: ";
+            std::set<std::string>::iterator it = layouts.begin();
+            for(; layouts.end() != it; ++it)
+            {
+                errorMessage << *it << ' ';
+            }
+            reply = QMessageBox::critical(this, QString("Layouting Error"), QString(errorMessage.str().c_str()));
+        }
+        else
+        {
+            reset(true /*keepData*/);
+            setLayout(QString(desiredLayout.c_str()));
+        }
+    }
+}
+
+void GraphWidget::startNewEdgeHere()
+{
+    mpStartVertex = mpSelectedVertex;
+    mEdgeStartVertex = true;
+    if(mEdgeStartVertex && mEdgeEndVertex)
+    {
+        bool ok;
+        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
+                                             tr("New Edge Label:"), QLineEdit::Normal,
+                                             QDir::home().dirName(), &ok);
+        if (ok && !label.isEmpty())
+        {
+            spawnEdge(label.toStdString());
+        }
+        mEdgeStartVertex    = false;
+        mEdgeEndVertex      = false;
+    }
+}
+
+void GraphWidget::spawnEdge(const std::string &label)
+{
+    Edge::Ptr edge(new Edge());
+    edge->setSourceVertex(mpStartVertex);
+    edge->setTargetVertex(mpEndVertex);
+    mpGraph->addEdge(edge);
+    enableEdge(edge);
+    // Registering new node edge items
+    Vertex::Ptr source = edge->getSourceVertex();
+    Vertex::Ptr target = edge->getTargetVertex();
+
+    NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+    NodeItem* targetNodeItem = mNodeItemMap[ target ];
+
+    if(sourceNodeItem && targetNodeItem)
+    {
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
+        mEdgeItemMap[edge] = edgeItem;
+        graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
+        edgeLabel->setPlainText(QString(label.c_str()));
+
+        scene()->addItem(edgeItem);
+        edgeItem->adjust();
+    }
+}
+
+void GraphWidget::endNewEdgeHere()
+{
+    mpEndVertex = mpSelectedVertex;
+    mEdgeEndVertex = true;
+    if(mEdgeStartVertex && mEdgeEndVertex)
+    {
+        bool ok;
+        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
+                                             tr("New Edge Label:"), QLineEdit::Normal,
+                                             QDir::home().dirName(), &ok);
+        if (ok && !label.isEmpty())
+        {
+            spawnEdge(label.toStdString());
+        }
+        mEdgeStartVertex    = false;
+        mEdgeEndVertex      = false;
+    }
+}
+
+void GraphWidget::toFile(const std::string &filename)
+{
+    mpGVGraph->renderToFile(filename, mLayout.toStdString());
 }
 
 void GraphWidget::reset(bool keepData)
 {
     clear();
 
-    delete mpGVGraph;
+    if(mpGVGraph)delete mpGVGraph;
     mpGVGraph = new GVGraph("GVGraphWidget");
 
     if(!keepData)
@@ -109,6 +371,7 @@ void GraphWidget::reset(bool keepData)
 
 void GraphWidget::clear()
 {
+    // TO-DO: add filtering clearing
     if(mpGVGraph)
     {
         mpGVGraph->clearEdges();
@@ -128,24 +391,30 @@ void GraphWidget::refresh()
     update();
 }
 
+void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
+{
+    LOG_DEBUG_S << "Enabling a vertex of filtering value: " << mpSubGraph->enabled(vertex);
+    mpSubGraph->enable(vertex);
+    LOG_DEBUG_S << "Enabled the vertex; NOW of filtering value: " << mpSubGraph->enabled(vertex);
+}
+void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
+{
+    LOG_DEBUG_S << "Enabling an edge of filtering value: " << mpSubGraph->enabled(edge);
+    mpSubGraph->enable(edge);
+    LOG_DEBUG_S << "Enabled the edge; NOW of filtering value: " << mpSubGraph->enabled(edge);
+}
+
 void GraphWidget::updateFromGraph()
 {
-    // Setting up filtering
-    GraphView graphView;
-    graphView.setVertexFilter(mpVertexFilter);
-    graphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
-
-    SubGraph::Ptr subGraph = graphView.apply(mpGraph);
-
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
-        if(!subGraph->enabled(vertex))
+        if(mFiltered && !mpSubGraph->enabled(vertex))
         {
+            LOG_DEBUG_S << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex);
             continue;
         }
 
@@ -169,8 +438,9 @@ void GraphWidget::updateFromGraph()
         Edge::Ptr edge = edgeIt->current();
 
         // Check on active filter
-        if(!subGraph->enabled(edge))
+        if(mFiltered && !mpSubGraph->enabled(edge))
         {
+            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
             continue;
         }
 
@@ -191,7 +461,7 @@ void GraphWidget::updateFromGraph()
             continue;
         }
 
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(sourceNodeItem, targetNodeItem, edge);
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
@@ -219,11 +489,11 @@ void GraphWidget::updateFromGraph()
                 LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
             }
 
-            //QPointF p = mapFromScene(nodeItem->pos());
-            QPointF p = nodeItem->pos();
-            QPointF scenePos = nodeItem->scenePos();
+//            QPointF p = mapFromScene(nodeItem->pos());
+//            QPointF p = nodeItem->pos();
+//            QPointF scenePos = nodeItem->scenePos();
             QPointF position = node.centerPos;
-            nodeItem->setPos(position.x(), position.y());
+            nodeItem->setPos(mScaleFactor * position.x(), mScaleFactor * position.y());
         }
 
         foreach(GVEdge edge, mpGVGraph->edges())
@@ -254,7 +524,8 @@ void GraphWidget::itemMoved()
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
+    switch (event->key()) 
+    {
     //case Qt::Key_Up:
     //    break;
     //case Qt::Key_Down:
@@ -301,12 +572,14 @@ void GraphWidget::timerEvent(QTimerEvent *event)
         }
 
         bool itemsMoved = false;
-        foreach (NodeItem* node, nodes) {
+        foreach (NodeItem* node, nodes)
+        {
             if (node->advance())
                 itemsMoved = true;
         }
 
-        if (!itemsMoved) {
+        if (!itemsMoved)
+        {
             killTimer(mTimerId);
             mTimerId = 0;
         }
@@ -325,7 +598,7 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     Q_UNUSED(rect);
 
     //// Shadow
-    QRectF sceneRect = this->sceneRect();
+//    QRectF sceneRect = this->sceneRect();
     //QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
     //QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
     //if (rightShadow.intersects(rect) || rightShadow.contains(rect))
@@ -374,6 +647,12 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
     {
         mpVertexFilter->add(filter);
     }
+    mGraphView.setVertexFilter(mpVertexFilter);
+    if(!mFiltered)
+    {
+        mpSubGraph = mGraphView.apply(mpGraph);
+        mFiltered = true;
+    }
 }
 
 void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
@@ -384,11 +663,18 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
     {
         mpEdgeFilter->add(filter);
     }
+    mGraphView.setEdgeFilter(mpEdgeFilter);
+    if(!mFiltered)
+    {
+        mpSubGraph = mGraphView.apply(mpGraph);
+        mFiltered = true;
+    }
 }
 
 void GraphWidget::shuffle()
 {
-    foreach (QGraphicsItem *item, scene()->items()) {
+    foreach (QGraphicsItem *item, scene()->items())
+    {
         if (qgraphicsitem_cast<NodeItem* >(item))
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }

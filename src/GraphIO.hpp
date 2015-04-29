@@ -8,7 +8,7 @@ namespace graph_analysis {
 
 namespace representation {
 
-enum Type { UNKNOWN = 0, GEXF, LEMON, END_MARKER };
+enum Type { UNKNOWN = 0, GEXF, LEMON, END_MARKER, GRAPHVIZ };
 
 extern std::map<Type, std::string> TypeTxt;
 

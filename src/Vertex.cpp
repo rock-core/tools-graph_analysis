@@ -2,11 +2,8 @@
 
 namespace graph_analysis {
 
-Vertex::Vertex()
-{}
-
-Vertex::Vertex(const std::string& name)
-    : mName(name)
+Vertex::Vertex(const std::string& label)
+    : mLabel(label)
 {}
 
 Vertex::Ptr Vertex::clone() const
@@ -18,9 +15,9 @@ Vertex::Ptr Vertex::clone() const
 
 std::string Vertex::toString() const
 {
-    if(!mName.empty())
+    if(!mLabel.empty())
     {
-        return mName;
+        return mLabel;
     } else {
         return getClassName();
     }

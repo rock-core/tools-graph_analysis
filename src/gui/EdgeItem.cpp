@@ -51,8 +51,9 @@ double graph_analysis::gui::EdgeItem::TwoPi = 2.0 * Pi;
 namespace graph_analysis {
 namespace gui {
 
-EdgeItem::EdgeItem(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
-    : mpSourceNodeItem(sourceNode)
+EdgeItem::EdgeItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
+    : mpGraphWidget(graphWidget)
+    , mpSourceNodeItem(sourceNode)
     , mpTargetNodeItem(targetNode)
     , mpEdge(edge)
     , mArrowSize(10)
@@ -81,7 +82,8 @@ void EdgeItem::adjust()
 
     prepareGeometryChange();
 
-    if (length > qreal(20.)) {
+    if (length > qreal(20.))
+    {
         QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
         mSourcePoint = line.p1() + edgeOffset;
         mTargetPoint = line.p2() - edgeOffset;

@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
 
 #include <graph_analysis/gui/NodeItem.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 #include <QPen>
 
 namespace graph_analysis {
@@ -13,6 +14,8 @@ class Label;
 class Resource : public graph_analysis::gui::NodeItem
 {
     Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
+    void changeLabel(const std::string &label);
+    void updateLabel();
 public:
     Resource() {}
     virtual ~Resource() {};

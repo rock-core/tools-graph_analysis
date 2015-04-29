@@ -17,11 +17,9 @@ class Vertex : public GraphElement
 public:
     typedef boost::shared_ptr< Vertex > Ptr;
 
-    Vertex();
-
     virtual ~Vertex() {}
 
-    Vertex(const std::string& name);
+    Vertex(const std::string& label = "");
 
     /**
      * Clone this vertex -- the returned vertex will have no
@@ -29,24 +27,25 @@ public:
      */
     Vertex::Ptr clone() const;
 
-    /**
-     * Set the name of the vertex
+    /** Get class name
+     * \return class name
      */
-    void setName(const std::string& name) { mName = name; }
-
-    /**
-     * Get the name of the vertex
-     */
-    const std::string& getName() const { return mName; }
-
-    // Get class name
-    // \return class name
     virtual std::string getClassName() const { return "graph_analysis::Vertex"; }
 
     /**
      * Convert element to string
      */
-    virtual std::string toString() const;
+    std::string toString() const;
+
+    /**
+     * Set the vertex label
+     */
+    void setLabel(const std::string &label) { mLabel = label; }
+
+    /**
+     * Get the vertex label
+     */
+    const std::string& getLabel() const { return mLabel; }
 
 protected:
     /**
@@ -54,7 +53,7 @@ protected:
      */
     virtual Vertex* getClone() const { return new Vertex(*this); }
 
-    std::string mName;
+    std::string mLabel;
 };
 
 } // end namespace graph_analysis

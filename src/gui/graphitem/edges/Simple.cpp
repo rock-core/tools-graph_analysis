@@ -1,5 +1,5 @@
 #include "Simple.hpp"
-#include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 
 namespace graph_analysis {
@@ -7,11 +7,11 @@ namespace gui {
 namespace graphitem {
 namespace edges {
 
-Simple::Simple(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
-    : EdgeItem(sourceNode, targetNode, edge)
+Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
+    : EdgeItem(graphWidget, sourceNode, targetNode, edge), mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
 {
     mpLabel = new EdgeLabel(edge->toString(), this);
-    mPen = QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    mPen = mPenDefault; // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
 
@@ -122,6 +122,23 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
     return intersectionPoint;
 }
 
+void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    qDebug("Hover ENTER event for %s", mpEdge->toString().c_str());
+    mpGraphWidget->setSelectedEdge(mpEdge);
+    mpGraphWidget->setEdgeSelected(true);
+    QGraphicsItem::hoverEnterEvent(event);
+}
+
+void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    mPen = mPenDefault;
+    qDebug("Hover LEAVE event for %s", mpEdge->toString().c_str());
+    mpGraphWidget->setEdgeSelected(false);
+    QGraphicsItem::hoverLeaveEvent(event);
+}
+    
 } // end namespace edges
 } // end namespace graphitem
 } // end namespace gui

@@ -65,7 +65,8 @@ NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
 
 void NodeItem::calculateForces()
 {
-    if (!scene() || scene()->mouseGrabberItem() == this) {
+    if (!scene() || scene()->mouseGrabberItem() == this)
+    {
         mNewPos = pos();
         return;
     }
@@ -73,7 +74,8 @@ void NodeItem::calculateForces()
     // Sum up all forces pushing this item away
     qreal xvel = 0;
     qreal yvel = 0;
-    foreach (QGraphicsItem *item, scene()->items()) {
+    foreach (QGraphicsItem *item, scene()->items())
+    {
         NodeItem* node = qgraphicsitem_cast<NodeItem* >(item);
         if (!node)
             continue;
@@ -82,7 +84,8 @@ void NodeItem::calculateForces()
         qreal dx = vec.x();
         qreal dy = vec.y();
         double l = 2.0 * (dx * dx + dy * dy);
-        if (l > 0) {
+        if (l > 0)
+        {
             xvel += (dx * 150.0) / l;
             yvel += (dy * 150.0) / l;
         }

@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_GVGRAPH_HPP
 
 #include <graphviz/gvc.h>
+#include <set>
 #include <QFont>
 #include <QGraphicsItem>
 
@@ -16,7 +17,7 @@ static inline Agraph_t* _agopen(QString name, Agdesc_t kind)
     // extern Agraph_t *agopen(char *name, Agdesc_t desc, Agdisc_t * disc);
     // first arg: graph
     // second arg: type of graph
-    // third arg: (optional) referenc to functions for reading, memory, etc. -- 
+    // third arg: (optional) reference to functions for reading, memory, etc. -- 
     //    0 for default
     return agopen(const_cast<char *>(qPrintable(name)), kind, 0);
 }
@@ -80,6 +81,10 @@ class GVGraph
 public:
     /// Default DPI value used by dot (which uses points instead of pixels for coordinates)
     static const qreal DotDefaultDPI;
+
+    static void registerLayouts();
+    static std::set<std::string> getRegisteredLayouts() { return msRegisteredLayouts; }
+
 
     /*!
      * \brief Construct a Graphviz graph object
@@ -161,13 +166,12 @@ private:
     QFont mFont;
     QMap<QString, Agnode_t*> mNodes;
     QMap< QPair<QString, QString>, Agedge_t*> mEdges;
-
     /// DPI setting
     double mDPI;
     /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
-
     bool mAppliedLayout;
+    static std::set<std::string> msRegisteredLayouts;
 };
 
 } // end namespace gui

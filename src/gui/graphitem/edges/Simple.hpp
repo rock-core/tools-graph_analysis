@@ -15,9 +15,10 @@ class EdgeLabel;
 
 class Simple : public graph_analysis::gui::EdgeItem
 {
-    Simple(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr vertex);
+    Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr vertex);
 public:
     Simple() {}
+    EdgeLabel* getLabel() { return mpLabel; }
     virtual ~Simple() {}
 
     virtual void adjust(); 
@@ -26,14 +27,17 @@ protected:
     virtual QRectF boundingRect() const;
     virtual QPainterPath shape() const { return ::graph_analysis::gui::EdgeItem::shape(); }
     virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
     QPointF getIntersectionPoint(NodeItem* item, const QLineF& line);
 
 
-    virtual EdgeItem* createNewItem(NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { return new Simple(sourceNode, targetNode, edge); }
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { return new Simple(graphWidget, sourceNode, targetNode, edge); }
 
     EdgeLabel* mpLabel;
     QPen mPen;
+    QPen mPenDefault;
     QGraphicsLineItem* mpLine;
     QPolygonF mArrowHead;
     QLineF mLine;
