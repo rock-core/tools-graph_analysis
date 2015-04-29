@@ -3,7 +3,9 @@ rock_library(graph_analysis
     SOURCES
         algorithms/CorrelationClustering.cpp
         algorithms/FloydWarshall.cpp
+        boost_graph/DirectedGraph.cpp
         Edge.cpp
+        EdgeIterable.cpp
         EdgeIterator.cpp
         Filter.cpp
         filters/EdgeContextFilter.cpp
@@ -34,6 +36,7 @@ rock_library(graph_analysis
         snap/DirectedGraph.cpp
         SubGraph.cpp
         Vertex.cpp
+        VertexIterable.cpp
         VertexIterator.cpp
         WeightedEdge.cpp
     HEADERS
@@ -41,8 +44,10 @@ rock_library(graph_analysis
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
         algorithms/FloydWarshall.hpp
+        boost_graph/DirectedGraph.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
+        EdgeIterable.hpp
         EdgeIterator.hpp
         Filter.hpp
         filters/CommonFilters.hpp
@@ -86,6 +91,7 @@ rock_library(graph_analysis
         SubGraphImpl.hpp
         TypedGraph.hpp
         Vertex.hpp
+        VertexIterable.hpp
         VertexIterator.hpp
         WeightedEdge.hpp
     DEPS_PKGCONFIG
@@ -100,8 +106,15 @@ rock_library(graph_analysis
         gui/graph_analysis_gui.ui
 )
 target_link_libraries(graph_analysis glpk gvc)
+get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)
+if(graph_analysis-linker_flags)
+    set(graph_analysis-linker_flags "${graph_analysis-linker_flags} -Wl,--exclude-libs=libsnap.a" )
+else()
+    set(graph_analysis-linker_flags "-Wl,--exclude-libs=libsnap.a" )
+endif()
+set_target_properties(graph_analysis PROPERTIES LINK_FLAGS ${graph_analysis-linker_flags})
 
-rock_executable(graph_analysis-bm Main.cpp
+rock_executable(graph_analysis-bm Benchmark.cpp
     DEPS graph_analysis
     DEPS_PLAIN rt
     NOINSTALL)

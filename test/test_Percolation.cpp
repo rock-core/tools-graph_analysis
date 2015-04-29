@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(random_draw)
 
 BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
 {
-    for(int i = BaseGraph::LEMON_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)
+    for(int i = BaseGraph::BOOST_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)
     {
         BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
         BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());

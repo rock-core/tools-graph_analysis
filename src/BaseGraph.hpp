@@ -24,7 +24,7 @@ namespace graph_analysis
 class BaseGraph : public VertexIterable, public EdgeIterable, public Algorithms
 {
 public:
-    enum ImplementationType { LEMON_DIRECTED_GRAPH, SNAP_DIRECTED_GRAPH, IMPLEMENTATION_TYPE_END };
+    enum ImplementationType { BOOST_DIRECTED_GRAPH, LEMON_DIRECTED_GRAPH, SNAP_DIRECTED_GRAPH, IMPLEMENTATION_TYPE_END };
     static std::map<ImplementationType, std::string> ImplementationTypeTxt;
 
     typedef boost::shared_ptr<BaseGraph> Ptr;
