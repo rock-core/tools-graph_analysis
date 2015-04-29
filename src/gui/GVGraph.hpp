@@ -5,6 +5,7 @@
 #include <set>
 #include <QFont>
 #include <QGraphicsItem>
+#include <graph_analysis/GraphElement.hpp>
 
 // http://graphviz.org/doc/libguide/libguide.pdf
 // The agopen method for opening a graph
@@ -132,13 +133,13 @@ public:
     void setEdgeAttribute(const std::string& name, const std::string& value);
 
     /// Add and remove nodes
-    void addNode(const QString& name);
+    GraphElementId addNode(const QString& name);
     void addNodes(const QStringList& names);
     void removeNode(const QString& name);
     void clearNodes();
 
     /// Add and remove edges
-    void addEdge(const QString& source, const QString& target, const QString& label = "");
+    GraphElementId addEdge(const QString& source, const QString& target, const QString& label = "");
     void removeEdge(const QString& source, const QString& target);
     void removeEdge(const QPair<QString, QString>& key);
     void clearEdges();

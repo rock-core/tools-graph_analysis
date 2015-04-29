@@ -43,4 +43,13 @@ GraphIdList GraphElement::getGraphAssociations() const
     return graphList;
 }
 
+std::string GraphElement::toPrefixedString(GraphId graph) const
+{
+    std::stringstream ss;
+    ss << getId(graph);
+    ss << ": ";
+    ss << toString();
+    return ss.str();
+}
+
 }

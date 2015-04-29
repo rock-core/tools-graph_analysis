@@ -22,7 +22,8 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
         // Registering new node items
         graph_analysis::gui::NodeItem* nodeItem = new graph_analysis::gui::NodeItem();
         nodeItem->setVertex(vertex);
-        mpGVGraph->addNode(QString(nodeItem->getId().c_str()));
+        std::string uniqueLabel = vertex->toPrefixedString(graph->getId());
+        mpGVGraph->addNode(QString( uniqueLabel.c_str() ) );
         mNodeItemMap[vertex] = nodeItem;
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz nodes");
@@ -36,6 +37,8 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
         // Registering new node edge items
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
+        std::string uniqueSourceLabel = source->toPrefixedString(graph->getId());
+        std::string uniqueTargetLabel = target->toPrefixedString(graph->getId());
 
         graph_analysis::gui::NodeItem* sourceNodeItem = mNodeItemMap[ source ];
         graph_analysis::gui::NodeItem* targetNodeItem = mNodeItemMap[ target ];
@@ -44,7 +47,7 @@ void GraphvizWriter::write(const std::string& filename, BaseGraph* graph)
         {
             continue;
         }
-        mpGVGraph->addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
+        mpGVGraph->addEdge(QString( uniqueSourceLabel.c_str()), QString( uniqueTargetLabel.c_str()));
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz edges");
 

@@ -19,13 +19,13 @@ BOOST_AUTO_TEST_CASE(it_should_output_dot_file_of_4Node_CompleteGraph)
     BOOST_REQUIRE_MESSAGE(true, "constructing test graph");
     graph_analysis::BaseGraph *graph = new graph_analysis::lemon::DirectedGraph();
     BOOST_REQUIRE_MESSAGE(true, "    constructing 4 vertices");
-    Vertex::Ptr v0(new Vertex("0"));
-    Vertex::Ptr v1(new Vertex("1"));
-    Vertex::Ptr v2(new Vertex("2"));
-    Vertex::Ptr v3(new Vertex("3"));
+    Vertex::Ptr v0(new Vertex("label 0"));
+    Vertex::Ptr v1(new Vertex("label 1"));
+    Vertex::Ptr v2(new Vertex("label 2"));
+    Vertex::Ptr v3(new Vertex("label 3"));
 
     BOOST_REQUIRE_MESSAGE(true, "    constructing 6 edges");
-    Edge::Ptr e0(new Edge(v0, v1));
+    Edge::Ptr e0(new Edge(v0, v1, "edge label 0"));
     Edge::Ptr e1(new Edge(v0, v2));
     Edge::Ptr e2(new Edge(v0, v3));
     Edge::Ptr e3(new Edge(v1, v2));

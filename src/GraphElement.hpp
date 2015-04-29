@@ -69,6 +69,11 @@ public:
      */
     GraphIdList getGraphAssociations() const;
 
+    /**
+     * Convert to a string with the element id as prefix
+     */
+    std::string toPrefixedString(GraphId graph) const;
+
 protected:
     void disassociateFromAll() { mGraphElementMap.clear(); }
 

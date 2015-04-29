@@ -108,17 +108,20 @@ void GVGraph::setEdgeAttribute(const std::string& name, const std::string& value
     agattr(mpGraph, AGEDGE, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
 }
 
-void GVGraph::addNode(const QString& name)
+GraphElementId GVGraph::addNode(const QString& name)
 {
     if(mNodes.contains(name))
         removeNode(name);
 
-    mNodes.insert(name, _agnode(mpGraph, name));
+    Agnode_t* node = _agnode(mpGraph, name);
+    mNodes.insert(name, node);
 
     if(mNodes.size() == 1)
     {
         setRootNode(name);
     }
+
+    return AGID(node);
 }
 
 void GVGraph::addNodes(const QStringList& names)
@@ -169,7 +172,7 @@ void GVGraph::setRootNode(const QString& name)
     }
 }
 
-void GVGraph::addEdge(const QString& source, const QString& target, const QString& label)
+GraphElementId GVGraph::addEdge(const QString& source, const QString& target, const QString& label)
 {
     if(mNodes.contains(source) && mNodes.contains(target))
     {
@@ -177,10 +180,12 @@ void GVGraph::addEdge(const QString& source, const QString& target, const QStrin
         if(!mEdges.contains(key))
         {
             bool create = true;
-            mEdges.insert(key, _agedge(mpGraph, mNodes[source], mNodes[target], label.toStdString().c_str(), create));
-            //mEdges.insert(key, agedge(mpGraph, mNodes[source], mNodes[target]));
+            Agedge_t* edge = _agedge(mpGraph, mNodes[source], mNodes[target], label.toStdString().c_str(), create);
+            mEdges.insert(key, edge);
+            return AGID(edge);
         }
     }
+    throw std::runtime_error("graph_analysis::gui::GVGraph::addEdge: failed to add edge, nodes or targets missing");
 }
 
 void GVGraph::removeEdge(const QString &source, const QString &target)
