@@ -66,6 +66,7 @@
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
 #define DEFAULT_SCALING_FACTOR 1.4
+#define UNVALIDATE " "
 
 using namespace graph_analysis;
 
@@ -232,11 +233,31 @@ void GraphWidget::changeSelectedEdgeLabel()
         EdgeItem* edge = mEdgeItemMap[mpSelectedEdge];
         graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
         edgeLabel->setPlainText(QString(label.toStdString().c_str()));
+        mpSelectedEdge->setLabel(label.toStdString());
     }
 }
 
 void GraphWidget::removeSelectedEdge()
 {
+    //    bool bidirectional = false;
+    const Vertex::Ptr source = mpSelectedEdge->getSourceVertex();
+    const Vertex::Ptr target = mpSelectedEdge->getTargetVertex();
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(target);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        const Vertex::Ptr target = edge->getTargetVertex();
+        if(target == source)
+        {
+//            bidirectional = true;
+            EdgeItem* edgeItem = mEdgeItemMap[edge];
+            graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
+            edgeLabel->revertText();
+            edge->revertLabel();
+            break;
+        }
+    }
+
     scene()->removeItem(mEdgeItemMap[mpSelectedEdge]);
     mpGraph->removeEdge(mpSelectedEdge);
 }
@@ -308,9 +329,31 @@ void GraphWidget::startNewEdgeHere()
 
 void GraphWidget::spawnEdge(const std::string &label)
 {
+    bool bidirectional = false;
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(mpEndVertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        const Vertex::Ptr target = edge->getTargetVertex();
+        if(target == mpStartVertex)
+        {
+            bidirectional = true;
+            EdgeItem* edgeItem = mEdgeItemMap[edge];
+            graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
+            edgeLabel->setText(QString(UNVALIDATE));
+            edge->setLabel(UNVALIDATE);
+            edge->unSetActive();
+            break;
+        }
+    }
+
     Edge::Ptr edge(new Edge());
     edge->setSourceVertex(mpStartVertex);
     edge->setTargetVertex(mpEndVertex);
+    if(bidirectional)
+    {
+        edge->setActive();
+    }
     mpGraph->addEdge(edge);
     enableEdge(edge);
     // Registering new node edge items
@@ -326,7 +369,7 @@ void GraphWidget::spawnEdge(const std::string &label)
         mEdgeItemMap[edge] = edgeItem;
         graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
         edgeLabel->setPlainText(QString(label.c_str()));
-
+        edge->setLabel(label);
         scene()->addItem(edgeItem);
         edgeItem->adjust();
     }

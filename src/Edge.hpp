@@ -66,17 +66,36 @@ public:
     /**
      * Set edge label
      */
-    void setLabel(const std::string &label) { mLabel = label; }
+    void setLabel(const std::string &label) { mCachedLabel = mLabel; mLabel = label; }
+    
+    /**
+     * Revert edge label contents
+     */
+    void revertLabel() { mLabel = mCachedLabel; }
 
     /**
      * Get label
      */ 
     std::string getLabel() const { return mLabel; }
+    /**
+     * Get label
+     */ 
+    std::string getCachedLabel() const { return mCachedLabel; }
+
+    void unSetActive() { mBidirectionalActive = false; }
+    void setActive() { mBidirectionalActive = true; }
+    bool isActive() { return mBidirectionalActive; }
+    bool isBidirectional() { return mBidirectional; }
+    void unSetBidirectional() { mBidirectional = false; }
+    void setBidirectional() { mBidirectional = true; }
 
 private:
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
+    std::string mCachedLabel;
     std::string mLabel;
+    bool mBidirectional;
+    bool mBidirectionalActive;
 };
 
 } // end namespace graph_analysis

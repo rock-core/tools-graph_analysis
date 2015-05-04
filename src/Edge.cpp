@@ -4,13 +4,19 @@ namespace graph_analysis {
 
 Edge::Edge(const std::string& label)
     : GraphElement()
+    , mCachedLabel(label)
     , mLabel(label)
+    , mBidirectional(false)
+    , mBidirectionalActive(false)
 {}
 
 Edge::Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label)
     : mSourceVertex(source)
     , mTargetVertex(target)
+    , mCachedLabel(label)
     , mLabel(label)
+    , mBidirectional(false)
+    , mBidirectionalActive(false)
 {}
 
 std::string Edge::getClassName() const
@@ -21,6 +27,10 @@ std::string Edge::getClassName() const
 std::string Edge::toString() const
 {
     std::stringstream ss;
+    if(' ' == mLabel[0])
+    {
+        return mLabel;
+    }
     ss << (mLabel.empty() ? getClassName() : mLabel) << ":";
     if(mSourceVertex)
     {
@@ -28,7 +38,7 @@ std::string Edge::toString() const
     } else {
         ss << "n/a";
     }
-    ss << "->";
+    ss << (mBidirectionalActive ? "<->" : "->");
     if(mTargetVertex)
     {
         ss << mTargetVertex->toString();
