@@ -6,7 +6,6 @@ Edge::Edge(const std::string& label)
     : GraphElement()
     , mCachedLabel(label)
     , mLabel(label)
-    , mBidirectional(false)
     , mBidirectionalActive(false)
 {}
 
@@ -15,7 +14,6 @@ Edge::Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label)
     , mTargetVertex(target)
     , mCachedLabel(label)
     , mLabel(label)
-    , mBidirectional(false)
     , mBidirectionalActive(false)
 {}
 

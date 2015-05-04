@@ -85,16 +85,12 @@ public:
     void unSetActive() { mBidirectionalActive = false; }
     void setActive() { mBidirectionalActive = true; }
     bool isActive() { return mBidirectionalActive; }
-    bool isBidirectional() { return mBidirectional; }
-    void unSetBidirectional() { mBidirectional = false; }
-    void setBidirectional() { mBidirectional = true; }
 
 private:
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
     std::string mCachedLabel;
     std::string mLabel;
-    bool mBidirectional;
     bool mBidirectionalActive;
 };
 
