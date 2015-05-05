@@ -98,7 +98,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     setCacheMode(CacheBackground);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setViewportUpdateMode(BoundingRectViewportUpdate);
-    setRenderHint(QPainter::Antialiasing);
+//    setRenderHint(QPainter::Antialiasing);
+    setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
@@ -107,7 +108,6 @@ GraphWidget::GraphWidget(QWidget *parent)
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
-
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), 
         this, SLOT(showContextMenu(const QPoint &)));
@@ -737,6 +737,30 @@ void GraphWidget::setLayout(QString layoutName)
 {
     mLayout = layoutName;
     updateFromGraph();
+}
+
+void GraphWidget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::MidButton)
+    {
+        //Use ScrollHand Drag Mode to enable Panning
+        setDragMode(ScrollHandDrag);
+        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
+        QGraphicsView::mousePressEvent(&fake);
+    }
+    else QGraphicsView::mousePressEvent(event);
+}
+
+void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::MidButton)
+    {
+        //Use ScrollHand Drag Mode to enable Panning
+        setDragMode(NoDrag);
+        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
+        QGraphicsView::mouseReleaseEvent(&fake);
+    }
+    else QGraphicsView::mouseReleaseEvent(event);
 }
 
 } // end namespace gui

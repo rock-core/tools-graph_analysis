@@ -135,6 +135,9 @@ public slots:
     void removeSelectedEdge();
 
 protected:
+
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void timerEvent(QTimerEvent *event);
 #ifndef QT_NO_WHEELEVENT
