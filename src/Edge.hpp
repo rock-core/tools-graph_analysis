@@ -71,6 +71,16 @@ public:
     static bool areMeeting(Edge::Ptr e0, Edge::Ptr e1);
 
     /**
+     * Set edge label
+     */
+    void setLabel(const std::string &label) { mCachedLabel = mLabel; mLabel = label; }
+    
+    /**
+     * Revert edge label contents
+     */
+    void revertLabel() { mLabel = mCachedLabel; }
+
+    /**
      * Get label
      */ 
     std::string getLabel() const { return mLabel; }
@@ -78,12 +88,7 @@ public:
      * Get the label from before
      */ 
     std::string getCachedLabel() const { return mCachedLabel; }
-    void setLabel(const std::string &label) { mCachedLabel = mLabel; mLabel = label; }
-    
-    /**
-     * Revert edge label contents
-     */
-    void revertLabel() { mLabel = mCachedLabel; }
+
 
     void unSetActive() { mBidirectionalActive = false; }
     void setActive() { mBidirectionalActive = true; }
