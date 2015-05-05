@@ -58,7 +58,7 @@
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
 
-#include "GVGraph.hpp"
+#include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
@@ -263,7 +263,7 @@ void GraphWidget::changeLayout()
     if (ok && !layout.isEmpty())
     {
         std::string desiredLayout = layout.toStdString();
-        std::set<std::string> layouts = GVGraph::getSupportedLayouts();
+        std::set<std::string> layouts = io::GVGraph::getSupportedLayouts();
         if(layouts.end() == layouts.find(desiredLayout))
         {
             QMessageBox::StandardButton reply;
@@ -360,13 +360,16 @@ void GraphWidget::reset(bool keepData)
 {
     clear();
 
-    if(mpGVGraph)delete mpGVGraph;
-    mpGVGraph = new GVGraph("GVGraphWidget");
-
     if(!keepData)
     {
         mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     }
+
+    if(mpGVGraph)
+    {
+        delete mpGVGraph;
+    }
+    mpGVGraph = new io::GVGraph(mpGraph, "GVGraphWidget");
 }
 
 void GraphWidget::clear()
@@ -378,8 +381,6 @@ void GraphWidget::clear()
         mpGVGraph->clearNodes();
     }
 
-    mGVNodeItemMap.clear();
-    mGVEdgeItemMap.clear();
     mNodeItemMap.clear();
     mEdgeItemMap.clear();
     scene()->clear();
@@ -428,8 +429,7 @@ void GraphWidget::updateFromGraph()
         mNodeItemMap[vertex] = nodeItem;
 
         scene()->addItem(nodeItem);
-        mpGVGraph->addNode(QString( nodeItem->getId().c_str()));
-        mGVNodeItemMap[nodeItem->getId()] = nodeItem;
+        mpGVGraph->addNode(vertex);
     }
 
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
@@ -465,12 +465,7 @@ void GraphWidget::updateFromGraph()
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
-        GraphElementId id = mpGVGraph->addEdge(QString( sourceNodeItem->getId().c_str()),
-                QString( targetNodeItem->getId().c_str()),
-                mpGraph->getEdgeId(edge),
-                QString( edge->getLabel().c_str()));
-        LOG_DEBUG_S << "EDGE ABEL: " << edge->getLabel();
-        mGVEdgeItemMap[id] = edgeItem;
+        mpGVGraph->addEdge(edge);
     }
 
     if(mLayout.toLower() != "force")
@@ -484,26 +479,35 @@ void GraphWidget::updateFromGraph()
         QApplication::restoreOverrideCursor();
         LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
 
-        foreach(GVNode node, mpGVGraph->nodes())
         {
-            NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
-
-            if(!nodeItem)
+            using namespace graph_analysis::io;
+            std::vector<GVNode> nodes = mpGVGraph->nodes();
+            std::vector<GVNode>::const_iterator cit = nodes.begin();
+            for(; cit != nodes.end(); ++cit)
             {
-                LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
-            }
+                GVNode gvNode = *cit;
+                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
 
-//            QPointF p = mapFromScene(nodeItem->pos());
-//            QPointF p = nodeItem->pos();
-//            QPointF scenePos = nodeItem->scenePos();
-            QPointF position = node.centerPos;
-            nodeItem->setPos(mScaleFactor * position.x(), mScaleFactor * position.y());
+                if(!nodeItem)
+                {
+                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
+                }
+
+                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
+            }
         }
 
-        foreach(GVEdge edge, mpGVGraph->edges())
         {
-            EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId() ];
-            edgeItem->setPainterPath( edge.path );
+            using namespace graph_analysis::io;
+            std::vector<GVEdge> edges = mpGVGraph->edges();
+            std::vector<GVEdge>::const_iterator cit = edges.begin();
+            for(; cit != edges.end(); ++cit)
+            {
+                GVEdge gvEdge = *cit;
+                EdgeItem* edgeItem = mEdgeItemMap[ gvEdge.getEdge() ];
+
+                //edgeItem->setPainterPath( edge.path );
+            }
         }
     }
 }

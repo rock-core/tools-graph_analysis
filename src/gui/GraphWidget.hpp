@@ -51,11 +51,16 @@
 
 namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
+namespace io {
+
+class GVGraph;
+
+} // end namespace io
+
 namespace gui {
 
 class NodeItem;
 class EdgeItem;
-class GVGraph;
 
 /**
  *
@@ -76,9 +81,6 @@ class GraphWidget : public QGraphicsView
 public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
-
-    typedef std::map<std::string, NodeItem*> GVNodeItemMap;
-    typedef std::map<GraphElementId, EdgeItem*> GVEdgeItemMap;
 
     GraphWidget(QWidget *parent = 0);
 
@@ -149,10 +151,7 @@ private:
 
     graph_analysis::BaseGraph::Ptr mpGraph;
 
-    GVGraph* mpGVGraph;
-    // Mapping with layout engine
-    GVNodeItemMap mGVNodeItemMap;
-    GVEdgeItemMap mGVEdgeItemMap;
+    io::GVGraph* mpGVGraph;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;
