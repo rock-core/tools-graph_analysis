@@ -69,8 +69,6 @@ public:
 
     virtual void adjust();
 
-    std::string getId() const;
-
     enum { Type = UserType + 2 };
     int type() const { return Type; }
 

@@ -78,7 +78,7 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
     typedef std::map<std::string, NodeItem*> GVNodeItemMap;
-    typedef std::map<std::string, EdgeItem*> GVEdgeItemMap;
+    typedef std::map<GraphElementId, EdgeItem*> GVEdgeItemMap;
 
     GraphWidget(QWidget *parent = 0);
 

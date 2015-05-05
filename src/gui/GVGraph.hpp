@@ -33,8 +33,36 @@ static inline Agedge_t* _agedge(Agraph_t* g, Agnode_t* node0, Agnode_t* node1, Q
     return agedge(g, node0, node1, const_cast<char*>(qPrintable(name)), create);
 }
 
+static inline Agedge_t* _agidedge(Agraph_t* g, Agnode_t* node0, Agnode_t* node1, graph_analysis::GraphElementId id, bool create)
+{
+    return agidedge(g, node0, node1, id, create);
+}
+
 namespace graph_analysis {
 namespace gui {
+
+template<typename T>
+class UniqueElement
+{
+    T* mElement;
+    GraphElementId mId;
+
+public:
+    UniqueElement()
+        : mElement(0)
+        , mId(0)
+    {}
+
+    UniqueElement(T* element, GraphElementId id)
+        : mElement(element)
+        , mId(id)
+    {}
+
+    GraphElementId getId() const { return mId; }
+
+    T* raw() const { return mElement; }
+
+};
 
 // A struct containing the information for a GVGraph's node
 // This implementation has been made based on Steve D. Lazaro's presentation on graphviz integration into qt
@@ -60,6 +88,8 @@ struct GVEdge
     QString source;
     QString target;
 
+    GraphElementId id;
+
     /**
      * \brief Path of the edge's line
      * \return edge's path
@@ -70,7 +100,8 @@ struct GVEdge
      * Unique id for this edge based on source and target node names
      * \return unique id
      */
-    QString getId() const { return source + "->" + target; }
+    GraphElementId getId() const { return id; }
+    void setId(GraphElementId _id) { id = _id; }
 };
 
 /**
@@ -138,9 +169,8 @@ public:
     void clearNodes();
 
     /// Add and remove edges
-    GraphElementId addEdge(const QString& source, const QString& target, const QString& label = "");
-    void removeEdge(const QString& source, const QString& target);
-    void removeEdge(const QPair<QString, QString>& key);
+    GraphElementId addEdge(const QString& source, const QString& target, GraphElementId id, const QString& label = "");
+    void removeEdge(GraphElementId id);
     void clearEdges();
 
     /// Set the font to use in all the labels
@@ -165,13 +195,14 @@ private:
     Agraph_t* mpGraph;
     QFont mFont;
     QMap<QString, Agnode_t*> mNodes;
-    QMap< QPair<QString, QString>, Agedge_t*> mEdges;
+    QMap< GraphElementId, UniqueElement<Agedge_t> > mEdges;
     /// DPI setting
     double mDPI;
     /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
     bool mAppliedLayout;
     static std::set<std::string> msSupportedLayouts;
+    static GraphElementId msEdgeId;
 };
 
 } // end namespace gui

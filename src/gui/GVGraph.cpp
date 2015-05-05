@@ -1,6 +1,8 @@
 #include "GVGraph.hpp"
 #include <QString>
+#include <sstream>
 #include <boost/assign/list_of.hpp>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -24,15 +26,17 @@ std::set<std::string> GVGraph::msSupportedLayouts = boost::assign::list_of
 
 GVGraph::GVGraph(QString name, QFont font, double node_size)
     : mpContext(gvContext())
-    , mpGraph(_agopen(name, Agstrictdirected)) // Strict directed graph -- one egdeg between two nodes, see libgraph doc
+    , mpGraph(_agopen(name, Agdirected)) // see also agstrictdirected graph -- one edgde between two nodes, see libgraph doc
     , mAppliedLayout(false)
 
 {
     //Set graph attributes
     setGraphAttribute("overlap", "false");
-    //setGraphAttribute("splines", "true");
+    setGraphAttribute("splines", "true");
     setGraphAttribute("pad", "0,2");
     setGraphAttribute("dpi", "96,0");
+
+    setGraphAttribute("concentrate", "false");
 
     // Don't use node sep here, since it prevents outputting the exact position
     // when using dot layout
@@ -54,6 +58,9 @@ GVGraph::GVGraph(QString name, QFont font, double node_size)
     //GV uses , instead of . for the separator in floats
     setNodeAttribute("width", nodePtsWidth.replace('.', ",").toStdString());
 
+    // First you need to make the label 'known' or rather set a default value
+    // Then you can use it
+    setEdgeAttribute("label", "");
     setFont(font);
 }
 
@@ -129,21 +136,18 @@ void GVGraph::removeNode(const QString& name)
 {
     if(mNodes.contains(name))
     {
-        QList<QPair<QString, QString> > keys = mEdges.keys();
-        for(int i=0; i<keys.size(); ++i)
-        {
-            QString sourceNodeName = keys.at(i).first;
-            QString targetNodeName = keys.at(i).second;
+        Agnode_t* node = mNodes[name];
 
-            if( sourceNodeName == name || targetNodeName == name)
-            {
-                removeEdge(keys.at(i));
-            }
+        //Agedge_t* edge = agfstedge(mpGraph, node);
+        for (Agedge_t* e = agfstedge(mpGraph, node); e; e = agnxtedge(mpGraph, e,node))
+        {
+            GraphElementId id = AGID(e);
+            removeEdge(id);
         }
+
 
         agdelnode(mpGraph, mNodes[name]);
         mNodes.remove(name);
-
     }
 }
 
@@ -165,39 +169,36 @@ void GVGraph::setRootNode(const QString& name)
     }
 }
 
-GraphElementId GVGraph::addEdge(const QString& source, const QString& target, const QString& label)
+GraphElementId GVGraph::addEdge(const QString& source, const QString& target, GraphElementId id, const QString& label)
 {
     if(mNodes.contains(source) && mNodes.contains(target))
     {
-        QPair<QString, QString> key(source, target);
-        if(!mEdges.contains(key))
-        {
-            bool create = true;
-            Agedge_t* edge = _agedge(mpGraph, mNodes[source], mNodes[target], label.toStdString().c_str(), create);
-            mEdges.insert(key, edge);
-            return AGID(edge);
-        }
+        std::stringstream ss; 
+        ss << label.toStdString() << "(id:" << id << ")";
+
+        bool create = true;
+        Agedge_t* edge = _agedge(mpGraph, mNodes[source], mNodes[target],ss.str().c_str(), create);
+        agset(edge, "label", const_cast<char*>(label.toStdString().c_str()));
+        mEdges.insert(id, UniqueElement<Agedge_t>(edge, id) );
+        LOG_WARN_S << "ADDING a edge from: " << source.toStdString() << " to " << target.toStdString() << " id: " << id
+            << ", label: "<< label.toStdString();
+        return id;
     }
     throw std::runtime_error("graph_analysis::gui::GVGraph::addEdge: failed to add edge, nodes or targets missing");
 }
 
-void GVGraph::removeEdge(const QString &source, const QString &target)
+void GVGraph::removeEdge(GraphElementId id)
 {
-    removeEdge(QPair<QString, QString>(source, target));
-}
-
-void GVGraph::removeEdge(const QPair<QString, QString>& key)
-{
-    if(mEdges.contains(key))
+    if(mEdges.contains(id))
     {
-        agdeledge(mpGraph, mEdges[key]);
-        mEdges.remove(key);
+        agdeledge(mpGraph, mEdges[id].raw());
+        mEdges.remove(id);
     }
 }
 
 void GVGraph::clearEdges()
 {
-    QList< QPair<QString, QString> > keys=mEdges.keys();
+    QList< GraphElementId > keys = mEdges.keys();
 
     for(int i=0; i < keys.size(); ++i)
     {
@@ -291,10 +292,10 @@ QList<GVNode> GVGraph::nodes() const
 QList<GVEdge> GVGraph::edges() const
 {
     QList<GVEdge> list;
-    QMap<QPair<QString, QString>, Agedge_t*>::const_iterator it = mEdges.begin();
+    QMap<GraphElementId, UniqueElement<Agedge_t> >::const_iterator it = mEdges.begin();
     for(; it != mEdges.end(); ++it)
     {
-        Agedge_t* edge = it.value();
+        Agedge_t* edge = it.value().raw();
         GVEdge object;
 
         //Fill the source and target node names
@@ -302,6 +303,7 @@ QList<GVEdge> GVGraph::edges() const
         //object.target = edge->head->name;
         object.source = agnameof( agtail(edge) );
         object.target = agnameof( aghead(edge) );
+        object.id = AGID(edge);
 
         //Calculate the path from the spline (only one spline, as the graph is strict. If it
         //wasn't, we would have to iterate over the first list too)

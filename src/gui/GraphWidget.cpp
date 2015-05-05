@@ -465,8 +465,12 @@ void GraphWidget::updateFromGraph()
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
-        mpGVGraph->addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
-        mGVEdgeItemMap[edgeItem->getId()] = edgeItem;
+        GraphElementId id = mpGVGraph->addEdge(QString( sourceNodeItem->getId().c_str()),
+                QString( targetNodeItem->getId().c_str()),
+                mpGraph->getEdgeId(edge),
+                QString( edge->getLabel().c_str()));
+        LOG_DEBUG_S << "EDGE ABEL: " << edge->getLabel();
+        mGVEdgeItemMap[id] = edgeItem;
     }
 
     if(mLayout.toLower() != "force")
@@ -498,7 +502,7 @@ void GraphWidget::updateFromGraph()
 
         foreach(GVEdge edge, mpGVGraph->edges())
         {
-            EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId().toStdString() ];
+            EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId() ];
             edgeItem->setPainterPath( edge.path );
         }
     }

@@ -51,7 +51,7 @@ void GraphvizWriter::write(const std::string& filename, const BaseGraph& graph) 
         {
             continue;
         }
-        gvGraph.addEdge(QString( uniqueSourceLabel.c_str()), QString( uniqueTargetLabel.c_str()));
+        gvGraph.addEdge(QString( uniqueSourceLabel.c_str()), QString( uniqueTargetLabel.c_str()), graph.getEdgeId(edge), QString( edge->getLabel().c_str()));
     }
     LOG_INFO("GraphvizWriter: Done formatting Graphviz edges");
 
