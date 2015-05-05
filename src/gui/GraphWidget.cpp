@@ -278,9 +278,11 @@ void GraphWidget::removeSelectedVertex()
 void GraphWidget::changeLayout()
 {
     bool ok;
-    QString layout = QInputDialog::getText(this, tr("Input New Layout"),
-                                         tr("Layout [circo, dot, fdp, neato, osage, sfdp, twopi]:"), QLineEdit::Normal,
-                                         QDir::home().dirName(), &ok);
+    QStringList options;
+    options << tr("circo") << tr("dot") << tr("fdp") << tr("neato") << tr("osage") << tr("sfdp") << tr("twopi"); // [circo, dot, fdp, neato, osage, sfdp, twopi]
+    QString layout = QInputDialog::getItem(this, tr("Input New Layout"),
+                                         tr("select a layout:"), options,
+                                         0, false, &ok);
     if (ok && !layout.isEmpty())
     {
         std::string desiredLayout = layout.toStdString();
