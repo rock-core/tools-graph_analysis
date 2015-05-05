@@ -206,18 +206,8 @@ void GraphWidget::exportGraph()
                                          "graph.dot", &ok);
     if (ok && !label.isEmpty())
     {
-        std::stringstream ss_cerr, ss_cout;
-        std::streambuf * old_cerr = std::cerr.rdbuf(ss_cerr.rdbuf());
-        std::streambuf * old_cout = std::cout.rdbuf(ss_cout.rdbuf());
-        toFile(label.toStdString());            
-
-        std::cerr.rdbuf(old_cerr);
-        std::cout.rdbuf(old_cout);
-        std::string errors = ss_cerr.str() + ss_cout.str();
-        if(!errors.empty())
-        {
-            QMessageBox::critical(this, QString("Exporting Error"), QString(errors.c_str()));
-        }
+        // TODO: listen to stderr for graphviz errors and alert the user with a message box
+        toFile(label.toStdString());
     }
 }
 
