@@ -97,6 +97,7 @@ int main(int argc, char **argv)
             Edge::Ptr edge4(new Edge("edge4"));
             Edge::Ptr edge5(new Edge("edge5"));
 
+            // Note: no bidirectional edge in this example
             edge0->setSourceVertex(v0);
             edge0->setTargetVertex(v1);
 

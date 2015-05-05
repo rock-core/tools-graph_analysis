@@ -10,7 +10,7 @@ namespace edges {
 Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
     : EdgeItem(graphWidget, sourceNode, targetNode, edge), mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
 {
-    mpLabel = new EdgeLabel(edge->toString(), this);
+    mpLabel = new EdgeLabel(edge->toString(), this, edge->getCachedLabel()); // the use of edge->toString() is a feature; not a bug!
     mPen = mPenDefault; // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
