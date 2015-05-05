@@ -190,7 +190,24 @@ void GraphWidget::showContextMenu(const QPoint &pos)
         connect(&actionLayout, SIGNAL(triggered()), this, SLOT(changeLayout()));
         contextMenu.addAction(&actionLayout);
 //    }
+//    {
+        QAction actionExportGraph("Export Graph", this);
+        connect(&actionExportGraph, SIGNAL(triggered()), this, SLOT(exportGraph()));
+        contextMenu.addAction(&actionExportGraph);
+//    }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::exportGraph()
+{
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Name Ouput File"),
+                                         tr("export file name:"), QLineEdit::Normal,
+                                         "graph.dot", &ok);
+    if (ok && !label.isEmpty())
+    {
+        toFile(label.toStdString());
+    }
 }
 
 void GraphWidget::addNodeAdhoc(QObject *pos)

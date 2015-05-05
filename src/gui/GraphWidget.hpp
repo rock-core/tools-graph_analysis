@@ -133,6 +133,7 @@ public slots:
     void removeSelectedVertex();
     void changeSelectedEdgeLabel();
     void removeSelectedEdge();
+    void exportGraph();
 
 protected:
 
