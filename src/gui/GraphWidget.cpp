@@ -206,7 +206,18 @@ void GraphWidget::exportGraph()
                                          "graph.dot", &ok);
     if (ok && !label.isEmpty())
     {
-        toFile(label.toStdString());
+        std::stringstream ss_cerr, ss_cout;
+        std::streambuf * old_cerr = std::cerr.rdbuf(ss_cerr.rdbuf());
+        std::streambuf * old_cout = std::cout.rdbuf(ss_cout.rdbuf());
+        toFile(label.toStdString());            
+
+        std::cerr.rdbuf(old_cerr);
+        std::cout.rdbuf(old_cout);
+        std::string errors = ss_cerr.str() + ss_cout.str();
+        if(!errors.empty())
+        {
+            QMessageBox::critical(this, QString("Exporting Error"), QString(errors.c_str()));
+        }
     }
 }
 
@@ -306,7 +317,6 @@ void GraphWidget::changeLayout()
         std::set<std::string> layouts = GVGraph::getSupportedLayouts();
         if(layouts.end() == layouts.find(desiredLayout))
         {
-            QMessageBox::StandardButton reply;
             /*
             Error: Layout type: "two" not recognized. Use one of: circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
              */
@@ -317,7 +327,7 @@ void GraphWidget::changeLayout()
             {
                 errorMessage << *it << ' ';
             }
-            reply = QMessageBox::critical(this, QString("Layouting Error"), QString(errorMessage.str().c_str()));
+            QMessageBox::critical(this, QString("Layouting Error"), QString(errorMessage.str().c_str()));
         }
         else
         {
