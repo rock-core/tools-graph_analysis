@@ -87,6 +87,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mEdgeSelected(false)
     , mEdgeStartVertex(false)
     , mEdgeEndVertex(false)
+    , mGVGraphDirty(true)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -215,6 +216,7 @@ void GraphWidget::addNodeAdhoc(QObject *pos)
 {
     graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
     mpGraph->addVertex(vertex);
+    mGVGraphDirty = true;
     enableVertex(vertex);
     // Registering the new node item
     NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
@@ -278,6 +280,7 @@ void GraphWidget::removeSelectedEdge()
 
     scene()->removeItem(mEdgeItemMap[mpSelectedEdge]);
     mpGraph->removeEdge(mpSelectedEdge);
+    mGVGraphDirty = true;
 }
 
 void GraphWidget::removeSelectedVertex()
@@ -291,6 +294,7 @@ void GraphWidget::removeSelectedVertex()
     }
     scene()->removeItem(mNodeItemMap[mpSelectedVertex]);
     mpGraph->removeVertex(mpSelectedVertex);
+    mGVGraphDirty = true;
 }
 
 void GraphWidget::changeLayout()
@@ -374,6 +378,7 @@ void GraphWidget::spawnEdge(const std::string &label)
         edge->setActive();
     }
     mpGraph->addEdge(edge);
+    mGVGraphDirty = true;
     enableEdge(edge);
     // Registering new node edge items
     Vertex::Ptr source = edge->getSourceVertex();
@@ -415,16 +420,16 @@ void GraphWidget::endNewEdgeHere()
 
 void GraphWidget::toFile(const std::string &filename)
 {
+    if(mGVGraphDirty)
+    {
+        updateGVGraph();
+    }
     mpGVGraph->renderToFile(filename, mLayout.toStdString());
 }
 
 void GraphWidget::reset(bool keepData)
 {
     clear();
-
-    if(mpGVGraph)delete mpGVGraph;
-    mpGVGraph = new GVGraph("GVGraphWidget");
-
     if(!keepData)
     {
         mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
@@ -445,6 +450,7 @@ void GraphWidget::clear()
     mNodeItemMap.clear();
     mEdgeItemMap.clear();
     scene()->clear();
+    mGVGraphDirty = true;
 }
 void GraphWidget::refresh()
 {
@@ -466,8 +472,119 @@ void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Enabled the edge; NOW of filtering value: " << mpSubGraph->enabled(edge);
 }
 
+void GraphWidget::updateGVGraph()
+{
+    if(mpGVGraph)delete mpGVGraph;
+    mpGVGraph = new GVGraph("GVGraphWidget");
+
+    VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
+    while(nodeIt->next())
+    {
+        Vertex::Ptr vertex = nodeIt->current();
+
+        // Check on active filter
+        if(mFiltered && !mpSubGraph->enabled(vertex))
+        {
+            LOG_DEBUG_S << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex);
+            continue;
+        }
+
+        if( mNodeItemMap.count(vertex))
+        {
+            continue;
+        }
+
+        // Registering new node items
+        NodeItem* nodeItem = mNodeItemMap[vertex];
+        mpGVGraph->addNode(QString( nodeItem->getId().c_str()));
+        mGVNodeItemMap[nodeItem->getId()] = nodeItem;
+    }
+
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+
+        // Check on active filter
+        if(mFiltered && !mpSubGraph->enabled(edge))
+        {
+            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
+            continue;
+        }
+
+        if( mEdgeItemMap.count(edge))
+        {
+            continue;
+        }
+
+        // Registering new node edge items
+        Vertex::Ptr source = edge->getSourceVertex();
+        Vertex::Ptr target = edge->getTargetVertex();
+
+        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+        NodeItem* targetNodeItem = mNodeItemMap[ target ];
+
+        if(!sourceNodeItem || !targetNodeItem)
+        {
+            continue;
+        }
+
+        EdgeItem* edgeItem = mEdgeItemMap[edge];
+        mpGVGraph->addEdge(QString( sourceNodeItem->getId().c_str()), QString( targetNodeItem->getId().c_str()));
+        mGVEdgeItemMap[edgeItem->getId()] = edgeItem;
+    }
+    mGVGraphDirty = false;
+}
+
+void GraphWidget::standAloneLayouting()
+{
+    if(mGVGraphDirty)
+    {
+        updateFromGraph();
+    }
+    else
+    {
+        if(mLayout.toLower() != "force")
+        {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+
+            LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
+            base::Time start = base::Time::now();
+            mpGVGraph->applyLayout(mLayout.toStdString());
+            base::Time delay = base::Time::now() - start;
+            QApplication::restoreOverrideCursor();
+            LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
+
+            foreach(GVNode node, mpGVGraph->nodes())
+            {
+                NodeItem* nodeItem = mGVNodeItemMap[ node.name.toStdString() ];
+
+                if(!nodeItem)
+                {
+                    LOG_WARN_S << "NodeItem: " << node.name.toStdString() << "is null";
+                }
+
+    //            QPointF p = mapFromScene(nodeItem->pos());
+    //            QPointF p = nodeItem->pos();
+    //            QPointF scenePos = nodeItem->scenePos();
+                QPointF position = node.centerPos;
+                nodeItem->setPos(mScaleFactor * position.x(), mScaleFactor * position.y());
+            }
+
+            foreach(GVEdge edge, mpGVGraph->edges())
+            {
+                EdgeItem* edgeItem = mGVEdgeItemMap[ edge.getId().toStdString() ];
+                edgeItem->setPainterPath( edge.path );
+            }
+        }
+    }
+}
+
 void GraphWidget::updateFromGraph()
 {
+    if(mpGVGraph)delete mpGVGraph;
+    mpGVGraph = new GVGraph("GVGraphWidget");
+
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -531,6 +648,8 @@ void GraphWidget::updateFromGraph()
         mGVEdgeItemMap[edgeItem->getId()] = edgeItem;
     }
 
+    mGVGraphDirty = false;
+
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -569,11 +688,13 @@ void GraphWidget::updateFromGraph()
 void GraphWidget::addVertex(Vertex::Ptr vertex)
 {
     mpGraph->addVertex(vertex);
+    mGVGraphDirty = true;
 }
 
 void GraphWidget::addEdge(Edge::Ptr edge)
 {
     mpGraph->addEdge(edge);
+    mGVGraphDirty = true;
 }
 
 void GraphWidget::itemMoved()
@@ -755,7 +876,7 @@ void GraphWidget::zoomOut()
 void GraphWidget::setLayout(QString layoutName)
 {
     mLayout = layoutName;
-    updateFromGraph();
+    standAloneLayouting();
 }
 
 void GraphWidget::mousePressEvent(QMouseEvent *event)
