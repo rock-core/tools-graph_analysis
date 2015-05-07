@@ -21,6 +21,23 @@ std::map<Type, std::string> TypeTxt = boost::assign::map_list_of
 
 namespace io {
 
+struct null_deleter
+{
+        void operator()(void const *) const {}
+};
+
+void Writer::write(const std::string& filename, const BaseGraph& graph) const
+{
+    BaseGraph::Ptr graphPtr(const_cast<BaseGraph*>(&graph), null_deleter());
+    write(filename, graphPtr);
+}
+
+void Reader::read(const std::string& filename, BaseGraph& graph)
+{
+    BaseGraph::Ptr graphPtr(&graph, null_deleter());
+    read(filename, graphPtr);
+}
+
 
 GraphIO::WriterMap GraphIO::msWriters = boost::assign::map_list_of
     (representation::GEXF, Writer::Ptr( new GexfWriter()))

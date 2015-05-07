@@ -7,7 +7,7 @@ namespace io {
 class GexfReader : public Reader
 {
 public:
-    void read(const std::string& filename, BaseGraph& graph) const;
+    void read(const std::string& filename, const BaseGraph::Ptr& graph) const;
 };
 
 } // end namespace io

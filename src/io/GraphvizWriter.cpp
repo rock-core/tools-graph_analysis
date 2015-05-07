@@ -11,18 +11,18 @@ GraphvizWriter::GraphvizWriter(const std::string &layout) : mLayout(layout)
 GraphvizWriter::~GraphvizWriter()
 {}
 
-void GraphvizWriter::write(const std::string& filename, const BaseGraph& graph) const
+void GraphvizWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
-    GVGraph gvGraph(graph.copy(), "GraphvizGraph");
+    GVGraph gvGraph(graph, "GraphvizGraph");
 
-    VertexIterator::Ptr nodeIt = graph.getVertexIterator();
+    VertexIterator::Ptr nodeIt = graph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
         gvGraph.addNode(vertex);
     }
 
-    EdgeIterator::Ptr edgeIt = graph.getEdgeIterator();
+    EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();

@@ -3,7 +3,7 @@
 namespace graph_analysis {
 namespace io {
 
-void GexfReader:read(const std::string& filename, BaseGraph& graph) const
+void GexfReader:read(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
 }
 

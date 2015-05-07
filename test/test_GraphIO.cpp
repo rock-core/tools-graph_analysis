@@ -38,10 +38,10 @@ BOOST_AUTO_TEST_CASE(dot)
         Edge::Ptr e6(new Edge(v0, v1, "edge label 1"));
 
         BOOST_REQUIRE_MESSAGE(true, "    adding the 4 vertices to graph");
-        graph->addVertex(v0);
-        graph->addVertex(v1);
-        graph->addVertex(v2);
-        graph->addVertex(v3);
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v0));
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v1));
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v2));
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v3));
 
         BOOST_REQUIRE_MESSAGE(true, "    adding the 6 edges to graph");
         graph->addEdge(e0);

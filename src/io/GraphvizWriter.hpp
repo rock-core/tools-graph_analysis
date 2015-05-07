@@ -14,6 +14,8 @@ public:
     ~GraphvizWriter();
 
     void write(const std::string& filename, const BaseGraph& graph) const;
+
+    void write(const std::string& filename, const BaseGraph::Ptr& graph) const;
 };
 
 } // end namespace io
