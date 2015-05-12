@@ -85,6 +85,7 @@ public:
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
     void toFile(const std::string &filename);
+    void toFileNoLayout(const std::string &filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
@@ -150,7 +151,6 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    /// not to be called before updateFromGraph()
     void updateGVGraph();
     void spawnEdge(const std::string &label);
 

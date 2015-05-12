@@ -208,7 +208,7 @@ void GraphWidget::exportGraph()
     if (ok && !label.isEmpty())
     {
         // TODO: listen to stderr for graphviz errors and alert the user with a message box
-        toFile(label.toStdString());
+        toFileNoLayout(label.toStdString());
     }
 }
 
@@ -425,6 +425,15 @@ void GraphWidget::toFile(const std::string &filename)
         updateGVGraph();
     }
     mpGVGraph->renderToFile(filename, mLayout.toStdString());
+}
+
+void GraphWidget::toFileNoLayout(const std::string &filename)
+{
+    if(mGVGraphDirty)
+    {
+        updateGVGraph();
+    }
+    mpGVGraph->renderToFileNoLayout(filename);
 }
 
 void GraphWidget::reset(bool keepData)

@@ -238,11 +238,16 @@ void GVGraph::applyLayout(const std::string& layout)
 
 void GVGraph::renderToFile(const std::string& filename, const std::string& layout)
 {
-    if(!mAppliedLayout)
-    {
-        applyLayout();
-    }
+    // applies layout too before rendering
     gvRenderFilename(mpContext, mpGraph, layout.c_str(), filename.c_str());
+}
+
+void GVGraph::renderToFileNoLayout(const std::string& filename)
+{
+    // should not apply layout before rendering
+//    mpContext->job->flags |=  LAYOUT_NOT_REQUIRED; //  (1<<26)
+    gvRenderFilename(mpContext, mpGraph, "dot", filename.c_str());
+//    mpContext->job->flags &= ~LAYOUT_NOT_REQUIRED; // ~(1<<26)
 }
 
 QRectF GVGraph::boundingRect() const

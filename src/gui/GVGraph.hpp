@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_GVGRAPH_HPP
 
 #include <graphviz/gvc.h>
+#include <graphviz/gvcjob.h>
 #include <set>
 #include <QFont>
 #include <QGraphicsItem>
@@ -153,6 +154,7 @@ public:
      */
     void applyLayout(const std::string& layout = "dot");
     void renderToFile(const std::string& filename, const std::string& layout = "dot");
+    void renderToFileNoLayout(const std::string& filename);
 
     QRectF boundingRect() const;
     void setRootNode(const QString& name);
