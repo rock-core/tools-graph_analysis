@@ -19,12 +19,12 @@ rock_library(graph_analysis
         gui/graphitem/Resource.cpp
         gui/graphitem/Simple.cpp
         gui/GraphWidget.cpp
-        gui/GVGraph.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
         gui/NodeTypeManager.cpp
         io/GexfWriter.cpp
         io/GraphvizWriter.cpp
+        io/GVGraph.cpp
         lemon/DirectedGraph.cpp
         lemon/DirectedSubGraph.cpp
         Percolation.cpp
@@ -68,11 +68,11 @@ rock_library(graph_analysis
         gui/graphitem/Resource.hpp
         gui/graphitem/Simple.hpp
         gui/GraphWidget.hpp
-        gui/GVGraph.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
         io/GexfWriter.hpp
         io/GraphvizWriter.hpp
+        io/GVGraph.hpp
         lemon/ArcIterator.hpp
         lemon/DirectedGraph.hpp
         lemon/DirectedSubGraph.hpp

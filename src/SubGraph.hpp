@@ -122,7 +122,6 @@ public:
      */
     virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
 
-protected:
     boost::shared_ptr<BaseGraph> getBaseGraph() const;
 };
 

@@ -10,7 +10,7 @@
 namespace graph_analysis {
 namespace io {
 
-void GexfWriter::write(const std::string& filename, const BaseGraph& graph) const
+void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
     libgexf::GEXF gexf;
     libgexf::DirectedGraph& digraph = gexf.getDirectedGraph();
@@ -20,24 +20,24 @@ void GexfWriter::write(const std::string& filename, const BaseGraph& graph) cons
     data.addNodeAttributeColumn(classAttr, "class", "STRING");
     data.addEdgeAttributeColumn(classAttr, "class", "STRING");
 
-    VertexIterator::Ptr vit = const_cast<BaseGraph*>(&graph)->getVertexIterator();
+    VertexIterator::Ptr vit = graph->getVertexIterator();
     while(vit->next())
     {
         Vertex::Ptr vertex = vit->current();
-        std::string nodeIdString = boost::lexical_cast<std::string>( graph.getVertexId(vertex) );
+        std::string nodeIdString = boost::lexical_cast<std::string>( graph->getVertexId(vertex) );
         digraph.addNode(nodeIdString);
 
         data.setNodeLabel(nodeIdString, vertex->toString() );
         data.setNodeValue(nodeIdString, classAttr, vertex->toString());
     }
 
-    EdgeIterator::Ptr eit = const_cast<BaseGraph*>(&graph)->getEdgeIterator();
+    EdgeIterator::Ptr eit = graph->getEdgeIterator();
     while(eit->next())
     {
         Edge::Ptr edge = eit->current();
-        std::string edgeId = boost::lexical_cast<std::string>( graph.getEdgeId(edge) );
-        std::string srcNode = boost::lexical_cast<std::string>( graph.getVertexId( edge->getSourceVertex() ) );
-        std::string targetNode = boost::lexical_cast<std::string>( graph.getVertexId( edge->getTargetVertex() ) );
+        std::string edgeId = boost::lexical_cast<std::string>( graph->getEdgeId(edge) );
+        std::string srcNode = boost::lexical_cast<std::string>( graph->getVertexId( edge->getSourceVertex() ) );
+        std::string targetNode = boost::lexical_cast<std::string>( graph->getVertexId( edge->getTargetVertex() ) );
 
         digraph.addEdge(edgeId, srcNode, targetNode);
         data.setEdgeLabel(edgeId, edge->toString() );

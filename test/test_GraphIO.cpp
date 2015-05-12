@@ -4,7 +4,7 @@
 
 using namespace graph_analysis;
 
-BOOST_AUTO_TEST_SUITE(graphviz_writer)
+BOOST_AUTO_TEST_SUITE(graph_io)
 /*
  * Note:
  * ----
@@ -34,12 +34,14 @@ BOOST_AUTO_TEST_CASE(dot)
         Edge::Ptr e3(new Edge(v1, v2));
         Edge::Ptr e4(new Edge(v1, v3));
         Edge::Ptr e5(new Edge(v2, v3));
+        // Add multiedge
+        Edge::Ptr e6(new Edge(v0, v1, "edge label 1"));
 
         BOOST_REQUIRE_MESSAGE(true, "    adding the 4 vertices to graph");
-        graph->addVertex(v0);
-        graph->addVertex(v1);
-        graph->addVertex(v2);
-        graph->addVertex(v3);
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v0));
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v1));
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v2));
+        BOOST_TEST_MESSAGE("Added vertex with id: " << graph->addVertex(v3));
 
         BOOST_REQUIRE_MESSAGE(true, "    adding the 6 edges to graph");
         graph->addEdge(e0);
@@ -48,6 +50,7 @@ BOOST_AUTO_TEST_CASE(dot)
         graph->addEdge(e3);
         graph->addEdge(e4);
         graph->addEdge(e5);
+        graph->addEdge(e6);
         BOOST_REQUIRE_MESSAGE(true, "constructed test graph successfully");
 
         std::string filename = "/tmp/test-" + graph->getImplementationTypeName() + "-graphviz.dot";

@@ -144,12 +144,5 @@ QPainterPath EdgeItem::shape() const
     return ::QGraphicsItem::shape();
 }
 
-std::string EdgeItem::getId() const
-{
-    char buffer[512];
-    snprintf(buffer, 512, "%s->%s",mpSourceNodeItem->getId().c_str(), mpTargetNodeItem->getId().c_str());
-    return std::string(buffer);
-}
-
 } // end namespace gui
 } // end namespace graph_analysis

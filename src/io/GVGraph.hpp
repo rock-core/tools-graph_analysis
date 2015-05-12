@@ -1,12 +1,9 @@
-#ifndef GRAPH_ANALYSIS_GUI_GVGRAPH_HPP
-#define GRAPH_ANALYSIS_GUI_GVGRAPH_HPP
+#ifndef GRAPH_ANALYSIS_IO_GVGRAPH_HPP
+#define GRAPH_ANALYSIS_IO_GVGRAPH_HPP
 
-#include <graphviz/gvc.h>
-#include <graphviz/gvcjob.h>
 #include <set>
-#include <QFont>
-#include <QGraphicsItem>
-#include <graph_analysis/GraphElement.hpp>
+#include <graphviz/gvc.h>
+#include <graph_analysis/BaseGraph.hpp>
 
 // http://graphviz.org/doc/libguide/libguide.pdf
 // The agopen method for opening a graph
@@ -14,64 +11,93 @@
 // AGRAPH, AGDIGRAPH, AGRAPHSTRICT, AGDIGRAPHSTRICT
 // version >= 2.36
 // Agundirected, Agstrictundirected, Agdirected, Agstrictdirected
-static inline Agraph_t* _agopen(QString name, Agdesc_t kind)
+static inline Agraph_t* _agopen(const std::string& name, Agdesc_t kind)
 {
     // extern Agraph_t *agopen(char *name, Agdesc_t desc, Agdisc_t * disc);
     // first arg: graph
     // second arg: type of graph
     // third arg: (optional) reference to functions for reading, memory, etc. -- 
     //    0 for default
-    return agopen(const_cast<char *>(qPrintable(name)), kind, 0);
+    return agopen(const_cast<char*>(name.c_str()), kind, 0);
 }
 
-static inline Agnode_t* _agnode(Agraph_t* g, QString name)
+static inline Agnode_t* _agnode(Agraph_t* g, const std::string& name)
 {
-    return agnode(g, const_cast<char*>(qPrintable(name)), true);
+    return agnode(g, const_cast<char*>(name.c_str()), true);
 }
 
-static inline Agedge_t* _agedge(Agraph_t* g, Agnode_t* node0, Agnode_t* node1, QString name, bool create)
+static inline Agedge_t* _agedge(Agraph_t* g, Agnode_t* node0, Agnode_t* node1, const std::string& name, bool create)
 {
-    return agedge(g, node0, node1, const_cast<char*>(qPrintable(name)), create);
+    return agedge(g, node0, node1, const_cast<char*>(name.c_str()), create);
+}
+
+static inline Agedge_t* _agidedge(Agraph_t* g, Agnode_t* node0, Agnode_t* node1, graph_analysis::GraphElementId id, bool create)
+{
+    return agidedge(g, node0, node1, id, create);
 }
 
 namespace graph_analysis {
-namespace gui {
+namespace io {
 
 // A struct containing the information for a GVGraph's node
 // This implementation has been made based on Steve D. Lazaro's presentation on graphviz integration into qt
 // \see http://www.mupuf.org/blog/2010/07/08/how_to_usempGraphviz_to_drawmGraphs_in_a_qtmGraphics_scene/
 // \credits Steve D. Lazaro, 2010
 //
-struct GVNode
+class GVNode
 {
+public:
+    GVNode()
+    {}
+
+    Vertex::Ptr getVertex() const { return mpVertex; }
+    const std::string& getName() const { return mName; }
+
+    int x() const { return mCenterPosX; }
+    int y() const { return mCenterPosY; }
+    int height() const { return mHeight; }
+    int width() const { return mWidth; }
+
+    GVNode(Vertex::Ptr vertex, const std::string& name, int x, int y, double height, double width)
+        : mpVertex(vertex)
+        , mName(name)
+        , mCenterPosX(x)
+        , mCenterPosY(y)
+        , mHeight(height)
+        , mWidth(width)
+    {}
+
+private:
+    graph_analysis::Vertex::Ptr mpVertex;
+
     /// The unique identifier of the node in the graph
-    QString name;
+    std::string mName;
 
     /// The position of the center point of the node from the top-left corner
-    QPoint centerPos;
+    int mCenterPosX, mCenterPosY;
 
     /// The size of the node in pixels
-    double height, width;
+    double mHeight, mWidth;
 };
 
 /// A struct containing the information for a GVGraph's edge
-struct GVEdge
+class GVEdge
 {
-    /// The source and target nodes of the edge
-    QString source;
-    QString target;
+public:
+    GVEdge(Edge::Ptr edge)
+        : mpEdge(edge)
+    {}
 
-    /**
-     * \brief Path of the edge's line
-     * \return edge's path
-     */
-    QPainterPath path;
+    Edge::Ptr getEdge() const { return mpEdge; }
 
-    /**
-     * Unique id for this edge based on source and target node names
-     * \return unique id
-     */
-    QString getId() const { return source + "->" + target; }
+private:
+    Edge::Ptr mpEdge;
+
+    ///**
+    // * \brief Path of the edge's line
+    // * \return edge's path
+    // */
+    //QPainterPath path;
 };
 
 /**
@@ -82,18 +108,20 @@ class GVGraph
 {
 public:
     /// Default DPI value used by dot (which uses points instead of pixels for coordinates)
-    static const qreal DotDefaultDPI;
+    static const double DotDefaultDPI;
 
     static std::set<std::string> getSupportedLayouts() { return msSupportedLayouts; }
-
 
     /*!
      * \brief Construct a Graphviz graph object
      * \param name The name of the graph, must be unique in the application
-     * \param font The font to use for the graph
      * \param node_size The size in pixels of each node
      */
-    GVGraph(QString name, QFont font=QFont(), double node_size = 0);
+    GVGraph(BaseGraph::Ptr baseGraph, const std::string& name, double node_size = 0);
+
+    /**
+     *
+     */
     ~GVGraph();
 
     /**
@@ -113,12 +141,6 @@ public:
     std::string getGraphAttribute(const std::string& name, const std::string& defaultValue ="") const;
 
     /**
-     * Qt based version of getGraphAttribute
-     * \return Current or default value for the given attribute
-     */
-    QString getQGraphAttribute(const QString& name, const QString& defaultValue ="") const { return QString( getGraphAttribute(name.toStdString(), defaultValue.toStdString()).c_str() ); }
-
-    /**
      * Set a node attribute by name
      * \param name Name of node's attribute
      * \param value Value to set
@@ -133,19 +155,20 @@ public:
     void setEdgeAttribute(const std::string& name, const std::string& value);
 
     /// Add and remove nodes
-    GraphElementId addNode(const QString& name);
-    void addNodes(const QStringList& names);
-    void removeNode(const QString& name);
+    GraphElementId addNode(graph_analysis::Vertex::Ptr vertex);
+    void addNodes(const std::vector<Vertex::Ptr>& names);
+    void removeNode(graph_analysis::Vertex::Ptr vertex);
+    void removeNode(GraphElementId id);
     void clearNodes();
 
     /// Add and remove edges
-    GraphElementId addEdge(const QString& source, const QString& target, const QString& label = "");
-    void removeEdge(const QString& source, const QString& target);
-    void removeEdge(const QPair<QString, QString>& key);
+    GraphElementId addEdge(Edge::Ptr edge);
+    void removeEdge(Edge::Ptr edge);
+    void removeEdge(GraphElementId id);
     void clearEdges();
 
     /// Set the font to use in all the labels
-    void setFont(QFont font);
+    void setFont(const std::string& fontname, uint16_t fontsizeInPt);
 
     /**
      *  Apply a layout to the graph
@@ -156,26 +179,35 @@ public:
     void renderToFile(const std::string& filename, const std::string& layout = "dot");
     void renderToFileNoLayout(const std::string& filename);
 
-    QRectF boundingRect() const;
-    void setRootNode(const QString& name);
+    boxf boundingRect() const;
+    void setRootNode(Vertex::Ptr vertex);
 
-    QList<GVNode> nodes() const;
-    QList<GVEdge> edges() const;
+    std::vector<GVNode> nodes() const;
+    std::vector<GVEdge> edges() const;
+
+    GraphElementId getId(Agnode_t* node) const;
+    GraphElementId getId(Agedge_t* edge) const;
+
+    std::string getUniqueName(Vertex::Ptr vertex) const;
+    std::string getUniqueName(Edge::Ptr edge) const;
 
 private:
     GVC_t* mpContext;
-    Agraph_t* mpGraph;
-    QFont mFont;
-    QMap<QString, Agnode_t*> mNodes;
-    QMap< QPair<QString, QString>, Agedge_t*> mEdges;
+    Agraph_t* mpGVGraph;
+    BaseGraph::Ptr mpBaseGraph;
+
+    std::map<GraphElementId, Agnode_t*> mNodes;
+    std::map<GraphElementId, Agedge_t*> mEdges;
+
     /// DPI setting
     double mDPI;
     /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
     bool mAppliedLayout;
     static std::set<std::string> msSupportedLayouts;
+    static GraphElementId msEdgeId;
 };
 
-} // end namespace gui
+} // end namespace io
 } // end namespace graph_analysis 
-#endif // GRAPH_ANALYSIS_GUI_GVGRAPH_HPP
+#endif // GRAPH_ANALYSIS_IO_GVGRAPH_HPP
