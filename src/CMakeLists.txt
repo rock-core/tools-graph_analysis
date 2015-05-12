@@ -19,6 +19,7 @@ rock_library(graph_analysis
         gui/graphitem/Resource.cpp
         gui/graphitem/Simple.cpp
         gui/GraphWidget.cpp
+        gui/ActionCommander.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
         gui/NodeTypeManager.cpp
@@ -68,6 +69,7 @@ rock_library(graph_analysis
         gui/graphitem/Resource.hpp
         gui/graphitem/Simple.hpp
         gui/GraphWidget.hpp
+        gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
         io/GexfWriter.hpp

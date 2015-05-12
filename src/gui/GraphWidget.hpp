@@ -61,6 +61,7 @@ namespace gui {
 
 class NodeItem;
 class EdgeItem;
+class ActionCommander;
 
 /**
  *

@@ -43,6 +43,7 @@
 #include "NodeItem.hpp"
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
+#include "ActionCommander.hpp"
 
 #include <set>
 #include <math.h>
@@ -117,90 +118,87 @@ GraphWidget::GraphWidget(QWidget *parent)
 
 void GraphWidget::showContextMenu(const QPoint &pos)
 {
+    ActionCommander comm(this);
     QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
+
 //    {
-        QAction actionChangeEdgeLabel("Change Selected Edge Label", this);
-        connect(&actionChangeEdgeLabel, SIGNAL(triggered()), this, SLOT(changeSelectedEdgeLabel()));
-        if(mEdgeSelected)
-        {
-            contextMenu.addAction(&actionChangeEdgeLabel);
-        }
+//        QAction actionChangeEdgeLabel("Change Selected Edge Label", this);
+//        connect(&actionChangeEdgeLabel, SIGNAL(triggered()), this, SLOT(changeSelectedEdgeLabel()));
 //    }
+        QAction *actionChangeEdgeLabel = comm.addAction("Change Selected Edge Label", SLOT(changeSelectedEdgeLabel()));
+
+
 //    {
         QAction actionRemoveEdge("Remove Selected Edge", this);
         connect(&actionRemoveEdge, SIGNAL(triggered()), this, SLOT(removeSelectedEdge()));
-        if(mEdgeSelected)
-        {
-            contextMenu.addAction(&actionRemoveEdge);
-        }
 //    }
 //    {
         QAction actionChangeLabel("Change Selected Node Label", this);
         connect(&actionChangeLabel, SIGNAL(triggered()), this, SLOT(changeSelectedVertexLabel()));
-        if(mVertexSelected)
-        {
-            contextMenu.addAction(&actionChangeLabel);
-        }
 //    }
 //    {
         QAction actionRemoveNode("Remove Selected Node", this);
         connect(&actionRemoveNode, SIGNAL(triggered()), this, SLOT(removeSelectedVertex()));
-        if(mVertexSelected)
-        {
-            contextMenu.addAction(&actionRemoveNode);
-        }
 //    }
 //    {
         QAction actionStartNewEdgeHere("Start New Edge Here", this);
         connect(&actionStartNewEdgeHere, SIGNAL(triggered()), this, SLOT(startNewEdgeHere()));
-        if(mVertexSelected)
-        {
-            contextMenu.addAction(&actionStartNewEdgeHere);
-        }
 //    }
 //    {
         QAction actionEndNewEdgeHere("End New Edge Here", this);
         connect(&actionEndNewEdgeHere, SIGNAL(triggered()), this, SLOT(endNewEdgeHere()));
-        if(mVertexSelected)
-        {
-            contextMenu.addAction(&actionEndNewEdgeHere);
-        }
 //    }
 //    {
         QSignalMapper* signalMapper = new QSignalMapper(this);
         QAction actionAddNode("Add Node", this);
         connect(&actionAddNode, SIGNAL(triggered()), signalMapper, SLOT(map()));
-        contextMenu.addAction(&actionAddNode);
         signalMapper->setMapping(&actionAddNode, (QObject*)&position);
         connect(signalMapper, SIGNAL(mapped(QObject*)), this, SLOT(addNodeAdhoc(QObject*)));
 //    }
 //    {
         QAction actionRefresh("Refresh", this);
         connect(&actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
-        contextMenu.addAction(&actionRefresh);
 //    }
 //    {
         QAction actionShuffle("Shuffle", this);
         connect(&actionShuffle, SIGNAL(triggered()), this, SLOT(shuffle()));
-        contextMenu.addAction(&actionShuffle);
 //    }
 //    {
         QAction actionLayout("Change Layout", this);
         connect(&actionLayout, SIGNAL(triggered()), this, SLOT(changeLayout()));
-        contextMenu.addAction(&actionLayout);
 //    }
+
+
+
+        // (conditionally) adding the actions to the context menu
+        if(mEdgeSelected)
+        {
+            contextMenu.addAction(actionChangeEdgeLabel);
+            contextMenu.addAction(&actionRemoveEdge);
+        }
+        if(mVertexSelected)
+        {
+            contextMenu.addAction(&actionChangeLabel);
+            contextMenu.addAction(&actionRemoveNode);
+            contextMenu.addAction(&actionStartNewEdgeHere);
+            contextMenu.addAction(&actionEndNewEdgeHere);
+        }
+        contextMenu.addAction(&actionAddNode);
+        contextMenu.addAction(&actionRefresh);
+        contextMenu.addAction(&actionShuffle);
+        contextMenu.addAction(&actionLayout);
     contextMenu.exec(mapToGlobal(pos));
 }
 
 void GraphWidget::addNodeAdhoc(QObject *pos)
 {
+    QPoint *position = (QPoint *)pos;
     graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
     mpGraph->addVertex(vertex);
     enableVertex(vertex);
     // Registering the new node item
     NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
-    QPoint *position = (QPoint *)pos;
     nodeItem->setPos((double) position->x(), (double) position->y());
     mNodeItemMap[vertex] = nodeItem;
 
