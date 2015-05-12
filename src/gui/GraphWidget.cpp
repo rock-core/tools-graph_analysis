@@ -44,6 +44,7 @@
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 
+#include <set>
 #include <math.h>
 #include <sstream>
 #include <QDir>
@@ -257,33 +258,21 @@ void GraphWidget::removeSelectedVertex()
 void GraphWidget::changeLayout()
 {
     bool ok;
-    QString layout = QInputDialog::getText(this, tr("Input New Layout"),
-                                         tr("Layout [circo, dot, fdp, neato, osage, sfdp, twopi]:"), QLineEdit::Normal,
-                                         QDir::home().dirName(), &ok);
+    QStringList options;
+    std::set<std::string> supportedLayouts = mpGVGraph->getSupportedLayouts();
+//    options << tr("circo") << tr("dot") << tr("fdp") << tr("neato") << tr("osage") << tr("sfdp") << tr("twopi"); // [circo, dot, fdp, neato, osage, sfdp, twopi]
+    foreach(std::string supportedLayout, supportedLayouts)
+    {
+        options << tr(supportedLayout.c_str());
+    }
+    QString layout = QInputDialog::getItem(this, tr("Input New Layout"),
+                                         tr("select a layout:"), options,
+                                         0, false, &ok);
     if (ok && !layout.isEmpty())
     {
         std::string desiredLayout = layout.toStdString();
-        std::set<std::string> layouts = io::GVGraph::getSupportedLayouts();
-        if(layouts.end() == layouts.find(desiredLayout))
-        {
-            QMessageBox::StandardButton reply;
-            /*
-            Error: Layout type: "two" not recognized. Use one of: circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi
-             */
-            std::stringstream errorMessage;
-            errorMessage << "Error: Layout type: \"" << desiredLayout << "\" not recognized. Use one of: ";
-            std::set<std::string>::iterator it = layouts.begin();
-            for(; layouts.end() != it; ++it)
-            {
-                errorMessage << *it << ' ';
-            }
-            reply = QMessageBox::critical(this, QString("Layouting Error"), QString(errorMessage.str().c_str()));
-        }
-        else
-        {
-            reset(true /*keepData*/);
-            setLayout(QString(desiredLayout.c_str()));
-        }
+        reset(true /*keepData*/);
+        setLayout(QString(desiredLayout.c_str()));
     }
 }
 
