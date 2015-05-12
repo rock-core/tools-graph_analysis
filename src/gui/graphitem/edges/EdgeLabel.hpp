@@ -13,7 +13,7 @@ class EdgeLabel : public QGraphicsTextItem
 {
 public:
     EdgeLabel(const std::string& label, QGraphicsItem* item, const std::string & cachedLabel = "")
-        : QGraphicsTextItem( QString(label.c_str()), item), mCachedTextLabel(QString(cachedLabel.c_str()))
+        : QGraphicsTextItem( QString(label.c_str()), item)
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
         setTextInteractionFlags(Qt::NoTextInteraction);
@@ -45,13 +45,7 @@ public:
 
     void setText(const QString &label)
     {
-        mCachedTextLabel = toPlainText();
         setPlainText(label);
-    }
-
-    void revertText()
-    {
-        setPlainText(mCachedTextLabel);
     }
 
 protected:
@@ -92,9 +86,6 @@ protected:
         }
         return QGraphicsTextItem::itemChange(change, value);
     }
-
-private:
-    QString mCachedTextLabel;    
 };
 
 } // end namespace edges

@@ -259,7 +259,6 @@ void GraphWidget::changeSelectedEdgeLabel()
 
 void GraphWidget::removeSelectedEdge()
 {
-    //    bool bidirectional = false;
     const Vertex::Ptr source = mpSelectedEdge->getSourceVertex();
     const Vertex::Ptr target = mpSelectedEdge->getTargetVertex();
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(target);
@@ -269,11 +268,8 @@ void GraphWidget::removeSelectedEdge()
         const Vertex::Ptr target = edge->getTargetVertex();
         if(target == source)
         {
-//            bidirectional = true;
             EdgeItem* edgeItem = mEdgeItemMap[edge];
             graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
-            edgeLabel->revertText();
-            edge->revertLabel();
             break;
         }
     }
@@ -365,7 +361,6 @@ void GraphWidget::spawnEdge(const std::string &label)
             graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
             edgeLabel->setText(QString(UNVALIDATE));
             edge->setLabel(UNVALIDATE);
-            edge->unSetActive();
             break;
         }
     }
@@ -373,10 +368,6 @@ void GraphWidget::spawnEdge(const std::string &label)
     Edge::Ptr edge(new Edge());
     edge->setSourceVertex(mpStartVertex);
     edge->setTargetVertex(mpEndVertex);
-    if(bidirectional)
-    {
-        edge->setActive();
-    }
     mpGraph->addEdge(edge);
     mGVGraphDirty = true;
     enableEdge(edge);

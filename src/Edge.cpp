@@ -4,18 +4,14 @@ namespace graph_analysis {
 
 Edge::Edge(const std::string& label)
     : GraphElement(label)
-    , mCachedLabel(label)
     , mLabel(label)
-    , mBidirectionalActive(false)
 {}
 
 Edge::Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label)
     : GraphElement(label)
     , mSourceVertex(source)
     , mTargetVertex(target)
-    , mCachedLabel(label)
     , mLabel(label)
-    , mBidirectionalActive(false)
 {}
 
 Edge::Ptr Edge::clone() const
@@ -44,7 +40,7 @@ std::string Edge::toString() const
     } else {
         ss << "n/a";
     }
-    ss << (mBidirectionalActive ? "<->" : "->");
+    ss << "->";
     if(mTargetVertex)
     {
         ss << mTargetVertex->toString();
