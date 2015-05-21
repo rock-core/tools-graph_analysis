@@ -13,6 +13,8 @@ class Strategy
 public:
     typedef boost::shared_ptr<Strategy> Ptr;
 
+    virtual ~Strategy() {}
+
     /**
      * Apply strategy to given subgraph
      * \return List of change events that have been applied to the graph

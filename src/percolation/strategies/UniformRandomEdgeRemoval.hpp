@@ -18,6 +18,8 @@ class UniformRandomEdgeRemoval : public Strategy
 public:
     UniformRandomEdgeRemoval(double occupationProbability, uint32_t seed = 0);
 
+    virtual ~UniformRandomEdgeRemoval() {}
+
     EventList apply(SubGraph::Ptr subgraph);
 
     std::vector<Edge::Ptr> getDisabledVertices() const { return mDisabled; }

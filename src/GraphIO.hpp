@@ -21,6 +21,8 @@ class Writer
 public:
     typedef boost::shared_ptr<Writer> Ptr;
 
+    virtual ~Writer() {}
+
     void write(const std::string& filename, const BaseGraph& graph) const;
 
     virtual void write(const std::string& filename, const BaseGraph::Ptr& graph) const { throw std::runtime_error("Writer: writer not implemented"); }
@@ -31,6 +33,8 @@ class Reader
 {
 public:
     typedef boost::shared_ptr<Reader> Ptr;
+
+    virtual ~Reader() {}
 
     void read(const std::string& filename, BaseGraph& graph);
 

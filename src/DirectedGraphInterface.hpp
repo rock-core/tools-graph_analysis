@@ -8,6 +8,9 @@ namespace graph_analysis
 
 class DirectedGraphInterface
 {
+public:
+    virtual ~DirectedGraphInterface() {}
+
     virtual EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const = 0;
     virtual EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const = 0;
 };
