@@ -1,5 +1,6 @@
 #include <iostream>
 #include <boost/lexical_cast.hpp>
+#include <boost/make_shared.hpp>
 #include <base/Time.hpp>
 
 #include <graph_analysis/lemon/Graph.hpp>
@@ -80,7 +81,7 @@ int main(int argc, char** argv)
         graphMark.startAddNodes = base::Time::now();
         for(int i = 0; i < nodeMax; ++i)
         {
-            Vertex::Ptr v(new Vertex());
+            Vertex::Ptr v = boost::make_shared<Vertex>();
             graph->addVertex( v );
         }
         graphMark.stopAddNodes = base::Time::now();
@@ -108,9 +109,9 @@ int main(int argc, char** argv)
         graphMark.startAddEdges = base::Time::now();
         for(int i = 0; i < edgeMax; ++i)
         {
-            Vertex::Ptr v0(new Vertex());
-            Vertex::Ptr v1(new Vertex());
-            Edge::Ptr e0(new Edge());
+            Vertex::Ptr v0 = boost::make_shared<Vertex>();
+            Vertex::Ptr v1 = boost::make_shared<Vertex>();
+            Edge::Ptr e0 = boost::make_shared<Edge>();
             e0->setSourceVertex(v0);
             e0->setTargetVertex(v1);
             graph->addEdge(e0);
@@ -171,7 +172,7 @@ int main(int argc, char** argv)
             ::lemon::ListDigraph::Node sourceNode = rawGraph.addNode();
             ::lemon::ListDigraph::Node targetNode = rawGraph.addNode();
             ::lemon::ListDigraph::Arc arc = rawGraph.addArc(sourceNode,targetNode);
-            edgeMap[arc] = Edge::Ptr(new Edge());
+            edgeMap[arc] = boost::make_shared<Edge>();
         }
         lemonRawMark.stopAddEdges = base::Time::now();
 
@@ -226,12 +227,12 @@ int main(int argc, char** argv)
         {
             using namespace graph_analysis;
 
-            Vertex::Ptr v0(new Vertex());
-            Vertex::Ptr v1(new Vertex());
+            Vertex::Ptr v0 = boost::make_shared<Vertex>();
+            Vertex::Ptr v1 = boost::make_shared<Vertex>();
             snap::Serializable<Vertex::Ptr> s0(v0);
             snap::Serializable<Vertex::Ptr> s1(v1);
 
-            Edge::Ptr e0(new Edge());
+            Edge::Ptr e0 = boost::make_shared<Edge>();
             snap::Serializable<Edge::Ptr> se0(e0);
             int sourceNode = rawGraph.AddNode(nodeId++,s0);
             int targetNode = rawGraph.AddNode(nodeId++,s1);

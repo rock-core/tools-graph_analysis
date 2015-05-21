@@ -47,6 +47,7 @@
 
 #include <graph_analysis/gui/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
 #define TESTNO 1
 //#define RENDER
@@ -84,18 +85,18 @@ int main(int argc, char **argv)
              * Test 1.:
              * -------
              */
-            Vertex::Ptr v0(new Vertex("v0"));
-            Vertex::Ptr v1(new Vertex("v1"));
-            Vertex::Ptr v2(new Vertex("v2"));
-            Vertex::Ptr v3(new Vertex("v3"));
-            Vertex::Ptr v4(new Vertex("v4"));
+            Vertex::Ptr v0 = boost::make_shared<Vertex>("v0");
+            Vertex::Ptr v1 = boost::make_shared<Vertex>("v1");
+            Vertex::Ptr v2 = boost::make_shared<Vertex>("v2");
+            Vertex::Ptr v3 = boost::make_shared<Vertex>("v3");
+            Vertex::Ptr v4 = boost::make_shared<Vertex>("v4");
             
-            Edge::Ptr edge0(new Edge("edge0"));
-            Edge::Ptr edge1(new Edge("edge1"));
-            Edge::Ptr edge2(new Edge("edge2"));
-            Edge::Ptr edge3(new Edge("edge3"));
-            Edge::Ptr edge4(new Edge("edge4"));
-            Edge::Ptr edge5(new Edge("edge5"));
+            Edge::Ptr edge0 = boost::make_shared<Edge>("edge0");
+            Edge::Ptr edge1 = boost::make_shared<Edge>("edge1");
+            Edge::Ptr edge2 = boost::make_shared<Edge>("edge2");
+            Edge::Ptr edge3 = boost::make_shared<Edge>("edge3");
+            Edge::Ptr edge4 = boost::make_shared<Edge>("edge4");
+            Edge::Ptr edge5 = boost::make_shared<Edge>("edge5");
 
             edge0->setSourceVertex(v0);
             edge0->setTargetVertex(v1);

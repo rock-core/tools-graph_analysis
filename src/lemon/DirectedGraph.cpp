@@ -1,6 +1,7 @@
 #include "DirectedGraph.hpp"
 #include <base/Logging.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
+#include <boost/make_shared.hpp>
 
 namespace graph_analysis {
 namespace lemon {
@@ -219,7 +220,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(BaseGraph::Ptr baseGrap
     Vertex::Ptr components[componentCount];
     for(int i = 0; i < componentCount; ++i)
     {
-        Vertex::Ptr vertex(new Vertex());
+        Vertex::Ptr vertex = boost::make_shared<Vertex>();
         components[i] = vertex;
 
         // Activate this node in the subgraph
@@ -256,7 +257,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(BaseGraph::Ptr baseGrap
             subgraph->disable(sourceVertex);
 
             // Add an edge to relate vertices to their components
-            Edge::Ptr edge( new Edge(sourceVertex, targetVertex) );
+            Edge::Ptr edge = boost::make_shared<Edge>(sourceVertex, targetVertex);
             addEdge(edge);
         }
     } else {
