@@ -92,9 +92,9 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
         BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
         BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
 
-        int numberOfEdges = 1000;
+        uint32_t numberOfEdges = 1000;
 
-        for(int i = 0; i < numberOfEdges; ++i)
+        for(uint32_t i = 0; i < numberOfEdges; ++i)
         {
             Vertex::Ptr v0( new Vertex());
             Vertex::Ptr v1( new Vertex());
@@ -165,8 +165,8 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
 BOOST_AUTO_TEST_CASE(random_uniform_vertex_removal)
 {
     BaseGraph::Ptr graph(new graph_analysis::lemon::DirectedGraph());
-    int numberOfEdges = 1000;
-    for(int i = 0; i < numberOfEdges; ++i)
+    uint32_t numberOfEdges = 1000;
+    for(uint32_t i = 0; i < numberOfEdges; ++i)
     {
         Vertex::Ptr v0( new Vertex());
         Vertex::Ptr v1( new Vertex());
