@@ -23,12 +23,12 @@ namespace gui {
 class ActionCommander
 {
 public:
-    ActionCommander(const GraphWidget *graphWidget);
+    ActionCommander(const GraphWidget* graphWidget);
     ~ActionCommander();
     QAction* addAction(const char *title, const char *slot);
     QAction* addMappedAction(const char *title, const char *slot, QObject *arg);
 private:
-    const GraphWidget *mpGraphWidget;
+    const GraphWidget* mpGraphWidget;
 };
 
 } // end namespace gui

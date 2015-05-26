@@ -5,7 +5,7 @@
 namespace graph_analysis {
 namespace gui {
 
-ActionCommander::ActionCommander(const GraphWidget *graphWidget) : mpGraphWidget(graphWidget) {}
+ActionCommander::ActionCommander(const GraphWidget* graphWidget) : mpGraphWidget(graphWidget) {}
 ActionCommander::~ActionCommander() {}
 
 QAction* ActionCommander::addAction(const char *title, const char *slot)
