@@ -19,6 +19,7 @@ rock_library(graph_analysis
         gui/graphitem/Resource.cpp
         gui/graphitem/Simple.cpp
         gui/GraphWidget.cpp
+        gui/AddNodeDialog.cpp
         gui/ActionCommander.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
@@ -72,6 +73,7 @@ rock_library(graph_analysis
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
+        gui/AddNodeDialog.hpp
         io/GexfWriter.hpp
         io/GraphvizWriter.hpp
         io/GVGraph.hpp
@@ -108,6 +110,7 @@ rock_library(graph_analysis
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
+        gui/add_node_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk gvc)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

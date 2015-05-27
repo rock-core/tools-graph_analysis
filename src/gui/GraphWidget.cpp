@@ -44,6 +44,7 @@
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
+#include "AddNodeDialog.hpp"
 
 #include <set>
 #include <math.h>
@@ -156,16 +157,20 @@ void GraphWidget::showContextMenu(const QPoint &pos)
 void GraphWidget::addNodeAdhoc(QObject *pos)
 {
     QPoint *position = (QPoint *)pos;
-    graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
-    mpGraph->addVertex(vertex);
-    enableVertex(vertex);
-    // Registering the new node item
-    NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
-    nodeItem->setPos((double) position->x(), (double) position->y());
-    mNodeItemMap[vertex] = nodeItem;
+    AddNodeDialog nodeDialog;
+    if(nodeDialog.isValid())
+    {
+        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex(nodeDialog.getNodeLabel()));
+        mpGraph->addVertex(vertex);
+        enableVertex(vertex);
+        // Registering the new node item
+        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+        nodeItem->setPos((double) position->x(), (double) position->y());
+        mNodeItemMap[vertex] = nodeItem;
 
-    scene()->addItem(nodeItem);
-//    update();
+        scene()->addItem(nodeItem);
+//        update();
+    }
 }
 
 void GraphWidget::changeSelectedVertexLabel()
