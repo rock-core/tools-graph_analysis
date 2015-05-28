@@ -65,6 +65,11 @@ void GraphIO::write(const std::string& filename, const BaseGraph& graph, represe
     }
 }
 
+void GraphIO::write(const std::string& filename, const BaseGraph::Ptr& graph, representation::Type format)
+{
+    write(filename, *graph.get(), format);
+}
+
 void GraphIO::read(const std::string& filename, BaseGraph& graph, representation::Type format)
 {
     ReaderMap::const_iterator cit = msReaders.find(format);
@@ -80,6 +85,11 @@ void GraphIO::read(const std::string& filename, BaseGraph& graph, representation
 
         throw std::runtime_error(ss.str());
     }
+}
+
+void GraphIO::read(const std::string& filename, BaseGraph::Ptr graph, representation::Type format)
+{
+    read(filename, *graph.get(), format);
 }
 
 } // end namespace io

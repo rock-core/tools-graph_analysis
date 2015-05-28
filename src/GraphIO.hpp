@@ -48,9 +48,11 @@ public:
     typedef std::map<representation::Type, Writer::Ptr> WriterMap;
     typedef std::map<representation::Type, Reader::Ptr> ReaderMap;
 
+    static void write(const std::string& filename, const BaseGraph::Ptr& graph, representation::Type format);
     static void write(const std::string& filename, const BaseGraph& graph, representation::Type format);
 
     static void read(const std::string& filename, BaseGraph& graph, representation::Type format);
+    static void read(const std::string& filename, BaseGraph::Ptr graph, representation::Type format);
 
 private:
     static WriterMap msWriters;
