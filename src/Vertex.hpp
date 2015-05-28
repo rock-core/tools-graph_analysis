@@ -1,6 +1,8 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_HPP
 #define GRAPH_ANALYSIS_VERTEX_HPP
 
+#include <set>
+#include <string>
 #include <iostream>
 #include <graph_analysis/GraphElement.hpp>
 
@@ -19,7 +21,7 @@ public:
 
     virtual ~Vertex() {}
 
-    Vertex(const std::string& label = "");
+    Vertex(const std::string& label = "", const std::string& type = "base");
 
     /**
      * Clone this vertex -- the returned vertex will have no
@@ -37,11 +39,15 @@ public:
      */
     std::string toString() const;
 
+    static std::set<std::string> getSupportedTypes() { return msSupportedTypes; }
+
 protected:
     /**
      * Create a copy of this vertex
      */
     virtual Vertex* getClone() const { return new Vertex(*this); }
+
+    static std::set<std::string> msSupportedTypes;
 };
 
 } // end namespace graph_analysis

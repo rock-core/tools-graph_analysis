@@ -1,7 +1,10 @@
 #include "AddNodeDialog.hpp"
+#include <boost/foreach.hpp>
 
 
 namespace graph_analysis {
+    class Vertex;
+
 namespace gui {
 
 AddNodeDialog::AddNodeDialog()
@@ -31,6 +34,11 @@ void AddNodeDialog::setupUi(QDialog *Dialog)
     label_2->setObjectName(QString::fromUtf8("label_2"));
     label_2->setGeometry(QRect(20, 70, 91, 31));
     comboBox = new QComboBox(Dialog);
+    std::set<std::string> types = Vertex::getSupportedTypes();
+    foreach(std::string type, types)
+    {
+        comboBox->addItem(QString(type.c_str()));
+    }
     comboBox->setObjectName(QString::fromUtf8("comboBox"));
     comboBox->setGeometry(QRect(117, 70, 291, 27));
 
@@ -54,6 +62,7 @@ void AddNodeDialog::nodeAccept()
 {
     mValid = true;
     mNodeLabel = lineEdit->text().toStdString();
+    mNodeType  = comboBox->currentText().toStdString();
 }
 
 void AddNodeDialog::nodeReject()

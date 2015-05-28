@@ -22,7 +22,7 @@ public:
     /**
      * \brief Default constructor
      */
-    GraphElement(const std::string& label = "");
+    GraphElement(const std::string& label = "", const std::string& type = "");
 
     virtual ~GraphElement() {};
 
@@ -31,13 +31,22 @@ public:
     /**
      * Set a label
      */
-    void setLabel(const std::string &label) { mLabel = label; }
+    void setLabel(const std::string& label) { mLabel = label; }
 
     /**
      * Get label
      */
     const std::string& getLabel() const { return mLabel; }
 
+    /**
+     * Set a Type
+     */
+    void setType(const std::string& type) { mType = type; }
+
+    /**
+     * Get Type
+     */
+    const std::string& getType() const { return mType; }
 
     // Get class name
     // \return class name
@@ -94,6 +103,7 @@ protected:
     static GraphElementId msUid;
 
     std::string mLabel;
+    std::string mType;
 };
 
 } // end namespace graph_analysis

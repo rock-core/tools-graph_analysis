@@ -1,9 +1,17 @@
 #include "Vertex.hpp"
+#include <boost/assign/list_of.hpp>
 
 namespace graph_analysis {
 
-Vertex::Vertex(const std::string& label)
-    : GraphElement(label)
+
+std::set<std::string> Vertex::msSupportedTypes = boost::assign::list_of
+    ("base")
+    ("port")
+    ("cluster")
+    ;
+
+Vertex::Vertex(const std::string& label, const std::string& type)
+    : GraphElement(label, type)
 {}
 
 Vertex::Ptr Vertex::clone() const
@@ -18,7 +26,9 @@ std::string Vertex::toString() const
     if(!mLabel.empty())
     {
         return mLabel;
-    } else {
+    }
+    else
+    {
         return getClassName();
     }
 }

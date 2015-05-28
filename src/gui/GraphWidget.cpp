@@ -160,7 +160,7 @@ void GraphWidget::addNodeAdhoc(QObject *pos)
     AddNodeDialog nodeDialog;
     if(nodeDialog.isValid())
     {
-        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex(nodeDialog.getNodeLabel()));
+        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex(nodeDialog.getNodeLabel(), nodeDialog.getNodeType()));
         mpGraph->addVertex(vertex);
         enableVertex(vertex);
         // Registering the new node item

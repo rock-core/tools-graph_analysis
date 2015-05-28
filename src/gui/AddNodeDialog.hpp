@@ -9,6 +9,8 @@
 #ifndef ADDNODEDIALOG_H
 #define ADDNODEDIALOG_H
 
+#include <set>
+#include <string>
 #include <QObject>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -20,6 +22,7 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
+#include <graph_analysis/Vertex.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -34,6 +37,7 @@ public:
     void retranslateUi(QDialog *Dialog);
     bool isValid() { return mValid; }
     std::string getNodeLabel() { return mNodeLabel; }
+    std::string getNodeType () { return mNodeType;  }
 
 public slots:
     void nodeAccept();
@@ -42,6 +46,8 @@ public slots:
 private:
     QDialog mDialog;
     std::string mNodeLabel;
+    std::string mNodeType;
+
     bool mValid;
     QDialogButtonBox *buttonBox;
     QLabel *label;
