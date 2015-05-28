@@ -106,6 +106,7 @@ rock_library(graph_analysis
         Boost_REGEX
     MOC
         gui/GraphWidget.hpp
+        gui/AddNodeDialog.hpp
     DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui
     UI

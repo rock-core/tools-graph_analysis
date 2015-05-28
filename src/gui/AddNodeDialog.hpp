@@ -26,6 +26,7 @@ namespace gui {
 
 class AddNodeDialog : public QObject
 {
+    Q_OBJECT
 public:
     AddNodeDialog();
     ~AddNodeDialog(){}
