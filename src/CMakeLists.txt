@@ -74,6 +74,7 @@ rock_library(graph_analysis
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
         gui/AddNodeDialog.hpp
+        gui/PropertyDialog.hpp
         io/GexfWriter.hpp
         io/GraphvizWriter.hpp
         io/GVGraph.hpp
@@ -107,11 +108,13 @@ rock_library(graph_analysis
     MOC
         gui/GraphWidget.hpp
         gui/AddNodeDialog.hpp
+        gui/PropertyDialog.hpp
     DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
         gui/add_node_dialog_gui.ui
+        gui/property_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk gvc)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

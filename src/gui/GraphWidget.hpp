@@ -127,7 +127,7 @@ public slots:
     void shuffle();
     void zoomIn();
     void zoomOut();
-    void addNodeAdhoc(QObject *pos);
+    void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
     void showContextMenu(const QPoint &pos);
 
     void setLayout(QString layoutName);
