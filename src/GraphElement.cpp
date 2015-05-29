@@ -6,10 +6,9 @@ namespace graph_analysis {
 
 GraphElementId GraphElement::msUid = 0;
 
-GraphElement::GraphElement(const std::string& label, const std::string& type)
+GraphElement::GraphElement(const std::string& label)
     : mUid(msUid++)
     , mLabel(label)
-    , mType (type )
 {
     if(msUid == std::numeric_limits<GraphElementId>::max() )
     {

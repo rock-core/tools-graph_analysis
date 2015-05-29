@@ -21,7 +21,7 @@ public:
 
     virtual ~Vertex() {}
 
-    Vertex(const std::string& label = "", const std::string& type = "base");
+    Vertex(const std::string& label = "");
 
     /**
      * Clone this vertex -- the returned vertex will have no
