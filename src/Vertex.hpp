@@ -39,7 +39,6 @@ public:
      */
     std::string toString() const;
 
-    static std::set<std::string> getSupportedTypes() { return msSupportedTypes; }
 
 protected:
     /**
@@ -47,7 +46,6 @@ protected:
      */
     virtual Vertex* getClone() const { return new Vertex(*this); }
 
-    static std::set<std::string> msSupportedTypes;
 };
 
 } // end namespace graph_analysis

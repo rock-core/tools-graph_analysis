@@ -48,9 +48,16 @@
 #include <QStyleOption>
 
 #include <base/Logging.hpp>
+#include <boost/assign/list_of.hpp>
 
 namespace graph_analysis {
 namespace gui {
+
+std::set<std::string> NodeItem::msSupportedTypes = boost::assign::list_of
+    ("base")
+    ("port")
+    ("cluster")
+    ;
 
 NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     : mpVertex(vertex)

@@ -3,9 +3,9 @@
 
 
 namespace graph_analysis {
-    class Vertex;
-
 namespace gui {
+    
+    class NodeItem;
 
 AddNodeDialog::AddNodeDialog()
 : mValid(false)
@@ -34,7 +34,7 @@ void AddNodeDialog::setupUi(QDialog *Dialog)
     label_2->setObjectName(QString::fromUtf8("label_2"));
     label_2->setGeometry(QRect(20, 70, 91, 31));
     comboBox = new QComboBox(Dialog);
-    std::set<std::string> types = Vertex::getSupportedTypes();
+    std::set<std::string> types = NodeItem::getSupportedTypes();
     foreach(std::string type, types)
     {
         comboBox->addItem(QString(type.c_str()));

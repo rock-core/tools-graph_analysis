@@ -84,6 +84,7 @@ public:
     virtual void changeLabel(const std::string &label)  { throw std::runtime_error("graph_analysis::gui::NodeItem::changeLabel is not reimplemented"); }
     virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented"); }
 
+    static std::set<std::string> getSupportedTypes() { return msSupportedTypes; }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
@@ -91,6 +92,8 @@ protected:
     graph_analysis::Vertex::Ptr mpVertex;
     QPointF mNewPos;
     GraphWidget* mpGraphWidget;
+
+    static std::set<std::string> msSupportedTypes;
 };
 
 } // end namespace gui
