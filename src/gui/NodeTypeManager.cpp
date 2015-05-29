@@ -30,23 +30,31 @@ NodeTypeManager::~NodeTypeManager()
     }
 }
 
-void NodeTypeManager::registerVisualization(const node::Type& type, NodeItem* graphicsItem)
+void NodeTypeManager::registerVisualization(const node::Type& type, NodeItem* graphicsItem, bool throwOnAlreadyRegistered)
 {
     try {
-        graphicsItemByType(type);
-        throw std::runtime_error("graph_analysis::gui::NodeTypeManager::registerVisualization: type '" + type + "' is already registered");
+        graphicsItemByType(type, true);
     } catch(...)
     {
         mClassVisualizationMap[type] = graphicsItem;
     }
+    LOG_WARN_S << "graph_analysis::gui::NodeTypeManager::registerVisualization: type '" + type + "' is already registered.";
+    if(throwOnAlreadyRegistered)
+    {
+        throw std::runtime_error("graph_analysis::gui::NodeTypeManager::registerVisualization: type '" + type + "' is already registered");
+    }
 }
 
-NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type)
+NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type, bool throwOnDefault)
 {
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
         LOG_DEBUG_S << "graph_analysis::gui::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
+        if(throwOnDefault)
+        {
+            throw std::runtime_error("graph_analysis::gui::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered");
+        }
         return mClassVisualizationMap["default"];
     }
 

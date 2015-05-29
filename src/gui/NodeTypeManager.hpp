@@ -27,7 +27,7 @@ public:
 
 private:
     ClassVisualizationMap mClassVisualizationMap;
-    NodeItem* graphicsItemByType(const node::Type& type);
+    NodeItem* graphicsItemByType(const node::Type& type, bool throwOnDefault = false);
 
 public:
     NodeTypeManager();
@@ -35,7 +35,7 @@ public:
 
     // Register visualization class
     // takes ownership of graphicsItem
-    void registerVisualization(const node::Type& type, NodeItem* graphicsItem);
+    void registerVisualization(const node::Type& type, NodeItem* graphicsItem, bool throwOnAlreadyRegistered = false);
     NodeItem* createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
 };
 

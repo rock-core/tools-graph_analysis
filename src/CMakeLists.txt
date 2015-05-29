@@ -39,6 +39,7 @@ rock_library(graph_analysis
         snap/DirectedGraph.cpp
         SubGraph.cpp
         Vertex.cpp
+        BaseVertex.cpp
         VertexIterable.cpp
         VertexIterator.cpp
         WeightedEdge.cpp
@@ -98,6 +99,7 @@ rock_library(graph_analysis
         SubGraphImpl.hpp
         TypedGraph.hpp
         Vertex.hpp
+        BaseVertex.hpp
         VertexIterable.hpp
         VertexIterator.hpp
         WeightedEdge.hpp

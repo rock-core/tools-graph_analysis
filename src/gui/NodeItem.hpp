@@ -44,6 +44,8 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsItem>
 #include <QList>
+#include <set>
+#include <string>
 #include <graph_analysis/Vertex.hpp>
 
 namespace graph_analysis {
