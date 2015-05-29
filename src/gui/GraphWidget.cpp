@@ -117,7 +117,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     reset();
 }
 
-void GraphWidget::showContextMenu(const QPoint &pos)
+void GraphWidget::showContextMenu(const QPoint& pos)
 {
     ActionCommander comm(this);
     QPoint position = mapTo(this, pos);
@@ -260,7 +260,7 @@ void GraphWidget::startNewEdgeHere()
     }
 }
 
-void GraphWidget::spawnEdge(const std::string &label)
+void GraphWidget::spawnEdge(const std::string& label)
 {
     Edge::Ptr edge(new Edge());
     edge->setSourceVertex(mpStartVertex);
@@ -318,7 +318,7 @@ void GraphWidget::exportGraph()
 }
 
 
-void GraphWidget::toFile(const std::string &filename)
+void GraphWidget::toFile(const std::string& filename)
 {
     mpGVGraph->renderToFile(filename, mLayout.toStdString());
 }
@@ -589,7 +589,7 @@ void GraphWidget::wheelEvent(QWheelEvent *event)
 }
 #endif
 
-void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
+void GraphWidget::drawBackground(QPainter *painter, const QRectF& rect)
 {
     Q_UNUSED(rect);
 

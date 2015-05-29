@@ -10,7 +10,7 @@ class GraphvizWriter : public Writer
 {
     std::string mLayout;
 public:
-    GraphvizWriter(const std::string &layout = "dot");
+    GraphvizWriter(const std::string& layout = "dot");
     ~GraphvizWriter();
 
     void write(const std::string& filename, const BaseGraph& graph) const;

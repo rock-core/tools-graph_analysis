@@ -81,7 +81,7 @@ public:
     graph_analysis::Vertex::Ptr getVertex() { return mpVertex; }
     void setVertex(graph_analysis::Vertex::Ptr vertex) { mpVertex = vertex; }
 
-    virtual void changeLabel(const std::string &label)  { throw std::runtime_error("graph_analysis::gui::NodeItem::changeLabel is not reimplemented"); }
+    virtual void changeLabel(const std::string& label)  { throw std::runtime_error("graph_analysis::gui::NodeItem::changeLabel is not reimplemented"); }
     virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented"); }
 
     static std::set<std::string> getSupportedTypes() { return msSupportedTypes; }

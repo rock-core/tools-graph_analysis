@@ -5,7 +5,7 @@
 namespace graph_analysis {
 namespace io {
 
-GraphvizWriter::GraphvizWriter(const std::string &layout) : mLayout(layout)
+GraphvizWriter::GraphvizWriter(const std::string& layout) : mLayout(layout)
 {}
 
 GraphvizWriter::~GraphvizWriter()

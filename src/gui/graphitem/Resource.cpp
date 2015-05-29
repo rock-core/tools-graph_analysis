@@ -26,7 +26,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     //mLabel->setZValue(-100.0);
 }
 
-void Resource::changeLabel(const std::string &label)
+void Resource::changeLabel(const std::string& label)
 {
     delete mLabel;
     mpVertex->setLabel(label);

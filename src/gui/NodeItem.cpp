@@ -132,7 +132,7 @@ bool NodeItem::advance()
     return true;
 }
 
-QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
 {
     switch (change)
     {

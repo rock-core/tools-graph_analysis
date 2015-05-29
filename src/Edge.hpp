@@ -16,9 +16,9 @@ class Edge : public GraphElement
 public:
     typedef boost::shared_ptr< Edge > Ptr;
 
-    Edge(const std::string &label = "");
+    Edge(const std::string& label = "");
 
-    Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string &label = "");
+    Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label = "");
 
     virtual ~Edge() {}
 
@@ -73,7 +73,7 @@ public:
     /**
      * Set edge label
      */
-    void setLabel(const std::string &label) { mLabel = label; }
+    void setLabel(const std::string& label) { mLabel = label; }
 
     /**
      * Get label

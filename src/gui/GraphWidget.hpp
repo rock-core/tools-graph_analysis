@@ -88,8 +88,8 @@ public:
 
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
-    void toFile(const std::string &filename);
-    void toFileNoLayout(const std::string &filename);
+    void toFile(const std::string& filename);
+    void toFileNoLayout(const std::string& filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
@@ -128,7 +128,7 @@ public slots:
     void zoomIn();
     void zoomOut();
     void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
-    void showContextMenu(const QPoint &pos);
+    void showContextMenu(const QPoint& pos);
 
     void setLayout(QString layoutName);
     void refresh();
@@ -150,13 +150,13 @@ protected:
 #ifndef QT_NO_WHEELEVENT
     void wheelEvent(QWheelEvent *event);
 #endif
-    void drawBackground(QPainter *painter, const QRectF &rect);
+    void drawBackground(QPainter *painter, const QRectF& rect);
 
     void scaleView(qreal scaleFactor);
 
 private:
     void updateGVGraph();
-    void spawnEdge(const std::string &label);
+    void spawnEdge(const std::string& label);
 
     graph_analysis::BaseGraph::Ptr mpGraph;
 
