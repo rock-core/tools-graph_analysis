@@ -2,15 +2,19 @@
 #define GRAPH_ANALYSIS_VERTEX_TYPE_MANAGER_HPP
 
 #include <map>
+#include <string>
 #include <base/Singleton.hpp>
+#include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/BaseVertex.hpp>
 
 namespace graph_analysis {
 
     class Vertex;
+    class BaseVertex;
 
 namespace vertex {
     typedef std::string Type;
-}
+} // end namespace vertex
 
 /**
  * \brief Factory for Vertex subclasses
@@ -22,7 +26,7 @@ public:
 
 private:
     ClassVisualizationMap mClassVisualizationMap;
-    Vertex::Ptr vertexByType(const vertex::Type& type);
+    Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnDefault = false);
 
 public:
     VertexTypeManager();
@@ -30,9 +34,9 @@ public:
 
     // Register visualization class
     // takes ownership of graphicsItem
-    void registerVisualization(const vertex::Type& type, Vertex::Ptr node);
+    void registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered = false);
     Vertex::Ptr createVertex(vertex::Type);
 };
 
-#endif /* GRAPH_ANALYSIS_VERTEX_TYPE_MANAGER_HPP */
 } // end namespace graph_analysis
+#endif /* GRAPH_ANALYSIS_VERTEX_TYPE_MANAGER_HPP */

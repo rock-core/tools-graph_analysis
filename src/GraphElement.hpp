@@ -84,9 +84,9 @@ public:
      */
     std::string toPrefixedString(GraphId graph) const;
 
-protected:
     void disassociateFromAll() { mGraphElementMap.clear(); }
 
+protected:
     GraphElementMap mGraphElementMap;
 
     GraphElementId mUid;

@@ -42,6 +42,7 @@ rock_library(graph_analysis
         BaseVertex.cpp
         VertexIterable.cpp
         VertexIterator.cpp
+        VertexTypeManager.cpp
         WeightedEdge.cpp
     HEADERS
         Algorithms.hpp
@@ -102,6 +103,7 @@ rock_library(graph_analysis
         BaseVertex.hpp
         VertexIterable.hpp
         VertexIterator.hpp
+        VertexTypeManager.hpp
         WeightedEdge.hpp
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric gsl
