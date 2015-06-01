@@ -60,9 +60,11 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
     return it->second;
 }
 
-Vertex::Ptr VertexTypeManager::createVertex(vertex::Type type)
+Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std::string& label)
 {
-    return vertexByType(type)->clone();
+    Vertex::Ptr clonedVertex = vertexByType(type)->clone();
+    clonedVertex->setLabel(label);
+    return clonedVertex;
 }
 
 std::set<std::string> VertexTypeManager::getSupportedTypes()
