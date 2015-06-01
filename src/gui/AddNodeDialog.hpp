@@ -23,6 +23,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <graph_analysis/gui/NodeItem.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
 
 namespace graph_analysis {
 namespace gui {

@@ -9,17 +9,17 @@ namespace graph_analysis
 {
 
 /**
- * \brief A Base vertex inherited to allow storing data of Base type
+ * \brief A Cluster vertex inherited to allow storing data of Cluster type
  * \details For the purpose of storing data with a vertex, this storage type inherits
  * from class Vertex
  */
-class BaseVertex : public Vertex
+class ClusterVertex : public Vertex
 {
 public:
-    BaseVertex(const std::string& label = "");
-    std::string type() { return "base"; }
+    ClusterVertex(const std::string& label = "");
+    std::string type() { return "cluster"; }
     /**
-     * Clone this base vertex -- the returned base vertex will have no
+     * Clone this cluster vertex -- the returned cluster vertex will have no
      * graph association
      */
     Vertex::Ptr clone() const;
@@ -27,13 +27,13 @@ public:
     /** Get class name
      * \return class name
      */
-    virtual std::string getClassName() const { return "graph_analysis::BaseVertex"; }
+    virtual std::string getClassName() const { return "graph_analysis::ClusterVertex"; }
 
 protected:
     /**
      * Create a copy of this vertex
      */
-    virtual BaseVertex* getClone() const { return new BaseVertex(*this); }
+    virtual ClusterVertex* getClone() const { return new ClusterVertex(*this); }
 
 };
 

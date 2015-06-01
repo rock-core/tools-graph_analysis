@@ -12,9 +12,16 @@ namespace graph_analysis {
 VertexTypeManager::VertexTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
-        ("default", Vertex::Ptr (            new      Vertex()))
         ("base",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
+        ("port",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
+        ("cluster",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
         ;
+    mRegisteredTypes.clear();
+    ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
+    for(; mClassVisualizationMap.end() != it; ++it)
+    {
+        mRegisteredTypes.insert(it->first);
+    }
 }
 
 VertexTypeManager::~VertexTypeManager()
@@ -41,12 +48,12 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
-        LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered. Using default.";
+        LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered. Using default type 'base'.";
         if(throwOnDefault)
         {
             throw std::runtime_error("graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered");
         }
-        return mClassVisualizationMap["default"];
+        return mClassVisualizationMap["base"];
     }
 
     LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' registered.";
@@ -56,6 +63,11 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
 Vertex::Ptr VertexTypeManager::createVertex(vertex::Type type)
 {
     return vertexByType(type)->clone();
+}
+
+std::set<std::string> VertexTypeManager::getSupportedTypes()
+{
+    return mRegisteredTypes;
 }
 
 } // end namespace graph_analysis

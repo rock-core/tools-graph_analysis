@@ -2,15 +2,18 @@
 #define GRAPH_ANALYSIS_VERTEX_TYPE_MANAGER_HPP
 
 #include <map>
+#include <set>
 #include <string>
 #include <base/Singleton.hpp>
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/BaseVertex.hpp>
+#include <graph_analysis/PortVertex.hpp>
 
 namespace graph_analysis {
 
     class Vertex;
     class BaseVertex;
+    class PortVertex;
 
 namespace vertex {
     typedef std::string Type;
@@ -26,6 +29,7 @@ public:
 
 private:
     ClassVisualizationMap mClassVisualizationMap;
+    std::set<std::string> mRegisteredTypes;
     Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnDefault = false);
 
 public:
@@ -36,6 +40,7 @@ public:
     // takes ownership of graphicsItem
     void registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered = false);
     Vertex::Ptr createVertex(vertex::Type);
+    std::set<std::string> getSupportedTypes();
 };
 
 } // end namespace graph_analysis

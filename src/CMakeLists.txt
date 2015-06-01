@@ -40,6 +40,8 @@ rock_library(graph_analysis
         SubGraph.cpp
         Vertex.cpp
         BaseVertex.cpp
+        PortVertex.cpp
+        ClusterVertex.cpp
         VertexIterable.cpp
         VertexIterator.cpp
         VertexTypeManager.cpp
@@ -101,6 +103,8 @@ rock_library(graph_analysis
         TypedGraph.hpp
         Vertex.hpp
         BaseVertex.hpp
+        PortVertex.hpp
+        ClusterVertex.hpp
         VertexIterable.hpp
         VertexIterator.hpp
         VertexTypeManager.hpp
