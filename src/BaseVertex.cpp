@@ -10,7 +10,6 @@ BaseVertex::BaseVertex(const std::string& label)
 Vertex::Ptr BaseVertex::clone() const
 {
     Vertex::Ptr vertex( getClone());
-    vertex->disassociateFromAll();
     return vertex;
 }
 
