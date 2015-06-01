@@ -28,6 +28,8 @@
 namespace graph_analysis {
 namespace gui {
 
+    class NodeItem;
+
 class AddNodeDialog : public QObject
 {
     Q_OBJECT

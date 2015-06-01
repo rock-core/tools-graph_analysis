@@ -63,6 +63,7 @@ class NodeItem;
 class EdgeItem;
 class AddNodeDialog;
 class ActionCommander;
+class PropertyDialog;
 
 /**
  *
@@ -85,6 +86,7 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
     GraphWidget(QWidget *parent = 0);
+    ~GraphWidget();
 
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
@@ -190,6 +192,8 @@ private:
     bool mEdgeStartVertex;
     bool mEdgeEndVertex;
     bool mGVGraphDirty;
+
+    PropertyDialog *mpPropertyDialog;
 };
 
 } // end namespace gui

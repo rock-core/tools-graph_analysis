@@ -45,6 +45,7 @@
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
 #include "AddNodeDialog.hpp"
+#include "PropertyDialog.hpp"
 
 #include <set>
 #include <math.h>
@@ -115,6 +116,16 @@ GraphWidget::GraphWidget(QWidget *parent)
         this, SLOT(showContextMenu(const QPoint &)));
 
     reset();
+    mpPropertyDialog = new PropertyDialog(this);
+}
+
+GraphWidget::~GraphWidget()
+{
+    if(mpPropertyDialog)
+    {
+        mpPropertyDialog->closeDialog();
+    }
+//    destroy();
 }
 
 void GraphWidget::showContextMenu(const QPoint& pos)

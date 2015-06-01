@@ -4,8 +4,6 @@
 
 namespace graph_analysis {
 namespace gui {
-    
-    class NodeItem;
 
 AddNodeDialog::AddNodeDialog()
 : mValid(false)

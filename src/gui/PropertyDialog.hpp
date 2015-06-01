@@ -10,6 +10,7 @@
 #define PROPERTYDIALOG_H
 
 #include <QObject>
+#include <QCloseEvent>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
@@ -34,9 +35,11 @@ public:
     , mDragDrop(false)
     {
         setupUi(&mDialog);
-        mDialog.exec();
+        mDialog.show();
     }
     ~PropertyDialog(){}
+    
+    void closeDialog() { mDialog.done(0); }
     void setupUi(QDialog *Dialog)
     {
         if (Dialog->objectName().isEmpty())
@@ -97,7 +100,7 @@ public:
 
     void retranslateUi(QDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Property Dialog", 0, QApplication::UnicodeUTF8));
+        Dialog->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
         mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
