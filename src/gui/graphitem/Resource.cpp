@@ -1,6 +1,7 @@
 #include "Resource.hpp"
 
 #include <QPainter>
+#include <QGraphicsSceneDragDropEvent>
 #include <QStyle>
 #include <QStyleOption>
 
@@ -17,6 +18,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
 {
+    setAcceptDrops(true);
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -81,7 +83,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //        gradient.setColorAt(1, Qt::darkYellow);
 //    }
 //    painter->setBrush(gradient);
-//  
+//
 //    painter->setPen(QPen(Qt::black, 0));
 //    painter->drawEllipse(-10, -10, 20, 20);
 }
@@ -90,22 +92,82 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
-    //mLabel->mouseEvent(event);
-    QGraphicsItem::mousePressEvent(event);
+    bool dragDrop = mpGraphWidget->getDragDrop();
+    if(dragDrop)
+    {
+        dragEnterEvent(new QGraphicsSceneDragDropEvent());
+    }
+    else
+    {
+        QGraphicsItem::mousePressEvent(event);
+    }
 }
 
 void Resource::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
-    QGraphicsItem::mouseReleaseEvent(event);
+    bool dragDrop = mpGraphWidget->getDragDrop();
+    if(dragDrop)
+    {
+        dropEvent(new QGraphicsSceneDragDropEvent());
+    }
+    else
+    {
+        QGraphicsItem::mouseReleaseEvent(event);
+    }
 }
+
 void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
+void Resource::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
+{
+    LOG_DEBUG_S << "Drag'n'Drop RESOURCE: ENTER";
+    qDebug("Drag ENTER event for %s", mpVertex->toString().c_str());
+    bool dragDrop = mpGraphWidget->getDragDrop();
+    if(dragDrop)
+    {
+        mpGraphWidget->startNewEdgeHere();
+    }
+    QGraphicsItem::dragEnterEvent(event);
+}
+
+void Resource::dropEvent(QGraphicsSceneDragDropEvent * event)
+{
+    LOG_DEBUG_S << "Drag'n'Drop RESOURCE: DROP";
+    qDebug("Drop event for %s", mpVertex->toString().c_str());
+    bool dragDrop = mpGraphWidget->getDragDrop();
+    if(dragDrop)
+    {
+        Resource* targetItem = (Resource *) mpGraphWidget->scene()->itemAt(event->scenePos());
+        if(!targetItem)
+        {
+            qDebug("located NULL!!!");
+        }
+        /*
+        graph_analysis::Vertex::Ptr targetVertex = targetItem->getVertex();
+        qDebug("located vertex %s", targetVertex->toString().c_str());
+        mpGraphWidget->setSelectedVertex(targetVertex);
+        mpGraphWidget->setVertexSelected(true);
+        mpGraphWidget->endNewEdgeHere();
+         */
+    }
+    QGraphicsItem::dropEvent(event);
+}
+
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
+    bool dragDrop = mpGraphWidget->getDragDrop();
+    if(dragDrop)
+    {
+        setFlag(ItemIsMovable, false);
+    }
+    else
+    {
+        setFlag(ItemIsMovable);
+    }
     qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
     mPen = QPen(Qt::green);
 

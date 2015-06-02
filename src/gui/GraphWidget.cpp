@@ -90,6 +90,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mEdgeSelected(false)
     , mEdgeStartVertex(false)
     , mEdgeEndVertex(false)
+    , mDragDrop(false)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -521,6 +522,11 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
         QGraphicsView::mouseReleaseEvent(&fake);
     }
     else QGraphicsView::mouseReleaseEvent(event);
+}
+
+void GraphWidget::updateDragDrop(bool dragDrop)
+{
+    mDragDrop = dragDrop;
 }
 
 void GraphWidget::itemMoved()

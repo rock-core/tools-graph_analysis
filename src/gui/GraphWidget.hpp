@@ -110,7 +110,7 @@ public:
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
     void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
-    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; } 
+    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
     double  getScaleFactor () const { return mScaleFactor; }
 
     void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
@@ -124,6 +124,7 @@ public:
 
     void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
     bool getEdgeSelected () { return mEdgeSelected; }
+    bool getDragDrop() { return mDragDrop; }
 
 public slots:
     void shuffle();
@@ -142,6 +143,7 @@ public slots:
     void changeSelectedEdgeLabel();
     void removeSelectedEdge();
     void exportGraph();
+    void updateDragDrop(bool dragDrop);
 
 protected:
 
@@ -194,6 +196,7 @@ private:
     bool mGVGraphDirty;
 
     PropertyDialog *mpPropertyDialog;
+    bool mDragDrop;
 };
 
 } // end namespace gui

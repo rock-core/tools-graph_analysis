@@ -35,6 +35,9 @@ protected:
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
+    virtual void dragEnterEvent(QGraphicsSceneDragDropEvent * event);
+    virtual void dropEvent(QGraphicsSceneDragDropEvent * event);
+
 //    void keyPressEvent(QKeyEvent* event);
 
 

@@ -32,7 +32,6 @@ class PropertyDialog : public QObject
 public:
     PropertyDialog(GraphWidget *widget)
     : mpGraphWidget(widget)
-    , mDragDrop(false)
     {
         setupUi(&mDialog);
         mDialog.show();
@@ -96,7 +95,7 @@ public:
 
         retranslateUi(Dialog);
 
-        QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), this, SLOT(updateDragDrop(bool)));
+        QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
         QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
@@ -117,16 +116,9 @@ public:
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
-    bool getDragDrop() { return mDragDrop; }
-
 public slots:
-    void updateDragDrop(bool dragDrop)
-    {
-        mDragDrop = dragDrop;
-    }
 
 private:
-    bool mDragDrop;
     QDialog mDialog;
     GraphWidget *mpGraphWidget;
     QWidget *horizontalLayoutWidget;
