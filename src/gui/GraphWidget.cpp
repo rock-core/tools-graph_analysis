@@ -112,7 +112,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     // End of setting up filters
 
 
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), 
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
 
     reset();
@@ -143,6 +143,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
+    QAction *actionExport = comm.addAction("Export as DOT", SLOT(exportGraph()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
 
     // (conditionally) adding the actions to the context menu
@@ -161,6 +162,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionAddNode);
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
+    contextMenu.addAction(actionExport);
     contextMenu.addAction(actionLayout);
     contextMenu.exec(mapToGlobal(pos));
 }
@@ -531,7 +533,7 @@ void GraphWidget::itemMoved()
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) 
+    switch (event->key())
     {
     //case Qt::Key_Up:
     //    break;

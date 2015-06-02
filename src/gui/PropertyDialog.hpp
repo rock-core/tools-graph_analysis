@@ -38,7 +38,7 @@ public:
         mDialog.show();
     }
     ~PropertyDialog(){}
-    
+
     void closeDialog() { mDialog.done(0); }
     void setupUi(QDialog *Dialog)
     {
@@ -79,6 +79,13 @@ public:
 
         verticalLayout->addWidget(mpShuffleButton);
 
+        mpExportButton = new QPushButton(horizontalLayoutWidget);
+        mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
+        mpExportButton->setCheckable(false);
+        mpExportButton->setChecked(false);
+
+        verticalLayout->addWidget(mpExportButton);
+
         mpLayoutButton = new QPushButton(horizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
         mpLayoutButton->setCheckable(false);
@@ -92,6 +99,7 @@ public:
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), this, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
+        QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
 
@@ -105,11 +113,12 @@ public:
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
+        mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
     bool getDragDrop() { return mDragDrop; }
-    
+
 public slots:
     void updateDragDrop(bool dragDrop)
     {
@@ -126,6 +135,7 @@ private:
     QPushButton *mpAddNodeButton;
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
+    QPushButton *mpExportButton;
     QPushButton *mpLayoutButton;
 
 };
