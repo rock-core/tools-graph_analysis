@@ -125,6 +125,8 @@ public:
     void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
     bool getEdgeSelected () { return mEdgeSelected; }
     bool getDragDrop() { return mDragDrop; }
+    bool getDragInitiated() { return mEdgeStartVertex; }
+    graph_analysis::Vertex::Ptr getDragSource() { return mpStartVertex; }
 
 public slots:
     void shuffle();

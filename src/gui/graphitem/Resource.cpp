@@ -18,7 +18,6 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
 {
-    setAcceptDrops(true);
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -95,66 +94,20 @@ void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
     bool dragDrop = mpGraphWidget->getDragDrop();
     if(dragDrop)
     {
-        dragEnterEvent(new QGraphicsSceneDragDropEvent());
+        mpGraphWidget->startNewEdgeHere();
     }
-    else
-    {
-        QGraphicsItem::mousePressEvent(event);
-    }
+    QGraphicsItem::mousePressEvent(event);
 }
 
 void Resource::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
-    bool dragDrop = mpGraphWidget->getDragDrop();
-    if(dragDrop)
-    {
-        dropEvent(new QGraphicsSceneDragDropEvent());
-    }
-    else
-    {
-        QGraphicsItem::mouseReleaseEvent(event);
-    }
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
     QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
-void Resource::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
-{
-    LOG_DEBUG_S << "Drag'n'Drop RESOURCE: ENTER";
-    qDebug("Drag ENTER event for %s", mpVertex->toString().c_str());
-    bool dragDrop = mpGraphWidget->getDragDrop();
-    if(dragDrop)
-    {
-        mpGraphWidget->startNewEdgeHere();
-    }
-    QGraphicsItem::dragEnterEvent(event);
-}
-
-void Resource::dropEvent(QGraphicsSceneDragDropEvent * event)
-{
-    LOG_DEBUG_S << "Drag'n'Drop RESOURCE: DROP";
-    qDebug("Drop event for %s", mpVertex->toString().c_str());
-    bool dragDrop = mpGraphWidget->getDragDrop();
-    if(dragDrop)
-    {
-        Resource* targetItem = (Resource *) mpGraphWidget->scene()->itemAt(event->scenePos());
-        if(!targetItem)
-        {
-            qDebug("located NULL!!!");
-        }
-        /*
-        graph_analysis::Vertex::Ptr targetVertex = targetItem->getVertex();
-        qDebug("located vertex %s", targetVertex->toString().c_str());
-        mpGraphWidget->setSelectedVertex(targetVertex);
-        mpGraphWidget->setVertexSelected(true);
-        mpGraphWidget->endNewEdgeHere();
-         */
-    }
-    QGraphicsItem::dropEvent(event);
 }
 
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
@@ -163,6 +116,12 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     if(dragDrop)
     {
         setFlag(ItemIsMovable, false);
+        if(mpGraphWidget->getDragInitiated() && mpGraphWidget->getDragSource() != mpVertex)
+        {
+            mpGraphWidget->setSelectedVertex(mpVertex);
+            mpGraphWidget->setVertexSelected(true);
+            mpGraphWidget->endNewEdgeHere();
+        }
     }
     else
     {
