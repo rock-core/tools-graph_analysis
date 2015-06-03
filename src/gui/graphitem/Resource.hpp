@@ -26,6 +26,9 @@ public:
 
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { return new Resource(graphWidget, vertex); }
 
+    void setPortCount(int portCount)    { mPortCount = portCount; }
+    int  getPortCount()                 { return mPortCount; }
+
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
     void mousePressEvent(::QGraphicsSceneMouseEvent* event);
@@ -42,6 +45,7 @@ private:
     Label* mLabel;
     QPen mPen;
     QPen mPenDefault;
+    int mPortCount;
 };
 
 } // end namespace graphitem

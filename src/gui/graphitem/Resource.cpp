@@ -17,6 +17,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex)
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
+    , mPortCount(0)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
@@ -44,11 +45,16 @@ void Resource::updateLabel()
 
 QRectF Resource::boundingRect() const
 {
-    //qreal adjust = 0;
     //QRectF boundingRect( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
     //return childrenBoundingRect() | boundingRect;
 
-    return childrenBoundingRect();
+    QRectF childrenRect = childrenBoundingRect();
+    if("graph_analysis::ClusterVertex" == mpVertex->getClassName())
+    {
+        qreal adjust = 13.;
+        return childrenRect.adjusted( - adjust, - adjust, adjust, adjust + (qreal) ((1 + mPortCount) >> 1) * 2. * adjust);
+    }
+    return childrenRect;
 }
 
 QPainterPath Resource::shape() const

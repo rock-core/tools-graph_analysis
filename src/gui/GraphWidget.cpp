@@ -192,7 +192,7 @@ void GraphWidget::changeSelectedVertexLabel()
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input Node Label"),
                                          tr("New Label:"), QLineEdit::Normal,
-                                         QDir::home().dirName(), &ok);
+                                         QString(mpSelectedVertex->getLabel().c_str()), &ok);
     if (ok && !label.isEmpty())
     {
         mpSelectedVertex->setLabel(label.toStdString());
@@ -204,12 +204,12 @@ void GraphWidget::changeSelectedVertexLabel()
 void GraphWidget::changeSelectedEdgeLabel()
 {
     bool ok;
+    EdgeItem* edge = mEdgeItemMap[mpSelectedEdge];
     QString label = QInputDialog::getText(this, tr("Input Edge Label"),
                                          tr("New Label:"), QLineEdit::Normal,
-                                         QDir::home().dirName(), &ok);
+                                          edge->getLabel()->toPlainText(), &ok);
     if (ok && !label.isEmpty())
     {
-        EdgeItem* edge = mEdgeItemMap[mpSelectedEdge];
         graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
         edgeLabel->setPlainText(QString(label.toStdString().c_str()));
     }
@@ -406,7 +406,7 @@ void GraphWidget::updateFromGraph()
         // Registering new node items
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
         mNodeItemMap[vertex] = nodeItem;
-
+//        nodeItem->setPortCount(mpGraph->getEdgeIterator(vertex));
         scene()->addItem(nodeItem);
         mpGVGraph->addNode(vertex);
     }

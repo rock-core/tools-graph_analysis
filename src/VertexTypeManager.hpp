@@ -8,12 +8,14 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/BaseVertex.hpp>
 #include <graph_analysis/PortVertex.hpp>
+#include <graph_analysis/ClusterVertex.hpp>
 
 namespace graph_analysis {
 
     class Vertex;
     class BaseVertex;
     class PortVertex;
+    class ClusterVertex;
 
 namespace vertex {
     typedef std::string Type;

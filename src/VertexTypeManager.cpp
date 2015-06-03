@@ -13,8 +13,8 @@ VertexTypeManager::VertexTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
         ("base",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
-        ("port",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
-        ("cluster",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
+        ("port",    Vertex::Ptr ((Vertex *) (new PortVertex())))
+        ("cluster",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
         ;
     mRegisteredTypes.clear();
     ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();

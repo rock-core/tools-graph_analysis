@@ -1,5 +1,5 @@
-#ifndef GRAPH_ANALYSIS_BASEVERTEX_HPP
-#define GRAPH_ANALYSIS_BASEVERTEX_HPP
+#ifndef GRAPH_ANALYSIS_CLUSTERVERTEX_HPP
+#define GRAPH_ANALYSIS_CLUSTERVERTEX_HPP
 
 #include <iostream>
 #include <graph_analysis/Vertex.hpp>
@@ -27,7 +27,7 @@ public:
     /** Get class name
      * \return class name
      */
-    virtual std::string getClassName() const { return "graph_analysis::ClusterVertex"; }
+    std::string getClassName() const    { return "graph_analysis::ClusterVertex"; }
 
 protected:
     /**
@@ -38,4 +38,4 @@ protected:
 };
 
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_BASEVERTEX_HPP
+#endif // GRAPH_ANALYSIS_CLUSTERVERTEX_HPP
