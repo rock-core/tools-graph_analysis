@@ -55,6 +55,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QKeyEvent>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
 #include <QInputDialog>
@@ -264,7 +265,7 @@ void GraphWidget::startNewEdgeHere()
         bool ok;
         QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
                                              tr("New Edge Label:"), QLineEdit::Normal,
-                                             QDir::home().dirName(), &ok);
+                                             QString("newEdge"), &ok);
         if (ok && !label.isEmpty())
         {
             spawnEdge(label.toStdString());
@@ -309,7 +310,7 @@ void GraphWidget::endNewEdgeHere()
         bool ok;
         QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
                                              tr("New Edge Label:"), QLineEdit::Normal,
-                                             QDir::home().dirName(), &ok);
+                                             QString("newEdge"), &ok);
         if (ok && !label.isEmpty())
         {
             spawnEdge(label.toStdString());
@@ -322,9 +323,7 @@ void GraphWidget::endNewEdgeHere()
 void GraphWidget::exportGraph()
 {
     bool ok;
-    QString label = QInputDialog::getText(this, tr("Name Ouput File"),
-                                         tr("export file name:"), QLineEdit::Normal,
-                                         "graph.dot", &ok);
+    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath());
     if (ok && !label.isEmpty())
     {
         toFile(label.toStdString());
