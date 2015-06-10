@@ -54,7 +54,7 @@ namespace graph_analysis {
 namespace io {
 
 class GVGraph;
-class YamlExportWriter;
+class YamlWriter;
 
 } // end namespace io
 
@@ -170,7 +170,7 @@ private:
     graph_analysis::BaseGraph::Ptr mpGraph;
 
     io::GVGraph* mpGVGraph;
-    io::YamlExportWriter* mpYamlExportWriter;
+    io::YamlWriter* mpYamlWriter;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;

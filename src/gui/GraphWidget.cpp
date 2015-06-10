@@ -65,7 +65,7 @@
 
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/io/YamlExportWriter.hpp>
+#include <graph_analysis/io/YamlWriter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
@@ -83,7 +83,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpGraph()
     , mpGVGraph(0)
-    , mpYamlExportWriter(new io::YamlExportWriter())
+    , mpYamlWriter(new io::YamlWriter())
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -347,7 +347,7 @@ void GraphWidget::toFile(const std::string& filename)
 {
     try
     {
-        mpYamlExportWriter->write(filename, mpGraph);
+        mpYamlWriter->write(filename, mpGraph);
     }
     catch(std::exception e)
     {

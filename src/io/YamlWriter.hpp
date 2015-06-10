@@ -8,14 +8,14 @@
 namespace graph_analysis {
 namespace io {
 
-class YamlExportWriter : public Writer
+class YamlWriter : public Writer
 {
 private:
     void exportVertex(std::ofstream& fout, Vertex::Ptr) const;
     void exportEdge(std::ofstream& fout, Edge::Ptr) const;
 public:
-    YamlExportWriter();
-    ~YamlExportWriter();
+    YamlWriter();
+    ~YamlWriter();
 
     void write(const std::string& filename, const BaseGraph& graph) const;
 

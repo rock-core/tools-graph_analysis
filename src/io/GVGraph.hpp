@@ -16,7 +16,7 @@ static inline Agraph_t* _agopen(const std::string& name, Agdesc_t kind)
     // extern Agraph_t *agopen(char *name, Agdesc_t desc, Agdisc_t * disc);
     // first arg: graph
     // second arg: type of graph
-    // third arg: (optional) reference to functions for reading, memory, etc. -- 
+    // third arg: (optional) reference to functions for reading, memory, etc. --
     //    0 for default
     return agopen(const_cast<char*>(name.c_str()), kind, 0);
 }
@@ -176,8 +176,7 @@ public:
      *  \see http://www.graphviz.org/Documentation.php for available layouts
      */
     void applyLayout(const std::string& layout = "dot");
-    void renderToFile(const std::string& filename, const std::string& layout = "dot");
-    void renderToFileNoLayout(const std::string& filename);
+    void renderToFile(const std::string& filename, const std::string& layout = "dot", bool forced = false);
 
     boxf boundingRect() const;
     void setRootNode(Vertex::Ptr vertex);
@@ -209,5 +208,5 @@ private:
 };
 
 } // end namespace io
-} // end namespace graph_analysis 
+} // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_IO_GVGRAPH_HPP
