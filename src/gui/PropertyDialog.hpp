@@ -121,7 +121,7 @@ public:
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
-        mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as DOT", 0, QApplication::UnicodeUTF8));
+        mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as .dot", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

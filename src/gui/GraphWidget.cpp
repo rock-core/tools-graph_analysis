@@ -149,7 +149,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
     QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
-    QAction *actionExportToDot = comm.addAction("Export as DOT", SLOT(exportGraphToDot()));
+    QAction *actionExportToDot = comm.addAction("Export as .dot", SLOT(exportGraphToDot()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
 
     // (conditionally) adding the actions to the context menu
@@ -349,7 +349,7 @@ void GraphWidget::toFile(const std::string& filename)
     {
         mpYamlWriter->write(filename, mpGraph);
     }
-    catch(std::exception e)
+    catch(std::runtime_error e)
     {
         LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export Failed"), QString(e.what()));
@@ -358,7 +358,15 @@ void GraphWidget::toFile(const std::string& filename)
 
 void GraphWidget::toDotFile(const std::string& filename)
 {
-    mpGVGraph->renderToFile(filename, mLayout.toStdString());
+    try
+    {
+        mpGVGraph->renderToFile(filename, mLayout.toStdString());
+    }
+    catch(std::runtime_error e)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export via graphviz failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
+    }
 }
 
 void GraphWidget::reset(bool keepData)
