@@ -63,11 +63,13 @@
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
 
-#include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/Filter.hpp>
+#include <graph_analysis/io/GVGraph.hpp>
+#include <graph_analysis/io/YamlExportWriter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
+#include <exception>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
 #define DEFAULT_SCALING_FACTOR 1.4
@@ -81,6 +83,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpGraph()
     , mpGVGraph(0)
+    , mpYamlExportWriter(new io::YamlExportWriter())
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -145,7 +148,8 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
-    QAction *actionExport = comm.addAction("Export as DOT", SLOT(exportGraph()));
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
+    QAction *actionExportToDot = comm.addAction("Export as DOT", SLOT(exportGraphToDot()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
 
     // (conditionally) adding the actions to the context menu
@@ -165,6 +169,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionExport);
+    contextMenu.addAction(actionExportToDot);
     contextMenu.addAction(actionLayout);
     contextMenu.exec(mapToGlobal(pos));
 }
@@ -322,16 +327,36 @@ void GraphWidget::endNewEdgeHere()
 
 void GraphWidget::exportGraph()
 {
-    bool ok;
     QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath());
-    if (ok && !label.isEmpty())
+    if (!label.isEmpty())
     {
         toFile(label.toStdString());
     }
 }
 
+void GraphWidget::exportGraphToDot()
+{
+    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath());
+    if (!label.isEmpty())
+    {
+        toDotFile(label.toStdString());
+    }
+}
 
 void GraphWidget::toFile(const std::string& filename)
+{
+    try
+    {
+        mpYamlExportWriter->write(filename, mpGraph);
+    }
+    catch(std::exception e)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph Export Failed"), QString(e.what()));
+    }
+}
+
+void GraphWidget::toDotFile(const std::string& filename)
 {
     mpGVGraph->renderToFile(filename, mLayout.toStdString());
 }

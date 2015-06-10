@@ -85,6 +85,13 @@ public:
 
         verticalLayout->addWidget(mpExportButton);
 
+        mpExportToDotButton = new QPushButton(horizontalLayoutWidget);
+        mpExportToDotButton->setObjectName(QString::fromUtf8("mpExportToDotButton"));
+        mpExportToDotButton->setCheckable(false);
+        mpExportToDotButton->setChecked(false);
+
+        verticalLayout->addWidget(mpExportToDotButton);
+
         mpLayoutButton = new QPushButton(horizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
         mpLayoutButton->setCheckable(false);
@@ -99,6 +106,7 @@ public:
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
         QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
+        QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
 
@@ -113,6 +121,7 @@ public:
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
+        mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as DOT", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
@@ -128,6 +137,7 @@ private:
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
     QPushButton *mpExportButton;
+    QPushButton *mpExportToDotButton;
     QPushButton *mpLayoutButton;
 
 };

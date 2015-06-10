@@ -26,6 +26,8 @@ rock_library(graph_analysis
         gui/NodeTypeManager.cpp
         io/GexfWriter.cpp
         io/GraphvizWriter.cpp
+        io/YamlExportWriter.cpp
+        io/YamlImportReader.cpp
         io/GVGraph.cpp
         lemon/DirectedGraph.cpp
         lemon/DirectedSubGraph.cpp
@@ -81,6 +83,8 @@ rock_library(graph_analysis
         gui/PropertyDialog.hpp
         io/GexfWriter.hpp
         io/GraphvizWriter.hpp
+        io/YamlExportWriter.hpp
+        io/YamlImportReader.hpp
         io/GVGraph.hpp
         lemon/ArcIterator.hpp
         lemon/DirectedGraph.hpp

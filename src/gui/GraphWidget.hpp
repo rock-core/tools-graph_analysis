@@ -54,6 +54,7 @@ namespace graph_analysis {
 namespace io {
 
 class GVGraph;
+class YamlExportWriter;
 
 } // end namespace io
 
@@ -91,6 +92,7 @@ public:
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
     void toFile(const std::string& filename);
+    void toDotFile(const std::string& filename);
     void toFileNoLayout(const std::string& filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
@@ -145,6 +147,7 @@ public slots:
     void changeSelectedEdgeLabel();
     void removeSelectedEdge();
     void exportGraph();
+    void exportGraphToDot();
     void updateDragDrop(bool dragDrop);
 
 protected:
@@ -167,6 +170,7 @@ private:
     graph_analysis::BaseGraph::Ptr mpGraph;
 
     io::GVGraph* mpGVGraph;
+    io::YamlExportWriter* mpYamlExportWriter;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;
