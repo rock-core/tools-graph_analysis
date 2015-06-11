@@ -148,9 +148,9 @@ public slots:
     void removeSelectedVertex();
     void changeSelectedEdgeLabel();
     void removeSelectedEdge();
-    void exportGraph();
-    void exportGraphToDot();
     void exportGraphToXml();
+    void exportGraphToYml();
+    void exportGraphToDot();
     void updateDragDrop(bool dragDrop);
 
 protected:

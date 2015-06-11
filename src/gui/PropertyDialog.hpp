@@ -78,12 +78,19 @@ public:
 
         verticalLayout->addWidget(mpShuffleButton);
 
-        mpExportButton = new QPushButton(horizontalLayoutWidget);
-        mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
-        mpExportButton->setCheckable(false);
-        mpExportButton->setChecked(false);
+        mpExportToXmlButton = new QPushButton(horizontalLayoutWidget);
+        mpExportToXmlButton->setObjectName(QString::fromUtf8("mpExportToXmlButton"));
+        mpExportToXmlButton->setCheckable(false);
+        mpExportToXmlButton->setChecked(false);
 
-        verticalLayout->addWidget(mpExportButton);
+        verticalLayout->addWidget(mpExportToXmlButton);
+
+        mpExportToYmlButton = new QPushButton(horizontalLayoutWidget);
+        mpExportToYmlButton->setObjectName(QString::fromUtf8("mpExportToYmlButton"));
+        mpExportToYmlButton->setCheckable(false);
+        mpExportToYmlButton->setChecked(false);
+
+        verticalLayout->addWidget(mpExportToYmlButton);
 
         mpExportToDotButton = new QPushButton(horizontalLayoutWidget);
         mpExportToDotButton->setObjectName(QString::fromUtf8("mpExportToDotButton"));
@@ -91,13 +98,6 @@ public:
         mpExportToDotButton->setChecked(false);
 
         verticalLayout->addWidget(mpExportToDotButton);
-
-        mpExportToXmlButton = new QPushButton(horizontalLayoutWidget);
-        mpExportToXmlButton->setObjectName(QString::fromUtf8("mpExportToXmlButton"));
-        mpExportToXmlButton->setCheckable(false);
-        mpExportToXmlButton->setChecked(false);
-
-        verticalLayout->addWidget(mpExportToXmlButton);
 
         mpLayoutButton = new QPushButton(horizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
@@ -112,9 +112,9 @@ public:
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
-        QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
-        QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
         QObject::connect(mpExportToXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToXml()));
+        QObject::connect(mpExportToYmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToYml()));
+        QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
 
@@ -128,9 +128,9 @@ public:
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
-        mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
+        mpExportToXmlButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
+        mpExportToYmlButton->setText(QApplication::translate("Dialog", "Export as .yml", 0, QApplication::UnicodeUTF8));
         mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as .dot", 0, QApplication::UnicodeUTF8));
-        mpExportToXmlButton->setText(QApplication::translate("Dialog", "Export as .gexf", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
@@ -145,9 +145,9 @@ private:
     QPushButton *mpAddNodeButton;
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
-    QPushButton *mpExportButton;
-    QPushButton *mpExportToDotButton;
     QPushButton *mpExportToXmlButton;
+    QPushButton *mpExportToYmlButton;
+    QPushButton *mpExportToDotButton;
     QPushButton *mpLayoutButton;
 
 };

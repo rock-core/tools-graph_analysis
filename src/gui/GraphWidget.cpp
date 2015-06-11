@@ -158,9 +158,9 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
+    QAction *actionExportToXml = comm.addAction("Export", SLOT(exportGraphToXml()));
+    QAction *actionExportToYml = comm.addAction("Export as .yml", SLOT(exportGraphToYml()));
     QAction *actionExportToDot = comm.addAction("Export as .dot", SLOT(exportGraphToDot()));
-    QAction *actionExportToXml = comm.addAction("Export as .gexp", SLOT(exportGraphToXml()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
 
     // (conditionally) adding the actions to the context menu
@@ -179,9 +179,9 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionAddNode);
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
-    contextMenu.addAction(actionExport);
-    contextMenu.addAction(actionExportToDot);
     contextMenu.addAction(actionExportToXml);
+    contextMenu.addAction(actionExportToYml);
+    contextMenu.addAction(actionExportToDot);
     contextMenu.addAction(actionLayout);
     contextMenu.exec(mapToGlobal(pos));
 }
@@ -339,7 +339,7 @@ void GraphWidget::endNewEdgeHere()
     }
 }
 
-void GraphWidget::exportGraph()
+void GraphWidget::exportGraphToYml()
 {
     QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath());
     if (!label.isEmpty())
