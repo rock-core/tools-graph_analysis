@@ -56,6 +56,7 @@ namespace io {
 class GVGraph;
 class YamlWriter;
 class GexfWriter;
+class GexfReader;
 
 } // end namespace io
 
@@ -92,10 +93,10 @@ public:
 
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
-    void toFile(const std::string& filename);
+    void toYmlFile(const std::string& filename);
     void toDotFile(const std::string& filename);
     void toXmlFile(const std::string& filename);
-    void toFileNoLayout(const std::string& filename);
+    void fromXmlFile(const std::string& filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
@@ -148,6 +149,7 @@ public slots:
     void removeSelectedVertex();
     void changeSelectedEdgeLabel();
     void removeSelectedEdge();
+    void importGraphFromXml();
     void exportGraphToXml();
     void exportGraphToYml();
     void exportGraphToDot();
@@ -175,6 +177,7 @@ private:
     io::GVGraph* mpGVGraph;
     io::YamlWriter* mpYamlWriter;
     io::GexfWriter* mpGexfWriter;
+    io::GexfReader* mpGexfReader;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;

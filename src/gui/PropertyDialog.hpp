@@ -43,10 +43,10 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
-        Dialog->resize(163, 221);
+        Dialog->resize(163, 281);
         horizontalLayoutWidget = new QWidget(Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 201));
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 261));
         verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -77,6 +77,13 @@ public:
         mpShuffleButton->setChecked(false);
 
         verticalLayout->addWidget(mpShuffleButton);
+
+        mpImportFromXmlButton = new QPushButton(horizontalLayoutWidget);
+        mpImportFromXmlButton->setObjectName(QString::fromUtf8("mpImportFromXmlButton"));
+        mpImportFromXmlButton->setCheckable(false);
+        mpImportFromXmlButton->setChecked(false);
+
+        verticalLayout->addWidget(mpImportFromXmlButton);
 
         mpExportToXmlButton = new QPushButton(horizontalLayoutWidget);
         mpExportToXmlButton->setObjectName(QString::fromUtf8("mpExportToXmlButton"));
@@ -112,6 +119,7 @@ public:
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
+        QObject::connect(mpImportFromXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphFromXml()));
         QObject::connect(mpExportToXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToXml()));
         QObject::connect(mpExportToYmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToYml()));
         QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
@@ -128,6 +136,7 @@ public:
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
+        mpImportFromXmlButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
         mpExportToXmlButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
         mpExportToYmlButton->setText(QApplication::translate("Dialog", "Export as .yml", 0, QApplication::UnicodeUTF8));
         mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as .dot", 0, QApplication::UnicodeUTF8));
@@ -145,6 +154,7 @@ private:
     QPushButton *mpAddNodeButton;
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
+    QPushButton *mpImportFromXmlButton;
     QPushButton *mpExportToXmlButton;
     QPushButton *mpExportToYmlButton;
     QPushButton *mpExportToDotButton;

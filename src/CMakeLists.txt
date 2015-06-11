@@ -25,6 +25,7 @@ rock_library(graph_analysis
         gui/NodeItem.cpp
         gui/NodeTypeManager.cpp
         io/GexfWriter.cpp
+        io/GexfReader.cpp
         io/GraphvizWriter.cpp
         io/YamlWriter.cpp
         io/YamlReader.cpp
@@ -82,6 +83,7 @@ rock_library(graph_analysis
         gui/AddNodeDialog.hpp
         gui/PropertyDialog.hpp
         io/GexfWriter.hpp
+        io/GexfReader.hpp
         io/GraphvizWriter.hpp
         io/YamlWriter.hpp
         io/YamlReader.hpp
