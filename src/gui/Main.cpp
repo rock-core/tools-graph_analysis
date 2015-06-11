@@ -48,7 +48,9 @@
 #include <graph_analysis/gui/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
-#define TESTNO 0
+#define TEST_1ST_GRAPH 0
+#define TEST_IMPORT 1
+#define TESTNO 1
 //#define RENDER
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
@@ -79,10 +81,11 @@ int main(int argc, char **argv)
     int testNo = TESTNO;
     switch(testNo)
     {
-        case 1:
+        case TEST_1ST_GRAPH:
+        {
             /*
-             * Test 1.:
-             * -------
+             * TEST_1ST_GRAPH:
+             * --------------
              */
             Vertex::Ptr v0(new Vertex("v0"));
             Vertex::Ptr v1(new Vertex("v1"));
@@ -139,6 +142,13 @@ int main(int argc, char **argv)
             widget->enableEdge(edge3);
             widget->enableEdge(edge4);
             widget->enableEdge(edge5);
+        }
+        break;
+
+        case TEST_IMPORT:
+        {
+            // working on a void graph
+        }
         break;
     }
 
