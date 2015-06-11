@@ -92,6 +92,13 @@ public:
 
         verticalLayout->addWidget(mpExportToDotButton);
 
+        mpExportToXmlButton = new QPushButton(horizontalLayoutWidget);
+        mpExportToXmlButton->setObjectName(QString::fromUtf8("mpExportToXmlButton"));
+        mpExportToXmlButton->setCheckable(false);
+        mpExportToXmlButton->setChecked(false);
+
+        verticalLayout->addWidget(mpExportToXmlButton);
+
         mpLayoutButton = new QPushButton(horizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
         mpLayoutButton->setCheckable(false);
@@ -107,6 +114,7 @@ public:
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
         QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
         QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
+        QObject::connect(mpExportToXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToXml()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
 
@@ -122,6 +130,7 @@ public:
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
         mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as .dot", 0, QApplication::UnicodeUTF8));
+        mpExportToXmlButton->setText(QApplication::translate("Dialog", "Export as .gexf", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
@@ -138,6 +147,7 @@ private:
     QPushButton *mpShuffleButton;
     QPushButton *mpExportButton;
     QPushButton *mpExportToDotButton;
+    QPushButton *mpExportToXmlButton;
     QPushButton *mpLayoutButton;
 
 };
