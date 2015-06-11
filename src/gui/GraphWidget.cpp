@@ -66,6 +66,7 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/io/YamlWriter.hpp>
+#include <graph_analysis/io/GexfWriter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
@@ -84,6 +85,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGraph()
     , mpGVGraph(0)
     , mpYamlWriter(new io::YamlWriter())
+    , mpGexfWriter(new io::GexfWriter())
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -130,6 +132,14 @@ GraphWidget::~GraphWidget()
     {
         mpPropertyDialog->closeDialog();
     }
+    if(mpYamlWriter)
+    {
+        delete mpYamlWriter;
+    }
+    if(mpGexfWriter)
+    {
+        delete mpGexfWriter;
+    }
 //    destroy();
 }
 
@@ -150,6 +160,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
     QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
     QAction *actionExportToDot = comm.addAction("Export as .dot", SLOT(exportGraphToDot()));
+    QAction *actionExportToXml = comm.addAction("Export as .gexp", SLOT(exportGraphToXml()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
 
     // (conditionally) adding the actions to the context menu
@@ -170,6 +181,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionExport);
     contextMenu.addAction(actionExportToDot);
+    contextMenu.addAction(actionExportToXml);
     contextMenu.addAction(actionLayout);
     contextMenu.exec(mapToGlobal(pos));
 }
@@ -343,6 +355,15 @@ void GraphWidget::exportGraphToDot()
     }
 }
 
+void GraphWidget::exportGraphToXml()
+{
+    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath());
+    if (!label.isEmpty())
+    {
+        toXmlFile(label.toStdString());
+    }
+}
+
 void GraphWidget::toFile(const std::string& filename)
 {
     try
@@ -366,6 +387,19 @@ void GraphWidget::toDotFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export via graphviz failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
+    }
+}
+
+void GraphWidget::toXmlFile(const std::string& filename)
+{
+    try
+    {
+        mpGexfWriter->write(filename, mpGraph);
+    }
+    catch(std::runtime_error e)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export to .gexf failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph Export to .gexf Failed"), QString(e.what()));
     }
 }
 

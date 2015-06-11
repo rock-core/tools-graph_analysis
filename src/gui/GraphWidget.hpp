@@ -55,6 +55,7 @@ namespace io {
 
 class GVGraph;
 class YamlWriter;
+class GexfWriter;
 
 } // end namespace io
 
@@ -93,6 +94,7 @@ public:
     void addEdge(graph_analysis::Edge::Ptr edge);
     void toFile(const std::string& filename);
     void toDotFile(const std::string& filename);
+    void toXmlFile(const std::string& filename);
     void toFileNoLayout(const std::string& filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
@@ -148,6 +150,7 @@ public slots:
     void removeSelectedEdge();
     void exportGraph();
     void exportGraphToDot();
+    void exportGraphToXml();
     void updateDragDrop(bool dragDrop);
 
 protected:
@@ -171,6 +174,7 @@ private:
 
     io::GVGraph* mpGVGraph;
     io::YamlWriter* mpYamlWriter;
+    io::GexfWriter* mpGexfWriter;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;
