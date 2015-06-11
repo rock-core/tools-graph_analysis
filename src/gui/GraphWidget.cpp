@@ -230,6 +230,8 @@ void GraphWidget::changeSelectedEdgeLabel()
     {
         graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
         edgeLabel->setPlainText(QString(label.toStdString().c_str()));
+        graph_analysis::Edge::Ptr graph_edge = edge->getEdge();
+        graph_edge->setLabel(label.toStdString());
     }
 }
 

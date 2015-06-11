@@ -75,6 +75,8 @@ public:
     void setPainterPath(QPainterPath painterPath) { mPainterPath = painterPath; }
     virtual graphitem::edges::EdgeLabel* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
 
+    graph_analysis::Edge::Ptr getEdge() { return mpEdge; }
+
 protected:
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
