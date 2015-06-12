@@ -35,8 +35,8 @@ void GexfReader::read(const std::string& filename, const BaseGraph::Ptr& graph) 
     {
         libgexf::t_id current = edge_it->next();
         std::string edgeLabel = data.getEdgeAttribute(current, labelAttr);
-        Vertex::Ptr sourceVertex = vertexMap[edge_it->currentSource()]; // NOTE: assumes .gexf(.xml) file is valid
-        Vertex::Ptr targetVertex = vertexMap[edge_it->currentTarget()]; // NOTE: assumes .gexf(.xml) file is valid
+        Vertex::Ptr sourceVertex = vertexMap[edge_it->currentSource()]; // NOTE: assumes the .gexf(.xml) file is valid
+        Vertex::Ptr targetVertex = vertexMap[edge_it->currentTarget()]; // NOTE: assumes the .gexf(.xml) file is valid
         graph->addEdge(Edge::Ptr(new Edge(sourceVertex, targetVertex, edgeLabel)));
     }
 }

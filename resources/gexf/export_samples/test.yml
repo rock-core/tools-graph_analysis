@@ -1,0 +1,35 @@
+nodes:
+  - id: 4
+    label: v4
+    type: graph_analysis::Vertex
+  - id: 3
+    label: v3
+    type: graph_analysis::Vertex
+  - id: 2
+    label: v2
+    type: graph_analysis::Vertex
+  - id: 1
+    label: v1
+    type: graph_analysis::Vertex
+  - id: 0
+    label: v0
+    type: graph_analysis::Vertex
+edges:
+  - fromNodeId: 3
+    toNodeId: 4
+    label: edge5
+  - fromNodeId: 2
+    toNodeId: 3
+    label: edge4
+  - fromNodeId: 1
+    toNodeId: 4
+    label: edge3
+  - fromNodeId: 1
+    toNodeId: 2
+    label: edge2
+  - fromNodeId: 0
+    toNodeId: 3
+    label: edge1
+  - fromNodeId: 0
+    toNodeId: 1
+    label: edge0

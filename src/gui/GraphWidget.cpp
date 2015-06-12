@@ -68,6 +68,7 @@
 #include <graph_analysis/io/YamlWriter.hpp>
 #include <graph_analysis/io/GexfWriter.hpp>
 #include <graph_analysis/io/GexfReader.hpp>
+#include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
@@ -88,6 +89,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpYamlWriter(new io::YamlWriter())
     , mpGexfWriter(new io::GexfWriter())
     , mpGexfReader(new io::GexfReader())
+    , mpYamlReader(new io::YamlReader())
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -166,6 +168,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
     QAction *actionImportFromXml = comm.addAction("Import", SLOT(importGraphFromXml()));
     QAction *actionExportToXml = comm.addAction("Export", SLOT(exportGraphToXml()));
+    QAction *actionImportFromYml = comm.addAction("Import .yml", SLOT(importGraphFromYml()));
     QAction *actionExportToYml = comm.addAction("Export as .yml", SLOT(exportGraphToYml()));
     QAction *actionExportToDot = comm.addAction("Export as .dot", SLOT(exportGraphToDot()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
@@ -188,6 +191,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionImportFromXml);
     contextMenu.addAction(actionExportToXml);
+    contextMenu.addAction(actionImportFromYml);
     contextMenu.addAction(actionExportToYml);
     contextMenu.addAction(actionExportToDot);
     contextMenu.addAction(actionLayout);
@@ -374,6 +378,15 @@ void GraphWidget::importGraphFromXml()
     }
 }
 
+void GraphWidget::importGraphFromYml()
+{
+    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("YAML (*.yaml *.yml)"));
+    if (!label.isEmpty())
+    {
+        fromYmlFile(label.toStdString());
+    }
+}
+
 void GraphWidget::exportGraphToXml()
 {
     QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml)"));
@@ -412,6 +425,14 @@ void GraphWidget::toDotFile(const std::string& filename)
 void GraphWidget::fromXmlFile(const std::string& filename)
 {
     mpGexfReader->read(filename, mpGraph);
+    mpSubGraph->enableAllVertices();
+    mpSubGraph->enableAllEdges();
+    refresh();
+}
+
+void GraphWidget::fromYmlFile(const std::string& filename)
+{
+    mpYamlReader->read(filename, mpGraph);
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
     refresh();

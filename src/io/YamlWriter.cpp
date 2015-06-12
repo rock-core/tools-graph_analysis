@@ -5,19 +5,13 @@
 namespace graph_analysis {
 namespace io {
 
-YamlWriter::YamlWriter()
-{}
-
-YamlWriter::~YamlWriter()
-{}
-
 void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
     const char *fname = filename.c_str();
     std::ofstream fout(fname);
     if(!fout.is_open() || fout.fail())
     {
-        std::string error_msg = std::string("graph_analysis::io::YamlWriter: failed to open file ") + filename + " for graph export";
+        std::string error_msg = std::string("graph_analysis::io::YamlWriter: failed to open output file ") + filename + " for graph export";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }

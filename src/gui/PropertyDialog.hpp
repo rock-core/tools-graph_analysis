@@ -92,6 +92,13 @@ public:
 
         verticalLayout->addWidget(mpExportToXmlButton);
 
+        mpImportFromYmlButton = new QPushButton(horizontalLayoutWidget);
+        mpImportFromYmlButton->setObjectName(QString::fromUtf8("mpImportFromYmlButton"));
+        mpImportFromYmlButton->setCheckable(false);
+        mpImportFromYmlButton->setChecked(false);
+
+        verticalLayout->addWidget(mpImportFromYmlButton);
+
         mpExportToYmlButton = new QPushButton(horizontalLayoutWidget);
         mpExportToYmlButton->setObjectName(QString::fromUtf8("mpExportToYmlButton"));
         mpExportToYmlButton->setCheckable(false);
@@ -121,6 +128,7 @@ public:
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
         QObject::connect(mpImportFromXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphFromXml()));
         QObject::connect(mpExportToXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToXml()));
+        QObject::connect(mpImportFromYmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphFromYml()));
         QObject::connect(mpExportToYmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToYml()));
         QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
@@ -138,6 +146,7 @@ public:
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpImportFromXmlButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
         mpExportToXmlButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
+        mpImportFromYmlButton->setText(QApplication::translate("Dialog", "Import .yml", 0, QApplication::UnicodeUTF8));
         mpExportToYmlButton->setText(QApplication::translate("Dialog", "Export as .yml", 0, QApplication::UnicodeUTF8));
         mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as .dot", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
@@ -155,6 +164,7 @@ private:
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
     QPushButton *mpImportFromXmlButton;
+    QPushButton *mpImportFromYmlButton;
     QPushButton *mpExportToXmlButton;
     QPushButton *mpExportToYmlButton;
     QPushButton *mpExportToDotButton;
