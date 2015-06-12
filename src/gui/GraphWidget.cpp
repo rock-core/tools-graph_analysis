@@ -412,8 +412,9 @@ void GraphWidget::toDotFile(const std::string& filename)
 void GraphWidget::fromXmlFile(const std::string& filename)
 {
     mpGexfReader->read(filename, mpGraph);
+    mpSubGraph->enableAllVertices();
+    mpSubGraph->enableAllEdges();
     refresh();
-    //// TODO: filtering?
 }
 
 void GraphWidget::toXmlFile(const std::string& filename)

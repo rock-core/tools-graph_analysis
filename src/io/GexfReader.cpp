@@ -16,6 +16,7 @@ void GexfReader::read(const std::string& filename, const BaseGraph::Ptr& graph) 
 
     libgexf::GEXF gexf = reader->getGEXFCopy();
     libgexf::DirectedGraph& gexf_graph = gexf.getDirectedGraph();
+    libgexf::Data& data = gexf.getData();
 
     graph->clear();
     VertexMap vertexMap;
