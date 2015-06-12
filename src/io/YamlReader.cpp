@@ -1,6 +1,5 @@
 #include "YamlReader.hpp"
 #include <base/Logging.hpp>
-#define IS_EMPTY(X) (0 == X.rdbuf()->in_avail())
 
 namespace graph_analysis {
 namespace io {
@@ -60,14 +59,14 @@ void YamlReader::parseNodes(std::stringstream& nodeStream, const BaseGraph::Ptr&
 {
     char c;
     std::string idWord, labelWord, typeWord;
-    while(!IS_EMPTY(nodeStream))
+    while(!nodeStream.eof())
     {
         do
         {
             nodeStream >> c;
         }
-        while('-' != c && !IS_EMPTY(nodeStream));
-        if(IS_EMPTY(nodeStream))
+        while('-' != c && !nodeStream.eof());
+        if(nodeStream.eof())
         {
             break;
         }
@@ -85,14 +84,14 @@ void YamlReader::parseEdges(std::stringstream& edgeStream, const BaseGraph::Ptr&
 {
     char c;
     std::string fromNodeWord, toNodeWord, labelWord;
-    while(!IS_EMPTY(edgeStream))
+    while(!edgeStream.eof())
     {
         do
         {
             edgeStream >> c;
         }
-        while('-' != c && !IS_EMPTY(edgeStream));
-        if(IS_EMPTY(edgeStream))
+        while('-' != c && !edgeStream.eof());
+        if(edgeStream.eof())
         {
             break;
         }
@@ -109,7 +108,7 @@ void YamlReader::parseEdges(std::stringstream& edgeStream, const BaseGraph::Ptr&
 
 std::string YamlReader::nextToken(const std::string& keyword, std::stringstream& stream, const BaseGraph::Ptr& graph) const
 {
-    if(IS_EMPTY(stream))
+    if(stream.eof())
     {
         die("Parsing error: keyword '" + keyword + "' failed to be found; End-Of-File was reached prematurely");
     }
@@ -121,7 +120,7 @@ std::string YamlReader::nextToken(const std::string& keyword, std::stringstream&
         die(keyword, word);
     }
 
-    if(IS_EMPTY(stream))
+    if(stream.eof())
     {
         die("Parsing error: Attribute corresponding to keyword '" + keyword + "' failed to be found; End-Of-File was reached prematurely");
     }
