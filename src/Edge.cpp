@@ -29,7 +29,7 @@ std::string Edge::getClassName() const
 std::string Edge::toString() const
 {
     std::stringstream ss;
-    if(' ' == mLabel[0])
+    if(' ' == mLabel[0] || std::string::npos != mLabel.find("->"))
     {
         return mLabel;
     }
