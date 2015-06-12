@@ -60,13 +60,17 @@ void YamlReader::parseNodes(std::stringstream& nodeStream, const BaseGraph::Ptr&
 {
     char c;
     std::string idWord, labelWord, typeWord;
-    while(!nodeStream.eof())
+    while(!IS_EMPTY(nodeStream))
     {
         do
         {
             nodeStream >> c;
         }
-        while('-' != c && !nodeStream.eof());
+        while('-' != c && !IS_EMPTY(nodeStream));
+        if(IS_EMPTY(nodeStream))
+        {
+            break;
+        }
 
         idWord = nextToken("id:", nodeStream, graph);
         labelWord = nextToken("label:", nodeStream, graph);
@@ -81,13 +85,17 @@ void YamlReader::parseEdges(std::stringstream& edgeStream, const BaseGraph::Ptr&
 {
     char c;
     std::string fromNodeWord, toNodeWord, labelWord;
-    while(!edgeStream.eof())
+    while(!IS_EMPTY(edgeStream))
     {
         do
         {
             edgeStream >> c;
         }
-        while('-' != c && !edgeStream.eof());
+        while('-' != c && !IS_EMPTY(edgeStream));
+        if(IS_EMPTY(edgeStream))
+        {
+            break;
+        }
 
         fromNodeWord = nextToken("fromNodeId:", edgeStream, graph);
         toNodeWord = nextToken("toNodeId:", edgeStream, graph);
