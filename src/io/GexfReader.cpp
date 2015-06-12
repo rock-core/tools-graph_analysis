@@ -17,6 +17,7 @@ void GexfReader::read(const std::string& filename, const BaseGraph::Ptr& graph) 
     libgexf::GEXF gexf = reader->getGEXFCopy();
     libgexf::DirectedGraph& gexf_graph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
+    std::string labelAttr = LABEL;
 
     graph->clear();
     VertexMap vertexMap;
@@ -24,7 +25,8 @@ void GexfReader::read(const std::string& filename, const BaseGraph::Ptr& graph) 
     while(node_it->hasNext())
     {
         libgexf::t_id current = node_it->next();
-        Vertex::Ptr vertex(new Vertex(current));
+        std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
+        Vertex::Ptr vertex(new Vertex(nodeLabel));
         graph->addVertex(vertex);
         vertexMap[current] = vertex;
     }
@@ -32,9 +34,10 @@ void GexfReader::read(const std::string& filename, const BaseGraph::Ptr& graph) 
     while(edge_it->hasNext())
     {
         libgexf::t_id current = edge_it->next();
+        std::string edgeLabel = data.getEdgeAttribute(current, labelAttr);
         Vertex::Ptr sourceVertex = vertexMap[edge_it->currentSource()]; // NOTE: assumes .gexf(.xml) file is valid
         Vertex::Ptr targetVertex = vertexMap[edge_it->currentTarget()]; // NOTE: assumes .gexf(.xml) file is valid
-        graph->addEdge(Edge::Ptr(new Edge(sourceVertex, targetVertex, current)));
+        graph->addEdge(Edge::Ptr(new Edge(sourceVertex, targetVertex, edgeLabel)));
     }
 }
 
