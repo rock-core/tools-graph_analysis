@@ -157,9 +157,12 @@ public slots:
     void exportGraphToYml();
     void exportGraphToDot();
     void updateDragDrop(bool dragDrop);
+    void setDragDrop();
+    void unsetDragDrop();
 
 protected:
 
+    void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);

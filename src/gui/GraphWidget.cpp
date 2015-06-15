@@ -172,6 +172,8 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionExportToYml = comm.addAction("Export as .yml", SLOT(exportGraphToYml()));
     QAction *actionExportToDot = comm.addAction("Export as .dot", SLOT(exportGraphToDot()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
+    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()));
+    QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)
@@ -195,6 +197,14 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionExportToYml);
     contextMenu.addAction(actionExportToDot);
     contextMenu.addAction(actionLayout);
+    if(mDragDrop)
+    {
+        contextMenu.addAction(actionUnsetDragDrop);
+    }
+    else
+    {
+        contextMenu.addAction(actionSetDragDrop);
+    }
     contextMenu.exec(mapToGlobal(pos));
 }
 
@@ -643,6 +653,16 @@ void GraphWidget::updateDragDrop(bool dragDrop)
     mDragDrop = dragDrop;
 }
 
+void GraphWidget::setDragDrop()
+{
+    mDragDrop = true;
+}
+
+void GraphWidget::unsetDragDrop()
+{
+    mDragDrop = false;
+}
+
 void GraphWidget::itemMoved()
 {
     if (!mTimerId)
@@ -653,6 +673,20 @@ void GraphWidget::itemMoved()
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
+    // check for a combination of user clicks
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+
+    if(modifiers & Qt::ControlModifier)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_Q:
+            case Qt::Key_W:
+                exit(0);
+            break;
+        }
+    }
+
     switch (event->key())
     {
     //case Qt::Key_Up:
@@ -823,6 +857,12 @@ void GraphWidget::setLayout(QString layoutName)
 {
     mLayout = layoutName;
     updateFromGraph();
+}
+
+void GraphWidget::closeEvent(QCloseEvent* event)
+{
+    QApplication::sendEvent(mpPropertyDialog, event);
+    event->accept();
 }
 
 } // end namespace gui
