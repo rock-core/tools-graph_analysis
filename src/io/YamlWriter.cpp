@@ -7,7 +7,12 @@ namespace io {
 
 void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
-    const char *fname = filename.c_str();
+    std::string file(filename);
+    if(std::string::npos == file.find(".yml") && std::string::npos == file.find(".yaml"))
+    {
+        file += std::string(".yml");
+    }
+    const char *fname = file.c_str();
     std::ofstream fout(fname);
     if(!fout.is_open() || fout.fail())
     {

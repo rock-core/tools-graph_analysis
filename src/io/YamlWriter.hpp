@@ -1,6 +1,7 @@
 #ifndef GRAPH_ANALYSIS_IO_YAMLEXPORTWRITER_HPP
 #define GRAPH_ANALYSIS_IO_YAMLEXPORTWRITER_HPP
 
+#include <string>
 #include <fstream>
 #include <stdexcept>
 #include <graph_analysis/GraphIO.hpp>

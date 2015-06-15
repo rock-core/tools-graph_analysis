@@ -166,9 +166,9 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
-    QAction *actionImportFromXml = comm.addAction("Import", SLOT(importGraphFromXml()));
-    QAction *actionExportToXml = comm.addAction("Export", SLOT(exportGraphToXml()));
+    QAction *actionImportFromXml = comm.addAction("Import .gexf", SLOT(importGraphFromXml()));
     QAction *actionImportFromYml = comm.addAction("Import .yml", SLOT(importGraphFromYml()));
+    QAction *actionExportToXml = comm.addAction("Export as .gexf", SLOT(exportGraphToXml()));
     QAction *actionExportToYml = comm.addAction("Export as .yml", SLOT(exportGraphToYml()));
     QAction *actionExportToDot = comm.addAction("Export as .dot", SLOT(exportGraphToDot()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
@@ -192,8 +192,8 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionImportFromXml);
-    contextMenu.addAction(actionExportToXml);
     contextMenu.addAction(actionImportFromYml);
+    contextMenu.addAction(actionExportToXml);
     contextMenu.addAction(actionExportToYml);
     contextMenu.addAction(actionExportToDot);
     contextMenu.addAction(actionLayout);
