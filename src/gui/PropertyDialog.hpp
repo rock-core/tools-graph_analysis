@@ -154,28 +154,6 @@ public:
 
 public slots:
 
-protected:
-    void closeEvent(QCloseEvent* event)
-    {
-        event->accept();
-    }
-    void keyPressEvent(QKeyEvent *event)
-    {
-        // check for a combination of user clicks
-        Qt::KeyboardModifiers modifiers = event->modifiers();
-
-        if(modifiers & Qt::ControlModifier)
-        {
-            switch (event->key())
-            {
-                case Qt::Key_Q:
-                case Qt::Key_W:
-                    exit(0);
-                break;
-            }
-        }
-    }
-
 private:
     QDialog mDialog;
     GraphWidget *mpGraphWidget;

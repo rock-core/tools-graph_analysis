@@ -162,7 +162,6 @@ public slots:
 
 protected:
 
-    void closeEvent(QCloseEvent* event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);

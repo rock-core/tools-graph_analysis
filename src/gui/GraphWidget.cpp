@@ -859,11 +859,5 @@ void GraphWidget::setLayout(QString layoutName)
     updateFromGraph();
 }
 
-void GraphWidget::closeEvent(QCloseEvent* event)
-{
-    QApplication::sendEvent(mpPropertyDialog, event);
-    event->accept();
-}
-
 } // end namespace gui
 } // end namespace graph_analysis
