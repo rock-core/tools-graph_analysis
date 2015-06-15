@@ -174,6 +174,8 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
     QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()));
     QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
+    QAction *actionSave = comm.addAction("Save", SLOT(save()));
+    QAction *actionOpen = comm.addAction("Open", SLOT(open()));
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)
@@ -205,7 +207,55 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     {
         contextMenu.addAction(actionSetDragDrop);
     }
+    contextMenu.addAction(actionSave);
+    contextMenu.addAction(actionOpen);
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::save()
+{
+    QStringList items;
+    items << tr("GEXF (XML)") << tr("YML (YAML)");
+
+    bool ok;
+    QString format = QInputDialog::getItem(this, tr("Choose File Format"),
+                                         tr("Format:"), items, 0, false, &ok);
+    if (ok && !format.isEmpty())
+    {
+        switch(format[0].toAscii())
+        {
+            case 'G':
+                exportGraphToXml();
+            break;
+
+            case 'Y':
+                exportGraphToYml();
+            break;
+        }
+    }
+}
+
+void GraphWidget::open()
+{
+    QStringList items;
+    items << tr("GEXF (XML)") << tr("YML (YAML)");
+
+    bool ok;
+    QString format = QInputDialog::getItem(this, tr("Choose File Format"),
+                                         tr("Format:"), items, 0, false, &ok);
+    if (ok && !format.isEmpty())
+    {
+        switch(format[0].toAscii())
+        {
+            case 'G':
+                importGraphFromXml();
+            break;
+
+            case 'Y':
+                importGraphFromYml();
+            break;
+        }
+    }
 }
 
 void GraphWidget::addNodeAdhoc(QObject *pos)

@@ -43,10 +43,10 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
-        Dialog->resize(163, 281);
+        Dialog->resize(163, 361);
         horizontalLayoutWidget = new QWidget(Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 261));
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 341));
         verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -120,6 +120,20 @@ public:
 
         verticalLayout->addWidget(mpLayoutButton);
 
+        mpSaveButton = new QPushButton(horizontalLayoutWidget);
+        mpSaveButton->setObjectName(QString::fromUtf8("mpSaveButton"));
+        mpSaveButton->setCheckable(false);
+        mpSaveButton->setChecked(false);
+
+        verticalLayout->addWidget(mpSaveButton);
+
+        mpOpenButton = new QPushButton(horizontalLayoutWidget);
+        mpOpenButton->setObjectName(QString::fromUtf8("mpOpenButton"));
+        mpOpenButton->setCheckable(false);
+        mpOpenButton->setChecked(false);
+
+        verticalLayout->addWidget(mpOpenButton);
+
 
         retranslateUi(Dialog);
 
@@ -133,6 +147,8 @@ public:
         QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
+        QObject::connect(mpSaveButton, SIGNAL(clicked()), mpGraphWidget, SLOT(save()));
+        QObject::connect(mpOpenButton, SIGNAL(clicked()), mpGraphWidget, SLOT(open()));
 
         QMetaObject::connectSlotsByName(Dialog);
     } // setupUi
@@ -150,6 +166,8 @@ public:
         mpExportToYmlButton->setText(QApplication::translate("Dialog", "Export as .yml", 0, QApplication::UnicodeUTF8));
         mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as .dot", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
+        mpSaveButton->setText(QApplication::translate("Dialog", "Save", 0, QApplication::UnicodeUTF8));
+        mpOpenButton->setText(QApplication::translate("Dialog", "Open", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 public slots:
@@ -169,6 +187,8 @@ private:
     QPushButton *mpExportToYmlButton;
     QPushButton *mpExportToDotButton;
     QPushButton *mpLayoutButton;
+    QPushButton *mpSaveButton;
+    QPushButton *mpOpenButton;
 
 };
 

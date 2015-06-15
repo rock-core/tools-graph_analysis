@@ -159,6 +159,8 @@ public slots:
     void updateDragDrop(bool dragDrop);
     void setDragDrop();
     void unsetDragDrop();
+    void save();
+    void open();
 
 protected:
 
