@@ -684,6 +684,22 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             case Qt::Key_W:
                 exit(0);
             break;
+
+            case Qt::Key_Plus:
+                zoomIn();
+            break;
+
+            case Qt::Key_Minus:
+                zoomOut();
+            break;
+
+            case Qt::Key_Left:
+                rotate(qreal(-1.13));
+            break;
+
+            case Qt::Key_Right:
+                rotate(qreal( 1.13));
+            break;
         }
     }
 
@@ -697,17 +713,20 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     //    break;
     //case Qt::Key_Right:
     //    break;
-    //case Qt::Key_Plus:
-    //    zoomIn();
-    //    break;
-    //case Qt::Key_Minus:
-    ////    zoomOut();
-    //    break;
+    case Qt::Key_Plus:
+        zoomIn();
+    break;
+    case Qt::Key_Minus:
+        zoomOut();
+    break;
     case Qt::Key_Space:
     case Qt::Key_Enter:
             refresh();
-    ////    shuffle();
-        break;
+    break;
+
+    case Qt::Key_S:
+        shuffle();
+    break; // TOO close to CTRL+S?!
     //default:
     }
 
@@ -752,7 +771,7 @@ void GraphWidget::timerEvent(QTimerEvent *event)
 #ifndef QT_NO_WHEELEVENT
 void GraphWidget::wheelEvent(QWheelEvent *event)
 {
-    scaleView(pow((double)2, -event->delta() / 240.0));
+    scaleView(pow((double)2, - event->delta() / 240.0));
 }
 #endif
 
@@ -845,12 +864,12 @@ void GraphWidget::shuffle()
 
 void GraphWidget::zoomIn()
 {
-    scaleView(qreal(1.2));
+    scaleView(qreal(1.13));
 }
 
 void GraphWidget::zoomOut()
 {
-    scaleView(1 / qreal(1.2));
+    scaleView(1 / qreal(1.13));
 }
 
 void GraphWidget::setLayout(QString layoutName)

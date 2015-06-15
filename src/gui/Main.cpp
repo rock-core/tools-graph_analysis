@@ -50,7 +50,7 @@
 #include <graph_analysis/filters/RegexFilters.hpp>
 #define TEST_1ST_GRAPH 0
 #define TEST_IMPORT 1
-#define TESTNO 1
+#define TESTNO 0
 //#define RENDER
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
