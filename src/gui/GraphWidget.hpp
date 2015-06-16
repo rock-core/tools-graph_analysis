@@ -165,6 +165,7 @@ public slots:
     void unsetDragDrop();
     void save();
     void open();
+    void reloadPropertyDialog();
 
 protected:
 

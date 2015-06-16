@@ -39,6 +39,7 @@ public:
     ~PropertyDialog(){}
 
     void closeDialog() { mDialog.done(0); }
+    bool isRunning() { return mDialog.isVisible(); }
     void setupUi(QDialog *Dialog)
     {
         if (Dialog->objectName().isEmpty())

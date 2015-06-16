@@ -176,6 +176,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
     QAction *actionSave = comm.addAction("Save", SLOT(save()));
     QAction *actionOpen = comm.addAction("Open", SLOT(open()));
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)
@@ -209,7 +210,20 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     }
     contextMenu.addAction(actionSave);
     contextMenu.addAction(actionOpen);
+    if(!mpPropertyDialog->isRunning())
+    {
+        contextMenu.addAction(actionReloadPropertyDialog);
+    }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::reloadPropertyDialog()
+{
+    if(mpPropertyDialog)
+    {
+        delete mpPropertyDialog;
+    }
+    mpPropertyDialog = new PropertyDialog(this);
 }
 
 void GraphWidget::save()
