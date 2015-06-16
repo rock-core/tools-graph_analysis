@@ -26,6 +26,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
     //mLabel->setFlag(QGraphicsItem::ItemIsSelectable, true);
     //mLabel->setZValue(-100.0);
+    setHandlesChildEvents(false);
 }
 
 void Resource::changeLabel(const std::string& label)

@@ -713,6 +713,13 @@ void GraphWidget::updateFromGraph()
         }
     }
 
+    EdgeItemMap::iterator it = mEdgeItemMap.begin();
+    for(; mEdgeItemMap.end() != it; ++it)
+    {
+        EdgeItem *edge = it->second;
+        // TODO: parenting issues
+    }
+
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
