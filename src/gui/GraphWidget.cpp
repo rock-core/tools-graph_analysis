@@ -676,7 +676,6 @@ void GraphWidget::updateFromGraph()
         if("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
         {
             // physical edge
-            continue; // will reiterate later on for them
             EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
             mEdgeItemMap[edge] = edgeItem;
 
@@ -711,48 +710,6 @@ void GraphWidget::updateFromGraph()
                                         target->toString() + "' of type '" + target->getClassName() + "'!";
             LOG_ERROR_S << error_msg;
             throw std::runtime_error(error_msg);
-        }
-    }
-
-    // re-iterating for physical edges
-    edgeIt = mpGraph->getEdgeIterator();
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(edge))
-        {
-            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
-            continue;
-        }
-
-        if( mEdgeItemMap.count(edge))
-        {
-            continue;
-        }
-
-        // Registering new node edge items
-        Vertex::Ptr source = edge->getSourceVertex();
-        Vertex::Ptr target = edge->getTargetVertex();
-
-        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-        NodeItem* targetNodeItem = mNodeItemMap[ target ];
-
-        if(!sourceNodeItem || !targetNodeItem)
-        {
-            continue;
-        }
-
-
-        if("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
-        {
-            // physical edge
-            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
-            mEdgeItemMap[edge] = edgeItem;
-
-            scene()->addItem(edgeItem);
-            mpGVGraph->addEdge(edge);
         }
     }
 
