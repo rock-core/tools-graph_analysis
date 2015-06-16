@@ -51,6 +51,7 @@
 #define TEST_1ST_GRAPH 0
 #define TEST_IMPORT 1
 #define TEST_TYPES 2
+#define TEST_TYPES_FAIL 3
 #define TESTNO 2
 //#define RENDER
 
@@ -174,6 +175,12 @@ int main(int argc, char **argv)
             Vertex::Ptr c2p1 = widget->createVertex("port", "c2p1");
             widget->createEdge(c2, c2p0, "c2e0");
             widget->createEdge(c2, c2p1, "c2e1");
+        }
+        break;
+
+        case TEST_TYPES_FAIL:
+        {
+            Vertex::Ptr c0 = widget->createVertex("coconut", "c0");
         }
         break;
     }

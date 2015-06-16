@@ -282,6 +282,14 @@ Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode
 
 Vertex::Ptr GraphWidget::createVertex(const std::string& type, const std::string& label)
 {
+    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
+    std::set<std::string>::iterator type_it = types.find(type);
+    if(types.end() == type_it)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::createVertex: Given Vertex Type '") + type + "' is not registered!";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
     mpGraph->addVertex(vertex);
     enableVertex(vertex);
@@ -296,6 +304,14 @@ Edge::Ptr GraphWidget::createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr 
 
 Vertex::Ptr GraphWidget::createStandaloneVertex(const std::string& type, const std::string& label)
 {
+    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
+    std::set<std::string>::iterator type_it = types.find(type);
+    if(types.end() == type_it)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::createVertex: Given Vertex Type '") + type + "' is not registered!";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
     return vertex;
 }
