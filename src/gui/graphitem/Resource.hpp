@@ -29,6 +29,8 @@ public:
     void setPortCount(int portCount)    { mPortCount = portCount; }
     int  getPortCount()                 { return mPortCount; }
 
+    void addPort(NodeItem* node);
+
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
     void mousePressEvent(::QGraphicsSceneMouseEvent* event);

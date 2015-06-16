@@ -93,6 +93,12 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    painter->drawEllipse(-10, -10, 20, 20);
 }
 
+void Resource::addPort(NodeItem* node)
+{
+    addToGroup(node);
+    node->setPos(pos());
+    mPortCount++;
+}
 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {

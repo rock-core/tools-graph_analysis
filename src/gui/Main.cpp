@@ -175,6 +175,11 @@ int main(int argc, char **argv)
             Vertex::Ptr c2p1 = widget->createVertex("port", "c2p1");
             widget->createEdge(c2, c2p0, "c2e0");
             widget->createEdge(c2, c2p1, "c2e1");
+
+            widget->createEdge(c0p0, c2p0, "edge0");
+//            widget->createEdge(c1p1, c2p0, "edge1");
+//            widget->createEdge(c2p1, c0p2, "edge2");
+//            widget->createEdge(c1p0, c0p1, "edge3");
         }
         break;
 
