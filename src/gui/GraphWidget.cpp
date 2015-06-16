@@ -258,6 +258,34 @@ void GraphWidget::open()
     }
 }
 
+Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
+{
+    Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
+    mpGraph->addEdge(edge);
+    enableEdge(edge);
+    return edge;
+}
+
+Vertex::Ptr GraphWidget::createVertex(const std::string& type, const std::string& label)
+{
+    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
+    mpGraph->addVertex(vertex);
+    enableVertex(vertex);
+    return vertex;
+}
+
+Edge::Ptr GraphWidget::createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
+{
+    Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
+    return edge;
+}
+
+Vertex::Ptr GraphWidget::createStandaloneVertex(const std::string& type, const std::string& label)
+{
+    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
+    return vertex;
+}
+
 void GraphWidget::addNodeAdhoc(QObject *pos)
 {
     QPoint *position = (QPoint *)pos;

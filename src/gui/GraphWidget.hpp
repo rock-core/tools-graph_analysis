@@ -92,6 +92,10 @@ public:
     GraphWidget(QWidget *parent = 0);
     ~GraphWidget();
 
+    Vertex::Ptr createVertex(const std::string& type, const std::string& label = "");
+    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
+    Vertex::Ptr createStandaloneVertex(const std::string& type, const std::string& label = "");
+    Edge::Ptr createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
     void toYmlFile(const std::string& filename);

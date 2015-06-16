@@ -50,7 +50,8 @@
 #include <graph_analysis/filters/RegexFilters.hpp>
 #define TEST_1ST_GRAPH 0
 #define TEST_IMPORT 1
-#define TESTNO 0
+#define TEST_TYPES 2
+#define TESTNO 2
 //#define RENDER
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
@@ -148,6 +149,31 @@ int main(int argc, char **argv)
         case TEST_IMPORT:
         {
             // working on a void graph
+        }
+        break;
+
+        case TEST_TYPES:
+        {
+            Vertex::Ptr c0 = widget->createVertex("cluster", "c0");
+            Vertex::Ptr c1 = widget->createVertex("cluster", "c1");
+            Vertex::Ptr c2 = widget->createVertex("cluster", "c2");
+
+            Vertex::Ptr c0p0 = widget->createVertex("port", "c0p0");
+            Vertex::Ptr c0p1 = widget->createVertex("port", "c0p1");
+            Vertex::Ptr c0p2 = widget->createVertex("port", "c0p2");
+            widget->createEdge(c0, c0p0, "c0e0");
+            widget->createEdge(c0, c0p1, "c0e1");
+            widget->createEdge(c0, c0p2, "c0e2");
+
+            Vertex::Ptr c1p0 = widget->createVertex("port", "c1p0");
+            Vertex::Ptr c1p1 = widget->createVertex("port", "c1p1");
+            widget->createEdge(c1, c1p0, "c1e0");
+            widget->createEdge(c1, c1p1, "c1e1");
+
+            Vertex::Ptr c2p0 = widget->createVertex("port", "c2p0");
+            Vertex::Ptr c2p1 = widget->createVertex("port", "c2p1");
+            widget->createEdge(c2, c2p0, "c2e0");
+            widget->createEdge(c2, c2p1, "c2e1");
         }
         break;
     }
