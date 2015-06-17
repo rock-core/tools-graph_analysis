@@ -46,7 +46,7 @@ EdgeItem* EdgeTypeManager::graphicsItemByType(const edge::Type& type)
         //LOG_DEBUG_S << "graph_analysis::gui::EdgeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
         return mClassVisualizationMap["default"];
     }
-    
+
     return it->second;
 }
 

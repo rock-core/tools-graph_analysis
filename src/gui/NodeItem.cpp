@@ -57,7 +57,7 @@ NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     : mpVertex(vertex)
     , mpGraphWidget(graphWidget)
 {
-    setFlag(ItemIsMovable);
+    setFlag(ItemIsMovable, false);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);

@@ -40,6 +40,7 @@ public:
 
     void closeDialog() { mDialog.done(0); }
     bool isRunning() { return mDialog.isVisible(); }
+    void setDragDrop(bool toggle) { mpDragDropButton->setChecked(toggle); }
     void setupUi(QDialog *Dialog)
     {
         if (Dialog->objectName().isEmpty())

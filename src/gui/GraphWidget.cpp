@@ -800,16 +800,42 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 void GraphWidget::updateDragDrop(bool dragDrop)
 {
     mDragDrop = dragDrop;
+    NodeItemMap::iterator it = mNodeItemMap.begin();
+    for(; mNodeItemMap.end() != it; ++it)
+    {
+        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
+        {
+            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
+        }
+    }
 }
 
 void GraphWidget::setDragDrop()
 {
     mDragDrop = true;
+    mpPropertyDialog->setDragDrop(true);
+    NodeItemMap::iterator it = mNodeItemMap.begin();
+    for(; mNodeItemMap.end() != it; ++it)
+    {
+        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
+        {
+            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
+        }
+    }
 }
 
 void GraphWidget::unsetDragDrop()
 {
     mDragDrop = false;
+    mpPropertyDialog->setDragDrop(false);
+    NodeItemMap::iterator it = mNodeItemMap.begin();
+    for(; mNodeItemMap.end() != it; ++it)
+    {
+        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
+        {
+            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
+        }
+    }
 }
 
 void GraphWidget::itemMoved()

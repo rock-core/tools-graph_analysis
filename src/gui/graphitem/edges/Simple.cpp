@@ -34,7 +34,6 @@ void Simple::adjust()
 
     mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
     mpLabel->setPos( mLine.pointAt(0.5) );
-
 }
 
 QRectF Simple::boundingRect() const
@@ -106,7 +105,7 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
     {
         p2 = item->mapToParent(polygon.at(i));
         QLineF pLine(p1,p2);
-        QLineF::IntersectType intersectType = 
+        QLineF::IntersectType intersectType =
             pLine.intersect(line, &intersectionPoint);
 
         if( intersectType == QLineF::BoundedIntersection)
@@ -138,7 +137,7 @@ void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     mpGraphWidget->setEdgeSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }
-    
+
 } // end namespace edges
 } // end namespace graphitem
 } // end namespace gui
