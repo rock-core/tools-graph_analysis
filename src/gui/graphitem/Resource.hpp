@@ -32,7 +32,7 @@ public:
     void setPortCount(int portCount)    { mPortCount = portCount; }
     int  getPortCount()                 { return mPortCount; }
 
-    void addPort(Vertex::Ptr node);
+    int addPort(Vertex::Ptr node);
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);

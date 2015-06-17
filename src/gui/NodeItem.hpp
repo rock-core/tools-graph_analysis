@@ -88,7 +88,7 @@ public:
     virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented"); }
     virtual void setPortCount(int)                      { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortCount is not reimplemented"); }
     virtual int  getPortCount()                         { throw std::runtime_error("graph_analysis::gui::NodeItem::getPortCount is not reimplemented"); }
-    virtual void addPort(Vertex::Ptr)               { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented"); }
+    virtual int addPort(Vertex::Ptr)               { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented"); }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);

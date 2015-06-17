@@ -6,8 +6,8 @@
 #include <QStyleOption>
 
 #include <base/Logging.hpp>
-
 #include "Label.hpp"
+#define ADJUST 23.
 
 namespace graph_analysis {
 namespace gui {
@@ -26,11 +26,8 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
     //mLabel->setFlag(QGraphicsItem::ItemIsSelectable, true);
     //mLabel->setZValue(-100.0);
-    if("graph_analysis::ClusterVertex" == mpVertex->getClassName())
-    {
-        setHandlesChildEvents(false);
-        setFlag(ItemIsMovable);
-    }
+//    setHandlesChildEvents(false);
+    setFlag(ItemIsMovable);
 }
 
 void Resource::changeLabel(const std::string& label)
@@ -54,11 +51,11 @@ QRectF Resource::boundingRect() const
     //return childrenBoundingRect() | boundingRect;
 
     QRectF childrenRect = childrenBoundingRect();
-    if("graph_analysis::ClusterVertex" == mpVertex->getClassName())
-    {
-        qreal adjust = 13.;
-        return childrenRect.adjusted( - adjust, - adjust, adjust, adjust + (qreal) ((1 + mPortCount) >> 1) * 2. * adjust);
-    }
+//    if("graph_analysis::ClusterVertex" == mpVertex->getClassName())
+//    {
+//        qreal adjust = 13.;
+//        return childrenRect.adjusted( - adjust, - adjust, adjust, adjust + (qreal) ((1 + mPortCount) >> 1) * 2. * adjust);
+//    }
     return childrenRect;
 }
 
@@ -98,10 +95,15 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    painter->drawEllipse(-10, -10, 20, 20);
 }
 
-void Resource::addPort(Vertex::Ptr node)
+int Resource::addPort(Vertex::Ptr node)
 {
-    mLabels.push_back(new Label(node->getLabel(), this));
+    Label *label = new Label(node->getLabel(), this);
+    mLabels.push_back(label);
+    addToGroup(label);
+    int size = mLabels.size();
+    label->setPos(label->pos() + QPointF(0, ADJUST + size * ADJUST));
     mPortCount++;
+    return size - 1; // returning this port's offset in the vector of ports
 }
 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)

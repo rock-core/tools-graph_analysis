@@ -693,7 +693,7 @@ void GraphWidget::updateFromGraph()
                 continue;
             }
             mPortMap[source] = targetNodeItem;
-            targetNodeItem->addPort(source);
+            mPortIDMap[source] = targetNodeItem->addPort(source);
 //            sourceNodeItem->setParentItem(targetNodeItem);
         }
         else if (
@@ -709,8 +709,15 @@ void GraphWidget::updateFromGraph()
             }
             mPortMap[target] = sourceNodeItem;
 //            NodeItem* targetNodeItem = mNodeItemMap[ target ];
-            sourceNodeItem->addPort(target);
+            mPortIDMap[target] = sourceNodeItem->addPort(target);
 //            targetNodeItem->setParentItem(sourceNodeItem);
+        }
+        else if (
+                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())
+                )
+        {
+            // automatically added edge - useful for the layouting stage
+            continue;
         }
         else
         {
@@ -752,7 +759,9 @@ void GraphWidget::updateFromGraph()
             mEdgeItemMap[edge] = edgeItem;
 
             scene()->addItem(edgeItem);
-            mpGVGraph->addEdge(Edge::Ptr(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex())));
+            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex()));
+            mpGraph->addEdge(default_edge);
+            mpGVGraph->addEdge(default_edge);
         }
     }
 
