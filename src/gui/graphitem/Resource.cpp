@@ -98,10 +98,9 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    painter->drawEllipse(-10, -10, 20, 20);
 }
 
-void Resource::addPort(NodeItem* node)
+void Resource::addPort(Vertex::Ptr node)
 {
-    addToGroup(node);
-    node->setPos(pos());
+    mLabels.push_back(new Label(node->getLabel(), this));
     mPortCount++;
 }
 

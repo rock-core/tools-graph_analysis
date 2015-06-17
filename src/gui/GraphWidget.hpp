@@ -88,6 +88,7 @@ class GraphWidget : public QGraphicsView
 public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
+    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> PortMap;
 
     GraphWidget(QWidget *parent = 0);
     ~GraphWidget();
@@ -197,6 +198,8 @@ private:
     bool mFiltered;
 
     // Mapping with data model
+    // Allow mapping of semantically port vertices to their (cluster) nodes in the scene
+    PortMap mPortMap;
     // Allow mapping from graph vertexes to nodes in the scene
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene

@@ -103,18 +103,18 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
 
     for(int i = 1; i < polygon.count(); ++i)
     {
-        p2 = item->mapToParent(polygon.at(i));
+        p2 = item->mapToScene(polygon.at(i));
         QLineF pLine(p1,p2);
         QLineF::IntersectType intersectType =
             pLine.intersect(line, &intersectionPoint);
 
-        if( intersectType == QLineF::BoundedIntersection)
+        if(intersectType == QLineF::BoundedIntersection)
         {
             // intersection found
             // qDebug("Intersection found: at %.3f / %.3f",intersectionPoint.x(), intersectionPoint.y());
             break;
         } else {
-            // no intersection fonuu
+            // no intersection found
             p1 = p2;
         }
     }

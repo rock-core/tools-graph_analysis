@@ -596,6 +596,7 @@ void GraphWidget::clear()
 
     mNodeItemMap.clear();
     mEdgeItemMap.clear();
+    mPortMap.clear();
     scene()->clear();
 }
 void GraphWidget::refresh()
@@ -635,12 +636,14 @@ void GraphWidget::updateFromGraph()
             continue;
         }
 
-        // Registering new node items
-        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
-        mNodeItemMap[vertex] = nodeItem;
-//        nodeItem->setPortCount(mpGraph->getEdgeIterator(vertex));
-        scene()->addItem(nodeItem);
-        mpGVGraph->addNode(vertex);
+        if("graph_analysis::ClusterVertex" == vertex->getClassName())
+        {
+            // Registering new Cluster node items only
+            NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+            mNodeItemMap[vertex] = nodeItem;
+            scene()->addItem(nodeItem);
+            mpGVGraph->addNode(vertex);
+        }
     }
 
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
@@ -660,27 +663,18 @@ void GraphWidget::updateFromGraph()
             continue;
         }
 
-        // Registering new node edge items
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
 
-        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-        NodeItem* targetNodeItem = mNodeItemMap[ target ];
-
-        if(!sourceNodeItem || !targetNodeItem)
-        {
-            continue;
-        }
-
-
         if("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
         {
-            // physical edge
-            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
-            mEdgeItemMap[edge] = edgeItem;
-
-            scene()->addItem(edgeItem);
-            mpGVGraph->addEdge(edge);
+            // physical edge - processing deflected until after all ports will have been registered
+            continue;
+//            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
+//            mEdgeItemMap[edge] = edgeItem;
+//
+//            scene()->addItem(edgeItem);
+//            mpGVGraph->addEdge(edge);
         }
         else if (
 //                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName()) ||
@@ -691,8 +685,16 @@ void GraphWidget::updateFromGraph()
             std::string warn_msg = std::string("graph_analysis::GraphWidget::updateFromGraph: found reversed edge from source Port vertex '") +
                                         source->toString() + "' of type '" + source->getClassName() + "' to target Cluster vertex '" +
                                         target->toString() + "' of type '" + target->getClassName() + "'!";
-            LOG_WARN_S << warn_msg;
-            targetNodeItem->addPort(sourceNodeItem);
+            LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
+//            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+            NodeItem* targetNodeItem = mNodeItemMap[ target ];
+            if(!targetNodeItem)
+            {
+                continue;
+            }
+            mPortMap[source] = targetNodeItem;
+            targetNodeItem->addPort(source);
+//            sourceNodeItem->setParentItem(targetNodeItem);
         }
         else if (
                     ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
@@ -700,7 +702,15 @@ void GraphWidget::updateFromGraph()
                 )
         {
             // semantical edge: links a cluster vertex to one of its ports
-            sourceNodeItem->addPort(targetNodeItem);
+            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+            if(!sourceNodeItem)
+            {
+                continue;
+            }
+            mPortMap[target] = sourceNodeItem;
+//            NodeItem* targetNodeItem = mNodeItemMap[ target ];
+            sourceNodeItem->addPort(target);
+//            targetNodeItem->setParentItem(sourceNodeItem);
         }
         else
         {
@@ -713,11 +723,37 @@ void GraphWidget::updateFromGraph()
         }
     }
 
-    EdgeItemMap::iterator it = mEdgeItemMap.begin();
-    for(; mEdgeItemMap.end() != it; ++it)
+    edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
     {
-        EdgeItem *edge = it->second;
-        // TODO: parenting issues
+        Edge::Ptr edge = edgeIt->current();
+
+        // Check on active filter
+        if(mFiltered && !mpSubGraph->enabled(edge))
+        {
+            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
+            continue;
+        }
+
+        if( mEdgeItemMap.count(edge))
+        {
+            continue;
+        }
+
+        Vertex::Ptr source = edge->getSourceVertex();
+        Vertex::Ptr target = edge->getTargetVertex();
+
+        if("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
+        {
+            NodeItem* sourceNodeItem = mPortMap[ source ];
+            NodeItem* targetNodeItem = mPortMap[ target ];
+            // physical edge - processing was deflected until after all ports will have been registered
+            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
+            mEdgeItemMap[edge] = edgeItem;
+
+            scene()->addItem(edgeItem);
+            mpGVGraph->addEdge(Edge::Ptr(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex())));
+        }
     }
 
     if(mLayout.toLower() != "force")

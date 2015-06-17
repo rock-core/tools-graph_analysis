@@ -82,12 +82,13 @@ public:
     std::string getId() const;
     graph_analysis::Vertex::Ptr getVertex() { return mpVertex; }
     void setVertex(graph_analysis::Vertex::Ptr vertex) { mpVertex = vertex; }
+    GraphWidget* getGraphWidget() { return mpGraphWidget; }
 
     virtual void changeLabel(const std::string& label)  { throw std::runtime_error("graph_analysis::gui::NodeItem::changeLabel is not reimplemented"); }
     virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented"); }
     virtual void setPortCount(int)                      { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortCount is not reimplemented"); }
     virtual int  getPortCount()                         { throw std::runtime_error("graph_analysis::gui::NodeItem::getPortCount is not reimplemented"); }
-    virtual void addPort(NodeItem*)               { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented"); }
+    virtual void addPort(Vertex::Ptr)               { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented"); }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);

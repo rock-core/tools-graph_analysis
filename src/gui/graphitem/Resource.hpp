@@ -1,6 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
 #define GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_RESOURCE_HPP
 
+#include <vector>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <QPen>
@@ -13,6 +14,8 @@ class Label;
 
 class Resource : public graph_analysis::gui::NodeItem
 {
+    typedef std::vector<Label*> Labels;
+
     Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
     void changeLabel(const std::string& label);
     void updateLabel();
@@ -29,7 +32,7 @@ public:
     void setPortCount(int portCount)    { mPortCount = portCount; }
     int  getPortCount()                 { return mPortCount; }
 
-    void addPort(NodeItem* node);
+    void addPort(Vertex::Ptr node);
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
@@ -45,6 +48,7 @@ protected:
 
 private:
     Label* mLabel;
+    Labels mLabels;
     QPen mPen;
     QPen mPenDefault;
     int mPortCount;
