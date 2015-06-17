@@ -33,6 +33,7 @@ public:
     int  getPortCount()                 { return mPortCount; }
 
     int addPort(Vertex::Ptr node);
+    QPolygonF portBoundingRect(int portID);
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);

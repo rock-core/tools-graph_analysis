@@ -426,6 +426,7 @@ void GraphWidget::startNewEdgeHere()
 
 void GraphWidget::spawnEdge(const std::string& label)
 {
+    /*
     Edge::Ptr edge(new Edge());
     edge->setSourceVertex(mpStartVertex);
     edge->setTargetVertex(mpEndVertex);
@@ -448,6 +449,7 @@ void GraphWidget::spawnEdge(const std::string& label)
         scene()->addItem(edgeItem);
         edgeItem->adjust();
     }
+     */
 }
 
 void GraphWidget::endNewEdgeHere()
@@ -755,7 +757,7 @@ void GraphWidget::updateFromGraph()
             NodeItem* sourceNodeItem = mPortMap[ source ];
             NodeItem* targetNodeItem = mPortMap[ target ];
             // physical edge - processing was deflected until after all ports will have been registered
-            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
+            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[source], targetNodeItem, mPortIDMap[target], edge);
             mEdgeItemMap[edge] = edgeItem;
 
             scene()->addItem(edgeItem);

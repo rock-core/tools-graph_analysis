@@ -50,9 +50,9 @@ EdgeItem* EdgeTypeManager::graphicsItemByType(const edge::Type& type)
     return it->second;
 }
 
-EdgeItem* EdgeTypeManager::createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
+EdgeItem* EdgeTypeManager::createItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge)
 {
-    return graphicsItemByType(edge->getClassName())->createNewItem(graphWidget, sourceNode, targetNode, edge);
+    return graphicsItemByType(edge->getClassName())->createNewItem(graphWidget, sourceNode, sourceNodePortID, targetNode, targetNodePortID, edge);
 }
 
 } // end namespace gui

@@ -106,6 +106,12 @@ int Resource::addPort(Vertex::Ptr node)
     return size - 1; // returning this port's offset in the vector of ports
 }
 
+
+QPolygonF Resource::portBoundingRect(int portID)
+{
+    return mLabels[portID]->boundingRect();
+}
+
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";

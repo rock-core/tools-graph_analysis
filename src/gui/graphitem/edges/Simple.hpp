@@ -15,13 +15,13 @@ class EdgeLabel;
 
 class Simple : public graph_analysis::gui::EdgeItem
 {
-    Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr vertex);
+    Simple(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr vertex);
 public:
     Simple() {}
     EdgeLabel* getLabel() { return mpLabel; }
     virtual ~Simple() {}
 
-    virtual void adjust(); 
+    virtual void adjust();
 
 protected:
     virtual QRectF boundingRect() const;
@@ -30,10 +30,10 @@ protected:
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
-    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line);
+    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line, int portID = -1);
 
 
-    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { return new Simple(graphWidget, sourceNode, targetNode, edge); }
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge) const { return new Simple(graphWidget, sourceNode, sourceNodePortID, targetNode, targetNodePortID, edge); }
 
     EdgeLabel* mpLabel;
     QPen mPen;
@@ -41,6 +41,8 @@ protected:
     QGraphicsLineItem* mpLine;
     QPolygonF mArrowHead;
     QLineF mLine;
+    int mSourceNodePortID;
+    int mTargetNodePortID;
 
 };
 
