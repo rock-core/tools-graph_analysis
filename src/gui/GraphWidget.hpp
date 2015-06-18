@@ -157,16 +157,11 @@ public slots:
     void removeSelectedVertex();
     void changeSelectedEdgeLabel();
     void removeSelectedEdge();
-    void importGraphFromXml();
-    void importGraphFromYml();
-    void exportGraphToXml();
-    void exportGraphToYml();
-    void exportGraphToDot();
+    void importGraph();
+    void exportGraph();
     void updateDragDrop(bool dragDrop);
     void setDragDrop();
     void unsetDragDrop();
-    void save();
-    void open();
     void reloadPropertyDialog();
 
 protected:

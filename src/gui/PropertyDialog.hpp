@@ -45,10 +45,10 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
-        Dialog->resize(163, 361);
+        Dialog->resize(163, 221);
         horizontalLayoutWidget = new QWidget(Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 341));
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 201));
         verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -80,40 +80,19 @@ public:
 
         verticalLayout->addWidget(mpShuffleButton);
 
-        mpImportFromXmlButton = new QPushButton(horizontalLayoutWidget);
-        mpImportFromXmlButton->setObjectName(QString::fromUtf8("mpImportFromXmlButton"));
-        mpImportFromXmlButton->setCheckable(false);
-        mpImportFromXmlButton->setChecked(false);
+        mpImportButton = new QPushButton(horizontalLayoutWidget);
+        mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
+        mpImportButton->setCheckable(false);
+        mpImportButton->setChecked(false);
 
-        verticalLayout->addWidget(mpImportFromXmlButton);
+        verticalLayout->addWidget(mpImportButton);
 
-        mpImportFromYmlButton = new QPushButton(horizontalLayoutWidget);
-        mpImportFromYmlButton->setObjectName(QString::fromUtf8("mpImportFromYmlButton"));
-        mpImportFromYmlButton->setCheckable(false);
-        mpImportFromYmlButton->setChecked(false);
+        mpExportButton = new QPushButton(horizontalLayoutWidget);
+        mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
+        mpExportButton->setCheckable(false);
+        mpExportButton->setChecked(false);
 
-        verticalLayout->addWidget(mpImportFromYmlButton);
-
-        mpExportToXmlButton = new QPushButton(horizontalLayoutWidget);
-        mpExportToXmlButton->setObjectName(QString::fromUtf8("mpExportToXmlButton"));
-        mpExportToXmlButton->setCheckable(false);
-        mpExportToXmlButton->setChecked(false);
-
-        verticalLayout->addWidget(mpExportToXmlButton);
-
-        mpExportToYmlButton = new QPushButton(horizontalLayoutWidget);
-        mpExportToYmlButton->setObjectName(QString::fromUtf8("mpExportToYmlButton"));
-        mpExportToYmlButton->setCheckable(false);
-        mpExportToYmlButton->setChecked(false);
-
-        verticalLayout->addWidget(mpExportToYmlButton);
-
-        mpExportToDotButton = new QPushButton(horizontalLayoutWidget);
-        mpExportToDotButton->setObjectName(QString::fromUtf8("mpExportToDotButton"));
-        mpExportToDotButton->setCheckable(false);
-        mpExportToDotButton->setChecked(false);
-
-        verticalLayout->addWidget(mpExportToDotButton);
+        verticalLayout->addWidget(mpExportButton);
 
         mpLayoutButton = new QPushButton(horizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
@@ -122,35 +101,15 @@ public:
 
         verticalLayout->addWidget(mpLayoutButton);
 
-        mpSaveButton = new QPushButton(horizontalLayoutWidget);
-        mpSaveButton->setObjectName(QString::fromUtf8("mpSaveButton"));
-        mpSaveButton->setCheckable(false);
-        mpSaveButton->setChecked(false);
-
-        verticalLayout->addWidget(mpSaveButton);
-
-        mpOpenButton = new QPushButton(horizontalLayoutWidget);
-        mpOpenButton->setObjectName(QString::fromUtf8("mpOpenButton"));
-        mpOpenButton->setCheckable(false);
-        mpOpenButton->setChecked(false);
-
-        verticalLayout->addWidget(mpOpenButton);
-
-
         retranslateUi(Dialog);
 
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
-        QObject::connect(mpImportFromXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphFromXml()));
-        QObject::connect(mpImportFromYmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphFromYml()));
-        QObject::connect(mpExportToXmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToXml()));
-        QObject::connect(mpExportToYmlButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToYml()));
-        QObject::connect(mpExportToDotButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphToDot()));
+        QObject::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
+        QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
-        QObject::connect(mpSaveButton, SIGNAL(clicked()), mpGraphWidget, SLOT(save()));
-        QObject::connect(mpOpenButton, SIGNAL(clicked()), mpGraphWidget, SLOT(open()));
 
         QMetaObject::connectSlotsByName(Dialog);
     } // setupUi
@@ -162,14 +121,9 @@ public:
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
-        mpImportFromXmlButton->setText(QApplication::translate("Dialog", "Import .gexf", 0, QApplication::UnicodeUTF8));
-        mpImportFromYmlButton->setText(QApplication::translate("Dialog", "Import .yml", 0, QApplication::UnicodeUTF8));
-        mpExportToXmlButton->setText(QApplication::translate("Dialog", "Export as .gexf", 0, QApplication::UnicodeUTF8));
-        mpExportToYmlButton->setText(QApplication::translate("Dialog", "Export as .yml", 0, QApplication::UnicodeUTF8));
-        mpExportToDotButton->setText(QApplication::translate("Dialog", "Export as .dot", 0, QApplication::UnicodeUTF8));
+        mpImportButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
+        mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
-        mpSaveButton->setText(QApplication::translate("Dialog", "Save", 0, QApplication::UnicodeUTF8));
-        mpOpenButton->setText(QApplication::translate("Dialog", "Open", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 public slots:
@@ -183,14 +137,9 @@ private:
     QPushButton *mpAddNodeButton;
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
-    QPushButton *mpImportFromXmlButton;
-    QPushButton *mpImportFromYmlButton;
-    QPushButton *mpExportToXmlButton;
-    QPushButton *mpExportToYmlButton;
-    QPushButton *mpExportToDotButton;
+    QPushButton *mpImportButton;
+    QPushButton *mpExportButton;
     QPushButton *mpLayoutButton;
-    QPushButton *mpSaveButton;
-    QPushButton *mpOpenButton;
 
 };
 

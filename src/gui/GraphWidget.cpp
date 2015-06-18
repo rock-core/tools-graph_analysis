@@ -166,16 +166,11 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
-    QAction *actionImportFromXml = comm.addAction("Import .gexf", SLOT(importGraphFromXml()));
-    QAction *actionImportFromYml = comm.addAction("Import .yml", SLOT(importGraphFromYml()));
-    QAction *actionExportToXml = comm.addAction("Export as .gexf", SLOT(exportGraphToXml()));
-    QAction *actionExportToYml = comm.addAction("Export as .yml", SLOT(exportGraphToYml()));
-    QAction *actionExportToDot = comm.addAction("Export as .dot", SLOT(exportGraphToDot()));
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()));
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
     QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()));
     QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
-    QAction *actionSave = comm.addAction("Save", SLOT(save()));
-    QAction *actionOpen = comm.addAction("Open", SLOT(open()));
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
 
     // (conditionally) adding the actions to the context menu
@@ -194,11 +189,8 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionAddNode);
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
-    contextMenu.addAction(actionImportFromXml);
-    contextMenu.addAction(actionImportFromYml);
-    contextMenu.addAction(actionExportToXml);
-    contextMenu.addAction(actionExportToYml);
-    contextMenu.addAction(actionExportToDot);
+    contextMenu.addAction(actionImport);
+    contextMenu.addAction(actionExport);
     contextMenu.addAction(actionLayout);
     if(mDragDrop)
     {
@@ -208,13 +200,57 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     {
         contextMenu.addAction(actionSetDragDrop);
     }
-    contextMenu.addAction(actionSave);
-    contextMenu.addAction(actionOpen);
     if(!mpPropertyDialog->isRunning())
     {
         contextMenu.addAction(actionReloadPropertyDialog);
     }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::importGraph()
+{
+    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"));
+
+    if (!label.isEmpty())
+    {
+        if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
+        {
+            fromXmlFile(label.toStdString());
+        }
+        else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
+        {
+            fromYmlFile(label.toStdString());
+        }
+        else
+        {
+            QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+        }
+    }
+}
+
+void GraphWidget::exportGraph()
+{
+    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"));
+
+    if (!label.isEmpty())
+    {
+        if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
+        {
+            toXmlFile(label.toStdString());
+        }
+        else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
+        {
+            toYmlFile(label.toStdString());
+        }
+        else if(label.endsWith(QString(".dot")))
+        {
+            toDotFile(label.toStdString());
+        }
+        else
+        {
+            QMessageBox::critical(this, tr("Graph Export Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+        }
+    }
 }
 
 void GraphWidget::reloadPropertyDialog()
@@ -224,52 +260,6 @@ void GraphWidget::reloadPropertyDialog()
         delete mpPropertyDialog;
     }
     mpPropertyDialog = new PropertyDialog(this);
-}
-
-void GraphWidget::save()
-{
-    QStringList items;
-    items << tr("GEXF (XML)") << tr("YML (YAML)");
-
-    bool ok;
-    QString format = QInputDialog::getItem(this, tr("Choose File Format"),
-                                         tr("Format:"), items, 0, false, &ok);
-    if (ok && !format.isEmpty())
-    {
-        switch(format[0].toAscii())
-        {
-            case 'G':
-                exportGraphToXml();
-            break;
-
-            case 'Y':
-                exportGraphToYml();
-            break;
-        }
-    }
-}
-
-void GraphWidget::open()
-{
-    QStringList items;
-    items << tr("GEXF (XML)") << tr("YML (YAML)");
-
-    bool ok;
-    QString format = QInputDialog::getItem(this, tr("Choose File Format"),
-                                         tr("Format:"), items, 0, false, &ok);
-    if (ok && !format.isEmpty())
-    {
-        switch(format[0].toAscii())
-        {
-            case 'G':
-                importGraphFromXml();
-            break;
-
-            case 'Y':
-                importGraphFromYml();
-            break;
-        }
-    }
 }
 
 Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
@@ -468,51 +458,6 @@ void GraphWidget::endNewEdgeHere()
         }
         mEdgeStartVertex    = false;
         mEdgeEndVertex      = false;
-    }
-}
-
-void GraphWidget::exportGraphToYml()
-{
-    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath(), tr("YAML (*.yaml *.yml)"));
-    if (!label.isEmpty())
-    {
-        toYmlFile(label.toStdString());
-    }
-}
-
-void GraphWidget::exportGraphToDot()
-{
-    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath());
-    if (!label.isEmpty())
-    {
-        toDotFile(label.toStdString());
-    }
-}
-
-void GraphWidget::importGraphFromXml()
-{
-    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml)"));
-    if (!label.isEmpty())
-    {
-        fromXmlFile(label.toStdString());
-    }
-}
-
-void GraphWidget::importGraphFromYml()
-{
-    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("YAML (*.yaml *.yml)"));
-    if (!label.isEmpty())
-    {
-        fromYmlFile(label.toStdString());
-    }
-}
-
-void GraphWidget::exportGraphToXml()
-{
-    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Ouput File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml)"));
-    if (!label.isEmpty())
-    {
-        toXmlFile(label.toStdString());
     }
 }
 
