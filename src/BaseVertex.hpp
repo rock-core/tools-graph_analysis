@@ -17,13 +17,6 @@ class BaseVertex : public Vertex
 {
 public:
     BaseVertex(const std::string& label = "");
-    std::string type() { return "base"; }
-    /**
-     * Clone this base vertex -- the returned base vertex will have no
-     * graph association
-     */
-    Vertex::Ptr clone() const;
-
     /** Get class name
      * \return class name
      */

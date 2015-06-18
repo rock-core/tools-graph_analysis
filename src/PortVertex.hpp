@@ -17,13 +17,6 @@ class PortVertex : public Vertex
 {
 public:
     PortVertex(const std::string& label = "");
-    std::string type() { return "port"; }
-    /**
-     * Clone this port vertex -- the returned port vertex will have no
-     * graph association
-     */
-    Vertex::Ptr clone() const;
-
     /** Get class name
      * \return class name
      */

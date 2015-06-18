@@ -17,13 +17,6 @@ class ClusterVertex : public Vertex
 {
 public:
     ClusterVertex(const std::string& label = "");
-    std::string type() { return "cluster"; }
-    /**
-     * Clone this cluster vertex -- the returned cluster vertex will have no
-     * graph association
-     */
-    Vertex::Ptr clone() const;
-
     /** Get class name
      * \return class name
      */
