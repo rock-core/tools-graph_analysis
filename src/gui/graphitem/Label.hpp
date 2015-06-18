@@ -10,9 +10,12 @@ namespace graphitem {
 
 class Label : public QGraphicsTextItem
 {
+private:
+    int mPortID;
 public:
-    Label(const std::string& label, QGraphicsItem* item)
+    Label(const std::string& label, QGraphicsItem* item, int portID = -1)
         : QGraphicsTextItem( QString(label.c_str()), item)
+        , mPortID(portID)
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
         setTextInteractionFlags(Qt::NoTextInteraction);
@@ -44,7 +47,7 @@ public:
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
-    { 
+    {
     //    if(textInteractionFlags() == Qt::TextEditorInteraction)
     //    {
     //        QGraphicsTextItem::mousePressEvent(event);
@@ -71,7 +74,7 @@ protected:
     {
         if(change == QGraphicsItem::ItemSelectedChange)
         {
-             qDebug("itemChange '%s', selected=%s", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str());
+             qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
         }
         if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
         {

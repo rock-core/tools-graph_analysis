@@ -56,7 +56,7 @@
 //#define RENDER
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
-#define LAYOUT "dot"
+//#define LAYOUT "dot"
 
 int main(int argc, char **argv)
 {
@@ -190,8 +190,11 @@ int main(int argc, char **argv)
         break;
     }
 
-    widget->updateFromGraph();
+#ifdef LAYOUT
     widget->setLayout(QString(LAYOUT));
+#else
+    widget->updateFromGraph();
+#endif
 #ifdef RENDER
     widget->toFile("graph.dot");
 #endif

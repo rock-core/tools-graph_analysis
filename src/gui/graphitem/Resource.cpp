@@ -8,7 +8,6 @@
 #include <base/Logging.hpp>
 #include "Label.hpp"
 #define ADJUST 23.69
-#define EPSILON 0.169
 
 namespace graph_analysis {
 namespace gui {
@@ -103,13 +102,13 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 
 int Resource::addPort(Vertex::Ptr node)
 {
-    Label *label = new Label(node->getLabel(), this);
+    int size = mLabels.size();
+    Label *label = new Label(node->getLabel(), this, size);
     mLabels.push_back(label);
     addToGroup(label);
-    int size = mLabels.size();
-    label->setPos(label->pos() + QPointF(0, (1 + size) * ADJUST));
+    label->setPos(label->pos() + QPointF(0, (2 + size) * ADJUST));
     mPortCount++;
-    return size - 1; // returning this port's offset in the vector of ports
+    return size; // returning this port's offset in the vector of ports
 }
 
 

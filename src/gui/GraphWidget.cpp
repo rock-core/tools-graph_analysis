@@ -633,7 +633,6 @@ void GraphWidget::updateFromGraph()
                                         source->toString() + "' of type '" + source->getClassName() + "' to target Cluster vertex '" +
                                         target->toString() + "' of type '" + target->getClassName() + "'!";
             LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
-//            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
             NodeItem* targetNodeItem = mNodeItemMap[ target ];
             if(!targetNodeItem)
             {
@@ -654,7 +653,6 @@ void GraphWidget::updateFromGraph()
                 continue;
             }
             mPortMap[target] = sourceNodeItem;
-//            NodeItem* targetNodeItem = mNodeItemMap[ target ];
             mPortIDMap[target] = sourceNodeItem->addPort(target);
         }
         else if (
@@ -1039,6 +1037,7 @@ void GraphWidget::zoomOut()
 
 void GraphWidget::setLayout(QString layoutName)
 {
+    reset(true /* please keep my data */ );
     mLayout = layoutName;
     updateFromGraph();
 }
