@@ -641,7 +641,6 @@ void GraphWidget::updateFromGraph()
             }
             mPortMap[source] = targetNodeItem;
             mPortIDMap[source] = targetNodeItem->addPort(source);
-//            sourceNodeItem->setParentItem(targetNodeItem);
         }
         else if (
                     ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
@@ -657,7 +656,6 @@ void GraphWidget::updateFromGraph()
             mPortMap[target] = sourceNodeItem;
 //            NodeItem* targetNodeItem = mNodeItemMap[ target ];
             mPortIDMap[target] = sourceNodeItem->addPort(target);
-//            targetNodeItem->setParentItem(sourceNodeItem);
         }
         else if (
                     ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())

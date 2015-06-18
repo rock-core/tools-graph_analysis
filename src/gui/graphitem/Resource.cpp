@@ -7,7 +7,8 @@
 
 #include <base/Logging.hpp>
 #include "Label.hpp"
-#define ADJUST 23.
+#define ADJUST 23.69
+#define EPSILON 0.169
 
 namespace graph_analysis {
 namespace gui {
@@ -68,14 +69,19 @@ QPainterPath Resource::shape() const
 
 void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
-    // Drawing of border, with transparent background
-    painter->setPen(mPen);
-
     // Draws fully filled item
     //painter->setPen(Qt::NoPen);
     //painter->setBrush(mPen.brush());
 
     //painter->drawEllipse(-7, -7, 20, 20);
+
+    painter->setPen(QPen(Qt::black, 0));
+    for(int i = 0; i < mPortCount; ++i)
+    {
+        painter->drawPolygon(portBoundingRect(i));
+    }
+    // Drawing of border: back to transparent background
+    painter->setPen(mPen);
     painter->drawRect(boundingRect()); //-7,-7,20,20);
 
 //    QRadialGradient gradient(-3, -3, 10);
@@ -101,7 +107,7 @@ int Resource::addPort(Vertex::Ptr node)
     mLabels.push_back(label);
     addToGroup(label);
     int size = mLabels.size();
-    label->setPos(label->pos() + QPointF(0, ADJUST + size * ADJUST));
+    label->setPos(label->pos() + QPointF(0, (1 + size) * ADJUST));
     mPortCount++;
     return size - 1; // returning this port's offset in the vector of ports
 }
@@ -109,7 +115,8 @@ int Resource::addPort(Vertex::Ptr node)
 
 QPolygonF Resource::portBoundingRect(int portID)
 {
-    return mLabels[portID]->boundingRect();
+    QRectF result = mLabel->boundingRect();
+    return result.adjusted(0, (2 + portID) * ADJUST, boundingRect().width() - result.width(), (2 + portID) * ADJUST);
 }
 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
