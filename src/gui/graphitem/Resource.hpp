@@ -29,8 +29,7 @@ public:
 
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { return new Resource(graphWidget, vertex); }
 
-    void setPortCount(int portCount)    { mPortCount = portCount; }
-    int  getPortCount()                 { return mPortCount; }
+    int  getPortCount() { return mLabels.size(); }
 
     int addPort(Vertex::Ptr node);
     QPolygonF portBoundingRect(int portID);
@@ -52,7 +51,6 @@ private:
     Labels mLabels;
     QPen mPen;
     QPen mPenDefault;
-    int mPortCount;
 };
 
 } // end namespace graphitem

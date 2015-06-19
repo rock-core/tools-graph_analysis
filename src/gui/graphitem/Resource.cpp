@@ -17,7 +17,6 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex)
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
-    , mPortCount(0)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
@@ -54,7 +53,7 @@ QRectF Resource::boundingRect() const
 //    if("graph_analysis::ClusterVertex" == mpVertex->getClassName())
 //    {
 //        qreal adjust = 13.;
-//        return childrenRect.adjusted( - adjust, - adjust, adjust, adjust + (qreal) ((1 + mPortCount) >> 1) * 2. * adjust);
+//        return childrenRect.adjusted( - adjust, - adjust, adjust, adjust + (qreal) ((1 + mLabels.size()) >> 1) * 2. * adjust);
 //    }
     return childrenRect;
 }
@@ -75,7 +74,8 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     //painter->drawEllipse(-7, -7, 20, 20);
 
     painter->setPen(QPen(Qt::black, 0));
-    for(int i = 0; i < mPortCount; ++i)
+    int port_count = mLabels.size();
+    for(int i = 0; i < port_count; ++i)
     {
         painter->drawPolygon(portBoundingRect(i));
     }
@@ -105,17 +105,18 @@ int Resource::addPort(Vertex::Ptr node)
     int size = mLabels.size();
     Label *label = new Label(node->getLabel(), this, size);
     mLabels.push_back(label);
-    addToGroup(label);
-    label->setPos(label->pos() + QPointF(0, (2 + size) * ADJUST));
-    mPortCount++;
+//    addToGroup(label);
+    label->setPos(mLabel->pos() + QPointF(0., qreal(2 + (size << 1)) * qreal(ADJUST)));
     return size; // returning this port's offset in the vector of ports
 }
 
 
 QPolygonF Resource::portBoundingRect(int portID)
 {
-    QRectF result = mLabel->boundingRect();
-    return result.adjusted(0, (2 + portID) * ADJUST, boundingRect().width() - result.width(), (2 + portID) * ADJUST);
+    QRectF result = boundingRect();
+    result.adjust(0, result.height() - qreal(2 + 2 * portID) * ADJUST, 0, - qreal(2 * portID) * ADJUST);
+//    result.adjust(0,  qreal(1 + 2 * portID) * ADJUST, 0, qreal(3 + 2 * portID) * ADJUST - result.height());
+    return QPolygonF(result);
 }
 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)

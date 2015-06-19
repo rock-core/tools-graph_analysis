@@ -52,7 +52,9 @@
 #define TEST_IMPORT 1
 #define TEST_TYPES 2
 #define TEST_TYPES_FAIL 3
-#define TESTNO 2
+#define TEST_PORTS_EDGES_INTERACTION_DEPTH1 4
+#define TEST_PORTS_EDGES_INTERACTION_DEPTH2 5
+#define TESTNO 4
 //#define RENDER
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
@@ -186,6 +188,56 @@ int main(int argc, char **argv)
         case TEST_TYPES_FAIL:
         {
             Vertex::Ptr c0 = widget->createVertex("coconut", "c0");
+            Vertex::Ptr c0p0 = widget->createVertex("port", "c0p0");
+        }
+        break;
+
+        case TEST_PORTS_EDGES_INTERACTION_DEPTH1:
+        {
+            /* firstly manipulating the conceptual view of the graph */
+            // 2 cluster nodes: c0, c1
+            Vertex::Ptr c0 = widget->createVertex("cluster", "c0");
+            Vertex::Ptr c1 = widget->createVertex("cluster", "c1");
+
+            // 1 port for c0: c0p0
+            Vertex::Ptr c0p0 = widget->createVertex("port", "c0p0");
+            widget->createEdge(c0, c0p0, "c0e0");
+
+            // 1 port for c1: c1p0
+            Vertex::Ptr c1p0 = widget->createVertex("port", "c1p0");
+            widget->createEdge(c1, c1p0, "c1e0");
+
+            // 1 physical edge: edge0
+            widget->createEdge(c0p0, c1p0, "edge0");
+        }
+        break;
+
+        case TEST_PORTS_EDGES_INTERACTION_DEPTH2:
+        {
+            /* manipulating the conceptual view of the graph */
+            // 2 cluster nodes: c0, c1
+            Vertex::Ptr c0 = widget->createVertex("cluster", "c0");
+            Vertex::Ptr c1 = widget->createVertex("cluster", "c1");
+
+            // 1 port for c0: c0p0
+            Vertex::Ptr c0p0 = widget->createVertex("port", "c0p0");
+            widget->createEdge(c0, c0p0, "c0e0");
+
+            // 3 ports for c1: c1p0, c1p1, c1p2
+            Vertex::Ptr c1p0 = widget->createVertex("port", "c1p0");
+            widget->createEdge(c1, c1p0, "c1e0");
+            Vertex::Ptr c1p1 = widget->createVertex("port", "c1p1");
+            widget->createEdge(c1, c1p1, "c1e1");
+            Vertex::Ptr c1p2 = widget->createVertex("port", "c1p2");
+            widget->createEdge(c1, c1p2, "c1e2");
+            Vertex::Ptr c1p3 = widget->createVertex("port", "c1p3");
+            widget->createEdge(c1, c1p3, "c1e3");
+            Vertex::Ptr c1p4 = widget->createVertex("port", "c1p4");
+            widget->createEdge(c1, c1p4, "c1e4");
+
+            // 2 physical edges: edge0, edge1
+            widget->createEdge(c0p0, c1p0, "edge0");
+//            widget->createEdge(c0p0, c1p1, "edge1");
         }
         break;
     }
