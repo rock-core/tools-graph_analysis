@@ -71,7 +71,8 @@ public:
 
     void calculateForces();
     bool advance();
-    virtual QPolygonF portBoundingRect(int portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingRect is not reimplemented"); }
+    virtual QPolygonF portBoundingPolygon   (int portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingPolygon is not reimplemented"); }
+    virtual QRectF    portBoundingRect      (int portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingRect is not reimplemented"); }
 
     /**
      * Get the center position of this node item

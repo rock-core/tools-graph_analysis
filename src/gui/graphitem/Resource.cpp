@@ -77,7 +77,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     int port_count = mLabels.size();
     for(int i = 0; i < port_count; ++i)
     {
-        painter->drawPolygon(portBoundingRect(i));
+        painter->drawRect(portBoundingRect(i));
     }
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
@@ -111,7 +111,14 @@ int Resource::addPort(Vertex::Ptr node)
 }
 
 
-QPolygonF Resource::portBoundingRect(int portID)
+QRectF Resource::portBoundingRect(int portID)
+{
+    QRectF result = boundingRect();
+    result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height());
+    return result;
+}
+
+QPolygonF Resource::portBoundingPolygon(int portID)
 {
     QRectF result = boundingRect();
 //    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST);
