@@ -81,7 +81,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     }
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
-//    painter->drawRect(boundingRect()); //-7,-7,20,20);
+    painter->drawRect(boundingRect()); //-7,-7,20,20);
 
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
@@ -114,29 +114,16 @@ int Resource::addPort(Vertex::Ptr node)
 QRectF Resource::portBoundingRect(int portID)
 {
     QRectF result = boundingRect();
-    result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height());
+//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
+    result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
     return result;
 }
 
 QPolygonF Resource::portBoundingPolygon(int portID)
 {
     QRectF result = boundingRect();
-//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST);
-    result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height());
-
-
-
-
-    std::cout   << "portBoundingRect() sent for node '" + mLabel->toPlainText().toStdString() << "' on port '" << portID << "': "
-                                                << "(" << result.topLeft().x() << "," << result.topLeft().y() << ")"
-                                                << "(" << result.bottomLeft().x() << "," << result.bottomLeft().y() << ")"
-                                                << "(" << result.bottomRight().x() << "," << result.bottomRight().y() << ")"
-                                                << "(" << result.topRight().x() << "," << result.topRight().y() << ")"
-                                                << "(" << result.topLeft().x() << "," << result.topLeft().y() << ")"
-                << '\n';
-
-
-
+//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
+    result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
     return QPolygonF(result);
 }
 

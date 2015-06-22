@@ -98,24 +98,6 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, int por
     //    qDebug("scene coord: %.3f/%.3f", inScene.x(), inScene.y());
     //}
 
-
-    if(1 + portID)
-    {
-
-
-
-        std::cout   << "ntersectionPoint()  got for node '" + item->getLabel() << "' on port '" << portID << "': ";
-        for(int i = polygon.count() - 1; i >= 0; --i)
-        {
-                                                std::cout << "(" << polygon.at(i).x() << "," << polygon.at(i).y() << ")";
-        }
-                    std::cout << '\n';
-
-
-    }
-
-
-
     // Intersection with target
     QPointF p1 = item->mapToScene(polygon.first());
     QPointF p2;
