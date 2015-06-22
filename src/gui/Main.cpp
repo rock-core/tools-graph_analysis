@@ -48,12 +48,15 @@
 #include <graph_analysis/gui/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
+// test graphs
 #define TEST_1ST_GRAPH 0
 #define TEST_IMPORT 1
 #define TEST_TYPES 2
 #define TEST_TYPES_FAIL 3
 #define TEST_PORTS_EDGES_INTERACTION_DEPTH1 4
 #define TEST_PORTS_EDGES_INTERACTION_DEPTH2 5
+
+// choosing the test graph to display
 #define TESTNO TEST_PORTS_EDGES_INTERACTION_DEPTH2
 //#define RENDER
 

@@ -181,7 +181,7 @@ private:
     void updateGVGraph();
     void spawnEdge(const std::string& label);
 
-    graph_analysis::BaseGraph::Ptr mpGraph;
+    graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
 
     io::GVGraph* mpGVGraph;
     io::YamlWriter* mpYamlWriter;
@@ -190,7 +190,7 @@ private:
     io::YamlReader* mpYamlReader;
     // Supports filtering functionality
     GraphView mGraphView;
-    SubGraph::Ptr mpSubGraph;
+    SubGraph::Ptr mpSubGraph, mpLayoutingSubGraph;
     bool mFiltered;
 
     // Mapping with data model

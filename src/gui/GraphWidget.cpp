@@ -85,6 +85,7 @@ namespace gui {
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpGraph()
+    , mpLayoutingGraph()
     , mpGVGraph(0)
     , mpYamlWriter(new io::YamlWriter())
     , mpGexfWriter(new io::GexfWriter())
@@ -522,14 +523,15 @@ void GraphWidget::reset(bool keepData)
 
     if(!keepData)
     {
-        mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
+        mpGraph             = BaseGraph::Ptr( new gl::DirectedGraph() );
+        mpLayoutingGraph    = BaseGraph::Ptr( new gl::DirectedGraph() );
     }
 
     if(mpGVGraph)
     {
         delete mpGVGraph;
     }
-    mpGVGraph = new io::GVGraph(mpGraph, "GVGraphWidget");
+    mpGVGraph = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
 }
 
 void GraphWidget::clear()
@@ -546,6 +548,7 @@ void GraphWidget::clear()
     mPortMap.clear();
     scene()->clear();
 }
+
 void GraphWidget::refresh()
 {
     reset(true /*keepData*/);
@@ -566,6 +569,7 @@ void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 
 void GraphWidget::updateFromGraph()
 {
+    mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -589,7 +593,9 @@ void GraphWidget::updateFromGraph()
             NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
             mNodeItemMap[vertex] = nodeItem;
             scene()->addItem(nodeItem);
-            mpGVGraph->addNode(vertex);
+            mpLayoutingGraph->addVertex(vertex);
+//            mpLayoutingSubGraph->enable(vertex);
+//            mpGVGraph->addNode(vertex);
         }
     }
 
@@ -617,11 +623,6 @@ void GraphWidget::updateFromGraph()
         {
             // physical edge - processing deflected until after all ports will have been registered
             continue;
-//            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
-//            mEdgeItemMap[edge] = edgeItem;
-//
-//            scene()->addItem(edgeItem);
-//            mpGVGraph->addEdge(edge);
         }
         else if (
 //                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName()) ||
@@ -655,13 +656,13 @@ void GraphWidget::updateFromGraph()
             mPortMap[target] = sourceNodeItem;
             mPortIDMap[target] = sourceNodeItem->addPort(target);
         }
-        else if (
-                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())
-                )
-        {
-            // automatically added edge - useful for the layouting stage
-            continue;
-        }
+//        else if (
+//                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())
+//                )
+//        {
+//            /////   after graphs decoupling this too falls under "invalid"  ///////  // automatically added edge - useful for the layouting stage
+//            continue;
+//        }
         else
         {
             // invalid edge
@@ -703,11 +704,11 @@ void GraphWidget::updateFromGraph()
 
             scene()->addItem(edgeItem);
             Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex()));
-            mpGraph->addEdge(default_edge);
-            mpGVGraph->addEdge(default_edge);
+            mpLayoutingGraph->addEdge(default_edge);
+//            mpGVGraph->addEdge(default_edge);
         }
     }
-
+/*
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -749,6 +750,7 @@ void GraphWidget::updateFromGraph()
 //            }
 //        }
     }
+     */
 }
 
 void GraphWidget::addVertex(Vertex::Ptr vertex)
@@ -996,6 +998,7 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
     if(!mFiltered)
     {
         mpSubGraph = mGraphView.apply(mpGraph);
+        mpLayoutingSubGraph = mGraphView.apply(mpLayoutingGraph);
         mFiltered = true;
     }
 }
@@ -1012,6 +1015,7 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
     if(!mFiltered)
     {
         mpSubGraph = mGraphView.apply(mpGraph);
+        mpLayoutingSubGraph = mGraphView.apply(mpLayoutingGraph);
         mFiltered = true;
     }
 }
