@@ -18,6 +18,7 @@ class Resource : public graph_analysis::gui::NodeItem
 
     Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
     void changeLabel(const std::string& label);
+    std::string  getLabel() { return mLabel->toPlainText().toStdString(); }
     void updateLabel();
 public:
     Resource() {}
