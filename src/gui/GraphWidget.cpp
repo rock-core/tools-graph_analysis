@@ -555,13 +555,14 @@ void GraphWidget::reset(bool keepData)
     if(!keepData)
     {
         mpGraph             = BaseGraph::Ptr( new gl::DirectedGraph() );
-        mpLayoutingGraph    = BaseGraph::Ptr( new gl::DirectedGraph() );
     }
 
     if(mpGVGraph)
     {
         delete mpGVGraph;
     }
+    mpLayoutingGraph.reset();
+    mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     mpGVGraph = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
 }
 
@@ -1069,7 +1070,6 @@ void GraphWidget::zoomOut()
 
 void GraphWidget::setLayout(QString layoutName)
 {
-    reset(true /* please keep my data */ );
     mLayout = layoutName;
     updateFromGraph();
 }

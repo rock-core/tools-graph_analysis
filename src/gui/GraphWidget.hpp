@@ -123,7 +123,7 @@ public:
     void clear();
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
-    void standAloneLayouting();
+//    void standAloneLayouting();
 
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
     void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
@@ -183,7 +183,7 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    void updateGVGraph();
+//    void updateGVGraph();
     void spawnEdge(const std::string& label);
 
     graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
