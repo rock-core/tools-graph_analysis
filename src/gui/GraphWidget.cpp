@@ -569,7 +569,6 @@ void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 
 void GraphWidget::updateFromGraph()
 {
-    mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -594,8 +593,8 @@ void GraphWidget::updateFromGraph()
             mNodeItemMap[vertex] = nodeItem;
             scene()->addItem(nodeItem);
             mpLayoutingGraph->addVertex(vertex);
-//            mpLayoutingSubGraph->enable(vertex);
-//            mpGVGraph->addNode(vertex);
+            mpLayoutingSubGraph->enable(vertex);
+            mpGVGraph->addNode(vertex);
         }
     }
 
@@ -705,10 +704,9 @@ void GraphWidget::updateFromGraph()
             scene()->addItem(edgeItem);
             Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex()));
             mpLayoutingGraph->addEdge(default_edge);
-//            mpGVGraph->addEdge(default_edge);
+            mpGVGraph->addEdge(default_edge);
         }
     }
-/*
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -750,7 +748,6 @@ void GraphWidget::updateFromGraph()
 //            }
 //        }
     }
-     */
 }
 
 void GraphWidget::addVertex(Vertex::Ptr vertex)

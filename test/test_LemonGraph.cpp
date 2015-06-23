@@ -22,7 +22,8 @@ BOOST_AUTO_TEST_CASE(layouting)
     BOOST_REQUIRE_MESSAGE(types.end() != types.find("cluster"), "lemon_graph Testing | layouting: testing type 'cluster' is registered");
 
     graph_analysis::BaseGraph::Ptr mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
-    io::GVGraph* mpGVGraphPre  = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
+    graph_analysis::BaseGraph::Ptr mpGraph          = BaseGraph::Ptr( new gl::DirectedGraph() );
+    io::GVGraph* mpGVGraphPost = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
 
     Vertex::Ptr v0 = VertexTypeManager::getInstance()->createVertex("cluster", "v0"); // (new Vertex("v0"));
     Vertex::Ptr v1 = VertexTypeManager::getInstance()->createVertex("cluster", "v1"); // (new Vertex("v1"));
@@ -37,14 +38,19 @@ BOOST_AUTO_TEST_CASE(layouting)
     BOOST_REQUIRE_MESSAGE("v3" == v3->getLabel(), "Checking vertex label to be 'v3'; instead was found: " << v3->getLabel());
     BOOST_REQUIRE_MESSAGE("v4" == v4->getLabel(), "Checking vertex label to be 'v4'; instead was found: " << v4->getLabel());
 
+    mpGraph->addVertex(v0);
+    mpGraph->addVertex(v1);
+    mpGraph->addVertex(v2);
+    mpGraph->addVertex(v3);
+    mpGraph->addVertex(v4);
     mpLayoutingGraph->addVertex(v0);
     mpLayoutingGraph->addVertex(v1);
     mpLayoutingGraph->addVertex(v2);
     mpLayoutingGraph->addVertex(v3);
     mpLayoutingGraph->addVertex(v4);
 
+    io::GVGraph* mpGVGraphPre  = new io::GVGraph(mpGraph, "GVGraphWidget");
 
-    io::GVGraph* mpGVGraphPost = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
     mpGVGraphPost->addNode(v0);
     mpGVGraphPost->addNode(v1);
     mpGVGraphPost->addNode(v2);
