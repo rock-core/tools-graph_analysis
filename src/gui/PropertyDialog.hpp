@@ -30,18 +30,17 @@ class PropertyDialog : public QObject
 {
     Q_OBJECT
 public:
-    PropertyDialog(GraphWidget *widget)
+    PropertyDialog(GraphWidget *widget, bool dragDropIsChecked = false)
     : mpGraphWidget(widget)
     {
-        setupUi(&mDialog);
+        setupUi(&mDialog, dragDropIsChecked);
         mDialog.show();
     }
     ~PropertyDialog(){}
 
-    void closeDialog() { mDialog.done(0); }
     bool isRunning() { return mDialog.isVisible(); }
     void setDragDrop(bool toggle) { mpDragDropButton->setChecked(toggle); }
-    void setupUi(QDialog *Dialog)
+    void setupUi(QDialog *Dialog, bool dragDropIsChecked = false)
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
@@ -56,7 +55,7 @@ public:
         mpDragDropButton = new QPushButton(horizontalLayoutWidget);
         mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
         mpDragDropButton->setCheckable(true);
-        mpDragDropButton->setChecked(false);
+        mpDragDropButton->setChecked(dragDropIsChecked);
 
         verticalLayout->addWidget(mpDragDropButton);
 

@@ -163,10 +163,6 @@ GraphWidget::GraphWidget(QWidget *parent)
 
 GraphWidget::~GraphWidget()
 {
-    if(mpPropertyDialog)
-    {
-        mpPropertyDialog->closeDialog();
-    }
     WriterMap::iterator it_writer = mWriterMap.begin();
     for(; mWriterMap.end() != it_writer; ++it_writer)
     {
@@ -294,7 +290,7 @@ void GraphWidget::reloadPropertyDialog()
     {
         delete mpPropertyDialog;
     }
-    mpPropertyDialog = new PropertyDialog(this);
+    mpPropertyDialog = new PropertyDialog(this, mDragDrop);
 }
 
 Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
