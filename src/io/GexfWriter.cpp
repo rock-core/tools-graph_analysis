@@ -32,7 +32,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         digraph.addNode(nodeIdString);
 
         data.setNodeLabel(nodeIdString, vertex->toString() );
-        data.setNodeValue(nodeIdString, classAttr, vertex->toString());
+        data.setNodeValue(nodeIdString, classAttr, vertex->getClassName());
         data.setNodeValue(nodeIdString, labelAttr, vertex->getLabel());
     }
 
