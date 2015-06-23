@@ -209,6 +209,14 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
 
     // (conditionally) adding the actions to the context menu
+    if(mDragDrop)
+    {
+        contextMenu.addAction(actionUnsetDragDrop);
+    }
+    else
+    {
+        contextMenu.addAction(actionSetDragDrop);
+    }
     if(mEdgeSelected)
     {
         contextMenu.addAction(actionChangeEdgeLabel);
@@ -227,14 +235,6 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionImport);
     contextMenu.addAction(actionExport);
     contextMenu.addAction(actionLayout);
-    if(mDragDrop)
-    {
-        contextMenu.addAction(actionUnsetDragDrop);
-    }
-    else
-    {
-        contextMenu.addAction(actionSetDragDrop);
-    }
     if(!mpPropertyDialog->isRunning())
     {
         contextMenu.addAction(actionReloadPropertyDialog);

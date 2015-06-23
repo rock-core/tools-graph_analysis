@@ -124,7 +124,7 @@ public:
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpImportButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
         mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
-        mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
+        mpLayoutButton->setText(QApplication::translate("Dialog", "Change Layout", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 public slots:
