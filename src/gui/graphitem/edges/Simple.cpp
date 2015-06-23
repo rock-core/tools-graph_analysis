@@ -8,11 +8,12 @@ namespace graphitem {
 namespace edges {
 
 Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge)
-    : EdgeItem(graphWidget, sourceNode, targetNode, edge), mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
+    : EdgeItem(graphWidget, sourceNode, targetNode, edge)
+    , mpLabel(new EdgeLabel(edge->toString(), this)) // the use of edge->toString() is a feature; not a bug!
+    , mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
     , mSourceNodePortID(sourceNodePortID)
     , mTargetNodePortID(targetNodePortID)
 {
-    mpLabel = new EdgeLabel(edge->toString(), this); // the use of edge->toString() is a feature; not a bug!
     mPen = mPenDefault; // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
@@ -28,14 +29,14 @@ void Simple::adjust()
     mSourcePoint = mpSourceNodeItem->mapToScene(mpSourceNodeItem->portBoundingRect(mSourceNodePortID).center());
     mTargetPoint = mpTargetNodeItem->mapToScene(mpTargetNodeItem->portBoundingRect(mTargetNodePortID).center());
 
-    QPointF centerPos((mTargetPoint.x() - mSourcePoint.x())/2.0, (mTargetPoint.y() - mSourcePoint.y())/2.0);
+//    QPointF centerPos((mTargetPoint.x() - mSourcePoint.x())/2.0, (mTargetPoint.y() - mSourcePoint.y())/2.0);
 
     QLineF line(mSourcePoint, mTargetPoint);
     QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line, mSourceNodePortID);
     QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line, mTargetNodePortID);
 
     mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
-    mpLabel->setPos( mLine.pointAt(0.5) );
+    mpLabel->setPos( mLine.pointAt(0.5) - QPointF(mpLabel->boundingRect().width() / 2., 0) );
 }
 
 QRectF Simple::boundingRect() const

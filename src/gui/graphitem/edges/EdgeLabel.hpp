@@ -12,7 +12,7 @@ namespace edges {
 class EdgeLabel : public QGraphicsTextItem
 {
 public:
-    EdgeLabel(const std::string& label, QGraphicsItem* item, const std::string& cachedLabel = "")
+    EdgeLabel(const std::string& label, QGraphicsItem* item)
         : QGraphicsTextItem( QString(label.c_str()), item)
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
@@ -50,7 +50,7 @@ public:
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
-    { 
+    {
     //    if(textInteractionFlags() == Qt::TextEditorInteraction)
     //    {
     //        QGraphicsTextItem::mousePressEvent(event);
