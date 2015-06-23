@@ -62,6 +62,7 @@
 #include <QSignalMapper>
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
@@ -76,7 +77,7 @@
 #include <exception>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-#define DEFAULT_SCALING_FACTOR 1.4
+#define DEFAULT_SCALING_FACTOR 2.269
 
 using namespace graph_analysis;
 
@@ -99,6 +100,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mEdgeStartVertex(false)
     , mEdgeEndVertex(false)
     , mDragDrop(false)
+    , mMaxNodeHeight(0)
+    , mMaxNodeWidth (0)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -554,13 +557,15 @@ void GraphWidget::reset(bool keepData)
 
     if(!keepData)
     {
-        mpGraph             = BaseGraph::Ptr( new gl::DirectedGraph() );
+        mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     }
 
     if(mpGVGraph)
     {
         delete mpGVGraph;
     }
+    mMaxNodeHeight  = 0;
+    mMaxNodeWidth   = 0;
     mpLayoutingGraph.reset();
     mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     mpGVGraph = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
@@ -601,6 +606,7 @@ void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 
 void GraphWidget::updateFromGraph()
 {
+    /* !!! reset(true); shall be called apriori (unless you know what you're doing) !!! */
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -739,12 +745,31 @@ void GraphWidget::updateFromGraph()
             mpGVGraph->addEdge(default_edge);
         }
     }
+
+    NodeItemMap::iterator node_it = mNodeItemMap.begin();
+    for(; mNodeItemMap.end() != node_it; ++node_it)
+    {
+        QRectF nodeBoundingRect = node_it->second->boundingRect();
+        qreal height = nodeBoundingRect.height();
+        qreal width  = nodeBoundingRect.width();
+        if(mMaxNodeHeight < height)
+        {
+            height = mMaxNodeHeight;
+        }
+        if(mMaxNodeWidth < width)
+        {
+            mMaxNodeWidth = width;
+        }
+    }
+
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
 
         LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
         base::Time start = base::Time::now();
+        mpGVGraph->setNodeAttribute("height", boost::lexical_cast<std::string>(mMaxNodeHeight));
+        mpGVGraph->setNodeAttribute("width" , boost::lexical_cast<std::string>(mMaxNodeWidth ));
         mpGVGraph->applyLayout(mLayout.toStdString());
         base::Time delay = base::Time::now() - start;
         QApplication::restoreOverrideCursor();
@@ -1070,6 +1095,7 @@ void GraphWidget::zoomOut()
 
 void GraphWidget::setLayout(QString layoutName)
 {
+    /* !!! reset(true); shall be called apriori (unless you know what you're doing) !!! */
     mLayout = layoutName;
     updateFromGraph();
 }

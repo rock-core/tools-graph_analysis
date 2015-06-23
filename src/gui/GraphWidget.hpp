@@ -232,6 +232,7 @@ private:
 
     PropertyDialog *mpPropertyDialog;
     bool mDragDrop;
+    qreal mMaxNodeHeight, mMaxNodeWidth;
 };
 
 } // end namespace gui

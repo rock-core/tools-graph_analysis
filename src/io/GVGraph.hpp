@@ -138,7 +138,7 @@ public:
      * \param defaultValue The return value will be this if the attribute has not been set for the graph
      * \return Current or default value for this attribute
      */
-    std::string getGraphAttribute(const std::string& name, const std::string& defaultValue ="") const;
+    std::string getGraphAttribute(const std::string& name, const std::string& defaultValue = "") const;
 
     /**
      * Set a node attribute by name
