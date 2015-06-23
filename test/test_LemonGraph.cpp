@@ -11,6 +11,7 @@
 
 
 using namespace graph_analysis;
+namespace gl = graph_analysis::lemon;
 
 BOOST_AUTO_TEST_SUITE(lemon_graph)
 
@@ -20,9 +21,8 @@ BOOST_AUTO_TEST_CASE(layouting)
     std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
     BOOST_REQUIRE_MESSAGE(types.end() != types.find("cluster"), "lemon_graph Testing | layouting: testing type 'cluster' is registered");
 
-    graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
-    io::GVGraph* mpGVGraph = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
-
+    graph_analysis::BaseGraph::Ptr mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
+    io::GVGraph* mpGVGraphPre  = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
 
     Vertex::Ptr v0 = VertexTypeManager::getInstance()->createVertex("cluster", "v0"); // (new Vertex("v0"));
     Vertex::Ptr v1 = VertexTypeManager::getInstance()->createVertex("cluster", "v1"); // (new Vertex("v1"));
@@ -31,19 +31,31 @@ BOOST_AUTO_TEST_CASE(layouting)
     Vertex::Ptr v4 = VertexTypeManager::getInstance()->createVertex("cluster", "v4"); // (new Vertex("v4"));
 
     BOOST_REQUIRE_MESSAGE(v0.get() && v1.get() && v2.get() && v3.get() && v4.get(), "lemon_graph Testing | layouting: testing vertices pointers did come back null");
+    BOOST_REQUIRE_MESSAGE("v0" == v0->getLabel(), "Checking vertex label to be 'v0'; instead was found: " << v0->getLabel());
+    BOOST_REQUIRE_MESSAGE("v1" == v1->getLabel(), "Checking vertex label to be 'v1'; instead was found: " << v1->getLabel());
+    BOOST_REQUIRE_MESSAGE("v2" == v2->getLabel(), "Checking vertex label to be 'v2'; instead was found: " << v2->getLabel());
+    BOOST_REQUIRE_MESSAGE("v3" == v3->getLabel(), "Checking vertex label to be 'v3'; instead was found: " << v3->getLabel());
+    BOOST_REQUIRE_MESSAGE("v4" == v4->getLabel(), "Checking vertex label to be 'v4'; instead was found: " << v4->getLabel());
 
     mpLayoutingGraph->addVertex(v0);
-    /*
     mpLayoutingGraph->addVertex(v1);
     mpLayoutingGraph->addVertex(v2);
     mpLayoutingGraph->addVertex(v3);
     mpLayoutingGraph->addVertex(v4);
-    mpGVGraph->addNode(v0);
-    mpGVGraph->addNode(v1);
-    mpGVGraph->addNode(v2);
-    mpGVGraph->addNode(v3);
-    mpGVGraph->addNode(v4);
-     */
+
+
+    io::GVGraph* mpGVGraphPost = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
+    mpGVGraphPost->addNode(v0);
+    mpGVGraphPost->addNode(v1);
+    mpGVGraphPost->addNode(v2);
+    mpGVGraphPost->addNode(v3);
+    mpGVGraphPost->addNode(v4);
+
+    mpGVGraphPre->addNode(v0);
+    mpGVGraphPre->addNode(v1);
+    mpGVGraphPre->addNode(v2);
+    mpGVGraphPre->addNode(v3);
+    mpGVGraphPre->addNode(v4);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
