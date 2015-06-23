@@ -65,6 +65,7 @@
 
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
+#include <graph_analysis/GraphIO.hpp>
 #include <graph_analysis/io/YamlWriter.hpp>
 #include <graph_analysis/io/GexfWriter.hpp>
 #include <graph_analysis/io/GexfReader.hpp>
@@ -87,10 +88,6 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGraph()
     , mpLayoutingGraph()
     , mpGVGraph(0)
-    , mpYamlWriter(new io::YamlWriter())
-    , mpGexfWriter(new io::GexfWriter())
-    , mpGexfReader(new io::GexfReader())
-    , mpYamlReader(new io::YamlReader())
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -123,7 +120,37 @@ GraphWidget::GraphWidget(QWidget *parent)
     mGraphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
 
+    // setting up the Reader- and Writer- Maps
+    io::YamlWriter *yamlWriter = new io::YamlWriter();
+    mWriterMap["yaml"]  = yamlWriter;
+    mWriterMap["Yaml"]  = yamlWriter;
+    mWriterMap["yml"]   = yamlWriter;
+    mWriterMap["Yml"]   = yamlWriter;
+    mWriterMap["YAML"]  = yamlWriter;
+    mWriterMap["YML"]   = yamlWriter;
+    io::YamlReader *yamlReader = new io::YamlReader();
+    mReaderMap["yaml"]  = yamlReader;
+    mReaderMap["Yaml"]  = yamlReader;
+    mReaderMap["yml"]   = yamlReader;
+    mReaderMap["Yml"]   = yamlReader;
+    mReaderMap["YAML"]  = yamlReader;
+    mReaderMap["YML"]   = yamlReader;
+    io::GexfWriter *gexfWriter = new io::GexfWriter();
+    mWriterMap["gexf"]  = gexfWriter;
+    mWriterMap["Gexf"]  = gexfWriter;
+    mWriterMap["xml"]   = gexfWriter;
+    mWriterMap["Xml"]   = gexfWriter;
+    mWriterMap["GEXF"]  = gexfWriter;
+    mWriterMap["XML"]   = gexfWriter;
+    io::GexfReader *gexfReader = new io::GexfReader();
+    mReaderMap["gexf"]  = gexfReader;
+    mReaderMap["Gexf"]  = gexfReader;
+    mReaderMap["xml"]   = gexfReader;
+    mReaderMap["Xml"]   = gexfReader;
+    mReaderMap["GEXF"]  = gexfReader;
+    mReaderMap["XML"]   = gexfReader;
 
+    // setting ip the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
 
@@ -137,17 +164,21 @@ GraphWidget::~GraphWidget()
     {
         mpPropertyDialog->closeDialog();
     }
-    if(mpYamlWriter)
+    WriterMap::iterator it_writer = mWriterMap.begin();
+    for(; mWriterMap.end() != it_writer; ++it_writer)
     {
-        delete mpYamlWriter;
+        if(it_writer->second)
+        {
+            delete it_writer->second;
+        }
     }
-    if(mpGexfWriter)
+    ReaderMap::iterator it_reader = mReaderMap.begin();
+    for(; mReaderMap.end() != it_reader; ++it_reader)
     {
-        delete mpGexfWriter;
-    }
-    if(mpGexfReader)
-    {
-        delete mpGexfReader;
+        if(it_reader->second)
+        {
+            delete it_reader->second;
+        }
     }
 //    destroy();
 }
@@ -466,7 +497,7 @@ void GraphWidget::toYmlFile(const std::string& filename)
 {
     try
     {
-        mpYamlWriter->write(filename, mpGraph);
+        mWriterMap["yaml"]->write(filename, mpGraph);
     }
     catch(std::runtime_error e)
     {
@@ -490,7 +521,7 @@ void GraphWidget::toDotFile(const std::string& filename)
 
 void GraphWidget::fromXmlFile(const std::string& filename)
 {
-    mpGexfReader->read(filename, mpGraph);
+    mReaderMap["gexf"]->read(filename, mpGraph);
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
     refresh();
@@ -498,7 +529,7 @@ void GraphWidget::fromXmlFile(const std::string& filename)
 
 void GraphWidget::fromYmlFile(const std::string& filename)
 {
-    mpYamlReader->read(filename, mpGraph);
+    mReaderMap["yaml"]->read(filename, mpGraph);
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
     refresh();
@@ -508,7 +539,7 @@ void GraphWidget::toXmlFile(const std::string& filename)
 {
     try
     {
-        mpGexfWriter->write(filename, mpGraph);
+        mWriterMap["gexf"]->write(filename, mpGraph);
     }
     catch(std::runtime_error e)
     {

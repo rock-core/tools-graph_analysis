@@ -41,6 +41,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
+#include <map>
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
@@ -53,6 +54,8 @@ namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
 namespace io {
 
+class Writer;
+class Reader;
 class GVGraph;
 class YamlWriter;
 class GexfWriter;
@@ -90,6 +93,8 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> PortMap;
     typedef std::map<graph_analysis::Vertex::Ptr, int> PortIDMap;
+    typedef std::map <std::string, io::Writer*> WriterMap;
+    typedef std::map <std::string, io::Reader*> ReaderMap;
 
     GraphWidget(QWidget *parent = 0);
     ~GraphWidget();
@@ -183,11 +188,14 @@ private:
 
     graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
 
+    /// io components
+
+    /// layouting
     io::GVGraph* mpGVGraph;
-    io::YamlWriter* mpYamlWriter;
-    io::GexfWriter* mpGexfWriter;
-    io::GexfReader* mpGexfReader;
-    io::YamlReader* mpYamlReader;
+    /// export
+    WriterMap mWriterMap;
+    /// import
+    ReaderMap mReaderMap;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph, mpLayoutingSubGraph;
