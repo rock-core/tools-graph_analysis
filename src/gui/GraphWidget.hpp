@@ -61,6 +61,7 @@ class YamlWriter;
 class GexfWriter;
 class GexfReader;
 class YamlReader;
+class GraphvizWriter;
 
 } // end namespace io
 
@@ -106,6 +107,7 @@ public:
     void addVertex(graph_analysis::Vertex::Ptr vertex);
     void addEdge(graph_analysis::Edge::Ptr edge);
     void toYmlFile(const std::string& filename);
+    void gvRender (const std::string& filename);
     void toDotFile(const std::string& filename);
     void toXmlFile(const std::string& filename);
     void fromXmlFile(const std::string& filename);
@@ -114,8 +116,10 @@ public:
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    void enableVertex(graph_analysis::Vertex::Ptr vertex);
-    void enableEdge(graph_analysis::Edge::Ptr edge);
+    void enableVertex (graph_analysis::Vertex::Ptr vertex);
+    void disableVertex(graph_analysis::Vertex::Ptr vertex);
+    void enableEdge (graph_analysis::Edge::Ptr edge);
+    void disableEdge(graph_analysis::Edge::Ptr edge);
 
     graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
 

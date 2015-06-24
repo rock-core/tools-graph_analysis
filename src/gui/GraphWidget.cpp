@@ -71,6 +71,7 @@
 #include <graph_analysis/io/GexfWriter.hpp>
 #include <graph_analysis/io/GexfReader.hpp>
 #include <graph_analysis/io/YamlReader.hpp>
+#include <graph_analysis/io/GraphvizWriter.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
@@ -152,6 +153,10 @@ GraphWidget::GraphWidget(QWidget *parent)
     mReaderMap["Xml"]   = gexfReader;
     mReaderMap["GEXF"]  = gexfReader;
     mReaderMap["XML"]   = gexfReader;
+    io::GraphvizWriter *gvWriter = new io::GraphvizWriter();
+    mWriterMap["dot"]  = gvWriter;
+    mWriterMap["Dot"]  = gvWriter;
+    mWriterMap["DOT"]  = gvWriter;
 
     // setting ip the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -534,6 +539,19 @@ void GraphWidget::toDotFile(const std::string& filename)
 {
     try
     {
+        mWriterMap["dot"]->write(filename, mpGraph);
+    }
+    catch(std::runtime_error e)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget::toDotFile: export via graphviz failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
+    }
+}
+
+void GraphWidget::gvRender(const std::string& filename)
+{
+    try
+    {
         mpGVGraph->renderToFile(filename, mLayout.toStdString());
     }
     catch(std::runtime_error e)
@@ -635,12 +653,23 @@ void GraphWidget::refresh()
 void GraphWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
     mpSubGraph->enable(vertex);
-    LOG_DEBUG_S << "Enabled a vertex of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
+    LOG_DEBUG_S << "Enabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
 }
 void GraphWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 {
     mpSubGraph->enable(edge);
-    LOG_DEBUG_S << "Enabled an edge of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
+    LOG_DEBUG_S << "Enabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
+}
+
+void GraphWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
+{
+    mpSubGraph->disable(vertex);
+    LOG_DEBUG_S << "Disabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
+}
+void GraphWidget::disableEdge(graph_analysis::Edge::Ptr edge)
+{
+    mpSubGraph->disable(edge);
+    LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
 void GraphWidget::updateFromGraph()
