@@ -562,14 +562,13 @@ void GraphWidget::reset(bool keepData)
     }
     mMaxNodeHeight  = 0;
     mMaxNodeWidth   = 0;
-    mpLayoutingGraph.reset();
     mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
     mpGVGraph = new io::GVGraph(mpLayoutingGraph, "GVGraphWidget");
 }
 
 void GraphWidget::clear()
 {
-    // TO-DO: add filtering clearing
+    // TO-DO: add filtering clearing?
     if(mpGVGraph)
     {
         mpGVGraph->clearEdges();
@@ -579,6 +578,7 @@ void GraphWidget::clear()
     mNodeItemMap.clear();
     mEdgeItemMap.clear();
     mPortMap.clear();
+    mPortIDMap.clear();
     scene()->clear();
 }
 
@@ -627,11 +627,9 @@ void GraphWidget::updateFromGraph()
             mNodeItemMap[vertex] = nodeItem;
             scene()->addItem(nodeItem);
             mpLayoutingGraph->addVertex(vertex);
-            mpLayoutingSubGraph->enable(vertex);
             mpGVGraph->addNode(vertex);
         }
     }
-
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
@@ -658,7 +656,6 @@ void GraphWidget::updateFromGraph()
             continue;
         }
         else if (
-//                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName()) ||
                     ("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())
                 )
         {
@@ -677,7 +674,6 @@ void GraphWidget::updateFromGraph()
         }
         else if (
                     ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
-//                    || ("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())
                 )
         {
             // semantical edge: links a cluster vertex to one of its ports
@@ -1048,7 +1044,6 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
     if(!mFiltered)
     {
         mpSubGraph = mGraphView.apply(mpGraph);
-        mpLayoutingSubGraph = mGraphView.apply(mpLayoutingGraph);
         mFiltered = true;
     }
 }
@@ -1065,7 +1060,6 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
     if(!mFiltered)
     {
         mpSubGraph = mGraphView.apply(mpGraph);
-        mpLayoutingSubGraph = mGraphView.apply(mpLayoutingGraph);
         mFiltered = true;
     }
 }

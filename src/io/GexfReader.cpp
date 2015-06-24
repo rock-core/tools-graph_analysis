@@ -1,5 +1,6 @@
 #include "GexfReader.hpp"
 
+#include <graph_analysis/VertexTypeManager.hpp>
 #include <libgexf/nodeiter.h>
 #include <libgexf/edgeiter.h>
 #include <libgexf/filereader.h>
@@ -8,7 +9,7 @@
 namespace graph_analysis {
 namespace io {
 
-void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph) const
+void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
 {
     libgexf::FileReader* reader = new libgexf::FileReader();
     reader->init(filename.c_str());
@@ -17,6 +18,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph) const
     libgexf::GEXF gexf = reader->getGEXFCopy();
     libgexf::DirectedGraph& gexf_graph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
+    std::string classAttr = CLASS;
     std::string labelAttr = LABEL;
 
     graph->clear();
@@ -25,8 +27,9 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph) const
     while(node_it->hasNext())
     {
         libgexf::t_id current = node_it->next();
+        std::string nodeClass = data.getNodeAttribute(current, classAttr);
         std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
-        Vertex::Ptr vertex(new Vertex(nodeLabel));
+        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeClass, nodeLabel); // (new Vertex(nodeLabel));
         graph->addVertex(vertex);
         vertexMap[current] = vertex;
     }

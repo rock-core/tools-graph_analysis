@@ -13,14 +13,20 @@ VertexTypeManager::VertexTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
         ("base",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
+        ("graph_analysis::BaseVertex",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
         ("port",    Vertex::Ptr ((Vertex *) (new PortVertex())))
+        ("graph_analysis::PortVertex",    Vertex::Ptr ((Vertex *) (new PortVertex())))
         ("cluster",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
+        ("graph_analysis::ClusterVertex",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
         ;
     mRegisteredTypes.clear();
     ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
     for(; mClassVisualizationMap.end() != it; ++it)
     {
-        mRegisteredTypes.insert(it->first);
+        if("graph_analysis::" != it->first.substr(0, std::string("graph_analysis::").length()))
+        {
+            mRegisteredTypes.insert(it->first);
+        }
     }
 }
 

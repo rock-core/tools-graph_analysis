@@ -198,7 +198,7 @@ private:
     ReaderMap mReaderMap;
     // Supports filtering functionality
     GraphView mGraphView;
-    SubGraph::Ptr mpSubGraph, mpLayoutingSubGraph;
+    SubGraph::Ptr mpSubGraph;
     bool mFiltered;
 
     // Mapping with data model
