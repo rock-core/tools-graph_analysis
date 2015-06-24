@@ -52,12 +52,6 @@ public:
         verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        mpDragDropButton = new QPushButton(horizontalLayoutWidget);
-        mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
-        mpDragDropButton->setCheckable(true);
-        mpDragDropButton->setChecked(dragDropIsChecked);
-
-        verticalLayout->addWidget(mpDragDropButton);
 
         mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
         mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
@@ -101,15 +95,22 @@ public:
 
         verticalLayout->addWidget(mpLayoutButton);
 
+        mpDragDropButton = new QPushButton(horizontalLayoutWidget);
+        mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
+        mpDragDropButton->setCheckable(true);
+        mpDragDropButton->setChecked(dragDropIsChecked);
+
+        verticalLayout->addWidget(mpDragDropButton);
+
         retranslateUi(Dialog);
 
-        QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
         QObject::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
         QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
+        QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
 
         QMetaObject::connectSlotsByName(Dialog);
     } // setupUi
@@ -117,13 +118,13 @@ public:
     void retranslateUi(QDialog *Dialog)
     {
         Dialog->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
-        mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpImportButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
         mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Change Layout", 0, QApplication::UnicodeUTF8));
+        mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 public slots:
@@ -133,13 +134,13 @@ private:
     GraphWidget *mpGraphWidget;
     QWidget *horizontalLayoutWidget;
     QVBoxLayout *verticalLayout;
-    QPushButton *mpDragDropButton;
     QPushButton *mpAddNodeButton;
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
     QPushButton *mpImportButton;
     QPushButton *mpExportButton;
     QPushButton *mpLayoutButton;
+    QPushButton *mpDragDropButton;
 
 };
 

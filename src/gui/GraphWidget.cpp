@@ -210,14 +210,6 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
 
     // (conditionally) adding the actions to the context menu
-    if(mDragDrop)
-    {
-        contextMenu.addAction(actionUnsetDragDrop);
-    }
-    else
-    {
-        contextMenu.addAction(actionSetDragDrop);
-    }
     if(mEdgeSelected)
     {
         contextMenu.addAction(actionChangeEdgeLabel);
@@ -236,6 +228,14 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionImport);
     contextMenu.addAction(actionExport);
     contextMenu.addAction(actionLayout);
+    if(mDragDrop)
+    {
+        contextMenu.addAction(actionUnsetDragDrop);
+    }
+    else
+    {
+        contextMenu.addAction(actionSetDragDrop);
+    }
     if(!mpPropertyDialog->isRunning())
     {
         contextMenu.addAction(actionReloadPropertyDialog);
@@ -880,6 +880,16 @@ void GraphWidget::addEdge(Edge::Ptr edge)
     mpGraph->addEdge(edge);
 }
 
+void GraphWidget::removeVertex(Vertex::Ptr vertex)
+{
+    mpGraph->removeVertex(vertex);
+}
+
+void GraphWidget::removeEdge(Edge::Ptr edge)
+{
+    mpGraph->removeEdge(edge);
+}
+
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
@@ -910,9 +920,11 @@ void GraphWidget::updateDragDrop(bool dragDrop)
     NodeItemMap::iterator it = mNodeItemMap.begin();
     for(; mNodeItemMap.end() != it; ++it)
     {
-        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
+        NodeItem *current = it->second;
+        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
-            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
+//            current->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop); // not really an issue
+            current->setHandlesChildEvents(!mDragDrop);
         }
     }
 }
@@ -924,9 +936,11 @@ void GraphWidget::setDragDrop()
     NodeItemMap::iterator it = mNodeItemMap.begin();
     for(; mNodeItemMap.end() != it; ++it)
     {
-        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
+        NodeItem *current = it->second;
+        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
-            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
+//            current->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop); // not really an issue
+            current->setHandlesChildEvents(false); // of !mDragDrop
         }
     }
 }
@@ -938,9 +952,11 @@ void GraphWidget::unsetDragDrop()
     NodeItemMap::iterator it = mNodeItemMap.begin();
     for(; mNodeItemMap.end() != it; ++it)
     {
-        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
+        NodeItem *current = it->second;
+        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
-            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
+//            current->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop); // not really an issue
+            current->setHandlesChildEvents(true); // of !mDragDrop
         }
     }
 }
@@ -1003,6 +1019,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     break;
     case Qt::Key_Space:
     case Qt::Key_Enter:
+    case Qt::Key_R:
             refresh();
     break;
 
@@ -1011,7 +1028,6 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     break; // TOO close to CTRL+S?!
     //default:
     }
-
     QGraphicsView::keyPressEvent(event);
 }
 
@@ -1098,15 +1114,15 @@ void GraphWidget::scaleView(qreal scaleFactor)
 {
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
     if (factor < 0.07 || factor > 100)
+    {
         return;
-
+    }
     scale(scaleFactor, scaleFactor);
 }
 
 void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
 {
     mpVertexFilter->clear();
-
     BOOST_FOREACH(Filter<Vertex::Ptr>::Ptr filter, filters)
     {
         mpVertexFilter->add(filter);
@@ -1122,7 +1138,6 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
 void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
 {
     mpEdgeFilter->clear();
-
     BOOST_FOREACH(Filter<Edge::Ptr>::Ptr filter, filters)
     {
         mpEdgeFilter->add(filter);
@@ -1140,7 +1155,9 @@ void GraphWidget::shuffle()
     foreach (QGraphicsItem *item, scene()->items())
     {
         if (qgraphicsitem_cast<NodeItem* >(item))
-            item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
+        {
+            item->setPos(-150 * mScaleFactor + mScaleFactor * (qrand() % 300), -150 * mScaleFactor + mScaleFactor * (qrand() % 300));
+        }
     }
 }
 
