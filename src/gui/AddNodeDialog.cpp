@@ -32,11 +32,12 @@ void AddNodeDialog::setupUi(QDialog *Dialog)
     label_2->setObjectName(QString::fromUtf8("label_2"));
     label_2->setGeometry(QRect(20, 70, 91, 31));
     comboBox = new QComboBox(Dialog);
-    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
-    foreach(std::string type, types)
-    {
-        comboBox->addItem(QString(type.c_str()));
-    }
+//    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
+//    foreach(std::string type, types)
+//    {
+//        comboBox->addItem(QString(type.c_str()));
+//    }
+    comboBox->addItem(QString("cluster"));
     comboBox->setObjectName(QString::fromUtf8("comboBox"));
     comboBox->setGeometry(QRect(117, 70, 291, 27));
 

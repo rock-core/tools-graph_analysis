@@ -350,9 +350,7 @@ void GraphWidget::addNodeAdhoc(QObject *pos)
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
         nodeItem->setPos((double) position->x(), (double) position->y());
         mNodeItemMap[vertex] = nodeItem;
-
         scene()->addItem(nodeItem);
-//        update();
     }
 }
 
@@ -394,15 +392,42 @@ void GraphWidget::removeSelectedEdge()
 
 void GraphWidget::removeSelectedVertex()
 {
+    // removing possible (default?) edges of this cluster node within the main graph (and its port-vertices)
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(mpSelectedVertex);
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();
+        Vertex::Ptr portVertex;
+        Vertex::Ptr sourceVertex = edge->getSourceVertex();
+        Vertex::Ptr targetVertex = edge->getTargetVertex();
+        if(sourceVertex != mpSelectedVertex)
+        {
+            portVertex = sourceVertex;
+        }
+        else
+        {
+            portVertex = targetVertex;
+        }
+        // removing all edges of the portVertex
+        EdgeIterator::Ptr edgeIterator = mpGraph->getEdgeIterator(portVertex);
+        while(edgeIterator->next())
+        {
+            mpGraph->removeEdge(edgeIterator->current());
+        }
+        mpGraph->removeVertex(portVertex);
+        // already removed the edge itself up above //       mpGraph->removeEdge(edge);
+    }
+    // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
+    edgeIt = mpLayoutingGraph->getEdgeIterator(mpSelectedVertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
         scene()->removeItem(mEdgeItemMap[edge]);
-        mpGraph->removeEdge(edge);
+        mpLayoutingGraph->removeEdge(edge);
     }
     scene()->removeItem(mNodeItemMap[mpSelectedVertex]);
     mpGraph->removeVertex(mpSelectedVertex);
+    mpLayoutingGraph->removeVertex(mpSelectedVertex); // not strictly necessary
 }
 
 void GraphWidget::changeLayout()
@@ -541,6 +566,7 @@ void GraphWidget::fromXmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::GraphWidget::fromXmlFile: import from .gexf failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Import from .gexf Failed"), QString(e.what()));
+        return;
     }
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
@@ -557,6 +583,7 @@ void GraphWidget::fromYmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::GraphWidget::fromYmlFile: import from .yaml failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Import from .yaml Failed"), QString(e.what()));
+        return;
     }
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
@@ -745,11 +772,10 @@ void GraphWidget::updateFromGraph()
             NodeItem* targetNodeItem = mPortMap[ target ];
             // physical edge - processing was deflected until after all ports will have been registered
             EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[source], targetNodeItem, mPortIDMap[target], edge);
-            mEdgeItemMap[edge] = edgeItem;
-
             scene()->addItem(edgeItem);
             Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex()));
             mpLayoutingGraph->addEdge(default_edge);
+            mEdgeItemMap[default_edge] = edgeItem;
             mpGVGraph->addEdge(default_edge);
         }
     }
