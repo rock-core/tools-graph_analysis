@@ -14,7 +14,7 @@ class GexfReader : public Reader
 {
     typedef std::map < libgexf::t_id, Vertex::Ptr > VertexMap;
 public:
-    void read(const std::string& filename, const BaseGraph::Ptr& graph) const;
+    void read(const std::string& filename, BaseGraph::Ptr graph) const;
 };
 
 } // end namespace io

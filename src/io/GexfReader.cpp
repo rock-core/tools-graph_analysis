@@ -8,7 +8,7 @@
 namespace graph_analysis {
 namespace io {
 
-void GexfReader::read(const std::string& filename, const BaseGraph::Ptr& graph) const
+void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph) const
 {
     libgexf::FileReader* reader = new libgexf::FileReader();
     reader->init(filename.c_str());
