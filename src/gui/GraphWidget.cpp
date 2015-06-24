@@ -500,7 +500,7 @@ void GraphWidget::toYmlFile(const std::string& filename)
     }
     catch(std::runtime_error e)
     {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export failed: " << e.what();
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget::toYmlFile: export failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export Failed"), QString(e.what()));
     }
 }
@@ -513,25 +513,9 @@ void GraphWidget::toDotFile(const std::string& filename)
     }
     catch(std::runtime_error e)
     {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export via graphviz failed: " << e.what();
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget::toDotFile: export via graphviz failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
     }
-}
-
-void GraphWidget::fromXmlFile(const std::string& filename)
-{
-    mReaderMap["gexf"]->read(filename, mpGraph);
-    mpSubGraph->enableAllVertices();
-    mpSubGraph->enableAllEdges();
-    refresh();
-}
-
-void GraphWidget::fromYmlFile(const std::string& filename)
-{
-    mReaderMap["yaml"]->read(filename, mpGraph);
-    mpSubGraph->enableAllVertices();
-    mpSubGraph->enableAllEdges();
-    refresh();
 }
 
 void GraphWidget::toXmlFile(const std::string& filename)
@@ -542,9 +526,41 @@ void GraphWidget::toXmlFile(const std::string& filename)
     }
     catch(std::runtime_error e)
     {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidget: export to .gexf failed: " << e.what();
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget::toXmlFile: export to .gexf failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export to .gexf Failed"), QString(e.what()));
     }
+}
+
+void GraphWidget::fromXmlFile(const std::string& filename)
+{
+    try
+    {
+        mReaderMap["gexf"]->read(filename, mpGraph);
+    }
+    catch(std::runtime_error e)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget::fromXmlFile: import from .gexf failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph Import from .gexf Failed"), QString(e.what()));
+    }
+    mpSubGraph->enableAllVertices();
+    mpSubGraph->enableAllEdges();
+    refresh();
+}
+
+void GraphWidget::fromYmlFile(const std::string& filename)
+{
+    try
+    {
+        mReaderMap["yaml"]->read(filename, mpGraph);
+    }
+    catch(std::runtime_error e)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidget::fromYmlFile: import from .yaml failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph Import from .yaml Failed"), QString(e.what()));
+    }
+    mpSubGraph->enableAllVertices();
+    mpSubGraph->enableAllEdges();
+    refresh();
 }
 
 void GraphWidget::reset(bool keepData)
