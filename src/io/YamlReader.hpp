@@ -23,7 +23,7 @@ private:
     void die(const std::string& keyword, const std::string& word) const;
     void die(const std::string& msg) const;
 public:
-    void read(const std::string& filename, const BaseGraph::Ptr& graph) const;
+    void read(const std::string& filename, BaseGraph::Ptr graph);
 };
 
 } // end namespace io

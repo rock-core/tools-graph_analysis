@@ -1,10 +1,9 @@
 #include "GexfReader.hpp"
-
-#include <graph_analysis/VertexTypeManager.hpp>
+#include <base/Logging.hpp>
 #include <libgexf/nodeiter.h>
 #include <libgexf/edgeiter.h>
 #include <libgexf/filereader.h>
-#include <base/Logging.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
 
 namespace graph_analysis {
 namespace io {

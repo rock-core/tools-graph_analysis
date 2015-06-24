@@ -12,8 +12,8 @@ namespace io {
 class YamlWriter : public Writer
 {
 private:
-    void exportVertex(std::ofstream& fout, Vertex::Ptr) const;
-    void exportEdge(std::ofstream& fout, Edge::Ptr) const;
+    void exportVertex(const BaseGraph::Ptr& graph, std::ofstream& fout, Vertex::Ptr) const;
+    void exportEdge(const BaseGraph::Ptr& graph, std::ofstream& fout, Edge::Ptr) const;
 public:
     void write(const std::string& filename, const BaseGraph& graph) const;
     void write(const std::string& filename, const BaseGraph::Ptr& graph) const;

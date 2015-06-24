@@ -1,10 +1,11 @@
 #include "YamlReader.hpp"
 #include <base/Logging.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
 
 namespace graph_analysis {
 namespace io {
 
-void YamlReader::read(const std::string& filename, const BaseGraph::Ptr& graph) const
+void YamlReader::read(const std::string& filename, BaseGraph::Ptr graph)
 {
     const char *fname = filename.c_str();
     std::ifstream fin(fname);
@@ -72,9 +73,9 @@ void YamlReader::parseNodes(std::stringstream& nodeStream, const BaseGraph::Ptr&
         }
 
         idWord = nextToken("id:", nodeStream, graph);
+        typeWord = nextToken("type:", nodeStream, graph);
         labelWord = nextToken("label:", nodeStream, graph);
-        typeWord = nextToken("type:", nodeStream, graph); // TODO: currently discards type issues (useful for a to-be-implemented feature of node clustering/grouping)
-        Vertex::Ptr vertex(new Vertex(labelWord));
+        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(typeWord, labelWord); // (new Vertex(labelWord));
         vMap[idWord] = vertex;
         graph->addVertex(vertex);
     }

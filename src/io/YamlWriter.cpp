@@ -1,5 +1,6 @@
 #include "YamlWriter.hpp"
 #include <base/Logging.hpp>
+#include <boost/lexical_cast.hpp>
 #include <graph_analysis/GraphElement.hpp>
 
 namespace graph_analysis {
@@ -27,7 +28,7 @@ void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
-        exportVertex(fout, vertex);
+        exportVertex(graph, fout, vertex);
     }
 
     EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
@@ -35,7 +36,7 @@ void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();
-        exportEdge(fout, edge);
+        exportEdge(graph, fout, edge);
     }
     if(fout.is_open())
     {
@@ -43,18 +44,18 @@ void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     }
 }
 
-void YamlWriter::exportVertex(std::ofstream& fout, Vertex::Ptr vertex) const
+void YamlWriter::exportVertex(const BaseGraph::Ptr& graph, std::ofstream& fout, Vertex::Ptr vertex) const
 {
-    fout << "  - id: " << vertex->getUid() << std::endl;
-    fout << "    label: " << vertex->getLabel() << std::endl;
-    fout << "    type: " << vertex->getClassName() << std::endl;
+    fout << "  - id: "      << graph->getVertexId(vertex)   << std::endl;
+    fout << "    type: "    << vertex->getClassName()       << std::endl;
+    fout << "    label: "   << vertex->getLabel()           << std::endl;
 }
 
-void YamlWriter::exportEdge(std::ofstream& fout, Edge::Ptr edge) const
+void YamlWriter::exportEdge(const BaseGraph::Ptr& graph, std::ofstream& fout, Edge::Ptr edge) const
 {
-    fout << "  - fromNodeId: " << edge->getSourceVertex()->getUid() << std::endl;
-    fout << "    toNodeId: " << edge->getTargetVertex()->getUid() << std::endl;
-    fout << "    label: " << edge->getLabel() << std::endl;
+    fout << "  - fromNodeId: "  << graph->getVertexId(edge->getSourceVertex())  << std::endl;
+    fout << "    toNodeId: "    << graph->getVertexId(edge->getTargetVertex())  << std::endl;
+    fout << "    label: "       << edge->getLabel()                             << std::endl;
 }
 
 } // end namespace io
