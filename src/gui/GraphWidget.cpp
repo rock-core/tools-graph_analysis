@@ -971,7 +971,7 @@ void GraphWidget::itemMoved()
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    // check for a combination of user clicks
+    // check for a keys combination
     Qt::KeyboardModifiers modifiers = event->modifiers();
 
     if(modifiers & Qt::ControlModifier)
@@ -1025,7 +1025,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 
     case Qt::Key_S:
         shuffle();
-    break; // TOO close to CTRL+S?!
+    break; // too close to CTRL+S?!
     //default:
     }
     QGraphicsView::keyPressEvent(event);
@@ -1173,7 +1173,7 @@ void GraphWidget::zoomOut()
 
 void GraphWidget::setLayout(QString layoutName)
 {
-    /* !!! reset(true); shall be called apriori (unless you know what you're doing) !!! */
+    /* !!! reset(true); shall be called apriori (unless you know what you're doing - e.g. at init) !!! */
     mLayout = layoutName;
     updateFromGraph();
 }

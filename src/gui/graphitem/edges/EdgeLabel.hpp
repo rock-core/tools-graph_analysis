@@ -17,6 +17,7 @@ public:
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
         setTextInteractionFlags(Qt::NoTextInteraction);
+        setAcceptDrops(false);
     }
 
     void setTextInteraction(bool on, bool selectAll = false)

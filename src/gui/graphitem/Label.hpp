@@ -1,11 +1,23 @@
 #ifndef GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_LABEL_HPP
 #define GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_LABEL_HPP
 
+#include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsTextItem>
 #include <QTextCursor>
+#include <QMouseEvent>
+#include <QMimeData>
+#include <QDrag>
+
+
+
+#include <iostream>
+
 
 namespace graph_analysis {
 namespace gui {
+
+//class NodeItem;
+
 namespace graphitem {
 
 class Label : public QGraphicsTextItem
@@ -18,7 +30,10 @@ public:
         , mPortID(portID)
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
+        setFlag(QGraphicsTextItem::ItemIsMovable);
         setTextInteractionFlags(Qt::NoTextInteraction);
+        setAcceptHoverEvents(true);
+        setAcceptDrops(true);
     }
 
     void setTextInteraction(bool on, bool selectAll = false)
@@ -60,7 +75,7 @@ protected:
 
     void keyPressEvent(::QKeyEvent* event)
     {
-        qDebug("KEYPRESS LABLE");
+        qDebug("KEYPRESS LABEL");
         QGraphicsTextItem::keyPressEvent(event);
     }
 
@@ -70,19 +85,92 @@ protected:
         ::QGraphicsTextItem::focusOutEvent(event);
     }
 
-    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
+    void mousePressEvent(::QGraphicsSceneMouseEvent *event)
     {
-        if(change == QGraphicsItem::ItemSelectedChange)
+        if(event->button() == Qt::LeftButton && -1 != mPortID)
         {
-             qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
+            std::cout << "\n\nto be or not to be called?!?!\n";
+            QDrag *drag = new QDrag(event->widget());
+            QMimeData *mimeData = new QMimeData;
+            mimeData->setText("edge");
+            drag->setMimeData(mimeData);
+            Qt::DropAction dropAction = drag->exec();
+//            drag->exec();
+            std::cout << "drag->exec() returned!\n\n";
         }
-        if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
+        else
         {
-            // item received SelectedChange event AND is in editor mode AND is about to be deselected:
-            setTextInteraction(false); // leave editor mode
+            QGraphicsItem::mousePressEvent(event);
         }
-        return QGraphicsTextItem::itemChange(change, value);
     }
+
+    void dragEnterEvent(QGraphicsSceneDragDropEvent *event)
+    {
+        if(-1 == mPortID)
+        {
+            event->ignore();
+            return;
+        }
+        std::cout << "attempted here: port: "   << toPlainText().toStdString() << " portID: " << mPortID
+//                                                << " parent cluster: " << ((NodeItem *)parentItem())->getLabel()
+                                                << " !\n";
+//        event->setAccepted(event->mimeData()->hasFormat("text/plain"));
+        if(event->mimeData()->hasFormat("text/plain"))
+        {
+            event->acceptProposedAction();
+            std::cout << "accepted attempt!!!\n";
+        }
+    }
+
+    void dragMoveEvent(QGraphicsSceneDragDropEvent *event)
+    {
+        if(-1 == mPortID)
+        {
+            event->ignore();
+            return;
+        }
+        std::cout << "move attempted here: port: "   << toPlainText().toStdString() << " portID: " << mPortID
+//                                                << " parent cluster: " << ((NodeItem *)parentItem())->getLabel()
+                                                << " !\n";
+//        event->setAccepted(event->mimeData()->hasFormat("text/plain"));
+        if(event->mimeData()->hasFormat("text/plain"))
+        {
+            event->acceptProposedAction();
+            std::cout << "accepted move attempt!!!\n";
+        }
+    }
+
+    void dropEvent(QGraphicsSceneDragDropEvent *event)
+    {
+        std::cout << "got a new drop request!!\n";
+        if("edge" == event->mimeData()->text())
+        {
+            std::cout << "got a new edge request!!\n";
+            event->acceptProposedAction();
+        }
+    }
+
+//    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
+//    {
+//        if(change == QGraphicsItem::ItemSelectedChange)
+//        {
+//            qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
+//            /*
+//            QDrag *drag = new QDrag(0);
+//            QMimeData *mimeData = new QMimeData;
+//            mimeData->setText("edge");
+//            drag->setMimeData(mimeData);
+//    //            Qt::DropAction dropAction = drag->exec();
+//            drag->exec();
+//             */
+//        }
+//        if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
+//        {
+//            // item received SelectedChange event AND is in editor mode AND is about to be deselected:
+//            setTextInteraction(false); // leave editor mode
+//        }
+//        return QGraphicsTextItem::itemChange(change, value);
+//    }
 };
 
 } // end namespace graphitem
