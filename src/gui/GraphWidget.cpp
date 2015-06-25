@@ -494,7 +494,7 @@ void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID
     addEdgeAddHoc();
 }
 
-void GraphWidget::addEdgeAddHoc() // assumes the concerned edge-creation member fields are properly set already
+void GraphWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fields are properly set already
 {
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input New Edge Label"),

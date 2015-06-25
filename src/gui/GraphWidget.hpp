@@ -173,7 +173,7 @@ public slots:
     void setDragDrop();
     void unsetDragDrop();
     void reloadPropertyDialog();
-    void addEdgeAddHoc(); // assumes the concerned edge-creation member fields are properly set already
+    void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
 
 protected:
 
