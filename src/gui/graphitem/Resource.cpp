@@ -116,7 +116,7 @@ int Resource::addPort(Vertex::Ptr node)
 QRectF Resource::portBoundingRect(int portID)
 {
 
-    if(portID < 0 || portID >= mLabels.size())
+    if(portID < 0 || portID >= (int) mLabels.size())
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingRect: supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -132,7 +132,7 @@ QRectF Resource::portBoundingRect(int portID)
 
 graph_analysis::Vertex::Ptr Resource::getPort(int portID)
 {
-    if(portID < 0 || portID >= mVertices.size())
+    if(portID < 0 || portID >= (int) mVertices.size())
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portNode: supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)

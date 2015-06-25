@@ -491,7 +491,7 @@ void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID
         throw std::runtime_error(error_msg);
     }
     // unconditionally trigger edge insertion
-    addEdgeAddHoc();
+    addEdgeAdHoc();
 }
 
 void GraphWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fields are properly set already
