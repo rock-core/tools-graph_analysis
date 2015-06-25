@@ -18,7 +18,6 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.cpp
         gui/graphitem/Resource.cpp
         gui/graphitem/Simple.cpp
-#        gui/graphitem/Label.cpp
         gui/GraphWidget.cpp
         gui/AddNodeDialog.cpp
         gui/ActionCommander.cpp

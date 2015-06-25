@@ -130,11 +130,6 @@ QPolygonF Resource::portBoundingPolygon(int portID)
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
-    bool dragDrop = mpGraphWidget->getDragDrop();
-    if(dragDrop)
-    {
-        mpGraphWidget->startNewEdgeHere();
-    }
     QGraphicsItem::mousePressEvent(event);
 }
 
@@ -151,28 +146,12 @@ void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    bool dragDrop = mpGraphWidget->getDragDrop();
-    if(dragDrop)
-    {
-        setFlag(ItemIsMovable, false);
-        if(mpGraphWidget->getDragInitiated() && mpGraphWidget->getDragSource() != mpVertex)
-        {
-            mpGraphWidget->setSelectedVertex(mpVertex);
-            mpGraphWidget->setVertexSelected(true);
-            mpGraphWidget->endNewEdgeHere();
-        }
-    }
-    else if("graph_analysis::ClusterVertex" == mpVertex->getClassName())
-    {
-        setFlag(ItemIsMovable);
-    }
     qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
     mPen = QPen(Qt::green);
 
     mpGraphWidget->setSelectedVertex(mpVertex);
     mpGraphWidget->setVertexSelected(true);
 //    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
-
     QGraphicsItem::hoverEnterEvent(event);
 }
 

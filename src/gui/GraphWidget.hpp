@@ -149,8 +149,6 @@ public:
     void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
     bool getEdgeSelected () { return mEdgeSelected; }
     bool getDragDrop() { return mDragDrop; }
-    bool getDragInitiated() { return mEdgeStartVertex; }
-    graph_analysis::Vertex::Ptr getDragSource() { return mpStartVertex; }
 
 public slots:
     void shuffle();
@@ -162,8 +160,6 @@ public slots:
     void setLayout(QString layoutName);
     void refresh();
     void changeSelectedVertexLabel();
-    void startNewEdgeHere();
-    void endNewEdgeHere();
     void changeLayout();
     void removeSelectedVertex();
     void changeSelectedEdgeLabel();
@@ -227,14 +223,9 @@ private:
 
     graph_analysis::Vertex::Ptr mpSelectedVertex;
     graph_analysis::Edge::Ptr mpSelectedEdge;
-    graph_analysis::Vertex::Ptr mpStartVertex;
-    graph_analysis::Vertex::Ptr mpEndVertex;
 
     bool mVertexSelected;
     bool mEdgeSelected;
-    bool mEdgeStartVertex;
-    bool mEdgeEndVertex;
-    bool mGVGraphDirty;
 
     PropertyDialog *mpPropertyDialog;
     bool mDragDrop;

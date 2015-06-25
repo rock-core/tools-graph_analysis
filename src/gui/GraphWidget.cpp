@@ -98,8 +98,6 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
     , mEdgeSelected(false)
-    , mEdgeStartVertex(false)
-    , mEdgeEndVertex(false)
     , mDragDrop(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
@@ -456,28 +454,9 @@ void GraphWidget::changeLayout()
     }
 }
 
-void GraphWidget::startNewEdgeHere()
-{
-    mpStartVertex = mpSelectedVertex;
-    mEdgeStartVertex = true;
-    if(mEdgeStartVertex && mEdgeEndVertex)
-    {
-        bool ok;
-        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
-                                             tr("New Edge Label:"), QLineEdit::Normal,
-                                             QString("newEdge"), &ok);
-        if (ok && !label.isEmpty())
-        {
-            spawnEdge(label.toStdString());
-        }
-        mEdgeStartVertex    = false;
-        mEdgeEndVertex      = false;
-    }
-}
-
+/*
 void GraphWidget::spawnEdge(const std::string& label)
 {
-    /*
     Edge::Ptr edge(new Edge());
     edge->setSourceVertex(mpStartVertex);
     edge->setTargetVertex(mpEndVertex);
@@ -500,27 +479,8 @@ void GraphWidget::spawnEdge(const std::string& label)
         scene()->addItem(edgeItem);
         edgeItem->adjust();
     }
-     */
 }
-
-void GraphWidget::endNewEdgeHere()
-{
-    mpEndVertex = mpSelectedVertex;
-    mEdgeEndVertex = true;
-    if(mEdgeStartVertex && mEdgeEndVertex)
-    {
-        bool ok;
-        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
-                                             tr("New Edge Label:"), QLineEdit::Normal,
-                                             QString("newEdge"), &ok);
-        if (ok && !label.isEmpty())
-        {
-            spawnEdge(label.toStdString());
-        }
-        mEdgeStartVertex    = false;
-        mEdgeEndVertex      = false;
-    }
-}
+ */
 
 void GraphWidget::toYmlFile(const std::string& filename)
 {
