@@ -150,6 +150,9 @@ public:
     bool getEdgeSelected () { return mEdgeSelected; }
     bool getDragDrop() { return mDragDrop; }
 
+    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID); // not-only { mpStartVertex = startVertex; }
+    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID); // not-only { mpEndVertex   = endVertex;   }
+
 public slots:
     void shuffle();
     void zoomIn();
@@ -170,6 +173,7 @@ public slots:
     void setDragDrop();
     void unsetDragDrop();
     void reloadPropertyDialog();
+    void addEdgeAddHoc(); // assumes the concerned edge-creation member fields are properly set already
 
 protected:
 
@@ -186,7 +190,7 @@ protected:
 
 private:
 //    void updateGVGraph();
-    void spawnEdge(const std::string& label);
+    void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
     graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
 
@@ -222,6 +226,10 @@ private:
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
     graph_analysis::Vertex::Ptr mpSelectedVertex;
+    graph_analysis::Vertex::Ptr mpStartVertex;
+    graph_analysis::Vertex::Ptr mpStartPort;
+    graph_analysis::Vertex::Ptr mpEndVertex;
+    graph_analysis::Vertex::Ptr mpEndPort;
     graph_analysis::Edge::Ptr mpSelectedEdge;
 
     bool mVertexSelected;

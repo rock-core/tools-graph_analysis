@@ -92,6 +92,7 @@ public:
     virtual void setPortCount(int)                      { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortCount is not reimplemented"); }
     virtual int  getPortCount()                         { throw std::runtime_error("graph_analysis::gui::NodeItem::getPortCount is not reimplemented"); }
     virtual int  addPort(Vertex::Ptr)                   { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented");      }
+    virtual graph_analysis::Vertex::Ptr getPort(int portID)    {throw std::runtime_error("graph_analysis::gui::NodeItem::getPort is not reimplemented");}
     virtual std::string  getLabel()                     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabel is not reimplemented");     }
 
 protected:

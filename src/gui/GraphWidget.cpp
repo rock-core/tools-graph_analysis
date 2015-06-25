@@ -195,8 +195,6 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionRemoveEdge = comm.addAction("Remove Selected Edge", SLOT(removeSelectedEdge()));
     QAction *actionChangeLabel = comm.addAction("Change Selected Node Label", SLOT(changeSelectedVertexLabel()));
     QAction *actionRemoveNode = comm.addAction("Remove Selected Node", SLOT(removeSelectedVertex()));
-    QAction *actionStartNewEdgeHere = comm.addAction("Start New Edge Here", SLOT(startNewEdgeHere()));
-    QAction *actionEndNewEdgeHere = comm.addAction("End New Edge Here", SLOT(endNewEdgeHere()));
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
@@ -217,8 +215,6 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     {
         contextMenu.addAction(actionChangeLabel);
         contextMenu.addAction(actionRemoveNode);
-        contextMenu.addAction(actionStartNewEdgeHere);
-        contextMenu.addAction(actionEndNewEdgeHere);
     }
     contextMenu.addAction(actionAddNode);
     contextMenu.addAction(actionRefresh);
@@ -454,8 +450,64 @@ void GraphWidget::changeLayout()
     }
 }
 
+void GraphWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int portID)
+{
+    if("graph_analysis::ClusterVertex" != startVertex->getClassName())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::setStartVertex: expected startVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
+                                        + startVertex->getClassName() + "'";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    mpStartVertex   = startVertex;
+    NodeItem *item  = mNodeItemMap[startVertex];
+    mpStartPort     = item->getPort(portID);
+    if("graph_analysis::PortVertex" != mpStartPort->getClassName())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::setStartVertex: expected associated portVertex to be of type 'graph_analysis::PortVertex'; instead, found type '")
+                                        + mpStartPort->getClassName() + "'";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+}
+
+void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
+{
+    if("graph_analysis::ClusterVertex" != endVertex->getClassName())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::setEndVertex: expected endVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
+                                        + endVertex->getClassName() + "'";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    mpEndVertex     = endVertex;
+    NodeItem *item  = mNodeItemMap[endVertex];
+    mpEndPort       = item->getPort(portID);
+    if("graph_analysis::PortVertex" != mpEndPort->getClassName())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::setEndVertex: expected associated portVertex to be of type 'graph_analysis::PortVertex'; instead, found type '")
+                                        + mpEndPort->getClassName() + "'";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    // unconditionally trigger edge insertion
+    addEdgeAddHoc();
+}
+
+void GraphWidget::addEdgeAddHoc() // assumes the concerned edge-creation member fields are properly set already
+{
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
+                                         tr("New Edge Label:"), QLineEdit::Normal,
+                                         QString("newEdge"), &ok);
+    if (ok && !label.isEmpty())
+    {
+//        spawnEdge(label.toStdString()); // assumes the concerned edge-creation member fields are properly set already
+    }
+}
+
 /*
-void GraphWidget::spawnEdge(const std::string& label)
+void GraphWidget::spawnEdge(const std::string& label) // assumes the concerned edge-creation member fields are properly set already
 {
     Edge::Ptr edge(new Edge());
     edge->setSourceVertex(mpStartVertex);

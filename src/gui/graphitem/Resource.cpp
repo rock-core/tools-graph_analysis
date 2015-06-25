@@ -1,11 +1,12 @@
 #include "Resource.hpp"
 
-#include <QPainter>
-#include <QGraphicsSceneDragDropEvent>
 #include <QStyle>
+#include <QPainter>
 #include <QStyleOption>
-
+#include <QGraphicsSceneDragDropEvent>
+#include <boost/lexical_cast.hpp>
 #include <base/Logging.hpp>
+#include <exception>
 #include "Label.hpp"
 #define ADJUST 23.69
 
@@ -103,8 +104,9 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 int Resource::addPort(Vertex::Ptr node)
 {
     int size = mLabels.size();
-    Label *label = new Label(node->getLabel(), this, size);
+    Label *label = new Label(node->getLabel(), this, mpGraphWidget, size);
     mLabels.push_back(label);
+    mVertices.push_back(node);
 //    addToGroup(label);
     label->setPos(mLabel->pos() + QPointF(0., qreal(2 + size) * ADJUST));
     return size; // returning this port's offset in the vector of ports
@@ -113,10 +115,32 @@ int Resource::addPort(Vertex::Ptr node)
 
 QRectF Resource::portBoundingRect(int portID)
 {
+
+    if(portID < 0 || portID >= mLabels.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingRect: supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     QRectF result = boundingRect();
 //    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
     result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
     return result;
+}
+
+graph_analysis::Vertex::Ptr Resource::getPort(int portID)
+{
+    if(portID < 0 || portID >= mVertices.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portNode: supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    return mVertices[portID];
 }
 
 QPolygonF Resource::portBoundingPolygon(int portID)
