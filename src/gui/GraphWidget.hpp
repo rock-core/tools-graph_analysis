@@ -163,6 +163,7 @@ public slots:
     void setLayout(QString layoutName);
     void refresh();
     void changeSelectedVertexLabel();
+    void resetGraph();
     void changeLayout();
     void removeSelectedVertex();
     void changeSelectedEdgeLabel();

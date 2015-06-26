@@ -198,6 +198,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
     QAction *actionImport = comm.addAction("Import", SLOT(importGraph()));
     QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
+    QAction *actionReset  = comm.addAction("Reset Graph", SLOT(resetGraph()));
     QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
     QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()));
     QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
@@ -219,6 +220,10 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionImport);
     contextMenu.addAction(actionExport);
+    if(!mpGraph->empty())
+    {
+        contextMenu.addAction(actionReset);
+    }
     contextMenu.addAction(actionLayout);
     if(mDragDrop)
     {
@@ -1216,6 +1221,28 @@ void GraphWidget::zoomIn()
 void GraphWidget::zoomOut()
 {
     scaleView(1 / qreal(1.13));
+}
+
+void GraphWidget::resetGraph()
+{
+    if(mpGraph->empty())
+    {
+        QMessageBox::information(this, tr("Nothing to Reset"), "The graph is already empty!");
+//        reset();
+    }
+    else
+    {
+        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Reset"), tr("The Graph will be completely erased! Are you sure you want to continue?"), QMessageBox::Yes | QMessageBox::No);
+        switch(button)
+        {
+            case QMessageBox::Yes:
+                reset();
+            break;
+
+            default:
+            break;
+        }
+    }
 }
 
 void GraphWidget::setLayout(QString layoutName)

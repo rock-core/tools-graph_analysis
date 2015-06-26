@@ -67,7 +67,7 @@ public:
 
 
     /**
-     * Get the subgraph for a graph. 
+     * Get the subgraph for a graph.
      * To support this feature implementation have to provide
      * an implementation of BaseGraph::createSubGraph
      * \see createSubGraph
@@ -85,6 +85,12 @@ public:
      * \return Stringified implementation type
      */
     std::string getImplementationTypeName() const { return ImplementationTypeTxt[mImplementationType]; }
+
+    /**
+     * @brief tests whether the graph is void/empty
+     * @return true when the graph is empty (does not contain a single vertex); false otherwise
+     */
+    bool empty();
 
     /**
      * \brief Add a vertex
