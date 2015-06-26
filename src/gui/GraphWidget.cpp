@@ -502,37 +502,36 @@ void GraphWidget::addEdgeAdHoc() // assumes the concerned edge-creation member f
                                          QString("newEdge"), &ok);
     if (ok && !label.isEmpty())
     {
-//        spawnEdge(label.toStdString()); // assumes the concerned edge-creation member fields are properly set already
+        spawnEdge(label.toStdString()); // assumes the concerned edge-creation member fields are properly set already
     }
 }
 
-/*
 void GraphWidget::spawnEdge(const std::string& label) // assumes the concerned edge-creation member fields are properly set already
 {
-    Edge::Ptr edge(new Edge());
-    edge->setSourceVertex(mpStartVertex);
-    edge->setTargetVertex(mpEndVertex);
-    mpGraph->addEdge(edge);
-    enableEdge(edge);
-    // Registering new node edge items
-    Vertex::Ptr source = edge->getSourceVertex();
-    Vertex::Ptr target = edge->getTargetVertex();
-
-    NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-    NodeItem* targetNodeItem = mNodeItemMap[ target ];
-
+    NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
+    NodeItem *targetNodeItem = mNodeItemMap[mpEndVertex];
     if(sourceNodeItem && targetNodeItem)
     {
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
-        mEdgeItemMap[edge] = edgeItem;
-        graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
-        edgeLabel->setPlainText(QString(label.c_str()));
+        Edge::Ptr edge(new Edge(mpStartPort, mpEndPort, label));
+        mpGraph->addEdge(edge);
+        enableEdge(edge);
+        Edge::Ptr default_edge(new Edge(mpStartVertex, mpEndVertex, label));
+        mpLayoutingGraph->addEdge(default_edge);
 
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[mpStartPort], targetNodeItem, mPortIDMap[mpEndPort], default_edge);
         scene()->addItem(edgeItem);
         edgeItem->adjust();
+        mEdgeItemMap[default_edge] = edgeItem;
+        mpGVGraph->addEdge(default_edge); // not vital since the mpGVGraph gets updated every single time before (rendering with) layouting engines
+    }
+    else
+    {
+        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::spawnEdge: could not insert new edge of label '") + label
+                                        + "' since its endpoint vertices are not both registered in mNodeItemMap";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
     }
 }
- */
 
 void GraphWidget::toYmlFile(const std::string& filename)
 {
@@ -812,10 +811,10 @@ void GraphWidget::updateFromGraph()
             NodeItem* sourceNodeItem = mPortMap[ source ];
             NodeItem* targetNodeItem = mPortMap[ target ];
             // physical edge - processing was deflected until after all ports will have been registered
-            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[source], targetNodeItem, mPortIDMap[target], edge);
-            scene()->addItem(edgeItem);
-            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex()));
+            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
             mpLayoutingGraph->addEdge(default_edge);
+            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[source], targetNodeItem, mPortIDMap[target], default_edge);
+            scene()->addItem(edgeItem);
             mEdgeItemMap[default_edge] = edgeItem;
             mpGVGraph->addEdge(default_edge);
         }

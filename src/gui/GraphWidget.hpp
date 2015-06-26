@@ -212,7 +212,7 @@ private:
     PortMap mPortMap;
     // stores ports IDs given their source vertices
     PortIDMap mPortIDMap;
-    // Allow mapping from graph vertexes to nodes in the scene
+    // Allow mapping from graph vertices to nodes in the scene
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
     EdgeItemMap mEdgeItemMap;
