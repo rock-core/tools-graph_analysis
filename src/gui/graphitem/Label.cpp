@@ -84,15 +84,12 @@ void Label::mousePressEvent(::QGraphicsSceneMouseEvent *event)
             LOG_ERROR_S << error_msg;
             throw std::runtime_error(error_msg);
         }
-        std::cout << "\n\nto be or not to be called?!?!\n";
         QDrag *drag = new QDrag(event->widget());
         QMimeData *mimeData = new QMimeData;
         mimeData->setText("edge");
         drag->setMimeData(mimeData);
         mpGraphWidget->setStartVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
-        drag->exec(); // disregarding the return code
-//        Qt::DropAction dropAction = drag->exec(); // for more opportunities regarding how the drag-n-drop (if any in the end) ends
-        std::cout << "drag->exec() returned!\n\n";
+        drag->exec();
     }
     else
     {
@@ -107,14 +104,10 @@ void Label::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
         event->ignore();
         return;
     }
-    std::cout << "attempted here: port: "   << toPlainText().toStdString() << " portID: " << mPortID
-//                                                << " parent cluster: " << ((NodeItem *)parentItem())->getLabel()
-                                            << " !\n";
 //        event->setAccepted(event->mimeData()->hasFormat("text/plain"));
     if(event->mimeData()->hasFormat("text/plain"))
     {
         event->acceptProposedAction();
-        std::cout << "accepted attempt!!!\n";
     }
 }
 
@@ -125,20 +118,15 @@ void Label::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
         event->ignore();
         return;
     }
-    std::cout << "move attempted here: port: "   << toPlainText().toStdString() << " portID: " << mPortID
-//                                                << " parent cluster: " << ((NodeItem *)parentItem())->getLabel()
-                                            << " !\n";
 //        event->setAccepted(event->mimeData()->hasFormat("text/plain"));
     if(event->mimeData()->hasFormat("text/plain"))
     {
         event->acceptProposedAction();
-        std::cout << "accepted move attempt!!!\n";
     }
 }
 
 void Label::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-    std::cout << "got a new drop request!!\n";
     if("edge" == event->mimeData()->text())
     {
         if(!mpGraphWidget)
@@ -152,7 +140,6 @@ void Label::dropEvent(QGraphicsSceneDragDropEvent *event)
             throw std::runtime_error(error_msg);
         }
         mpGraphWidget->setEndVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
-        std::cout << "got a new edge request!!\n";
         event->acceptProposedAction();
     }
 }

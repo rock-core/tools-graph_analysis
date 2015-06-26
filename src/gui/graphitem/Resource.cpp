@@ -21,12 +21,12 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
+    //setHandlesChildEvents(false);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
     //mLabel->setParentItem(this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
     //mLabel->setFlag(QGraphicsItem::ItemIsSelectable, true);
     //mLabel->setZValue(-100.0);
-//    setHandlesChildEvents(false);
     setFlag(ItemIsMovable);
 }
 
@@ -49,13 +49,7 @@ QRectF Resource::boundingRect() const
 {
     //QRectF boundingRect( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
     //return childrenBoundingRect() | boundingRect;
-
     QRectF childrenRect = childrenBoundingRect();
-//    if("graph_analysis::ClusterVertex" == mpVertex->getClassName())
-//    {
-//        qreal adjust = 13.;
-//        return childrenRect.adjusted( - adjust, - adjust, adjust, adjust + (qreal) ((1 + mLabels.size()) >> 1) * 2. * adjust);
-//    }
     return childrenRect;
 }
 
@@ -71,9 +65,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     // Draws fully filled item
     //painter->setPen(Qt::NoPen);
     //painter->setBrush(mPen.brush());
-
     //painter->drawEllipse(-7, -7, 20, 20);
-
     painter->setPen(QPen(Qt::black, 0));
     int port_count = mLabels.size();
     for(int i = 0; i < port_count; ++i)
@@ -83,7 +75,6 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
     painter->drawRect(boundingRect()); //-7,-7,20,20);
-
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
 //    {
@@ -107,7 +98,6 @@ int Resource::addPort(Vertex::Ptr node)
     Label *label = new Label(node->getLabel(), this, mpGraphWidget, size);
     mLabels.push_back(label);
     mVertices.push_back(node);
-//    addToGroup(label);
     label->setPos(mLabel->pos() + QPointF(0., qreal(2 + size) * ADJUST));
     return size; // returning this port's offset in the vector of ports
 }
@@ -115,18 +105,17 @@ int Resource::addPort(Vertex::Ptr node)
 
 QRectF Resource::portBoundingRect(int portID)
 {
-
     if(portID < 0 || portID >= (int) mLabels.size())
     {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingRect: supplied portID: ")
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingRect: the supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
                                         + " is out of array bounds";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
     QRectF result = boundingRect();
-//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
     result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
+//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
     return result;
 }
 
@@ -145,9 +134,17 @@ graph_analysis::Vertex::Ptr Resource::getPort(int portID)
 
 QPolygonF Resource::portBoundingPolygon(int portID)
 {
+    if(portID < 0 || portID >= (int) mLabels.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingPolygon: the supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     QRectF result = boundingRect();
-//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
     result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
+//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
     return QPolygonF(result);
 }
 
@@ -175,7 +172,6 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
     mpGraphWidget->setSelectedVertex(mpVertex);
     mpGraphWidget->setVertexSelected(true);
-//    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -184,7 +180,6 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
     mPen = mPenDefault;
     mpGraphWidget->setVertexSelected(false);
-//    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

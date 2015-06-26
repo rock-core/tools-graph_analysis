@@ -120,7 +120,6 @@ GraphWidget::GraphWidget(QWidget *parent)
     // Setting up filtering
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
 
     // setting up the Reader- and Writer- Maps
     io::YamlWriter *yamlWriter = new io::YamlWriter();
@@ -156,7 +155,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     mWriterMap["Dot"]  = gvWriter;
     mWriterMap["DOT"]  = gvWriter;
 
-    // setting ip the context menu
+    // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
 
@@ -182,7 +181,6 @@ GraphWidget::~GraphWidget()
             delete it_reader->second;
         }
     }
-//    destroy();
 }
 
 void GraphWidget::showContextMenu(const QPoint& pos)
@@ -490,8 +488,7 @@ void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    // unconditionally trigger edge insertion
-    addEdgeAdHoc();
+    addEdgeAdHoc(); // unconditionally trigger edge insertion
 }
 
 void GraphWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fields are properly set already
@@ -768,13 +765,6 @@ void GraphWidget::updateFromGraph()
             mPortMap[target] = sourceNodeItem;
             mPortIDMap[target] = sourceNodeItem->addPort(target);
         }
-//        else if (
-//                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())
-//                )
-//        {
-//            /////   after graphs decoupling this too falls under "invalid"  ///////  // automatically added edge - useful for the layouting stage
-//            continue;
-//        }
         else
         {
             // invalid edge
@@ -841,7 +831,6 @@ void GraphWidget::updateFromGraph()
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
-
         LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
         base::Time start = base::Time::now();
         mpGVGraph->setNodeAttribute("height", boost::lexical_cast<std::string>(mMaxNodeHeight));
@@ -850,7 +839,6 @@ void GraphWidget::updateFromGraph()
         base::Time delay = base::Time::now() - start;
         QApplication::restoreOverrideCursor();
         LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
-
         {
             using namespace graph_analysis::io;
             std::vector<GVNode> nodes = mpGVGraph->nodes();
@@ -859,12 +847,10 @@ void GraphWidget::updateFromGraph()
             {
                 GVNode gvNode = *cit;
                 NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
-
                 if(!nodeItem)
                 {
                     LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
                 }
-
                 nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
             }
         }
@@ -1099,7 +1085,6 @@ void GraphWidget::wheelEvent(QWheelEvent *event)
 void GraphWidget::drawBackground(QPainter *painter, const QRectF& rect)
 {
     Q_UNUSED(rect);
-
     //// Shadow
 //    QRectF sceneRect = this->sceneRect();
     //QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
