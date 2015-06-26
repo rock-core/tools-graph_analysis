@@ -15,9 +15,9 @@ Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWi
     , mpGraphWidget(graphWidget)
     , mPortID(portID)
 {
-    setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
-    setFlag(QGraphicsTextItem::ItemIsMovable);
+//    setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
     setTextInteractionFlags(Qt::NoTextInteraction);
+    setFlag(ItemIsMovable, false);
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
 }

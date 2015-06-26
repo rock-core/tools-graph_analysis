@@ -170,6 +170,7 @@ public slots:
     void importGraph();
     void exportGraph();
     void updateDragDrop(bool dragDrop);
+    void syncDragDrop();
     void setDragDrop();
     void unsetDragDrop();
     void reloadPropertyDialog();

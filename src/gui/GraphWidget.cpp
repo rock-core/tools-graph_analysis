@@ -836,6 +836,8 @@ void GraphWidget::updateFromGraph()
         }
     }
 
+    syncDragDrop();
+
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -934,7 +936,19 @@ void GraphWidget::updateDragDrop(bool dragDrop)
         NodeItem *current = it->second;
         if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
-//            current->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop); // not really an issue
+            current->setHandlesChildEvents(!mDragDrop);
+        }
+    }
+}
+
+void GraphWidget::syncDragDrop()
+{
+    NodeItemMap::iterator it = mNodeItemMap.begin();
+    for(; mNodeItemMap.end() != it; ++it)
+    {
+        NodeItem *current = it->second;
+        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
+        {
             current->setHandlesChildEvents(!mDragDrop);
         }
     }
@@ -950,7 +964,6 @@ void GraphWidget::setDragDrop()
         NodeItem *current = it->second;
         if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
-//            current->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop); // not really an issue
             current->setHandlesChildEvents(false); // of !mDragDrop
         }
     }
@@ -966,7 +979,6 @@ void GraphWidget::unsetDragDrop()
         NodeItem *current = it->second;
         if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
-//            current->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop); // not really an issue
             current->setHandlesChildEvents(true); // of !mDragDrop
         }
     }
