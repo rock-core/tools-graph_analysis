@@ -384,7 +384,46 @@ void GraphWidget::changeSelectedEdgeLabel()
 void GraphWidget::removeSelectedEdge()
 {
     scene()->removeItem(mEdgeItemMap[mpSelectedEdge]);
-    mpGraph->removeEdge(mpSelectedEdge);
+    const std::string label = mpSelectedEdge->getLabel();
+    const graph_analysis::Vertex::Ptr sourceClusterVertex = mpSelectedEdge->getSourceVertex();
+    const graph_analysis::Vertex::Ptr targetClusterVertex = mpSelectedEdge->getTargetVertex();
+    const NodeItem * sceneSourceNodeItem = mNodeItemMap[sourceClusterVertex];
+    const NodeItem * sceneTargetNodeItem = mNodeItemMap[targetClusterVertex];
+    if(!sceneSourceNodeItem || !sceneTargetNodeItem)
+    {
+        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::removeSelectedEdge: the selected edge '")
+                                        + label + "' in the layouting graph mpLayoutingGraph has invalid Vertex endpoints or invalid scene items correspondands";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        if(label != edge->getLabel())
+        {
+            continue;
+        }
+        NodeItem * sourceNodeItem = mPortMap[edge->getSourceVertex()];
+        NodeItem * targetNodeItem = mPortMap[edge->getTargetVertex()];
+        if(!sourceNodeItem || !targetNodeItem)
+        {
+            std::string error_msg = std::string("graph_analysis::gui::GraphWidget::removeSelectedEdge: the iterated-over edge '")
+                                            + label + "' in the main graph mpGraph has invalid Vertex endpoints or invalid scene items correspondands";
+            LOG_ERROR_S << error_msg;
+            throw std::runtime_error(error_msg);
+        }
+        if  (
+                    sourceClusterVertex == sourceNodeItem->getVertex() && sceneSourceNodeItem == sourceNodeItem
+                &&  targetClusterVertex == targetNodeItem->getVertex() && sceneTargetNodeItem == targetNodeItem
+            )
+        {
+            mpGraph->removeEdge(edge);
+            break; // assuming there is a single correspondent edge in the main graph mpGraph
+        }
+    }
+    mpLayoutingGraph->removeEdge(mpSelectedEdge);
 }
 
 void GraphWidget::removeSelectedVertex()
