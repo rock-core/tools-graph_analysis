@@ -40,7 +40,7 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
     void dropEvent(QGraphicsSceneDragDropEvent *event);
-//    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
+    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
 };
 
 } // end namespace graphitem

@@ -17,8 +17,9 @@ Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWi
     , mpGraphWidget(graphWidget)
     , mPortID(portID)
 {
-//    setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
+    setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
     setTextInteractionFlags(Qt::NoTextInteraction);
+//    setTextInteractionFlags(Qt::TextEditorInteraction);
     setFlag(ItemIsMovable, false);
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
@@ -50,14 +51,14 @@ void Label::setTextInteraction(bool on, bool selectAll)
 
 void Label::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
-//    if(textInteractionFlags() == Qt::TextEditorInteraction)
-//    {
-//        QGraphicsTextItem::mousePressEvent(event);
-//        return;
-//    }
+    if(textInteractionFlags() == Qt::TextEditorInteraction)
+    {
+        QGraphicsTextItem::mousePressEvent(event);
+        return;
+    }
 
-//    setTextInteraction(true);
-//    QGraphicsTextItem::mouseDoubleClickEvent(event);
+    setTextInteraction(true, true);
+    QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 
 void Label::keyPressEvent(::QKeyEvent* event)
@@ -158,27 +159,19 @@ void Label::dropEvent(QGraphicsSceneDragDropEvent *event)
     }
 }
 
-//    QVariant Label::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
-//    {
-//        if(change == QGraphicsItem::ItemSelectedChange)
-//        {
-//            qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
-//            /*
-//            QDrag *drag = new QDrag(0);
-//            QMimeData *mimeData = new QMimeData;
-//            mimeData->setText("edge");
-//            drag->setMimeData(mimeData);
-//    //            Qt::DropAction dropAction = drag->exec();
-//            drag->exec();
-//             */
-//        }
-//        if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
-//        {
-//            // item received SelectedChange event AND is in editor mode AND is about to be deselected:
-//            setTextInteraction(false); // leave editor mode
-//        }
-//        return QGraphicsTextItem::itemChange(change, value);
-//    }
+QVariant Label::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
+{
+    if(change == QGraphicsItem::ItemSelectedChange)
+    {
+        qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
+    }
+    if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
+    {
+        // item received SelectedChange event AND is in editor mode AND is about to be deselected:
+        setTextInteraction(false); // leave editor mode
+    }
+    return QGraphicsTextItem::itemChange(change, value);
+}
 
 } // end namespace graphitem
 } // end namespace gui
