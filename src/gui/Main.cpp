@@ -59,6 +59,7 @@
 // choosing the test graph to display
 #define TESTNO TEST_IMPORT
 //#define RENDER
+#define IMPORT
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 //#define LAYOUT "dot"
@@ -273,6 +274,9 @@ int main(int argc, char **argv)
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);
 
+#ifdef IMPORT
+    widget->fromXmlFile("/home/clasian/Desktop/current.gexf");
+#endif
     mainWindow.show();
     return app.exec();
 }

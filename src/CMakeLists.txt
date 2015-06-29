@@ -21,6 +21,7 @@ rock_library(graph_analysis
         gui/graphitem/Label.cpp
         gui/GraphWidget.cpp
         gui/AddNodeDialog.cpp
+        gui/RenamePortDialog.cpp
         gui/ActionCommander.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
@@ -82,6 +83,7 @@ rock_library(graph_analysis
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
         gui/AddNodeDialog.hpp
+        gui/RenamePortDialog.hpp
         gui/PropertyDialog.hpp
         io/GexfWriter.hpp
         io/GexfReader.hpp
@@ -124,11 +126,13 @@ rock_library(graph_analysis
         gui/GraphWidget.hpp
         gui/AddNodeDialog.hpp
         gui/PropertyDialog.hpp
+        gui/RenamePortDialog.hpp
     DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
         gui/add_node_dialog_gui.ui
+        gui/rename_port_dialog_gui.ui
         gui/property_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk gvc)

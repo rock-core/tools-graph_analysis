@@ -26,6 +26,7 @@ public:
     void changeLabel(const std::string& label);
     std::string  getLabel() { return mLabel->toPlainText().toStdString(); }
     void updateLabel();
+    void setPortLabel(int portID, const std::string& label);
 
     virtual QRectF boundingRect() const;
     virtual QPainterPath shape() const;

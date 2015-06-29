@@ -30,6 +30,19 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     setFlag(ItemIsMovable);
 }
 
+void Resource::setPortLabel(int portID, const std::string& label)
+{
+    if(portID < 0 || portID >= (int) mLabels.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::setPortLabel: the supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    mLabels[portID]->setPlainText(QString(label.c_str()));
+}
+
 void Resource::changeLabel(const std::string& label)
 {
     delete mLabel;

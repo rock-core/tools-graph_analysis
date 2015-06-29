@@ -46,6 +46,7 @@
 #include "ActionCommander.hpp"
 #include "AddNodeDialog.hpp"
 #include "PropertyDialog.hpp"
+#include "RenamePortDialog.hpp"
 
 #include <set>
 #include <math.h>
@@ -53,6 +54,7 @@
 #include <QDir>
 #include <QTime>
 #include <QMenu>
+#include <sstream>
 #include <QAction>
 #include <QKeyEvent>
 #include <QFileDialog>
@@ -193,8 +195,9 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionRemoveEdge = comm.addAction("Remove Selected Edge", SLOT(removeSelectedEdge()));
     QAction *actionChangeLabel = comm.addAction("Change Selected Node Label", SLOT(changeSelectedVertexLabel()));
     QAction *actionRemoveNode = comm.addAction("Remove Selected Node", SLOT(removeSelectedVertex()));
+    QAction *actionAddPort = comm.addAction("Add Port to Selected Node", SLOT(addPort()));
+    QAction *actionRenamePort = comm.addAction("Rename a Port of Selected Node", SLOT(renamePort()));
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
-    QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPort()));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
     QAction *actionImport = comm.addAction("Import", SLOT(importGraph()));
@@ -215,6 +218,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     {
         contextMenu.addAction(actionChangeLabel);
         contextMenu.addAction(actionAddPort);
+        contextMenu.addAction(actionRenamePort);
         contextMenu.addAction(actionRemoveNode);
     }
     contextMenu.addAction(actionAddNode);
@@ -252,6 +256,27 @@ void GraphWidget::addPort()
     mPortMap[portVertex] = item;
     mPortIDMap[portVertex] = item->addPort(portVertex);
     item->update();
+}
+
+void GraphWidget::renamePort()
+{
+    NodeItem *item = mNodeItemMap[mpSelectedVertex];
+    int portCount = item->getPortCount();
+    if(!portCount)
+    {
+        QMessageBox::critical(this, tr("Cannot Rename a Port"), tr("The selected vertex had no ports!"));
+        return;
+    }
+    RenamePortDialog dialog(item);
+    if(dialog.isValid())
+    {
+        std::string newLabel    = dialog.getNewLabel();
+        std::string strPortID   = dialog.getPortID();
+        int portID;
+        std::stringstream ss(strPortID);
+        ss >> portID;
+        item->setPortLabel(portID, newLabel);
+    }
 }
 
 void GraphWidget::importGraph()
