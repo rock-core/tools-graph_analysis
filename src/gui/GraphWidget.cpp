@@ -497,17 +497,17 @@ void GraphWidget::removeSelectedVertex()
         mpGraph->removeVertex(portVertex);
         // already removed the edge itself up above //       mpGraph->removeEdge(edge);
     }
-    // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
-    edgeIt = mpLayoutingGraph->getEdgeIterator(mpSelectedVertex);
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-        scene()->removeItem(mEdgeItemMap[edge]);
-        mpLayoutingGraph->removeEdge(edge);
-    }
+//    // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
+//    edgeIt = mpLayoutingGraph->getEdgeIterator(mpSelectedVertex);
+//    while(edgeIt->next())
+//    {
+//        Edge::Ptr edge = edgeIt->current();
+//        scene()->removeItem(mEdgeItemMap[edge]);
+//        mpLayoutingGraph->removeEdge(edge);
+//    }  // commented out since it introduces bugs when mpLayoutingGraph is dirty
+//    mpLayoutingGraph->removeVertex(mpSelectedVertex); // commented out since it introduces bugs when mpLayoutingGraph is 'dirty'
     scene()->removeItem(mNodeItemMap[mpSelectedVertex]);
     mpGraph->removeVertex(mpSelectedVertex);
-    mpLayoutingGraph->removeVertex(mpSelectedVertex); // not strictly necessary
 }
 
 void GraphWidget::changeLayout()
