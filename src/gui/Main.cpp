@@ -57,7 +57,7 @@
 #define TEST_PORTS_EDGES_INTERACTION_DEPTH2 5
 
 // choosing the test graph to display
-#define TESTNO TEST_PORTS_EDGES_INTERACTION_DEPTH2
+#define TESTNO TEST_IMPORT
 //#define RENDER
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi

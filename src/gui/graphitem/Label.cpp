@@ -1,6 +1,7 @@
 #include "Label.hpp"
 
 #include <exception>
+#include <QApplication>
 #include <base/Logging.hpp>
 #include <boost/lexical_cast.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
@@ -72,8 +73,20 @@ void Label::focusOutEvent(QFocusEvent* event)
 
 void Label::mousePressEvent(::QGraphicsSceneMouseEvent *event)
 {
-    if(event->button() == Qt::LeftButton && -1 != mPortID)
+    if(Qt::LeftButton == event->button())
     {
+        mDragStartPosition = event->pos();
+    }
+}
+
+void Label::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
+{
+    if((event->buttons() & Qt::LeftButton) && -1 != mPortID)
+    {
+        if((event->pos() - mDragStartPosition).manhattanLength() < QApplication::startDragDistance())
+        {
+            return;
+        }
         if(!mpGraphWidget)
         {
             std::string error_msg = std::string("graph_analysis::gui::graphitem::Label::mousePressEvent: cannot start drag-n-drop from port ")
@@ -89,7 +102,7 @@ void Label::mousePressEvent(::QGraphicsSceneMouseEvent *event)
         mimeData->setText("edge");
         drag->setMimeData(mimeData);
         mpGraphWidget->setStartVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
-        drag->exec();
+        drag->exec(Qt::CopyAction | Qt::MoveAction);
     }
     else
     {

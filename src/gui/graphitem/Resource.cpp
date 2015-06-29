@@ -94,6 +94,13 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 
 int Resource::addPort(Vertex::Ptr node)
 {
+    if("graph_analysis::PortVertex" != node->getClassName())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::addPort: provided port node is not of type PortVertex, but of inadmissible type '")
+                                + node->getClassName() + "'!";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     int size = mLabels.size();
     Label *label = new Label(node->getLabel(), this, mpGraphWidget, size);
     mLabels.push_back(label);

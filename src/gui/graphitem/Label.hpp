@@ -26,6 +26,7 @@ class Label : public QGraphicsTextItem
 private:
     GraphWidget *mpGraphWidget;
     int mPortID;
+    QPointF mDragStartPosition;
 public:
     Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0, int portID = -1);
     void setTextInteraction(bool on, bool selectAll = false);
@@ -34,6 +35,7 @@ protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
     void keyPressEvent(::QKeyEvent* event);
     void focusOutEvent(QFocusEvent* event);
+    void mouseMoveEvent(::QGraphicsSceneMouseEvent *event);
     void mousePressEvent(::QGraphicsSceneMouseEvent *event);
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);

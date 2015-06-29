@@ -194,6 +194,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionChangeLabel = comm.addAction("Change Selected Node Label", SLOT(changeSelectedVertexLabel()));
     QAction *actionRemoveNode = comm.addAction("Remove Selected Node", SLOT(removeSelectedVertex()));
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
+    QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPort()));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
     QAction *actionImport = comm.addAction("Import", SLOT(importGraph()));
@@ -213,6 +214,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     if(mVertexSelected)
     {
         contextMenu.addAction(actionChangeLabel);
+        contextMenu.addAction(actionAddPort);
         contextMenu.addAction(actionRemoveNode);
     }
     contextMenu.addAction(actionAddNode);
@@ -238,6 +240,18 @@ void GraphWidget::showContextMenu(const QPoint& pos)
         contextMenu.addAction(actionReloadPropertyDialog);
     }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void GraphWidget::addPort()
+{
+    NodeItem *item = mNodeItemMap[mpSelectedVertex];
+    graph_analysis::Vertex::Ptr portVertex = VertexTypeManager::getInstance()->createVertex("port", "newPort");
+    mpGraph->addVertex(portVertex);
+    enableVertex(portVertex);
+    createEdge(mpSelectedVertex, portVertex, "portRegistrationEdge");
+    mPortMap[portVertex] = item;
+    mPortIDMap[portVertex] = item->addPort(portVertex);
+    item->update();
 }
 
 void GraphWidget::importGraph()
