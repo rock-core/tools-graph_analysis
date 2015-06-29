@@ -2,9 +2,6 @@
 
 #include <QMenu>
 #include <exception>
-#include <QAction>
-#include <QMessageBox>
-#include <QApplication>
 #include <base/Logging.hpp>
 #include <boost/lexical_cast.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
@@ -25,28 +22,6 @@ Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWi
     setFlag(ItemIsMovable, false);
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
-    // setting up the context menu
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
-        this, SLOT(showContextMenu(const QPoint &)));
-}
-
-void Label::showContextMenu(const QPoint& pos)
-{
-    ActionCommander comm(this);
-//    QMenu contextMenu(tr("Context menu"), this);
-    QMenu contextMenu(tr("Context menu"));
-
-    QAction *actionChangePortLabel = comm.addAction("Change Selected Port Label", SLOT(changePortLabel()));
-
-    contextMenu.addAction(actionChangePortLabel);
-
-//    contextMenu.exec(mapToGlobal(pos));
-    contextMenu.exec(pos);
-}
-
-void Label::changePortLabel()
-{
-    QMessageBox::information(mpGraphWidget, tr("Label::changePortLabel()"), tr("changePortLabel() was called"));
 }
 
 void Label::setTextInteraction(bool on, bool selectAll)
