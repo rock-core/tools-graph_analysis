@@ -32,6 +32,7 @@ public:
     void setTextInteraction(bool on, bool selectAll = false);
 public slots:
     void showContextMenu(const QPoint& pos);
+    void changePortLabel();
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);

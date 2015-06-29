@@ -2,6 +2,8 @@
 
 #include <QMenu>
 #include <exception>
+#include <QAction>
+#include <QMessageBox>
 #include <QApplication>
 #include <base/Logging.hpp>
 #include <boost/lexical_cast.hpp>
@@ -30,9 +32,21 @@ Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWi
 
 void Label::showContextMenu(const QPoint& pos)
 {
-//    ActionCommander comm(this);
-//    QPoint position = mapTo(this, pos);
+    ActionCommander comm(this);
 //    QMenu contextMenu(tr("Context menu"), this);
+    QMenu contextMenu(tr("Context menu"));
+
+    QAction *actionChangePortLabel = comm.addAction("Change Selected Port Label", SLOT(changePortLabel()));
+
+    contextMenu.addAction(actionChangePortLabel);
+
+//    contextMenu.exec(mapToGlobal(pos));
+    contextMenu.exec(pos);
+}
+
+void Label::changePortLabel()
+{
+    QMessageBox::information(mpGraphWidget, tr("Label::changePortLabel()"), tr("changePortLabel() was called"));
 }
 
 void Label::setTextInteraction(bool on, bool selectAll)

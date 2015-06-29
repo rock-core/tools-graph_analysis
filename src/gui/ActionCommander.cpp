@@ -5,8 +5,8 @@
 namespace graph_analysis {
 namespace gui {
 
-ActionCommander::ActionCommander(const GraphWidget* graphWidget)
-: mpGraphWidget(graphWidget)
+ActionCommander::ActionCommander(const QObject* object)
+: mpObject(object)
 {}
 
 ActionCommander::~ActionCommander()
@@ -14,8 +14,8 @@ ActionCommander::~ActionCommander()
 
 QAction* ActionCommander::addAction(const char *title, const char *slot)
 {
-    QAction *action = new QAction(QString(title), (QObject*) mpGraphWidget);
-    bool connected = mpGraphWidget->connect(action, SIGNAL(triggered()), mpGraphWidget, slot);
+    QAction *action = new QAction(QString(title), (QObject*) mpObject);
+    bool connected = mpObject->connect(action, SIGNAL(triggered()), mpObject, slot);
     if(!connected)
     {
         std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the GraphWidget context menu";
@@ -27,11 +27,11 @@ QAction* ActionCommander::addAction(const char *title, const char *slot)
 
 QAction* ActionCommander::addMappedAction(const char *title, const char *slot, QObject *arg)
 {
-    QSignalMapper* signalMapper = new QSignalMapper((QObject*) mpGraphWidget);
-    QAction *action = new QAction(QString(title), (QObject*) mpGraphWidget);
-    mpGraphWidget->connect(action, SIGNAL(triggered()), signalMapper, SLOT(map()));
+    QSignalMapper* signalMapper = new QSignalMapper((QObject*) mpObject);
+    QAction *action = new QAction(QString(title), (QObject*) mpObject);
+    mpObject->connect(action, SIGNAL(triggered()), signalMapper, SLOT(map()));
     signalMapper->setMapping(action, arg);
-    bool connected = mpGraphWidget->connect(signalMapper, SIGNAL(mapped(QObject*)), mpGraphWidget, slot);
+    bool connected = mpObject->connect(signalMapper, SIGNAL(mapped(QObject*)), mpObject, slot);
     if(!connected)
     {
         std::string error = std::string("graph_analysis::gui::ActionCommander::addMappedAction: Failed to connect action ");

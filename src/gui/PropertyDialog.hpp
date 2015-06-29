@@ -50,10 +50,10 @@ public:
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
         }
         Dialog->resize(163, 221);
-        Dialog->setMinimumSize(163, 81 + 20 * nbuttons);
+        Dialog->setMinimumSize(163, 101 + 20 * nbuttons);
         horizontalLayoutWidget = new QWidget(Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 61 + 20 * nbuttons));
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 81 + 20 * nbuttons));
         verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
