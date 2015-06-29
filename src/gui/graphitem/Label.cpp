@@ -1,11 +1,13 @@
 #include "Label.hpp"
 
+#include <QMenu>
 #include <exception>
 #include <QApplication>
 #include <base/Logging.hpp>
 #include <boost/lexical_cast.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
+#include <graph_analysis/gui/ActionCommander.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -21,6 +23,16 @@ Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWi
     setFlag(ItemIsMovable, false);
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
+    // setting up the context menu
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
+        this, SLOT(showContextMenu(const QPoint &)));
+}
+
+void Label::showContextMenu(const QPoint& pos)
+{
+//    ActionCommander comm(this);
+//    QPoint position = mapTo(this, pos);
+//    QMenu contextMenu(tr("Context menu"), this);
 }
 
 void Label::setTextInteraction(bool on, bool selectAll)

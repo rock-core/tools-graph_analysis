@@ -30,6 +30,8 @@ private:
 public:
     Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0, int portID = -1);
     void setTextInteraction(bool on, bool selectAll = false);
+public slots:
+    void showContextMenu(const QPoint& pos);
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
