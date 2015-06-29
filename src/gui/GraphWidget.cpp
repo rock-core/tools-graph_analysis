@@ -628,9 +628,10 @@ void GraphWidget::toXmlFile(const std::string& filename)
 
 void GraphWidget::fromXmlFile(const std::string& filename)
 {
+    graph_analysis::BaseGraph::Ptr graph = BaseGraph::Ptr( new gl::DirectedGraph() );
     try
     {
-        mReaderMap["gexf"]->read(filename, mpGraph);
+        mReaderMap["gexf"]->read(filename, graph);
     }
     catch(std::runtime_error e)
     {
@@ -638,6 +639,11 @@ void GraphWidget::fromXmlFile(const std::string& filename)
         QMessageBox::critical(this, tr("Graph Import from .gexf Failed"), QString(e.what()));
         return;
     }
+
+    mpGraph = graph;
+    mpSubGraph = mGraphView.apply(mpGraph);
+    mFiltered = true;
+
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
     refresh();
@@ -645,9 +651,10 @@ void GraphWidget::fromXmlFile(const std::string& filename)
 
 void GraphWidget::fromYmlFile(const std::string& filename)
 {
+    graph_analysis::BaseGraph::Ptr graph = BaseGraph::Ptr( new gl::DirectedGraph() );
     try
     {
-        mReaderMap["yaml"]->read(filename, mpGraph);
+        mReaderMap["yaml"]->read(filename, graph);
     }
     catch(std::runtime_error e)
     {
@@ -655,6 +662,11 @@ void GraphWidget::fromYmlFile(const std::string& filename)
         QMessageBox::critical(this, tr("Graph Import from .yaml Failed"), QString(e.what()));
         return;
     }
+
+    mpGraph = graph;
+    mpSubGraph = mGraphView.apply(mpGraph);
+    mFiltered = true;
+
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
     refresh();
@@ -667,6 +679,8 @@ void GraphWidget::reset(bool keepData)
     if(!keepData)
     {
         mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
+        mpSubGraph = mGraphView.apply(mpGraph);
+        mFiltered = true;
     }
 
     if(mpGVGraph)
