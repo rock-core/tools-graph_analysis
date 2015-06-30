@@ -20,7 +20,8 @@ public:
     Simple() {}
     EdgeLabel* getLabel() { return mpLabel; }
     virtual ~Simple() {}
-
+    int getSourcePortID() { return mSourceNodePortID; }
+    int getTargetPortID() { return mTargetNodePortID; }
     virtual void adjust();
 
 protected:

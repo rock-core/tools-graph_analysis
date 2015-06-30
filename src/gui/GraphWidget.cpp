@@ -57,7 +57,6 @@
 #include <sstream>
 #include <QAction>
 #include <QKeyEvent>
-//#include <QTransform>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
@@ -306,17 +305,48 @@ void GraphWidget::removePort()
     {
         std::stringstream ss(strPortID.toStdString());
         ss >> portID;
-        // remove
+        // remove conceptual edges
         EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getPort(portID));
         while(edgeIt->next())
         {
             Edge::Ptr edge = edgeIt->current();
             mpGraph->removeEdge(edge);
+//            if(mEdgeItemMap.count(edge))
+//            {
+//                EdgeItem* edgeItem = mEdgeItemMap[edge];
+//                scene()->removeItem(edgeItem);
+//                if(edgeItem)
+//                {
+//                    delete edgeItem;
+//                }
+//            }
+        }
+        // remove physical edges and their graphics
+        graph_analysis::Vertex::Ptr cluster = item->getVertex();
+        edgeIt = mpLayoutingGraph->getEdgeIterator(cluster);
+        while(edgeIt->next())
+        {
+            Edge::Ptr edge = edgeIt->current();
+            if(mEdgeItemMap.count(edge))
+            {
+                EdgeItem* edgeItem = mEdgeItemMap[edge];
+                if  (
+                        (item == edgeItem->sourceNodeItem() && portID == edgeItem->getSourcePortID()) ||
+                        (item == edgeItem->targetNodeItem() && portID == edgeItem->getTargetPortID())
+                    )
+                    {
+                        mpLayoutingGraph->removeEdge(edge);
+                        scene()->removeItem(edgeItem);
+                        if(edgeItem)
+                        {
+                            delete edgeItem;
+                        }
+                        break;
+                    }
+            }
         }
         // remove port graphics
         item->removePort(portID);
-//        repaint();
-//        repaint(item->boundingRegion(QTransform()));
     }
 }
 

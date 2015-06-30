@@ -135,20 +135,19 @@ void Resource::removePort(int portID)
     prepareGeometryChange();
     removeFromGroup(mLabels[portID]);
     scene()->removeItem(mLabels[portID]);
+    // shifting all ports up
+    int size = mLabels.size();
+    for(int i = portID + 1; i < size; ++i)
+    {
+        Label *label = mLabels[i];
+        label->setPos(label->pos() - QPointF(0., ADJUST));
+    }
     if(mLabels[portID])
     {
         delete mLabels[portID];
     }
     mLabels.erase(mLabels.begin() + portID);
     mVertices.erase(mVertices.begin() + portID);
-//    int n = mLabels.size();
-//    for(int i = portID; i < n - 1; ++i)
-//    {
-//        mLabels[i]   = mLabels[i+1];
-//        mVertices[i] = mVertices[i+1];
-//    }
-//    mLabels.pop_back();
-//    mVertices.pop_back();
 }
 
 QRectF Resource::portBoundingRect(int portID)
