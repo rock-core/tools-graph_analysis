@@ -1168,6 +1168,10 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
                 rotate(qreal(-1.13));
             break;
 
+            case Qt::Key_CapsLock:
+                updateDragDrop(!mDragDrop);
+            break;
+
             case Qt::Key_Right:
                 rotate(qreal( 1.13));
             break;
@@ -1194,10 +1198,6 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Enter:
     case Qt::Key_R:
             refresh();
-    break;
-
-    case Qt::Key_CapsLock:
-        updateDragDrop(!mDragDrop);
     break;
 
     case Qt::Key_S:
