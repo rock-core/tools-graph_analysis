@@ -122,6 +122,34 @@ int Resource::addPort(Vertex::Ptr node)
     return size; // returning this port's offset in the vector of ports
 }
 
+void Resource::removePort(int portID)
+{
+    if(portID < 0 || portID >= (int) mLabels.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::removePort: the supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    prepareGeometryChange();
+    removeFromGroup(mLabels[portID]);
+    scene()->removeItem(mLabels[portID]);
+    if(mLabels[portID])
+    {
+        delete mLabels[portID];
+    }
+    mLabels.erase(mLabels.begin() + portID);
+    mVertices.erase(mVertices.begin() + portID);
+//    int n = mLabels.size();
+//    for(int i = portID; i < n - 1; ++i)
+//    {
+//        mLabels[i]   = mLabels[i+1];
+//        mVertices[i] = mVertices[i+1];
+//    }
+//    mLabels.pop_back();
+//    mVertices.pop_back();
+}
 
 QRectF Resource::portBoundingRect(int portID)
 {

@@ -57,6 +57,7 @@
 #include <sstream>
 #include <QAction>
 #include <QKeyEvent>
+//#include <QTransform>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
@@ -197,6 +198,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionRemoveNode = comm.addAction("Remove Selected Node", SLOT(removeSelectedVertex()));
     QAction *actionAddPort = comm.addAction("Add Port to Selected Node", SLOT(addPort()));
     QAction *actionRenamePort = comm.addAction("Rename a Port of Selected Node", SLOT(renamePort()));
+    QAction *actionRemovePort = comm.addAction("Remove a Port of Selected Node", SLOT(removePort()));
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
@@ -219,6 +221,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
         contextMenu.addAction(actionChangeLabel);
         contextMenu.addAction(actionAddPort);
         contextMenu.addAction(actionRenamePort);
+        contextMenu.addAction(actionRemovePort);
         contextMenu.addAction(actionRemoveNode);
     }
     contextMenu.addAction(actionAddNode);
@@ -276,6 +279,44 @@ void GraphWidget::renamePort()
         std::stringstream ss(strPortID);
         ss >> portID;
         item->setPortLabel(portID, newLabel);
+    }
+}
+
+void GraphWidget::removePort()
+{
+    NodeItem *item = mNodeItemMap[mpSelectedVertex];
+    int portCount = item->getPortCount();
+    if(!portCount)
+    {
+        QMessageBox::critical(this, tr("Cannot Remove a Port"), tr("The selected vertex had no ports!"));
+        return;
+    }
+    bool ok;
+    QStringList ports_options;
+    int portID = 0;
+    foreach(graph_analysis::Vertex::Ptr vertex, item->getVertices())
+    {
+        std::string option = boost::lexical_cast<std::string>(portID++) + ": " + vertex->getLabel();
+        ports_options << tr(option.c_str());
+    }
+    QString strPortID = QInputDialog::getItem(this, tr("Choose Port to Remove"),
+                                         tr("Port ID:"), ports_options,
+                                         0, false, &ok);
+    if (ok && !strPortID.isEmpty())
+    {
+        std::stringstream ss(strPortID.toStdString());
+        ss >> portID;
+        // remove
+        EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getPort(portID));
+        while(edgeIt->next())
+        {
+            Edge::Ptr edge = edgeIt->current();
+            mpGraph->removeEdge(edge);
+        }
+        // remove port graphics
+        item->removePort(portID);
+//        repaint();
+//        repaint(item->boundingRegion(QTransform()));
     }
 }
 

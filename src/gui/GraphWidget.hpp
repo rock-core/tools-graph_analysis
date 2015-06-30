@@ -160,6 +160,7 @@ public slots:
     void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
     void addPort();
     void renamePort();
+    void removePort();
     void showContextMenu(const QPoint& pos);
 
     void setLayout(QString layoutName);

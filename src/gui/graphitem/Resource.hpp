@@ -15,14 +15,13 @@ class Label;
 
 class Resource : public graph_analysis::gui::NodeItem
 {
-    typedef std::vector<Label*> Labels;
-    typedef std::vector<graph_analysis::Vertex::Ptr> Vertices;
 private:
     Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
 public:
     Resource() {}
     virtual ~Resource() {};
 
+    Vertices getVertices() { return mVertices; }
     void changeLabel(const std::string& label);
     std::string  getLabel() { return mLabel->toPlainText().toStdString(); }
     void updateLabel();
@@ -37,6 +36,7 @@ public:
     int  getPortCount() { return mLabels.size(); }
     graph_analysis::Vertex::Ptr getPort(int portID);
     int addPort(Vertex::Ptr node);
+    void removePort(int portID);
     QPolygonF   portBoundingPolygon (int portID);
     QRectF      portBoundingRect    (int portID);
 
