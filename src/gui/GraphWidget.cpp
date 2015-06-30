@@ -1196,6 +1196,10 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             refresh();
     break;
 
+    case Qt::Key_CapsLock:
+        updateDragDrop(!mDragDrop);
+    break;
+
     case Qt::Key_S:
         shuffle();
     break; // too close to CTRL+S?!
