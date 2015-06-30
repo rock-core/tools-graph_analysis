@@ -41,6 +41,7 @@ void Resource::setPortLabel(int portID, const std::string& label)
         throw std::runtime_error(error_msg);
     }
     mLabels[portID]->setPlainText(QString(label.c_str()));
+    mVertices[portID]->setLabel(label);
 }
 
 void Resource::changeLabel(const std::string& label)
