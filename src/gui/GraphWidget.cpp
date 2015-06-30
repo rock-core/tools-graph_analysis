@@ -337,10 +337,6 @@ void GraphWidget::removePort()
                     {
                         mpLayoutingGraph->removeEdge(edge);
                         scene()->removeItem(edgeItem);
-                        if(edgeItem)
-                        {
-                            delete edgeItem;
-                        }
                         break;
                     }
             }
