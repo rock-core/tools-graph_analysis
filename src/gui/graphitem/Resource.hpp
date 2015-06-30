@@ -37,6 +37,8 @@ public:
     graph_analysis::Vertex::Ptr getPort(int portID);
     int addPort(Vertex::Ptr node);
     void removePort(int portID);
+    void syncLabel(int portID);
+    void prepareChange() { prepareGeometryChange(); }
     QPolygonF   portBoundingPolygon (int portID);
     QRectF      portBoundingRect    (int portID);
 

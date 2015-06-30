@@ -180,6 +180,35 @@ graph_analysis::Vertex::Ptr Resource::getPort(int portID)
     return mVertices[portID];
 }
 
+void Resource::syncLabel(int portID)
+{
+    if(portID < -1 || portID >= (int) mVertices.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::syncLabel: supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    if(-1 == portID)
+    {
+        std::string label = mLabel->toPlainText().toStdString();
+        if(mpVertex->getLabel() != label)
+        {
+            mpVertex->setLabel(label);
+            update();
+        }
+        return;
+    }
+    graph_analysis::Vertex::Ptr port = mVertices[portID];
+    std::string tag = mLabels[portID]->toPlainText().toStdString();
+    if(port->getLabel() != tag)
+    {
+        port->setLabel(tag);
+        update();
+    }
+}
+
 QPolygonF Resource::portBoundingPolygon(int portID)
 {
     if(portID < 0 || portID >= (int) mLabels.size())

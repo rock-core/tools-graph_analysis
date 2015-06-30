@@ -1178,32 +1178,35 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         }
     }
 
-    switch (event->key())
+    if(!mDragDrop)
     {
-    //case Qt::Key_Up:
-    //    break;
-    //case Qt::Key_Down:
-    //    break;
-    //case Qt::Key_Left:
-    //    break;
-    //case Qt::Key_Right:
-    //    break;
-    case Qt::Key_Plus:
-        zoomIn();
-    break;
-    case Qt::Key_Minus:
-        zoomOut();
-    break;
-    case Qt::Key_Space:
-    case Qt::Key_Enter:
-    case Qt::Key_R:
-            refresh();
-    break;
+        switch (event->key())
+        {
+        //case Qt::Key_Up:
+        //    break;
+        //case Qt::Key_Down:
+        //    break;
+        //case Qt::Key_Left:
+        //    break;
+        //case Qt::Key_Right:
+        //    break;
+        case Qt::Key_Plus:
+            zoomIn();
+        break;
+        case Qt::Key_Minus:
+            zoomOut();
+        break;
+        case Qt::Key_Space:
+        case Qt::Key_Enter:
+        case Qt::Key_R:
+                refresh();
+        break;
 
-    case Qt::Key_S:
-        shuffle();
-    break; // too close to CTRL+S?!
-    //default:
+        case Qt::Key_S:
+            shuffle();
+        break; // too close to CTRL+S?!
+        //default:
+        }
     }
     QGraphicsView::keyPressEvent(event);
 }

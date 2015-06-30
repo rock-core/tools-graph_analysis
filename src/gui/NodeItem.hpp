@@ -105,6 +105,8 @@ public:
     virtual void removePort(int portID)                 { throw std::runtime_error("graph_analysis::gui::NodeItem::removePort is not reimplemented");   }
     virtual graph_analysis::Vertex::Ptr getPort(int portID)    {throw std::runtime_error("graph_analysis::gui::NodeItem::getPort is not reimplemented");}
     virtual std::string  getLabel()                     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabel is not reimplemented");     }
+    virtual void syncLabel(int portID)                  { throw std::runtime_error("graph_analysis::gui::NodeItem::syncLabel is not reimplemented");    }
+    virtual void prepareChange()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::prepareChange is not reimplemented");}
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
