@@ -7,7 +7,7 @@
 namespace graph_analysis {
 namespace gui {
 
-class CustomDialog : public QDialog, public QDockWidget
+class CustomDialog : public QDockWidget
 {
 public:
     CustomDialog();

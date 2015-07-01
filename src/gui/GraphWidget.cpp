@@ -162,7 +162,7 @@ GraphWidget::GraphWidget(QWidget *parent)
         this, SLOT(showContextMenu(const QPoint &)));
 
     reset();
-    mpPropertyDialog = new PropertyDialog(this);
+    mpPropertyDialog = new PropertyDialog(this, (QMainWindow *)parentWidget());
 }
 
 GraphWidget::~GraphWidget()
@@ -398,7 +398,7 @@ void GraphWidget::reloadPropertyDialog()
     {
         delete mpPropertyDialog;
     }
-    mpPropertyDialog = new PropertyDialog(this, mDragDrop);
+    mpPropertyDialog = new PropertyDialog(this, (QMainWindow *)parentWidget(), mDragDrop);
 }
 
 Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)

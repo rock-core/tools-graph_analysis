@@ -71,7 +71,8 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-    GraphWidget* widget = new GraphWidget;
+    QMainWindow mainWindow;
+    GraphWidget* widget = new GraphWidget(&mainWindow);
     widget->reset();
 
     using namespace graph_analysis;
@@ -271,7 +272,6 @@ int main(int argc, char **argv)
 #ifdef RENDER
     widget->toFile("graph.dot");
 #endif
-    QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);
 
 #ifdef IMPORT

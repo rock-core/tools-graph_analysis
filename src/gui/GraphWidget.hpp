@@ -42,6 +42,7 @@
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
 #include <map>
+#include <QMainWindow>
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
