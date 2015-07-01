@@ -11,6 +11,8 @@ class CustomDialog : public QDockWidget
 public:
     CustomDialog();
     ~CustomDialog() {}
+protected:
+    void keyPressEvent(QKeyEvent *event);
 };
 
 } // end namespace gui

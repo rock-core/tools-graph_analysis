@@ -1161,7 +1161,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 
     if(modifiers & Qt::ControlModifier)
     {
-        switch (event->key())
+        switch(event->key())
         {
             case Qt::Key_Q:
             case Qt::Key_W:
@@ -1180,19 +1180,19 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
                 rotate(qreal(-1.13));
             break;
 
-            case Qt::Key_CapsLock:
-                mDragDrop ? unsetDragDrop() : setDragDrop();
-            break;
-
             case Qt::Key_Right:
                 rotate(qreal( 1.13));
+            break;
+
+            case Qt::Key_CapsLock:
+                mDragDrop ? unsetDragDrop() : setDragDrop();
             break;
         }
     }
 
     if(!mDragDrop)
     {
-        switch (event->key())
+        switch(event->key())
         {
         //case Qt::Key_Up:
         //    break;
