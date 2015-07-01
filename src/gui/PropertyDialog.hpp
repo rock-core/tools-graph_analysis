@@ -21,6 +21,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 #include "GraphWidget.hpp"
+#include "CustomDialog.hpp"
 
 #define DEFAULT_NBUTTONS 8
 
@@ -36,22 +37,21 @@ public:
     : mpGraphWidget(widget)
     {
         setupUi(&mDialog, dragDropIsChecked);
-        mDialog.show();
+        ((QDialog *)&mDialog)->show();
     }
     ~PropertyDialog(){}
 
-    bool isRunning() { return mDialog.isVisible(); }
+    bool isRunning() { return ((QDialog *)&mDialog)->isVisible(); }
     void setDragDrop(bool toggle) { mpDragDropButton->setChecked(toggle); }
-    void setupUi(QDialog *Dialog, bool dragDropIsChecked = false)
+    void setupUi(CustomDialog *Dialog, bool dragDropIsChecked = false)
     {
         int nbuttons = DEFAULT_NBUTTONS;
-        if (Dialog->objectName().isEmpty())
+        if (((QDialog *)Dialog)->objectName().isEmpty())
         {
-            Dialog->setObjectName(QString::fromUtf8("Dialog"));
+            ((QDialog *)Dialog)->setObjectName(QString::fromUtf8("Dialog"));
         }
-        Dialog->resize(163, 221);
-        Dialog->setMinimumSize(163, 101 + 20 * nbuttons);
-        horizontalLayoutWidget = new QWidget(Dialog);
+        ((QDialog *)Dialog)->setFixedSize(163, 101 + 20 * nbuttons);
+        horizontalLayoutWidget = new QWidget((QDialog *)Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
         horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 81 + 20 * nbuttons));
         verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
@@ -125,12 +125,12 @@ public:
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
 
-        QMetaObject::connectSlotsByName(Dialog);
+        QMetaObject::connectSlotsByName((QDialog *)Dialog);
     } // setupUi
 
-    void retranslateUi(QDialog *Dialog)
+    void retranslateUi(CustomDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
+        ((QDialog *)Dialog)->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
@@ -144,7 +144,7 @@ public:
 public slots:
 
 private:
-    QDialog mDialog;
+    CustomDialog mDialog;
     GraphWidget *mpGraphWidget;
     QWidget *horizontalLayoutWidget;
     QVBoxLayout *verticalLayout;

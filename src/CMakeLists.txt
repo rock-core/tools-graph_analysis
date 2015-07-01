@@ -15,6 +15,7 @@ rock_library(graph_analysis
         GraphIO.cpp
         gui/EdgeItem.cpp
         gui/EdgeTypeManager.cpp
+        gui/CustomDialog.cpp
         gui/graphitem/edges/Simple.cpp
         gui/graphitem/Resource.cpp
         gui/graphitem/Simple.cpp
@@ -85,6 +86,7 @@ rock_library(graph_analysis
         gui/AddNodeDialog.hpp
         gui/RenamePortDialog.hpp
         gui/PropertyDialog.hpp
+        gui/CustomDialog.hpp
         io/GexfWriter.hpp
         io/GexfReader.hpp
         io/GraphvizWriter.hpp
