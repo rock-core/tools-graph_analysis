@@ -1181,7 +1181,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_CapsLock:
-                updateDragDrop(!mDragDrop);
+                mDragDrop ? unsetDragDrop() : setDragDrop();
             break;
 
             case Qt::Key_Right:
