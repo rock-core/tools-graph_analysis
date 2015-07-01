@@ -71,6 +71,10 @@ public:
 
         mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
         mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
+        QIcon icon;
+        //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
+        icon.addFile(QString::fromUtf8("../../resources/icons/add.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpAddNodeButton->setIcon(icon);
         mpAddNodeButton->setCheckable(false);
         mpAddNodeButton->setChecked(false);
 
