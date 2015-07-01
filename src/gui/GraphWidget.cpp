@@ -217,22 +217,33 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     }
     if(mVertexSelected)
     {
+        if(mEdgeSelected)
+        {
+            contextMenu.addSeparator();
+        }
         contextMenu.addAction(actionChangeLabel);
         contextMenu.addAction(actionAddPort);
         contextMenu.addAction(actionRenamePort);
         contextMenu.addAction(actionRemovePort);
         contextMenu.addAction(actionRemoveNode);
     }
+    if(mVertexSelected || mEdgeSelected)
+    {
+        contextMenu.addSeparator();
+    }
     contextMenu.addAction(actionAddNode);
+    contextMenu.addSeparator();
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
-    contextMenu.addAction(actionImport);
-    contextMenu.addAction(actionExport);
+    contextMenu.addAction(actionLayout);
     if(!mpGraph->empty())
     {
         contextMenu.addAction(actionReset);
     }
-    contextMenu.addAction(actionLayout);
+    contextMenu.addSeparator();
+    contextMenu.addAction(actionImport);
+    contextMenu.addAction(actionExport);
+    contextMenu.addSeparator();
     if(mDragDrop)
     {
         contextMenu.addAction(actionUnsetDragDrop);
@@ -243,6 +254,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     }
     if(!mpPropertyDialog->isRunning())
     {
+        contextMenu.addSeparator();
         contextMenu.addAction(actionReloadPropertyDialog);
     }
     contextMenu.exec(mapToGlobal(pos));
