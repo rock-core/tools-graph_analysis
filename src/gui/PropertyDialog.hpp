@@ -9,6 +9,7 @@
 #ifndef PROPERTYDIALOG_H
 #define PROPERTYDIALOG_H
 
+#include <vector>
 #include <QObject>
 #include <QCloseEvent>
 #include <QMainWindow>
@@ -34,6 +35,8 @@ class PropertyDialog : public QObject
 {
     Q_OBJECT
 public:
+    typedef std::vector<QFrame *> QFrames;
+
     PropertyDialog(GraphWidget *widget, QMainWindow *mainWindow, bool dragDropIsChecked = false)
     : mpGraphWidget(widget)
     , mpMainWindow(mainWindow)
@@ -45,6 +48,13 @@ public:
 
     bool isRunning() { return (&mDialog)->isVisible(); }
     void setDragDrop(bool toggle) { mpDragDropButton->setChecked(toggle); }
+    void addFrame(QVBoxLayout* verticalLayout)
+    {
+        mFrames.push_back(new QFrame());
+        mFrames.back()->setFrameShape(QFrame::HLine);
+        verticalLayout->addWidget(mFrames.back());
+    }
+
     void setupUi(CustomDialog *Dialog, bool dragDropIsChecked = false)
     {
         int nbuttons = DEFAULT_NBUTTONS;
@@ -52,13 +62,12 @@ public:
         {
             (Dialog)->setObjectName(QString::fromUtf8("Dialog"));
         }
-        (Dialog)->setFixedSize(163, 101 + 20 * nbuttons);
         horizontalLayoutWidget = new QWidget(Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 81 + 20 * nbuttons));
         verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 20, 0, 0);
+        verticalLayout->setContentsMargins(0, 25, 0, 0);
+        addFrame(verticalLayout);
 
         mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
         mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
@@ -66,6 +75,22 @@ public:
         mpAddNodeButton->setChecked(false);
 
         verticalLayout->addWidget(mpAddNodeButton);
+        addFrame(verticalLayout);
+
+        mpImportButton = new QPushButton(horizontalLayoutWidget);
+        mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
+        mpImportButton->setCheckable(false);
+        mpImportButton->setChecked(false);
+
+        verticalLayout->addWidget(mpImportButton);
+
+        mpExportButton = new QPushButton(horizontalLayoutWidget);
+        mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
+        mpExportButton->setCheckable(false);
+        mpExportButton->setChecked(false);
+
+        verticalLayout->addWidget(mpExportButton);
+        addFrame(verticalLayout);
 
         mpRefreshButton = new QPushButton(horizontalLayoutWidget);
         mpRefreshButton->setObjectName(QString::fromUtf8("mpRefreshButton"));
@@ -81,20 +106,6 @@ public:
 
         verticalLayout->addWidget(mpShuffleButton);
 
-        mpImportButton = new QPushButton(horizontalLayoutWidget);
-        mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
-        mpImportButton->setCheckable(false);
-        mpImportButton->setChecked(false);
-
-        verticalLayout->addWidget(mpImportButton);
-
-        mpExportButton = new QPushButton(horizontalLayoutWidget);
-        mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
-        mpExportButton->setCheckable(false);
-        mpExportButton->setChecked(false);
-
-        verticalLayout->addWidget(mpExportButton);
-
         mpResetButton = new QPushButton(horizontalLayoutWidget);
         mpResetButton->setObjectName(QString::fromUtf8("mpResetButton"));
         mpResetButton->setCheckable(false);
@@ -108,6 +119,7 @@ public:
         mpLayoutButton->setChecked(false);
 
         verticalLayout->addWidget(mpLayoutButton);
+        addFrame(verticalLayout);
 
         mpDragDropButton = new QPushButton(horizontalLayoutWidget);
         mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
@@ -128,6 +140,9 @@ public:
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
 
         QMetaObject::connectSlotsByName(Dialog);
+
+        (Dialog)->setFixedSize(163, 101 + 20 * (nbuttons + mFrames.size()));
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 81 + 20 * (nbuttons + mFrames.size())));
     } // setupUi
 
     void retranslateUi(CustomDialog *Dialog)
@@ -159,6 +174,7 @@ private:
     QPushButton *mpResetButton;
     QPushButton *mpLayoutButton;
     QPushButton *mpDragDropButton;
+    QFrames mFrames;
 
 };
 

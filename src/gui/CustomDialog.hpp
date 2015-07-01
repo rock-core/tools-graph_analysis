@@ -1,7 +1,6 @@
 #ifndef CUSTOM_DIALOG_HPP
 #define CUSTOM_DIALOG_HPP
 
-#include <QDialog>
 #include <QDockWidget>
 
 namespace graph_analysis {

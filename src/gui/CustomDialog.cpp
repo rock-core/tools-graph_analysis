@@ -6,7 +6,7 @@ namespace gui {
 
 CustomDialog::CustomDialog()
 {
-    ((QDockWidget *)this)->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    setFeatures(QDockWidget::AllDockWidgetFeatures);
 }
 
 } // end namespace gui
