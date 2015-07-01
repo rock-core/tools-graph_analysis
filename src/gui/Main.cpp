@@ -59,7 +59,7 @@
 // choosing the test graph to display
 #define TESTNO TEST_IMPORT
 //#define RENDER
-#define IMPORT
+//#define IMPORT
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 //#define LAYOUT "dot"
