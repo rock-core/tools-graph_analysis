@@ -8,3 +8,62 @@ License: 	Free for non-commercial use
 Commercial usage:   	Not allowed
 Posted: 	October 23, 2013
 
+import.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
+Author: 	Happy Icon Studio (http://www.softicons.com/designers/happy-icon-studio)
+License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/by/3.0/us/)
+Commercial usage:   	Allowed
+Posted: 	March 12, 2013
+
+export.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
+Author: 	Happy Icon Studio (http://www.softicons.com/designers/happy-icon-studio)
+License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/by/3.0/us/)
+Commercial usage:   	Allowed
+Posted: 	March 12, 2013
+
+refresh.png
+-----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Essen Icons (http://www.softicons.com/web-icons/essen-icons-by-pc.de)
+Author: 	PC.DE (http://www.softicons.com/designers/pc.de)
+License: 	CC Attribution 3.0 Unported (http://creativecommons.org/licenses/by/3.0/)
+Commercial usage:   	Allowed
+Posted: 	September 09, 2010
+
+shuffle.png
+-----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Mono Reflection Yellow Icons (http://www.softicons.com/toolbar-icons/mono-reflection-yellow-icons-by-double-j-design)
+Author: 	Double-J Design (http://www.softicons.com/designers/double-j-design)
+License: 	CC Attribution 3.0 Unported (http://creativecommons.org/licenses/by/3.0/)
+Commercial usage:   	Allowed
+Posted: 	December 23, 2010
+
+reset.png
+-----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Web 2 Icon Set (http://www.softicons.com/web-icons/web-2-icon-set-by-anders-bjarnle)
+Author: 	Anders Bjarnle (http://www.softicons.com/designers/anders-bjarnle)
+License: 	Free for commercial use
+Commercial usage:   	Allowed
+Posted: 	February 11, 2013
+
+layout.png
+-----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Eldorado Mini Icons (http://www.softicons.com/web-icons/eldorado-mini-icons-by-icojam)
+Author: 	Icojam (http://www.softicons.com/designers/icojam)
+License: 	Free for commercial use
+Commercial usage:   	Allowed
+Posted: 	March 28, 2014

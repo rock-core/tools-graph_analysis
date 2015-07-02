@@ -26,6 +26,7 @@
 #include "CustomDialog.hpp"
 
 #define DEFAULT_NBUTTONS 8
+#define DEFAULT_BUTTON_POINTS 21
 
 namespace graph_analysis {
 namespace gui {
@@ -58,6 +59,7 @@ public:
     void setupUi(CustomDialog *Dialog, bool dragDropIsChecked = false)
     {
         int nbuttons = DEFAULT_NBUTTONS;
+        int npoints  = DEFAULT_BUTTON_POINTS;
         if ((Dialog)->objectName().isEmpty())
         {
             (Dialog)->setObjectName(QString::fromUtf8("Dialog"));
@@ -71,10 +73,10 @@ public:
 
         mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
         mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
-        QIcon icon;
+        QIcon iconAddNodeButton;
         //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
-        icon.addFile(QString::fromUtf8("../../resources/icons/add.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpAddNodeButton->setIcon(icon);
+        iconAddNodeButton.addFile(QString::fromUtf8("../../resources/icons/add.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpAddNodeButton->setIcon(iconAddNodeButton);
         mpAddNodeButton->setCheckable(false);
         mpAddNodeButton->setChecked(false);
 
@@ -83,6 +85,10 @@ public:
 
         mpImportButton = new QPushButton(horizontalLayoutWidget);
         mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
+        QIcon iconImportButton;
+        //        taken_from: www.softicons.com         //        commercial_usage: allowed
+        iconImportButton.addFile(QString::fromUtf8("../../resources/icons/import.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpImportButton->setIcon(iconImportButton);
         mpImportButton->setCheckable(false);
         mpImportButton->setChecked(false);
 
@@ -90,6 +96,10 @@ public:
 
         mpExportButton = new QPushButton(horizontalLayoutWidget);
         mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
+        QIcon iconExportButton;
+        //        taken_from: www.softicons.com         //        commercial_usage: allowed
+        iconExportButton.addFile(QString::fromUtf8("../../resources/icons/export.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpExportButton->setIcon(iconExportButton);
         mpExportButton->setCheckable(false);
         mpExportButton->setChecked(false);
 
@@ -98,6 +108,10 @@ public:
 
         mpRefreshButton = new QPushButton(horizontalLayoutWidget);
         mpRefreshButton->setObjectName(QString::fromUtf8("mpRefreshButton"));
+        QIcon iconRefreshButton;
+        //        taken_from: www.softicons.com         //        commercial_usage: allowed
+        iconRefreshButton.addFile(QString::fromUtf8("../../resources/icons/refresh.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpRefreshButton->setIcon(iconRefreshButton);
         mpRefreshButton->setCheckable(false);
         mpRefreshButton->setChecked(false);
 
@@ -105,6 +119,10 @@ public:
 
         mpShuffleButton = new QPushButton(horizontalLayoutWidget);
         mpShuffleButton->setObjectName(QString::fromUtf8("mpShuffleButton"));
+        QIcon iconShuffleButton;
+        //        taken_from: www.softicons.com         //        commercial_usage: allowed
+        iconShuffleButton.addFile(QString::fromUtf8("../../resources/icons/shuffle.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpShuffleButton->setIcon(iconShuffleButton);
         mpShuffleButton->setCheckable(false);
         mpShuffleButton->setChecked(false);
 
@@ -112,6 +130,10 @@ public:
 
         mpResetButton = new QPushButton(horizontalLayoutWidget);
         mpResetButton->setObjectName(QString::fromUtf8("mpResetButton"));
+        QIcon iconResetButton;
+        //        taken_from: www.softicons.com         //        commercial_usage: allowed
+        iconResetButton.addFile(QString::fromUtf8("../../resources/icons/reset.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpResetButton->setIcon(iconResetButton);
         mpResetButton->setCheckable(false);
         mpResetButton->setChecked(false);
 
@@ -119,6 +141,10 @@ public:
 
         mpLayoutButton = new QPushButton(horizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
+        QIcon iconLayoutButton;
+        //        taken_from: www.softicons.com         //        commercial_usage: allowed
+        iconLayoutButton.addFile(QString::fromUtf8("../../resources/icons/layout.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpLayoutButton->setIcon(iconLayoutButton);
         mpLayoutButton->setCheckable(false);
         mpLayoutButton->setChecked(false);
 
@@ -127,6 +153,10 @@ public:
 
         mpDragDropButton = new QPushButton(horizontalLayoutWidget);
         mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
+        QIcon iconDragDropButton;
+        //        taken_from: www.softicons.com         //        commercial_usage: allowed
+        iconDragDropButton.addFile(QString::fromUtf8("../../resources/icons/dragndrop.png"), QSize(), QIcon::Normal, QIcon::Off);
+        mpDragDropButton->setIcon(iconDragDropButton);
         mpDragDropButton->setCheckable(true);
         mpDragDropButton->setChecked(dragDropIsChecked);
 
@@ -145,8 +175,8 @@ public:
 
         QMetaObject::connectSlotsByName(Dialog);
 
-        (Dialog)->setFixedSize(163, 101 + 20 * (nbuttons + mFrames.size()));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 81 + 20 * (nbuttons + mFrames.size())));
+        (Dialog)->setFixedSize(163, 101 + npoints * (nbuttons + mFrames.size()));
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 81 + npoints * (nbuttons + mFrames.size())));
     } // setupUi
 
     void retranslateUi(CustomDialog *Dialog)
@@ -157,8 +187,8 @@ public:
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpImportButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
         mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
-        mpResetButton->setText(QApplication::translate("Dialog", "Reset Graph", 0, QApplication::UnicodeUTF8));
-        mpLayoutButton->setText(QApplication::translate("Dialog", "Change Layout", 0, QApplication::UnicodeUTF8));
+        mpResetButton->setText(QApplication::translate("Dialog", "Reset", 0, QApplication::UnicodeUTF8));
+        mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
         mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
