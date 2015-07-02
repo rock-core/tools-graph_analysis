@@ -81,6 +81,7 @@
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
 #define DEFAULT_SCALING_FACTOR 2.269
+#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
 
 using namespace graph_analysis;
 
@@ -158,22 +159,23 @@ GraphWidget::GraphWidget(QWidget *parent)
     mWriterMap["DOT"]  = gvWriter;
 
     // setting up the icons
+    std::string pathToIcons = DEFAULT_PATH_TO_ICONS;
     //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
-    loadIcon(mIconMap["addNode"], "../../resources/icons/addNode.png");
+    loadIcon(mIconMap["addNode"], pathToIcons + "addNode.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["import"], "../../resources/icons/import.png");
+    loadIcon(mIconMap["import"], pathToIcons + "import.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["export"], "../../resources/icons/export.png");
+    loadIcon(mIconMap["export"], pathToIcons + "export.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["refresh"], "../../resources/icons/refresh.png");
+    loadIcon(mIconMap["refresh"], pathToIcons + "refresh.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["shuffle"], "../../resources/icons/shuffle.png");
+    loadIcon(mIconMap["shuffle"], pathToIcons + "shuffle.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["reset"], "../../resources/icons/reset.png");
+    loadIcon(mIconMap["reset"], pathToIcons + "reset.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["layout"], "../../resources/icons/layout.png");
+    loadIcon(mIconMap["layout"], pathToIcons + "layout.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["dragndrop"], "../../resources/icons/dragndrop.png");
+    loadIcon(mIconMap["dragndrop"], pathToIcons + "dragndrop.png");
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
