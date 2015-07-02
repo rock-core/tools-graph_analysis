@@ -1172,6 +1172,23 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
                 zoomIn();
             break;
 
+            case Qt::Key_R:
+                resetGraph();
+            break;
+
+            case Qt::Key_S:
+                exportGraph();
+            break;
+
+            case Qt::Key_A:
+                addNodeAdhoc();
+            break;
+
+            case Qt::Key_I:
+            case Qt::Key_O:
+                importGraph();
+            break;
+
             case Qt::Key_Minus:
                 zoomOut();
             break;
@@ -1185,12 +1202,12 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_CapsLock:
+            case Qt::Key_D:
                 mDragDrop ? unsetDragDrop() : setDragDrop();
             break;
         }
     }
-
-    if(!mDragDrop)
+    else if(!mDragDrop)
     {
         switch(event->key())
         {
@@ -1211,12 +1228,17 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Space:
         case Qt::Key_Enter:
         case Qt::Key_R:
-                refresh();
+            refresh();
         break;
 
         case Qt::Key_S:
             shuffle();
         break; // too close to CTRL+S?!
+
+        case Qt::Key_L:
+            changeLayout();
+        break;
+
         //default:
         }
     }
