@@ -73,10 +73,7 @@ public:
 
         mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
         mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
-        QIcon iconAddNodeButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
-        iconAddNodeButton.addFile(QString::fromUtf8("../../resources/icons/add.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpAddNodeButton->setIcon(iconAddNodeButton);
+        mpAddNodeButton->setIcon(*(mpGraphWidget->getIcon("addNode")));
         mpAddNodeButton->setCheckable(false);
         mpAddNodeButton->setChecked(false);
 
@@ -85,10 +82,7 @@ public:
 
         mpImportButton = new QPushButton(horizontalLayoutWidget);
         mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
-        QIcon iconImportButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: allowed
-        iconImportButton.addFile(QString::fromUtf8("../../resources/icons/import.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpImportButton->setIcon(iconImportButton);
+        mpImportButton->setIcon(*(mpGraphWidget->getIcon("import")));
         mpImportButton->setCheckable(false);
         mpImportButton->setChecked(false);
 
@@ -96,10 +90,7 @@ public:
 
         mpExportButton = new QPushButton(horizontalLayoutWidget);
         mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
-        QIcon iconExportButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: allowed
-        iconExportButton.addFile(QString::fromUtf8("../../resources/icons/export.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpExportButton->setIcon(iconExportButton);
+        mpExportButton->setIcon(*(mpGraphWidget->getIcon("export")));
         mpExportButton->setCheckable(false);
         mpExportButton->setChecked(false);
 
@@ -108,10 +99,7 @@ public:
 
         mpRefreshButton = new QPushButton(horizontalLayoutWidget);
         mpRefreshButton->setObjectName(QString::fromUtf8("mpRefreshButton"));
-        QIcon iconRefreshButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: allowed
-        iconRefreshButton.addFile(QString::fromUtf8("../../resources/icons/refresh.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpRefreshButton->setIcon(iconRefreshButton);
+        mpRefreshButton->setIcon(*(mpGraphWidget->getIcon("refresh")));
         mpRefreshButton->setCheckable(false);
         mpRefreshButton->setChecked(false);
 
@@ -119,10 +107,7 @@ public:
 
         mpShuffleButton = new QPushButton(horizontalLayoutWidget);
         mpShuffleButton->setObjectName(QString::fromUtf8("mpShuffleButton"));
-        QIcon iconShuffleButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: allowed
-        iconShuffleButton.addFile(QString::fromUtf8("../../resources/icons/shuffle.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpShuffleButton->setIcon(iconShuffleButton);
+        mpShuffleButton->setIcon(*(mpGraphWidget->getIcon("shuffle")));
         mpShuffleButton->setCheckable(false);
         mpShuffleButton->setChecked(false);
 
@@ -130,10 +115,7 @@ public:
 
         mpResetButton = new QPushButton(horizontalLayoutWidget);
         mpResetButton->setObjectName(QString::fromUtf8("mpResetButton"));
-        QIcon iconResetButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: allowed
-        iconResetButton.addFile(QString::fromUtf8("../../resources/icons/reset.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpResetButton->setIcon(iconResetButton);
+        mpResetButton->setIcon(*(mpGraphWidget->getIcon("reset")));
         mpResetButton->setCheckable(false);
         mpResetButton->setChecked(false);
 
@@ -141,10 +123,7 @@ public:
 
         mpLayoutButton = new QPushButton(horizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
-        QIcon iconLayoutButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: allowed
-        iconLayoutButton.addFile(QString::fromUtf8("../../resources/icons/layout.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpLayoutButton->setIcon(iconLayoutButton);
+        mpLayoutButton->setIcon(*(mpGraphWidget->getIcon("layout")));
         mpLayoutButton->setCheckable(false);
         mpLayoutButton->setChecked(false);
 
@@ -153,10 +132,7 @@ public:
 
         mpDragDropButton = new QPushButton(horizontalLayoutWidget);
         mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
-        QIcon iconDragDropButton;
-        //        taken_from: www.softicons.com         //        commercial_usage: allowed
-        iconDragDropButton.addFile(QString::fromUtf8("../../resources/icons/dragndrop.png"), QSize(), QIcon::Normal, QIcon::Off);
-        mpDragDropButton->setIcon(iconDragDropButton);
+        mpDragDropButton->setIcon(*(mpGraphWidget->getIcon("dragndrop")));
         mpDragDropButton->setCheckable(true);
         mpDragDropButton->setChecked(dragDropIsChecked);
 

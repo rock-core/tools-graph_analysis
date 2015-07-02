@@ -159,21 +159,21 @@ GraphWidget::GraphWidget(QWidget *parent)
 
     // setting up the icons
     //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
-    loadIcon(mQIconMap["addNode"], "../../resources/icons/add.png");
+    loadIcon(mIconMap["addNode"], "../../resources/icons/addNode.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mQIconMap["import"], "../../resources/icons/import.png");
+    loadIcon(mIconMap["import"], "../../resources/icons/import.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mQIconMap["export"], "../../resources/icons/export.png");
+    loadIcon(mIconMap["export"], "../../resources/icons/export.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mQIconMap["refresh"], "../../resources/icons/refresh.png");
+    loadIcon(mIconMap["refresh"], "../../resources/icons/refresh.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mQIconMap["shuffle"], "../../resources/icons/shuffle.png");
+    loadIcon(mIconMap["shuffle"], "../../resources/icons/shuffle.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mQIconMap["reset"], "../../resources/icons/reset.png");
+    loadIcon(mIconMap["reset"], "../../resources/icons/reset.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mQIconMap["layout"], "../../resources/icons/layout.png");
+    loadIcon(mIconMap["layout"], "../../resources/icons/layout.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mQIconMap["dragndrop"], "../../resources/icons/dragndrop.png");
+    loadIcon(mIconMap["dragndrop"], "../../resources/icons/dragndrop.png");
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -221,14 +221,14 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionAddPort = comm.addAction("Add Port to Selected Node", SLOT(addPort()));
     QAction *actionRenamePort = comm.addAction("Rename a Port of Selected Node", SLOT(renamePort()));
     QAction *actionRemovePort = comm.addAction("Remove a Port of Selected Node", SLOT(removePort()));
-    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mQIconMap["addNode"]);
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mQIconMap["refresh"]);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mQIconMap["shuffle"]);
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mQIconMap["import"]);
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mQIconMap["export"]);
-    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mQIconMap["reset"]);
-    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mQIconMap["layout"]);
-    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mQIconMap["dragndrop"]);
+    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mIconMap["import"]);
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export"]);
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset"]);
+    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mIconMap["layout"]);
+    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mIconMap["dragndrop"]);
     QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
 

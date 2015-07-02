@@ -98,7 +98,7 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, int> PortIDMap;
     typedef std::map <std::string, io::Writer*> WriterMap;
     typedef std::map <std::string, io::Reader*> ReaderMap;
-    typedef std::map <std::string, QIcon> QIconMap;
+    typedef std::map <std::string, QIcon> IconMap;
 
     GraphWidget(QWidget *parent = 0);
     ~GraphWidget();
@@ -155,6 +155,8 @@ public:
 
     void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID); // not-only { mpStartVertex = startVertex; }
     void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID); // not-only { mpEndVertex   = endVertex;   }
+
+    QIcon* getIcon(std::string key) { return &(mIconMap[key]); }
 
 public slots:
     void shuffle();
@@ -248,7 +250,7 @@ private:
     qreal mMaxNodeHeight, mMaxNodeWidth;
 
     // icons
-    QIconMap mQIconMap;
+    IconMap mIconMap;
     void loadIcon(QIcon& icon, std::string file);
 };
 
