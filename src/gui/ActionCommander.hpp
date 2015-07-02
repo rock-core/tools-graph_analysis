@@ -1,6 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_ACTIONCOMMANDER_HPP
 #define GRAPH_ANALYSIS_GUI_ACTIONCOMMANDER_HPP
 
+#include <QIcon>
 #include <QAction>
 #include <QString>
 #include <QApplication>
@@ -26,7 +27,9 @@ public:
     ActionCommander(const QObject* object);
     ~ActionCommander();
     QAction* addAction(const char *title, const char *slot);
+    QAction* addAction(const char *title, const char *slot, const QIcon& icon);
     QAction* addMappedAction(const char *title, const char *slot, QObject *arg);
+    QAction* addMappedAction(const char *title, const char *slot, QObject *arg, const QIcon& icon);
 private:
     const QObject* mpObject;
 };

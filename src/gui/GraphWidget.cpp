@@ -157,12 +157,35 @@ GraphWidget::GraphWidget(QWidget *parent)
     mWriterMap["Dot"]  = gvWriter;
     mWriterMap["DOT"]  = gvWriter;
 
+    // setting up the icons
+    //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
+    loadIcon(mQIconMap["addNode"], "../../resources/icons/add.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mQIconMap["import"], "../../resources/icons/import.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mQIconMap["export"], "../../resources/icons/export.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mQIconMap["refresh"], "../../resources/icons/refresh.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mQIconMap["shuffle"], "../../resources/icons/shuffle.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mQIconMap["reset"], "../../resources/icons/reset.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mQIconMap["layout"], "../../resources/icons/layout.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mQIconMap["dragndrop"], "../../resources/icons/dragndrop.png");
+
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
 
     reset();
     mpPropertyDialog = new PropertyDialog(this, (QMainWindow *)parentWidget());
+}
+
+void GraphWidget::loadIcon(QIcon& icon, std::string file)
+{
+    icon.addFile(QString::fromUtf8(file.c_str()), QSize(), QIcon::Normal, QIcon::Off);
 }
 
 GraphWidget::~GraphWidget()
@@ -198,14 +221,14 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionAddPort = comm.addAction("Add Port to Selected Node", SLOT(addPort()));
     QAction *actionRenamePort = comm.addAction("Rename a Port of Selected Node", SLOT(renamePort()));
     QAction *actionRemovePort = comm.addAction("Remove a Port of Selected Node", SLOT(removePort()));
-    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()));
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
-    QAction *actionReset  = comm.addAction("Reset Graph", SLOT(resetGraph()));
-    QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
-    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()));
+    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mQIconMap["addNode"]);
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mQIconMap["refresh"]);
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mQIconMap["shuffle"]);
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mQIconMap["import"]);
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mQIconMap["export"]);
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mQIconMap["reset"]);
+    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mQIconMap["layout"]);
+    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mQIconMap["dragndrop"]);
     QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
 

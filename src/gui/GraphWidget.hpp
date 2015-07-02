@@ -42,6 +42,7 @@
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
 #include <map>
+#include <QIcon>
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
@@ -97,6 +98,7 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, int> PortIDMap;
     typedef std::map <std::string, io::Writer*> WriterMap;
     typedef std::map <std::string, io::Reader*> ReaderMap;
+    typedef std::map <std::string, QIcon> QIconMap;
 
     GraphWidget(QWidget *parent = 0);
     ~GraphWidget();
@@ -244,6 +246,10 @@ private:
     PropertyDialog *mpPropertyDialog;
     bool mDragDrop;
     qreal mMaxNodeHeight, mMaxNodeWidth;
+
+    // icons
+    QIconMap mQIconMap;
+    void loadIcon(QIcon& icon, std::string file);
 };
 
 } // end namespace gui
