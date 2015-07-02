@@ -177,6 +177,16 @@ GraphWidget::GraphWidget(QWidget *parent)
     loadIcon(mIconMap["layout"], pathToIcons + "layout.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["dragndrop"], pathToIcons + "dragndrop.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["label"], pathToIcons + "label.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["portLabel"], pathToIcons + "portLabel.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["remove"], pathToIcons + "remove.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["addPort"], pathToIcons + "addPort.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["move"], pathToIcons + "move.png");
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -217,13 +227,13 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionChangeEdgeLabel = comm.addAction("Change Selected Edge Label", SLOT(changeSelectedEdgeLabel()));
-    QAction *actionRemoveEdge = comm.addAction("Remove Selected Edge", SLOT(removeSelectedEdge()));
-    QAction *actionChangeLabel = comm.addAction("Change Selected Node Label", SLOT(changeSelectedVertexLabel()));
-    QAction *actionRemoveNode = comm.addAction("Remove Selected Node", SLOT(removeSelectedVertex()));
-    QAction *actionAddPort = comm.addAction("Add Port to Selected Node", SLOT(addPort()));
-    QAction *actionRenamePort = comm.addAction("Rename a Port of Selected Node", SLOT(renamePort()));
-    QAction *actionRemovePort = comm.addAction("Remove a Port of Selected Node", SLOT(removePort()));
+    QAction *actionChangeEdgeLabel = comm.addAction("Change Edge Label", SLOT(changeSelectedEdgeLabel()), mIconMap["label"]);
+    QAction *actionRemoveEdge = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
+    QAction *actionChangeLabel = comm.addAction("Change Node Label", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
+    QAction *actionRemoveNode = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
+    QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPort()), mIconMap["addPort"]);
+    QAction *actionRenamePort = comm.addAction("Rename a Port", SLOT(renamePort()), mIconMap["portLabel"]);
+    QAction *actionRemovePort = comm.addAction("Remove a Port", SLOT(removePort()), mIconMap["remove"]);
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
@@ -232,7 +242,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset"]);
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mIconMap["layout"]);
     QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mIconMap["dragndrop"]);
-    QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
+    QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), mIconMap["move"]);
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
 
     // (conditionally) adding the actions to the context menu

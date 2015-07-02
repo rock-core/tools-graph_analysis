@@ -78,3 +78,45 @@ License: 	CC Attribution 2.5 Generic (http://creativecommons.org/licenses/by/2.5
 Commercial usage:   	Allowed
 Posted: 	February 12, 2011
 
+label.png
+---------
+portLabel.png
+-------------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Glyphish Icons (http://www.softicons.com/toolbar-icons/glyphish-icons-by-joseph-wain)
+Author: 	Joseph Wain (http://www.softicons.com/designers/joseph-wain)
+License: 	CC Attribution 3.0 Unported (http://creativecommons.org/licenses/by/3.0/)
+Commercial usage:   	Allowed
+Posted: 	January 22, 2014
+
+remove.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	16x16 Free Application Icons (http://www.softicons.com/toolbar-icons/16x16-free-application-icons-by-aha-soft)
+Author: 	Aha-Soft (http://www.softicons.com/designers/aha-soft)
+License: 	CC Attribution-ShareAlike 3.0 Unported (http://creativecommons.org/licenses/by-sa/3.0/)
+Commercial usage:   	Allowed
+Posted: 	March 18, 2012
+
+addPort.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Koloria Icon Set (http://www.softicons.com/toolbar-icons/koloria-icon-set-by-andy-gongea)
+Author: 	Andy Gongea (http://www.softicons.com/designers/andy-gongea)
+License: 	Free for commercial use
+Commercial usage:   	Allowed
+Posted: 	July 06, 2012
+
+move.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
+Author: 	Happy Icon Studio (http://www.softicons.com/designers/happy-icon-studio)
+License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/by/3.0/us/)
+Commercial usage:   	Allowed
+Posted: 	March 12, 2013
+
