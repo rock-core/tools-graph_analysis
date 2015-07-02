@@ -81,7 +81,8 @@
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
 #define DEFAULT_SCALING_FACTOR 2.269
-#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
+//#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
+#define DEFAULT_PATH_TO_ICONS "icons/"
 
 using namespace graph_analysis;
 

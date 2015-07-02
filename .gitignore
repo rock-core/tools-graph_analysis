@@ -1,3 +1,4 @@
-build/
+build/*
+!build/**/icons/*
 *.sw?
 docs/
