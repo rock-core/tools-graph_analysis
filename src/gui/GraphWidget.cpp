@@ -187,6 +187,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     loadIcon(mIconMap["addPort"], pathToIcons + "addPort.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["move"], pathToIcons + "move.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["reload"], pathToIcons + "reload.png");
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -243,7 +245,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mIconMap["layout"]);
     QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mIconMap["dragndrop"]);
     QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), mIconMap["move"]);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()), mIconMap["reload"]);
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)

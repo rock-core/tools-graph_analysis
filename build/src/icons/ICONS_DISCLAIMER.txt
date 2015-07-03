@@ -120,3 +120,13 @@ License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/
 Commercial usage:   	Allowed
 Posted: 	March 12, 2013
 
+reload.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Glyphish Icons (http://www.softicons.com/toolbar-icons/glyphish-icons-by-joseph-wain)
+Author: 	Joseph Wain (http://www.softicons.com/designers/joseph-wain)
+License: 	CC Attribution 3.0 Unported (http://creativecommons.org/licenses/by/3.0/)
+Commercial usage:   	Allowed
+Posted: 	January 22, 2014
+
