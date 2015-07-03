@@ -42,7 +42,10 @@ public:
     QPolygonF   portBoundingPolygon (int portID);
     QRectF      portBoundingRect    (int portID);
 
+    void releaseFocus();
+
 protected:
+    void grabFocus();
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
     void mousePressEvent(::QGraphicsSceneMouseEvent* event);
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
@@ -61,6 +64,7 @@ private:
     QPen mPen;
     QPen mPenDefault;
     bool mFocused;
+    bool mSelected;
 };
 
 } // end namespace graphitem

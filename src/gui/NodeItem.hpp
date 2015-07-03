@@ -107,6 +107,7 @@ public:
     virtual std::string  getLabel()                     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabel is not reimplemented");     }
     virtual void syncLabel(int portID)                  { throw std::runtime_error("graph_analysis::gui::NodeItem::syncLabel is not reimplemented");    }
     virtual void prepareChange()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::prepareChange is not reimplemented");}
+    virtual void releaseFocus ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::releaseFocus is not reimplemented"); }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);

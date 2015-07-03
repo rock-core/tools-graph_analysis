@@ -170,6 +170,9 @@ public:
     void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID); // not-only { mpEndVertex   = endVertex;   }
 
     QIcon* getIcon(std::string key) { return &(mIconMap[key]); }
+    void clearNodeFocus();
+    void clearEdgeFocus();
+    void clearFocus();
 
 public slots:
     void shuffle();
@@ -200,8 +203,9 @@ public slots:
 
 protected:
 
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
+    void mouseDoubleClickEvent(QMouseEvent* event);
     void keyPressEvent(QKeyEvent *event);
     void timerEvent(QTimerEvent *event);
 #ifndef QT_NO_WHEELEVENT

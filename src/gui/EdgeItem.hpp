@@ -76,6 +76,7 @@ public:
     virtual graphitem::edges::EdgeLabel* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
     virtual int getSourcePortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getSourcePortID: is not reimplemented at this level"); }
     virtual int getTargetPortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getTargetPortID: is not reimplemented at this level"); }
+    virtual void releaseFocus()   { throw std::runtime_error("graph_analysis::gui::EdgeItem::releaseFocus is not reimplemented");}
 
     graph_analysis::Edge::Ptr getEdge() { return mpEdge; }
 

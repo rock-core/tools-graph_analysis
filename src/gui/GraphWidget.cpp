@@ -1105,6 +1105,12 @@ void GraphWidget::removeEdge(Edge::Ptr edge)
     mpGraph->removeEdge(edge);
 }
 
+void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    clearFocus();
+    QGraphicsView::mouseDoubleClickEvent(event);
+}
+
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
@@ -1277,6 +1283,10 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 
         case Qt::Key_L:
             changeLayout();
+        break;
+
+        case Qt::Key_Escape:
+            clearFocus();
         break;
 
         //default:
@@ -1463,6 +1473,30 @@ void GraphWidget::setEdgeFocused(bool focused)
 {
     mEdgeFocused = focused;
     mpPropertyDialog->setEdgeFocused(focused);
+}
+
+void GraphWidget::clearNodeFocus()
+{
+    if(mVertexFocused)
+    {
+        NodeItem *item = mNodeItemMap[mpFocusedVertex];
+        item->releaseFocus();
+    }
+}
+
+void GraphWidget::clearEdgeFocus()
+{
+    if(mEdgeFocused)
+    {
+        EdgeItem *item = mEdgeItemMap[mpFocusedEdge];
+        item->releaseFocus();
+    }
+}
+
+void GraphWidget::clearFocus()
+{
+    clearNodeFocus();
+    clearEdgeFocus();
 }
 
 } // end namespace gui
