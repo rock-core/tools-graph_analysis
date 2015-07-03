@@ -235,7 +235,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionRemoveEdge = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
     QAction *actionChangeLabel = comm.addAction("Change Node Label", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
     QAction *actionRemoveNode = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
-    QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPort()), mIconMap["addPort"]);
+    QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPortSelected()), mIconMap["addPort"]);
     QAction *actionRenamePort = comm.addAction("Rename a Port", SLOT(renamePort()), mIconMap["portLabel"]);
     QAction *actionRemovePort = comm.addAction("Remove a Port", SLOT(removePort()), mIconMap["remove"]);
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
@@ -300,13 +300,23 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.exec(mapToGlobal(pos));
 }
 
-void GraphWidget::addPort()
+void GraphWidget::addPortFocused()
 {
-    NodeItem *item = mNodeItemMap[mpSelectedVertex];
+    addPort(mpFocusedVertex);
+}
+
+void GraphWidget::addPortSelected()
+{
+    addPort(mpSelectedVertex);
+}
+
+void GraphWidget::addPort(graph_analysis::Vertex::Ptr vertex)
+{
+    NodeItem *item = mNodeItemMap[vertex];
     graph_analysis::Vertex::Ptr portVertex = VertexTypeManager::getInstance()->createVertex("port", "newPort");
     mpGraph->addVertex(portVertex);
     enableVertex(portVertex);
-    createEdge(mpSelectedVertex, portVertex, "portRegistrationEdge");
+    createEdge(vertex, portVertex, "portRegistrationEdge");
     mPortMap[portVertex] = item;
     mPortIDMap[portVertex] = item->addPort(portVertex);
     item->update();
@@ -514,6 +524,18 @@ void GraphWidget::addNodeAdhoc(QObject *pos)
     }
 }
 
+void GraphWidget::changeFocusedVertexLabel()
+{
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Input Node Label"),
+                                         tr("New Label:"), QLineEdit::Normal,
+                                         QString(mpFocusedVertex->getLabel().c_str()), &ok);
+    if (ok && !label.isEmpty())
+    {
+        changeVertexLabel(mpFocusedVertex, label.toStdString());
+    }
+}
+
 void GraphWidget::changeSelectedVertexLabel()
 {
     bool ok;
@@ -522,10 +544,15 @@ void GraphWidget::changeSelectedVertexLabel()
                                          QString(mpSelectedVertex->getLabel().c_str()), &ok);
     if (ok && !label.isEmpty())
     {
-        mpSelectedVertex->setLabel(label.toStdString());
-        NodeItem* nodeItem = mNodeItemMap[mpSelectedVertex];
-        nodeItem->updateLabel();
+        changeVertexLabel(mpSelectedVertex, label.toStdString());
     }
+}
+
+void GraphWidget::changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std::string& label)
+{
+    vertex->setLabel(label);
+    NodeItem* nodeItem = mNodeItemMap[vertex];
+    nodeItem->updateLabel();
 }
 
 void GraphWidget::changeSelectedEdgeLabel()

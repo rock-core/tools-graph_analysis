@@ -77,14 +77,15 @@ public:
         horizontalLayoutWidget = new QWidget(Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
         horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
+        horizontalLayout->setContentsMargins(0, 25, 0, 0);
 
         {
             // main properties
             verticalLayout = new QVBoxLayout();
             horizontalLayout->addLayout(verticalLayout);
             verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-            verticalLayout->setContentsMargins(0, 0, 0, 0);
-            addFrame(verticalLayout);
+            verticalLayout->setContentsMargins(0, 5, 0, 0);
+//            addFrame(verticalLayout);
 
             mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
             mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
@@ -152,6 +153,7 @@ public:
             mpDragDropButton->setChecked(dragDropIsChecked);
 
             verticalLayout->addWidget(mpDragDropButton);
+
         }
         horizontalLayout->addSpacing(5);
         addFrame(horizontalLayout);
@@ -161,8 +163,8 @@ public:
             verticalLayoutFocus = new QVBoxLayout();
             horizontalLayout->addLayout(verticalLayoutFocus);
             verticalLayoutFocus->setObjectName(QString::fromUtf8("verticalLayoutFocus"));
-            verticalLayoutFocus->setContentsMargins(0, 0, 0, 0);
-            addFrame(verticalLayoutFocus);
+            verticalLayoutFocus->setContentsMargins(0, 5, 0, 0);
+//            addFrame(verticalLayoutFocus);
 
             mpChangeNodeLabelButton = new QPushButton(horizontalLayoutWidget);
             mpChangeNodeLabelButton->setObjectName(QString::fromUtf8("mpChangeNodeLabelButton"));
@@ -172,6 +174,15 @@ public:
             mpChangeNodeLabelButton->setChecked(false);
 
             verticalLayoutFocus->addWidget(mpChangeNodeLabelButton);
+
+            mpAddPortButton = new QPushButton(horizontalLayoutWidget);
+            mpAddPortButton->setObjectName(QString::fromUtf8("mpAddPortButton"));
+            mpAddPortButton->setIcon(*(mpGraphWidget->getIcon("addPort")));
+            mpAddPortButton->setEnabled(mVertexFocused);
+            mpAddPortButton->setCheckable(false);
+            mpAddPortButton->setChecked(false);
+
+            verticalLayoutFocus->addWidget(mpAddPortButton);
 
 
 
@@ -190,6 +201,7 @@ public:
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(addNodeAdhoc()));
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpChangeNodeLabelButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(changeSelectedVertexLabel()));
+        QObject::connect(mpAddPortButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(addPortFocused()));
 
         QMetaObject::connectSlotsByName(Dialog);
 
@@ -209,6 +221,7 @@ public:
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
         mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
         mpChangeNodeLabelButton->setText(QApplication::translate("Dialog", "Change Node Label", 0, QApplication::UnicodeUTF8));
+        mpAddPortButton->setText(QApplication::translate("Dialog", "Add Port", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
     void setVertexFocused(bool vertexFocused)
@@ -216,6 +229,7 @@ public:
         if(vertexFocused != mVertexFocused)
         {
             mpChangeNodeLabelButton->setEnabled(vertexFocused);
+            mpAddPortButton->setEnabled(vertexFocused);
         }
         mVertexFocused = vertexFocused;
     }
@@ -249,6 +263,7 @@ private:
     QPushButton *mpLayoutButton;
     QPushButton *mpDragDropButton;
     QPushButton *mpChangeNodeLabelButton;
+    QPushButton *mpAddPortButton;
     QFrames mFrames;
     bool mVertexFocused;
     bool mEdgeFocused;
