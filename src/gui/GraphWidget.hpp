@@ -143,14 +143,27 @@ public:
     void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
     graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
 
+    void setFocusedVertex(graph_analysis::Vertex::Ptr focusedVertex) { mpFocusedVertex = focusedVertex; }
+    graph_analysis::Vertex::Ptr getFocusedVertex() { return mpFocusedVertex; }
+
+    void setFocusedEdge(graph_analysis::Edge::Ptr focusedEdge) { mpFocusedEdge = focusedEdge; }
+    graph_analysis::Edge::Ptr getFocusedEdge() { return mpFocusedEdge; }
+
     void setVertexSelected (bool selected) { mVertexSelected = selected; }
     bool getVertexSelected () { return mVertexSelected; }
+
+    void setVertexFocused (bool focused); // { mVertexFocused = focused; mpPropertyDialog->setVertexFocused(focused); }
+    bool getVertexFocused () { return mVertexFocused; }
+
+    void setEdgeFocused (bool focused); // { mEdgeFocused = focused; mpPropertyDialog->setEdgeFocused(focused); }
+    bool getEdgeFocused () { return mEdgeFocused; }
 
     void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge= selectedEdge; }
     graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
 
     void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
     bool getEdgeSelected () { return mEdgeSelected; }
+
     bool getDragDrop() { return mDragDrop; }
 
     void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID); // not-only { mpStartVertex = startVertex; }
@@ -236,14 +249,18 @@ private:
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
     graph_analysis::Vertex::Ptr mpSelectedVertex;
+    graph_analysis::Vertex::Ptr mpFocusedVertex;
     graph_analysis::Vertex::Ptr mpStartVertex;
     graph_analysis::Vertex::Ptr mpStartPort;
     graph_analysis::Vertex::Ptr mpEndVertex;
     graph_analysis::Vertex::Ptr mpEndPort;
     graph_analysis::Edge::Ptr mpSelectedEdge;
+    graph_analysis::Edge::Ptr mpFocusedEdge;
 
     bool mVertexSelected;
+    bool mVertexFocused;
     bool mEdgeSelected;
+    bool mEdgeFocused;
 
     PropertyDialog *mpPropertyDialog;
     bool mDragDrop;

@@ -101,7 +101,9 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
+    , mVertexFocused(false)
     , mEdgeSelected(false)
+    , mEdgeFocused(false)
     , mDragDrop(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
@@ -1449,6 +1451,18 @@ void GraphWidget::setLayout(QString layoutName)
     /* !!! reset(true); shall be called apriori (unless you know what you're doing - e.g. at init) !!! */
     mLayout = layoutName;
     updateFromGraph();
+}
+
+void GraphWidget::setVertexFocused(bool focused)
+{
+    mVertexFocused = focused;
+    mpPropertyDialog->setVertexFocused(focused);
+}
+
+void GraphWidget::setEdgeFocused(bool focused)
+{
+    mEdgeFocused = focused;
+    mpPropertyDialog->setEdgeFocused(focused);
 }
 
 } // end namespace gui

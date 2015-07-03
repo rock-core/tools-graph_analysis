@@ -46,10 +46,12 @@ protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
     void mousePressEvent(::QGraphicsSceneMouseEvent* event);
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
+    void focusInEvent(QFocusEvent* event);
+    void focusOutEvent(QFocusEvent* event);
 
     //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 //    void keyPressEvent(QKeyEvent* event);
 
 private:
@@ -58,6 +60,7 @@ private:
     Vertices mVertices;
     QPen mPen;
     QPen mPenDefault;
+    bool mFocused;
 };
 
 } // end namespace graphitem

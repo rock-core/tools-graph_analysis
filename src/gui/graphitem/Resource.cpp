@@ -20,6 +20,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mPenDefault(Qt::blue)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
+    setFlag(ItemIsFocusable);
     mLabel = new Label(vertex->toString(), this);
     //setHandlesChildEvents(false);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -228,6 +229,10 @@ QPolygonF Resource::portBoundingPolygon(int portID)
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
+    mPen = QPen(Qt::red);
+    mpGraphWidget->setVertexFocused(true);
+    mFocused = true;
+    mpGraphWidget->setFocusedVertex(mpVertex);
     QGraphicsItem::mousePressEvent(event);
 }
 
@@ -242,20 +247,40 @@ void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
     QGraphicsItem::mouseDoubleClickEvent(event);
 }
 
-void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void Resource::focusInEvent(QFocusEvent* event)
+{
+    LOG_DEBUG_S << "Focus-In event for %s" << mpVertex->toString();
+    ::QGraphicsItemGroup::focusInEvent(event);
+}
+
+void Resource::focusOutEvent(QFocusEvent* event)
+{
+    qDebug("Focus-Out event for %s", mpVertex->toString().c_str());
+    mPen = mPenDefault;
+    mFocused = false;
+    mpGraphWidget->setVertexFocused(false);
+    ::QGraphicsItemGroup::focusOutEvent(event);
+}
+
+void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
-    mPen = QPen(Qt::green);
-
+    if(!mFocused)
+    {
+        mPen = QPen(Qt::green);
+    }
     mpGraphWidget->setSelectedVertex(mpVertex);
     mpGraphWidget->setVertexSelected(true);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
-void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
-    mPen = mPenDefault;
+    if(!mFocused)
+    {
+        mPen = mPenDefault;
+    }
     mpGraphWidget->setVertexSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }

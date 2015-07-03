@@ -21,6 +21,7 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QWidget>
 #include "GraphWidget.hpp"
 #include "CustomDialog.hpp"
@@ -38,9 +39,11 @@ class PropertyDialog : public QObject
 public:
     typedef std::vector<QFrame *> QFrames;
 
-    PropertyDialog(GraphWidget *widget, QMainWindow *mainWindow, bool dragDropIsChecked = false)
+    PropertyDialog(GraphWidget *widget, QMainWindow *mainWindow, bool dragDropIsChecked = false, bool vertexFocused = false, bool edgeFocused = false)
     : mpGraphWidget(widget)
     , mpMainWindow(mainWindow)
+    , mVertexFocused(vertexFocused)
+    , mEdgeFocused(edgeFocused)
     {
         setupUi(&mDialog, dragDropIsChecked);
         mpMainWindow->addDockWidget(Qt::RightDockWidgetArea, &mDialog, Qt::Horizontal);
@@ -56,6 +59,13 @@ public:
         verticalLayout->addWidget(mFrames.back());
     }
 
+    void addFrame(QHBoxLayout* horizontalLayout)
+    {
+        mFrames.push_back(new QFrame());
+        mFrames.back()->setFrameShape(QFrame::VLine);
+        horizontalLayout->addWidget(mFrames.back());
+    }
+
     void setupUi(CustomDialog *Dialog, bool dragDropIsChecked = false)
     {
         int nbuttons = DEFAULT_NBUTTONS;
@@ -66,77 +76,108 @@ public:
         }
         horizontalLayoutWidget = new QWidget(Dialog);
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
-        verticalLayout = new QVBoxLayout(horizontalLayoutWidget);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 25, 0, 0);
-        addFrame(verticalLayout);
+        horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
 
-        mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
-        mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
-        mpAddNodeButton->setIcon(*(mpGraphWidget->getIcon("addNode")));
-        mpAddNodeButton->setCheckable(false);
-        mpAddNodeButton->setChecked(false);
+        {
+            // main properties
+            verticalLayout = new QVBoxLayout();
+            horizontalLayout->addLayout(verticalLayout);
+            verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+            verticalLayout->setContentsMargins(0, 0, 0, 0);
+            addFrame(verticalLayout);
 
-        verticalLayout->addWidget(mpAddNodeButton);
-        addFrame(verticalLayout);
+            mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
+            mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
+            mpAddNodeButton->setIcon(*(mpGraphWidget->getIcon("addNode")));
+            mpAddNodeButton->setCheckable(false);
+            mpAddNodeButton->setChecked(false);
 
-        mpImportButton = new QPushButton(horizontalLayoutWidget);
-        mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
-        mpImportButton->setIcon(*(mpGraphWidget->getIcon("import")));
-        mpImportButton->setCheckable(false);
-        mpImportButton->setChecked(false);
+            verticalLayout->addWidget(mpAddNodeButton);
+            addFrame(verticalLayout);
 
-        verticalLayout->addWidget(mpImportButton);
+            mpImportButton = new QPushButton(horizontalLayoutWidget);
+            mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
+            mpImportButton->setIcon(*(mpGraphWidget->getIcon("import")));
+            mpImportButton->setCheckable(false);
+            mpImportButton->setChecked(false);
 
-        mpExportButton = new QPushButton(horizontalLayoutWidget);
-        mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
-        mpExportButton->setIcon(*(mpGraphWidget->getIcon("export")));
-        mpExportButton->setCheckable(false);
-        mpExportButton->setChecked(false);
+            verticalLayout->addWidget(mpImportButton);
 
-        verticalLayout->addWidget(mpExportButton);
-        addFrame(verticalLayout);
+            mpExportButton = new QPushButton(horizontalLayoutWidget);
+            mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
+            mpExportButton->setIcon(*(mpGraphWidget->getIcon("export")));
+            mpExportButton->setCheckable(false);
+            mpExportButton->setChecked(false);
 
-        mpRefreshButton = new QPushButton(horizontalLayoutWidget);
-        mpRefreshButton->setObjectName(QString::fromUtf8("mpRefreshButton"));
-        mpRefreshButton->setIcon(*(mpGraphWidget->getIcon("refresh")));
-        mpRefreshButton->setCheckable(false);
-        mpRefreshButton->setChecked(false);
+            verticalLayout->addWidget(mpExportButton);
+            addFrame(verticalLayout);
 
-        verticalLayout->addWidget(mpRefreshButton);
+            mpRefreshButton = new QPushButton(horizontalLayoutWidget);
+            mpRefreshButton->setObjectName(QString::fromUtf8("mpRefreshButton"));
+            mpRefreshButton->setIcon(*(mpGraphWidget->getIcon("refresh")));
+            mpRefreshButton->setCheckable(false);
+            mpRefreshButton->setChecked(false);
 
-        mpShuffleButton = new QPushButton(horizontalLayoutWidget);
-        mpShuffleButton->setObjectName(QString::fromUtf8("mpShuffleButton"));
-        mpShuffleButton->setIcon(*(mpGraphWidget->getIcon("shuffle")));
-        mpShuffleButton->setCheckable(false);
-        mpShuffleButton->setChecked(false);
+            verticalLayout->addWidget(mpRefreshButton);
 
-        verticalLayout->addWidget(mpShuffleButton);
+            mpShuffleButton = new QPushButton(horizontalLayoutWidget);
+            mpShuffleButton->setObjectName(QString::fromUtf8("mpShuffleButton"));
+            mpShuffleButton->setIcon(*(mpGraphWidget->getIcon("shuffle")));
+            mpShuffleButton->setCheckable(false);
+            mpShuffleButton->setChecked(false);
 
-        mpResetButton = new QPushButton(horizontalLayoutWidget);
-        mpResetButton->setObjectName(QString::fromUtf8("mpResetButton"));
-        mpResetButton->setIcon(*(mpGraphWidget->getIcon("reset")));
-        mpResetButton->setCheckable(false);
-        mpResetButton->setChecked(false);
+            verticalLayout->addWidget(mpShuffleButton);
 
-        verticalLayout->addWidget(mpResetButton);
+            mpResetButton = new QPushButton(horizontalLayoutWidget);
+            mpResetButton->setObjectName(QString::fromUtf8("mpResetButton"));
+            mpResetButton->setIcon(*(mpGraphWidget->getIcon("reset")));
+            mpResetButton->setCheckable(false);
+            mpResetButton->setChecked(false);
 
-        mpLayoutButton = new QPushButton(horizontalLayoutWidget);
-        mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
-        mpLayoutButton->setIcon(*(mpGraphWidget->getIcon("layout")));
-        mpLayoutButton->setCheckable(false);
-        mpLayoutButton->setChecked(false);
+            verticalLayout->addWidget(mpResetButton);
 
-        verticalLayout->addWidget(mpLayoutButton);
-        addFrame(verticalLayout);
+            mpLayoutButton = new QPushButton(horizontalLayoutWidget);
+            mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
+            mpLayoutButton->setIcon(*(mpGraphWidget->getIcon("layout")));
+            mpLayoutButton->setCheckable(false);
+            mpLayoutButton->setChecked(false);
 
-        mpDragDropButton = new QPushButton(horizontalLayoutWidget);
-        mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
-        mpDragDropButton->setIcon(*(mpGraphWidget->getIcon("dragndrop")));
-        mpDragDropButton->setCheckable(true);
-        mpDragDropButton->setChecked(dragDropIsChecked);
+            verticalLayout->addWidget(mpLayoutButton);
+            addFrame(verticalLayout);
 
-        verticalLayout->addWidget(mpDragDropButton);
+            mpDragDropButton = new QPushButton(horizontalLayoutWidget);
+            mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
+            mpDragDropButton->setIcon(*(mpGraphWidget->getIcon("dragndrop")));
+            mpDragDropButton->setCheckable(true);
+            mpDragDropButton->setChecked(dragDropIsChecked);
+
+            verticalLayout->addWidget(mpDragDropButton);
+        }
+        horizontalLayout->addSpacing(5);
+        addFrame(horizontalLayout);
+        horizontalLayout->addSpacing(5);
+        {
+            // focus-based properties
+            verticalLayoutFocus = new QVBoxLayout();
+            horizontalLayout->addLayout(verticalLayoutFocus);
+            verticalLayoutFocus->setObjectName(QString::fromUtf8("verticalLayoutFocus"));
+            verticalLayoutFocus->setContentsMargins(0, 0, 0, 0);
+            addFrame(verticalLayoutFocus);
+
+            mpChangeNodeLabelButton = new QPushButton(horizontalLayoutWidget);
+            mpChangeNodeLabelButton->setObjectName(QString::fromUtf8("mpChangeNodeLabelButton"));
+            mpChangeNodeLabelButton->setIcon(*(mpGraphWidget->getIcon("label")));
+            mpChangeNodeLabelButton->setEnabled(mVertexFocused);
+            mpChangeNodeLabelButton->setCheckable(false);
+            mpChangeNodeLabelButton->setChecked(false);
+
+            verticalLayoutFocus->addWidget(mpChangeNodeLabelButton);
+
+
+
+
+            addFrame(verticalLayoutFocus);
+        }
 
         retranslateUi(Dialog);
 
@@ -148,11 +189,12 @@ public:
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(addNodeAdhoc()));
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
+        QObject::connect(mpChangeNodeLabelButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(changeSelectedVertexLabel()));
 
         QMetaObject::connectSlotsByName(Dialog);
 
-        (Dialog)->setFixedSize(163, 101 + npoints * (nbuttons + mFrames.size()));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 141, 81 + npoints * (nbuttons + mFrames.size())));
+        (Dialog)->setFixedSize(370 /* 163 */, 101 + npoints * (nbuttons + mFrames.size()));
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 350 /* 141 */, 81 + npoints * (nbuttons + mFrames.size())));
     } // setupUi
 
     void retranslateUi(CustomDialog *Dialog)
@@ -166,7 +208,27 @@ public:
         mpResetButton->setText(QApplication::translate("Dialog", "Reset", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
         mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
+        mpChangeNodeLabelButton->setText(QApplication::translate("Dialog", "Change Node Label", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
+
+    void setVertexFocused(bool vertexFocused)
+    {
+        if(vertexFocused != mVertexFocused)
+        {
+            mpChangeNodeLabelButton->setEnabled(vertexFocused);
+        }
+        mVertexFocused = vertexFocused;
+    }
+    void setEdgeFocused(bool edgeFocused)
+    {
+        if(edgeFocused != mEdgeFocused)
+        {
+        }
+        mEdgeFocused = edgeFocused;
+    }
+
+    bool getVertexFocused() { return mVertexFocused; }
+    bool getEdgeFocused  () { return mEdgeFocused;   }
 
 public slots:
 
@@ -176,6 +238,8 @@ private:
     QMainWindow *mpMainWindow;
     QWidget *horizontalLayoutWidget;
     QVBoxLayout *verticalLayout;
+    QVBoxLayout *verticalLayoutFocus;
+    QHBoxLayout *horizontalLayout;
     QPushButton *mpAddNodeButton;
     QPushButton *mpRefreshButton;
     QPushButton *mpShuffleButton;
@@ -184,7 +248,10 @@ private:
     QPushButton *mpResetButton;
     QPushButton *mpLayoutButton;
     QPushButton *mpDragDropButton;
+    QPushButton *mpChangeNodeLabelButton;
     QFrames mFrames;
+    bool mVertexFocused;
+    bool mEdgeFocused;
 
 };
 
