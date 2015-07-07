@@ -26,8 +26,12 @@
 #include "GraphWidget.hpp"
 #include "CustomDialog.hpp"
 
+#define WIDTH 286
+#define PADDING 7
+#define DEFAULT_NFRAMES 3
 #define DEFAULT_NBUTTONS 8
-#define DEFAULT_BUTTON_POINTS 21
+#define DEFAULT_LINE_POINTS 15
+#define DEFAULT_BUTTON_POINTS 31
 
 namespace graph_analysis {
 namespace gui {
@@ -68,8 +72,11 @@ public:
 
     void setupUi(CustomDialog *Dialog, bool dragDropIsChecked = false)
     {
+        int nframes = DEFAULT_NFRAMES;
         int nbuttons = DEFAULT_NBUTTONS;
-        int npoints  = DEFAULT_BUTTON_POINTS;
+        int linePoints  = DEFAULT_LINE_POINTS;
+        int buttonPoints  = DEFAULT_BUTTON_POINTS;
+        mHeight = 31 + linePoints * nframes + buttonPoints * nbuttons;
         if ((Dialog)->objectName().isEmpty())
         {
             (Dialog)->setObjectName(QString::fromUtf8("Dialog"));
@@ -84,7 +91,7 @@ public:
             verticalLayout = new QVBoxLayout();
             horizontalLayout->addLayout(verticalLayout);
             verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-            verticalLayout->setContentsMargins(0, 5, 0, 0);
+            verticalLayout->setContentsMargins(0, PADDING, 0, 0);
 //            addFrame(verticalLayout);
 
             mpAddNodeButton = new QPushButton(horizontalLayoutWidget);
@@ -163,17 +170,17 @@ public:
             verticalLayoutFocus = new QVBoxLayout();
             horizontalLayout->addLayout(verticalLayoutFocus);
             verticalLayoutFocus->setObjectName(QString::fromUtf8("verticalLayoutFocus"));
-            verticalLayoutFocus->setContentsMargins(0, 5, 0, 0);
+            verticalLayoutFocus->setContentsMargins(0, PADDING, 0, 0);
 //            addFrame(verticalLayoutFocus);
 
-            mpChangeNodeLabelButton = new QPushButton(horizontalLayoutWidget);
-            mpChangeNodeLabelButton->setObjectName(QString::fromUtf8("mpChangeNodeLabelButton"));
-            mpChangeNodeLabelButton->setIcon(*(mpGraphWidget->getIcon("label")));
-            mpChangeNodeLabelButton->setEnabled(mVertexFocused);
-            mpChangeNodeLabelButton->setCheckable(false);
-            mpChangeNodeLabelButton->setChecked(false);
+            mpRenameNodeButton = new QPushButton(horizontalLayoutWidget);
+            mpRenameNodeButton->setObjectName(QString::fromUtf8("mpRenameNodeButton"));
+            mpRenameNodeButton->setIcon(*(mpGraphWidget->getIcon("label")));
+            mpRenameNodeButton->setEnabled(mVertexFocused);
+            mpRenameNodeButton->setCheckable(false);
+            mpRenameNodeButton->setChecked(false);
 
-            verticalLayoutFocus->addWidget(mpChangeNodeLabelButton);
+            verticalLayoutFocus->addWidget(mpRenameNodeButton);
 
             mpAddPortButton = new QPushButton(horizontalLayoutWidget);
             mpAddPortButton->setObjectName(QString::fromUtf8("mpAddPortButton"));
@@ -212,28 +219,51 @@ public:
             verticalLayoutFocus->addWidget(mpRemoveNodeButton);
 
             addFrame(verticalLayoutFocus);
+
+            mpRenameEdgeButton = new QPushButton(horizontalLayoutWidget);
+            mpRenameEdgeButton->setObjectName(QString::fromUtf8("mpRenameEdgeButton"));
+            mpRenameEdgeButton->setIcon(*(mpGraphWidget->getIcon("label")));
+            mpRenameEdgeButton->setEnabled(mEdgeFocused);
+            mpRenameEdgeButton->setCheckable(false);
+            mpRenameEdgeButton->setChecked(false);
+
+            verticalLayoutFocus->addWidget(mpRenameEdgeButton);
+
+            mpRemoveEdgeButton = new QPushButton(horizontalLayoutWidget);
+            mpRemoveEdgeButton->setObjectName(QString::fromUtf8("mpRemoveEdgeButton"));
+            mpRemoveEdgeButton->setIcon(*(mpGraphWidget->getIcon("remove")));
+            mpRemoveEdgeButton->setEnabled(mEdgeFocused);
+            mpRemoveEdgeButton->setCheckable(false);
+            mpRemoveEdgeButton->setChecked(false);
+
+            verticalLayoutFocus->addWidget(mpRemoveEdgeButton);
+
+            // adding bottom padding
+            verticalLayoutFocus->addSpacing(mHeight - 2 * PADDING - (1 * linePoints + 7 * buttonPoints));
         }
 
         retranslateUi(Dialog);
 
-        QObject::connect(mpRefreshButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(refresh()));
-        QObject::connect(mpShuffleButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(shuffle()));
-        QObject::connect(mpImportButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(importGraph()));
-        QObject::connect(mpExportButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(exportGraph()));
-        QObject::connect(mpResetButton,  SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(resetGraph()));
-        QObject::connect(mpLayoutButton,  SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(changeLayout()));
-        QObject::connect(mpAddNodeButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(addNodeAdhoc()));
+        QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
+        QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
+        QObject::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
+        QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
+        QObject::connect(mpResetButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraph()));
+        QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
+        QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
-        QObject::connect(mpChangeNodeLabelButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(changeFocusedVertexLabel()));
-        QObject::connect(mpAddPortButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(addPortFocused()));
-        QObject::connect(mpRenamePortButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(renamePortFocused()));
-        QObject::connect(mpRemovePortButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(removePortFocused()));
-        QObject::connect(mpRemoveNodeButton, SIGNAL(clicked()), (QGraphicsView *)mpGraphWidget, SLOT(removeNodeFocused()));
+        QObject::connect(mpRenameNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedVertexLabel()));
+        QObject::connect(mpAddPortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addPortFocused()));
+        QObject::connect(mpRenamePortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(renamePortFocused()));
+        QObject::connect(mpRemovePortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removePortFocused()));
+        QObject::connect(mpRemoveNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedVertex()));
+        QObject::connect(mpRenameEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedEdgeLabel()));
+        QObject::connect(mpRemoveEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedEdge()));
 
         QMetaObject::connectSlotsByName(Dialog);
 
-        (Dialog)->setFixedSize(370 /* 163 */, 101 + npoints * (nbuttons + mFrames.size()));
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, 350 /* 141 */, 81 + npoints * (nbuttons + mFrames.size())));
+        (Dialog)->setFixedSize(WIDTH + 20, 20 + mHeight);
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, WIDTH, mHeight));
     } // setupUi
 
     void retranslateUi(CustomDialog *Dialog)
@@ -247,18 +277,20 @@ public:
         mpResetButton->setText(QApplication::translate("Dialog", "Reset", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
         mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
-        mpChangeNodeLabelButton->setText(QApplication::translate("Dialog", "Change Node Label", 0, QApplication::UnicodeUTF8));
+        mpRenameNodeButton->setText(QApplication::translate("Dialog", "Rename Node", 0, QApplication::UnicodeUTF8));
         mpAddPortButton->setText(QApplication::translate("Dialog", "Add Port", 0, QApplication::UnicodeUTF8));
         mpRenamePortButton->setText(QApplication::translate("Dialog", "Rename a Port", 0, QApplication::UnicodeUTF8));
         mpRemovePortButton->setText(QApplication::translate("Dialog", "Remove a Port", 0, QApplication::UnicodeUTF8));
         mpRemoveNodeButton->setText(QApplication::translate("Dialog", "Remove Node", 0, QApplication::UnicodeUTF8));
+        mpRenameEdgeButton->setText(QApplication::translate("Dialog", "Rename Edge", 0, QApplication::UnicodeUTF8));
+        mpRemoveEdgeButton->setText(QApplication::translate("Dialog", "Remove Edge", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
     void setVertexFocused(bool vertexFocused)
     {
         if(vertexFocused != mVertexFocused)
         {
-            mpChangeNodeLabelButton->setEnabled(vertexFocused);
+            mpRenameNodeButton->setEnabled(vertexFocused);
             mpAddPortButton->setEnabled(vertexFocused);
             mpRenamePortButton->setEnabled(vertexFocused);
             mpRemovePortButton->setEnabled(vertexFocused);
@@ -270,6 +302,8 @@ public:
     {
         if(edgeFocused != mEdgeFocused)
         {
+            mpRenameEdgeButton->setEnabled(edgeFocused);
+            mpRemoveEdgeButton->setEnabled(edgeFocused);
         }
         mEdgeFocused = edgeFocused;
     }
@@ -295,15 +329,17 @@ private:
     QPushButton *mpResetButton;
     QPushButton *mpLayoutButton;
     QPushButton *mpDragDropButton;
-    QPushButton *mpChangeNodeLabelButton;
+    QPushButton *mpRenameNodeButton;
     QPushButton *mpAddPortButton;
     QPushButton *mpRenamePortButton;
     QPushButton *mpRemovePortButton;
     QPushButton *mpRemoveNodeButton;
+    QPushButton *mpRenameEdgeButton;
+    QPushButton *mpRemoveEdgeButton;
     QFrames mFrames;
     bool mVertexFocused;
     bool mEdgeFocused;
-
+    int mHeight;
 };
 
 } // end namespace gui

@@ -234,9 +234,9 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionChangeEdgeLabel = comm.addAction("Change Edge Label", SLOT(changeSelectedEdgeLabel()), mIconMap["label"]);
+    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeSelectedEdgeLabel()), mIconMap["label"]);
     QAction *actionRemoveEdge = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
-    QAction *actionChangeLabel = comm.addAction("Change Node Label", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
+    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
     QAction *actionRemoveNode = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
     QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPortSelected()), mIconMap["addPort"]);
     QAction *actionRenamePort = comm.addAction("Rename a Port", SLOT(renamePortSelected()), mIconMap["portLabel"]);
@@ -248,9 +248,9 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export"]);
     QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset"]);
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mIconMap["layout"]);
-    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mIconMap["dragndrop"]);
-    QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), mIconMap["move"]);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()), mIconMap["reload"]);
+    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop", SLOT(setDragDrop()), mIconMap["dragndrop"]);
+    QAction *actionUnsetDragDrop = comm.addAction("Move-around", SLOT(unsetDragDrop()), mIconMap["move"]);
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialog()), mIconMap["reload"]);
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)
@@ -316,6 +316,12 @@ void GraphWidget::addPortSelected()
 void GraphWidget::addPort(graph_analysis::Vertex::Ptr vertex)
 {
     NodeItem *item = mNodeItemMap[vertex];
+    if(!item)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::addPort: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     graph_analysis::Vertex::Ptr portVertex = VertexTypeManager::getInstance()->createVertex("port", "newPort");
     mpGraph->addVertex(portVertex);
     enableVertex(portVertex);
@@ -587,31 +593,78 @@ void GraphWidget::changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const st
 {
     vertex->setLabel(label);
     NodeItem* nodeItem = mNodeItemMap[vertex];
+    if(!nodeItem)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::changeVertexLabel: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     nodeItem->updateLabel();
+}
+
+void GraphWidget::changeFocusedEdgeLabel()
+{
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Input Edge Label"),
+                                         tr("New Label:"), QLineEdit::Normal,
+                                          QString(mpFocusedEdge->getLabel().c_str()), &ok);
+    if (ok && !label.isEmpty())
+    {
+        changeEdgeLabel(mpFocusedEdge, label.toStdString());
+    }
 }
 
 void GraphWidget::changeSelectedEdgeLabel()
 {
     bool ok;
-    EdgeItem* edge = mEdgeItemMap[mpSelectedEdge];
     QString label = QInputDialog::getText(this, tr("Input Edge Label"),
                                          tr("New Label:"), QLineEdit::Normal,
-                                          edge->getLabel()->toPlainText(), &ok);
+                                          QString(mpSelectedEdge->getLabel().c_str()), &ok);
     if (ok && !label.isEmpty())
     {
-        graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
-        edgeLabel->setPlainText(QString(label.toStdString().c_str()));
-        graph_analysis::Edge::Ptr graph_edge = edge->getEdge();
-        graph_edge->setLabel(label.toStdString());
+        changeEdgeLabel(mpSelectedEdge, label.toStdString());
     }
+}
+
+void GraphWidget::changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const std::string& label)
+{
+    EdgeItem* edge = mEdgeItemMap[concernedEdge];
+    if(!edge)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::changeEdgeLabel: provided edge '") + concernedEdge->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
+    edgeLabel->setPlainText(QString(label.c_str()));
+    graph_analysis::Edge::Ptr graph_edge = edge->getEdge();
+    graph_edge->setLabel(label);
+}
+
+void GraphWidget::removeFocusedEdge()
+{
+    clearEdge(mpFocusedEdge);
+    clearEdgeFocus();
 }
 
 void GraphWidget::removeSelectedEdge()
 {
-    scene()->removeItem(mEdgeItemMap[mpSelectedEdge]);
-    const std::string label = mpSelectedEdge->getLabel();
-    const graph_analysis::Vertex::Ptr sourceClusterVertex = mpSelectedEdge->getSourceVertex();
-    const graph_analysis::Vertex::Ptr targetClusterVertex = mpSelectedEdge->getTargetVertex();
+    clearEdge(mpSelectedEdge);
+}
+
+void GraphWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
+{
+    EdgeItem *edge = mEdgeItemMap[concernedEdge];
+    if(!edge)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::clearEdge: provided edge '") + concernedEdge->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    scene()->removeItem(edge);
+    const std::string label = concernedEdge->getLabel();
+    const graph_analysis::Vertex::Ptr sourceClusterVertex = concernedEdge->getSourceVertex();
+    const graph_analysis::Vertex::Ptr targetClusterVertex = concernedEdge->getTargetVertex();
     const NodeItem * sceneSourceNodeItem = mNodeItemMap[sourceClusterVertex];
     const NodeItem * sceneTargetNodeItem = mNodeItemMap[targetClusterVertex];
     if(!sceneSourceNodeItem || !sceneTargetNodeItem)
@@ -648,12 +701,13 @@ void GraphWidget::removeSelectedEdge()
             break; // assuming there is a single correspondent edge in the main graph mpGraph
         }
     }
-    mpLayoutingGraph->removeEdge(mpSelectedEdge);
+    mpLayoutingGraph->removeEdge(concernedEdge);
 }
 
 void GraphWidget::removeFocusedVertex()
 {
     clearVertex(mpFocusedVertex);
+    clearNodeFocus();
 }
 
 void GraphWidget::removeSelectedVertex()
