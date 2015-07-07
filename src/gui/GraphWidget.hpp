@@ -175,6 +175,9 @@ public:
     void clearFocus();
     void addPort(graph_analysis::Vertex::Ptr vertex);
     void changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std::string& label);
+    void renamePort(graph_analysis::Vertex::Ptr concernedVertex);
+    void removePort(graph_analysis::Vertex::Ptr concernedVertex);
+    void clearVertex(graph_analysis::Vertex::Ptr concernedVertex);
 
 public slots:
     void shuffle();
@@ -183,8 +186,10 @@ public slots:
     void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
     void addPortSelected();
     void addPortFocused();
-    void renamePort();
-    void removePort();
+    void renamePortFocused();
+    void renamePortSelected();
+    void removePortFocused();
+    void removePortSelected();
     void showContextMenu(const QPoint& pos);
 
     void setLayout(QString layoutName);
@@ -194,6 +199,7 @@ public slots:
     void resetGraph();
     void changeLayout();
     void removeSelectedVertex();
+    void removeFocusedVertex();
     void changeSelectedEdgeLabel();
     void removeSelectedEdge();
     void importGraph();

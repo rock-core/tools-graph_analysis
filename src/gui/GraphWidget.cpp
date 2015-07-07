@@ -84,6 +84,9 @@
 //#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
 #define DEFAULT_PATH_TO_ICONS "icons/"
 
+// comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
+#define CLEAR_BY_BACKGROUND
+
 using namespace graph_analysis;
 
 namespace graph_analysis {
@@ -236,8 +239,8 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionChangeLabel = comm.addAction("Change Node Label", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
     QAction *actionRemoveNode = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
     QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPortSelected()), mIconMap["addPort"]);
-    QAction *actionRenamePort = comm.addAction("Rename a Port", SLOT(renamePort()), mIconMap["portLabel"]);
-    QAction *actionRemovePort = comm.addAction("Remove a Port", SLOT(removePort()), mIconMap["remove"]);
+    QAction *actionRenamePort = comm.addAction("Rename a Port", SLOT(renamePortSelected()), mIconMap["portLabel"]);
+    QAction *actionRemovePort = comm.addAction("Remove a Port", SLOT(removePortSelected()), mIconMap["remove"]);
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
@@ -322,9 +325,25 @@ void GraphWidget::addPort(graph_analysis::Vertex::Ptr vertex)
     item->update();
 }
 
-void GraphWidget::renamePort()
+void GraphWidget::renamePortFocused()
 {
-    NodeItem *item = mNodeItemMap[mpSelectedVertex];
+    renamePort(mpFocusedVertex);
+}
+
+void GraphWidget::renamePortSelected()
+{
+    renamePort(mpSelectedVertex);
+}
+
+void GraphWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
+{
+    NodeItem *item = mNodeItemMap[concernedVertex];
+    if(!item)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::renamePort: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     int portCount = item->getPortCount();
     if(!portCount)
     {
@@ -343,9 +362,25 @@ void GraphWidget::renamePort()
     }
 }
 
-void GraphWidget::removePort()
+void GraphWidget::removePortFocused()
 {
-    NodeItem *item = mNodeItemMap[mpSelectedVertex];
+    removePort(mpFocusedVertex);
+}
+
+void GraphWidget::removePortSelected()
+{
+    removePort(mpSelectedVertex);
+}
+
+void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
+{
+    NodeItem *item = mNodeItemMap[concernedVertex];
+    if(!item)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::removePort: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     int portCount = item->getPortCount();
     if(!portCount)
     {
@@ -616,17 +651,27 @@ void GraphWidget::removeSelectedEdge()
     mpLayoutingGraph->removeEdge(mpSelectedEdge);
 }
 
+void GraphWidget::removeFocusedVertex()
+{
+    clearVertex(mpFocusedVertex);
+}
+
 void GraphWidget::removeSelectedVertex()
 {
+    clearVertex(mpSelectedVertex);
+}
+
+void GraphWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
+{
     // removing possible (default?) edges of this cluster node within the main graph (and its port-vertices)
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(mpSelectedVertex);
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(concernedVertex);
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();
         Vertex::Ptr portVertex;
         Vertex::Ptr sourceVertex = edge->getSourceVertex();
         Vertex::Ptr targetVertex = edge->getTargetVertex();
-        if(sourceVertex != mpSelectedVertex)
+        if(sourceVertex != concernedVertex)
         {
             portVertex = sourceVertex;
         }
@@ -644,16 +689,23 @@ void GraphWidget::removeSelectedVertex()
         // already removed the edge itself up above //       mpGraph->removeEdge(edge);
     }
 //    // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
-//    edgeIt = mpLayoutingGraph->getEdgeIterator(mpSelectedVertex);
+//    edgeIt = mpLayoutingGraph->getEdgeIterator(concernedVertex);
 //    while(edgeIt->next())
 //    {
 //        Edge::Ptr edge = edgeIt->current();
 //        scene()->removeItem(mEdgeItemMap[edge]);
 //        mpLayoutingGraph->removeEdge(edge);
 //    }  // commented out since it introduces bugs when mpLayoutingGraph is dirty
-//    mpLayoutingGraph->removeVertex(mpSelectedVertex); // commented out since it introduces bugs when mpLayoutingGraph is 'dirty'
-    scene()->removeItem(mNodeItemMap[mpSelectedVertex]);
-    mpGraph->removeVertex(mpSelectedVertex);
+//    mpLayoutingGraph->removeVertex(concernedVertex); // commented out since it introduces bugs when mpLayoutingGraph is 'dirty'
+    NodeItem *item = mNodeItemMap[concernedVertex];
+    if(!item)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::removeVertex: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    scene()->removeItem(item);
+    mpGraph->removeVertex(concernedVertex);
 }
 
 void GraphWidget::changeLayout()
@@ -1134,7 +1186,14 @@ void GraphWidget::removeEdge(Edge::Ptr edge)
 
 void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
+#ifdef CLEAR_BY_BACKGROUND
+    if(mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex)
+    {
+        clearFocus();
+        return;
+    }
     clearFocus();
+#endif
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
