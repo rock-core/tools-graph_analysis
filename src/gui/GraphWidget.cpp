@@ -1188,15 +1188,19 @@ void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
 #ifdef CLEAR_BY_BACKGROUND
     if(
-        !( // Achtung!!! Negating the following statements
+        !( // Achtung!!! Negating the following statement
             (mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex) ||
             (mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge)
         )
     )
     {
+        clearFocus();
         QGraphicsView::mouseDoubleClickEvent(event);
     }
-    clearFocus();
+    else
+    {
+        clearFocus();
+    }
 #else
     QGraphicsView::mouseDoubleClickEvent(event);
 #endif
