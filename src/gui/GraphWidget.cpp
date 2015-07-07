@@ -1187,23 +1187,56 @@ void GraphWidget::removeEdge(Edge::Ptr edge)
 void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
 #ifdef CLEAR_BY_BACKGROUND
-    if(
-        !( // Achtung!!! Negating the following statement
-            (mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex) ||
-            (mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge)
-        )
-    )
+    bool defocusNodes = !(
+                            (mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex)
+                            ||
+                            (mVertexFocused && mEdgeSelected)
+                        )
+                        ;
+    bool defocusEdges = !(
+                            (mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge)
+                            ||
+                            (mVertexSelected && mEdgeFocused)
+                        )
+                        ;
+    if(defocusNodes)
     {
-        clearFocus();
-        QGraphicsView::mouseDoubleClickEvent(event);
+        clearNodeFocus();
     }
-    else
+    if(defocusEdges)
     {
-        clearFocus();
+        clearEdgeFocus();
     }
-#else
-    QGraphicsView::mouseDoubleClickEvent(event);
+
+//    if(!(mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex))
+//    {
+//        clearNodeFocus();
+//        if(!(mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge))
+//        {
+//            clearEdgeFocus();
+//        }
+//        QGraphicsView::mouseDoubleClickEvent(event);
+//    }
+//    else if(!(mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge))
+//    {
+//        clearEdgeFocus();
+//        QGraphicsView::mouseDoubleClickEvent(event);
+//    }
+//    else if(mVertexSelected && mEdgeFocused)
+//    {
+//        clearNodeFocus();
+//    }
+//    else if(mVertexFocused && mEdgeSelected)
+//    {
+//        clearEdgeFocus();
+//    }
+//    else
+//    {
+//        clearFocus();
+//    }
+//#else
 #endif
+    QGraphicsView::mouseDoubleClickEvent(event);
 }
 
 void GraphWidget::mousePressEvent(QMouseEvent *event)
