@@ -31,6 +31,11 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     //mLabel->setFlag(QGraphicsItem::ItemIsSelectable, true);
     //mLabel->setZValue(-100.0);
     setFlag(ItemIsMovable);
+
+    mpBoard = new QGraphicsWidget(this);
+    mpBoard->setAcceptHoverEvents(true);
+    QRectF rect = boundingRect();
+    mpBoard->resize(rect.width(), rect.height());
 }
 
 void Resource::setPortLabel(int portID, const std::string& label)
@@ -91,7 +96,8 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     }
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
-    painter->drawRect(boundingRect()); //-7,-7,20,20);
+    QRectF rect = boundingRect();
+    painter->drawRect(rect); //-7,-7,20,20);
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
 //    {
@@ -107,6 +113,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //
 //    painter->setPen(QPen(Qt::black, 0));
 //    painter->drawEllipse(-10, -10, 20, 20);
+    mpBoard->resize(rect.width(), rect.height());
 }
 
 int Resource::addPort(Vertex::Ptr node)

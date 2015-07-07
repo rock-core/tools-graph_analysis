@@ -6,6 +6,7 @@
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <QPen>
+#include <QGraphicsWidget>
 
 namespace graph_analysis {
 namespace gui {
@@ -58,6 +59,7 @@ protected:
 //    void keyPressEvent(QKeyEvent* event);
 
 private:
+    QGraphicsWidget *mpBoard;
     Label* mLabel;
     Labels mLabels;
     Vertices mVertices;
