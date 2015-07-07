@@ -13,6 +13,8 @@ Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePor
     , mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
     , mSourceNodePortID(sourceNodePortID)
     , mTargetNodePortID(targetNodePortID)
+    , mFocused(false)
+    , mSelected(false)
 {
     mPen = mPenDefault; // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -127,6 +129,7 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, int por
 void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    mSelected = true;
     qDebug("Hover ENTER event for %s", mpEdge->toString().c_str());
     mpGraphWidget->setSelectedEdge(mpEdge);
     mpGraphWidget->setEdgeSelected(true);
@@ -136,9 +139,34 @@ void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = mPenDefault;
+    mSelected = false;
     qDebug("Hover LEAVE event for %s", mpEdge->toString().c_str());
     mpGraphWidget->setEdgeSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
+}
+
+void Simple::grabFocus()
+{
+    mpGraphWidget->clearEdgeFocus();
+    mPen = QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    update();
+    mpGraphWidget->setEdgeFocused(true);
+    mFocused = true;
+    mpGraphWidget->setFocusedEdge(mpEdge);
+}
+
+void Simple::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
+{
+    mFocused ? releaseFocus() : grabFocus();
+    QGraphicsItem::mouseDoubleClickEvent(event);
+}
+
+void Simple::releaseFocus()
+{
+    mPen = mSelected ? QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin) : mPenDefault;
+    update();
+    mFocused = false;
+    mpGraphWidget->setEdgeFocused(false);
 }
 
 } // end namespace edges

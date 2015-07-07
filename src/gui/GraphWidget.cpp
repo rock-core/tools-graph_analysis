@@ -1187,14 +1187,19 @@ void GraphWidget::removeEdge(Edge::Ptr edge)
 void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
 #ifdef CLEAR_BY_BACKGROUND
-    if(mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex)
+    if(
+        !( // Achtung!!! Negating the following statements
+            (mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex) ||
+            (mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge)
+        )
+    )
     {
-        clearFocus();
-        return;
+        QGraphicsView::mouseDoubleClickEvent(event);
     }
     clearFocus();
-#endif
+#else
     QGraphicsView::mouseDoubleClickEvent(event);
+#endif
 }
 
 void GraphWidget::mousePressEvent(QMouseEvent *event)

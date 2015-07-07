@@ -22,7 +22,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mSelected(false)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
-    setFlag(ItemIsFocusable);
+//    setFlag(ItemIsFocusable);
     mLabel = new Label(vertex->toString(), this);
     //setHandlesChildEvents(false);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);

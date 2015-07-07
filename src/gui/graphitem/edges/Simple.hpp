@@ -24,12 +24,16 @@ public:
     int getTargetPortID() { return mTargetNodePortID; }
     virtual void adjust();
 
+    void releaseFocus();
+
 protected:
+    void grabFocus();
     virtual QRectF boundingRect() const;
     virtual QPainterPath shape() const { return ::graph_analysis::gui::EdgeItem::shape(); }
     virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
 
     QPointF getIntersectionPoint(NodeItem* item, const QLineF& line, int portID = -1);
 
@@ -44,7 +48,8 @@ protected:
     QLineF mLine;
     int mSourceNodePortID;
     int mTargetNodePortID;
-
+    bool mFocused;
+    bool mSelected;
 };
 
 } // end namespace edges
