@@ -64,6 +64,11 @@ void Label::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 void Label::keyPressEvent(::QKeyEvent* event)
 {
     qDebug("KEYPRESS LABEL");
+    // skipping Key_Return (a.k.a. ENTER)
+    if(Qt::Key_Return == event->key())
+    {
+        return;
+    }
     QGraphicsTextItem::keyPressEvent(event);
 }
 
