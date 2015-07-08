@@ -44,6 +44,7 @@ public:
     QRectF      portBoundingRect    (int portID);
 
     void releaseFocus();
+    void updateWidth ();
 
 protected:
     void grabFocus();

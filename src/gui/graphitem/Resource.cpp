@@ -5,6 +5,7 @@
 #include <QStyleOption>
 #include <QGraphicsSceneDragDropEvent>
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 #include <base/Logging.hpp>
 #include <exception>
 #include "Label.hpp"
@@ -127,6 +128,25 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    this->update(rect);
 }
 
+void Resource::updateWidth()
+{
+    qreal rect_width, max_width = mLabel->boundingRect().width();
+    QRectF rect;
+    foreach(graphitem::Label *label, mLabels)
+    {
+        rect = label->boundingRect();
+        rect_width = rect.width();
+        if(max_width < rect_width)
+        {
+            max_width = rect_width;
+        }
+    }
+    rect = boundingRect();
+    rect.setWidth(max_width);
+    mpBoard->resize(max_width, rect.height());
+    this->update(rect);
+}
+
 int Resource::addPort(Vertex::Ptr node)
 {
     if("graph_analysis::PortVertex" != node->getClassName())
@@ -226,6 +246,7 @@ void Resource::syncLabel(int portID)
     if(port->getLabel() != tag)
     {
         port->setLabel(tag);
+        updateWidth();
         update();
     }
 }
