@@ -556,6 +556,7 @@ void GraphWidget::addNodeAdhoc(QObject *pos)
     {
         graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeDialog.getNodeType(), nodeDialog.getNodeLabel());
         mpGraph->addVertex(vertex);
+        mpLayoutingGraph->addVertex(vertex);
         enableVertex(vertex);
         // Registering the new node item
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
@@ -865,7 +866,7 @@ void GraphWidget::spawnEdge(const std::string& label) // assumes the concerned e
         scene()->addItem(edgeItem);
         edgeItem->adjust();
         mEdgeItemMap[default_edge] = edgeItem;
-        mpGVGraph->addEdge(default_edge); // not vital since the mpGVGraph gets updated every single time before (rendering with) layouting engines
+//        mpGVGraph->addEdge(default_edge); // not vital since the mpGVGraph gets updated every single time before (rendering with) layouting engines
     }
     else
     {
