@@ -55,7 +55,7 @@ void Resource::setPortLabel(int portID, const std::string& label)
 
 void Resource::changeLabel(const std::string& label)
 {
-    delete mLabel;
+    scene()->removeItem(mLabel);
     mpVertex->setLabel(label);
     mLabel = new Label(mpVertex->toString(), this);
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
@@ -63,7 +63,7 @@ void Resource::changeLabel(const std::string& label)
 
 void Resource::updateLabel()
 {
-    delete mLabel;
+    scene()->removeItem(mLabel);
     mLabel = new Label(mpVertex->toString(), this);
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
@@ -260,6 +260,19 @@ QRectF Resource::portBoundingRect(int portID)
     result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
 //    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
     return result;
+}
+
+void Resource::removePorts()
+{
+    foreach(graphitem::Label *label, mLabels)
+    {
+        this->removeFromGroup(label);
+        scene()->removeItem(label);
+    }
+    mLabels.clear();
+    mVertices.clear();
+    mpBoard->resize(mLabel->boundingRect().size());
+    update();
 }
 
 graph_analysis::Vertex::Ptr Resource::getPort(int portID)

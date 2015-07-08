@@ -189,6 +189,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["remove"], pathToIcons + "remove.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["removeAll"], pathToIcons + "remove.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["addPort"], pathToIcons + "addPort.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["move"], pathToIcons + "move.png");
@@ -239,8 +241,9 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
     QAction *actionRemoveNode = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
     QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPortSelected()), mIconMap["addPort"]);
-    QAction *actionRenamePort = comm.addAction("Rename a Port", SLOT(renamePortSelected()), mIconMap["portLabel"]);
-    QAction *actionRemovePort = comm.addAction("Remove a Port", SLOT(removePortSelected()), mIconMap["remove"]);
+    QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortSelected()), mIconMap["portLabel"]);
+    QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortSelected()), mIconMap["remove"]);
+    QAction *actionRemovePorts = comm.addAction("Remove ALL Ports", SLOT(removePortsSelected()), mIconMap["removeAll"]);
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
@@ -268,6 +271,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
         contextMenu.addAction(actionAddPort);
         contextMenu.addAction(actionRenamePort);
         contextMenu.addAction(actionRemovePort);
+        contextMenu.addAction(actionRemovePorts);
         contextMenu.addAction(actionRemoveNode);
     }
     if(mVertexSelected || mEdgeSelected)
@@ -432,7 +436,7 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
             Edge::Ptr edge = edgeIt->current();
             if(mEdgeItemMap.count(edge))
             {
-                EdgeItem* edgeItem = mEdgeItemMap[edge];
+                EdgeItem *edgeItem = mEdgeItemMap[edge];
                 if  (
                         (item == edgeItem->sourceNodeItem() && portID == edgeItem->getSourcePortID()) ||
                         (item == edgeItem->targetNodeItem() && portID == edgeItem->getTargetPortID())
@@ -1721,6 +1725,73 @@ void GraphWidget::clearFocus()
 {
     clearNodeFocus();
     clearEdgeFocus();
+}
+
+
+void GraphWidget::removePortsFocused()
+{
+    removePorts(mpFocusedVertex);
+}
+
+void GraphWidget::removePortsSelected()
+{
+    removePorts(mpSelectedVertex);
+}
+
+void GraphWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
+{
+    NodeItem *item = mNodeItemMap[concernedVertex];
+    if(!item)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::removePorts: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    int nports = item->getPortCount();
+    if(!nports)
+    {
+        QMessageBox::critical(this, tr("No Ports to Remove"), "The cluster is already empty!");
+        return;
+    }
+    else
+    {
+        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Complete Ports-Removal"), tr((QString("All ports in node '") + QString(concernedVertex->getLabel().c_str()) + QString("' will be deleted! Are you sure you want to continue?")).toAscii()), QMessageBox::Yes | QMessageBox::No);
+        EdgeIterator::Ptr edgeIt;
+        graph_analysis::Vertex::Ptr cluster;
+        switch(button)
+        {
+            case QMessageBox::Yes:
+                // remove conceptual edges
+                for(int i = 0; i < nports; ++i)
+                {
+                    edgeIt = mpGraph->getEdgeIterator(item->getPort(i));
+                    while(edgeIt->next())
+                    {
+                        Edge::Ptr edge = edgeIt->current();
+                        mpGraph->removeEdge(edge);
+                    }
+                }
+                // remove physical edges and their graphics
+                cluster = item->getVertex();
+                edgeIt = mpLayoutingGraph->getEdgeIterator(cluster);
+                while(edgeIt->next())
+                {
+                    Edge::Ptr edge = edgeIt->current();
+                    EdgeItem *edgeItem = mEdgeItemMap[edge];
+                    if(edgeItem)
+                    {
+                        mpLayoutingGraph->removeEdge(edge);
+                        scene()->removeItem(edgeItem);
+                    }
+                }
+                // remove ports graphics
+                item->removePorts();
+            break;
+
+            default:
+            break;
+        }
+    }
 }
 
 } // end namespace gui

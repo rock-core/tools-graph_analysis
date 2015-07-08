@@ -47,6 +47,7 @@ public:
     void updateWidth ();
     void updateHeight();
     void swapPorts(int port1, int port2);
+    void removePorts();
 
 protected:
     void grabFocus();
@@ -56,14 +57,14 @@ protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
 
-    //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+    //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 //    void keyPressEvent(QKeyEvent* event);
 
 private:
     QGraphicsWidget *mpBoard;
-    Label* mLabel;
+    Label *mLabel;
     Labels mLabels;
     Vertices mVertices;
     QPen mPen;
