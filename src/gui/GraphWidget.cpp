@@ -637,6 +637,7 @@ void GraphWidget::changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const
         throw std::runtime_error(error_msg);
     }
     concernedEdge->setLabel(label);
+    mEdgeMap[concernedEdge]->setLabel(label);
     graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
     edgeLabel->setPlainText(QString(label.c_str()));
     edge->adjustLabel();
@@ -1007,8 +1008,9 @@ void GraphWidget::clear()
 
     mNodeItemMap.clear();
     mEdgeItemMap.clear();
-    mPortMap.clear();
     mPortIDMap.clear();
+    mPortMap.clear();
+    mEdgeMap.clear();
     scene()->clear();
 }
 
@@ -1168,6 +1170,7 @@ void GraphWidget::updateFromGraph()
             scene()->addItem(edgeItem);
             mEdgeItemMap[default_edge] = edgeItem;
             mpGVGraph->addEdge(default_edge);
+            mEdgeMap[default_edge] = edge;
         }
     }
 

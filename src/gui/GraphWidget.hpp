@@ -92,6 +92,7 @@ class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
 public:
+    typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap;
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> PortMap;
@@ -257,6 +258,8 @@ private:
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
     EdgeItemMap mEdgeItemMap;
+    // Allow mapping from default graph edges to their main graph edges correspondents
+    EdgeMap mEdgeMap;
 
     int mTimerId;
     /// if |mScaleFactor| > 1.0, it makes edges longer; it makes them shorter otherwise ||| if negative, it rotates the graph 180 degrees
