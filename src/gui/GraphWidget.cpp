@@ -718,6 +718,13 @@ void GraphWidget::removeSelectedVertex()
 void GraphWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
 {
     // removing possible (default?) edges of this cluster node within the main graph (and its port-vertices)
+    if("graph_analysis::ClusterVertex" != concernedVertex->getClassName())
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::clearVertex: the supplied vertex '") + concernedVertex->getLabel()
+                                        + "' is of unexpected type '" + concernedVertex->getClassName() + "'";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(concernedVertex);
     while(edgeIt->next())
     {
@@ -742,14 +749,18 @@ void GraphWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
         mpGraph->removeVertex(portVertex);
         // already removed the edge itself up above //       mpGraph->removeEdge(edge);
     }
-//    // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
-//    edgeIt = mpLayoutingGraph->getEdgeIterator(concernedVertex);
-//    while(edgeIt->next())
-//    {
-//        Edge::Ptr edge = edgeIt->current();
-//        scene()->removeItem(mEdgeItemMap[edge]);
-//        mpLayoutingGraph->removeEdge(edge);
-//    }  // commented out since it introduces bugs when mpLayoutingGraph is dirty
+    // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
+    edgeIt = mpLayoutingGraph->getEdgeIterator(concernedVertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        EdgeItem *edgeItem = mEdgeItemMap[edge];
+        if(edgeItem)
+        {
+            scene()->removeItem(edgeItem);
+        }
+//        mpLayoutingGraph->removeEdge(edge); // commented out since it introduces bugs when mpLayoutingGraph is dirty
+    }
 //    mpLayoutingGraph->removeVertex(concernedVertex); // commented out since it introduces bugs when mpLayoutingGraph is 'dirty'
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
