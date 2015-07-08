@@ -25,6 +25,7 @@ public:
     virtual void adjust();
 
     void releaseFocus();
+    void adjustLabel();
 
 protected:
     void grabFocus();

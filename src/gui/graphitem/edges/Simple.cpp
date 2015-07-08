@@ -38,6 +38,11 @@ void Simple::adjust()
     QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line, mTargetNodePortID);
 
     mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
+    adjustLabel();
+}
+
+void Simple::adjustLabel()
+{
     mpLabel->setPos( mLine.pointAt(0.5) - QPointF(mpLabel->boundingRect().width() / 2., 0) );
 }
 

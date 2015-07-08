@@ -635,10 +635,10 @@ void GraphWidget::changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
+    concernedEdge->setLabel(label);
     graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
     edgeLabel->setPlainText(QString(label.c_str()));
-    graph_analysis::Edge::Ptr graph_edge = edge->getEdge();
-    graph_edge->setLabel(label);
+    edge->adjustLabel();
 }
 
 void GraphWidget::removeFocusedEdge()
@@ -1433,11 +1433,17 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_Left:
-                rotate(qreal(-1.13));
+                if(!mDragDrop)
+                {
+                    rotate(qreal(-1.13));
+                }
             break;
 
             case Qt::Key_Right:
-                rotate(qreal( 1.13));
+                if(!mDragDrop)
+                {
+                    rotate(qreal( 1.13));
+                }
             break;
 
             case Qt::Key_CapsLock:
