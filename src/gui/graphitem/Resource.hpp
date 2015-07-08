@@ -45,6 +45,7 @@ public:
 
     void releaseFocus();
     void updateWidth ();
+    void updateHeight();
 
 protected:
     void grabFocus();

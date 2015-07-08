@@ -128,6 +128,20 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    this->update(rect);
 }
 
+void Resource::updateHeight()
+{
+    QRectF rect = boundingRect();
+    int slotCount = 1; // one for the node label
+    int nslots = mLabels.size();
+    if(nslots)
+    {
+        slotCount += 1 + nslots; // the n ports and the pad between them and the node label
+    }
+    rect.setHeight(slotCount * ADJUST);
+    mpBoard->resize(rect.size());
+    this->update(rect);
+}
+
 void Resource::updateWidth()
 {
     qreal rect_width, max_width = mLabel->boundingRect().width();
@@ -166,7 +180,16 @@ int Resource::addPort(Vertex::Ptr node)
 
 void Resource::removePort(int portID)
 {
-    if(portID < 0 || portID >= (int) mLabels.size())
+    int nports = mLabels.size();
+    if(!nports)
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::removePort: node '")
+                                        + getLabel()
+                                        + "' has no ports whatsoever!";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    if(portID < 0 || portID >= (int) nports)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::removePort: the supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -174,9 +197,7 @@ void Resource::removePort(int portID)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    prepareGeometryChange();
-    removeFromGroup(mLabels[portID]);
-    scene()->removeItem(mLabels[portID]);
+    graphitem::Label *label_to_delete = mLabels[portID];
     // shifting all ports up
     int size = mLabels.size();
     for(int i = portID + 1; i < size; ++i)
@@ -184,12 +205,15 @@ void Resource::removePort(int portID)
         Label *label = mLabels[i];
         label->setPos(label->pos() - QPointF(0., ADJUST));
     }
-    if(mLabels[portID])
-    {
-        delete mLabels[portID];
-    }
     mLabels.erase(mLabels.begin() + portID);
     mVertices.erase(mVertices.begin() + portID);
+    prepareGeometryChange();
+    removeFromGroup(label_to_delete);
+    scene()->removeItem(label_to_delete);
+//    updateHeight();
+    QRectF rect = boundingRect().adjusted(0, 0, 0, - ADJUST);
+    mpBoard->resize(rect.size());
+    this->update(rect);
 }
 
 QRectF Resource::portBoundingRect(int portID)
