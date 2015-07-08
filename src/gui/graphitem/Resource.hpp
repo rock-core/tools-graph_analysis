@@ -46,6 +46,7 @@ public:
     void releaseFocus();
     void updateWidth ();
     void updateHeight();
+    void swapPorts(int port1, int port2);
 
 protected:
     void grabFocus();

@@ -110,6 +110,7 @@ public:
     virtual void releaseFocus ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::releaseFocus is not reimplemented"); }
     virtual void updateWidth  ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateWidth  is not reimplemented"); }
     virtual void updateHeight ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateHeight is not reimplemented"); }
+    virtual void swapPorts(int, int)                    { throw std::runtime_error("graph_analysis::gui::NodeItem::swapPorts is not reimplemented");    }
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);

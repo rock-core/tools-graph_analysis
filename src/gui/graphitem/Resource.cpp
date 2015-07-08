@@ -216,6 +216,36 @@ void Resource::removePort(int portID)
     this->update(rect);
 }
 
+void Resource::swapPorts(int port1, int port2)
+{
+    int portID = port1;
+    if(portID < 0 || portID >= (int) mLabels.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::swapPorts: the first supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    portID = port2;
+    if(portID < 0 || portID >= (int) mLabels.size())
+    {
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::swapPorts: the second supplied portID: ")
+                                        + boost::lexical_cast<std::string>(portID)
+                                        + " is out of array bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    QString str_swap = mLabels[port1]->toPlainText();
+    graph_analysis::Vertex::Ptr vertex_swap = mVertices[port1];
+
+    mLabels[port1]->setPlainText(mLabels[port2]->toPlainText());
+    mVertices[port1] = mVertices[port2];
+
+    mLabels[port2]->setPlainText(str_swap);
+    mVertices[port2] = vertex_swap;
+}
+
 QRectF Resource::portBoundingRect(int portID)
 {
     if(portID < 0 || portID >= (int) mLabels.size())

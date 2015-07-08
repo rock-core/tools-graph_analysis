@@ -828,6 +828,12 @@ void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID
     }
     mpEndVertex     = endVertex;
     NodeItem *item  = mNodeItemMap[endVertex];
+    if(!item)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::setEndVertex: provided vertex '") + endVertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
     mpEndPort       = item->getPort(portID);
     if("graph_analysis::PortVertex" != mpEndPort->getClassName())
     {
@@ -836,7 +842,17 @@ void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    addEdgeAdHoc(); // unconditionally trigger edge insertion
+    NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
+    NodeItem *targetNodeItem = item;
+    if(sourceNodeItem == targetNodeItem)
+    {
+        // preventing self-edges and handling it into ports swapping
+        sourceNodeItem->swapPorts(mPortIDMap[mpStartPort], mPortIDMap[mpEndPort]);
+    }
+    else
+    {
+        addEdgeAdHoc(); // unconditionally trigger edge insertion
+    }
 }
 
 void GraphWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fields are properly set already
@@ -857,6 +873,11 @@ void GraphWidget::spawnEdge(const std::string& label) // assumes the concerned e
     NodeItem *targetNodeItem = mNodeItemMap[mpEndVertex];
     if(sourceNodeItem && targetNodeItem)
     {
+        if(sourceNodeItem == targetNodeItem)
+        {
+            // preventing self-edges (handled it into ports swapping already)
+            return;
+        }
         Edge::Ptr edge(new Edge(mpStartPort, mpEndPort, label));
         mpGraph->addEdge(edge);
         enableEdge(edge);
@@ -867,7 +888,7 @@ void GraphWidget::spawnEdge(const std::string& label) // assumes the concerned e
         scene()->addItem(edgeItem);
         edgeItem->adjust();
         mEdgeItemMap[default_edge] = edgeItem;
-//        mpGVGraph->addEdge(default_edge); // not vital since the mpGVGraph gets updated every single time before (rendering with) layouting engines
+//            mpGVGraph->addEdge(default_edge); // not vital since the mpGVGraph gets updated every single time before (rendering with) layouting engines
     }
     else
     {
