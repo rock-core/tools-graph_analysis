@@ -90,13 +90,22 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     //painter->drawEllipse(-7, -7, 20, 20);
     painter->setPen(QPen(Qt::black, 0));
     int port_count = mLabels.size();
+//    qreal rect_width, max_width = mLabel->boundingRect().width();
+    QRectF rect;
     for(int i = 0; i < port_count; ++i)
     {
-        painter->drawRect(portBoundingRect(i));
+        rect = portBoundingRect(i);
+//        rect_width = rect.width();
+//        if(max_width < rect_width)
+//        {
+//            max_width = rect_width;
+//        }
+        painter->drawRect(rect);
     }
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
-    QRectF rect = boundingRect();
+    rect = boundingRect();
+//    rect.setWidth(max_width);
     painter->drawRect(rect); //-7,-7,20,20);
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
@@ -114,6 +123,8 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    painter->setPen(QPen(Qt::black, 0));
 //    painter->drawEllipse(-10, -10, 20, 20);
     mpBoard->resize(rect.width(), rect.height());
+//    mpBoard->resize(max_width, rect.height());
+//    this->update(rect);
 }
 
 int Resource::addPort(Vertex::Ptr node)

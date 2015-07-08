@@ -21,7 +21,7 @@ Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWi
     setTextInteractionFlags(Qt::NoTextInteraction);
 //    setTextInteractionFlags(Qt::TextEditorInteraction);
     setFlag(ItemIsMovable, false);
-    setAcceptHoverEvents(true);
+    setAcceptHoverEvents(false);
     setAcceptDrops(true);
 }
 
