@@ -400,8 +400,9 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
     bool ok;
     QStringList ports_options;
     int portID = 0;
-    foreach(graph_analysis::Vertex::Ptr vertex, item->getVertices())
+    foreach(NodeItem::VTuple tuple, item->getVertices())
     {
+        graph_analysis::Vertex::Ptr vertex = tuple.second;
         std::string option = boost::lexical_cast<std::string>(portID++) + ": " + vertex->getLabel();
         ports_options << tr(option.c_str());
     }

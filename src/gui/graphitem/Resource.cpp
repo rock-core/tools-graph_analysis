@@ -146,8 +146,9 @@ void Resource::updateWidth()
 {
     qreal rect_width, max_width = mLabel->boundingRect().width();
     QRectF rect;
-    foreach(graphitem::Label *label, mLabels)
+    foreach(Tuple tuple, mLabels)
     {
+        graphitem::Label *label = tuple.second;
         rect = label->boundingRect();
         rect_width = rect.width();
         if(max_width < rect_width)
@@ -172,8 +173,8 @@ int Resource::addPort(Vertex::Ptr node)
     }
     int size = mLabels.size();
     Label *label = new Label(node->getLabel(), this, mpGraphWidget, size);
-    mLabels.push_back(label);
-    mVertices.push_back(node);
+    mLabels[size] = label;
+    mVertices[size] = node;
     label->setPos(mLabel->pos() + QPointF(0., qreal(2 + size) * ADJUST));
     return size; // returning this port's offset in the vector of ports
 }
@@ -205,12 +206,11 @@ void Resource::removePort(int portID)
         Label *label = mLabels[i];
         label->setPos(label->pos() - QPointF(0., ADJUST));
     }
-    mLabels.erase(mLabels.begin() + portID);
-    mVertices.erase(mVertices.begin() + portID);
+    mLabels.erase(mLabels.find(portID));
+    mVertices.erase(mVertices.find(portID));
     prepareGeometryChange();
     removeFromGroup(label_to_delete);
     scene()->removeItem(label_to_delete);
-//    updateHeight();
     QRectF rect = boundingRect().adjusted(0, 0, 0, - ADJUST);
     mpBoard->resize(rect.size());
     this->update(rect);
@@ -264,8 +264,9 @@ QRectF Resource::portBoundingRect(int portID)
 
 void Resource::removePorts()
 {
-    foreach(graphitem::Label *label, mLabels)
+    foreach(Tuple tuple, mLabels)
     {
+        graphitem::Label *label = tuple.second;
         this->removeFromGroup(label);
         scene()->removeItem(label);
     }

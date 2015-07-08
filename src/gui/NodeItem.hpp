@@ -64,8 +64,10 @@ class QGraphicsSceneMouseEvent;
 class NodeItem : public QGraphicsItemGroup
 {
 public:
-    typedef std::vector<graphitem::Label*> Labels;
-    typedef std::vector<graph_analysis::Vertex::Ptr> Vertices;
+    typedef std::map<int, graphitem::Label*> Labels;
+    typedef std::pair<int, graphitem::Label*> Tuple;
+    typedef std::pair<int, graph_analysis::Vertex::Ptr> VTuple;
+    typedef std::map<int, graph_analysis::Vertex::Ptr> Vertices;
 protected:
     NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
 
