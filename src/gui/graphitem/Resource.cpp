@@ -169,7 +169,7 @@ int Resource::addPort(Vertex::Ptr node)
     Label *label = new Label(node->getLabel(), this, mpGraphWidget, mID);
     mLabels[mID] = label;
     mVertices[mID] = node;
-    label->setPos(mLabel->pos() + QPointF(0., qreal(2 + mID) * ADJUST));
+    label->setPos(mLabel->pos() + QPointF(0., qreal(1 + mLabels.size()) * ADJUST));
     return mID++; // returning this port's offset in the vector of ports
 }
 
