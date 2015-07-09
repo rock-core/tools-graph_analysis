@@ -92,6 +92,8 @@ Posted: 	January 22, 2014
 
 remove.png
 ----------
+removeAll.png
+----------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	16x16 Free Application Icons (http://www.softicons.com/toolbar-icons/16x16-free-application-icons-by-aha-soft)

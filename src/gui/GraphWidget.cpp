@@ -189,7 +189,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["remove"], pathToIcons + "remove.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["removeAll"], pathToIcons + "remove.png");
+    loadIcon(mIconMap["removeAll"], pathToIcons + "removeAll.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["addPort"], pathToIcons + "addPort.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
