@@ -186,13 +186,13 @@ void Resource::removePort(int portID)
     }
     dieOnPort(portID, "removePort");
     graphitem::Label *label_to_delete = mLabels[portID];
-    // shifting all ports up
-//    Labels::iterator it = mLabels.find(portID);
-//    for(++it; mLabels.end() != it; ++it)
-//    {
-//        Label *label = it->second;
-//        label->setPos(label->pos() - QPointF(0., ADJUST));
-//    }
+    // shifting up all ports initially under the port-to-be-removed
+    Labels::iterator it = mLabels.find(portID);
+    for(++it; mLabels.end() != it; ++it)
+    {
+        Label *label = it->second;
+        label->setPos(label->pos() - QPointF(0., ADJUST));
+    }
     mLabels.erase(mLabels.find(portID));
     mVertices.erase(mVertices.find(portID));
     prepareGeometryChange();
@@ -209,6 +209,7 @@ void Resource::removePort(int portID)
     }
     mpBoard->resize(rect.size());
     this->update(rect);
+    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
 void Resource::swapPorts(int port1, int port2)
@@ -225,17 +226,6 @@ void Resource::swapPorts(int port1, int port2)
 
     mLabels[port2]->setPlainText(str_swap);
     mVertices[port2] = vertex_swap;
-}
-
-QRectF Resource::portBoundingRect(int portID)
-{
-    dieOnPort(portID, "portBoundingRect");
-    QRectF result = boundingRect();
-    Labels::iterator it = mLabels.find(portID);
-    int offset = std::distance(mLabels.begin(), it);
-    result.adjust(0,  qreal(2 + offset) * ADJUST, 0, qreal(3 + offset) * ADJUST - result.height()); // forward enumeration
-//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
-    return result;
 }
 
 void Resource::removePorts()
@@ -281,12 +271,25 @@ void Resource::syncLabel(int portID)
     }
 }
 
+QRectF Resource::portBoundingRect(int portID)
+{
+    dieOnPort(portID, "portBoundingRect");
+    QRectF result = boundingRect();
+    Labels::iterator it = mLabels.find(portID);
+    int offset = std::distance(mLabels.begin(), it);
+    result.adjust(0,  qreal(2 + offset) * ADJUST, 0, qreal(3 + offset) * ADJUST - result.height()); // forward enumeration
+//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
+    return result;
+}
+
 QPolygonF Resource::portBoundingPolygon(int portID)
 {
     dieOnPort(portID, "portBoundingPolygon");
     QRectF result = boundingRect();
-    result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
-//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
+    Labels::iterator it = mLabels.find(portID);
+    int offset = std::distance(mLabels.begin(), it);
+    result.adjust(0,  qreal(2 + offset) * ADJUST, 0, qreal(3 + offset) * ADJUST - result.height()); // forward enumeration
+//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
     return QPolygonF(result);
 }
 
