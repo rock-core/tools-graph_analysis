@@ -141,6 +141,7 @@ void Resource::updateHeight()
     rect.setHeight(slotCount * ADJUST);
     mpBoard->resize(rect.size());
     this->update(rect);
+    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
 void Resource::updateWidth()
@@ -161,6 +162,7 @@ void Resource::updateWidth()
     rect.setWidth(max_width);
     mpBoard->resize(max_width, rect.height());
     this->update(rect);
+    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
 int Resource::addPort(Vertex::Ptr node)
@@ -211,7 +213,15 @@ void Resource::removePort(int portID)
     prepareGeometryChange();
     removeFromGroup(label_to_delete);
     scene()->removeItem(label_to_delete);
-    QRectF rect = boundingRect().adjusted(0, 0, 0, - ADJUST);
+    QRectF rect;
+    if(!mLabels.size())
+    {
+        rect = mLabel->boundingRect();
+    }
+    else
+    {
+        rect = boundingRect().adjusted(0, 0, 0, - ADJUST);
+    }
     mpBoard->resize(rect.size());
     this->update(rect);
 }
@@ -307,7 +317,7 @@ void Resource::syncLabel(int portID)
         if(mpVertex->getLabel() != label)
         {
             mpVertex->setLabel(label);
-            update();
+            updateWidth();
         }
         return;
     }
