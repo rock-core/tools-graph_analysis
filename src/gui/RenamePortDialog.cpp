@@ -1,4 +1,5 @@
 #include "RenamePortDialog.hpp"
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 
@@ -33,10 +34,9 @@ void RenamePortDialog::setupUi(QDialog *Dialog)
     label_2->setObjectName(QString::fromUtf8("label_2"));
     label_2->setGeometry(QRect(20, 70, 91, 31));
     comboBox = new QComboBox(Dialog);
-    int ports = mpNodeItem->getPortCount();
-    for(int i = 0; i < ports; ++i)
+    foreach(NodeItem::VTuple tuple, mpNodeItem->getVertices())
     {
-        std::string item = boost::lexical_cast<std::string>(i) + ": " + mpNodeItem->getPort(i)->getLabel();
+        std::string item = boost::lexical_cast<std::string>(tuple.first) + ": " + tuple.second->getLabel();
         comboBox->addItem(QString(item.c_str()));
     }
     comboBox->setObjectName(QString::fromUtf8("comboBox"));

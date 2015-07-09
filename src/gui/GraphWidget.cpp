@@ -399,11 +399,10 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
     }
     bool ok;
     QStringList ports_options;
-    int portID = 0;
     foreach(NodeItem::VTuple tuple, item->getVertices())
     {
         graph_analysis::Vertex::Ptr vertex = tuple.second;
-        std::string option = boost::lexical_cast<std::string>(portID++) + ": " + vertex->getLabel();
+        std::string option = boost::lexical_cast<std::string>(tuple.first) + ": " + vertex->getLabel();
         ports_options << tr(option.c_str());
     }
     QString strPortID = QInputDialog::getItem(this, tr("Choose Port to Remove"),
@@ -412,6 +411,7 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
     if (ok && !strPortID.isEmpty())
     {
         std::stringstream ss(strPortID.toStdString());
+        int portID;
         ss >> portID;
         // remove conceptual edges
         EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getPort(portID));
@@ -441,7 +441,6 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
                         mpLayoutingGraph->removeEdge(edge);
                         syncEdgeItemMap(edge);
                         scene()->removeItem(edgeItem);
-                        break;
                     }
             }
         }
@@ -1776,12 +1775,20 @@ void GraphWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
                 while(edgeIt->next())
                 {
                     Edge::Ptr edge = edgeIt->current();
-                    EdgeItem *edgeItem = mEdgeItemMap[edge];
-                    if(edgeItem)
+                    if(mEdgeItemMap.count(edge))
+                    {
+                        EdgeItem *edgeItem = mEdgeItemMap[edge];
+                        if(edgeItem)
+                        {
+                            mpLayoutingGraph->removeEdge(edge);
+                            syncEdgeItemMap(edge);
+                            scene()->removeItem(edgeItem);
+                        }
+                    }
+                    else
                     {
                         mpLayoutingGraph->removeEdge(edge);
                         syncEdgeItemMap(edge);
-                        scene()->removeItem(edgeItem);
                     }
                 }
                 // remove ports graphics
