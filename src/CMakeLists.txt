@@ -22,6 +22,7 @@ rock_library(graph_analysis
         gui/graphitem/Label.cpp
         gui/GraphWidget.cpp
         gui/AddNodeDialog.cpp
+        gui/SwapPortsDialog.cpp
         gui/RenamePortDialog.cpp
         gui/ActionCommander.cpp
         gui/Main.cpp
@@ -84,6 +85,7 @@ rock_library(graph_analysis
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
         gui/AddNodeDialog.hpp
+        gui/SwapPortsDialog.hpp
         gui/RenamePortDialog.hpp
         gui/PropertyDialog.hpp
         gui/CustomDialog.hpp
@@ -128,6 +130,7 @@ rock_library(graph_analysis
         gui/GraphWidget.hpp
         gui/AddNodeDialog.hpp
         gui/PropertyDialog.hpp
+        gui/SwapPortsDialog.hpp
         gui/RenamePortDialog.hpp
     DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui

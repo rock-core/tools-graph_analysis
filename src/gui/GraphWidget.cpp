@@ -41,11 +41,12 @@
 #include "GraphWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
+#include "AddNodeDialog.hpp"
+#include "PropertyDialog.hpp"
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
-#include "AddNodeDialog.hpp"
-#include "PropertyDialog.hpp"
+#include "SwapPortsDialog.hpp"
 #include "RenamePortDialog.hpp"
 
 #include <set>
@@ -196,6 +197,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     loadIcon(mIconMap["move"], pathToIcons + "move.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["reload"], pathToIcons + "reload.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["swap"], pathToIcons + "swap.png");
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -237,10 +240,11 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QMenu contextMenu(tr("Context menu"), this);
 
     QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeSelectedEdgeLabel()), mIconMap["label"]);
-    QAction *actionRemoveEdge = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
+    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
     QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
-    QAction *actionRemoveNode = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
-    QAction *actionAddPort = comm.addAction("Add Port", SLOT(addPortSelected()), mIconMap["addPort"]);
+    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
+    QAction *actionAddPort     = comm.addAction("Add Port", SLOT(addPortSelected()), mIconMap["addPort"]);
+    QAction *actionSwapPorts   = comm.addAction("Swap Ports", SLOT(swapPortsSelected()), mIconMap["swap"]);
     QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortSelected()), mIconMap["portLabel"]);
     QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortSelected()), mIconMap["remove"]);
     QAction *actionRemovePorts = comm.addAction("Remove ALL Ports", SLOT(removePortsSelected()), mIconMap["removeAll"]);
@@ -269,6 +273,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
         }
         contextMenu.addAction(actionChangeLabel);
         contextMenu.addAction(actionAddPort);
+        contextMenu.addAction(actionSwapPorts);
         contextMenu.addAction(actionRenamePort);
         contextMenu.addAction(actionRemovePort);
         contextMenu.addAction(actionRemovePorts);
@@ -1807,6 +1812,53 @@ void GraphWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
     if(mEdgeItemMap.end() != it)
     {
         mEdgeItemMap.erase(it);
+    }
+}
+
+void GraphWidget::swapPortsFocused()
+{
+    swapPorts(mpFocusedVertex);
+}
+
+void GraphWidget::swapPortsSelected()
+{
+    swapPorts(mpSelectedVertex);
+}
+
+void GraphWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
+{
+    NodeItem *item = mNodeItemMap[concernedVertex];
+    if(!item)
+    {
+        std::string error_msg = std::string("graph_analysis::GraphWidget::swapPorts: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
+    int portCount = item->getPortCount();
+    if(portCount < 2)
+    {
+        QMessageBox::critical(this, tr("Cannot Swap Ports"), tr("The selected vertex had not enough ports!"));
+        return;
+    }
+    SwapPortsDialog dialog(item);
+    if(dialog.isValid())
+    {
+        std::string strPort1ID   = dialog.getPort1ID();
+        std::string strPort2ID   = dialog.getPort2ID();
+        int port1ID;
+        std::stringstream ss1(strPort1ID);
+        ss1 >> port1ID;
+        int port2ID;
+        std::stringstream ss2(strPort2ID);
+        ss1 >> port2ID;
+        if(port1ID - port2ID)
+        {
+            item->swapPorts(port1ID, port2ID);
+        }
+        else
+        {
+            QMessageBox::information(this, tr("Swapped Ports In-place"), tr("identical ports were selected!"));
+        }
     }
 }
 

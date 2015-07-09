@@ -183,6 +183,7 @@ public:
     void changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const std::string& label);
     void clearEdge(graph_analysis::Edge::Ptr concernedEdge);
     void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
+    void swapPorts(graph_analysis::Vertex::Ptr concernedVertex);
 
 public slots:
     void shuffle();
@@ -211,6 +212,8 @@ public slots:
     void changeSelectedEdgeLabel();
     void removeFocusedEdge();
     void removeSelectedEdge();
+    void swapPortsFocused();
+    void swapPortsSelected();
     void importGraph();
     void exportGraph();
     void updateDragDrop(bool dragDrop);

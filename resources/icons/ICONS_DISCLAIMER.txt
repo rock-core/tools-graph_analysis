@@ -132,3 +132,10 @@ License: 	CC Attribution 3.0 Unported (http://creativecommons.org/licenses/by/3.
 Commercial usage:   	Allowed
 Posted: 	January 22, 2014
 
+swap.png
+----------
+taken_from: www.uxrepo.com
+URL: http://uxrepo.com/icon/arrow-swap-by-ionicons
+commercial_usage: allowed
+license: labeled for reuse and open source
+
