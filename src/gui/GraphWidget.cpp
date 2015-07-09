@@ -419,15 +419,6 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
         {
             Edge::Ptr edge = edgeIt->current();
             mpGraph->removeEdge(edge);
-//            if(mEdgeItemMap.count(edge))
-//            {
-//                EdgeItem* edgeItem = mEdgeItemMap[edge];
-//                scene()->removeItem(edgeItem);
-//                if(edgeItem)
-//                {
-//                    delete edgeItem;
-//                }
-//            }
         }
         // remove physical edges and their graphics
         graph_analysis::Vertex::Ptr cluster = item->getVertex();
@@ -439,11 +430,16 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
             {
                 EdgeItem *edgeItem = mEdgeItemMap[edge];
                 if  (
-                        (item == edgeItem->sourceNodeItem() && portID == edgeItem->getSourcePortID()) ||
-                        (item == edgeItem->targetNodeItem() && portID == edgeItem->getTargetPortID())
+                        edgeItem
+                            &&
+                        (
+                            (item == edgeItem->sourceNodeItem() && portID == edgeItem->getSourcePortID()) ||
+                            (item == edgeItem->targetNodeItem() && portID == edgeItem->getTargetPortID())
+                        )
                     )
                     {
                         mpLayoutingGraph->removeEdge(edge);
+                        syncEdgeItemMap(edge);
                         scene()->removeItem(edgeItem);
                         break;
                     }
@@ -709,6 +705,7 @@ void GraphWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
         }
     }
     mpLayoutingGraph->removeEdge(concernedEdge);
+    syncEdgeItemMap(concernedEdge);
 }
 
 void GraphWidget::removeFocusedVertex()
@@ -766,6 +763,7 @@ void GraphWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
         {
             scene()->removeItem(edgeItem);
         }
+        syncEdgeItemMap(edge);
 //        mpLayoutingGraph->removeEdge(edge); // commented out since it introduces bugs when mpLayoutingGraph is dirty
     }
 //    mpLayoutingGraph->removeVertex(concernedVertex); // commented out since it introduces bugs when mpLayoutingGraph is 'dirty'
@@ -1763,9 +1761,9 @@ void GraphWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
         {
             case QMessageBox::Yes:
                 // remove conceptual edges
-                for(int i = 0; i < nports; ++i)
+                foreach(NodeItem::VTuple tuple, item->getVertices())
                 {
-                    edgeIt = mpGraph->getEdgeIterator(item->getPort(i));
+                    edgeIt = mpGraph->getEdgeIterator(tuple.second);
                     while(edgeIt->next())
                     {
                         Edge::Ptr edge = edgeIt->current();
@@ -1782,6 +1780,7 @@ void GraphWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
                     if(edgeItem)
                     {
                         mpLayoutingGraph->removeEdge(edge);
+                        syncEdgeItemMap(edge);
                         scene()->removeItem(edgeItem);
                     }
                 }
@@ -1792,6 +1791,15 @@ void GraphWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
             default:
             break;
         }
+    }
+}
+
+void GraphWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
+{
+    EdgeItemMap::iterator it = mEdgeItemMap.find(concernedEdge);
+    if(mEdgeItemMap.end() != it)
+    {
+        mEdgeItemMap.erase(it);
     }
 }
 

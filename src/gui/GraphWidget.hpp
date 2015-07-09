@@ -182,6 +182,7 @@ public:
     void clearVertex(graph_analysis::Vertex::Ptr concernedVertex);
     void changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const std::string& label);
     void clearEdge(graph_analysis::Edge::Ptr concernedEdge);
+    void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
 
 public slots:
     void shuffle();

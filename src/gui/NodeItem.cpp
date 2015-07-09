@@ -139,7 +139,10 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
             for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
             {
                 EdgeItem* edge = it->second;
-                edge->adjust();
+                if(edge)
+                {
+                    edge->adjust();
+                }
             }
             mpGraphWidget->itemMoved();
             break;

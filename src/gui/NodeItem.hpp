@@ -84,7 +84,6 @@ public:
     virtual QPolygonF portBoundingPolygon   (int portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingPolygon is not reimplemented");    }
     virtual QRectF    portBoundingRect      (int portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingRect is not reimplemented");       }
     virtual void setPortLabel(int portID, const std::string& label) { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortLabel is not reimplemented"); }
-    virtual Vertices getVertices() { throw std::runtime_error("graph_analysis::gui::NodeItem::getVertices is not reimplemented"); }
 
     /**
      * Get the center position of this node item
@@ -114,6 +113,9 @@ public:
     virtual void updateHeight ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateHeight is not reimplemented"); }
     virtual void swapPorts(int, int)                    { throw std::runtime_error("graph_analysis::gui::NodeItem::swapPorts is not reimplemented");    }
     virtual void removePorts()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::removePorts is not reimplemented");  }
+    virtual Labels      getLabels()     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabels is not reimplemented");   }
+    virtual Vertices    getVertices()   { throw std::runtime_error("graph_analysis::gui::NodeItem::getVertices is not reimplemented"); }
+
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);

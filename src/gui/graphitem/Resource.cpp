@@ -42,14 +42,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 
 void Resource::setPortLabel(int portID, const std::string& label)
 {
-    if(portID < 0)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::setPortLabel: the supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
+    dieOnPort(portID, "setPortLabel");
     mLabels[portID]->setPlainText(QString(label.c_str()));
     mVertices[portID]->setLabel(label);
 }
@@ -91,12 +84,11 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     //painter->setBrush(mPen.brush());
     //painter->drawEllipse(-7, -7, 20, 20);
     painter->setPen(QPen(Qt::black, 0));
-    int port_count = mLabels.size();
 //    qreal rect_width, max_width = mLabel->boundingRect().width();
     QRectF rect;
-    for(int i = 0; i < port_count; ++i)
+    foreach(Tuple tuple, mLabels)
     {
-        rect = portBoundingRect(i);
+        rect = portBoundingRect(tuple.first);
 //        rect_width = rect.width();
 //        if(max_width < rect_width)
 //        {
@@ -192,22 +184,15 @@ void Resource::removePort(int portID)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    if(portID < 0)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::removePort: the supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
+    dieOnPort(portID, "removePort");
     graphitem::Label *label_to_delete = mLabels[portID];
     // shifting all ports up
-    Labels::iterator it = mLabels.find(portID);
-    for(++it; mLabels.end() != it; ++it)
-    {
-        Label *label = it->second;
-        label->setPos(label->pos() - QPointF(0., ADJUST));
-    }
+//    Labels::iterator it = mLabels.find(portID);
+//    for(++it; mLabels.end() != it; ++it)
+//    {
+//        Label *label = it->second;
+//        label->setPos(label->pos() - QPointF(0., ADJUST));
+//    }
     mLabels.erase(mLabels.find(portID));
     mVertices.erase(mVertices.find(portID));
     prepareGeometryChange();
@@ -229,23 +214,9 @@ void Resource::removePort(int portID)
 void Resource::swapPorts(int port1, int port2)
 {
     int portID = port1;
-    if(portID < 0)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::swapPorts: the first supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
+    dieOnPort(portID, "swapPorts");
     portID = port2;
-    if(portID < 0)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::swapPorts: the second supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
+    dieOnPort(portID, "swapPorts");
     QString str_swap = mLabels[port1]->toPlainText();
     graph_analysis::Vertex::Ptr vertex_swap = mVertices[port1];
 
@@ -258,14 +229,7 @@ void Resource::swapPorts(int port1, int port2)
 
 QRectF Resource::portBoundingRect(int portID)
 {
-    if(portID < 0)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingRect: the supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
+    dieOnPort(portID, "portBoundingRect");
     QRectF result = boundingRect();
     Labels::iterator it = mLabels.find(portID);
     int offset = std::distance(mLabels.begin(), it);
@@ -290,27 +254,12 @@ void Resource::removePorts()
 
 graph_analysis::Vertex::Ptr Resource::getPort(int portID)
 {
-    if(portID < 0)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portNode: supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
+    dieOnPort(portID, "getPort");
     return mVertices[portID];
 }
 
 void Resource::syncLabel(int portID)
 {
-    if(portID < -1)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::syncLabel: supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
     if(-1 == portID)
     {
         std::string label = mLabel->toPlainText().toStdString();
@@ -321,6 +270,7 @@ void Resource::syncLabel(int portID)
         }
         return;
     }
+    dieOnPort(portID, "syncLabel");
     graph_analysis::Vertex::Ptr port = mVertices[portID];
     std::string tag = mLabels[portID]->toPlainText().toStdString();
     if(port->getLabel() != tag)
@@ -333,14 +283,7 @@ void Resource::syncLabel(int portID)
 
 QPolygonF Resource::portBoundingPolygon(int portID)
 {
-    if(portID < 0)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingPolygon: the supplied portID: ")
-                                        + boost::lexical_cast<std::string>(portID)
-                                        + " is out of array bounds";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
+    dieOnPort(portID, "portBoundingPolygon");
     QRectF result = boundingRect();
     result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
 //    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
@@ -418,6 +361,21 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     mSelected = false;
     mpGraphWidget->setVertexSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
+}
+
+void Resource::dieOnPort(int portID, const std::string& caller)
+{
+    if(mLabels.count(portID))
+    {
+        return;
+    }
+
+    std::string method = ("" == caller) ? "die" : caller;
+    std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::") + method + ": the supplied portID: "
+                                    + boost::lexical_cast<std::string>(portID)
+                                    + " is not registered";
+    LOG_ERROR_S << error_msg;
+    throw std::runtime_error(error_msg);
 }
 
 //void Resource::keyPressEvent(QKeyEvent* event)

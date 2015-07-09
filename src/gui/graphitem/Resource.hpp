@@ -22,7 +22,6 @@ public:
     Resource() {}
     virtual ~Resource() {};
 
-    Vertices getVertices() { return mVertices; }
     void changeLabel(const std::string& label);
     std::string  getLabel() { return mLabel->toPlainText().toStdString(); }
     void updateLabel();
@@ -49,6 +48,9 @@ public:
     void swapPorts(int port1, int port2);
     void removePorts();
 
+    Labels      getLabels()     { return mLabels;   }
+    Vertices    getVertices()   { return mVertices; }
+
 protected:
     void grabFocus();
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
@@ -56,6 +58,7 @@ protected:
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
+    void dieOnPort(int portID, const std::string& caller = "");
 
     //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
