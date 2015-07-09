@@ -265,7 +265,7 @@ private:
     EdgeMap mEdgeMap;
 
     int mTimerId;
-    /// if |mScaleFactor| > 1.0, it makes edges longer; it makes them shorter otherwise ||| if negative, it rotates the graph 180 degrees
+    /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees
     double mScaleFactor;
     QString mLayout;
 
