@@ -261,7 +261,7 @@ private:
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
     EdgeItemMap mEdgeItemMap;
-    // Allow mapping from default graph edges to their main graph edges correspondents
+    // Allow mapping from default graph edges (edges not part of the model but used to layou the GUI graph) to their main graph edges correspondents (mainly needed for labels updating)
     EdgeMap mEdgeMap;
 
     int mTimerId;

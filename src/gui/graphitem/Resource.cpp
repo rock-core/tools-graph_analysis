@@ -21,6 +21,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mPenDefault(Qt::blue)
     , mFocused(false)
     , mSelected(false)
+    , mID(0)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
 //    setFlag(ItemIsFocusable);
@@ -41,7 +42,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 
 void Resource::setPortLabel(int portID, const std::string& label)
 {
-    if(portID < 0 || portID >= (int) mLabels.size())
+    if(portID < 0)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::setPortLabel: the supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -171,12 +172,11 @@ int Resource::addPort(Vertex::Ptr node)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    int size = mLabels.size();
-    Label *label = new Label(node->getLabel(), this, mpGraphWidget, size);
-    mLabels[size] = label;
-    mVertices[size] = node;
-    label->setPos(mLabel->pos() + QPointF(0., qreal(2 + size) * ADJUST));
-    return size; // returning this port's offset in the vector of ports
+    Label *label = new Label(node->getLabel(), this, mpGraphWidget, mID);
+    mLabels[mID] = label;
+    mVertices[mID] = node;
+    label->setPos(mLabel->pos() + QPointF(0., qreal(2 + mID) * ADJUST));
+    return mID++; // returning this port's offset in the vector of ports
 }
 
 void Resource::removePort(int portID)
@@ -190,7 +190,7 @@ void Resource::removePort(int portID)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    if(portID < 0 || portID >= (int) nports)
+    if(portID < 0)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::removePort: the supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -200,10 +200,10 @@ void Resource::removePort(int portID)
     }
     graphitem::Label *label_to_delete = mLabels[portID];
     // shifting all ports up
-    int size = mLabels.size();
-    for(int i = portID + 1; i < size; ++i)
+    Labels::iterator it = mLabels.find(portID);
+    for(++it; mLabels.end() != it; ++it)
     {
-        Label *label = mLabels[i];
+        Label *label = it->second;
         label->setPos(label->pos() - QPointF(0., ADJUST));
     }
     mLabels.erase(mLabels.find(portID));
@@ -219,7 +219,7 @@ void Resource::removePort(int portID)
 void Resource::swapPorts(int port1, int port2)
 {
     int portID = port1;
-    if(portID < 0 || portID >= (int) mLabels.size())
+    if(portID < 0)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::swapPorts: the first supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -228,7 +228,7 @@ void Resource::swapPorts(int port1, int port2)
         throw std::runtime_error(error_msg);
     }
     portID = port2;
-    if(portID < 0 || portID >= (int) mLabels.size())
+    if(portID < 0)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::swapPorts: the second supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -248,7 +248,7 @@ void Resource::swapPorts(int port1, int port2)
 
 QRectF Resource::portBoundingRect(int portID)
 {
-    if(portID < 0 || portID >= (int) mLabels.size())
+    if(portID < 0)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingRect: the supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -257,8 +257,10 @@ QRectF Resource::portBoundingRect(int portID)
         throw std::runtime_error(error_msg);
     }
     QRectF result = boundingRect();
-    result.adjust(0,  qreal(2 + portID) * ADJUST, 0, qreal(3 + portID) * ADJUST - result.height()); // forward enumeration
-//    result.adjust(0, result.height() - qreal(1 + portID) * ADJUST, 0, - qreal(portID) * ADJUST); // backward enumeration
+    Labels::iterator it = mLabels.find(portID);
+    int offset = std::distance(mLabels.begin(), it);
+    result.adjust(0,  qreal(2 + offset) * ADJUST, 0, qreal(3 + offset) * ADJUST - result.height()); // forward enumeration
+//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
     return result;
 }
 
@@ -278,7 +280,7 @@ void Resource::removePorts()
 
 graph_analysis::Vertex::Ptr Resource::getPort(int portID)
 {
-    if(portID < 0 || portID >= (int) mVertices.size())
+    if(portID < 0)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portNode: supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -291,7 +293,7 @@ graph_analysis::Vertex::Ptr Resource::getPort(int portID)
 
 void Resource::syncLabel(int portID)
 {
-    if(portID < -1 || portID >= (int) mVertices.size())
+    if(portID < -1)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::syncLabel: supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)
@@ -321,7 +323,7 @@ void Resource::syncLabel(int portID)
 
 QPolygonF Resource::portBoundingPolygon(int portID)
 {
-    if(portID < 0 || portID >= (int) mLabels.size())
+    if(portID < 0)
     {
         std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::portBoundingPolygon: the supplied portID: ")
                                         + boost::lexical_cast<std::string>(portID)

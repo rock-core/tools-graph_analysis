@@ -71,6 +71,7 @@ private:
     QPen mPenDefault;
     bool mFocused;
     bool mSelected;
+    unsigned long long mID;
 };
 
 } // end namespace graphitem
