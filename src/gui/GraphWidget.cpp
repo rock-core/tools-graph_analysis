@@ -1403,6 +1403,7 @@ void GraphWidget::setDragDrop()
         if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
             current->setHandlesChildEvents(false); // of !mDragDrop
+            current->setFlag(QGraphicsItem::ItemIsMovable, false);
         }
     }
 }
@@ -1418,6 +1419,7 @@ void GraphWidget::unsetDragDrop()
         if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
         {
             current->setHandlesChildEvents(true); // of !mDragDrop
+            current->setFlag(QGraphicsItem::ItemIsMovable);
         }
     }
 }

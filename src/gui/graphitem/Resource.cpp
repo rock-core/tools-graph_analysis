@@ -36,7 +36,6 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 
     mpBoard = new QGraphicsWidget(this);
     mpBoard->setAcceptHoverEvents(true);
-//    mpBoard->setFlag(QGraphicsWidget::ItemIsMovable, false);
     QRectF rect = boundingRect();
     mpBoard->resize(rect.width(), rect.height());
 }
