@@ -1347,19 +1347,25 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
         QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
         QGraphicsView::mousePressEvent(&fake);
     }
-    else QGraphicsView::mousePressEvent(event);
+    else
+    {
+        QGraphicsView::mousePressEvent(event);
+    }
 }
 
 void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
     {
-        //Use ScrollHand Drag Mode to enable Panning
+        //Use ScrollHand Drag Mode to desable Panning
         setDragMode(NoDrag);
         QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
         QGraphicsView::mouseReleaseEvent(&fake);
     }
-    else QGraphicsView::mouseReleaseEvent(event);
+    else
+    {
+        QGraphicsView::mouseReleaseEvent(event);
+    }
 }
 
 void GraphWidget::updateDragDrop(bool dragDrop)

@@ -74,18 +74,8 @@ int main(int argc, char **argv)
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     QMainWindow mainWindow;
-    mainWindow.setMinimumSize(700, 400);
-//    QDockWidget *dockFrame = new QDockWidget(&mainWindow);
-//    dockFrame->setObjectName(QString::fromUtf8("dockFrame"));
-//    dockFrame->setWindowTitle(QString("Graphview"));
-//    dockFrame->setMinimumSize(400, 400);
-//    dockFrame->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
-//    QHBoxLayout *layout = new QHBoxLayout(dockFrame);
-//    layout->setObjectName(QString::fromUtf8("fillLayout"));
-//    layout->setContentsMargins(0, 0, 0, 0);
-//    dockFrame->setFeatures(QDockWidget::AllDockWidgetFeatures);
-    GraphWidget* widget = new GraphWidget(&mainWindow); //, dockFrame);
-//    layout->addWidget(widget);
+    mainWindow.setMinimumSize(850, 400);
+    GraphWidget* widget = new GraphWidget(&mainWindow, &mainWindow);
     widget->reset();
 
     using namespace graph_analysis;
@@ -286,7 +276,7 @@ int main(int argc, char **argv)
     widget->toFile("graph.dot");
 #endif
 
-    mainWindow.setCentralWidget(widget); // widget);
+    mainWindow.setCentralWidget(widget);
 
 #ifdef IMPORT
     widget->fromXmlFile("/home/clasian/Desktop/current.gexf");
