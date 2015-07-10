@@ -209,14 +209,8 @@ void Resource::removePort(int portID)
 
 void Resource::swapPorts(int port1, int port2)
 {
-    int portID = port1;
-    dieOnPort(portID, "swapPorts");
-    portID = port2;
-    dieOnPort(portID, "swapPorts");
-    // swapping vertex references
-    graph_analysis::Vertex::Ptr vertex_swap = mVertices[port1];
-    mVertices[port1] = mVertices[port2];
-    mVertices[port2] = vertex_swap;
+    dieOnPort(port1, "swapPorts");
+    dieOnPort(port2, "swapPorts");
 
     // swapping GUI labels
 #ifdef LABEL_SWAPPING

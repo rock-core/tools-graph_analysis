@@ -197,7 +197,6 @@ QVariant Label::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
         else
         {
             ((NodeItem *)parentItem())->syncLabel(mPortID);
-//            ((NodeItem *)parentItem())->updateWidth(); // included just above
         }
     }
     if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())

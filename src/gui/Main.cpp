@@ -62,6 +62,7 @@
 #define TESTNO TEST_IMPORT
 //#define RENDER
 #define IMPORT
+#define FILENAME  "/home/clasian/Desktop/port__shifting_test.gexf" // "/home/clasian/Desktop/current.gexf"
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 //#define LAYOUT "dot"
@@ -279,7 +280,10 @@ int main(int argc, char **argv)
     mainWindow.setCentralWidget(widget);
 
 #ifdef IMPORT
-    widget->fromXmlFile("/home/clasian/Desktop/current.gexf");
+    widget->fromXmlFile
+                (
+                    FILENAME
+                );
 #endif
     mainWindow.show();
     return app.exec();
