@@ -101,7 +101,7 @@ public:
     typedef std::map <std::string, io::Reader*> ReaderMap;
     typedef std::map <std::string, QIcon> IconMap;
 
-    GraphWidget(QWidget *parent = 0);
+    GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent = 0);
     ~GraphWidget();
 
     Vertex::Ptr createVertex(const std::string& type, const std::string& label = "");
@@ -241,10 +241,10 @@ private:
 //    void updateGVGraph();
     void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
+    QMainWindow* mpParentWindowWidget;
     graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
 
     /// io components
-
     /// layouting
     io::GVGraph* mpGVGraph;
     /// export

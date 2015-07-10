@@ -93,8 +93,9 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(QWidget *parent)
+GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     : QGraphicsView(parent)
+    , mpParentWindowWidget(parentWindowWidget)
     , mpGraph()
     , mpLayoutingGraph()
     , mpGVGraph(0)
@@ -121,6 +122,7 @@ GraphWidget::GraphWidget(QWidget *parent)
 
     setCacheMode(CacheBackground);
     setContextMenuPolicy(Qt::CustomContextMenu);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
@@ -205,7 +207,7 @@ GraphWidget::GraphWidget(QWidget *parent)
         this, SLOT(showContextMenu(const QPoint &)));
 
     reset();
-    mpPropertyDialog = new PropertyDialog(this, (QMainWindow *)parentWidget());
+    mpPropertyDialog = new PropertyDialog(this, mpParentWindowWidget);
 }
 
 void GraphWidget::loadIcon(QIcon& icon, std::string file)
@@ -506,7 +508,7 @@ void GraphWidget::reloadPropertyDialog()
     {
         delete mpPropertyDialog;
     }
-    mpPropertyDialog = new PropertyDialog(this, (QMainWindow *)parentWidget(), mDragDrop);
+    mpPropertyDialog = new PropertyDialog(this, mpParentWindowWidget, mDragDrop);
 }
 
 Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)

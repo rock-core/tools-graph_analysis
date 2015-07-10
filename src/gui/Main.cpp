@@ -41,9 +41,11 @@
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 
-#include <QApplication>
 #include <QTime>
+#include <QHBoxLayout>
+#include <QDockWidget>
 #include <QMainWindow>
+#include <QApplication>
 
 #include <graph_analysis/gui/graphitem/Resource.hpp>
 #include <boost/foreach.hpp>
@@ -72,7 +74,18 @@ int main(int argc, char **argv)
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     QMainWindow mainWindow;
-    GraphWidget* widget = new GraphWidget(&mainWindow);
+    mainWindow.setMinimumSize(700, 400);
+//    QDockWidget *dockFrame = new QDockWidget(&mainWindow);
+//    dockFrame->setObjectName(QString::fromUtf8("dockFrame"));
+//    dockFrame->setWindowTitle(QString("Graphview"));
+//    dockFrame->setMinimumSize(400, 400);
+//    dockFrame->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+//    QHBoxLayout *layout = new QHBoxLayout(dockFrame);
+//    layout->setObjectName(QString::fromUtf8("fillLayout"));
+//    layout->setContentsMargins(0, 0, 0, 0);
+//    dockFrame->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    GraphWidget* widget = new GraphWidget(&mainWindow); //, dockFrame);
+//    layout->addWidget(widget);
     widget->reset();
 
     using namespace graph_analysis;
@@ -272,7 +285,8 @@ int main(int argc, char **argv)
 #ifdef RENDER
     widget->toFile("graph.dot");
 #endif
-    mainWindow.setCentralWidget(widget);
+
+    mainWindow.setCentralWidget(widget); // widget);
 
 #ifdef IMPORT
     widget->fromXmlFile("/home/clasian/Desktop/current.gexf");
