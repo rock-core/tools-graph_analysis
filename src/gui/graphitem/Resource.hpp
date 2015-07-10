@@ -71,9 +71,7 @@ protected:
 private:
     QGraphicsWidget *mpBoard;
     Label *mLabel;
-    Labels mSlots;
     Labels mLabels;
-    Slots mSlotMap;
     Vertices mVertices;
     QPen mPen;
     QPen mPenDefault;

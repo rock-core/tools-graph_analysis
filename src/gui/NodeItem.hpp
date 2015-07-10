@@ -66,7 +66,6 @@ class QGraphicsSceneMouseEvent;
 class NodeItem : public QGraphicsItemGroup
 {
 public:
-    typedef std::map<graphitem::Label*, int> Slots;
     typedef std::map<int, graphitem::Label*> Labels;
     typedef std::pair<int, graphitem::Label*> Tuple;
     typedef std::pair<int, graph_analysis::Vertex::Ptr> VTuple;

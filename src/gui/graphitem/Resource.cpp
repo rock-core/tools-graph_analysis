@@ -89,17 +89,11 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     foreach(Tuple tuple, mLabels)
     {
         rect = portBoundingRect(tuple.first);
-//        rect_width = rect.width();
-//        if(max_width < rect_width)
-//        {
-//            max_width = rect_width;
-//        }
         painter->drawRect(rect);
     }
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
     rect = boundingRect();
-//    rect.setWidth(max_width);
     painter->drawRect(rect); //-7,-7,20,20);
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
@@ -117,8 +111,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    painter->setPen(QPen(Qt::black, 0));
 //    painter->drawEllipse(-10, -10, 20, 20);
     mpBoard->resize(rect.width(), rect.height());
-//    mpBoard->resize(max_width, rect.height());
-//    this->update(rect);
+    this->update(rect);
 }
 
 void Resource::updateHeight()
@@ -167,10 +160,6 @@ int Resource::addPort(Vertex::Ptr node)
         throw std::runtime_error(error_msg);
     }
     Label *label = new Label(node->getLabel(), this, mpGraphWidget, mID);
-#ifdef LABEL_SWAPPING
-    mSlots[mID] = label;
-    mSlotMap[label] = mID;
-#endif
     mLabels[mID] = label;
     mVertices[mID] = node;
     label->setPos(mLabel->pos() + QPointF(0., qreal(1 + mLabels.size()) * ADJUST));
@@ -197,18 +186,6 @@ void Resource::removePort(int portID)
         Label *label = it->second;
         label->setPos(label->pos() - QPointF(0., ADJUST));
     }
-#ifdef LABEL_SWAPPING
-    it = mSlots.find(portID);
-    mSlotMap.erase(mSlotMap.find(it->second));
-    Labels::iterator cached = it++;
-    for(;mSlots.end() != it; ++it, ++cached)
-    {
-        --mSlotMap[it->second];
-//        --(cached->first); // would be illegal
-        mSlots[cached->first] = it->second;
-    }
-    mSlots.erase(cached);
-#endif
     mLabels.erase(mLabels.find(portID));
     mVertices.erase(mVertices.find(portID));
     prepareGeometryChange();
@@ -245,10 +222,6 @@ void Resource::swapPorts(int port1, int port2)
     QPointF pos2 = mLabels[port2]->pos();
     mLabels[port1]->setPos(pos2);
     mLabels[port2]->setPos(pos1);
-    mSlots[port1]  =  mLabels[port2];
-    mSlots[port2]  =  mLabels[port1];
-    mSlotMap[mLabels[port1]] = port2;
-    mSlotMap[mLabels[port2]] = port1;
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 #else
     QString str_swap = mLabels[port1]->toPlainText();
@@ -265,10 +238,6 @@ void Resource::removePorts()
         this->removeFromGroup(label);
         scene()->removeItem(label);
     }
-#ifdef LABEL_SWAPPING
-    mSlots.clear();
-    mSlotMap.clear();
-#endif
     mLabels.clear();
     mVertices.clear();
     mpBoard->resize(mLabel->boundingRect().size());
@@ -316,7 +285,6 @@ QRectF Resource::portBoundingRect(int portID)
 #else
     qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
     result.adjust(0,  offset, 0, offset + ADJUST - result.height()); // forward enumeration
-//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
 #endif
     return result;
 }
@@ -333,7 +301,6 @@ QPolygonF Resource::portBoundingPolygon(int portID)
 #else
     qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
     result.adjust(0,  offset, 0, offset + ADJUST - result.height()); // forward enumeration
-//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
 #endif
     return QPolygonF(result);
 }
@@ -438,12 +405,12 @@ void Resource::shiftPortUp(int portID)
     {
         dieOnPort(portID, "shiftPortUp");
     }
-    unsigned long long slot = mSlotMap[tuple->second];
-    if(!slot)
-    {
-        return;
-    }
-    swapPorts(mSlots[slot-1]->getPortID(), portID);
+//    unsigned long long slot = mSlotMap[tuple->second];
+//    if(!slot)
+//    {
+//        return;
+//    }
+//    swapPorts(mSlots[slot-1]->getPortID(), portID);
 }
 
 void Resource::shiftPortDown(int portID)
@@ -453,12 +420,12 @@ void Resource::shiftPortDown(int portID)
     {
         dieOnPort(portID, "shiftPortDown");
     }
-    unsigned long long slot = mSlotMap[tuple->second];
-    if(mLabels.size() >= slot - 1)
-    {
-        return;
-    }
-    swapPorts(mSlots[slot+1]->getPortID(), portID);
+//    unsigned long long slot = mSlotMap[tuple->second];
+//    if(mLabels.size() >= slot - 1)
+//    {
+//        return;
+//    }
+//    swapPorts(mSlots[slot+1]->getPortID(), portID);
 }
 
 //void Resource::keyPressEvent(QKeyEvent* event)
