@@ -1,5 +1,6 @@
 #include "Resource.hpp"
 
+#include <cmath>
 #include <QStyle>
 #include <QPainter>
 #include <QStyleOption>
@@ -10,6 +11,7 @@
 #include <exception>
 #include "Label.hpp"
 #define ADJUST 23.69
+#define EPSILON 0.001
 
 namespace graph_analysis {
 namespace gui {
@@ -405,12 +407,23 @@ void Resource::shiftPortUp(int portID)
     {
         dieOnPort(portID, "shiftPortUp");
     }
-//    unsigned long long slot = mSlotMap[tuple->second];
-//    if(!slot)
-//    {
-//        return;
-//    }
-//    swapPorts(mSlots[slot-1]->getPortID(), portID);
+
+    const qreal y = tuple->second->pos().y();
+    qreal delta = y - mLabel->pos().y();
+    if(abs(delta - 2. * ADJUST) < EPSILON) // safety belt against loss in floating point precision
+    {
+        return;
+    }
+    // iterating for closest upper label
+    foreach(Tuple tuple, mLabels)
+    {
+        delta = y - tuple.second->pos().y();
+        if(abs(delta - ADJUST) < EPSILON)
+        {
+            swapPorts(tuple.first, portID);
+            return;
+        }
+    }
 }
 
 void Resource::shiftPortDown(int portID)
@@ -420,12 +433,23 @@ void Resource::shiftPortDown(int portID)
     {
         dieOnPort(portID, "shiftPortDown");
     }
-//    unsigned long long slot = mSlotMap[tuple->second];
-//    if(mLabels.size() >= slot - 1)
-//    {
-//        return;
-//    }
-//    swapPorts(mSlots[slot+1]->getPortID(), portID);
+
+    const qreal y = tuple->second->pos().y();
+    qreal delta = y - mLabel->pos().y();
+    if(abs(delta - (double)(1 + mLabels.size()) * ADJUST) < EPSILON) // safety belt against loss in floating point precision
+    {
+        return;
+    }
+    // iterating for closest lower label
+    foreach(Tuple tuple, mLabels)
+    {
+        delta = tuple.second->pos().y() - y;
+        if(abs(delta - ADJUST) < EPSILON)
+        {
+            swapPorts(tuple.first, portID);
+            return;
+        }
+    }
 }
 
 //void Resource::keyPressEvent(QKeyEvent* event)
