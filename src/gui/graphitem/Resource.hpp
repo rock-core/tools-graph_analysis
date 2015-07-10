@@ -47,6 +47,7 @@ public:
     void updateHeight();
     void swapPorts(int port1, int port2);
     void removePorts();
+    void unselect();
 
     Labels      getLabels()     { return mLabels;   }
     Vertices    getVertices()   { return mVertices; }

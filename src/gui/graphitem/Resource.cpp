@@ -36,6 +36,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 
     mpBoard = new QGraphicsWidget(this);
     mpBoard->setAcceptHoverEvents(true);
+//    mpBoard->setFlag(QGraphicsWidget::ItemIsMovable, false);
     QRectF rect = boundingRect();
     mpBoard->resize(rect.width(), rect.height());
 }
@@ -379,6 +380,11 @@ void Resource::dieOnPort(int portID, const std::string& caller)
                                     + " is not registered";
     LOG_ERROR_S << error_msg;
     throw std::runtime_error(error_msg);
+}
+
+void Resource::unselect()
+{
+    hoverLeaveEvent(new QGraphicsSceneHoverEvent());
 }
 
 //void Resource::keyPressEvent(QKeyEvent* event)

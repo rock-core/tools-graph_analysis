@@ -1391,6 +1391,11 @@ void GraphWidget::setDragDrop()
 {
     mDragDrop = true;
     mpPropertyDialog->setDragDrop(true);
+    if(mVertexSelected)
+    {
+        NodeItem *item = mNodeItemMap[mpSelectedVertex];
+        item->unselect();
+    }
     NodeItemMap::iterator it = mNodeItemMap.begin();
     for(; mNodeItemMap.end() != it; ++it)
     {
