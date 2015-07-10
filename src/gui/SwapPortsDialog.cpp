@@ -30,12 +30,14 @@ void SwapPortsDialog::setupUi(QDialog *Dialog)
     label_2 = new QLabel(Dialog);
     label_2->setObjectName(QString::fromUtf8("label_2"));
     label_2->setGeometry(QRect(20, 70, 91, 31));
+#ifndef LABEL_SWAPPING
     warning = new QLabel(Dialog);
     warning->setObjectName(QString::fromUtf8("warning"));
     warning->setGeometry(QRect(20, 105, 70, 31));
     warningText = new QLabel(Dialog);
     warningText->setObjectName(QString::fromUtf8("warning"));
     warningText->setGeometry(QRect(20, 130, 200, 31));
+#endif
     comboBox1 = new QComboBox(Dialog);
     foreach(NodeItem::VTuple tuple, mpNodeItem->getVertices())
     {
@@ -68,8 +70,10 @@ void SwapPortsDialog::retranslateUi(QDialog *Dialog)
     Dialog -> setWindowTitle(QApplication::translate("Dialog", "Swap Ports", 0, QApplication::UnicodeUTF8));
     label  -> setText(QApplication::translate("Dialog", "Port ID:", 0, QApplication::UnicodeUTF8));
     label_2-> setText(QApplication::translate("Dialog", "Port ID:", 0, QApplication::UnicodeUTF8));
+#ifndef LABEL_SWAPPING
     warning-> setText(QApplication::translate("Dialog", "Warning:", 0, QApplication::UnicodeUTF8));
     warningText -> setText(QApplication::translate("Dialog", "Edges are not affected by the change!", 0, QApplication::UnicodeUTF8));
+#endif
 } // retranslateUi
 
 void SwapPortsDialog::nodeAccept()

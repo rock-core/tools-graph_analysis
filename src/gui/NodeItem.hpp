@@ -50,6 +50,8 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/gui/graphitem/Label.hpp>
 
+#define LABEL_SWAPPING
+
 namespace graph_analysis {
 namespace gui {
 
@@ -64,6 +66,7 @@ class QGraphicsSceneMouseEvent;
 class NodeItem : public QGraphicsItemGroup
 {
 public:
+    typedef std::map<graphitem::Label*, int> Slots;
     typedef std::map<int, graphitem::Label*> Labels;
     typedef std::pair<int, graphitem::Label*> Tuple;
     typedef std::pair<int, graph_analysis::Vertex::Ptr> VTuple;
@@ -108,6 +111,8 @@ public:
     virtual graph_analysis::Vertex::Ptr getPort(int portID)    {throw std::runtime_error("graph_analysis::gui::NodeItem::getPort is not reimplemented");}
     virtual std::string  getLabel()                     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabel is not reimplemented");     }
     virtual void syncLabel(int portID)                  { throw std::runtime_error("graph_analysis::gui::NodeItem::syncLabel is not reimplemented");    }
+    virtual void shiftPortUp(int portID)                { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftPortUp is not reimplemented");  }
+    virtual void shiftPortDown(int portID)              { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftPortDown is not reimplemented");}
     virtual void prepareChange()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::prepareChange is not reimplemented");}
     virtual void releaseFocus ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::releaseFocus is not reimplemented"); }
     virtual void updateWidth  ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateWidth  is not reimplemented"); }

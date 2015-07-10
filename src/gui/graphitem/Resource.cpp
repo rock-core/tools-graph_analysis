@@ -167,6 +167,10 @@ int Resource::addPort(Vertex::Ptr node)
         throw std::runtime_error(error_msg);
     }
     Label *label = new Label(node->getLabel(), this, mpGraphWidget, mID);
+#ifdef LABEL_SWAPPING
+    mSlots[mID] = label;
+    mSlotMap[label] = mID;
+#endif
     mLabels[mID] = label;
     mVertices[mID] = node;
     label->setPos(mLabel->pos() + QPointF(0., qreal(1 + mLabels.size()) * ADJUST));
@@ -193,6 +197,18 @@ void Resource::removePort(int portID)
         Label *label = it->second;
         label->setPos(label->pos() - QPointF(0., ADJUST));
     }
+#ifdef LABEL_SWAPPING
+    it = mSlots.find(portID);
+    mSlotMap.erase(mSlotMap.find(it->second));
+    Labels::iterator cached = it++;
+    for(;mSlots.end() != it; ++it, ++cached)
+    {
+        --mSlotMap[it->second];
+//        --(cached->first); // would be illegal
+        mSlots[cached->first] = it->second;
+    }
+    mSlots.erase(cached);
+#endif
     mLabels.erase(mLabels.find(portID));
     mVertices.erase(mVertices.find(portID));
     prepareGeometryChange();
@@ -218,14 +234,27 @@ void Resource::swapPorts(int port1, int port2)
     dieOnPort(portID, "swapPorts");
     portID = port2;
     dieOnPort(portID, "swapPorts");
-    QString str_swap = mLabels[port1]->toPlainText();
+    // swapping vertex references
     graph_analysis::Vertex::Ptr vertex_swap = mVertices[port1];
-
-    mLabels[port1]->setPlainText(mLabels[port2]->toPlainText());
     mVertices[port1] = mVertices[port2];
-
-    mLabels[port2]->setPlainText(str_swap);
     mVertices[port2] = vertex_swap;
+
+    // swapping GUI labels
+#ifdef LABEL_SWAPPING
+    QPointF pos1 = mLabels[port1]->pos();
+    QPointF pos2 = mLabels[port2]->pos();
+    mLabels[port1]->setPos(pos2);
+    mLabels[port2]->setPos(pos1);
+    mSlots[port1]  =  mLabels[port2];
+    mSlots[port2]  =  mLabels[port1];
+    mSlotMap[mLabels[port1]] = port2;
+    mSlotMap[mLabels[port2]] = port1;
+    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+#else
+    QString str_swap = mLabels[port1]->toPlainText();
+    mLabels[port1]->setPlainText(mLabels[port2]->toPlainText());
+    mLabels[port2]->setPlainText(str_swap);
+#endif
 }
 
 void Resource::removePorts()
@@ -236,6 +265,10 @@ void Resource::removePorts()
         this->removeFromGroup(label);
         scene()->removeItem(label);
     }
+#ifdef LABEL_SWAPPING
+    mSlots.clear();
+    mSlotMap.clear();
+#endif
     mLabels.clear();
     mVertices.clear();
     mpBoard->resize(mLabel->boundingRect().size());
@@ -276,9 +309,15 @@ QRectF Resource::portBoundingRect(int portID)
     dieOnPort(portID, "portBoundingRect");
     QRectF result = boundingRect();
     Labels::iterator it = mLabels.find(portID);
+#ifndef LABEL_SWAPPING
     int offset = std::distance(mLabels.begin(), it);
     result.adjust(0,  qreal(2 + offset) * ADJUST, 0, qreal(3 + offset) * ADJUST - result.height()); // forward enumeration
 //    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
+#else
+    qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
+    result.adjust(0,  offset, 0, offset + ADJUST - result.height()); // forward enumeration
+//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
+#endif
     return result;
 }
 
@@ -287,9 +326,15 @@ QPolygonF Resource::portBoundingPolygon(int portID)
     dieOnPort(portID, "portBoundingPolygon");
     QRectF result = boundingRect();
     Labels::iterator it = mLabels.find(portID);
+#ifndef LABEL_SWAPPING
     int offset = std::distance(mLabels.begin(), it);
     result.adjust(0,  qreal(2 + offset) * ADJUST, 0, qreal(3 + offset) * ADJUST - result.height()); // forward enumeration
 //    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
+#else
+    qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
+    result.adjust(0,  offset, 0, offset + ADJUST - result.height()); // forward enumeration
+//    result.adjust(0, result.height() - qreal(1 + offset) * ADJUST, 0, - qreal(offset) * ADJUST); // backward enumeration
+#endif
     return QPolygonF(result);
 }
 
@@ -384,6 +429,36 @@ void Resource::dieOnPort(int portID, const std::string& caller)
 void Resource::unselect()
 {
     hoverLeaveEvent(new QGraphicsSceneHoverEvent());
+}
+
+void Resource::shiftPortUp(int portID)
+{
+    Labels::iterator tuple = mLabels.find(portID);
+    if(mLabels.end() == tuple)
+    {
+        dieOnPort(portID, "shiftPortUp");
+    }
+    unsigned long long slot = mSlotMap[tuple->second];
+    if(!slot)
+    {
+        return;
+    }
+    swapPorts(mSlots[slot-1]->getPortID(), portID);
+}
+
+void Resource::shiftPortDown(int portID)
+{
+    Labels::iterator tuple = mLabels.find(portID);
+    if(mLabels.end() == tuple)
+    {
+        dieOnPort(portID, "shiftPortDown");
+    }
+    unsigned long long slot = mSlotMap[tuple->second];
+    if(mLabels.size() >= slot - 1)
+    {
+        return;
+    }
+    swapPorts(mSlots[slot+1]->getPortID(), portID);
 }
 
 //void Resource::keyPressEvent(QKeyEvent* event)

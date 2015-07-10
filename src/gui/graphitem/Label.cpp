@@ -65,9 +65,30 @@ void Label::keyPressEvent(::QKeyEvent* event)
 {
     qDebug("KEYPRESS LABEL");
     // skipping Key_Return (a.k.a. ENTER)
-    if(Qt::Key_Return == event->key())
+    // check for a keys combination
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+
+    if(modifiers & Qt::ShiftModifier)
     {
-        return;
+        switch(event->key())
+        {
+            case Qt::Key_Up:
+                ((NodeItem *)parentItem())->shiftPortUp(mPortID);
+            break;
+
+            case Qt::Key_Down:
+                ((NodeItem *)parentItem())->shiftPortDown(mPortID);
+            break;
+        }
+    }
+    else
+    {
+        switch(event->key())
+        {
+            case Qt::Key_Return:
+                return;
+            break;
+        }
     }
     QGraphicsTextItem::keyPressEvent(event);
 }

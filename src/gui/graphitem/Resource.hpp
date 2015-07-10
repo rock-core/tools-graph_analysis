@@ -48,6 +48,8 @@ public:
     void swapPorts(int port1, int port2);
     void removePorts();
     void unselect();
+    void shiftPortUp(int portID);
+    void shiftPortDown(int portID);
 
     Labels      getLabels()     { return mLabels;   }
     Vertices    getVertices()   { return mVertices; }
@@ -69,7 +71,9 @@ protected:
 private:
     QGraphicsWidget *mpBoard;
     Label *mLabel;
+    Labels mSlots;
     Labels mLabels;
+    Slots mSlotMap;
     Vertices mVertices;
     QPen mPen;
     QPen mPenDefault;
