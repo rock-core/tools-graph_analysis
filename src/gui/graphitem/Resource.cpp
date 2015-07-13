@@ -249,6 +249,10 @@ void Resource::removePort(NodeItem::portID_t portID)
                 }
             }
         }
+        if(--mInPorts >= mOutPorts)
+        {
+            updateHeight();
+        }
     }
     else // "graph_analysis::OutputPortVertex" == label_to_delete->getNode()->getClassName();
     {
@@ -283,19 +287,12 @@ void Resource::removePort(NodeItem::portID_t portID)
                 }
             }
         }
+        if(--mOutPorts >= mInPorts)
+        {
+            updateHeight();
+        }
     }
-    if(!mLabels.size())
-    {
-        QRectF rect = mLabel->boundingRect();
-        mpBoard->resize(rect.size());
-        this->update(rect);
-    }
-    else
-    {
-        updateHeight();
-//        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant()); // already contained in the instruction right above
-    }
-
+    this->update();
 }
 
 void Resource::swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2)
