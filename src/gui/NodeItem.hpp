@@ -66,7 +66,7 @@ class QGraphicsSceneMouseEvent;
 class NodeItem : public QGraphicsItemGroup
 {
 public:
-    typedef unsigned long long portID_t;
+    typedef long long portID_t;
     typedef std::map<portID_t, graphitem::Label*> Labels;
     typedef std::pair<portID_t, graphitem::Label*> Tuple;
     typedef std::map<portID_t, graph_analysis::Vertex::Ptr> Vertices;
@@ -84,9 +84,9 @@ public:
 
     void calculateForces();
     bool advance();
-    virtual QPolygonF portBoundingPolygon   (int portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingPolygon is not reimplemented");    }
-    virtual QRectF    portBoundingRect      (int portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingRect is not reimplemented");       }
-    virtual void setPortLabel(int portID, const std::string& label) { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortLabel is not reimplemented"); }
+    virtual QPolygonF portBoundingPolygon   (portID_t portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingPolygon is not reimplemented");    }
+    virtual QRectF    portBoundingRect      (portID_t portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingRect is not reimplemented");       }
+    virtual void setPortLabel(portID_t portID, const std::string& label) { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortLabel is not reimplemented"); }
     virtual void unselect() { throw std::runtime_error("graph_analysis::gui::NodeItem::unselect is not reimplemented"); }
 
     /**
@@ -104,20 +104,20 @@ public:
 
     virtual void changeLabel(const std::string& label)  { throw std::runtime_error("graph_analysis::gui::NodeItem::changeLabel is not reimplemented");  }
     virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented");  }
-    virtual void setPortCount(int)                      { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortCount is not reimplemented"); }
-    virtual int  getPortCount()                         { throw std::runtime_error("graph_analysis::gui::NodeItem::getPortCount is not reimplemented"); }
+    virtual void setPortCount(unsigned)                 { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortCount is not reimplemented"); }
+    virtual unsigned  getPortCount()                    { throw std::runtime_error("graph_analysis::gui::NodeItem::getPortCount is not reimplemented"); }
     virtual portID_t  addPort(Vertex::Ptr)              { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented");      }
-    virtual void removePort(int portID)                 { throw std::runtime_error("graph_analysis::gui::NodeItem::removePort is not reimplemented");   }
-    virtual graph_analysis::Vertex::Ptr getPort(int portID)    {throw std::runtime_error("graph_analysis::gui::NodeItem::getPort is not reimplemented");}
+    virtual void removePort(portID_t portID)            { throw std::runtime_error("graph_analysis::gui::NodeItem::removePort is not reimplemented");   }
+    virtual graph_analysis::Vertex::Ptr getPort(portID_t portID)    {throw std::runtime_error("graph_analysis::gui::NodeItem::getPort is not reimplemented");}
     virtual std::string  getLabel()                     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabel is not reimplemented");     }
-    virtual void syncLabel(int portID)                  { throw std::runtime_error("graph_analysis::gui::NodeItem::syncLabel is not reimplemented");    }
-    virtual void shiftPortUp(int portID)                { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftPortUp is not reimplemented");  }
-    virtual void shiftPortDown(int portID)              { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftPortDown is not reimplemented");}
+    virtual void syncLabel(portID_t portID)             { throw std::runtime_error("graph_analysis::gui::NodeItem::syncLabel is not reimplemented");    }
+    virtual void shiftPortUp(portID_t portID)           { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftPortUp is not reimplemented");  }
+    virtual void shiftPortDown(portID_t portID)         { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftPortDown is not reimplemented");}
     virtual void prepareChange()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::prepareChange is not reimplemented");}
     virtual void releaseFocus ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::releaseFocus is not reimplemented"); }
     virtual void updateWidth  ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateWidth  is not reimplemented"); }
     virtual void updateHeight ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateHeight is not reimplemented"); }
-    virtual void swapPorts(int, int)                    { throw std::runtime_error("graph_analysis::gui::NodeItem::swapPorts is not reimplemented");    }
+    virtual void swapPorts(portID_t, portID_t)          { throw std::runtime_error("graph_analysis::gui::NodeItem::swapPorts is not reimplemented");    }
     virtual void removePorts()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::removePorts is not reimplemented");  }
     virtual Labels      getLabels()     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabels is not reimplemented");   }
     virtual Vertices    getVertices()   { throw std::runtime_error("graph_analysis::gui::NodeItem::getVertices is not reimplemented"); }

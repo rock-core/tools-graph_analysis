@@ -42,7 +42,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     mpBoard->resize(rect.width(), rect.height());
 }
 
-void Resource::setPortLabel(int portID, const std::string& label)
+void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
 {
     dieOnPort(portID, "setPortLabel");
     mLabels[portID]->setPlainText(QString(label.c_str()));
@@ -165,10 +165,16 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
     mLabels[mID] = label;
     mVertices[mID] = node;
     label->setPos(mLabel->pos() + QPointF(0., qreal(1 + mLabels.size()) * ADJUST));
-    return mID++; // returning this port's offset in the vector of ports
+    NodeItem::portID_t portID = mID;
+    if(++mID < 0) // test if the following ID overflowed
+    {
+        LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: port IDs counter overflowed";
+        mID = 0;
+    }
+    return portID; // returning this port's offset in the vector of ports
 }
 
-void Resource::removePort(int portID)
+void Resource::removePort(NodeItem::portID_t portID)
 {
     int nports = mLabels.size();
     if(!nports)
@@ -207,7 +213,7 @@ void Resource::removePort(int portID)
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
-void Resource::swapPorts(int port1, int port2)
+void Resource::swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2)
 {
     dieOnPort(port1, "swapPorts");
     dieOnPort(port2, "swapPorts");
@@ -240,13 +246,13 @@ void Resource::removePorts()
     update();
 }
 
-graph_analysis::Vertex::Ptr Resource::getPort(int portID)
+graph_analysis::Vertex::Ptr Resource::getPort(NodeItem::portID_t portID)
 {
     dieOnPort(portID, "getPort");
     return mVertices[portID];
 }
 
-void Resource::syncLabel(int portID)
+void Resource::syncLabel(NodeItem::portID_t portID)
 {
     if(-1 == portID)
     {
@@ -269,7 +275,7 @@ void Resource::syncLabel(int portID)
     }
 }
 
-QRectF Resource::portBoundingRect(int portID)
+QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
 {
     dieOnPort(portID, "portBoundingRect");
     QRectF result = boundingRect();
@@ -285,7 +291,7 @@ QRectF Resource::portBoundingRect(int portID)
     return result;
 }
 
-QPolygonF Resource::portBoundingPolygon(int portID)
+QPolygonF Resource::portBoundingPolygon(NodeItem::portID_t portID)
 {
     dieOnPort(portID, "portBoundingPolygon");
     QRectF result = boundingRect();
@@ -374,7 +380,7 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
-void Resource::dieOnPort(int portID, const std::string& caller)
+void Resource::dieOnPort(NodeItem::portID_t portID, const std::string& caller)
 {
     if(mLabels.count(portID))
     {
@@ -394,7 +400,7 @@ void Resource::unselect()
     hoverLeaveEvent(new QGraphicsSceneHoverEvent());
 }
 
-void Resource::shiftPortUp(int portID)
+void Resource::shiftPortUp(NodeItem::portID_t portID)
 {
     Labels::iterator tuple = mLabels.find(portID);
     if(mLabels.end() == tuple)
@@ -420,7 +426,7 @@ void Resource::shiftPortUp(int portID)
     }
 }
 
-void Resource::shiftPortDown(int portID)
+void Resource::shiftPortDown(NodeItem::portID_t portID)
 {
     Labels::iterator tuple = mLabels.find(portID);
     if(mLabels.end() == tuple)

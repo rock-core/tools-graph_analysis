@@ -25,7 +25,7 @@ public:
     void changeLabel(const std::string& label);
     std::string  getLabel() { return mLabel->toPlainText().toStdString(); }
     void updateLabel();
-    void setPortLabel(int portID, const std::string& label);
+    void setPortLabel(NodeItem::portID_t portID, const std::string& label);
 
     virtual QRectF boundingRect() const;
     virtual QPainterPath shape() const;
@@ -33,23 +33,23 @@ public:
 
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { return new Resource(graphWidget, vertex); }
 
-    int  getPortCount() { return mLabels.size(); }
-    graph_analysis::Vertex::Ptr getPort(int portID);
+    unsigned  getPortCount() { return mLabels.size(); }
+    graph_analysis::Vertex::Ptr getPort(NodeItem::portID_t portID);
     portID_t addPort(Vertex::Ptr node);
-    void removePort(int portID);
-    void syncLabel(int portID);
+    void removePort(NodeItem::portID_t portID);
+    void syncLabel(NodeItem::portID_t portID);
     void prepareChange() { prepareGeometryChange(); }
-    QPolygonF   portBoundingPolygon (int portID);
-    QRectF      portBoundingRect    (int portID);
+    QPolygonF   portBoundingPolygon (NodeItem::portID_t portID);
+    QRectF      portBoundingRect    (NodeItem::portID_t portID);
 
     void releaseFocus();
     void updateWidth ();
     void updateHeight();
-    void swapPorts(int port1, int port2);
+    void swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2);
     void removePorts();
     void unselect();
-    void shiftPortUp(int portID);
-    void shiftPortDown(int portID);
+    void shiftPortUp(NodeItem::portID_t portID);
+    void shiftPortDown(NodeItem::portID_t portID);
 
     Labels      getLabels()     { return mLabels;   }
     Vertices    getVertices()   { return mVertices; }
@@ -61,7 +61,7 @@ protected:
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
-    void dieOnPort(int portID, const std::string& caller = "");
+    void dieOnPort(NodeItem::portID_t  portID, const std::string& caller = "");
 
     //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
