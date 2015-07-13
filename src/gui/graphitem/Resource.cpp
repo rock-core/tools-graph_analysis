@@ -324,6 +324,8 @@ void Resource::removePorts()
     }
     mLabels.clear();
     mVertices.clear();
+    mInPorts = mOutPorts = 0;
+    mMaxInputPortWidth = mMaxOutputPortWidth = 0.;
     mpBoard->resize(mLabel->boundingRect().size());
     update();
 }
