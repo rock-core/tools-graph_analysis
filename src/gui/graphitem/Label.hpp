@@ -8,6 +8,7 @@
 #include <QMimeData>
 #include <QDrag>
 
+#include <graph_analysis/Vertex.hpp>
 #include <iostream>
 
 namespace graph_analysis {
@@ -23,11 +24,13 @@ class Label : public QGraphicsTextItem
 private:
     GraphWidget *mpGraphWidget;
     int mPortID;
+    graph_analysis::Vertex::Ptr mNode;
     QPointF mDragStartPosition;
 public:
-    Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0, int portID = -1);
+    Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0, int portID = -1, graph_analysis::Vertex::Ptr node = graph_analysis::Vertex::Ptr(new graph_analysis::Vertex()));
     void setTextInteraction(bool on, bool selectAll = false);
     int getPortID() { return mPortID; }
+    graph_analysis::Vertex::Ptr getNode() { return mNode; }
 
 protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);

@@ -62,7 +62,7 @@
 #define TESTNO TEST_IMPORT
 //#define RENDER
 #define IMPORT
-#define FILENAME  "../../resources/gexf/export_samples/port__shifting_test.gexf"
+#define FILENAME  "../../resources/gexf/export_samples/port__types_test.gexf"
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 //#define LAYOUT "dot"

@@ -78,6 +78,8 @@ private:
     bool mFocused;
     bool mSelected;
     NodeItem::portID_t mID;
+    NodeItem::portID_t mInPorts, mOutPorts;
+    qreal mMaxInputPortWidth, mMaxOutputPortWidth;
 };
 
 } // end namespace graphitem

@@ -249,7 +249,7 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     QAction *actionSwapPorts   = comm.addAction("Swap Ports", SLOT(swapPortsSelected()), mIconMap["swap"]);
     QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortSelected()), mIconMap["portLabel"]);
     QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortSelected()), mIconMap["remove"]);
-    QAction *actionRemovePorts = comm.addAction("Remove ALL Ports", SLOT(removePortsSelected()), mIconMap["removeAll"]);
+    QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsSelected()), mIconMap["removeAll"]);
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
@@ -333,12 +333,31 @@ void GraphWidget::addPort(graph_analysis::Vertex::Ptr vertex)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    graph_analysis::Vertex::Ptr portVertex = VertexTypeManager::getInstance()->createVertex("port", "newPort");
-    mpGraph->addVertex(portVertex);
-    enableVertex(portVertex);
-    createEdge(vertex, portVertex, "portRegistrationEdge");
-    mPortMap[portVertex] = item;
-    mPortIDMap[portVertex] = item->addPort(portVertex);
+    bool ok;
+    QStringList ports_options;
+    ports_options << tr("input");
+    ports_options << tr("output");
+
+    QString strPortID = QInputDialog::getItem(this, tr("Choose Port Type"),
+                                         tr("Port Type:"), ports_options,
+                                         0, false, &ok);
+    if (ok && !strPortID.isEmpty())
+    {
+        graph_analysis::Vertex::Ptr portVertex;
+        if("input" == strPortID)
+        {
+            portVertex = VertexTypeManager::getInstance()->createVertex("inputport", "newInputPort");
+        }
+        else // ("output" == strPortID)
+        {
+            portVertex = VertexTypeManager::getInstance()->createVertex("outputport", "newOutputPort");
+        }
+        mpGraph->addVertex(portVertex);
+        enableVertex(portVertex);
+        createEdge(vertex, portVertex, "portRegistrationEdge");
+        mPortMap[portVertex] = item;
+        mPortIDMap[portVertex] = item->addPort(portVertex);
+    }
     item->update();
 }
 
@@ -1123,7 +1142,7 @@ void GraphWidget::updateFromGraph()
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
 
-        if("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
+        if("graph_analysis::OutputPortVertex" == source->getClassName() && "graph_analysis::InputPortVertex" == target->getClassName())
         {
             // physical edge - processing deflected until after all ports will have been registered
             continue;
@@ -1146,7 +1165,15 @@ void GraphWidget::updateFromGraph()
             mPortIDMap[source] = targetNodeItem->addPort(source);
         }
         else if (
-                    ("graph_analysis::ClusterVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
+                    (
+                        "graph_analysis::ClusterVertex" == source->getClassName()
+                            &&
+                        (
+                            "graph_analysis::InputPortVertex" == target->getClassName()
+                                ||
+                            "graph_analysis::OutputPortVertex" == target->getClassName()
+                        )
+                    )
                 )
         {
             // semantical edge: links a cluster vertex to one of its ports
@@ -1189,7 +1216,7 @@ void GraphWidget::updateFromGraph()
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
 
-        if("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::PortVertex" == target->getClassName())
+        if("graph_analysis::OutputPortVertex" == source->getClassName() && "graph_analysis::InputPortVertex" == target->getClassName())
         {
             NodeItem* sourceNodeItem = mPortMap[ source ];
             NodeItem* targetNodeItem = mPortMap[ target ];

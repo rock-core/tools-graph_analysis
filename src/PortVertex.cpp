@@ -2,7 +2,6 @@
 
 namespace graph_analysis {
 
-
 PortVertex::PortVertex(const std::string& label)
     : Vertex(label)
 {}

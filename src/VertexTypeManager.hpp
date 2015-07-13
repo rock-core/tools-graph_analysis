@@ -8,6 +8,8 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/BaseVertex.hpp>
 #include <graph_analysis/PortVertex.hpp>
+#include <graph_analysis/InputPortVertex.hpp>
+#include <graph_analysis/OutputPortVertex.hpp>
 #include <graph_analysis/ClusterVertex.hpp>
 
 namespace graph_analysis {
@@ -15,6 +17,8 @@ namespace graph_analysis {
     class Vertex;
     class BaseVertex;
     class PortVertex;
+    class InputPortVertex;
+    class OutputPortVertex;
     class ClusterVertex;
 
 namespace vertex {

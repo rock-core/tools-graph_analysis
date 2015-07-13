@@ -12,10 +12,11 @@ namespace graph_analysis {
 namespace gui {
 namespace graphitem {
 
-Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget, int portID)
+Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget, int portID, graph_analysis::Vertex::Ptr node )
     : QGraphicsTextItem( QString(label.c_str()), item)
     , mpGraphWidget(graphWidget)
     , mPortID(portID)
+    , mNode(node)
 {
     setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
     setTextInteractionFlags(Qt::NoTextInteraction);

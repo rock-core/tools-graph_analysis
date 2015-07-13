@@ -48,6 +48,8 @@ rock_library(graph_analysis
         Vertex.cpp
         BaseVertex.cpp
         PortVertex.cpp
+        InputPortVertex.cpp
+        OutputPortVertex.cpp
         ClusterVertex.cpp
         VertexIterable.cpp
         VertexIterator.cpp
@@ -117,6 +119,8 @@ rock_library(graph_analysis
         Vertex.hpp
         BaseVertex.hpp
         PortVertex.hpp
+        InputPortVertex.hpp
+        OutputPortVertex.hpp
         ClusterVertex.hpp
         VertexIterable.hpp
         VertexIterator.hpp
