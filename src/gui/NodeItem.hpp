@@ -66,10 +66,11 @@ class QGraphicsSceneMouseEvent;
 class NodeItem : public QGraphicsItemGroup
 {
 public:
-    typedef std::map<int, graphitem::Label*> Labels;
-    typedef std::pair<int, graphitem::Label*> Tuple;
-    typedef std::pair<int, graph_analysis::Vertex::Ptr> VTuple;
-    typedef std::map<int, graph_analysis::Vertex::Ptr> Vertices;
+    typedef unsigned long long portID_t;
+    typedef std::map<portID_t, graphitem::Label*> Labels;
+    typedef std::pair<portID_t, graphitem::Label*> Tuple;
+    typedef std::map<portID_t, graph_analysis::Vertex::Ptr> Vertices;
+    typedef std::pair<portID_t, graph_analysis::Vertex::Ptr> VTuple;
 protected:
     NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
 
@@ -105,7 +106,7 @@ public:
     virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented");  }
     virtual void setPortCount(int)                      { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortCount is not reimplemented"); }
     virtual int  getPortCount()                         { throw std::runtime_error("graph_analysis::gui::NodeItem::getPortCount is not reimplemented"); }
-    virtual int  addPort(Vertex::Ptr)                   { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented");      }
+    virtual portID_t  addPort(Vertex::Ptr)              { throw std::runtime_error("graph_analysis::gui::NodeItem::addPort is not reimplemented");      }
     virtual void removePort(int portID)                 { throw std::runtime_error("graph_analysis::gui::NodeItem::removePort is not reimplemented");   }
     virtual graph_analysis::Vertex::Ptr getPort(int portID)    {throw std::runtime_error("graph_analysis::gui::NodeItem::getPort is not reimplemented");}
     virtual std::string  getLabel()                     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabel is not reimplemented");     }

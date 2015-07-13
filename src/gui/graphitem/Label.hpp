@@ -8,10 +8,7 @@
 #include <QMimeData>
 #include <QDrag>
 
-
-
 #include <iostream>
-
 
 namespace graph_analysis {
 namespace gui {

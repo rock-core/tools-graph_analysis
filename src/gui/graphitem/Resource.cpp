@@ -152,7 +152,7 @@ void Resource::updateWidth()
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
-int Resource::addPort(Vertex::Ptr node)
+NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
 {
     if("graph_analysis::PortVertex" != node->getClassName())
     {

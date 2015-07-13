@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.1draft http://gexf.net/1.1draft/gexf.xsd" version="1.1">
+  <graph mode="static" defaultedgetype="directed">
+    <attributes class="node" mode="static">
+      <attribute id="0" title="class" type="string"/>
+      <attribute id="1" title="label" type="string"/>
+    </attributes>
+    <attributes class="edge" mode="static">
+      <attribute id="0" title="class" type="string"/>
+      <attribute id="1" title="label" type="string"/>
+    </attributes>
+    <nodes>
+      <node id="0" label="node1">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::ClusterVertex"/>
+          <attvalue for="1" value="node1"/>
+        </attvalues>
+      </node>
+      <node id="1" label="1">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::PortVertex"/>
+          <attvalue for="1" value="1"/>
+        </attvalues>
+      </node>
+      <node id="2" label="2">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::PortVertex"/>
+          <attvalue for="1" value="2"/>
+        </attvalues>
+      </node>
+      <node id="3" label="3">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::PortVertex"/>
+          <attvalue for="1" value="3"/>
+        </attvalues>
+      </node>
+      <node id="4" label="node2">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::ClusterVertex"/>
+          <attvalue for="1" value="node2"/>
+        </attvalues>
+      </node>
+      <node id="5" label="0">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::PortVertex"/>
+          <attvalue for="1" value="0"/>
+        </attvalues>
+      </node>
+      <node id="6" label="1">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::PortVertex"/>
+          <attvalue for="1" value="1"/>
+        </attvalues>
+      </node>
+      <node id="7" label="2">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::PortVertex"/>
+          <attvalue for="1" value="2"/>
+        </attvalues>
+      </node>
+      <node id="8" label="3">
+        <attvalues>
+          <attvalue for="0" value="graph_analysis::PortVertex"/>
+          <attvalue for="1" value="3"/>
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="0" target="1" label="portRegistrationEdge:node1-&gt;1">
+        <attvalues>
+          <attvalue for="0" value="portRegistrationEdge:node1-&gt;1"/>
+          <attvalue for="1" value="portRegistrationEdge"/>
+        </attvalues>
+      </edge>
+      <edge id="1" source="0" target="2" label="portRegistrationEdge:node1-&gt;2">
+        <attvalues>
+          <attvalue for="0" value="portRegistrationEdge:node1-&gt;2"/>
+          <attvalue for="1" value="portRegistrationEdge"/>
+        </attvalues>
+      </edge>
+      <edge id="2" source="0" target="3" label="portRegistrationEdge:node1-&gt;3">
+        <attvalues>
+          <attvalue for="0" value="portRegistrationEdge:node1-&gt;3"/>
+          <attvalue for="1" value="portRegistrationEdge"/>
+        </attvalues>
+      </edge>
+      <edge id="3" source="4" target="5" label="portRegistrationEdge:node2-&gt;0">
+        <attvalues>
+          <attvalue for="0" value="portRegistrationEdge:node2-&gt;0"/>
+          <attvalue for="1" value="portRegistrationEdge"/>
+        </attvalues>
+      </edge>
+      <edge id="4" source="4" target="6" label="portRegistrationEdge:node2-&gt;1">
+        <attvalues>
+          <attvalue for="0" value="portRegistrationEdge:node2-&gt;1"/>
+          <attvalue for="1" value="portRegistrationEdge"/>
+        </attvalues>
+      </edge>
+      <edge id="5" source="4" target="7" label="portRegistrationEdge:node2-&gt;2">
+        <attvalues>
+          <attvalue for="0" value="portRegistrationEdge:node2-&gt;2"/>
+          <attvalue for="1" value="portRegistrationEdge"/>
+        </attvalues>
+      </edge>
+      <edge id="6" source="4" target="8" label="portRegistrationEdge:node2-&gt;3">
+        <attvalues>
+          <attvalue for="0" value="portRegistrationEdge:node2-&gt;3"/>
+          <attvalue for="1" value="portRegistrationEdge"/>
+        </attvalues>
+      </edge>
+      <edge id="8" source="6" target="1" label="001:1-&gt;1">
+        <attvalues>
+          <attvalue for="0" value="001:1-&gt;1"/>
+          <attvalue for="1" value="001"/>
+        </attvalues>
+      </edge>
+      <edge id="7" source="8" target="2" label="000:3-&gt;2">
+        <attvalues>
+          <attvalue for="0" value="000:3-&gt;2"/>
+          <attvalue for="1" value="000"/>
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

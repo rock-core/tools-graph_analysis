@@ -35,7 +35,7 @@ public:
 
     int  getPortCount() { return mLabels.size(); }
     graph_analysis::Vertex::Ptr getPort(int portID);
-    int addPort(Vertex::Ptr node);
+    portID_t addPort(Vertex::Ptr node);
     void removePort(int portID);
     void syncLabel(int portID);
     void prepareChange() { prepareGeometryChange(); }
@@ -77,7 +77,7 @@ private:
     QPen mPenDefault;
     bool mFocused;
     bool mSelected;
-    unsigned long long mID;
+    NodeItem::portID_t mID;
 };
 
 } // end namespace graphitem

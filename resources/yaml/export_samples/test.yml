@@ -1,0 +1,95 @@
+nodes:
+  - id: 13
+    type: graph_analysis::PortVertex
+    label: c2p1
+  - id: 12
+    type: graph_analysis::PortVertex
+    label: c2p0
+  - id: 11
+    type: graph_analysis::PortVertex
+    label: c1p4
+  - id: 10
+    type: graph_analysis::PortVertex
+    label: c1p3
+  - id: 9
+    type: graph_analysis::PortVertex
+    label: c1p2
+  - id: 8
+    type: graph_analysis::PortVertex
+    label: c1p1
+  - id: 7
+    type: graph_analysis::PortVertex
+    label: c1p0
+  - id: 6
+    type: graph_analysis::PortVertex
+    label: c0p3
+  - id: 5
+    type: graph_analysis::PortVertex
+    label: c0p2
+  - id: 4
+    type: graph_analysis::PortVertex
+    label: c0p1
+  - id: 3
+    type: graph_analysis::PortVertex
+    label: c0p0
+  - id: 2
+    type: graph_analysis::ClusterVertex
+    label: c2
+  - id: 1
+    type: graph_analysis::ClusterVertex
+    label: c1
+  - id: 0
+    type: graph_analysis::ClusterVertex
+    label: c0
+edges:
+  - fromNodeId: 12
+    toNodeId: 6
+    label: edge4
+  - fromNodeId: 9
+    toNodeId: 5
+    label: edge3
+  - fromNodeId: 8
+    toNodeId: 13
+    label: edge5
+  - fromNodeId: 6
+    toNodeId: 10
+    label: edge2
+  - fromNodeId: 3
+    toNodeId: 8
+    label: edge1
+  - fromNodeId: 3
+    toNodeId: 7
+    label: edge0
+  - fromNodeId: 2
+    toNodeId: 13
+    label: c2e1
+  - fromNodeId: 2
+    toNodeId: 12
+    label: c2e0
+  - fromNodeId: 1
+    toNodeId: 11
+    label: c1e4
+  - fromNodeId: 1
+    toNodeId: 10
+    label: c1e3
+  - fromNodeId: 1
+    toNodeId: 9
+    label: c1e2
+  - fromNodeId: 1
+    toNodeId: 8
+    label: c1e1
+  - fromNodeId: 1
+    toNodeId: 7
+    label: c1e0
+  - fromNodeId: 0
+    toNodeId: 6
+    label: c0e3
+  - fromNodeId: 0
+    toNodeId: 5
+    label: c0e2
+  - fromNodeId: 0
+    toNodeId: 4
+    label: c0e1
+  - fromNodeId: 0
+    toNodeId: 3
+    label: c0e0
