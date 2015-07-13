@@ -59,16 +59,14 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
 
 void Resource::changeLabel(const std::string& label)
 {
-    scene()->removeItem(mLabel);
     mpVertex->setLabel(label);
-    mLabel = new Label(mpVertex->toString(), this);
+    mLabel->setPlainText(QString(label.c_str()));
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
 void Resource::updateLabel()
 {
-    scene()->removeItem(mLabel);
-    mLabel = new Label(mpVertex->toString(), this);
+    mLabel->setPlainText(QString(mpVertex->getLabel().c_str()));
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
