@@ -178,6 +178,7 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
     if(width > isInputPort ? mMaxInputPortWidth : mMaxOutputPortWidth)
     {
         isInputPort ? mMaxInputPortWidth : mMaxOutputPortWidth = width;
+        updateWidth();
     }
     label->setPos(mLabel->pos() + QPointF(isInputPort ? 0. : mMaxInputPortWidth + SEPARATOR, qreal(1 + (++(isInputPort ? mInPorts : mOutPorts ))) * ADJUST));
     NodeItem::portID_t portID = mID;
