@@ -60,7 +60,7 @@ std::vector<Vertex::Ptr> Edge::getInvolvedVertices(Edge::Ptr e0, Edge::Ptr e1)
     {
         // skip e0_target
     } else {
-        vertices.push_back(e0_source);
+        vertices.push_back(e0_target);
     }
 
     vertices.push_back(e1->getSourceVertex());
