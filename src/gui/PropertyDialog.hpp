@@ -101,6 +101,7 @@ public:
             mpAddNodeButton->setIcon(*(mpGraphWidget->getIcon("addNode")));
             mpAddNodeButton->setCheckable(false);
             mpAddNodeButton->setChecked(false);
+            mpAddNodeButton->setToolTip(QString("adds a new node to the graph"));
 
             verticalLayout->addWidget(mpAddNodeButton);
             addFrame(verticalLayout);
@@ -110,6 +111,7 @@ public:
             mpImportButton->setIcon(*(mpGraphWidget->getIcon("import")));
             mpImportButton->setCheckable(false);
             mpImportButton->setChecked(false);
+            mpImportButton->setToolTip(QString("opens an existing graph file"));
 
             verticalLayout->addWidget(mpImportButton);
 
@@ -118,6 +120,7 @@ public:
             mpExportButton->setIcon(*(mpGraphWidget->getIcon("export")));
             mpExportButton->setCheckable(false);
             mpExportButton->setChecked(false);
+            mpExportButton->setToolTip(QString("saves the graph to file"));
 
             verticalLayout->addWidget(mpExportButton);
             addFrame(verticalLayout);
@@ -127,6 +130,7 @@ public:
             mpRefreshButton->setIcon(*(mpGraphWidget->getIcon("refresh")));
             mpRefreshButton->setCheckable(false);
             mpRefreshButton->setChecked(false);
+            mpRefreshButton->setToolTip(QString("reloads the graph view"));
 
             verticalLayout->addWidget(mpRefreshButton);
 
@@ -135,6 +139,7 @@ public:
             mpShuffleButton->setIcon(*(mpGraphWidget->getIcon("shuffle")));
             mpShuffleButton->setCheckable(false);
             mpShuffleButton->setChecked(false);
+            mpShuffleButton->setToolTip(QString("randomly spreads around existing vertices"));
 
             verticalLayout->addWidget(mpShuffleButton);
 
@@ -143,6 +148,7 @@ public:
             mpResetButton->setIcon(*(mpGraphWidget->getIcon("reset")));
             mpResetButton->setCheckable(false);
             mpResetButton->setChecked(false);
+            mpResetButton->setToolTip(QString("completely deletes the graph"));
 
             verticalLayout->addWidget(mpResetButton);
 
@@ -151,6 +157,7 @@ public:
             mpLayoutButton->setIcon(*(mpGraphWidget->getIcon("layout")));
             mpLayoutButton->setCheckable(false);
             mpLayoutButton->setChecked(false);
+            mpLayoutButton->setToolTip(QString("applies a new layout to the graph"));
 
             verticalLayout->addWidget(mpLayoutButton);
             addFrame(verticalLayout);
@@ -160,6 +167,7 @@ public:
             mpDragDropButton->setIcon(*(mpGraphWidget->getIcon("dragndrop")));
             mpDragDropButton->setCheckable(true);
             mpDragDropButton->setChecked(dragDropIsChecked);
+            mpDragDropButton->setToolTip(QString("toggles the drag-n-drop mode"));
 
             verticalLayout->addWidget(mpDragDropButton);
 
@@ -190,6 +198,7 @@ public:
             mpRenameNodeButton->setEnabled(mVertexFocused);
             mpRenameNodeButton->setCheckable(false);
             mpRenameNodeButton->setChecked(false);
+            mpRenameNodeButton->setToolTip(QString("changes the label of the selected vertex"));
 
             verticalLayoutFocus->addWidget(mpRenameNodeButton);
 
@@ -199,6 +208,7 @@ public:
             mpAddPortButton->setEnabled(mVertexFocused);
             mpAddPortButton->setCheckable(false);
             mpAddPortButton->setChecked(false);
+            mpAddPortButton->setToolTip(QString("adds a port to the selected vertex"));
 
             verticalLayoutFocus->addWidget(mpAddPortButton);
 
@@ -208,6 +218,7 @@ public:
             mpSwapPortsButton->setEnabled(mVertexFocused);
             mpSwapPortsButton->setCheckable(false);
             mpSwapPortsButton->setChecked(false);
+            mpSwapPortsButton->setToolTip(QString("interchanges the positions of two ports of the selected vertex"));
 
             verticalLayoutFocus->addWidget(mpSwapPortsButton);
 
@@ -217,6 +228,7 @@ public:
             mpRenamePortButton->setEnabled(mVertexFocused);
             mpRenamePortButton->setCheckable(false);
             mpRenamePortButton->setChecked(false);
+            mpRenamePortButton->setToolTip(QString("changes the label of a port of the selected vertex"));
 
             verticalLayoutFocus->addWidget(mpRenamePortButton);
 
@@ -226,6 +238,7 @@ public:
             mpRemovePortButton->setEnabled(mVertexFocused);
             mpRemovePortButton->setCheckable(false);
             mpRemovePortButton->setChecked(false);
+            mpRemovePortButton->setToolTip(QString("removes a port of the selected vertex"));
 
             verticalLayoutFocus->addWidget(mpRemovePortButton);
 
@@ -235,6 +248,7 @@ public:
             mpRemovePortsButton->setEnabled(mVertexFocused);
             mpRemovePortsButton->setCheckable(false);
             mpRemovePortsButton->setChecked(false);
+            mpRemovePortsButton->setToolTip(QString("removes all ports of the selected vertex"));
 
             verticalLayoutFocus->addWidget(mpRemovePortsButton);
 
@@ -244,6 +258,7 @@ public:
             mpRemoveNodeButton->setEnabled(mVertexFocused);
             mpRemoveNodeButton->setCheckable(false);
             mpRemoveNodeButton->setChecked(false);
+            mpRemoveNodeButton->setToolTip(QString("removes the selected vertex from the graph"));
 
             verticalLayoutFocus->addWidget(mpRemoveNodeButton);
 
@@ -255,6 +270,7 @@ public:
             mpRenameEdgeButton->setEnabled(mEdgeFocused);
             mpRenameEdgeButton->setCheckable(false);
             mpRenameEdgeButton->setChecked(false);
+            mpRenameEdgeButton->setToolTip(QString("changes the label of the selected edge"));
 
             verticalLayoutFocus->addWidget(mpRenameEdgeButton);
 
@@ -264,6 +280,7 @@ public:
             mpRemoveEdgeButton->setEnabled(mEdgeFocused);
             mpRemoveEdgeButton->setCheckable(false);
             mpRemoveEdgeButton->setChecked(false);
+            mpRemoveEdgeButton->setToolTip(QString("removes the selected edge from the graph"));
 
             verticalLayoutFocus->addWidget(mpRemoveEdgeButton);
 
