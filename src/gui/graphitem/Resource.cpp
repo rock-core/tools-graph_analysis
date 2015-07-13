@@ -139,7 +139,8 @@ void Resource::updateHeight()
 
 void Resource::updateWidth()
 {
-    qreal max_width = mLabel->boundingRect().width(), ports_width = mMaxInputPortWidth + mMaxOutputPortWidth;
+    qreal max_width = mLabel->boundingRect().width();
+    qreal ports_width = mMaxInputPortWidth + mMaxOutputPortWidth;
     QRectF rect = boundingRect();
     if(ports_width > 0)
     {
@@ -149,7 +150,7 @@ void Resource::updateWidth()
         }
     }
     rect.setWidth(max_width);
-    mpBoard->resize(max_width, rect.height());
+    mpBoard->resize(rect.size());
     this->update(rect);
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
@@ -213,29 +214,88 @@ void Resource::removePort(NodeItem::portID_t portID)
     dieOnPort(portID, "removePort");
     graphitem::Label *label_to_delete = mLabels[portID];
     // shifting up all ports initially under the port-to-be-removed
-    Labels::iterator it = mLabels.find(portID);
-    for(++it; mLabels.end() != it; ++it)
-    {
-        Label *label = it->second;
-        label->setPos(label->pos() - QPointF(0., ADJUST));
-    }
-    mLabels.erase(mLabels.find(portID));
-    mVertices.erase(mVertices.find(portID));
     prepareGeometryChange();
-    removeFromGroup(label_to_delete);
-    scene()->removeItem(label_to_delete);
-    QRectF rect;
+    bool isInputPort = "graph_analysis::InputPortVertex" == label_to_delete->getNode()->getClassName();
+    if(isInputPort)
+    {
+        bool maxInputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxInputPortWidth;
+        Labels::iterator it = mLabels.begin();
+        for(++it; mLabels.end() != it; ++it)
+        {
+            Label *label = it->second;
+            if("graph_analysis::InputPortVertex" == label->getNode()->getClassName() && label->pos().y() > label_to_delete->pos().y())
+            {
+                label->setPos(label->pos() - QPointF(0., ADJUST));
+            }
+        }
+        mLabels.erase(mLabels.find(portID));
+        mVertices.erase(mVertices.find(portID));
+        removeFromGroup(label_to_delete);
+        scene()->removeItem(label_to_delete);
+        if(maxInputPortWidthIsDirty)
+        {
+            it = mLabels.begin();
+            mMaxInputPortWidth = 0;
+            for(++it; mLabels.end() != it; ++it)
+            {
+                Label *label = it->second;
+                if("graph_analysis::InputPortVertex" == label->getNode()->getClassName())
+                {
+                    qreal current_width = label->boundingRect().width();
+                    if(mMaxInputPortWidth < current_width)
+                    {
+                        mMaxInputPortWidth = current_width;
+                    }
+                }
+            }
+        }
+    }
+    else // "graph_analysis::OutputPortVertex" == label_to_delete->getNode()->getClassName();
+    {
+        bool maxOutputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxOutputPortWidth;
+        Labels::iterator it = mLabels.begin();
+        for(++it; mLabels.end() != it; ++it)
+        {
+            Label *label = it->second;
+            if("graph_analysis::OutputPortVertex" == label->getNode()->getClassName() && label->pos().y() > label_to_delete->pos().y())
+            {
+                label->setPos(label->pos() - QPointF(0., ADJUST));
+            }
+        }
+        mLabels.erase(mLabels.find(portID));
+        mVertices.erase(mVertices.find(portID));
+        removeFromGroup(label_to_delete);
+        scene()->removeItem(label_to_delete);
+        if(maxOutputPortWidthIsDirty)
+        {
+            it = mLabels.begin();
+            mMaxOutputPortWidth = 0;
+            for(++it; mLabels.end() != it; ++it)
+            {
+                Label *label = it->second;
+                if("graph_analysis::OutputPortVertex" == label->getNode()->getClassName())
+                {
+                    qreal current_width = label->boundingRect().width();
+                    if(mMaxOutputPortWidth < current_width)
+                    {
+                        mMaxOutputPortWidth = current_width;
+                    }
+                }
+            }
+        }
+    }
     if(!mLabels.size())
     {
-        rect = mLabel->boundingRect();
+        QRectF rect = mLabel->boundingRect();
+        mpBoard->resize(rect.size());
+        this->update(rect);
     }
     else
     {
-        rect = boundingRect().adjusted(0, 0, 0, - ADJUST);
+        updateHeight();
+//        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant()); // already contained in the instruction right above
     }
-    mpBoard->resize(rect.size());
-    this->update(rect);
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+
 }
 
 void Resource::swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2)
