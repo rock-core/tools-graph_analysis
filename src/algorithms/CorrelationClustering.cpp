@@ -117,7 +117,7 @@ void CorrelationClustering::prepare()
 
                 // set factors for x13, x12 and x23
                 for(size_t i = 0; i < 3; ++i)
-            `    {
+                {
                     ia[i_index++] = rowNumber;
                     ja[j_index++] = triangle_permutation[i] + 1 /* columns starting at 1*/;
                     if(i == 0)
