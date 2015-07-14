@@ -57,7 +57,8 @@ void Resource::recomputeMaxInputPortWidth(void)
     for(++it; mLabels.end() != it; ++it)
     {
         Label *label = it->second;
-        if("graph_analysis::InputPortVertex" == label->getNode()->getClassName())
+        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        if("graph_analysis::InputPortVertex" == current_port->getClassName())
         {
             qreal current_width = label->boundingRect().width();
             if(mMaxInputPortWidth < current_width)
@@ -75,7 +76,8 @@ void Resource::recomputeMaxOutputPortWidth(void)
     for(++it; mLabels.end() != it; ++it)
     {
         Label *label = it->second;
-        if("graph_analysis::OutputPortVertex" == label->getNode()->getClassName())
+        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        if("graph_analysis::OutputPortVertex" == current_port->getClassName())
         {
             qreal current_width = label->boundingRect().width();
             if(mMaxOutputPortWidth < current_width)
@@ -252,7 +254,7 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    Label *label = new Label(node->getLabel(), this, mpGraphWidget, mID, node);
+    Label *label = new Label(node->getLabel(), this, mpGraphWidget, mID);
     mLabels[mID] = label;
     mVertices[mID] = node;
     bool isInputPort = "graph_analysis::InputPortVertex" == node->getClassName();
@@ -296,9 +298,10 @@ void Resource::removePort(NodeItem::portID_t portID)
     }
     dieOnPort(portID, "removePort");
     graphitem::Label *label_to_delete = mLabels[portID];
+    graph_analysis::Vertex::Ptr port_to_delete = mVertices[portID];
     // shifting up all ports initially under the port-to-be-removed
     prepareGeometryChange();
-    bool isInputPort = "graph_analysis::InputPortVertex" == label_to_delete->getNode()->getClassName();
+    bool isInputPort = "graph_analysis::InputPortVertex" == port_to_delete->getClassName();
     if(isInputPort)
     {
         bool maxInputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxInputPortWidth;
@@ -306,7 +309,8 @@ void Resource::removePort(NodeItem::portID_t portID)
         for(++it; mLabels.end() != it; ++it)
         {
             Label *label = it->second;
-            if("graph_analysis::InputPortVertex" == label->getNode()->getClassName() && label->pos().y() > label_to_delete->pos().y())
+            graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+            if("graph_analysis::InputPortVertex" == current_port->getClassName() && label->pos().y() > label_to_delete->pos().y())
             {
                 label->setPos(label->pos() - QPointF(0., ADJUST));
             }
@@ -324,14 +328,15 @@ void Resource::removePort(NodeItem::portID_t portID)
             updateHeight();
         }
     }
-    else // "graph_analysis::OutputPortVertex" == label_to_delete->getNode()->getClassName();
+    else // "graph_analysis::OutputPortVertex" == port_to_delete->getClassName();
     {
         bool maxOutputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxOutputPortWidth;
         Labels::iterator it = mLabels.begin();
         for(++it; mLabels.end() != it; ++it)
         {
             Label *label = it->second;
-            if("graph_analysis::OutputPortVertex" == label->getNode()->getClassName() && label->pos().y() > label_to_delete->pos().y())
+            graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+            if("graph_analysis::OutputPortVertex" == current_port->getClassName() && label->pos().y() > label_to_delete->pos().y())
             {
                 label->setPos(label->pos() - QPointF(0., ADJUST));
             }
@@ -437,7 +442,8 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
     dieOnPort(portID, "portBoundingRect");
     QRectF result = boundingRect();
     Labels::iterator it = mLabels.find(portID);
-    bool isInputPort = "graph_analysis::InputPortVertex" == it->second->getNode()->getClassName();
+    graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+    bool isInputPort = "graph_analysis::InputPortVertex" == current_port->getClassName();
 #ifndef LABEL_SWAPPING
     int offset = std::distance(mLabels.begin(), it);
     result.adjust(
@@ -463,7 +469,8 @@ QPolygonF Resource::portBoundingPolygon(NodeItem::portID_t portID)
     dieOnPort(portID, "portBoundingPolygon");
     QRectF result = boundingRect();
     Labels::iterator it = mLabels.find(portID);
-    bool isInputPort = "graph_analysis::InputPortVertex" == it->second->getNode()->getClassName();
+    graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+    bool isInputPort = "graph_analysis::InputPortVertex" == current_port->getClassName();
 #ifndef LABEL_SWAPPING
     int offset = std::distance(mLabels.begin(), it);
     result.adjust(
