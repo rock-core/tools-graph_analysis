@@ -17,6 +17,8 @@
 #define SEPARATOR 69.
 
 
+//#define MSEPARATOR
+
 namespace graph_analysis {
 namespace gui {
 namespace graphitem {
@@ -252,18 +254,26 @@ void Resource::updateWidth(bool active)
         if(SEPARATOR + ports_width < max_width)
         {
             qreal separator = mSeparator;
+#ifdef MSEPARATOR
             qDebug("Resource::updateWidth (@cluster='%s'): mSeparator was = %lf", mpVertex->getLabel().c_str(), mSeparator);
+#endif
             mSeparator = max_width - ports_width;
+#ifdef MSEPARATOR
             qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is = %lf", mpVertex->getLabel().c_str(), mSeparator);
+#endif
             shiftOutports(mSeparator - separator);
         }
         else
         {
             max_width = ports_width + SEPARATOR;
             qreal separator = mSeparator;
+#ifdef MSEPARATOR
             qDebug("Resource::updateWidth (@cluster='%s'): mSeparator was = %lf", mpVertex->getLabel().c_str(), mSeparator);
+#endif
             mSeparator = SEPARATOR;
+#ifdef MSEPARATOR
             qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is (default) = %lf", mpVertex->getLabel().c_str(), mSeparator);
+#endif
             shiftOutports(mSeparator - separator);
         }
     }
@@ -323,7 +333,9 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
             mOutPorts = 0;
         }
         label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
+#ifdef MSEPARATOR
         qDebug("Resource::addPort (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
+#endif
         updateWidth();
     }
     NodeItem::portID_t portID = mID;
@@ -510,16 +522,18 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
     Labels::iterator it = mLabels.find(portID);
     graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
     bool isInputPort = "graph_analysis::InputPortVertex" == current_port->getClassName();
-#ifndef LABEL_SWAPPING
-    int offset = std::distance(mLabels.begin(), it);
-    result.adjust(
-                    isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
-                    qreal(2 + offset) * ADJUST,
-                    isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
-                    qreal(3 + offset) * ADJUST - result.height()
-                ); // forward enumeration
-    qDebug("Resource::portBoundingRect (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
-#else
+//#ifndef LABEL_SWAPPING
+//    int offset = std::distance(mLabels.begin(), it);
+//    result.adjust(
+//                    isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
+//                    qreal(2 + offset) * ADJUST,
+//                    isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
+//                    qreal(3 + offset) * ADJUST - result.height()
+//                ); // forward enumeration
+//#ifdef MSEPARATOR
+//    qDebug("Resource::portBoundingRect (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
+//#endif
+//#else
     qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
     result.adjust(
                     isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
@@ -527,8 +541,10 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
                     isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
                     offset + ADJUST - result.height()
                 ); // forward enumeration
+#ifdef MSEPARATOR
     qDebug("Resource::portBoundingRect (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
 #endif
+//#endif
     return result;
 }
 
