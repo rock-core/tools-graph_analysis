@@ -43,7 +43,7 @@ public:
     QRectF      portBoundingRect    (NodeItem::portID_t portID);
 
     void releaseFocus();
-    void updateWidth ();
+    void updateWidth (bool active = true);
     void updateHeight();
     void swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2);
     void removePorts();
@@ -62,6 +62,7 @@ protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
     void dieOnPort(NodeItem::portID_t  portID, const std::string& caller = "");
+    void shiftOutports(qreal delta);
     void recomputeMaxInputPortWidth(void);
     void recomputeMaxOutputPortWidth(void);
 
@@ -81,7 +82,7 @@ private:
     bool mSelected;
     NodeItem::portID_t mID;
     NodeItem::portID_t mInPorts, mOutPorts;
-    qreal mMaxInputPortWidth, mMaxOutputPortWidth;
+    qreal mMaxInputPortWidth, mMaxOutputPortWidth, mSeparator;
 };
 
 } // end namespace graphitem

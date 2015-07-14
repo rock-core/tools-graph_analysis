@@ -122,7 +122,6 @@ public:
     virtual Labels      getLabels()     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabels is not reimplemented");   }
     virtual Vertices    getVertices()   { throw std::runtime_error("graph_analysis::gui::NodeItem::getVertices is not reimplemented"); }
 
-
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 

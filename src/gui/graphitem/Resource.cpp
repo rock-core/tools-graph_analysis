@@ -14,7 +14,7 @@
 #define max(X, Y) X > Y ? X : Y
 #define ADJUST 23.69
 #define EPSILON 0.001
-#define SEPARATOR 69
+#define SEPARATOR 69.
 
 
 namespace graph_analysis {
@@ -32,6 +32,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mOutPorts(0)
     , mMaxInputPortWidth(0.)
     , mMaxOutputPortWidth(0.)
+    , mSeparator(SEPARATOR)
 {
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
 //    setFlag(ItemIsFocusable);
@@ -176,6 +177,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     //painter->setBrush(mPen.brush());
     //painter->drawEllipse(-7, -7, 20, 20);
     painter->setPen(QPen(Qt::black, 0));
+    updateWidth(false); // in case the main label change triggered redrawing
 //    qreal rect_width, max_width = mLabel->boundingRect().width();
     QRectF rect;
     foreach(Tuple tuple, mLabels)
@@ -202,8 +204,28 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //
 //    painter->setPen(QPen(Qt::black, 0));
 //    painter->drawEllipse(-10, -10, 20, 20);
+
     mpBoard->resize(rect.width(), rect.height());
     this->update(rect);
+    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+}
+
+void Resource::shiftOutports(qreal delta)
+{
+    if(0. == delta)
+    {
+        return;
+    }
+    Labels::iterator it = mLabels.begin();
+    for(++it; mLabels.end() != it; ++it)
+    {
+        Label *label = it->second;
+        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        if("graph_analysis::OutputPortVertex" == current_port->getClassName())
+        {
+            label->setPos(label->pos() + QPointF(delta, 0.));
+        }
+    }
 }
 
 void Resource::updateHeight()
@@ -221,22 +243,34 @@ void Resource::updateHeight()
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
-void Resource::updateWidth()
+void Resource::updateWidth(bool active)
 {
     qreal max_width = mLabel->boundingRect().width();
     qreal ports_width = mMaxInputPortWidth + mMaxOutputPortWidth;
-    QRectF rect = boundingRect();
     if(ports_width > 0)
     {
-        if(max_width < ports_width + SEPARATOR)
+        if(SEPARATOR + ports_width < max_width)
+        {
+            qreal separator = mSeparator;
+            mSeparator = max_width - ports_width;
+            shiftOutports(mSeparator - separator);
+        }
+        else
         {
             max_width = ports_width + SEPARATOR;
+            qreal separator = mSeparator;
+            mSeparator = SEPARATOR;
+            shiftOutports(mSeparator - separator);
         }
     }
-    rect.setWidth(max_width);
-    mpBoard->resize(rect.size());
-    this->update(rect);
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    if(active)
+    {
+        QRectF rect = boundingRect();
+        rect.setWidth(max_width);
+        mpBoard->resize(rect.size());
+        this->update(rect);
+        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    }
 }
 
 NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
@@ -259,24 +293,36 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
     mVertices[mID] = node;
     bool isInputPort = "graph_analysis::InputPortVertex" == node->getClassName();
     qreal width = label->boundingRect().width();
-    if(width > isInputPort ? mMaxInputPortWidth : mMaxOutputPortWidth)
+    if(isInputPort)
     {
-        isInputPort ? mMaxInputPortWidth : mMaxOutputPortWidth = width;
+        if(width > mMaxInputPortWidth)
+        {
+            mMaxInputPortWidth = width;
+        }
+        if(mInPorts + 1 < 0)
+        {
+            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: input ports counter overflowed";
+            mInPorts = 0;
+        }
+        label->setPos(mLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
         updateWidth();
     }
-    label->setPos(mLabel->pos() + QPointF(isInputPort ? 0. : mMaxInputPortWidth + SEPARATOR, qreal(1 + (++(isInputPort ? mInPorts : mOutPorts ))) * ADJUST));
+    else
+    {
+        if(width > mMaxOutputPortWidth)
+        {
+            mMaxOutputPortWidth = width;
+        }
+        if(mOutPorts + 1 < 0)
+        {
+            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: output ports counter overflowed";
+            mOutPorts = 0;
+        }
+        label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
+        updateWidth();
+    }
     NodeItem::portID_t portID = mID;
-    // test if the following IDs overflowed
-    if(mInPorts < 0)
-    {
-        LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: input ports counter overflowed";
-        mInPorts = 0;
-    }
-    if(mOutPorts < 0)
-    {
-        LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: output ports counter overflowed";
-        mOutPorts = 0;
-    }
+    // test if the IDs overflowed
     if(++mID < 0)
     {
         LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: port IDs counter overflowed";
@@ -386,8 +432,10 @@ void Resource::removePorts()
     }
     mLabels.clear();
     mVertices.clear();
-    mInPorts = mOutPorts = 0;
-    mMaxInputPortWidth = mMaxOutputPortWidth = 0.;
+    mInPorts = 0;
+    mOutPorts = 0;
+    mMaxInputPortWidth = 0.;
+    mMaxOutputPortWidth = 0.;
     mpBoard->resize(mLabel->boundingRect().size());
     update();
 }
@@ -455,17 +503,17 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
 #ifndef LABEL_SWAPPING
     int offset = std::distance(mLabels.begin(), it);
     result.adjust(
-                    isInputPort ? 0. : mMaxInputPortWidth + SEPARATOR,
+                    isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
                     qreal(2 + offset) * ADJUST,
-                    isInputPort ? - (SEPARATOR + mMaxOutputPortWidth) : 0.,
+                    isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
                     qreal(3 + offset) * ADJUST - result.height()
                 ); // forward enumeration
 #else
     qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
     result.adjust(
-                    isInputPort ? 0. : mMaxInputPortWidth + SEPARATOR,
+                    isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
                     offset,
-                    isInputPort ? - (SEPARATOR + mMaxOutputPortWidth) : 0.,
+                    isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
                     offset + ADJUST - result.height()
                 ); // forward enumeration
 #endif
@@ -474,29 +522,7 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
 
 QPolygonF Resource::portBoundingPolygon(NodeItem::portID_t portID)
 {
-    dieOnPort(portID, "portBoundingPolygon");
-    QRectF result = boundingRect();
-    Labels::iterator it = mLabels.find(portID);
-    graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
-    bool isInputPort = "graph_analysis::InputPortVertex" == current_port->getClassName();
-#ifndef LABEL_SWAPPING
-    int offset = std::distance(mLabels.begin(), it);
-    result.adjust(
-                    isInputPort ? 0. : mMaxInputPortWidth + SEPARATOR,
-                    qreal(2 + offset) * ADJUST,
-                    isInputPort ? - (SEPARATOR + mMaxOutputPortWidth) : 0.,
-                    qreal(3 + offset) * ADJUST - result.height()
-                ); // forward enumeration
-#else
-    qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
-    result.adjust(
-                    isInputPort ? 0. : mMaxInputPortWidth + SEPARATOR,
-                    offset,
-                    isInputPort ? - (SEPARATOR + mMaxOutputPortWidth) : 0.,
-                    offset + ADJUST - result.height()
-                ); // forward enumeration
-#endif
-    return QPolygonF(result);
+    return QPolygonF(portBoundingRect(portID));
 }
 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)

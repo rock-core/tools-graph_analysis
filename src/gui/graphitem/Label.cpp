@@ -199,7 +199,7 @@ QVariant Label::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
             ((NodeItem *)parentItem())->syncLabel(mPortID);
         }
     }
-    if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
+    else if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
     {
         // item received SelectedChange event AND is in editor mode AND is about to be deselected:
         setTextInteraction(false); // leave editor mode
