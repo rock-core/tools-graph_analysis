@@ -424,12 +424,20 @@ void Resource::syncLabel(NodeItem::portID_t portID)
             {
                 mMaxInputPortWidth = width;
             }
+            else // there is no way to know it wasn't max before - forcing recalculation of max width nevertheless
+            {
+                recomputeMaxInputPortWidth();
+            }
         }
         else // ("graph_analysis::OutputPortVertex" == port->getClassName())
         {
             if(width > mMaxOutputPortWidth)
             {
                 mMaxOutputPortWidth = width;
+            }
+            else // there is no way to know it wasn't max before - forcing recalculation of max width nevertheless
+            {
+                recomputeMaxOutputPortWidth();
             }
         }
         updateWidth();
