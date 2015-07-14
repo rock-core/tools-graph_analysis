@@ -252,14 +252,18 @@ void Resource::updateWidth(bool active)
         if(SEPARATOR + ports_width < max_width)
         {
             qreal separator = mSeparator;
+            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator was = %lf", mpVertex->getLabel().c_str(), mSeparator);
             mSeparator = max_width - ports_width;
+            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is = %lf", mpVertex->getLabel().c_str(), mSeparator);
             shiftOutports(mSeparator - separator);
         }
         else
         {
             max_width = ports_width + SEPARATOR;
             qreal separator = mSeparator;
+            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator was = %lf", mpVertex->getLabel().c_str(), mSeparator);
             mSeparator = SEPARATOR;
+            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is (default) = %lf", mpVertex->getLabel().c_str(), mSeparator);
             shiftOutports(mSeparator - separator);
         }
     }
@@ -319,6 +323,7 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
             mOutPorts = 0;
         }
         label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
+        qDebug("Resource::addPort (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
         updateWidth();
     }
     NodeItem::portID_t portID = mID;
@@ -466,15 +471,20 @@ void Resource::syncLabel(NodeItem::portID_t portID)
     {
         port->setLabel(tag);
         qreal width = label->boundingRect().width();
+        qDebug("Resource::syncLabel (@cluster='%s'): 1. Syncing label '%s' of width = %lf", mpVertex->getLabel().c_str(), tag.c_str(), width);
         if("graph_analysis::InputPortVertex" == port->getClassName())
         {
+            qDebug("Resource::syncLabel (@cluster='%s'): 2. Item is of type 'graph_analysis::InputPortVertex'", mpVertex->getLabel().c_str());
             if(width > mMaxInputPortWidth)
             {
+                qDebug("Resource::syncLabel (@cluster='%s'): 3. mMaxInputPortWidth was '%lf' -> updated it to be '%lf'", mpVertex->getLabel().c_str(), mMaxInputPortWidth, width);
                 mMaxInputPortWidth = width;
             }
             else // there is no way to know it wasn't max before - forcing recalculation of max width nevertheless
             {
+                qDebug("Resource::syncLabel (@cluster='%s'): 3. else: mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
                 recomputeMaxInputPortWidth();
+                qDebug("Resource::syncLabel (@cluster='%s'): 3. else: mMaxInputPortWidth recomputed as '%lf'", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
             }
         }
         else // ("graph_analysis::OutputPortVertex" == port->getClassName())
@@ -508,6 +518,7 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
                     isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
                     qreal(3 + offset) * ADJUST - result.height()
                 ); // forward enumeration
+    qDebug("Resource::portBoundingRect (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
 #else
     qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
     result.adjust(
@@ -516,6 +527,7 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
                     isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
                     offset + ADJUST - result.height()
                 ); // forward enumeration
+    qDebug("Resource::portBoundingRect (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
 #endif
     return result;
 }
