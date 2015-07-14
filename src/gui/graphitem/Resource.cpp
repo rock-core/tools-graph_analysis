@@ -50,24 +50,106 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     mpBoard->resize(rect.width(), rect.height());
 }
 
+void Resource::recomputeMaxInputPortWidth(void)
+{
+    Labels::iterator it = mLabels.begin();
+    mMaxInputPortWidth = 0;
+    for(++it; mLabels.end() != it; ++it)
+    {
+        Label *label = it->second;
+        if("graph_analysis::InputPortVertex" == label->getNode()->getClassName())
+        {
+            qreal current_width = label->boundingRect().width();
+            if(mMaxInputPortWidth < current_width)
+            {
+                mMaxInputPortWidth = current_width;
+            }
+        }
+    }
+}
+
+void Resource::recomputeMaxOutputPortWidth(void)
+{
+    Labels::iterator it = mLabels.begin();
+    mMaxOutputPortWidth = 0;
+    for(++it; mLabels.end() != it; ++it)
+    {
+        Label *label = it->second;
+        if("graph_analysis::OutputPortVertex" == label->getNode()->getClassName())
+        {
+            qreal current_width = label->boundingRect().width();
+            if(mMaxOutputPortWidth < current_width)
+            {
+                mMaxOutputPortWidth = current_width;
+            }
+        }
+    }
+}
+
 void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
 {
     dieOnPort(portID, "setPortLabel");
-    mLabels[portID]->setPlainText(QString(label.c_str()));
-    mVertices[portID]->setLabel(label);
+    graph_analysis::Vertex::Ptr port = mVertices[portID];
+    port->setLabel(label);
+    Label *port_label = mLabels[portID];
+    qreal pre_width = port_label->boundingRect().width();
+    port_label->setPlainText(QString(label.c_str()));
+    qreal post_width = port_label->boundingRect().width();
+    if("graph_analysis::InputPortVertex" == port->getClassName())
+    {
+        if(post_width > mMaxInputPortWidth)
+        {
+            mMaxInputPortWidth = post_width;
+        }
+        else if(abs(pre_width - mMaxInputPortWidth) < EPSILON)
+        {
+            recomputeMaxInputPortWidth();
+        }
+    }
+    else // ("graph_analysis::OutputPortVertex" == port->getClassName())
+    {
+        if(post_width > mMaxOutputPortWidth)
+        {
+            mMaxOutputPortWidth = post_width;
+        }
+        else if(abs(pre_width - mMaxOutputPortWidth) < EPSILON)
+        {
+            recomputeMaxOutputPortWidth();
+        }
+    }
 }
 
 void Resource::changeLabel(const std::string& label)
 {
     mpVertex->setLabel(label);
+    qreal pre_width = mLabel->boundingRect().width();
     mLabel->setPlainText(QString(label.c_str()));
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    qreal post_width = mLabel->boundingRect().width();
+    if(post_width > pre_width)
+    {
+        updateWidth();
+        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    }
+    else if(!mLabels.size())
+    {
+        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    }
 }
 
 void Resource::updateLabel()
 {
+    qreal pre_width = mLabel->boundingRect().width();
     mLabel->setPlainText(QString(mpVertex->getLabel().c_str()));
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    qreal post_width = mLabel->boundingRect().width();
+    if(post_width > pre_width)
+    {
+        updateWidth();
+        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    }
+    else if(!mLabels.size())
+    {
+        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    }
 }
 
 QRectF Resource::boundingRect() const
@@ -235,20 +317,7 @@ void Resource::removePort(NodeItem::portID_t portID)
         scene()->removeItem(label_to_delete);
         if(maxInputPortWidthIsDirty)
         {
-            it = mLabels.begin();
-            mMaxInputPortWidth = 0;
-            for(++it; mLabels.end() != it; ++it)
-            {
-                Label *label = it->second;
-                if("graph_analysis::InputPortVertex" == label->getNode()->getClassName())
-                {
-                    qreal current_width = label->boundingRect().width();
-                    if(mMaxInputPortWidth < current_width)
-                    {
-                        mMaxInputPortWidth = current_width;
-                    }
-                }
-            }
+            recomputeMaxInputPortWidth();
         }
         if(--mInPorts >= mOutPorts)
         {
@@ -273,20 +342,7 @@ void Resource::removePort(NodeItem::portID_t portID)
         scene()->removeItem(label_to_delete);
         if(maxOutputPortWidthIsDirty)
         {
-            it = mLabels.begin();
-            mMaxOutputPortWidth = 0;
-            for(++it; mLabels.end() != it; ++it)
-            {
-                Label *label = it->second;
-                if("graph_analysis::OutputPortVertex" == label->getNode()->getClassName())
-                {
-                    qreal current_width = label->boundingRect().width();
-                    if(mMaxOutputPortWidth < current_width)
-                    {
-                        mMaxOutputPortWidth = current_width;
-                    }
-                }
-            }
+            recomputeMaxOutputPortWidth();
         }
         if(--mOutPorts >= mInPorts)
         {
@@ -350,11 +406,27 @@ void Resource::syncLabel(NodeItem::portID_t portID)
         return;
     }
     dieOnPort(portID, "syncLabel");
+    Label *label = mLabels[portID];
     graph_analysis::Vertex::Ptr port = mVertices[portID];
-    std::string tag = mLabels[portID]->toPlainText().toStdString();
+    std::string tag = label->toPlainText().toStdString();
     if(port->getLabel() != tag)
     {
         port->setLabel(tag);
+        qreal width = label->boundingRect().width();
+        if("graph_analysis::InputPortVertex" == port->getClassName())
+        {
+            if(width > mMaxInputPortWidth)
+            {
+                mMaxInputPortWidth = width;
+            }
+        }
+        else // ("graph_analysis::OutputPortVertex" == port->getClassName())
+        {
+            if(width > mMaxOutputPortWidth)
+            {
+                mMaxOutputPortWidth = width;
+            }
+        }
         updateWidth();
         update();
     }

@@ -62,6 +62,8 @@ protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
     void dieOnPort(NodeItem::portID_t  portID, const std::string& caller = "");
+    void recomputeMaxInputPortWidth(void);
+    void recomputeMaxOutputPortWidth(void);
 
     //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
