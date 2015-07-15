@@ -498,7 +498,7 @@ void GraphWidget::importGraph()
 
 void GraphWidget::exportGraph()
 {
-    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"));
+    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Export File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"));
 
     if (!label.isEmpty())
     {
