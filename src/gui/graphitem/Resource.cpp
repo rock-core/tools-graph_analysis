@@ -18,7 +18,7 @@
 
 
 //#define MSEPARATOR
-#define MMAXINPUTOUTPUTPORTWIDTH
+//#define MMAXINPUTOUTPUTPORTWIDTH
 
 namespace graph_analysis {
 namespace gui {
@@ -249,20 +249,40 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
-void Resource::shiftOutports(qreal delta)
+void Resource::shiftOutputPorts(qreal delta)
 {
     if(0. == delta)
     {
         return;
     }
     Labels::iterator it = mLabels.begin();
-    for(++it; mLabels.end() != it; ++it)
+    for(; mLabels.end() != it; ++it)
     {
         Label *label = it->second;
         graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
         if("graph_analysis::OutputPortVertex" == current_port->getClassName())
         {
             label->setPos(label->pos() + QPointF(delta, 0.));
+        }
+    }
+}
+
+void Resource::displaceOutputPorts(qreal delta)
+{
+    Labels::iterator it = mLabels.begin();
+    for(; mLabels.end() != it; ++it)
+    {
+        Label *label = it->second;
+        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        if("graph_analysis::OutputPortVertex" == current_port->getClassName())
+        {
+            qDebug("Resource::displaceOutputPorts (@cluster='%s'): displacing port = %s", mpVertex->getLabel().c_str(), label->toPlainText().toStdString().c_str());
+            QPointF position = label->pos();
+            label->setPos(position + QPointF(delta - position.x(), 0.));
+        }
+        else
+        {
+            qDebug("Resource::displaceOutputPorts (@cluster='%s'): avoided port of type = %s", mpVertex->getLabel().c_str(), current_port->getClassName().c_str());
         }
     }
 }
@@ -302,12 +322,11 @@ void Resource::updateWidth(bool active)
 #ifdef MSEPARATOR
             qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is = %lf", mpVertex->getLabel().c_str(), mSeparator);
 #endif
-            shiftOutports(mSeparator - separator);
+            shiftOutputPorts(mSeparator - separator);
         }
         else
         {
             max_width = ports_width + SEPARATOR;
-            qreal separator = mSeparator;
 #ifdef MSEPARATOR
             qDebug("Resource::updateWidth (@cluster='%s'): mSeparator was = %lf", mpVertex->getLabel().c_str(), mSeparator);
 #endif
@@ -315,7 +334,8 @@ void Resource::updateWidth(bool active)
 #ifdef MSEPARATOR
             qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is (default) = %lf", mpVertex->getLabel().c_str(), mSeparator);
 #endif
-            shiftOutports(mSeparator - separator);
+            qDebug("Resource::updateWidth (@cluster='%s'): displacing all OUtputPorts with delta = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth + mSeparator);
+            displaceOutputPorts(mMaxInputPortWidth + mSeparator);
         }
     }
     if(active)
@@ -400,6 +420,8 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
         LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: port IDs counter overflowed";
         mID = 0;
     }
+
+    qDebug("Resource::addPort (@cluster='%s'): port [0] is taken by = %s of type %s", mpVertex->getLabel().c_str(), mVertices[0]->getLabel().c_str(), mVertices[0]->getClassName().c_str());
     return portID; // returning this port's offset in the vector of ports
 }
 

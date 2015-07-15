@@ -62,7 +62,8 @@ protected:
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
     void dieOnPort(NodeItem::portID_t  portID, const std::string& caller = "");
-    void shiftOutports(qreal delta);
+    void displaceOutputPorts(qreal delta);
+    void shiftOutputPorts(qreal delta);
     void recomputeMaxInputPortWidth(void);
     void recomputeMaxOutputPortWidth(void);
 
