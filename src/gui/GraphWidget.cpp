@@ -836,13 +836,6 @@ void GraphWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int po
     mpStartVertex   = startVertex;
     NodeItem *item  = mNodeItemMap[startVertex];
     mpStartPort     = item->getPort(portID);
-    if("graph_analysis::PortVertex" != mpStartPort->getClassName())
-    {
-        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::setStartVertex: expected associated portVertex to be of type 'graph_analysis::PortVertex'; instead, found type '")
-                                        + mpStartPort->getClassName() + "'";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
 }
 
 void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
@@ -863,23 +856,41 @@ void GraphWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID
         throw std::runtime_error(error_msg);
     }
     mpEndPort       = item->getPort(portID);
-    if("graph_analysis::PortVertex" != mpEndPort->getClassName())
-    {
-        std::string error_msg = std::string("graph_analysis::gui::GraphWidget::setEndVertex: expected associated portVertex to be of type 'graph_analysis::PortVertex'; instead, found type '")
-                                        + mpEndPort->getClassName() + "'";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
     NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
     NodeItem *targetNodeItem = item;
     if(sourceNodeItem == targetNodeItem)
     {
         // preventing self-edges and handling it into ports swapping
-        sourceNodeItem->swapPorts(mPortIDMap[mpStartPort], mPortIDMap[mpEndPort]);
+        NodeItem::portID_t start_portID = mPortIDMap[mpStartPort];
+        NodeItem::portID_t   end_portID = mPortIDMap[mpEndPort];
+        if(mpStartPort->getClassName() != mpEndPort->getClassName())
+        {
+            std::string error_msg = std::string("The two ports are of different types '") + mpStartPort->getClassName() + "' and '" + mpEndPort->getClassName() + "'";
+            LOG_WARN_S << "graph_analysis::gui::GraphWidget::setEndVertex: failed to initiate ports swapping: " << error_msg;
+            QMessageBox::critical(this, tr("Ports Swapping Failed"), QString(error_msg.c_str()));
+            return;
+        }
+        sourceNodeItem->swapPorts(start_portID, end_portID);
     }
     else
     {
-        addEdgeAdHoc(); // unconditionally trigger edge insertion
+        if("graph_analysis::OutputPortVertex" != mpStartPort->getClassName())
+        {
+            std::string error_msg = std::string("Expected associated source portVertex to be of type 'graph_analysis::OutputPortVertex'; instead, found type '")
+                                            + mpStartPort->getClassName() + "'";
+            LOG_WARN_S << "graph_analysis::gui::GraphWidget::setEndVertex: " << error_msg;
+            QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
+            return;
+        }
+        if("graph_analysis::InputPortVertex" != mpEndPort->getClassName())
+        {
+            std::string error_msg = std::string("Expected associated target portVertex to be of type 'graph_analysis::InputPortVertex'; instead, found type '")
+                                            + mpEndPort->getClassName() + "'";
+            LOG_WARN_S << "graph_analysis::gui::GraphWidget::setEndVertex: " << error_msg;
+            QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
+            return;
+        }
+        addEdgeAdHoc();
     }
 }
 
