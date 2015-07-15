@@ -1522,6 +1522,13 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
                 importGraph();
             break;
 
+            case Qt::Key_P:
+                if(!mpPropertyDialog->isRunning())
+                {
+                    reloadPropertyDialog();
+                }
+            break;
+
             case Qt::Key_Minus:
                 zoomOut();
             break;

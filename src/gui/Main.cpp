@@ -47,8 +47,10 @@
 #include <QMainWindow>
 #include <QApplication>
 
-#include <graph_analysis/gui/graphitem/Resource.hpp>
+#include <string>
+#include <sstream>
 #include <boost/foreach.hpp>
+#include <graph_analysis/gui/graphitem/Resource.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
 // test graphs
 #define TEST_1ST_GRAPH 0
@@ -67,8 +69,63 @@
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 //#define LAYOUT "dot"
 
+void help_setup(std::stringstream& ss, const std::string& cmd)
+{
+    ss << "usage: " << cmd << " [ --help ]" << std::endl;
+    ss << std::endl;
+    ss << "Options:" << std::endl;
+    ss << "-------" << std::endl;
+    ss << "    --help " << "displays this informative message" << std::endl;
+    ss << std::endl;
+    ss << "Details:" << std::endl;
+    ss << "-------" << std::endl;
+    ss << " The current graph GUI implementation illustrates the Rock Orogen Components diagrams use-case."; // << std::endl;
+    ss << " The Orogen Components are modeled as cluster nodes in an internal base graph while their input/output "; // << std::endl;
+    ss << "ports correspond to port vertices through which clusters form edges."; // << std::endl;
+    ss << std::endl;
+    ss << "Features:" << std::endl;
+    ss << "--------" << std::endl;
+    ss << "The GUI contains a main windnow representing the Orogen Components Diagram (the view of the graph) and a dockable panel with button-commands." << std::endl;
+    ss << "The commands panel is accompanied by homologous commands in the context menu of the main window. "; // << std::endl;
+    ss << "The commands panel can be reloaded (if previously closed) via the extra command 'Reload Properties' made available in the context menu "; // << std::endl;
+    ss << "or by the keyboard short-cut CTRL+P (CTRL+p)" << std::endl;
+    ss << std::endl;
+    ss << "In the so-called 'move-around' mode, the user can re-arranged and closely manipulate displayed components (a.k.a. node items)." << std::endl;
+    ss << "The re-arranging is performed by dragging the components with the mouse while the manipulation includes the following commands "; // << std:endl;
+    ss << "made available in both the commands panel and the main window context menu:" << std::endl;
+    ss << std::endl;
+    ss << std::endl;
+    ss << std::endl;
+    ss << "In the 'drag-n-drop' mode, the user can spawn new edges from output ports of one component to input ports of another component "; // << std::endl;
+    ss << "and swap same-type ports of the same component." << std::endl;
+    ss << "The user can toggle in between the 2 modes either by using the <Drag'n'Drop> button command in the dockable panel, "; // << std::endl;
+    ss << "or the homologous one in the main window context menu, or by employing one of the 2 keyboard short-cuts: CTRL+CapsLock or CTRL+D (CTRL+d)." << std::endl;
+    ss << std::endl;
+    ss << "Keys Combinations:" << std::endl;
+    ss << "---- ------------" << std::endl;
+    ss << std::endl;
+    ss << std::endl;
+    ss << std::endl;
+}
+
 int main(int argc, char **argv)
 {
+    if(argc > 1)
+    {
+        if("--help" == std::string(argv[1]))
+        {
+            std::stringstream help_message;
+            help_setup(help_message, std::string(argv[0]));
+            std::cout << help_message.rdbuf();
+            return 0;
+        }
+        else
+        {
+            std::cout << "usage: " << argv[0] << " [--help]\n";
+            return 0;
+        }
+    }
+
     using namespace graph_analysis::gui;
 
     QApplication app(argc, argv);
