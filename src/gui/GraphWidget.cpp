@@ -1496,7 +1496,10 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_A:
-                addNodeAdhoc();
+                if(!mDragDrop)
+                {
+                    addNodeAdhoc();
+                }
             break;
 
             case Qt::Key_I:
