@@ -63,7 +63,7 @@ void Label::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 
 void Label::keyPressEvent(::QKeyEvent* event)
 {
-    qDebug("KEYPRESS LABEL");
+    LOG_DEBUG_S << "KEYPRESS LABEL";
     // skipping Key_Return (a.k.a. ENTER)
     // check for a keys combination
     Qt::KeyboardModifiers modifiers = event->modifiers();
@@ -95,7 +95,7 @@ void Label::keyPressEvent(::QKeyEvent* event)
 
 void Label::focusOutEvent(QFocusEvent* event)
 {
-    qDebug("Lost focus");
+    LOG_DEBUG_S << "Lost focus";
     ::QGraphicsTextItem::focusOutEvent(event);
 }
 

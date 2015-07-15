@@ -16,10 +16,6 @@
 #define EPSILON 0.001
 #define SEPARATOR 69.
 
-
-//#define MSEPARATOR
-//#define MMAXINPUTOUTPUTPORTWIDTH
-
 namespace graph_analysis {
 namespace gui {
 namespace graphitem {
@@ -57,13 +53,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 void Resource::recomputeMaxInputPortWidth(void)
 {
     Labels::iterator it = mLabels.begin();
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::recomputeMaxInputPortWidth (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
     mMaxInputPortWidth = 0;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::recomputeMaxInputPortWidth (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
     for(++it; mLabels.end() != it; ++it)
     {
         Label *label = it->second;
@@ -73,13 +63,7 @@ void Resource::recomputeMaxInputPortWidth(void)
             qreal current_width = label->boundingRect().width();
             if(mMaxInputPortWidth < current_width)
             {
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-                qDebug("Resource::recomputeMaxInputPortWidth (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
                 mMaxInputPortWidth = current_width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-                qDebug("Resource::recomputeMaxInputPortWidth (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
             }
         }
     }
@@ -88,13 +72,7 @@ void Resource::recomputeMaxInputPortWidth(void)
 void Resource::recomputeMaxOutputPortWidth(void)
 {
     Labels::iterator it = mLabels.begin();
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::recomputeMaxOutputPortWidth (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
     mMaxOutputPortWidth = 0;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::recomputeMaxOutputPortWidth (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
     for(++it; mLabels.end() != it; ++it)
     {
         Label *label = it->second;
@@ -104,13 +82,7 @@ void Resource::recomputeMaxOutputPortWidth(void)
             qreal current_width = label->boundingRect().width();
             if(mMaxOutputPortWidth < current_width)
             {
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-                qDebug("Resource::recomputeMaxOutputPortWidth (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
                 mMaxOutputPortWidth = current_width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-                qDebug("Resource::recomputeMaxOutputPortWidth (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
             }
         }
     }
@@ -129,13 +101,7 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
     {
         if(post_width > mMaxInputPortWidth)
         {
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-            qDebug("Resource::setPortLabel (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
             mMaxInputPortWidth = post_width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-            qDebug("Resource::setPortLabel (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
         }
         else if(abs(pre_width - mMaxInputPortWidth) < EPSILON)
         {
@@ -146,13 +112,7 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
     {
         if(post_width > mMaxOutputPortWidth)
         {
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::setPortLabel (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
             mMaxOutputPortWidth = post_width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::setPortLabel (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
         }
         else if(abs(pre_width - mMaxOutputPortWidth) < EPSILON)
         {
@@ -276,13 +236,8 @@ void Resource::displaceOutputPorts(qreal delta)
         graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
         if("graph_analysis::OutputPortVertex" == current_port->getClassName())
         {
-            qDebug("Resource::displaceOutputPorts (@cluster='%s'): displacing port = %s", mpVertex->getLabel().c_str(), label->toPlainText().toStdString().c_str());
             QPointF position = label->pos();
             label->setPos(position + QPointF(delta - position.x(), 0.));
-        }
-        else
-        {
-            qDebug("Resource::displaceOutputPorts (@cluster='%s'): avoided port of type = %s", mpVertex->getLabel().c_str(), current_port->getClassName().c_str());
         }
     }
 }
@@ -305,36 +260,19 @@ void Resource::updateHeight()
 void Resource::updateWidth(bool active)
 {
     qreal max_width = mLabel->boundingRect().width();
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-            qDebug("Resource::updateWidth (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-            qDebug("Resource::updateWidth (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
     qreal ports_width = mMaxInputPortWidth + mMaxOutputPortWidth;
     if(ports_width > 0)
     {
         if(SEPARATOR + ports_width < max_width)
         {
             qreal separator = mSeparator;
-#ifdef MSEPARATOR
-            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator was = %lf", mpVertex->getLabel().c_str(), mSeparator);
-#endif
             mSeparator = max_width - ports_width;
-#ifdef MSEPARATOR
-            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is = %lf", mpVertex->getLabel().c_str(), mSeparator);
-#endif
             shiftOutputPorts(mSeparator - separator);
         }
         else
         {
             max_width = ports_width + SEPARATOR;
-#ifdef MSEPARATOR
-            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator was = %lf", mpVertex->getLabel().c_str(), mSeparator);
-#endif
             mSeparator = SEPARATOR;
-#ifdef MSEPARATOR
-            qDebug("Resource::updateWidth (@cluster='%s'): mSeparator now is (default) = %lf", mpVertex->getLabel().c_str(), mSeparator);
-#endif
-            qDebug("Resource::updateWidth (@cluster='%s'): displacing all OUtputPorts with delta = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth + mSeparator);
             displaceOutputPorts(mMaxInputPortWidth + mSeparator);
         }
     }
@@ -370,16 +308,9 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
     qreal width = label->boundingRect().width();
     if(isInputPort)
     {
-        qDebug("Resource::addPort (@cluster='%s'): adding (In)port '%s'", mpVertex->getLabel().c_str(), node->getLabel().c_str());
         if(width > mMaxInputPortWidth)
         {
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-            qDebug("Resource::addPort (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
             mMaxInputPortWidth = width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-            qDebug("Resource::addPort (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
         }
         if(mInPorts + 1 < 0)
         {
@@ -391,16 +322,9 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
     }
     else
     {
-        qDebug("Resource::addPort (@cluster='%s'): adding (Out)port '%s'", mpVertex->getLabel().c_str(), node->getLabel().c_str());
         if(width > mMaxOutputPortWidth)
         {
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::addPort (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
             mMaxOutputPortWidth = width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::addPort (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
         }
         if(mOutPorts + 1 < 0)
         {
@@ -408,9 +332,6 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
             mOutPorts = 0;
         }
         label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
-#ifdef MSEPARATOR
-        qDebug("Resource::addPort (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
-#endif
         updateWidth();
     }
     NodeItem::portID_t portID = mID;
@@ -421,7 +342,6 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
         mID = 0;
     }
 
-    qDebug("Resource::addPort (@cluster='%s'): port [0] is taken by = %s of type %s", mpVertex->getLabel().c_str(), mVertices[0]->getLabel().c_str(), mVertices[0]->getClassName().c_str());
     return portID; // returning this port's offset in the vector of ports
 }
 
@@ -528,16 +448,8 @@ void Resource::removePorts()
     mVertices.clear();
     mInPorts = 0;
     mOutPorts = 0;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::removePorts (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-    qDebug("Resource::removePorts (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
     mMaxInputPortWidth = 0.;
     mMaxOutputPortWidth = 0.;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::removePorts (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-    qDebug("Resource::removePorts (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
     mpBoard->resize(mLabel->boundingRect().size());
     update();
 }
@@ -568,39 +480,22 @@ void Resource::syncLabel(NodeItem::portID_t portID)
     {
         port->setLabel(tag);
         qreal width = label->boundingRect().width();
-        qDebug("Resource::syncLabel (@cluster='%s'): 1. Syncing label '%s' of width = %lf", mpVertex->getLabel().c_str(), tag.c_str(), width);
         if("graph_analysis::InputPortVertex" == port->getClassName())
         {
-            qDebug("Resource::syncLabel (@cluster='%s'): 2. Item is of type 'graph_analysis::InputPortVertex'", mpVertex->getLabel().c_str());
             if(width > mMaxInputPortWidth)
             {
-                qDebug("Resource::syncLabel (@cluster='%s'): 3. mMaxInputPortWidth was '%lf' -> updated it to be '%lf'", mpVertex->getLabel().c_str(), mMaxInputPortWidth, width);
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::syncLabel (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
                 mMaxInputPortWidth = width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::syncLabel (@cluster='%s'): mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
-#endif
             }
             else // there is no way to know it wasn't max before - forcing recalculation of max width nevertheless
             {
-                qDebug("Resource::syncLabel (@cluster='%s'): 3. else: mMaxInputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
                 recomputeMaxInputPortWidth();
-                qDebug("Resource::syncLabel (@cluster='%s'): 3. else: mMaxInputPortWidth recomputed as '%lf'", mpVertex->getLabel().c_str(), mMaxInputPortWidth);
             }
         }
         else // ("graph_analysis::OutputPortVertex" == port->getClassName())
         {
             if(width > mMaxOutputPortWidth)
             {
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::syncLabel (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
                 mMaxOutputPortWidth = width;
-#ifdef MMAXINPUTOUTPUTPORTWIDTH
-    qDebug("Resource::syncLabel (@cluster='%s'): mMaxOutputPortWidth = %lf", mpVertex->getLabel().c_str(), mMaxOutputPortWidth);
-#endif
             }
             else // there is no way to know it wasn't max before - forcing recalculation of max width nevertheless
             {
@@ -619,18 +514,15 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
     Labels::iterator it = mLabels.find(portID);
     graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
     bool isInputPort = "graph_analysis::InputPortVertex" == current_port->getClassName();
-//#ifndef LABEL_SWAPPING
-//    int offset = std::distance(mLabels.begin(), it);
-//    result.adjust(
-//                    isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
-//                    qreal(2 + offset) * ADJUST,
-//                    isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
-//                    qreal(3 + offset) * ADJUST - result.height()
-//                ); // forward enumeration
-//#ifdef MSEPARATOR
-//    qDebug("Resource::portBoundingRect (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
-//#endif
-//#else
+#ifndef LABEL_SWAPPING
+    int offset = std::distance(mLabels.begin(), it);
+    result.adjust(
+                    isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
+                    qreal(2 + offset) * ADJUST,
+                    isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
+                    qreal(3 + offset) * ADJUST - result.height()
+                ); // forward enumeration
+#else
     qreal offset = mLabels[portID]->pos().y() - mLabel->pos().y();
     result.adjust(
                     isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
@@ -638,10 +530,7 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
                     isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
                     offset + ADJUST - result.height()
                 ); // forward enumeration
-#ifdef MSEPARATOR
-    qDebug("Resource::portBoundingRect (@cluster='%s'): made use of mSeparator = %lf", mpVertex->getLabel().c_str(), mSeparator);
 #endif
-//#endif
     return result;
 }
 
@@ -700,7 +589,7 @@ void Resource::focusOutEvent(QFocusEvent* event)
 
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
-    qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
+    LOG_DEBUG_S << "Hover ENTER event for " << mpVertex->toString();
     if(!mFocused)
     {
         mPen = QPen(Qt::green);
@@ -713,7 +602,7 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 
 void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
-    qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
+    LOG_DEBUG_S << "Hover LEAVE event for " << mpVertex->toString();
     if(!mFocused)
     {
         mPen = mPenDefault;
