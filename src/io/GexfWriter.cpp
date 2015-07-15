@@ -59,6 +59,11 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     writer.init(name, &gexf);
     writer.write();
 
+    if(std::string::npos != name.find(' '))
+    {
+        return;
+    }
+
     std::string formattedFile = name + ".formatted";
     std::string command = "`which xmllint` --encode UTF-8 --format " + name + " > " + formattedFile;
 
