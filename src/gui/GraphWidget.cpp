@@ -481,6 +481,8 @@ void GraphWidget::importGraph()
 
     if (!label.isEmpty())
     {
+        // removing trailing whitespaces in the filename
+        label = label.trimmed();
         if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
         {
             fromXmlFile(label.toStdString());
@@ -502,6 +504,8 @@ void GraphWidget::exportGraph()
 
     if (!label.isEmpty())
     {
+        // removing trailing whitespaces in the filename
+        label = label.trimmed();
         if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
         {
             toXmlFile(label.toStdString());
