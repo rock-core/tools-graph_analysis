@@ -477,50 +477,84 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
 
 void GraphWidget::importGraph()
 {
-    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"));
+    QString selectedFilter;
+    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"), &selectedFilter);
 
     if (!label.isEmpty())
     {
         // removing trailing whitespaces in the filename
         label = label.trimmed();
-        if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
+        if(label.contains('.'))
         {
-            fromXmlFile(label.toStdString());
-        }
-        else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
-        {
-            fromYmlFile(label.toStdString());
+            if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
+            {
+                fromXmlFile(label.toStdString());
+            }
+            else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
+            {
+                fromYmlFile(label.toStdString());
+            }
+            else
+            {
+                QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+            }
         }
         else
         {
-            QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+            if(selectedFilter.startsWith("YAML"))
+            {
+                fromYmlFile(label.toStdString() + ".yml");
+            }
+            else // if(selectedFilter.startsWith("GEXF"))
+            {
+                fromXmlFile(label.toStdString() + ".gexf");
+            }
         }
     }
 }
 
 void GraphWidget::exportGraph()
 {
-    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Export File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"));
+    QString selectedFilter;
+    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Export File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"), &selectedFilter);
 
     if (!label.isEmpty())
     {
         // removing trailing whitespaces in the filename
         label = label.trimmed();
-        if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
+        if(label.contains('.'))
         {
-            toXmlFile(label.toStdString());
-        }
-        else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
-        {
-            toYmlFile(label.toStdString());
-        }
-        else if(label.endsWith(QString(".dot")))
-        {
-            toDotFile(label.toStdString());
+            if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
+            {
+                toXmlFile(label.toStdString());
+            }
+            else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
+            {
+                toYmlFile(label.toStdString());
+            }
+            else if(label.endsWith(QString(".dot")))
+            {
+                toDotFile(label.toStdString());
+            }
+            else
+            {
+                QMessageBox::critical(this, tr("Graph Export Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+            }
         }
         else
         {
-            QMessageBox::critical(this, tr("Graph Export Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+            if(selectedFilter.startsWith("GEXF"))
+            {
+                toXmlFile(label.toStdString() + ".gexf");
+            }
+            else if(selectedFilter.startsWith("YAML"))
+            {
+                toYmlFile(label.toStdString() + ".yml");
+            }
+            else
+            {
+                toDotFile(label.toStdString() + ".dot");
+            }
         }
     }
 }
