@@ -81,6 +81,7 @@ private:
     QPen mPenDefault;
     bool mFocused;
     bool mSelected;
+    bool mHeightAdjusted;
     NodeItem::portID_t mID;
     NodeItem::portID_t mInPorts, mOutPorts;
     qreal mMaxInputPortWidth, mMaxOutputPortWidth, mSeparator;

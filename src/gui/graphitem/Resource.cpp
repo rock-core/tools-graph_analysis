@@ -15,6 +15,8 @@
 #define ADJUST 23.69
 #define EPSILON 0.001
 #define SEPARATOR 69.
+#define PORT_BORDER 3.
+#define NODE_BORDER 12.
 
 namespace graph_analysis {
 namespace gui {
@@ -26,6 +28,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mPenDefault(Qt::blue)
     , mFocused(false)
     , mSelected(false)
+    , mHeightAdjusted(false)
     , mID(0)
     , mInPorts(0)
     , mOutPorts(0)
@@ -182,12 +185,17 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     foreach(Tuple tuple, mLabels)
     {
         rect = portBoundingRect(tuple.first);
-        painter->drawRect(rect);
+        painter->drawRoundedRect(rect, PORT_BORDER, PORT_BORDER);
     }
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
     rect = boundingRect();
-    painter->drawRect(rect); //-7,-7,20,20);
+    if(mLabels.size() && !mHeightAdjusted)
+    {
+        rect.adjust(0., 0., 0., NODE_BORDER - PORT_BORDER);
+        mHeightAdjusted = true;
+    }
+    painter->drawRoundedRect(rect, NODE_BORDER, NODE_BORDER); //-7,-7,20,20);
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
 //    {
@@ -318,7 +326,11 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
             mInPorts = 0;
         }
         label->setPos(mLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
-        updateWidth();
+        if(mInPorts > mOutPorts)
+        {
+            mHeightAdjusted = false;
+            updateWidth();
+        }
     }
     else
     {
@@ -332,7 +344,11 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
             mOutPorts = 0;
         }
         label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
-        updateWidth();
+        if(mOutPorts > mInPorts)
+        {
+            mHeightAdjusted = false;
+            updateWidth();
+        }
     }
     NodeItem::portID_t portID = mID;
     // test if the IDs overflowed
@@ -385,6 +401,7 @@ void Resource::removePort(NodeItem::portID_t portID)
         }
         if(--mInPorts >= mOutPorts)
         {
+            mHeightAdjusted = false;
             updateHeight();
         }
     }
@@ -411,6 +428,7 @@ void Resource::removePort(NodeItem::portID_t portID)
         }
         if(--mOutPorts >= mInPorts)
         {
+            mHeightAdjusted = false;
             updateHeight();
         }
     }
@@ -448,6 +466,7 @@ void Resource::removePorts()
     mVertices.clear();
     mInPorts = 0;
     mOutPorts = 0;
+    mHeightAdjusted = false;
     mMaxInputPortWidth = 0.;
     mMaxOutputPortWidth = 0.;
     mpBoard->resize(mLabel->boundingRect().size());
