@@ -102,9 +102,9 @@ void help_setup(std::stringstream& ss, const std::string& cmd)
     ss << "        'Reset'    - completely deletes the graph"       << std::endl;
     ss << "        'Layout'   - applies a new layout to the graph"  << std::endl;
     ss << "        Drag'n'Drop- toggles the drag-n-drop mode"       << std::endl;
-    ss << "    When a component has been focused on - i.e. the user double-clicked it"; // << std::endl;
+    ss << "    When a component has been focused on - i.e. the user double-clicked it";     // << std::endl;
     ss << " the following commands are made available in the commands panel:"               << std::endl;
-    ss << "    (or in the context menu when the component is being right-clicked instead)"  << std::endl;
+    ss << "    (or in the context menu when the component has been right-clicked instead)"  << std::endl;
     ss << "        'Rename Node'    - changes the label of the selected vertex"             << std::endl;
     ss << "        'Add Port'       - adds a port to the selected vertex"                   << std::endl;
     ss << "        'Swap Ports'     - swaps the positions of two ports of that vertex"      << std::endl;
@@ -112,7 +112,11 @@ void help_setup(std::stringstream& ss, const std::string& cmd)
     ss << "        'Remove a Port'  - removes a port of the selected vertex"                << std::endl;
     ss << "        'Remove Ports'   - removes ALL ports of the selected vertex"             << std::endl;
     ss << "        'Remove Node'    - removes the selected vertex from the graph"           << std::endl;
-    ss << std::endl;
+    ss << "    When an edge has been focused on - i.e. the user double-clicked its label";  // << std::endl;
+    ss << " the following commands are made available in the commands panel:"               << std::endl;
+    ss << "    (or in the context menu when the component has been right-clicked instead)"  << std::endl;
+    ss << "        'Rename Edge'    - changes the label of the selected edge"               << std::endl;
+    ss << "        'Remove Edge'    - removes the selected edge from the graph"             << std::endl;
     ss << std::endl;
     ss << "In the 'drag-n-drop' mode, the user can spawn new edges from output ports of one component to input ports of another component "; // << std::endl;
     ss << "and swap same-type ports of the same component." << std::endl;
