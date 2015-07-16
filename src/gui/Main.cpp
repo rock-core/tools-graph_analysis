@@ -80,8 +80,9 @@ void help_setup(std::stringstream& ss, const std::string& cmd)
     ss << "Details:" << std::endl;
     ss << "-------"  << std::endl;
     ss << " The current graph GUI implementation illustrates the Rock Orogen Components diagrams use-case."; // << std::endl;
-    ss << " The Orogen Components are modeled as cluster nodes in an internal base graph while their input/output "; // << std::endl;
+    ss << " The Orogen Components are modeled as cluster nodes in an internal base graph, while their input/output "; // << std::endl;
     ss << "ports correspond to port vertices through which clusters form edges."; // << std::endl;
+    ss << std::endl;
     ss << std::endl;
     ss << "Features:" << std::endl;
     ss << "--------"  << std::endl;
@@ -117,6 +118,8 @@ void help_setup(std::stringstream& ss, const std::string& cmd)
     ss << "    (or in the context menu when the component has been right-clicked instead)"  << std::endl;
     ss << "        'Rename Edge'    - changes the label of the selected edge"               << std::endl;
     ss << "        'Remove Edge'    - removes the selected edge from the graph"             << std::endl;
+    ss << "The view can generally be changed at all times by zooming in or out with the";   // << std::endl;
+    ss << " mouse wheel or by 2D translations via dragging with the middle mouse button."   << std::endl;
     ss << std::endl;
     ss << "In the 'drag-n-drop' mode, the user can spawn new edges from output ports of one component to input ports of another component "; // << std::endl;
     ss << "and swap same-type ports of the same component." << std::endl;
@@ -125,8 +128,36 @@ void help_setup(std::stringstream& ss, const std::string& cmd)
     ss << std::endl;
     ss << "Keys Combinations:" << std::endl;
     ss << "---- ------------"  << std::endl;
+    ss << "    Minus    (-)     -*  zoom-out the view" << std::endl;
+    ss << "    Plus     (+)     -*  zoom-in  the view" << std::endl;
+    ss << "    Space    (space) -*  refresh the graph view" << std::endl;
+    ss << "    R        (r)     -*  refresh the graph view" << std::endl;
+    ss << "    S        (s)     -*  shuffle the graph nodes" << std::endl;
+    ss << "    L        (l)     -*  change graph layout" << std::endl;
     ss << std::endl;
+    ss << "    Escape   (ESC)   -   clear focus (if any node and/or edge is being focused on)" << std::endl;
     ss << std::endl;
+    ss << "    CTRL+Minus(CTRL-)-   zoom-out the view" << std::endl;
+    ss << "    CTRL+Plus (CTRL+)-   zoom-in  the view" << std::endl;
+    ss << "    CTRL+Q   (CTRL+q)-   quit" << std::endl;
+    ss << "    CTRL+W   (CTRL+w)-   quit" << std::endl;
+    ss << "    CTRL+R   (CTRL+r)-   reset graph" << std::endl;
+    ss << "    CTRL+S   (CTRL+s)-   save (export graph)" << std::endl;
+    ss << "    CTRL+A   (CTRL+a)-   add new node to graph" << std::endl;
+    ss << "    CTRL+I   (CTRL+i)-   open (import graph)" << std::endl;
+    ss << "    CTRL+O   (CTRL+o)-   open (import graph)" << std::endl;
+    ss << "    CTRL+P   (CTRL+p)-   reload buttons panel (if closed)" << std::endl;
+    ss << "    CTRL+Left        -   rotate view anti-clockwise" << std::endl;
+    ss << "    CTRL+Right       -   rotate view clockwise" << std::endl;
+    ss << "    CTRL+D   (CTRL+d)-   toggle in between the two modes" << std::endl;
+    ss << "    CTRL+CapsLock    -   toggle in between the two modes" << std::endl;
+    ss << std::endl;
+    ss << "    SHIFT+Up         -** shift up the port that is being edited" << std::endl;
+    ss << "    SHIFT+Down       -** shift down the port that is being edited" << std::endl;
+    ss << std::endl;
+    ss << "Notes:" << std::endl;
+    ss << "    -*  available in move-around mode only" << std::endl;
+    ss << "    -** available in drag-n-drop mode only" << std::endl;
     ss << std::endl;
 }
 

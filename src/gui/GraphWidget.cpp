@@ -1382,34 +1382,6 @@ void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
     {
         clearEdgeFocus();
     }
-
-//    if(!(mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex))
-//    {
-//        clearNodeFocus();
-//        if(!(mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge))
-//        {
-//            clearEdgeFocus();
-//        }
-//        QGraphicsView::mouseDoubleClickEvent(event);
-//    }
-//    else if(!(mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge))
-//    {
-//        clearEdgeFocus();
-//        QGraphicsView::mouseDoubleClickEvent(event);
-//    }
-//    else if(mVertexSelected && mEdgeFocused)
-//    {
-//        clearNodeFocus();
-//    }
-//    else if(mVertexFocused && mEdgeSelected)
-//    {
-//        clearEdgeFocus();
-//    }
-//    else
-//    {
-//        clearFocus();
-//    }
-//#else
 #endif
     QGraphicsView::mouseDoubleClickEvent(event);
 }
@@ -1536,6 +1508,10 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
                 zoomIn();
             break;
 
+            case Qt::Key_Minus:
+                zoomOut();
+            break;
+
             case Qt::Key_R:
                 resetGraph();
             break;
@@ -1561,10 +1537,6 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
                 {
                     reloadPropertyDialog();
                 }
-            break;
-
-            case Qt::Key_Minus:
-                zoomOut();
             break;
 
             case Qt::Key_Left:
@@ -1602,9 +1574,11 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_Plus:
             zoomIn();
         break;
+
         case Qt::Key_Minus:
             zoomOut();
         break;
+
         case Qt::Key_Space:
         case Qt::Key_Enter:
         case Qt::Key_R:
@@ -1613,19 +1587,26 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 
         case Qt::Key_S:
             shuffle();
-        break; // too close to CTRL+S?!
+        break;
 
         case Qt::Key_L:
             changeLayout();
         break;
 
-        case Qt::Key_Escape:
-            clearFocus();
-        break;
-
         //default:
         }
     }
+
+    switch(event->key())
+    {
+
+    case Qt::Key_Escape:
+        clearFocus();
+    break;
+
+    //default:
+    }
+
     QGraphicsView::keyPressEvent(event);
 }
 
