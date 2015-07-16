@@ -23,6 +23,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QWidget>
+#include <QtGui/QTabWidget>
 #include "GraphWidget.hpp"
 #include "CustomDialog.hpp"
 
@@ -83,10 +84,17 @@ public:
         {
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
         }
-        horizontalLayoutWidget = new QWidget(Dialog);
+//        mainLayout = new QVBoxLayout;
+//        mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
+//        Dialog->setLayout(mainLayout);
+        mainLayout = Dialog->layout();
+        tabWidget = new QTabWidget();
+        mainLayout->addWidget(tabWidget);
+        horizontalLayoutWidget = new QWidget();
+        tabWidget->addTab(horizontalLayoutWidget, "&Properties");
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
         horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
-        horizontalLayout->setContentsMargins(0, 25, 0, 0);
+        horizontalLayout->setContentsMargins(5, 0, 5, 0);
         int verticalLayoutLeftover;
         {
             // main properties
@@ -179,9 +187,9 @@ public:
             }
         }
 
-        horizontalLayout->addSpacing(5);
+//        horizontalLayout->addSpacing(5);
         addFrame(horizontalLayout);
-        horizontalLayout->addSpacing(5);
+//        horizontalLayout->addSpacing(5);
 
         int verticalLayoutFocusLeftover;
         {
@@ -318,12 +326,13 @@ public:
         QMetaObject::connectSlotsByName(Dialog);
 
         Dialog->setFixedSize(WIDTH + 20, 20 + mHeight - commonExtraPadding);
-        horizontalLayoutWidget->setGeometry(QRect(10, 10, WIDTH, mHeight - commonExtraPadding));
+        tabWidget->setGeometry(QRect(5, 5, WIDTH + 10, 10 + mHeight - commonExtraPadding));
+        horizontalLayoutWidget->setGeometry(QRect(0, 0, WIDTH, mHeight - commonExtraPadding));
     } // setupUi
 
     void retranslateUi(CustomDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
+//        Dialog->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
@@ -376,7 +385,9 @@ private:
     CustomDialog mDialog;
     GraphWidget *mpGraphWidget;
     QMainWindow *mpMainWindow;
+    QTabWidget *tabWidget;
     QWidget *horizontalLayoutWidget;
+    QLayout *mainLayout;
     QVBoxLayout *verticalLayout;
     QVBoxLayout *verticalLayoutFocus;
     QHBoxLayout *horizontalLayout;
