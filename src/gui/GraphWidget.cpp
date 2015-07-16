@@ -431,7 +431,7 @@ void GraphWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
         std::string option = boost::lexical_cast<std::string>(tuple.first) + ": " + vertex->getLabel();
         ports_options << tr(option.c_str());
     }
-    QString strPortID = QInputDialog::getItem(this, tr("Choose Port to Remove"),
+    QString strPortID = QInputDialog::getItem(this, tr("Remove a Port"),
                                          tr("Port ID:"), ports_options,
                                          0, false, &ok);
     if (ok && !strPortID.isEmpty())
