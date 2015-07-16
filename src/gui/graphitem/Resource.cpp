@@ -398,6 +398,7 @@ void Resource::removePort(NodeItem::portID_t portID)
         if(maxInputPortWidthIsDirty)
         {
             recomputeMaxInputPortWidth();
+            updateWidth();
         }
         if(--mInPorts >= mOutPorts)
         {
@@ -425,6 +426,7 @@ void Resource::removePort(NodeItem::portID_t portID)
         if(maxOutputPortWidthIsDirty)
         {
             recomputeMaxOutputPortWidth();
+            updateWidth();
         }
         if(--mOutPorts >= mInPorts)
         {
