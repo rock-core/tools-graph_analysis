@@ -287,16 +287,16 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     }
     contextMenu.addAction(actionAddNode);
     contextMenu.addSeparator();
+    contextMenu.addAction(actionImport);
+    contextMenu.addAction(actionExport);
+    contextMenu.addSeparator();
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
-    contextMenu.addAction(actionLayout);
     if(!mpGraph->empty())
     {
         contextMenu.addAction(actionReset);
     }
-    contextMenu.addSeparator();
-    contextMenu.addAction(actionImport);
-    contextMenu.addAction(actionExport);
+    contextMenu.addAction(actionLayout);
     contextMenu.addSeparator();
     if(mDragDrop)
     {
