@@ -3,6 +3,7 @@
 #include <cmath>
 #include <QStyle>
 #include <QPainter>
+#include <QMessageBox>
 #include <QStyleOption>
 #include <QGraphicsSceneDragDropEvent>
 #include <boost/lexical_cast.hpp>
@@ -442,17 +443,30 @@ void Resource::swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2)
     dieOnPort(port1, "swapPorts");
     dieOnPort(port2, "swapPorts");
 
+    graph_analysis::Vertex::Ptr vertex1 = mVertices[port1];
+    graph_analysis::Vertex::Ptr vertex2 = mVertices[port2];
+    if(vertex1->getClassName() != vertex2->getClassName())
+    {
+        std::string error_msg = std::string("illegal swapping operation was requested in between ports of different types '")
+                                    + vertex1->getClassName() + "' and '" + vertex2->getClassName() + "'";
+        LOG_WARN_S << "graph_analysis::gui:graphitem::Resource::swapPorts: " << error_msg;
+        QMessageBox::critical(mpGraphWidget, QString("Swapping Failed"), QString((error_msg).c_str()));
+        return;
+    }
+    Label *label1 = mLabels[port1];
+    Label *label2 = mLabels[port2];
+
     // swapping GUI labels
 #ifdef LABEL_SWAPPING
-    QPointF pos1 = mLabels[port1]->pos();
-    QPointF pos2 = mLabels[port2]->pos();
-    mLabels[port1]->setPos(pos2);
-    mLabels[port2]->setPos(pos1);
+    QPointF pos1 = label1->pos();
+    QPointF pos2 = label2->pos();
+    label1->setPos(pos2);
+    label2->setPos(pos1);
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 #else
-    QString str_swap = mLabels[port1]->toPlainText();
-    mLabels[port1]->setPlainText(mLabels[port2]->toPlainText());
-    mLabels[port2]->setPlainText(str_swap);
+    QString str_swap = label1->toPlainText();
+    label1->setPlainText(label2->toPlainText());
+    label2->setPlainText(str_swap);
 #endif
 }
 
@@ -668,10 +682,12 @@ void Resource::shiftPortUp(NodeItem::portID_t portID)
         return;
     }
     // iterating for closest upper label
+    graph_analysis::Vertex::Ptr vertex = mVertices[portID];
+    const std::string vertexType = vertex->getClassName();
     foreach(Tuple tuple, mLabels)
     {
         delta = y - tuple.second->pos().y();
-        if(abs(delta - ADJUST) < EPSILON)
+        if(abs(delta - ADJUST) < EPSILON && vertexType == mVertices[tuple.first]->getClassName())
         {
             swapPorts(tuple.first, portID);
             return;
@@ -694,10 +710,12 @@ void Resource::shiftPortDown(NodeItem::portID_t portID)
         return;
     }
     // iterating for closest lower label
+    graph_analysis::Vertex::Ptr vertex = mVertices[portID];
+    const std::string vertexType = vertex->getClassName();
     foreach(Tuple tuple, mLabels)
     {
         delta = tuple.second->pos().y() - y;
-        if(abs(delta - ADJUST) < EPSILON)
+        if(abs(delta - ADJUST) < EPSILON && vertexType == mVertices[tuple.first]->getClassName())
         {
             swapPorts(tuple.first, portID);
             return;

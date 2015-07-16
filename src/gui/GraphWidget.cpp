@@ -1934,10 +1934,18 @@ void GraphWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
         ss1 >> port1ID;
         int port2ID;
         std::stringstream ss2(strPort2ID);
-        ss1 >> port2ID;
+        ss2 >> port2ID;
         if(port1ID - port2ID)
         {
-            item->swapPorts(port1ID, port2ID);
+            try
+            {
+                item->swapPorts(port1ID, port2ID);
+            }
+            catch(std::runtime_error e)
+            {
+                LOG_ERROR_S << "graph_analysis::gui::GraphWidget::swapPorts: swapping operation failed: " << e.what();
+                QMessageBox::critical(this, tr("Swapping Failed"), QString(e.what()));
+            }
         }
         else
         {
