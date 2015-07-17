@@ -118,7 +118,7 @@ LayerWidget::LayerWidget(GraphWidget *graphWidget, graph_analysis::BaseGraph::Pt
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
 
-    reset();
+//    reset(true);
 }
 
 LayerWidget::~LayerWidget()
