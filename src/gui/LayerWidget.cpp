@@ -45,7 +45,6 @@
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
 #include "AddNodeDialog.hpp"
-#include "PropertyDialog.hpp"
 
 #include <set>
 #include <math.h>
@@ -65,12 +64,8 @@
 
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/io/YamlWriter.hpp>
-#include <graph_analysis/io/GexfWriter.hpp>
-#include <graph_analysis/io/GexfReader.hpp>
-#include <graph_analysis/io/YamlReader.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
-#include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
 #include <exception>
 #include <boost/foreach.hpp>
@@ -152,6 +147,16 @@ void LayerWidget::showContextMenu(const QPoint& pos)
         contextMenu.addAction(actionReloadPropertyDialog);
     }
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void LayerWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
+{
+    mpGraph = graph;
+    mpSubGraph = mGraphView.apply(mpGraph);
+    mFiltered = true;
+
+    mpSubGraph->enableAllVertices();
+    mpSubGraph->enableAllEdges();
 }
 
 void LayerWidget::changeLayout()

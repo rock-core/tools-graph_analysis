@@ -74,6 +74,7 @@ class EdgeItem;
 class AddNodeDialog;
 class ActionCommander;
 class PropertyDialog;
+class LayerWidget;
 
 /**
  *
@@ -225,6 +226,9 @@ public slots:
     void reloadPropertyDialog();
     void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
 
+    void importGraphLayer();
+    void resetGraphLayer();
+
 protected:
 
     void mousePressEvent(QMouseEvent* event);
@@ -299,6 +303,8 @@ private:
     // icons
     IconMap mIconMap;
     void loadIcon(QIcon& icon, std::string file);
+
+    LayerWidget *mpLayerWidget;
 };
 
 } // end namespace gui

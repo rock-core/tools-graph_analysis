@@ -45,7 +45,6 @@
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
-#include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 //#include <boost/thread/mutex.hpp> // no need to: SLOT calls are executed sequentially
     // more details @ http://doc.qt.io/qt-4.8/threads-qobject.html#signals-and-slots-across-threads
@@ -66,9 +65,8 @@ namespace gui {
 
 class NodeItem;
 class EdgeItem;
+class GraphWidget;
 class AddNodeDialog;
-class ActionCommander;
-class PropertyDialog;
 
 /**
  *
@@ -97,7 +95,7 @@ public:
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
     graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
-    void setGraph(graph_analysis::BaseGraph::Ptr graph) { mpGraph = graph; }
+    void setGraph(graph_analysis::BaseGraph::Ptr graph);
 
     void reset(bool keepData = false);
     void clear();

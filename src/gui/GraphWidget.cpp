@@ -39,6 +39,7 @@
 ****************************************************************************/
 
 #include "GraphWidget.hpp"
+#include "LayerWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
 #include "AddNodeDialog.hpp"
@@ -112,6 +113,7 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     , mDragDrop(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
+    , mpLayerWidget(new LayerWidget(this, mpGraph))
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -208,6 +210,20 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
 
     reset();
     mpPropertyDialog = new PropertyDialog(this, mpParentWindowWidget);
+}
+
+void GraphWidget::importGraphLayer()
+{
+    importGraph();
+    mpLayerWidget->setGraph(mpGraph);
+    mpLayerWidget->refresh();
+}
+
+void GraphWidget::resetGraphLayer()
+{
+    resetGraph();
+    mpLayerWidget->setGraph(mpGraph);
+    mpLayerWidget->refresh();
 }
 
 void GraphWidget::loadIcon(QIcon& icon, std::string file)
@@ -1759,7 +1775,6 @@ void GraphWidget::resetGraph()
     if(mpGraph->empty())
     {
         QMessageBox::information(this, tr("Nothing to Reset"), "The graph is already empty!");
-//        reset();
     }
     else
     {

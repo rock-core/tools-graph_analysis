@@ -390,7 +390,7 @@ public:
         QObject::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
         QObject::connect(mpImportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphLayer()));
         QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
-        QObject::connect(mpExportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphLayer()));
+        QObject::connect(mpExportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
         QObject::connect(mpResetButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraph()));
         QObject::connect(mpResetLayerButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraphLayer()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
