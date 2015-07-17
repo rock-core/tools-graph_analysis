@@ -82,25 +82,17 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-LayerWidget::LayerWidget(QWidget *parent)
+LayerWidget::LayerWidget(GraphWidget *graphWidget, graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
     : QGraphicsView(parent)
-    , mpGraph()
+    , mpGraph(graph)
     , mpGVGraph(0)
-    , mpYamlWriter(new io::YamlWriter())
-    , mpGexfWriter(new io::GexfWriter())
-    , mpGexfReader(new io::GexfReader())
-    , mpYamlReader(new io::YamlReader())
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mVertexSelected(false)
-    , mEdgeSelected(false)
-    , mEdgeStartVertex(false)
-    , mEdgeEndVertex(false)
-    , mDragDrop(false)
+    , mpGraphWidget(graphWidget)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -131,246 +123,35 @@ LayerWidget::LayerWidget(QWidget *parent)
 
 LayerWidget::~LayerWidget()
 {
-    if(mpPropertyDialog)
-    {
-        mpPropertyDialog->closeDialog();
-    }
-    if(mpYamlWriter)
-    {
-        delete mpYamlWriter;
-    }
-    if(mpGexfWriter)
-    {
-        delete mpGexfWriter;
-    }
-    if(mpGexfReader)
-    {
-        delete mpGexfReader;
-    }
 //    destroy();
 }
 
 void LayerWidget::showContextMenu(const QPoint& pos)
 {
-    ActionCommander comm(this);
-    QPoint position = mapTo(this, pos);
+    ActionCommander comm(mpGraphWidget);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionChangeEdgeLabel = comm.addAction("Change Selected Edge Label", SLOT(changeSelectedEdgeLabel()));
-    QAction *actionRemoveEdge = comm.addAction("Remove Selected Edge", SLOT(removeSelectedEdge()));
-    QAction *actionChangeLabel = comm.addAction("Change Selected Node Label", SLOT(changeSelectedVertexLabel()));
-    QAction *actionRemoveNode = comm.addAction("Remove Selected Node", SLOT(removeSelectedVertex()));
-    QAction *actionStartNewEdgeHere = comm.addAction("Start New Edge Here", SLOT(startNewEdgeHere()));
-    QAction *actionEndNewEdgeHere = comm.addAction("End New Edge Here", SLOT(endNewEdgeHere()));
-    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position);
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()));
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()));
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()));
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()));
-    QAction *actionLayout = comm.addAction("Change Layout", SLOT(changeLayout()));
-    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()));
-    QAction *actionUnsetDragDrop = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()));
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Property Dialog", SLOT(reloadPropertyDialog()));
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(mpGraphWidget->getIcon("refresh")), this);
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(mpGraphWidget->getIcon("shuffle")), this);
+    QAction *actionImport  = comm.addAction("Import", SLOT(importGraph()), *(mpGraphWidget->getIcon("import")));
+    QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(mpGraphWidget->getIcon("export")));
+    QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(mpGraphWidget->getIcon("reset")));
+    QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(mpGraphWidget->getIcon("layout")), this);
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialog()), *(mpGraphWidget->getIcon("reload")));
 
-    // (conditionally) adding the actions to the context menu
-    if(mEdgeSelected)
-    {
-        contextMenu.addAction(actionChangeEdgeLabel);
-        contextMenu.addAction(actionRemoveEdge);
-    }
-    if(mVertexSelected)
-    {
-        contextMenu.addAction(actionChangeLabel);
-        contextMenu.addAction(actionRemoveNode);
-        contextMenu.addAction(actionStartNewEdgeHere);
-        contextMenu.addAction(actionEndNewEdgeHere);
-    }
-    contextMenu.addAction(actionAddNode);
+    contextMenu.addAction(actionImport);
+    contextMenu.addAction(actionExport);
+    contextMenu.addSeparator();
     contextMenu.addAction(actionRefresh);
     contextMenu.addAction(actionShuffle);
-    contextMenu.addAction(actionExport);
-    contextMenu.addAction(actionImport);
+    contextMenu.addAction(actionReset);
     contextMenu.addAction(actionLayout);
-    if(mDragDrop)
+    if(!mpGraphWidget->dialogIsRunning())
     {
-        contextMenu.addAction(actionUnsetDragDrop);
-    }
-    else
-    {
-        contextMenu.addAction(actionSetDragDrop);
-    }
-    if(!mpPropertyDialog->isRunning())
-    {
+        contextMenu.addSeparator();
         contextMenu.addAction(actionReloadPropertyDialog);
     }
     contextMenu.exec(mapToGlobal(pos));
-}
-
-void LayerWidget::reloadPropertyDialog()
-{
-    if(mpPropertyDialog)
-    {
-        delete mpPropertyDialog;
-    }
-    mpPropertyDialog = new PropertyDialog(this);
-}
-
-void LayerWidget::importGraph()
-{
-    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"));
-
-    if (!label.isEmpty())
-    {
-        if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
-        {
-            fromXmlFile(label.toStdString());
-        }
-        else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
-        {
-            fromYmlFile(label.toStdString());
-        }
-        else
-        {
-            QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
-        }
-    }
-}
-
-void LayerWidget::exportGraph()
-{
-    QString label =  QFileDialog::getSaveFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"));
-
-    if (!label.isEmpty())
-    {
-        if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
-        {
-            toXmlFile(label.toStdString());
-        }
-        else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
-        {
-            toYmlFile(label.toStdString());
-        }
-        else if(label.endsWith(QString(".dot")))
-        {
-            toDotFile(label.toStdString());
-        }
-        else
-        {
-            QMessageBox::critical(this, tr("Graph Export Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
-        }
-    }
-}
-
-Edge::Ptr LayerWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
-{
-    Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
-    mpGraph->addEdge(edge);
-    enableEdge(edge);
-    return edge;
-}
-
-Vertex::Ptr LayerWidget::createVertex(const std::string& type, const std::string& label)
-{
-    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
-    std::set<std::string>::iterator type_it = types.find(type);
-    if(types.end() == type_it)
-    {
-        std::string error_msg = std::string("graph_analysis::LayerWidget::createVertex: Given Vertex Type '") + type + "' is not registered!";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
-    mpGraph->addVertex(vertex);
-    enableVertex(vertex);
-    return vertex;
-}
-
-Edge::Ptr LayerWidget::createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
-{
-    Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
-    return edge;
-}
-
-Vertex::Ptr LayerWidget::createStandaloneVertex(const std::string& type, const std::string& label)
-{
-    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
-    std::set<std::string>::iterator type_it = types.find(type);
-    if(types.end() == type_it)
-    {
-        std::string error_msg = std::string("graph_analysis::LayerWidget::createVertex: Given Vertex Type '") + type + "' is not registered!";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
-    return vertex;
-}
-
-void LayerWidget::addNodeAdhoc(QObject *pos)
-{
-    QPoint *position = (QPoint *)pos;
-    AddNodeDialog nodeDialog;
-    if(nodeDialog.isValid())
-    {
-        graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeDialog.getNodeType(), nodeDialog.getNodeLabel());
-        mpGraph->addVertex(vertex);
-        enableVertex(vertex);
-        // Registering the new node item
-        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
-        nodeItem->setPos((double) position->x(), (double) position->y());
-        mNodeItemMap[vertex] = nodeItem;
-
-        scene()->addItem(nodeItem);
-//        update();
-    }
-}
-
-void LayerWidget::changeSelectedVertexLabel()
-{
-    bool ok;
-    QString label = QInputDialog::getText(this, tr("Input Node Label"),
-                                         tr("New Label:"), QLineEdit::Normal,
-                                         QString(mpSelectedVertex->getLabel().c_str()), &ok);
-    if (ok && !label.isEmpty())
-    {
-        mpSelectedVertex->setLabel(label.toStdString());
-        NodeItem* nodeItem = mNodeItemMap[mpSelectedVertex];
-        nodeItem->updateLabel();
-    }
-}
-
-void LayerWidget::changeSelectedEdgeLabel()
-{
-    bool ok;
-    EdgeItem* edge = mEdgeItemMap[mpSelectedEdge];
-    QString label = QInputDialog::getText(this, tr("Input Edge Label"),
-                                         tr("New Label:"), QLineEdit::Normal,
-                                          edge->getLabel()->toPlainText(), &ok);
-    if (ok && !label.isEmpty())
-    {
-        graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
-        edgeLabel->setPlainText(QString(label.toStdString().c_str()));
-        graph_analysis::Edge::Ptr graph_edge = edge->getEdge();
-        graph_edge->setLabel(label.toStdString());
-    }
-}
-
-void LayerWidget::removeSelectedEdge()
-{
-    scene()->removeItem(mEdgeItemMap[mpSelectedEdge]);
-    mpGraph->removeEdge(mpSelectedEdge);
-}
-
-void LayerWidget::removeSelectedVertex()
-{
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(mpSelectedVertex);
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-        scene()->removeItem(mEdgeItemMap[edge]);
-        mpGraph->removeEdge(edge);
-    }
-    scene()->removeItem(mNodeItemMap[mpSelectedVertex]);
-    mpGraph->removeVertex(mpSelectedVertex);
 }
 
 void LayerWidget::changeLayout()
@@ -391,125 +172,6 @@ void LayerWidget::changeLayout()
         std::string desiredLayout = layout.toStdString();
         reset(true /*keepData*/);
         setLayout(QString(desiredLayout.c_str()));
-    }
-}
-
-void LayerWidget::startNewEdgeHere()
-{
-    mpStartVertex = mpSelectedVertex;
-    mEdgeStartVertex = true;
-    if(mEdgeStartVertex && mEdgeEndVertex)
-    {
-        bool ok;
-        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
-                                             tr("New Edge Label:"), QLineEdit::Normal,
-                                             QString("newEdge"), &ok);
-        if (ok && !label.isEmpty())
-        {
-            spawnEdge(label.toStdString());
-        }
-        mEdgeStartVertex    = false;
-        mEdgeEndVertex      = false;
-    }
-}
-
-void LayerWidget::spawnEdge(const std::string& label)
-{
-    Edge::Ptr edge(new Edge());
-    edge->setSourceVertex(mpStartVertex);
-    edge->setTargetVertex(mpEndVertex);
-    mpGraph->addEdge(edge);
-    enableEdge(edge);
-    // Registering new node edge items
-    Vertex::Ptr source = edge->getSourceVertex();
-    Vertex::Ptr target = edge->getTargetVertex();
-
-    NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-    NodeItem* targetNodeItem = mNodeItemMap[ target ];
-
-    if(sourceNodeItem && targetNodeItem)
-    {
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
-        mEdgeItemMap[edge] = edgeItem;
-        graphitem::edges::EdgeLabel* edgeLabel = edgeItem->getLabel();
-        edgeLabel->setPlainText(QString(label.c_str()));
-
-        scene()->addItem(edgeItem);
-        edgeItem->adjust();
-    }
-}
-
-void LayerWidget::endNewEdgeHere()
-{
-    mpEndVertex = mpSelectedVertex;
-    mEdgeEndVertex = true;
-    if(mEdgeStartVertex && mEdgeEndVertex)
-    {
-        bool ok;
-        QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
-                                             tr("New Edge Label:"), QLineEdit::Normal,
-                                             QString("newEdge"), &ok);
-        if (ok && !label.isEmpty())
-        {
-            spawnEdge(label.toStdString());
-        }
-        mEdgeStartVertex    = false;
-        mEdgeEndVertex      = false;
-    }
-}
-
-void LayerWidget::toYmlFile(const std::string& filename)
-{
-    try
-    {
-        mpYamlWriter->write(filename, mpGraph);
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::LayerWidget: export failed: " << e.what();
-        QMessageBox::critical(this, tr("Graph Export Failed"), QString(e.what()));
-    }
-}
-
-void LayerWidget::toDotFile(const std::string& filename)
-{
-    try
-    {
-        mpGVGraph->renderToFile(filename, mLayout.toStdString());
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::LayerWidget: export via graphviz failed: " << e.what();
-        QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
-    }
-}
-
-void LayerWidget::fromXmlFile(const std::string& filename)
-{
-    mpGexfReader->read(filename, mpGraph);
-    mpSubGraph->enableAllVertices();
-    mpSubGraph->enableAllEdges();
-    refresh();
-}
-
-void LayerWidget::fromYmlFile(const std::string& filename)
-{
-    mpYamlReader->read(filename, mpGraph);
-    mpSubGraph->enableAllVertices();
-    mpSubGraph->enableAllEdges();
-    refresh();
-}
-
-void LayerWidget::toXmlFile(const std::string& filename)
-{
-    try
-    {
-        mpGexfWriter->write(filename, mpGraph);
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::LayerWidget: export to .gexf failed: " << e.what();
-        QMessageBox::critical(this, tr("Graph Export to .gexf Failed"), QString(e.what()));
     }
 }
 
@@ -562,6 +224,7 @@ void LayerWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 
 void LayerWidget::updateFromGraph()
 {
+    /*
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -664,6 +327,7 @@ void LayerWidget::updateFromGraph()
 //            }
 //        }
     }
+     */
 }
 
 void LayerWidget::addVertex(Vertex::Ptr vertex)
@@ -698,47 +362,6 @@ void LayerWidget::mouseReleaseEvent(QMouseEvent *event)
         QGraphicsView::mouseReleaseEvent(&fake);
     }
     else QGraphicsView::mouseReleaseEvent(event);
-}
-
-void LayerWidget::updateDragDrop(bool dragDrop)
-{
-    mDragDrop = dragDrop;
-    NodeItemMap::iterator it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != it; ++it)
-    {
-        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
-        {
-            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
-        }
-    }
-}
-
-void LayerWidget::setDragDrop()
-{
-    mDragDrop = true;
-    mpPropertyDialog->setDragDrop(true);
-    NodeItemMap::iterator it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != it; ++it)
-    {
-        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
-        {
-            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
-        }
-    }
-}
-
-void LayerWidget::unsetDragDrop()
-{
-    mDragDrop = false;
-    mpPropertyDialog->setDragDrop(false);
-    NodeItemMap::iterator it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != it; ++it)
-    {
-        if("graph_analysis::ClusterVertex" == it->second->getVertex()->getClassName())
-        {
-            it->second->setFlag(QGraphicsItemGroup::ItemIsMovable, !mDragDrop);
-        }
-    }
 }
 
 void LayerWidget::itemMoved()

@@ -5,16 +5,82 @@
 namespace graph_analysis {
 namespace gui {
 
-ActionCommander::ActionCommander(const QObject* object)
+ActionCommander::ActionCommander(QObject* object)
 : mpObject(object)
 {}
 
 ActionCommander::~ActionCommander()
 {}
 
+QAction* ActionCommander::addAction(const char *title, const char *slot, QObject* object)
+{
+    QAction *action = new QAction(QString(title), object);
+    bool connected = object->connect(action, SIGNAL(triggered()), object, slot);
+    if(!connected)
+    {
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the GraphWidget context menu";
+        LOG_ERROR_S << error;
+        throw std::runtime_error(error);
+    }
+    return action;
+}
+
+QAction* ActionCommander::addAction(const char *title, const char *slot, const QIcon& icon, QObject* object)
+{
+    QAction *action = new QAction(QString(title), object);
+    action->setIcon(icon);
+    action->setIconVisibleInMenu(true);
+    bool connected = object->connect(action, SIGNAL(triggered()), object, slot);
+    if(!connected)
+    {
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the GraphWidget context menu";
+        LOG_ERROR_S << error;
+        throw std::runtime_error(error);
+    }
+    return action;
+}
+
+QAction* ActionCommander::addMappedAction(const char *title, const char *slot, QObject *arg, QObject* object)
+{
+    QSignalMapper* signalMapper = new QSignalMapper(object);
+    QAction *action = new QAction(QString(title), object);
+    object->connect(action, SIGNAL(triggered()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(action, arg);
+    bool connected = object->connect(signalMapper, SIGNAL(mapped(QObject*)), object, slot);
+    if(!connected)
+    {
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addMappedAction: Failed to connect action ");
+        error += std::string(title);
+        error += std::string(" to the GraphWidget context menu");
+        LOG_ERROR_S << error;
+        throw std::runtime_error(error);
+    }
+    return action;
+}
+
+QAction* ActionCommander::addMappedAction(const char *title, const char *slot, QObject *arg, const QIcon& icon, QObject* object)
+{
+    QSignalMapper* signalMapper = new QSignalMapper(object);
+    QAction *action = new QAction(QString(title), object);
+    action->setIcon(icon);
+    action->setIconVisibleInMenu(true);
+    object->connect(action, SIGNAL(triggered()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(action, arg);
+    bool connected = object->connect(signalMapper, SIGNAL(mapped(QObject*)), object, slot);
+    if(!connected)
+    {
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addMappedAction: Failed to connect action ");
+        error += std::string(title);
+        error += std::string(" to the GraphWidget context menu");
+        LOG_ERROR_S << error;
+        throw std::runtime_error(error);
+    }
+    return action;
+}
+
 QAction* ActionCommander::addAction(const char *title, const char *slot)
 {
-    QAction *action = new QAction(QString(title), (QObject*) mpObject);
+    QAction *action = new QAction(QString(title), mpObject);
     bool connected = mpObject->connect(action, SIGNAL(triggered()), mpObject, slot);
     if(!connected)
     {
@@ -27,7 +93,7 @@ QAction* ActionCommander::addAction(const char *title, const char *slot)
 
 QAction* ActionCommander::addAction(const char *title, const char *slot, const QIcon& icon)
 {
-    QAction *action = new QAction(QString(title), (QObject*) mpObject);
+    QAction *action = new QAction(QString(title), mpObject);
     action->setIcon(icon);
     action->setIconVisibleInMenu(true);
     bool connected = mpObject->connect(action, SIGNAL(triggered()), mpObject, slot);
@@ -42,8 +108,8 @@ QAction* ActionCommander::addAction(const char *title, const char *slot, const Q
 
 QAction* ActionCommander::addMappedAction(const char *title, const char *slot, QObject *arg)
 {
-    QSignalMapper* signalMapper = new QSignalMapper((QObject*) mpObject);
-    QAction *action = new QAction(QString(title), (QObject*) mpObject);
+    QSignalMapper* signalMapper = new QSignalMapper(mpObject);
+    QAction *action = new QAction(QString(title), mpObject);
     mpObject->connect(action, SIGNAL(triggered()), signalMapper, SLOT(map()));
     signalMapper->setMapping(action, arg);
     bool connected = mpObject->connect(signalMapper, SIGNAL(mapped(QObject*)), mpObject, slot);
@@ -60,8 +126,8 @@ QAction* ActionCommander::addMappedAction(const char *title, const char *slot, Q
 
 QAction* ActionCommander::addMappedAction(const char *title, const char *slot, QObject *arg, const QIcon& icon)
 {
-    QSignalMapper* signalMapper = new QSignalMapper((QObject*) mpObject);
-    QAction *action = new QAction(QString(title), (QObject*) mpObject);
+    QSignalMapper* signalMapper = new QSignalMapper(mpObject);
+    QAction *action = new QAction(QString(title), mpObject);
     action->setIcon(icon);
     action->setIconVisibleInMenu(true);
     mpObject->connect(action, SIGNAL(triggered()), signalMapper, SLOT(map()));

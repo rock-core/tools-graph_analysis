@@ -314,6 +314,11 @@ void GraphWidget::showContextMenu(const QPoint& pos)
     contextMenu.exec(mapToGlobal(pos));
 }
 
+bool GraphWidget::dialogIsRunning()
+{
+    return mpPropertyDialog->isRunning();
+}
+
 void GraphWidget::addPortFocused()
 {
     addPort(mpFocusedVertex);

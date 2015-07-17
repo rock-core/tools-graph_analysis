@@ -45,6 +45,7 @@
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 //#include <boost/thread/mutex.hpp> // no need to: SLOT calls are executed sequentially
     // more details @ http://doc.qt.io/qt-4.8/threads-qobject.html#signals-and-slots-across-threads
@@ -89,80 +90,43 @@ public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
-    LayerWidget(QWidget *parent = 0);
+    LayerWidget(GraphWidget *graphWidget, graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr(), QWidget *parent = 0);
     ~LayerWidget();
-
-    Vertex::Ptr createVertex(const std::string& type, const std::string& label = "");
-    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
-    Vertex::Ptr createStandaloneVertex(const std::string& type, const std::string& label = "");
-    Edge::Ptr createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
-    void addVertex(graph_analysis::Vertex::Ptr vertex);
-    void addEdge(graph_analysis::Edge::Ptr edge);
-    void toYmlFile(const std::string& filename);
-    void toDotFile(const std::string& filename);
-    void toXmlFile(const std::string& filename);
-    void fromXmlFile(const std::string& filename);
-    void fromYmlFile(const std::string& filename);
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    void enableVertex(graph_analysis::Vertex::Ptr vertex);
-    void enableEdge(graph_analysis::Edge::Ptr edge);
-
     graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
+    void setGraph(graph_analysis::BaseGraph::Ptr graph) { mpGraph = graph; }
 
     void reset(bool keepData = false);
     void clear();
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
-    void standAloneLayouting();
-
-    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
-    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
     void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
     double  getScaleFactor () const { return mScaleFactor; }
-
-    void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
-    graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
-
-    void setVertexSelected (bool selected) { mVertexSelected = selected; }
-    bool getVertexSelected () { return mVertexSelected; }
-
-    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge= selectedEdge; }
-    graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
-
-    void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
-    bool getEdgeSelected () { return mEdgeSelected; }
-    bool getDragDrop() { return mDragDrop; }
-    bool getDragInitiated() { return mEdgeStartVertex; }
-    graph_analysis::Vertex::Ptr getDragSource() { return mpStartVertex; }
 
 public slots:
     void shuffle();
     void zoomIn();
     void zoomOut();
-    void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
     void showContextMenu(const QPoint& pos);
 
     void setLayout(QString layoutName);
     void refresh();
-    void changeSelectedVertexLabel();
-    void startNewEdgeHere();
-    void endNewEdgeHere();
     void changeLayout();
-    void removeSelectedVertex();
-    void changeSelectedEdgeLabel();
-    void removeSelectedEdge();
-    void importGraph();
-    void exportGraph();
-    void updateDragDrop(bool dragDrop);
-    void setDragDrop();
-    void unsetDragDrop();
-    void reloadPropertyDialog();
 
 protected:
+
+    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
+    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
+
+    void enableVertex(graph_analysis::Vertex::Ptr vertex);
+    void enableEdge(graph_analysis::Edge::Ptr edge);
+
+    void addVertex(graph_analysis::Vertex::Ptr vertex);
+    void addEdge(graph_analysis::Edge::Ptr edge);
 
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
@@ -182,10 +146,6 @@ private:
     graph_analysis::BaseGraph::Ptr mpGraph;
 
     io::GVGraph* mpGVGraph;
-    io::YamlWriter* mpYamlWriter;
-    io::GexfWriter* mpGexfWriter;
-    io::GexfReader* mpGexfReader;
-    io::YamlReader* mpYamlReader;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;
@@ -205,18 +165,7 @@ private:
     graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
-    graph_analysis::Vertex::Ptr mpSelectedVertex;
-    graph_analysis::Edge::Ptr mpSelectedEdge;
-    graph_analysis::Vertex::Ptr mpStartVertex;
-    graph_analysis::Vertex::Ptr mpEndVertex;
-
-    bool mVertexSelected;
-    bool mEdgeSelected;
-    bool mEdgeStartVertex;
-    bool mEdgeEndVertex;
-    bool mGVGraphDirty;
-
-    bool mDragDrop;
+    GraphWidget* mpGraphWidget;
 };
 
 } // end namespace gui

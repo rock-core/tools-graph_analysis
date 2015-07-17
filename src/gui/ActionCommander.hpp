@@ -24,14 +24,18 @@ namespace gui {
 class ActionCommander
 {
 public:
-    ActionCommander(const QObject* object);
+    ActionCommander(QObject* object);
     ~ActionCommander();
     QAction* addAction(const char *title, const char *slot);
+    QAction* addAction(const char *title, const char *slot, QObject* object);
     QAction* addAction(const char *title, const char *slot, const QIcon& icon);
+    QAction* addAction(const char *title, const char *slot, const QIcon& icon, QObject* object);
     QAction* addMappedAction(const char *title, const char *slot, QObject *arg);
+    QAction* addMappedAction(const char *title, const char *slot, QObject *arg, QObject* object);
     QAction* addMappedAction(const char *title, const char *slot, QObject *arg, const QIcon& icon);
+    QAction* addMappedAction(const char *title, const char *slot, QObject *arg, const QIcon& icon, QObject* object);
 private:
-    const QObject* mpObject;
+    QObject* mpObject;
 };
 
 } // end namespace gui

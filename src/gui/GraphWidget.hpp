@@ -159,7 +159,7 @@ public:
     void setEdgeFocused (bool focused); // { mEdgeFocused = focused; mpPropertyDialog->setEdgeFocused(focused); }
     bool getEdgeFocused () { return mEdgeFocused; }
 
-    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge= selectedEdge; }
+    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge = selectedEdge; }
     graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
 
     void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
@@ -184,6 +184,8 @@ public:
     void clearEdge(graph_analysis::Edge::Ptr concernedEdge);
     void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
     void swapPorts(graph_analysis::Vertex::Ptr concernedVertex);
+
+    bool dialogIsRunning();
 
 public slots:
     void shuffle();

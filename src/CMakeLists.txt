@@ -140,6 +140,7 @@ rock_library(graph_analysis
         Boost_REGEX
     MOC
         gui/GraphWidget.hpp
+        gui/LayerWidget.hpp
         gui/AddNodeDialog.hpp
         gui/PropertyDialog.hpp
         gui/SwapPortsDialog.hpp
