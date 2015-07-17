@@ -18,7 +18,7 @@ class Simple : public graph_analysis::gui::EdgeItem
     Simple(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr vertex);
 public:
     Simple() {}
-    EdgeLabel* getLabel() { return mpLabel; }
+    virtual EdgeLabel* getLabel() { return mpLabel; }
     virtual ~Simple() {}
     int getSourcePortID() { return mSourceNodePortID; }
     int getTargetPortID() { return mTargetNodePortID; }

@@ -20,6 +20,8 @@ rock_library(graph_analysis
         gui/graphitem/Resource.cpp
         gui/graphitem/Simple.cpp
         gui/graphitem/Label.cpp
+        gui/layeritem/edges/Simple.cpp
+        gui/layeritem/Resource.cpp
         gui/GraphWidget.cpp
         gui/AddNodeDialog.cpp
         gui/SwapPortsDialog.cpp
@@ -82,6 +84,10 @@ rock_library(graph_analysis
         gui/graphitem/Label.hpp
         gui/graphitem/Resource.hpp
         gui/graphitem/Simple.hpp
+        gui/layeritem/edges/EdgeLabel.hpp
+        gui/layeritem/edges/Simple.hpp
+        gui/layeritem/Label.hpp
+        gui/layeritem/Resource.hpp
         gui/GraphWidget.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp

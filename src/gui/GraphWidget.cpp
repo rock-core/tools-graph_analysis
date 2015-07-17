@@ -702,7 +702,7 @@ void GraphWidget::changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const
     }
     concernedEdge->setLabel(label);
     mEdgeMap[concernedEdge]->setLabel(label);
-    graphitem::edges::EdgeLabel* edgeLabel = edge->getLabel();
+    graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edge->getLabel();
     edgeLabel->setPlainText(QString(label.c_str()));
     edge->adjustLabel();
 }

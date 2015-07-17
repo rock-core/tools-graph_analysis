@@ -47,6 +47,7 @@
 #include <math.h>
 #include <graph_analysis/Edge.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
+#include <graph_analysis/gui/layeritem/edges/EdgeLabel.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -73,7 +74,7 @@ public:
     int type() const { return Type; }
 
     void setPainterPath(QPainterPath painterPath) { mPainterPath = painterPath; }
-    virtual graphitem::edges::EdgeLabel* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
+    virtual QGraphicsTextItem* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
     virtual int getSourcePortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getSourcePortID: is not reimplemented at this level"); }
     virtual int getTargetPortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getTargetPortID: is not reimplemented at this level"); }
     virtual void releaseFocus()   { throw std::runtime_error("graph_analysis::gui::EdgeItem::releaseFocus is not reimplemented");}
