@@ -12,8 +12,8 @@ namespace edges {
 class EdgeLabel : public QGraphicsTextItem
 {
 public:
-    EdgeLabel(const std::string& label, QGraphicsItem* item, const std::string& cachedLabel = "")
-        : QGraphicsTextItem( QString(label.c_str()), item)
+    EdgeLabel(const std::string& label, QGraphicsItem* item)
+        : QGraphicsTextItem(QString(label.c_str()), item)
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
         setTextInteractionFlags(Qt::NoTextInteraction);

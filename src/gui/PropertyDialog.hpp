@@ -147,7 +147,7 @@ public:
             mpShuffleButton->setIcon(*(mpGraphWidget->getIcon("shuffle")));
             mpShuffleButton->setCheckable(false);
             mpShuffleButton->setChecked(false);
-            mpShuffleButton->setToolTip(QString("randomly spreads around existing vertices"));
+            mpShuffleButton->setToolTip(QString("randomly spreads around existing vertices in this view"));
 
             verticalLayout->addWidget(mpShuffleButton);
 
@@ -300,17 +300,101 @@ public:
             }
         }
 
+        horizontalLayoutLayerWidget = new QWidget();
+        tabWidget->addTab(horizontalLayoutLayerWidget, "&Layers");
+        horizontalLayoutLayerWidget->setObjectName(QString::fromUtf8("horizontalLayoutLayerWidget"));
+        horizontalLayoutLayer = new QHBoxLayout(horizontalLayoutLayerWidget);
+        horizontalLayoutLayer->setContentsMargins(5, 0, 5, 0);
+        verticalLayoutLayer = new QVBoxLayout();
+        horizontalLayoutLayer->addLayout(verticalLayoutLayer);
+        verticalLayoutLayer->setObjectName(QString::fromUtf8("verticalLayoutLayer"));
+        verticalLayoutLayer->setContentsMargins(0, PADDING, 0, 0);
+        int verticalLayoutLayerLeftover;
+        {
+
+            mpImportLayerButton = new QPushButton(horizontalLayoutLayerWidget);
+            mpImportLayerButton->setObjectName(QString::fromUtf8("mpImportLayerButton"));
+            mpImportLayerButton->setIcon(*(mpGraphWidget->getIcon("import")));
+            mpImportLayerButton->setCheckable(false);
+            mpImportLayerButton->setChecked(false);
+            mpImportLayerButton->setToolTip(QString("opens an existing graph file"));
+
+            verticalLayoutLayer->addWidget(mpImportLayerButton);
+
+            mpExportLayerButton = new QPushButton(horizontalLayoutWidget);
+            mpExportLayerButton->setObjectName(QString::fromUtf8("mpExportLayerButton"));
+            mpExportLayerButton->setIcon(*(mpGraphWidget->getIcon("export")));
+            mpExportLayerButton->setCheckable(false);
+            mpExportLayerButton->setChecked(false);
+            mpExportLayerButton->setToolTip(QString("saves the graph to file"));
+
+            verticalLayoutLayer->addWidget(mpExportLayerButton);
+            addFrame(verticalLayoutLayer);
+
+            mpRefreshLayerButton = new QPushButton(horizontalLayoutWidget);
+            mpRefreshLayerButton->setObjectName(QString::fromUtf8("mpRefreshLayerButton"));
+            mpRefreshLayerButton->setIcon(*(mpGraphWidget->getIcon("refresh")));
+            mpRefreshLayerButton->setCheckable(false);
+            mpRefreshLayerButton->setChecked(false);
+            mpRefreshLayerButton->setToolTip(QString("reloads this graph view"));
+
+            verticalLayoutLayer->addWidget(mpRefreshLayerButton);
+
+            mpShuffleLayerButton = new QPushButton(horizontalLayoutWidget);
+            mpShuffleLayerButton->setObjectName(QString::fromUtf8("mpShuffleLayerButton"));
+            mpShuffleLayerButton->setIcon(*(mpGraphWidget->getIcon("shuffle")));
+            mpShuffleLayerButton->setCheckable(false);
+            mpShuffleLayerButton->setChecked(false);
+            mpShuffleLayerButton->setToolTip(QString("randomly spreads around existing vertices"));
+
+            verticalLayoutLayer->addWidget(mpShuffleLayerButton);
+
+            mpResetLayerButton = new QPushButton(horizontalLayoutWidget);
+            mpResetLayerButton->setObjectName(QString::fromUtf8("mpResetLayerButton"));
+            mpResetLayerButton->setIcon(*(mpGraphWidget->getIcon("reset")));
+            mpResetLayerButton->setCheckable(false);
+            mpResetLayerButton->setChecked(false);
+            mpResetLayerButton->setToolTip(QString("completely deletes the graph"));
+
+            verticalLayoutLayer->addWidget(mpResetLayerButton);
+
+            mpLayoutLayerButton = new QPushButton(horizontalLayoutWidget);
+            mpLayoutLayerButton->setObjectName(QString::fromUtf8("mpLayoutLayerButton"));
+            mpLayoutLayerButton->setIcon(*(mpGraphWidget->getIcon("layout")));
+            mpLayoutLayerButton->setCheckable(false);
+            mpLayoutLayerButton->setChecked(false);
+            mpLayoutLayerButton->setToolTip(QString("applies a new layout to the graph"));
+
+            verticalLayoutLayer->addWidget(mpLayoutLayerButton);
+
+            // adding bottom padding
+            verticalLayoutLayerLeftover = 2 * linePoints + 3 * buttonPoints;
+            if(commonExtraPadding > verticalLayoutLayerLeftover)
+            {
+                commonExtraPadding = verticalLayoutLayerLeftover;
+            }
+        }
+
+        horizontalLayoutLayer->addSpacing(WIDTH / 2);
+
         verticalLayout->addSpacing(verticalLayoutLeftover - commonExtraPadding);
         verticalLayoutFocus->addSpacing(verticalLayoutFocusLeftover - commonExtraPadding);
+        verticalLayoutLayer->addSpacing(verticalLayoutLayerLeftover - commonExtraPadding);
 
         retranslateUi(Dialog);
 
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
+        QObject::connect(mpRefreshLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refreshLayer()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
+        QObject::connect(mpShuffleLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffleLayer()));
         QObject::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
+        QObject::connect(mpImportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphLayer()));
         QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
+        QObject::connect(mpExportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraphLayer()));
         QObject::connect(mpResetButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraph()));
+        QObject::connect(mpResetLayerButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraphLayer()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
+        QObject::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayoutLayer()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRenameNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedVertexLabel()));
@@ -328,6 +412,7 @@ public:
         Dialog->setFixedSize(WIDTH + 20, 20 + mHeight - commonExtraPadding);
         tabWidget->setGeometry(QRect(5, 5, WIDTH + 10, 10 + mHeight - commonExtraPadding));
         horizontalLayoutWidget->setGeometry(QRect(0, 0, WIDTH, mHeight - commonExtraPadding));
+        horizontalLayoutLayerWidget->setGeometry(QRect(0, 0, WIDTH / 2, mHeight - commonExtraPadding));
     } // setupUi
 
     void retranslateUi(CustomDialog *Dialog)
@@ -335,11 +420,17 @@ public:
 //        Dialog->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
+        mpRefreshLayerButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpShuffleButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
+        mpShuffleLayerButton->setText(QApplication::translate("Dialog", "Shuffle", 0, QApplication::UnicodeUTF8));
         mpImportButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
+        mpImportLayerButton->setText(QApplication::translate("Dialog", "Import", 0, QApplication::UnicodeUTF8));
         mpExportButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
+        mpExportLayerButton->setText(QApplication::translate("Dialog", "Export", 0, QApplication::UnicodeUTF8));
         mpResetButton->setText(QApplication::translate("Dialog", "Reset", 0, QApplication::UnicodeUTF8));
+        mpResetLayerButton->setText(QApplication::translate("Dialog", "Reset", 0, QApplication::UnicodeUTF8));
         mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
+        mpLayoutLayerButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
         mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
         mpRenameNodeButton->setText(QApplication::translate("Dialog", "Rename Node", 0, QApplication::UnicodeUTF8));
         mpAddPortButton->setText(QApplication::translate("Dialog", "Add Port", 0, QApplication::UnicodeUTF8));
@@ -387,17 +478,26 @@ private:
     QMainWindow *mpMainWindow;
     QTabWidget *tabWidget;
     QWidget *horizontalLayoutWidget;
+    QWidget *horizontalLayoutLayerWidget;
     QLayout *mainLayout;
     QVBoxLayout *verticalLayout;
+    QVBoxLayout *verticalLayoutLayer;
     QVBoxLayout *verticalLayoutFocus;
     QHBoxLayout *horizontalLayout;
+    QHBoxLayout *horizontalLayoutLayer;
     QPushButton *mpAddNodeButton;
     QPushButton *mpRefreshButton;
+    QPushButton *mpRefreshLayerButton;
     QPushButton *mpShuffleButton;
+    QPushButton *mpShuffleLayerButton;
     QPushButton *mpImportButton;
+    QPushButton *mpImportLayerButton;
     QPushButton *mpExportButton;
+    QPushButton *mpExportLayerButton;
     QPushButton *mpResetButton;
+    QPushButton *mpResetLayerButton;
     QPushButton *mpLayoutButton;
+    QPushButton *mpLayoutLayerButton;
     QPushButton *mpDragDropButton;
     QPushButton *mpRenameNodeButton;
     QPushButton *mpAddPortButton;
