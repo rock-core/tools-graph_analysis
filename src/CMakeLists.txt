@@ -23,6 +23,7 @@ rock_library(graph_analysis
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
         gui/GraphWidget.cpp
+        gui/LayerWidget.cpp
         gui/AddNodeDialog.cpp
         gui/SwapPortsDialog.cpp
         gui/RenamePortDialog.cpp
@@ -89,6 +90,7 @@ rock_library(graph_analysis
         gui/layeritem/Label.hpp
         gui/layeritem/Resource.hpp
         gui/GraphWidget.hpp
+        gui/LayerWidget.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
