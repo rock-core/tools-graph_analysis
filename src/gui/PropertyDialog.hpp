@@ -87,11 +87,8 @@ public:
         {
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
         }
-//        mainLayout = new QVBoxLayout;
-//        mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
-//        Dialog->setLayout(mainLayout);
         mainLayout = Dialog->layout();
-        tabWidget = new CustomTabWidget(mpMainWindow, &mDialog);
+        tabWidget = new QTabWidget();
         mainLayout->addWidget(tabWidget);
         horizontalLayoutWidget = new QWidget();
         tabWidget->addTab(horizontalLayoutWidget, "&Properties");
@@ -409,6 +406,7 @@ public:
         QObject::connect(mpRemoveNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedVertex()));
         QObject::connect(mpRenameEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedEdgeLabel()));
         QObject::connect(mpRemoveEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedEdge()));
+        PropertyDialog::connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
 
         QMetaObject::connectSlotsByName(Dialog);
 
@@ -474,13 +472,32 @@ public:
     bool getEdgeFocused  () { return mEdgeFocused;   }
 
 public slots:
+    void updateMainWidget(int index)
+    {
+        switch(index)
+        {
+        case 0:
+            qDebug("graph_analysis::gui::PropertyDialog::updateMainWidget: switched to mpGraphWidget");
+            mpMainWindow->setCentralWidget(mpGraphWidget);
+        break;
+
+        case 1:
+            qDebug("graph_analysis::gui::PropertyDialog::updateMainWidget: switched to mpLayerWidget");
+            if(!mpLayerWidget)
+            {
+                qDebug("graph_analysis::gui::PropertyDialog::updateMainWidget: mpLayerWidget is uninitialized");
+            }
+//            mpMainWindow->setCentralWidget(mpLayerWidget);
+        break;
+        }
+    }
 
 private:
     CustomDialog mDialog;
     GraphWidget *mpGraphWidget;
     LayerWidget *mpLayerWidget;
     QMainWindow *mpMainWindow;
-    CustomTabWidget *tabWidget;
+    QTabWidget *tabWidget;
     QWidget *horizontalLayoutWidget;
     QWidget *horizontalLayoutLayerWidget;
     QLayout *mainLayout;
