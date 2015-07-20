@@ -13,17 +13,18 @@
 #include <QObject>
 #include <QCloseEvent>
 #include <QMainWindow>
-#include <QtCore/QVariant>
 #include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
 #include <QtGui/QDialog>
+#include <QtGui/QWidget>
+#include <QtCore/QVariant>
+#include <QtGui/QTabWidget>
 #include <QtGui/QHeaderView>
 #include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
-#include <QtGui/QWidget>
-#include <QtGui/QTabWidget>
+#include <QtGui/QApplication>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QStackedWidget>
 #include "GraphWidget.hpp"
 #include "LayerWidget.hpp"
 #include "CustomDialog.hpp"
@@ -45,8 +46,9 @@ class PropertyDialog : public QObject
 public:
     typedef std::vector<QFrame *> QFrames;
 
-    PropertyDialog(GraphWidget *widget, LayerWidget *layerWidget, QMainWindow *mainWindow, bool dragDropIsChecked = false, bool vertexFocused = false, bool edgeFocused = false)
-    : mpGraphWidget(widget)
+    PropertyDialog(GraphWidget *widget, LayerWidget *layerWidget, QMainWindow *mainWindow, QStackedWidget *stackedWidget, bool dragDropIsChecked = false, bool vertexFocused = false, bool edgeFocused = false)
+    : mpStackedWidget(stackedWidget)
+    , mpGraphWidget(widget)
     , mpLayerWidget(layerWidget)
     , mpMainWindow(mainWindow)
     , mVertexFocused(vertexFocused)
@@ -476,23 +478,18 @@ public slots:
         switch(index)
         {
         case 0:
-            qDebug("graph_analysis::gui::PropertyDialog::updateMainWidget: switched to mpGraphWidget");
-            mpMainWindow->setCentralWidget(mpGraphWidget);
+            mpStackedWidget->setCurrentIndex(0);
         break;
 
         case 1:
-            qDebug("graph_analysis::gui::PropertyDialog::updateMainWidget: switched to mpLayerWidget");
-            if(!mpLayerWidget)
-            {
-                qDebug("graph_analysis::gui::PropertyDialog::updateMainWidget: mpLayerWidget is uninitialized");
-            }
-//            mpMainWindow->setCentralWidget(mpLayerWidget);
+            mpStackedWidget->setCurrentIndex(1);
         break;
         }
     }
 
 private:
     CustomDialog mDialog;
+    QStackedWidget* mpStackedWidget;
     GraphWidget *mpGraphWidget;
     LayerWidget *mpLayerWidget;
     QMainWindow *mpMainWindow;

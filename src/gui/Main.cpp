@@ -387,8 +387,6 @@ int main(int argc, char **argv)
     widget->toFile("graph.dot");
 #endif
 
-    mainWindow.setCentralWidget(widget);
-
 #ifdef IMPORT
     widget->fromXmlFile
                 (

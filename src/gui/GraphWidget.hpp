@@ -45,6 +45,7 @@
 #include <QIcon>
 #include <QMainWindow>
 #include <QGraphicsView>
+#include <QStackedWidget>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
@@ -167,6 +168,7 @@ public:
     bool getEdgeSelected () { return mEdgeSelected; }
 
     bool getDragDrop() { return mDragDrop; }
+    LayerWidget* getLayerWidget() { return mpLayerWidget; }
 
     void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID); // not-only { mpStartVertex = startVertex; }
     void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID); // not-only { mpEndVertex   = endVertex;   }
@@ -248,6 +250,7 @@ private:
     void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
     QMainWindow* mpParentWindowWidget;
+    QStackedWidget* mpStackedWidget;
     graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
 
     /// io components
@@ -296,7 +299,7 @@ private:
     bool mEdgeSelected;
     bool mEdgeFocused;
 
-    PropertyDialog *mpPropertyDialog;
+    PropertyDialog* mpPropertyDialog;
     bool mDragDrop;
     qreal mMaxNodeHeight, mMaxNodeWidth;
 
@@ -304,7 +307,7 @@ private:
     IconMap mIconMap;
     void loadIcon(QIcon& icon, std::string file);
 
-    LayerWidget *mpLayerWidget;
+    LayerWidget* mpLayerWidget;
 };
 
 } // end namespace gui

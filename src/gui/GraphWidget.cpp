@@ -97,6 +97,7 @@ namespace gui {
 GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     : QGraphicsView(parent)
     , mpParentWindowWidget(parentWindowWidget)
+    , mpStackedWidget(new QStackedWidget())
     , mpGraph()
     , mpLayoutingGraph()
     , mpGVGraph(0)
@@ -207,9 +208,12 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
-
+    mpStackedWidget->addWidget((QWidget *) this);
+    mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
+    mpStackedWidget->setCurrentIndex(0);
+    mpParentWindowWidget->setCentralWidget(mpStackedWidget);
     reset();
-    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpParentWindowWidget);
+    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpParentWindowWidget, mpStackedWidget);
 }
 
 void GraphWidget::importGraphLayer()
@@ -586,7 +590,7 @@ void GraphWidget::reloadPropertyDialog()
     {
         delete mpPropertyDialog;
     }
-    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpParentWindowWidget, mDragDrop);
+    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpParentWindowWidget, mpStackedWidget, mDragDrop);
 }
 
 Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
