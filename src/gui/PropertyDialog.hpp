@@ -25,7 +25,9 @@
 #include <QtGui/QWidget>
 #include <QtGui/QTabWidget>
 #include "GraphWidget.hpp"
+#include "LayerWidget.hpp"
 #include "CustomDialog.hpp"
+#include "CustomTabWidget.hpp"
 
 #define WIDTH 306
 #define PADDING 7
@@ -44,8 +46,9 @@ class PropertyDialog : public QObject
 public:
     typedef std::vector<QFrame *> QFrames;
 
-    PropertyDialog(GraphWidget *widget, QMainWindow *mainWindow, bool dragDropIsChecked = false, bool vertexFocused = false, bool edgeFocused = false)
+    PropertyDialog(GraphWidget *widget, LayerWidget *layerWidget, QMainWindow *mainWindow, bool dragDropIsChecked = false, bool vertexFocused = false, bool edgeFocused = false)
     : mpGraphWidget(widget)
+    , mpLayerWidget(layerWidget)
     , mpMainWindow(mainWindow)
     , mVertexFocused(vertexFocused)
     , mEdgeFocused(edgeFocused)
@@ -88,7 +91,7 @@ public:
 //        mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
 //        Dialog->setLayout(mainLayout);
         mainLayout = Dialog->layout();
-        tabWidget = new QTabWidget();
+        tabWidget = new CustomTabWidget(mpMainWindow, &mDialog);
         mainLayout->addWidget(tabWidget);
         horizontalLayoutWidget = new QWidget();
         tabWidget->addTab(horizontalLayoutWidget, "&Properties");
@@ -384,9 +387,9 @@ public:
         retranslateUi(Dialog);
 
         QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
-        QObject::connect(mpRefreshLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refreshLayer()));
+        QObject::connect(mpRefreshLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(refresh()));
         QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
-        QObject::connect(mpShuffleLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffleLayer()));
+        QObject::connect(mpShuffleLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(shuffle()));
         QObject::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
         QObject::connect(mpImportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphLayer()));
         QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
@@ -394,7 +397,7 @@ public:
         QObject::connect(mpResetButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraph()));
         QObject::connect(mpResetLayerButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraphLayer()));
         QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
-        QObject::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayoutLayer()));
+        QObject::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpLayerWidget, SLOT(changeLayout()));
         QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
         QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
         QObject::connect(mpRenameNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedVertexLabel()));
@@ -475,8 +478,9 @@ public slots:
 private:
     CustomDialog mDialog;
     GraphWidget *mpGraphWidget;
+    LayerWidget *mpLayerWidget;
     QMainWindow *mpMainWindow;
-    QTabWidget *tabWidget;
+    CustomTabWidget *tabWidget;
     QWidget *horizontalLayoutWidget;
     QWidget *horizontalLayoutLayerWidget;
     QLayout *mainLayout;

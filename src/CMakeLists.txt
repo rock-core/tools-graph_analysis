@@ -23,6 +23,7 @@ rock_library(graph_analysis
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
         gui/GraphWidget.cpp
+        gui/CustomTabWidget.cpp
         gui/LayerWidget.cpp
         gui/AddNodeDialog.cpp
         gui/SwapPortsDialog.cpp
@@ -90,6 +91,7 @@ rock_library(graph_analysis
         gui/layeritem/Label.hpp
         gui/layeritem/Resource.hpp
         gui/GraphWidget.hpp
+        gui/CustomTabWidget.hpp
         gui/LayerWidget.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
@@ -150,8 +152,9 @@ rock_library(graph_analysis
     UI
         gui/graph_analysis_gui.ui
         gui/add_node_dialog_gui.ui
-        gui/rename_port_dialog_gui.ui
         gui/property_dialog_gui.ui
+        gui/swap_ports_dialog_gui.ui
+        gui/rename_port_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk gvc)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)
