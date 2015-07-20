@@ -57,6 +57,7 @@
 #include <QTime>
 #include <QMenu>
 #include <sstream>
+#include <QMenuBar>
 #include <QAction>
 #include <QKeyEvent>
 #include <QFileDialog>
@@ -218,6 +219,66 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     mpParentWindowWidget->setCentralWidget(mpStackedWidget);
     reset();
     mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpParentWindowWidget, mpStackedWidget);
+
+    // setting up the Menus ToolBar
+    ActionCommander comm(this);
+    QMenuBar *bar = mpParentWindowWidget->menuBar();
+
+    // needed menus
+    QMenu MainMenu(tr("Graph"));
+    QMenu NodeMenu(tr("Node"));
+    QMenu EdgeMenu(tr("Edge"));
+
+    // needed actions
+    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeFocusedEdgeLabelMainWindow()), mIconMap["label"]);
+    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeFocusedEdgeMainWindow()), mIconMap["remove"]);
+    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeFocusedVertexLabelMainWindow()), mIconMap["label"]);
+    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertexMainWindow()), mIconMap["remove"]);
+    QAction *actionAddPort     = comm.addAction("Add Port", SLOT(addPortFocusedMainWindow()), mIconMap["addPort"]);
+    QAction *actionSwapPorts   = comm.addAction("Swap Ports", SLOT(swapPortsFocusedMainWindow()), mIconMap["swap"]);
+    QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel"]);
+    QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortFocusedMainWindow()), mIconMap["remove"]);
+    QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll"]);
+    QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode"]);
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh"]);
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle"]);
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mIconMap["import"]);
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export"]);
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset"]);
+    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), mIconMap["layout"]);
+    QAction *actionToggleDragDrop = comm.addAction("Toggle Drag-n-Drop", SLOT(toggleDragDrop()), mIconMap["dragndrop"]);
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), mIconMap["reload"]);
+
+    // loading different actions in different menus
+    MainMenu.addAction(actionAddNode);
+    MainMenu.addSeparator();
+    MainMenu.addAction(actionImport);
+    MainMenu.addAction(actionExport);
+    MainMenu.addSeparator();
+    MainMenu.addAction(actionRefresh);
+    MainMenu.addAction(actionShuffle);
+    MainMenu.addAction(actionReset);
+    MainMenu.addAction(actionLayout);
+    MainMenu.addSeparator();
+    MainMenu.addAction(actionToggleDragDrop);
+    MainMenu.addSeparator();
+    MainMenu.addAction(actionReloadPropertyDialog);
+
+    NodeMenu.addAction(actionChangeLabel);
+    NodeMenu.addAction(actionAddPort);
+    NodeMenu.addAction(actionSwapPorts);
+    NodeMenu.addAction(actionRenamePort);
+    NodeMenu.addAction(actionRemovePort);
+    NodeMenu.addAction(actionRemovePorts);
+    NodeMenu.addAction(actionRemoveNode);
+
+    EdgeMenu.addAction(actionChangeEdgeLabel);
+    EdgeMenu.addAction(actionRemoveEdge);
+
+    // loading menus in the bar
+    bar->addMenu(&MainMenu);
+    bar->addMenu(&NodeMenu);
+    bar->addMenu(&EdgeMenu);
 }
 
 void GraphWidget::importGraphLayer()
