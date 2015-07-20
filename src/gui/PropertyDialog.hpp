@@ -27,7 +27,6 @@
 #include "GraphWidget.hpp"
 #include "LayerWidget.hpp"
 #include "CustomDialog.hpp"
-#include "CustomTabWidget.hpp"
 
 #define WIDTH 306
 #define PADDING 7
@@ -383,29 +382,29 @@ public:
 
         retranslateUi(Dialog);
 
-        QObject::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
-        QObject::connect(mpRefreshLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(refresh()));
-        QObject::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
-        QObject::connect(mpShuffleLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(shuffle()));
-        QObject::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
-        QObject::connect(mpImportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphLayer()));
-        QObject::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
-        QObject::connect(mpExportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
-        QObject::connect(mpResetButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraph()));
-        QObject::connect(mpResetLayerButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraphLayer()));
-        QObject::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
-        QObject::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpLayerWidget, SLOT(changeLayout()));
-        QObject::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
-        QObject::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
-        QObject::connect(mpRenameNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedVertexLabel()));
-        QObject::connect(mpAddPortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addPortFocused()));
-        QObject::connect(mpSwapPortsButton, SIGNAL(clicked()), mpGraphWidget, SLOT(swapPortsFocused()));
-        QObject::connect(mpRenamePortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(renamePortFocused()));
-        QObject::connect(mpRemovePortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removePortFocused()));
-        QObject::connect(mpRemovePortsButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removePortsFocused()));
-        QObject::connect(mpRemoveNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedVertex()));
-        QObject::connect(mpRenameEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedEdgeLabel()));
-        QObject::connect(mpRemoveEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedEdge()));
+        PropertyDialog::connect(mpRefreshButton, SIGNAL(clicked()), mpGraphWidget, SLOT(refresh()));
+        PropertyDialog::connect(mpRefreshLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(refresh()));
+        PropertyDialog::connect(mpShuffleButton, SIGNAL(clicked()), mpGraphWidget, SLOT(shuffle()));
+        PropertyDialog::connect(mpShuffleLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(shuffle()));
+        PropertyDialog::connect(mpImportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraph()));
+        PropertyDialog::connect(mpImportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(importGraphLayer()));
+        PropertyDialog::connect(mpExportButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
+        PropertyDialog::connect(mpExportLayerButton, SIGNAL(clicked()), mpGraphWidget, SLOT(exportGraph()));
+        PropertyDialog::connect(mpResetButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraph()));
+        PropertyDialog::connect(mpResetLayerButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(resetGraphLayer()));
+        PropertyDialog::connect(mpLayoutButton,  SIGNAL(clicked()), mpGraphWidget, SLOT(changeLayout()));
+        PropertyDialog::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpLayerWidget, SLOT(changeLayout()));
+        PropertyDialog::connect(mpAddNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addNodeAdhoc()));
+        PropertyDialog::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpGraphWidget, SLOT(updateDragDrop(bool)));
+        PropertyDialog::connect(mpRenameNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedVertexLabel()));
+        PropertyDialog::connect(mpAddPortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(addPortFocused()));
+        PropertyDialog::connect(mpSwapPortsButton, SIGNAL(clicked()), mpGraphWidget, SLOT(swapPortsFocused()));
+        PropertyDialog::connect(mpRenamePortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(renamePortFocused()));
+        PropertyDialog::connect(mpRemovePortButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removePortFocused()));
+        PropertyDialog::connect(mpRemovePortsButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removePortsFocused()));
+        PropertyDialog::connect(mpRemoveNodeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedVertex()));
+        PropertyDialog::connect(mpRenameEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(changeFocusedEdgeLabel()));
+        PropertyDialog::connect(mpRemoveEdgeButton, SIGNAL(clicked()), mpGraphWidget, SLOT(removeFocusedEdge()));
         PropertyDialog::connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
 
         QMetaObject::connectSlotsByName(Dialog);

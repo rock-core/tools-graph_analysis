@@ -23,7 +23,6 @@ rock_library(graph_analysis
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
         gui/GraphWidget.cpp
-        gui/CustomTabWidget.cpp
         gui/LayerWidget.cpp
         gui/AddNodeDialog.cpp
         gui/SwapPortsDialog.cpp
@@ -91,7 +90,6 @@ rock_library(graph_analysis
         gui/layeritem/Label.hpp
         gui/layeritem/Resource.hpp
         gui/GraphWidget.hpp
-        gui/CustomTabWidget.hpp
         gui/LayerWidget.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
