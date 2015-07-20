@@ -413,6 +413,7 @@ public:
 
         Dialog->setFixedSize(WIDTH + 20, 20 + mHeight - commonExtraPadding);
         tabWidget->setGeometry(QRect(5, 5, WIDTH + 10, 10 + mHeight - commonExtraPadding));
+        tabWidget->setCurrentIndex(mpStackedWidget->currentIndex());
         horizontalLayoutWidget->setGeometry(QRect(0, 0, WIDTH, mHeight - commonExtraPadding));
         horizontalLayoutLayerWidget->setGeometry(QRect(0, 0, WIDTH / 2, mHeight - commonExtraPadding));
     } // setupUi
@@ -475,16 +476,7 @@ public:
 public slots:
     void updateMainWidget(int index)
     {
-        switch(index)
-        {
-        case 0:
-            mpStackedWidget->setCurrentIndex(0);
-        break;
-
-        case 1:
-            mpStackedWidget->setCurrentIndex(1);
-        break;
-        }
+        mpStackedWidget->setCurrentIndex(index);
     }
 
 private:
