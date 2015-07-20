@@ -113,7 +113,8 @@ LayerWidget::LayerWidget(GraphWidget *graphWidget, graph_analysis::BaseGraph::Pt
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
 
-//    reset(true);
+    reset(true);
+    updateFromGraph();
 }
 
 LayerWidget::~LayerWidget()
@@ -157,6 +158,7 @@ void LayerWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
 
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
+    updateFromGraph();
 }
 
 void LayerWidget::changeLayout()

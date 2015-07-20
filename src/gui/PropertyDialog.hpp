@@ -88,9 +88,7 @@ public:
         {
             Dialog->setObjectName(QString::fromUtf8("Dialog"));
         }
-        mainLayout = Dialog->layout();
-        tabWidget = new QTabWidget();
-        mainLayout->addWidget(tabWidget);
+        tabWidget = new QTabWidget(Dialog);
         horizontalLayoutWidget = new QWidget();
         tabWidget->addTab(horizontalLayoutWidget, "&Properties");
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
@@ -488,7 +486,6 @@ private:
     QTabWidget *tabWidget;
     QWidget *horizontalLayoutWidget;
     QWidget *horizontalLayoutLayerWidget;
-    QLayout *mainLayout;
     QVBoxLayout *verticalLayout;
     QVBoxLayout *verticalLayoutLayer;
     QVBoxLayout *verticalLayoutFocus;
