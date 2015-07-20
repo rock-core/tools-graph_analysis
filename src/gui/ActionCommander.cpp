@@ -1,6 +1,5 @@
-
 #include "ActionCommander.hpp"
-#include "GraphWidget.hpp"
+#include <stdexcept>
 
 namespace graph_analysis {
 namespace gui {
@@ -18,7 +17,7 @@ QAction* ActionCommander::addAction(const char *title, const char *slot, QObject
     bool connected = object->connect(action, SIGNAL(triggered()), object, slot);
     if(!connected)
     {
-        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the GraphWidget context menu";
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the widget menu";
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
@@ -33,7 +32,7 @@ QAction* ActionCommander::addAction(const char *title, const char *slot, const Q
     bool connected = object->connect(action, SIGNAL(triggered()), object, slot);
     if(!connected)
     {
-        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the GraphWidget context menu";
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the widget menu";
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
@@ -51,7 +50,7 @@ QAction* ActionCommander::addMappedAction(const char *title, const char *slot, Q
     {
         std::string error = std::string("graph_analysis::gui::ActionCommander::addMappedAction: Failed to connect action ");
         error += std::string(title);
-        error += std::string(" to the GraphWidget context menu");
+        error += std::string(" to the widget menu");
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
@@ -71,7 +70,7 @@ QAction* ActionCommander::addMappedAction(const char *title, const char *slot, Q
     {
         std::string error = std::string("graph_analysis::gui::ActionCommander::addMappedAction: Failed to connect action ");
         error += std::string(title);
-        error += std::string(" to the GraphWidget context menu");
+        error += std::string(" to the widget menu");
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
@@ -84,7 +83,7 @@ QAction* ActionCommander::addAction(const char *title, const char *slot)
     bool connected = mpObject->connect(action, SIGNAL(triggered()), mpObject, slot);
     if(!connected)
     {
-        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the GraphWidget context menu";
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the widget menu";
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
@@ -99,7 +98,7 @@ QAction* ActionCommander::addAction(const char *title, const char *slot, const Q
     bool connected = mpObject->connect(action, SIGNAL(triggered()), mpObject, slot);
     if(!connected)
     {
-        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the GraphWidget context menu";
+        std::string error = std::string("graph_analysis::gui::ActionCommander::addAction: Failed to connect action ") + std::string(title) + " to the widget menu";
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
@@ -117,7 +116,7 @@ QAction* ActionCommander::addMappedAction(const char *title, const char *slot, Q
     {
         std::string error = std::string("graph_analysis::gui::ActionCommander::addMappedAction: Failed to connect action ");
         error += std::string(title);
-        error += std::string(" to the GraphWidget context menu");
+        error += std::string(" to the widget menu");
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
@@ -137,7 +136,7 @@ QAction* ActionCommander::addMappedAction(const char *title, const char *slot, Q
     {
         std::string error = std::string("graph_analysis::gui::ActionCommander::addMappedAction: Failed to connect action ");
         error += std::string(title);
-        error += std::string(" to the GraphWidget context menu");
+        error += std::string(" to the widget menu");
         LOG_ERROR_S << error;
         throw std::runtime_error(error);
     }
