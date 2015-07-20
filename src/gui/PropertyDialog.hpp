@@ -90,7 +90,7 @@ public:
         }
         tabWidget = new QTabWidget(Dialog);
         horizontalLayoutWidget = new QWidget();
-        int currentIndexHorizontalLayoutWidget =  tabWidget->addTab(horizontalLayoutWidget, "&Properties");
+        int currentIndexHorizontalLayoutWidget =  tabWidget->addTab(horizontalLayoutWidget, *(mpGraphWidget->getIcon("properties")), "&Properties");
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
         QString horizontalLayoutWidgetTip("Command Properties for the Graph View, Focused Node (if any) and Focused Edge (if any)");
         tabWidget->setTabToolTip(currentIndexHorizontalLayoutWidget, horizontalLayoutWidgetTip);
@@ -304,7 +304,7 @@ public:
         }
 
         horizontalLayoutLayerWidget = new QWidget();
-        int currentIndexHorizontalLayoutLayerWidget = tabWidget->addTab(horizontalLayoutLayerWidget, "&Layers");
+        int currentIndexHorizontalLayoutLayerWidget = tabWidget->addTab(horizontalLayoutLayerWidget, *(mpGraphWidget->getIcon("layers")), "&Layers");
         horizontalLayoutLayerWidget->setObjectName(QString::fromUtf8("horizontalLayoutLayerWidget"));
         QString horizontalLayoutLayerWidgetTip("Command Properties for the Layers View");
         tabWidget->setTabToolTip(currentIndexHorizontalLayoutLayerWidget, horizontalLayoutLayerWidgetTip);

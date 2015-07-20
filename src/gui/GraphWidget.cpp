@@ -204,6 +204,10 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     loadIcon(mIconMap["reload"], pathToIcons + "reload.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["swap"], pathToIcons + "swap.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["layers"], pathToIcons + "layers.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["properties"], pathToIcons + "properties.png");
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),

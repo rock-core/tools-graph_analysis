@@ -139,3 +139,23 @@ URL: http://uxrepo.com/icon/arrow-swap-by-ionicons
 commercial_usage: allowed
 license: labeled for reuse and open source
 
+layers.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	FatCow Hosting Extra Icons 2 (www.softicons.com/toolbar-icons/fatcow-hosting-extra-icons-2-by-fatcow)
+Author: 	FatCow (http://www.softicons.com/designers/fatcow)
+License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/by/3.0/us/)
+Commercial usage:   	Allowed
+Posted: 	September 27, 2012
+
+properties.png
+----------
+taken_from: www.softicons.com
+commercial_usage: allowed
+Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
+Author: 	Happy Icon Studio (http://www.softicons.com/designers/happy-icon-studio)
+License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/by/3.0/us/)
+Commercial usage:   	Allowed
+Posted: 	March 12, 2013
+
