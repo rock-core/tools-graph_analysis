@@ -90,8 +90,12 @@ public:
         }
         tabWidget = new QTabWidget(Dialog);
         horizontalLayoutWidget = new QWidget();
-        tabWidget->addTab(horizontalLayoutWidget, "&Properties");
+        int currentIndexHorizontalLayoutWidget =  tabWidget->addTab(horizontalLayoutWidget, "&Properties");
         horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
+        QString horizontalLayoutWidgetTip("Command Properties for the Graph View, Focused Node (if any) and Focused Edge (if any)");
+        tabWidget->setTabToolTip(currentIndexHorizontalLayoutWidget, horizontalLayoutWidgetTip);
+        tabWidget->setTabWhatsThis(currentIndexHorizontalLayoutWidget, horizontalLayoutWidgetTip);
+        horizontalLayoutWidget->setToolTip(horizontalLayoutWidgetTip);
         horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
         horizontalLayout->setContentsMargins(5, 0, 5, 0);
         int verticalLayoutLeftover;
@@ -300,8 +304,12 @@ public:
         }
 
         horizontalLayoutLayerWidget = new QWidget();
-        tabWidget->addTab(horizontalLayoutLayerWidget, "&Layers");
+        int currentIndexHorizontalLayoutLayerWidget = tabWidget->addTab(horizontalLayoutLayerWidget, "&Layers");
         horizontalLayoutLayerWidget->setObjectName(QString::fromUtf8("horizontalLayoutLayerWidget"));
+        QString horizontalLayoutLayerWidgetTip("Command Properties for the Layers View");
+        tabWidget->setTabToolTip(currentIndexHorizontalLayoutLayerWidget, horizontalLayoutLayerWidgetTip);
+        tabWidget->setTabWhatsThis(currentIndexHorizontalLayoutLayerWidget, horizontalLayoutLayerWidgetTip);
+        horizontalLayoutLayerWidget->setToolTip(horizontalLayoutLayerWidgetTip);
         horizontalLayoutLayer = new QHBoxLayout(horizontalLayoutLayerWidget);
         horizontalLayoutLayer->setContentsMargins(5, 0, 5, 0);
         verticalLayoutLayer = new QVBoxLayout();
@@ -418,7 +426,7 @@ public:
 
     void retranslateUi(CustomDialog *Dialog)
     {
-//        Dialog->setWindowTitle(QApplication::translate("Dialog", "Properties", 0, QApplication::UnicodeUTF8));
+        Dialog->setWindowTitle(QApplication::translate("Dialog", " Properties", 0, QApplication::UnicodeUTF8));
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpRefreshLayerButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
