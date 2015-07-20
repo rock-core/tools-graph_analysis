@@ -239,6 +239,7 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel"]);
     QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortFocusedMainWindow()), mIconMap["remove"]);
     QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll"]);
+
     QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle"]);
@@ -2040,6 +2041,114 @@ void GraphWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
         {
             QMessageBox::information(this, tr("Swapped Ports In-place"), tr("identical ports were selected!"));
         }
+    }
+}
+
+void GraphWidget::changeFocusedEdgeLabelMainWindow()
+{
+    if(mEdgeFocused)
+    {
+        changeFocusedEdgeLabel();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Rename Focused Edge"), tr("Cannot Rename Focused Edge: no edge is focused on!"));
+    }
+}
+
+void GraphWidget::removeFocusedEdgeMainWindow()
+{
+    if(mEdgeFocused)
+    {
+        removeFocusedEdge();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Remove Focused Edge"), tr("Cannot Remove Focused Edge: no edge is focused on!"));
+    }
+}
+
+void GraphWidget::changeFocusedVertexLabelMainWindow()
+{
+    if(mVertexFocused)
+    {
+        changeFocusedVertexLabel();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Rename Focused Node"), tr("Cannot Rename Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphWidget::removeFocusedVertexMainWindow()
+{
+    if(mVertexFocused)
+    {
+        removeFocusedVertex();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Remove Focused Node"), tr("Cannot Remove Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphWidget::addPortFocusedMainWindow()
+{
+    if(mVertexFocused)
+    {
+        addPortFocused();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Add a Port to the Focused Node"), tr("Cannot Add a Port to the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphWidget::swapPortsFocusedMainWindow()
+{
+    if(mVertexFocused)
+    {
+        swapPortsFocused();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Swap Ports of the Focused Node"), tr("Cannot Swap Ports of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphWidget::renamePortFocusedMainWindow()
+{
+    if(mVertexFocused)
+    {
+        renamePortFocused();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Rename a Port of the Focused Node"), tr("Cannot Rename a Port of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphWidget::removePortFocusedMainWindow()
+{
+    if(mVertexFocused)
+    {
+        removePortFocused();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Remove a Port of the Focused Node"), tr("Cannot Remove a Port of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphWidget::removePortsFocusedMainWindow()
+{
+    if(mVertexFocused)
+    {
+        removePortsFocused();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Remove the Ports of the Focused Node"), tr("Cannot Remove the Ports of the Focused Node: no node is focused on!"));
     }
 }
 

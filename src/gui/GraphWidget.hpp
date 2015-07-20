@@ -231,6 +231,16 @@ public slots:
     void importGraphLayer();
     void resetGraphLayer();
 
+    void changeFocusedEdgeLabelMainWindow();
+    void removeFocusedEdgeMainWindow();
+    void changeFocusedVertexLabelMainWindow();
+    void removeFocusedVertexMainWindow();
+    void addPortFocusedMainWindow();
+    void swapPortsFocusedMainWindow();
+    void renamePortFocusedMainWindow();
+    void removePortFocusedMainWindow();
+    void removePortsFocusedMainWindow();
+
 protected:
 
     void mousePressEvent(QMouseEvent* event);
