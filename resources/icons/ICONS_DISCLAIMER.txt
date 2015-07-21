@@ -1,5 +1,7 @@
 addNode.png
--------
+-----------
+addNode_white.png
+-----------------
 taken_from: www.softicons.com
 commercial_usage: NOT allowed
 Icon set: 	Flatastic Icons Part 1 (http://www.softicons.com/toolbar-icons/flatastic-icons-part-1-by-custom-icon-design)
@@ -10,6 +12,8 @@ Posted: 	October 23, 2013
 
 import.png
 ----------
+import_white.png
+----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
@@ -20,6 +24,8 @@ Posted: 	March 12, 2013
 
 export.png
 ----------
+export_white.png
+----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
@@ -30,6 +36,8 @@ Posted: 	March 12, 2013
 
 refresh.png
 -----------
+refresh_white.png
+-----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Essen Icons (http://www.softicons.com/web-icons/essen-icons-by-pc.de)
@@ -40,6 +48,8 @@ Posted: 	September 09, 2010
 
 shuffle.png
 -----------
+shuffle_white.png
+-----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Mono Reflection Yellow Icons (http://www.softicons.com/toolbar-icons/mono-reflection-yellow-icons-by-double-j-design)
@@ -49,7 +59,9 @@ Commercial usage:   	Allowed
 Posted: 	December 23, 2010
 
 reset.png
------------
+---------
+reset_white.png
+---------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Web 2 Icon Set (http://www.softicons.com/web-icons/web-2-icon-set-by-anders-bjarnle)
@@ -59,7 +71,9 @@ Commercial usage:   	Allowed
 Posted: 	February 11, 2013
 
 layout.png
------------
+----------
+layout_white.png
+----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Eldorado Mini Icons (http://www.softicons.com/web-icons/eldorado-mini-icons-by-icojam)
@@ -70,6 +84,8 @@ Posted: 	March 28, 2014
 
 dragndrop.png
 -------------
+dragndrop_white.png
+-------------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Web 2.0 Orange Icons (http://www.softicons.com/web-icons/web-2.0-orange-icons-by-axialis-team)
@@ -80,8 +96,12 @@ Posted: 	February 12, 2011
 
 label.png
 ---------
+label_white.png
+---------------
 portLabel.png
 -------------
+portLabel_white.png
+-------------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Glyphish Icons (http://www.softicons.com/toolbar-icons/glyphish-icons-by-joseph-wain)
@@ -92,8 +112,12 @@ Posted: 	January 22, 2014
 
 remove.png
 ----------
+remove_white.png
+----------------
 removeAll.png
-----------
+-------------
+removeAll_white.png
+-------------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	16x16 Free Application Icons (http://www.softicons.com/toolbar-icons/16x16-free-application-icons-by-aha-soft)
@@ -103,7 +127,9 @@ Commercial usage:   	Allowed
 Posted: 	March 18, 2012
 
 addPort.png
-----------
+-----------
+addPort_white.png
+-----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Koloria Icon Set (http://www.softicons.com/toolbar-icons/koloria-icon-set-by-andy-gongea)
@@ -113,7 +139,9 @@ Commercial usage:   	Allowed
 Posted: 	July 06, 2012
 
 move.png
-----------
+--------
+move_white.png
+--------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
@@ -124,6 +152,8 @@ Posted: 	March 12, 2013
 
 reload.png
 ----------
+reload_white.png
+----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Glyphish Icons (http://www.softicons.com/toolbar-icons/glyphish-icons-by-joseph-wain)
@@ -133,7 +163,9 @@ Commercial usage:   	Allowed
 Posted: 	January 22, 2014
 
 swap.png
-----------
+--------
+swap_white.png
+--------------
 taken_from: www.uxrepo.com
 URL: http://uxrepo.com/icon/arrow-swap-by-ionicons
 commercial_usage: allowed
@@ -141,6 +173,8 @@ license: labeled for reuse and open source
 
 layers.png
 ----------
+layers_white.png
+----------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	FatCow Hosting Extra Icons 2 (www.softicons.com/toolbar-icons/fatcow-hosting-extra-icons-2-by-fatcow)
@@ -150,7 +184,9 @@ Commercial usage:   	Allowed
 Posted: 	September 27, 2012
 
 properties.png
-----------
+--------------
+properties_white.png
+--------------------
 taken_from: www.softicons.com
 commercial_usage: allowed
 Icon set: 	Free Mobile Icon Kit (http://www.softicons.com/toolbar-icons/free-mobile-icon-kit-by-happy-icon-studio)
@@ -158,4 +194,3 @@ Author: 	Happy Icon Studio (http://www.softicons.com/designers/happy-icon-studio
 License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/by/3.0/us/)
 Commercial usage:   	Allowed
 Posted: 	March 12, 2013
-
