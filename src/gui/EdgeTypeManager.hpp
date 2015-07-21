@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QGraphicsItem>
+#include <QGraphicsView>
 
 
 namespace graph_analysis {
@@ -18,8 +19,8 @@ namespace edge {
 }
 
 class NodeItem;
-class GraphWidget;
 class EdgeItem;
+class GraphWidget;
 
 class EdgeTypeManager : public base::Singleton<EdgeTypeManager>
 {
@@ -38,7 +39,8 @@ public:
     // takes ownership of graphicsItem
     void registerVisualization(const edge::Type& type, EdgeItem* graphicsItem);
 
-    EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge);
+    EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());
+    EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());
 };
 
 } // end namespace gui

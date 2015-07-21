@@ -95,9 +95,34 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
+GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mpMainWindow(parentWindowWidget)
+    , mpMainWindow(0)
+    , mpStackedWidget(new QStackedWidget())
+    , mpGraph()
+    , mpLayoutingGraph()
+    , mpGVGraph(0)
+    , mFiltered(false)
+    , mTimerId(0)
+    , mScaleFactor(DEFAULT_SCALING_FACTOR)
+    , mLayout("dot")
+    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
+    , mpEdgeFilter(new filters::EdgeContextFilter())
+    , mVertexSelected(false)
+    , mVertexFocused(false)
+    , mEdgeSelected(false)
+    , mEdgeFocused(false)
+    , mDragDrop(false)
+    , mMaxNodeHeight(0)
+    , mMaxNodeWidth (0)
+    , mpLayerWidget(new LayerWidget(this, mpGraph))
+{
+
+}
+
+GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
+    : QGraphicsView(parent)
+    , mpMainWindow(mainWindow)
     , mpStackedWidget(new QStackedWidget())
     , mpGraph()
     , mpLayoutingGraph()

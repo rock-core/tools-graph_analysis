@@ -41,6 +41,8 @@
 #ifndef GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
 #define GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
 
+#include "GraphWidget.hpp"
+
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
@@ -65,7 +67,6 @@ namespace gui {
 
 class NodeItem;
 class EdgeItem;
-class GraphWidget;
 class AddNodeDialog;
 
 /**
@@ -88,7 +89,7 @@ public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
-    LayerWidget(GraphWidget *graphWidget, graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr(), QWidget *parent = 0);
+    LayerWidget(GraphWidget* graphWidget, graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr());
     ~LayerWidget();
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }

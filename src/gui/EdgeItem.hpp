@@ -66,7 +66,8 @@ public:
     NodeItem* sourceNodeItem() const;
     NodeItem* targetNodeItem() const;
 
-    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem is not reimplemented"); }
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@6 args) is not reimplemented"); }
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@4 args) is not reimplemented"); }
 
     virtual void adjust();
 

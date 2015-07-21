@@ -8,7 +8,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QGraphicsItem>
-
+#include <QGraphicsView>
 
 namespace graph_analysis {
 namespace gui {
@@ -17,8 +17,8 @@ namespace node {
     typedef std::string Type;
 }
 
-class GraphWidget;
 class NodeItem;
+class GraphWidget;
 
 class NodeTypeManager : public base::Singleton<NodeTypeManager>
 {
@@ -36,7 +36,7 @@ public:
     // Register visualization class
     // takes ownership of graphicsItem
     void registerVisualization(const node::Type& type, NodeItem* graphicsItem, bool throwOnAlreadyRegistered = false);
-    NodeItem* createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
+    NodeItem* createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex, const std::string& type = std::string());
 };
 
 } // end namespace gui

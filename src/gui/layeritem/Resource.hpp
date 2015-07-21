@@ -5,6 +5,8 @@
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <QPen>
 
+#define LAYER_NODE_TYPE "LayerVertex"
+
 namespace graph_analysis {
 namespace gui {
 namespace layeritem {

@@ -103,7 +103,8 @@ public:
     typedef std::map <std::string, io::Reader*> ReaderMap;
     typedef std::map <std::string, QIcon> IconMap;
 
-    GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent = 0);
+    GraphWidget(QWidget *parent = 0);
+    GraphWidget(QMainWindow *mainWindow, QWidget *parent = 0);
     ~GraphWidget();
 
     Vertex::Ptr createVertex(const std::string& type, const std::string& label = "");

@@ -6,6 +6,8 @@
 #include <QColor>
 #include <QGraphicsLineItem>
 
+#define LAYER_EDGE_TYPE "LayerEdge"
+
 namespace graph_analysis {
 namespace gui {
 namespace layeritem {

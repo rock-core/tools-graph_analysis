@@ -62,9 +62,11 @@
 #include <boost/regex.hpp>
 #include <base/Logging.hpp>
 
+
+#include "layeritem/Resource.hpp"
+#include "layeritem/edges/Simple.hpp"
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 
 #include <exception>
@@ -77,9 +79,8 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-LayerWidget::LayerWidget(GraphWidget *graphWidget, graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
-    : QGraphicsView(parent)
-    , mpGraph(graph)
+LayerWidget::LayerWidget(GraphWidget* graphWidget, graph_analysis::BaseGraph::Ptr graph)
+    : mpGraph(graph)
     , mpGVGraph(0)
     , mFiltered(false)
     , mTimerId(0)
@@ -250,7 +251,7 @@ void LayerWidget::updateFromGraph()
         }
 
         // Registering new node items
-        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, LAYER_NODE_TYPE);
         mNodeItemMap[vertex] = nodeItem;
 //        nodeItem->setPortCount(mpGraph->getEdgeIterator(vertex));
         scene()->addItem(nodeItem);
@@ -286,7 +287,7 @@ void LayerWidget::updateFromGraph()
             continue;
         }
 
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge);
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
