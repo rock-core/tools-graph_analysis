@@ -210,6 +210,43 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["properties"], pathToIcons + "properties.png");
 
+    //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
+    loadIcon(mIconMap["addNode_white"], pathToIcons + "addNode_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["import_white"], pathToIcons + "import_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["export_white"], pathToIcons + "export_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["refresh_white"], pathToIcons + "refresh_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["shuffle_white"], pathToIcons + "shuffle_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["reset_white"], pathToIcons + "reset_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["layout_white"], pathToIcons + "layout_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["dragndrop_white"], pathToIcons + "dragndrop_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["label_white"], pathToIcons + "label_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["portLabel_white"], pathToIcons + "portLabel_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["remove_white"], pathToIcons + "remove_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["removeAll_white"], pathToIcons + "removeAll_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["addPort_white"], pathToIcons + "addPort_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["move_white"], pathToIcons + "move_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["reload_white"], pathToIcons + "reload_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["swap_white"], pathToIcons + "swap_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["layers_white"], pathToIcons + "layers_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["properties_white"], pathToIcons + "properties_white.png");
+
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
@@ -230,24 +267,24 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     QMenu *EdgeMenu = new QMenu(tr("&Edge"));
 
     // needed actions
-    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeFocusedEdgeLabelMainWindow()), mIconMap["label"]);
-    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeFocusedEdgeMainWindow()), mIconMap["remove"]);
-    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeFocusedVertexLabelMainWindow()), mIconMap["label"]);
-    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertexMainWindow()), mIconMap["remove"]);
-    QAction *actionAddPort     = comm.addAction("Add Port", SLOT(addPortFocusedMainWindow()), mIconMap["addPort"]);
-    QAction *actionSwapPorts   = comm.addAction("Swap Ports", SLOT(swapPortsFocusedMainWindow()), mIconMap["swap"]);
-    QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel"]);
-    QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortFocusedMainWindow()), mIconMap["remove"]);
-    QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll"]);
-    QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode"]);
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh"]);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle"]);
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mIconMap["import"]);
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export"]);
-    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset"]);
-    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), mIconMap["layout"]);
-    QAction *actionToggleDragDrop = comm.addAction("Toggle Drag-n-Drop", SLOT(toggleDragDrop()), mIconMap["dragndrop"]);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), mIconMap["reload"]);
+    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeFocusedEdgeLabelMainWindow()), mIconMap["label_white"]);
+    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeFocusedEdgeMainWindow()), mIconMap["remove_white"]);
+    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeFocusedVertexLabelMainWindow()), mIconMap["label_white"]);
+    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertexMainWindow()), mIconMap["remove_white"]);
+    QAction *actionAddPort     = comm.addAction("Add Port", SLOT(addPortFocusedMainWindow()), mIconMap["addPort_white"]);
+    QAction *actionSwapPorts   = comm.addAction("Swap Ports", SLOT(swapPortsFocusedMainWindow()), mIconMap["swap_white"]);
+    QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel_white"]);
+    QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortFocusedMainWindow()), mIconMap["remove_white"]);
+    QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll_white"]);
+    QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode_white"]);
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh_white"]);
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle_white"]);
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mIconMap["import_white"]);
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export_white"]);
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset_white"]);
+    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), mIconMap["layout_white"]);
+    QAction *actionToggleDragDrop = comm.addAction("Toggle Drag-n-Drop", SLOT(toggleDragDrop()), mIconMap["dragndrop_white"]);
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), mIconMap["reload_white"]);
 
     // loading different actions in different menus
     MainMenu->addAction(actionAddNode);
