@@ -233,6 +233,18 @@ public:
      */
     void clear();
 
+    /**
+     * Get size of the graph, i.e. by definition the number of edges in the
+     * graph
+     */
+    size_t size() const { return getAllEdges().size(); }
+
+    /**
+     * Get the order of the graph, i.e. by definition the number of vertices in
+     * the graph
+     */
+    size_t order() const { return getAllVertices().size(); }
+
 protected:
     /**
      * Add an edge using source and target vertex on the internal

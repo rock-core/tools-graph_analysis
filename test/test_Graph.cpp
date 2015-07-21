@@ -10,7 +10,7 @@ using namespace graph_analysis;
 
 BOOST_AUTO_TEST_SUITE(graph_impl)
 
-BOOST_AUTO_TEST_CASE(add_remove_egdes_and_vertices)
+BOOST_AUTO_TEST_CASE(add_remove_edges_and_vertices)
 {
     for(int i = BaseGraph::BOOST_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)
     {
@@ -32,6 +32,12 @@ BOOST_AUTO_TEST_CASE(add_remove_egdes_and_vertices)
         BOOST_REQUIRE_MESSAGE(graph->getVertexCount() == 2, "Count nodes: expected 2 vertices but was " << vertexCount);
         BOOST_REQUIRE_MESSAGE(graph->getEdgeCount() == 1, "Count edges: expected 1 edge but was " << vertexCount);
 
+        size_t order = graph->order();
+        BOOST_REQUIRE_MESSAGE(order == 2, "Graph order: expected order 2, but was " << order);
+
+        size_t size = graph->size();
+        BOOST_REQUIRE_MESSAGE(size == 1, "Graph size: expected size 1, but was " << size);
+
         BOOST_REQUIRE_NO_THROW(graph->removeEdge(e0));
         BOOST_REQUIRE_NO_THROW(graph->removeVertex(v0));
         BOOST_REQUIRE_NO_THROW(graph->removeVertex(v1));
@@ -39,6 +45,7 @@ BOOST_AUTO_TEST_CASE(add_remove_egdes_and_vertices)
         vertexCount = graph->getVertexCount();
         BOOST_REQUIRE_MESSAGE(vertexCount == 0, "Removed vertices: expected 0 but was " << vertexCount);
         BOOST_REQUIRE_MESSAGE(graph->getVertexCount() == 0, "Removed vertices: expected 0 but was " << vertexCount);
+
     }
 }
 
