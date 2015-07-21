@@ -240,6 +240,12 @@ public slots:
     void renamePortFocusedMainWindow();
     void removePortFocusedMainWindow();
     void removePortsFocusedMainWindow();
+    void addNodeAdhocMainWindow();
+    void refreshMainWindow();
+    void shuffleMainWindow();
+    void changeLayoutMainWindow();
+    void toggleDragDrop();
+    void reloadPropertyDialogMainWindow();
 
 protected:
 
@@ -259,7 +265,7 @@ private:
 //    void updateGVGraph();
     void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
-    QMainWindow* mpParentWindowWidget;
+    QMainWindow* mpMainWindow;
     QStackedWidget* mpStackedWidget;
     graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
 

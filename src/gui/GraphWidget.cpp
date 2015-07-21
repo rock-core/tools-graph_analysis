@@ -97,7 +97,7 @@ namespace gui {
 
 GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     : QGraphicsView(parent)
-    , mpParentWindowWidget(parentWindowWidget)
+    , mpMainWindow(parentWindowWidget)
     , mpStackedWidget(new QStackedWidget())
     , mpGraph()
     , mpLayoutingGraph()
@@ -216,18 +216,18 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     mpStackedWidget->addWidget((QWidget *) this);
     mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
     mpStackedWidget->setCurrentIndex(0);
-    mpParentWindowWidget->setCentralWidget(mpStackedWidget);
+    mpMainWindow->setCentralWidget(mpStackedWidget);
     reset();
-    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpParentWindowWidget, mpStackedWidget);
+    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpMainWindow, mpStackedWidget);
 
     // setting up the Menus ToolBar
     ActionCommander comm(this);
-    QMenuBar *bar = mpParentWindowWidget->menuBar();
+    QMenuBar *bar = mpMainWindow->menuBar();
 
     // needed menus
-    QMenu MainMenu(tr("Graph"));
-    QMenu NodeMenu(tr("Node"));
-    QMenu EdgeMenu(tr("Edge"));
+    QMenu *MainMenu = new QMenu(tr("&Graph"));
+    QMenu *NodeMenu = new QMenu(tr("&Node"));
+    QMenu *EdgeMenu = new QMenu(tr("&Edge"));
 
     // needed actions
     QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeFocusedEdgeLabelMainWindow()), mIconMap["label"]);
@@ -239,7 +239,6 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel"]);
     QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortFocusedMainWindow()), mIconMap["remove"]);
     QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll"]);
-
     QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle"]);
@@ -251,35 +250,37 @@ GraphWidget::GraphWidget(QMainWindow *parentWindowWidget, QWidget *parent)
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), mIconMap["reload"]);
 
     // loading different actions in different menus
-    MainMenu.addAction(actionAddNode);
-    MainMenu.addSeparator();
-    MainMenu.addAction(actionImport);
-    MainMenu.addAction(actionExport);
-    MainMenu.addSeparator();
-    MainMenu.addAction(actionRefresh);
-    MainMenu.addAction(actionShuffle);
-    MainMenu.addAction(actionReset);
-    MainMenu.addAction(actionLayout);
-    MainMenu.addSeparator();
-    MainMenu.addAction(actionToggleDragDrop);
-    MainMenu.addSeparator();
-    MainMenu.addAction(actionReloadPropertyDialog);
+    MainMenu->addAction(actionAddNode);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionImport);
+    MainMenu->addAction(actionExport);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionRefresh);
+    MainMenu->addAction(actionShuffle);
+    MainMenu->addAction(actionReset);
+    MainMenu->addAction(actionLayout);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionToggleDragDrop);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionReloadPropertyDialog);
 
-    NodeMenu.addAction(actionChangeLabel);
-    NodeMenu.addAction(actionAddPort);
-    NodeMenu.addAction(actionSwapPorts);
-    NodeMenu.addAction(actionRenamePort);
-    NodeMenu.addAction(actionRemovePort);
-    NodeMenu.addAction(actionRemovePorts);
-    NodeMenu.addAction(actionRemoveNode);
+    NodeMenu->addAction(actionChangeLabel);
+    NodeMenu->addAction(actionAddPort);
+    NodeMenu->addAction(actionSwapPorts);
+    NodeMenu->addAction(actionRenamePort);
+    NodeMenu->addAction(actionRemovePort);
+    NodeMenu->addAction(actionRemovePorts);
+    NodeMenu->addAction(actionRemoveNode);
 
-    EdgeMenu.addAction(actionChangeEdgeLabel);
-    EdgeMenu.addAction(actionRemoveEdge);
+    EdgeMenu->addAction(actionChangeEdgeLabel);
+    EdgeMenu->addAction(actionRemoveEdge);
 
     // loading menus in the bar
-    bar->addMenu(&MainMenu);
-    bar->addMenu(&NodeMenu);
-    bar->addMenu(&EdgeMenu);
+    bar->addMenu(MainMenu);
+    bar->addMenu(NodeMenu);
+    bar->addMenu(EdgeMenu);
+
+    mpMainWindow->setWindowTitle(tr("Graph Analysis"));
 }
 
 void GraphWidget::importGraphLayer()
@@ -656,7 +657,7 @@ void GraphWidget::reloadPropertyDialog()
     {
         delete mpPropertyDialog;
     }
-    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpParentWindowWidget, mpStackedWidget, mDragDrop);
+    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpMainWindow, mpStackedWidget, mDragDrop);
 }
 
 Edge::Ptr GraphWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
@@ -2149,6 +2150,66 @@ void GraphWidget::removePortsFocusedMainWindow()
     else
     {
         QMessageBox::information(this, tr("Cannot Remove the Ports of the Focused Node"), tr("Cannot Remove the Ports of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphWidget::addNodeAdhocMainWindow()
+{
+    addNodeAdhoc();
+}
+
+void GraphWidget::refreshMainWindow()
+{
+    switch(mpStackedWidget->currentIndex())
+    {
+    case 0:
+        this->refresh();
+    break;
+
+    case 1:
+        mpLayerWidget->refresh();
+    break;
+    }
+}
+
+void GraphWidget::shuffleMainWindow()
+{
+    switch(mpStackedWidget->currentIndex())
+    {
+    case 0:
+        this->shuffle();
+    break;
+
+    case 1:
+        mpLayerWidget->shuffle();
+    break;
+    }
+}
+
+void GraphWidget::changeLayoutMainWindow()
+{
+    switch(mpStackedWidget->currentIndex())
+    {
+    case 0:
+        this->changeLayout();
+    break;
+
+    case 1:
+        mpLayerWidget->changeLayout();
+    break;
+    }
+}
+
+void GraphWidget::toggleDragDrop()
+{
+    updateDragDrop(!mDragDrop);
+}
+
+void GraphWidget::reloadPropertyDialogMainWindow()
+{
+    if(!mpPropertyDialog->isRunning())
+    {
+        reloadPropertyDialog();
     }
 }
 
