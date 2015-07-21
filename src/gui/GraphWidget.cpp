@@ -2202,7 +2202,9 @@ void GraphWidget::changeLayoutMainWindow()
 
 void GraphWidget::toggleDragDrop()
 {
+    mDragDrop ? unsetDragDrop() : setDragDrop();
     updateDragDrop(!mDragDrop);
+
 }
 
 void GraphWidget::reloadPropertyDialogMainWindow()
@@ -2210,6 +2212,10 @@ void GraphWidget::reloadPropertyDialogMainWindow()
     if(!mpPropertyDialog->isRunning())
     {
         reloadPropertyDialog();
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Cannot Reload Property Dialog"), tr("Cannot Reload Property Dialog: the dialog is still active! It needs closing first."));
     }
 }
 
