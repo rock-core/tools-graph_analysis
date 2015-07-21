@@ -2203,8 +2203,6 @@ void GraphWidget::changeLayoutMainWindow()
 void GraphWidget::toggleDragDrop()
 {
     mDragDrop ? unsetDragDrop() : setDragDrop();
-    updateDragDrop(!mDragDrop);
-
 }
 
 void GraphWidget::reloadPropertyDialogMainWindow()
