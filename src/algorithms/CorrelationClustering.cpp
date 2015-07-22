@@ -50,7 +50,6 @@ void CorrelationClustering::prepare()
 
         col++;
     }
-
     mTotalNumberOfColumns = col - 1;
 
     // Formulate the triangle inequality constraint
@@ -59,13 +58,11 @@ void CorrelationClustering::prepare()
     {
         edgeIndices.push_back(i);
     }
-
     numeric::Combination<size_t> combination(edgeIndices, 3, numeric::EXACT);
 
     // triangle count: 3! = 6
     int maxRowCount = combination.numberOfCombinations()*6;
     int maxColumnCount = 3;
-
     // List of row indexes
     int ia[1+maxRowCount*maxColumnCount];
     // List of column indexes
@@ -76,44 +73,63 @@ void CorrelationClustering::prepare()
     int i_index = 1;
     int j_index = 1;
     int ar_index = 1;
+    Edge::Ptr edges[3];
     do {
         // Select the a triangle
         std::vector<size_t> triangle = combination.current();
-
-        // Generate the constraints for this triangle
-        numeric::Permutation<size_t> permutation(triangle);
-        do {
-            // the permutation of indexes pointing to an edge (by
-            // column index)
-            std::vector<size_t> triangle_permutation = permutation.current();
-
-            // Add a row to define the triangle constraint
-            int rowNumber = glp_add_rows(mpProblem, 1);
-            std::stringstream ss;
-            ss << rowNumber;
-            glp_set_row_name(mpProblem, rowNumber, ss.str().c_str());
-
-            /// triangle inequality for three edges
-            // x12 + x23 >= x13
-            // 0 >= 1*x13 + (-1)*x12 + (-1)*x23 + 0*xREST
-            // GLP_UP for upper bound, last argument is the upper bound
-            glp_set_row_bnds(mpProblem, rowNumber, GLP_UP, 0.0, 0.0);
-
-            // set factors for x13, x12 and x23
-            for(size_t i = 0; i < 3; ++i)
+        size_t cnt;
+        //check if the edges are of the form xab, xbc, xca (if they form a triangle)
+        for (size_t i=0;i<3;i++)
+        {
+            cnt=-1;
+            while (triangle[i]!=cnt)
             {
-                ia[i_index++] = rowNumber;
-                ja[j_index++] = triangle_permutation[i] + 1 /* columns starting at 1*/;
-                if(i == 0)
-                {
-                    ar[ar_index++] = 1.0;
-                } else {
-                    ar[ar_index++] = -1.0;
-                }
+                cnt++;
             }
-        } while(permutation.next());
-    } while(combination.next());
+            edges[i] = mColumnToEdge[cnt];
+        }
+        std::vector<Vertex::Ptr> vertices = Edge::getInvolvedVertices(edges[0],edges[1]);
+        bool ok1 = false, ok2 = false;
+        for (size_t i=0;i<vertices.size();i++) {
+            if (vertices[i] == edges[2]->getSourceVertex()) ok1 = true; 
+            if (vertices[i] == edges[2]->getTargetVertex()) ok2 = true;
+        }
+        if (vertices.size() == 3 && ok1 && ok2) 
+        {
+        // Generate the constraints for this triangle
+            numeric::Permutation<size_t> permutation(triangle);
+            do {
+                // the permutation of indexes pointing to an edge (by
+                // column index)
+                std::vector<size_t> triangle_permutation = permutation.current();
 
+                // Add a row to define the triangle constraint
+                int rowNumber = glp_add_rows(mpProblem, 1);
+                std::stringstream ss;
+                ss << rowNumber;
+                glp_set_row_name(mpProblem, rowNumber, ss.str().c_str());
+
+                /// triangle inequality for three edges
+                // x12 + x23 >= x13
+                // 0 >= 1*x13 + (-1)*x12 + (-1)*x23 + 0*xREST
+                // GLP_UP for upper bound, last argument is the upper bound
+                glp_set_row_bnds(mpProblem, rowNumber, GLP_UP, 0.0, 0.0);
+
+                // set factors for x13, x12 and x23
+                for(size_t i = 0; i < 3; ++i)
+                {
+                    ia[i_index++] = rowNumber;
+                    ja[j_index++] = triangle_permutation[i] + 1 /* columns starting at 1*/;
+                    if(i == 0)
+                    {
+                        ar[ar_index++] = 1.0;
+                    } else {
+                        ar[ar_index++] = -1.0;
+                    }
+                }
+            } while(permutation.next());
+        }
+    } while(combination.next());
     glp_load_matrix(mpProblem, i_index - 1, ia, ja, ar);
 }
 
@@ -315,7 +331,7 @@ void CorrelationClustering::round()
 
             // 3. Grow the ball by another entire edge
             LOG_INFO_S << "Grow ball";
-            while( cut(ball) >= mConstant*volume(ball) )
+            while( cut(ball) > mConstant*volume(ball) )
             {
                 double minDistance = std::numeric_limits<double>::infinity();
                 Edge::Ptr minEdge;
@@ -343,7 +359,7 @@ void CorrelationClustering::round()
                         {
                             throw std::runtime_error("This edge should be already included in the ball");
                         } else {
-                            if(currentDistance > 0 && currentDistance < minDistance)
+                            if(currentDistance >= 0 && currentDistance <= minDistance && currentDistance!=1)
                             {
                                 LOG_INFO_S << "Update minDistance: " << currentDistance;
                                 minDistance = currentDistance;
@@ -376,6 +392,7 @@ void CorrelationClustering::round()
                 mEdgeActivation[edge] = 0;
                 graph->removeEdge(edge);
             }
+
             VertexIterator::Ptr vertexIt = ball.graph->getVertexIterator();
             while(vertexIt->next())
             {
@@ -399,7 +416,7 @@ CorrelationClustering::CorrelationClustering(BaseGraph::Ptr graph, EdgeWeightFun
     Ball ball;
     ball.graph = mpGraph;
     // Prevent premature use of radius in volume(S)
-    ball.radius = 1;
+    ball.radius = 0;
 
     uint64_t nodeCount = graph->getVertexCount();
     mConstant = 2.01* log(nodeCount + 1);
