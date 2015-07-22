@@ -52,6 +52,14 @@ class CorrelationClustering
     void prepare();
     void solve();
 
+    /**
+     * Check if the given edge indices form a triangle
+     *
+     * \throw std::invalid_argument if triangle size does not equal 3
+     * \throw std::runtime_error if self-loops are detected in the graph
+     */
+    bool areFormingTriangle(const std::vector<size_t>& triangleIndices) const;
+
 public:
     CorrelationClustering(BaseGraph::Ptr graph, EdgeWeightFunction weightfunction);
 

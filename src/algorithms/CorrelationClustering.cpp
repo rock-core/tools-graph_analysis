@@ -73,30 +73,14 @@ void CorrelationClustering::prepare()
     int i_index = 1;
     int j_index = 1;
     int ar_index = 1;
-    Edge::Ptr edges[3];
+
     do {
-        // Select the a triangle
+        // Select a triangle
         std::vector<size_t> triangle = combination.current();
-        size_t cnt;
-        //check if the edges are of the form xab, xbc, xca (if they form a triangle)
-        for (size_t i=0;i<3;i++)
+
+        if(areFormingTriangle(triangle))
         {
-            cnt=-1;
-            while (triangle[i]!=cnt)
-            {
-                cnt++;
-            }
-            edges[i] = mColumnToEdge[cnt];
-        }
-        std::vector<Vertex::Ptr> vertices = Edge::getInvolvedVertices(edges[0],edges[1]);
-        bool ok1 = false, ok2 = false;
-        for (size_t i=0;i<vertices.size();i++) {
-            if (vertices[i] == edges[2]->getSourceVertex()) ok1 = true; 
-            if (vertices[i] == edges[2]->getTargetVertex()) ok2 = true;
-        }
-        if (vertices.size() == 3 && ok1 && ok2) 
-        {
-        // Generate the constraints for this triangle
+            // Generate the constraints for this triangle
             numeric::Permutation<size_t> permutation(triangle);
             do {
                 // the permutation of indexes pointing to an edge (by
@@ -149,6 +133,53 @@ void CorrelationClustering::solve()
 
     glp_delete_prob(mpProblem);
 }
+
+
+bool CorrelationClustering::areFormingTriangle(const std::vector<size_t>& triangle) const
+{
+    if(triangle.size() != 3)
+    {
+        throw std::invalid_argument("graph_analysis::algorithms::CorrelationClustering::areFormingTriangle"
+                "requires a list of indices of size 3");
+    }
+    //check if the edges are of the form xab, xbc, xca (if they form a triangle)
+    std::vector<Vertex::Ptr> vertices = Edge::getInvolvedVertices(mColumnToEdge[ triangle[0] ], mColumnToEdge[ triangle[1] ]);
+
+    // Check that edges are linked via one node, otherwise they cannot form
+    // a triangle
+    if (vertices.size() != 3)
+    {
+        return false;
+    }
+
+    Vertex::Ptr existingSourceVertex;
+    Vertex::Ptr existingTargetVertex;
+
+    // Check the remaining edge -- size of vertices: 3
+    // so that triangle condition is fulfilled
+    Edge::Ptr edge = mColumnToEdge[ triangle[2] ];
+    for (size_t i = 0; i < vertices.size(); i++)
+    {
+        if (vertices[i] == edge->getSourceVertex())
+        {
+            existingSourceVertex = vertices[i];
+        }
+
+        if (vertices[i] == edge->getTargetVertex())
+        {
+            existingTargetVertex = vertices[i];
+        }
+    }
+
+    // Validate assumption on graph
+    if(existingSourceVertex && existingSourceVertex == existingTargetVertex)
+    {
+        throw std::runtime_error("graph_analysis::algorithms::CorrelationClustering: cannot cluster graph with self-loops, i.e. edges that connect a vertex to itself: " + existingSourceVertex->toString());
+    }
+
+    return existingSourceVertex && existingTargetVertex;
+}
+
 
 double CorrelationClustering::cut(Ball ball)
 {
@@ -419,6 +450,7 @@ CorrelationClustering::CorrelationClustering(BaseGraph::Ptr graph, EdgeWeightFun
     ball.radius = 0;
 
     uint64_t nodeCount = graph->getVertexCount();
+    // See paper for motivation of setting this constant
     mConstant = 2.01* log(nodeCount + 1);
     mInitialVolume = volume(ball) / (nodeCount*1.0);
 
