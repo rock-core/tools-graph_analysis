@@ -172,15 +172,6 @@ protected:
     virtual void mousePressEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mousePressEvent is not reimplemented"); }
     virtual void mouseDoubleClickEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mouseDoubleClickEvent is not reimplemented"); }
     virtual void mouseReleaseEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mouseReleaseEvent is not reimplemented"); }
-/*
-    void timerEvent(QTimerEvent *event);
-#ifndef QT_NO_WHEELEVENT
-    void wheelEvent(QWheelEvent *event);
-#endif
-    void drawBackground(QPainter *painter, const QRectF& rect);
-
-    void scaleView(qreal scaleFactor);
- */
 
 protected:
 

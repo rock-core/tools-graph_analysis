@@ -138,7 +138,7 @@ void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
         mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     }
     mSelected = true;
-    qDebug("Hover ENTER event for %s", mpEdge->toString().c_str());
+//    qDebug("Hover ENTER event for %s", mpEdge->toString().c_str());
     mpGraphWidget->setSelectedEdge(mpEdge);
     mpGraphWidget->setEdgeSelected(true);
     QGraphicsItem::hoverEnterEvent(event);
@@ -151,7 +151,7 @@ void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
         mPen = mPenDefault;
     }
     mSelected = false;
-    qDebug("Hover LEAVE event for %s", mpEdge->toString().c_str());
+//    qDebug("Hover LEAVE event for %s", mpEdge->toString().c_str());
     mpGraphWidget->setEdgeSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }

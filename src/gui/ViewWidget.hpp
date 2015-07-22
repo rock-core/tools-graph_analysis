@@ -123,16 +123,6 @@ public:
     void clear();
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
-//    void standAloneLayouting();
-
-//    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
-//    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
-
-//    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
-//    double  getScaleFactor () const { return mScaleFactor; }
-
-//    void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
-//    graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
 
     void setFocusedVertex(graph_analysis::Vertex::Ptr focusedVertex) { mpFocusedVertex = focusedVertex; }
     graph_analysis::Vertex::Ptr getFocusedVertex() { return mpFocusedVertex; }
@@ -140,25 +130,16 @@ public:
     void setFocusedEdge(graph_analysis::Edge::Ptr focusedEdge) { mpFocusedEdge = focusedEdge; }
     graph_analysis::Edge::Ptr getFocusedEdge() { return mpFocusedEdge; }
 
-//    void setVertexSelected (bool selected) { mVertexSelected = selected; }
-//    bool getVertexSelected () { return mVertexSelected; }
-
-    void setVertexFocused (bool focused); // { mVertexFocused = focused; mpPropertyDialog->setVertexFocused(focused); }
+    void setVertexFocused (bool focused);
     bool getVertexFocused () { return mVertexFocused; }
 
-    void setEdgeFocused (bool focused); // { mEdgeFocused = focused; mpPropertyDialog->setEdgeFocused(focused); }
+    void setEdgeFocused (bool focused);
     bool getEdgeFocused () { return mEdgeFocused; }
-
-//    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge = selectedEdge; }
-//    graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
-
-//    void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
-//    bool getEdgeSelected () { return mEdgeSelected; }
 
     LayerWidget* getLayerWidget() { return mpLayerWidget; }
 
-    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID); // not-only { mpStartVertex = startVertex; }
-    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID); // not-only { mpEndVertex   = endVertex;   }
+    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID);
+    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID);
 
     QIcon* getIcon(std::string key) { return &(mIconMap[key]); }
     void clearNodeFocus();
@@ -249,7 +230,6 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-//    void updateGVGraph();
     void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
     QMainWindow* mpMainWindow;
@@ -257,39 +237,10 @@ private:
     graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
 
     /// io components
-    /// layouting
-//    io::GVGraph* mpGVGraph;
     /// export
     WriterMap mWriterMap;
     /// import
     ReaderMap mReaderMap;
-    // Supports filtering functionality
-//    GraphView mGraphView;
-//    SubGraph::Ptr mpSubGraph;
-//    bool mFiltered;
-
-    // Mapping with data model
-    // Allow mapping of semantically port vertices to their (cluster) nodes in the scene
-//    PortMap mPortMap;
-    // stores ports IDs given their source vertices
-//    PortIDMap mPortIDMap;
-    // Allow mapping from graph vertices to nodes in the scene
-//    NodeItemMap mNodeItemMap;
-    // Allow mapping from graph edges to edges in the scene
-//    EdgeItemMap mEdgeItemMap;
-    // Allow mapping from default graph edges (edges not part of the model but used to layou the GUI graph) to their main graph edges correspondents (mainly needed for labels updating)
-//    EdgeMap mEdgeMap;
-
-//    int mTimerId;
-    /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees
-//    double mScaleFactor;
-//    QString mLayout;
-
-//    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
-//    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
-
-//    graph_analysis::Vertex::Ptr mpSelectedVertex;
-//    graph_analysis::Edge::Ptr mpSelectedEdge;
     graph_analysis::Vertex::Ptr mpFocusedVertex;
     graph_analysis::Vertex::Ptr mpStartVertex;
     graph_analysis::Vertex::Ptr mpStartPort;

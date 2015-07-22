@@ -189,7 +189,7 @@ QVariant Label::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
 {
     if(change == QGraphicsItem::ItemSelectedChange)
     {
-        qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
+//        qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
         if(value.toBool())
         {
             ((NodeItem *)parentItem())->prepareChange();

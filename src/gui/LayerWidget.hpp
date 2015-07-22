@@ -48,8 +48,6 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
-//#include <boost/thread/mutex.hpp> // no need to: SLOT calls are executed sequentially
-    // more details @ http://doc.qt.io/qt-4.8/threads-qobject.html#signals-and-slots-across-threads
 
 namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
@@ -135,28 +133,6 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-//    graph_analysis::BaseGraph::Ptr mpGraph;
-
-//    io::GVGraph* mpGVGraph;
-    // Supports filtering functionality
-//    GraphView mGraphView;
-//    SubGraph::Ptr mpSubGraph;
-//    bool mFiltered;
-
-    // Mapping with data model
-    // Allow mapping from graph vertexes to nodes in the scene
-//    NodeItemMap mNodeItemMap;
-    // Allow mapping from graph edges to edges in the scene
-//    EdgeItemMap mEdgeItemMap;
-
-//    int mTimerId;
-    /// if |mScaleFactor| > 1.0, it makes edges longer; it makes them shorter otherwise ||| if negative, it rotates the graph 180 degrees
-//    double mScaleFactor;
-//    QString mLayout;
-
-//    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
-//    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
-
     ViewWidget* mpViewWidget;
 };
 
