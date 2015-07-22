@@ -125,14 +125,14 @@ public:
     void itemMoved();
 //    void standAloneLayouting();
 
-    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
-    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
+//    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
+//    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
-    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
-    double  getScaleFactor () const { return mScaleFactor; }
+//    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
+//    double  getScaleFactor () const { return mScaleFactor; }
 
-    void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
-    graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
+//    void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
+//    graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
 
     void setFocusedVertex(graph_analysis::Vertex::Ptr focusedVertex) { mpFocusedVertex = focusedVertex; }
     graph_analysis::Vertex::Ptr getFocusedVertex() { return mpFocusedVertex; }
@@ -140,8 +140,8 @@ public:
     void setFocusedEdge(graph_analysis::Edge::Ptr focusedEdge) { mpFocusedEdge = focusedEdge; }
     graph_analysis::Edge::Ptr getFocusedEdge() { return mpFocusedEdge; }
 
-    void setVertexSelected (bool selected) { mVertexSelected = selected; }
-    bool getVertexSelected () { return mVertexSelected; }
+//    void setVertexSelected (bool selected) { mVertexSelected = selected; }
+//    bool getVertexSelected () { return mVertexSelected; }
 
     void setVertexFocused (bool focused); // { mVertexFocused = focused; mpPropertyDialog->setVertexFocused(focused); }
     bool getVertexFocused () { return mVertexFocused; }
@@ -149,13 +149,12 @@ public:
     void setEdgeFocused (bool focused); // { mEdgeFocused = focused; mpPropertyDialog->setEdgeFocused(focused); }
     bool getEdgeFocused () { return mEdgeFocused; }
 
-    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge = selectedEdge; }
-    graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
+//    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge = selectedEdge; }
+//    graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
 
-    void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
-    bool getEdgeSelected () { return mEdgeSelected; }
+//    void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
+//    bool getEdgeSelected () { return mEdgeSelected; }
 
-    bool getDragDrop() { return mDragDrop; }
     LayerWidget* getLayerWidget() { return mpLayerWidget; }
 
     void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID); // not-only { mpStartVertex = startVertex; }
@@ -255,56 +254,53 @@ private:
 
     QMainWindow* mpMainWindow;
     QStackedWidget* mpStackedWidget;
-    graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
+    graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
 
     /// io components
     /// layouting
-    io::GVGraph* mpGVGraph;
+//    io::GVGraph* mpGVGraph;
     /// export
     WriterMap mWriterMap;
     /// import
     ReaderMap mReaderMap;
     // Supports filtering functionality
-    GraphView mGraphView;
-    SubGraph::Ptr mpSubGraph;
-    bool mFiltered;
+//    GraphView mGraphView;
+//    SubGraph::Ptr mpSubGraph;
+//    bool mFiltered;
 
     // Mapping with data model
     // Allow mapping of semantically port vertices to their (cluster) nodes in the scene
-    PortMap mPortMap;
+//    PortMap mPortMap;
     // stores ports IDs given their source vertices
-    PortIDMap mPortIDMap;
+//    PortIDMap mPortIDMap;
     // Allow mapping from graph vertices to nodes in the scene
-    NodeItemMap mNodeItemMap;
+//    NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
-    EdgeItemMap mEdgeItemMap;
+//    EdgeItemMap mEdgeItemMap;
     // Allow mapping from default graph edges (edges not part of the model but used to layou the GUI graph) to their main graph edges correspondents (mainly needed for labels updating)
-    EdgeMap mEdgeMap;
+//    EdgeMap mEdgeMap;
 
-    int mTimerId;
+//    int mTimerId;
     /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees
-    double mScaleFactor;
-    QString mLayout;
+//    double mScaleFactor;
+//    QString mLayout;
 
-    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
-    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
+//    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
+//    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
-    graph_analysis::Vertex::Ptr mpSelectedVertex;
+//    graph_analysis::Vertex::Ptr mpSelectedVertex;
+//    graph_analysis::Edge::Ptr mpSelectedEdge;
     graph_analysis::Vertex::Ptr mpFocusedVertex;
     graph_analysis::Vertex::Ptr mpStartVertex;
     graph_analysis::Vertex::Ptr mpStartPort;
     graph_analysis::Vertex::Ptr mpEndVertex;
     graph_analysis::Vertex::Ptr mpEndPort;
-    graph_analysis::Edge::Ptr mpSelectedEdge;
     graph_analysis::Edge::Ptr mpFocusedEdge;
 
-    bool mVertexSelected;
     bool mVertexFocused;
-    bool mEdgeSelected;
     bool mEdgeFocused;
 
     PropertyDialog* mpPropertyDialog;
-    bool mDragDrop;
     qreal mMaxNodeHeight, mMaxNodeWidth;
 
     // icons

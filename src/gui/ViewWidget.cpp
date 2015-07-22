@@ -83,7 +83,6 @@
 #include <exception>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-#define DEFAULT_SCALING_FACTOR 2.269
 //#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
 #define DEFAULT_PATH_TO_ICONS "icons/"
 
@@ -99,20 +98,9 @@ ViewWidget::ViewWidget(QWidget *parent)
     : GraphWidget(parent)
     , mpMainWindow(0)
     , mpStackedWidget(new QStackedWidget())
-    , mpGraph()
     , mpLayoutingGraph()
-    , mpGVGraph(0)
-    , mFiltered(false)
-    , mTimerId(0)
-    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-    , mLayout("dot")
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mVertexSelected(false)
     , mVertexFocused(false)
-    , mEdgeSelected(false)
     , mEdgeFocused(false)
-    , mDragDrop(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mpLayerWidget(new LayerWidget(this, mpGraph))
@@ -124,20 +112,9 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     : GraphWidget(parent)
     , mpMainWindow(mainWindow)
     , mpStackedWidget(new QStackedWidget())
-    , mpGraph()
     , mpLayoutingGraph()
-    , mpGVGraph(0)
-    , mFiltered(false)
-    , mTimerId(0)
-    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-    , mLayout("dot")
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mVertexSelected(false)
     , mVertexFocused(false)
-    , mEdgeSelected(false)
     , mEdgeFocused(false)
-    , mDragDrop(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mpLayerWidget(new LayerWidget(this, mpGraph))
@@ -1850,36 +1827,6 @@ void ViewWidget::scaleView(qreal scaleFactor)
         return;
     }
     scale(scaleFactor, scaleFactor);
-}
-
-void ViewWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
-{
-    mpVertexFilter->clear();
-    BOOST_FOREACH(Filter<Vertex::Ptr>::Ptr filter, filters)
-    {
-        mpVertexFilter->add(filter);
-    }
-    mGraphView.setVertexFilter(mpVertexFilter);
-    if(!mFiltered)
-    {
-        mpSubGraph = mGraphView.apply(mpGraph);
-        mFiltered = true;
-    }
-}
-
-void ViewWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
-{
-    mpEdgeFilter->clear();
-    BOOST_FOREACH(Filter<Edge::Ptr>::Ptr filter, filters)
-    {
-        mpEdgeFilter->add(filter);
-    }
-    mGraphView.setEdgeFilter(mpEdgeFilter);
-    if(!mFiltered)
-    {
-        mpSubGraph = mGraphView.apply(mpGraph);
-        mFiltered = true;
-    }
 }
 
 void ViewWidget::shuffle()

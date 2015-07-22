@@ -84,11 +84,6 @@
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
 #define DEFAULT_SCALING_FACTOR 2.269
-//#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
-#define DEFAULT_PATH_TO_ICONS "icons/"
-
-// comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
-#define CLEAR_BY_BACKGROUND
 
 using namespace graph_analysis;
 
@@ -352,6 +347,16 @@ void GraphWidget::scaleView(qreal scaleFactor)
     scale(scaleFactor, scaleFactor);
 }
 
+void GraphWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
+{
+    EdgeItemMap::iterator it = mEdgeItemMap.find(concernedEdge);
+    if(mEdgeItemMap.end() != it)
+    {
+        mEdgeItemMap.erase(it);
+    }
+}
+ */
+
 void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
 {
     mpVertexFilter->clear();
@@ -381,16 +386,6 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
         mFiltered = true;
     }
 }
-
-void GraphWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
-{
-    EdgeItemMap::iterator it = mEdgeItemMap.find(concernedEdge);
-    if(mEdgeItemMap.end() != it)
-    {
-        mEdgeItemMap.erase(it);
-    }
-}
- */
 
 } // end namespace gui
 } // end namespace graph_analysis

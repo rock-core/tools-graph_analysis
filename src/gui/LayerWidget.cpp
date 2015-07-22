@@ -73,7 +73,6 @@
 #include <exception>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-#define DEFAULT_SCALING_FACTOR 1.4
 
 using namespace graph_analysis;
 
@@ -81,15 +80,7 @@ namespace graph_analysis {
 namespace gui {
 
 LayerWidget::LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph)
-    : mpGraph(graph)
-    , mpGVGraph(0)
-    , mFiltered(false)
-    , mTimerId(0)
-    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-    , mLayout("dot")
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpViewWidget(viewWidget)
+    : mpViewWidget(viewWidget)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));

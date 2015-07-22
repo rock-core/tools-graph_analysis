@@ -189,10 +189,6 @@ protected:
     /// io components
     /// layouting
     io::GVGraph* mpGVGraph;
-    /// export
-    WriterMap mWriterMap;
-    /// import
-    ReaderMap mReaderMap;
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;

@@ -135,30 +135,27 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    void updateGVGraph();
-    void spawnEdge(const std::string& label);
+//    graph_analysis::BaseGraph::Ptr mpGraph;
 
-    graph_analysis::BaseGraph::Ptr mpGraph;
-
-    io::GVGraph* mpGVGraph;
+//    io::GVGraph* mpGVGraph;
     // Supports filtering functionality
-    GraphView mGraphView;
-    SubGraph::Ptr mpSubGraph;
-    bool mFiltered;
+//    GraphView mGraphView;
+//    SubGraph::Ptr mpSubGraph;
+//    bool mFiltered;
 
     // Mapping with data model
     // Allow mapping from graph vertexes to nodes in the scene
-    NodeItemMap mNodeItemMap;
+//    NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
-    EdgeItemMap mEdgeItemMap;
+//    EdgeItemMap mEdgeItemMap;
 
-    int mTimerId;
+//    int mTimerId;
     /// if |mScaleFactor| > 1.0, it makes edges longer; it makes them shorter otherwise ||| if negative, it rotates the graph 180 degrees
-    double mScaleFactor;
-    QString mLayout;
+//    double mScaleFactor;
+//    QString mLayout;
 
-    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
-    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
+//    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
+//    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
     ViewWidget* mpViewWidget;
 };
