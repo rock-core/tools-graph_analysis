@@ -17,6 +17,18 @@ double getWeight(Edge::Ptr edge)
 }
 
 // complete graph with 3 vertices
+//
+// input:
+// v0 - 1.0 - v1
+// |          /
+// -2.0    1.0
+// |     /
+// v2
+//
+// output:
+// v0 --- v1
+//
+//    v3
 BOOST_AUTO_TEST_CASE(cluster_correlation_1)
 {
     graph_analysis::BaseGraph::Ptr graph(new graph_analysis::lemon::DirectedGraph());
@@ -40,7 +52,7 @@ BOOST_AUTO_TEST_CASE(cluster_correlation_1)
     WeightedEdge::Ptr e2(new WeightedEdge(-2.0));
     e2->setSourceVertex(v2);
     e2->setTargetVertex(v0);
-    
+
     graph->addEdge(e0);
     graph->addEdge(e1);
     graph->addEdge(e2);
@@ -60,6 +72,21 @@ BOOST_AUTO_TEST_CASE(cluster_correlation_1)
 
 
 // complete graph with 4 vertices
+//
+// input:
+// v0 -- 10.0  -- v1
+// |               |
+//       /1.0/
+// -3.0           2.0
+//       \1.0\
+// |               |
+// v2 -- 1.0 --   v3
+//
+// output:
+//
+// v0 ---- v1
+//         |
+// v2      v3
 BOOST_AUTO_TEST_CASE(cluster_correlation_2)
 {
     graph_analysis::BaseGraph::Ptr graph(new graph_analysis::lemon::DirectedGraph());
@@ -92,7 +119,7 @@ BOOST_AUTO_TEST_CASE(cluster_correlation_2)
 
     WeightedEdge::Ptr e4(new WeightedEdge(-3.0));
     e4->setSourceVertex(v0);
-    e4->setTargetVertex(v2);    
+    e4->setTargetVertex(v2);
 
     WeightedEdge::Ptr e5(new WeightedEdge(2.0));
     e5->setSourceVertex(v3);
@@ -120,6 +147,28 @@ BOOST_AUTO_TEST_CASE(cluster_correlation_2)
 }
 
 // complete graph with 5 vertices
+//
+// input:
+//                v1
+//       /5.0/
+//                \-4.0\
+//
+//  v0         = -5.0 =        v2
+//
+//    \-7.0\ /-3.0/
+//                /1.0/    /5.0/
+//
+//              \-6.0\
+//         v3  == 3.0 ==  v4
+//
+//
+// output: 2 clusters
+//      ___ v1
+//     /
+// v0       /----  __ v2
+//         /        /
+//       v3---- v4
+//
 BOOST_AUTO_TEST_CASE(cluster_correlation_3)
 {
     graph_analysis::BaseGraph::Ptr graph(new graph_analysis::lemon::DirectedGraph());
@@ -154,7 +203,7 @@ BOOST_AUTO_TEST_CASE(cluster_correlation_3)
 
     WeightedEdge::Ptr e4(new WeightedEdge(-3.0));
     e4->setSourceVertex(v1);
-    e4->setTargetVertex(v2);    
+    e4->setTargetVertex(v2);
 
     WeightedEdge::Ptr e5(new WeightedEdge(-3.0));
     e5->setSourceVertex(v1);
@@ -212,10 +261,10 @@ BOOST_AUTO_TEST_CASE(cluster_correlation_3)
 
  for e0 = -1 and e1 = e2 = e3 = +1, the algorithm doesn't work
  it returns e0 = 1 and e1 = e2 = e3 = 0 which is not possible
- (if v0, v1, v2, v3 are in the same cluster , than e0 can not be 1) 
+ (if v0, v1, v2, v3 are in the same cluster , than e0 can not be 1)
 
  Need to add a condition to check if we have 4 vertices, with an edge between each two consecutive
- vertices; then we can not have 3 edges 0 and the other one 1 
+ vertices; then we can not have 3 edges 0 and the other one 1
 */
 
 BOOST_AUTO_TEST_CASE(cluster_correlation_4)
@@ -252,7 +301,7 @@ BOOST_AUTO_TEST_CASE(cluster_correlation_4)
     graph->addEdge(e1);
     graph->addEdge(e2);
     graph->addEdge(e3);
-    
+
     CorrelationClustering cc(graph, getWeight);
     {
         std::map<Edge::Ptr, double> solution = cc.getEdgeActivation();
