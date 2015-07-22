@@ -66,6 +66,7 @@ class GraphvizWriter;
 
 } // end namespace io
 
+namespace gl = graph_analysis::lemon;
 namespace gui {
 
 class NodeItem;
@@ -101,6 +102,7 @@ public:
     typedef std::map <std::string, QIcon> IconMap;
 
     GraphWidget(QWidget *parent = 0);
+    GraphWidget(graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ), QWidget *parent = 0);
     GraphWidget(QMainWindow *mainWindow, QWidget *parent = 0);
     ~GraphWidget();
 

@@ -80,7 +80,8 @@ namespace graph_analysis {
 namespace gui {
 
 LayerWidget::LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph)
-    : mpViewWidget(viewWidget)
+    : GraphWidget(graph)
+    , mpViewWidget(viewWidget)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -151,6 +152,7 @@ void LayerWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
 
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
+    reset(true);
     updateFromGraph();
 }
 
@@ -224,7 +226,11 @@ void LayerWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 
 void LayerWidget::updateFromGraph()
 {
-    /*
+    if(mpGraph->empty())
+    {
+        LOG_WARN_S << "graph_analysis::gui::LayerWidget::updateFromGraph was called while mpGraph was still empty";
+        return;
+    }
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -245,11 +251,9 @@ void LayerWidget::updateFromGraph()
         // Registering new node items
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, LAYER_NODE_TYPE);
         mNodeItemMap[vertex] = nodeItem;
-//        nodeItem->setPortCount(mpGraph->getEdgeIterator(vertex));
         scene()->addItem(nodeItem);
         mpGVGraph->addNode(vertex);
     }
-
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
@@ -327,7 +331,6 @@ void LayerWidget::updateFromGraph()
 //            }
 //        }
     }
-     */
 }
 
 void LayerWidget::addVertex(Vertex::Ptr vertex)
@@ -427,7 +430,7 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
 
     case Qt::Key_S:
         shuffle();
-    break; // TOO close to CTRL+S?!
+    break;
     //default:
     }
 

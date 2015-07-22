@@ -92,7 +92,7 @@ namespace gui {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mpGraph()
+    , mpGraph(graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ))
     , mpGVGraph(0)
     , mFiltered(false)
     , mTimerId(0)
@@ -104,12 +104,27 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mEdgeSelected(false)
     , mDragDrop(false)
 {
+}
 
+GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
+    : QGraphicsView(parent)
+    , mpGraph(graph)
+    , mpGVGraph(0)
+    , mFiltered(false)
+    , mTimerId(0)
+    , mScaleFactor(DEFAULT_SCALING_FACTOR)
+    , mLayout("dot")
+    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
+    , mpEdgeFilter(new filters::EdgeContextFilter())
+    , mVertexSelected(false)
+    , mEdgeSelected(false)
+    , mDragDrop(false)
+{
 }
 
 GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     : QGraphicsView(parent)
-    , mpGraph()
+    , mpGraph(graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ))
     , mpGVGraph(0)
     , mFiltered(false)
     , mTimerId(0)

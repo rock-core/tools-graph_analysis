@@ -53,7 +53,6 @@
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 
-namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
 namespace io {
 

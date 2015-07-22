@@ -325,14 +325,14 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
 void ViewWidget::importGraphLayer()
 {
     importGraph();
-    mpLayerWidget->setGraph(mpGraph);
+//    mpLayerWidget->setGraph(mpGraph); // already contained above
     mpLayerWidget->refresh();
 }
 
 void ViewWidget::resetGraphLayer()
 {
     resetGraph();
-    mpLayerWidget->setGraph(mpGraph);
+//    mpLayerWidget->setGraph(mpGraph); // already contained above
     mpLayerWidget->refresh();
 }
 
@@ -1174,6 +1174,7 @@ void ViewWidget::fromXmlFile(const std::string& filename)
     }
 
     mpGraph = graph;
+    mpLayerWidget->setGraph(mpGraph);
     mpSubGraph = mGraphView.apply(mpGraph);
     mFiltered = true;
 
@@ -1197,6 +1198,7 @@ void ViewWidget::fromYmlFile(const std::string& filename)
     }
 
     mpGraph = graph;
+    mpLayerWidget->setGraph(mpGraph);
     mpSubGraph = mGraphView.apply(mpGraph);
     mFiltered = true;
 
@@ -1212,6 +1214,7 @@ void ViewWidget::reset(bool keepData)
     if(!keepData)
     {
         mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
+        mpLayerWidget->setGraph(mpGraph);
         mpSubGraph = mGraphView.apply(mpGraph);
         mFiltered = true;
     }
