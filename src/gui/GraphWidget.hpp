@@ -132,7 +132,6 @@ public:
     void reset(bool keepData = false);
     void clear();
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
-    void itemMoved();
 //    void standAloneLayouting();
 
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
@@ -144,20 +143,8 @@ public:
     void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
     graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
 
-    void setFocusedVertex(graph_analysis::Vertex::Ptr focusedVertex) { mpFocusedVertex = focusedVertex; }
-    graph_analysis::Vertex::Ptr getFocusedVertex() { return mpFocusedVertex; }
-
-    void setFocusedEdge(graph_analysis::Edge::Ptr focusedEdge) { mpFocusedEdge = focusedEdge; }
-    graph_analysis::Edge::Ptr getFocusedEdge() { return mpFocusedEdge; }
-
     void setVertexSelected (bool selected) { mVertexSelected = selected; }
     bool getVertexSelected () { return mVertexSelected; }
-
-    void setVertexFocused (bool focused); // { mVertexFocused = focused; mpPropertyDialog->setVertexFocused(focused); }
-    bool getVertexFocused () { return mVertexFocused; }
-
-    void setEdgeFocused (bool focused); // { mEdgeFocused = focused; mpPropertyDialog->setEdgeFocused(focused); }
-    bool getEdgeFocused () { return mEdgeFocused; }
 
     void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge = selectedEdge; }
     graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
@@ -166,34 +153,26 @@ public:
     bool getEdgeSelected () { return mEdgeSelected; }
 
     bool getDragDrop() { return mDragDrop; }
-    LayerWidget* getLayerWidget() { return mpLayerWidget; }
-
-    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID); // not-only { mpStartVertex = startVertex; }
-    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID); // not-only { mpEndVertex   = endVertex;   }
-
-    QIcon* getIcon(std::string key) { return &(mIconMap[key]); }
-    void clearNodeFocus();
-    void clearEdgeFocus();
     void clearFocus();
-    void addPort(graph_analysis::Vertex::Ptr vertex);
-    void changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std::string& label);
-    void renamePort (graph_analysis::Vertex::Ptr concernedVertex);
-    void removePort (graph_analysis::Vertex::Ptr concernedVertex);
-    void removePorts(graph_analysis::Vertex::Ptr concernedVertex);
-    void clearVertex(graph_analysis::Vertex::Ptr concernedVertex);
-    void changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const std::string& label);
-    void clearEdge(graph_analysis::Edge::Ptr concernedEdge);
-    void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
-    void swapPorts(graph_analysis::Vertex::Ptr concernedVertex);
 
-    bool dialogIsRunning();
+    virtual void setVertexFocused(bool focused) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setVertexFocused is not reimplemented");  }
+    virtual void setEdgeFocused  (bool focused) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEdgeFocused is not reimplemented");    }
+    virtual void clearEdgeFocus() { throw std::runtime_error("graph_analysis::gui::GraphWidget::clearEdgeFocus is not reimplemented"); }
+    virtual void clearNodeFocus() { throw std::runtime_error("graph_analysis::gui::GraphWidget::clearNodeFocus is not reimplemented"); }
+    virtual void setStartVertex (graph_analysis::Vertex::Ptr, int) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setStartVertex is not reimplemented"); }
+    virtual void setEndVertex   (graph_analysis::Vertex::Ptr, int) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEndVertex is not reimplemented");   }
+    virtual void setFocusedEdge     (graph_analysis::Edge::Ptr)     { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedEdge is not reimplemented");   }
+    virtual void setFocusedVertex   (graph_analysis::Vertex::Ptr)   { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedVertex is not reimplemented"); }
+    virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
+    virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
 
 protected:
 
-    void mousePressEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
-    void mouseDoubleClickEvent(QMouseEvent* event);
-    void keyPressEvent(QKeyEvent *event);
+    virtual void keyPressEvent(QKeyEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::keyPressEvent is not reimplemented"); }
+    virtual void mousePressEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mousePressEvent is not reimplemented"); }
+    virtual void mouseDoubleClickEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mouseDoubleClickEvent is not reimplemented"); }
+    virtual void mouseReleaseEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mouseReleaseEvent is not reimplemented"); }
+/*
     void timerEvent(QTimerEvent *event);
 #ifndef QT_NO_WHEELEVENT
     void wheelEvent(QWheelEvent *event);
@@ -201,8 +180,9 @@ protected:
     void drawBackground(QPainter *painter, const QRectF& rect);
 
     void scaleView(qreal scaleFactor);
+ */
 
-private:
+protected:
 //    void updateGVGraph();
     void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
@@ -243,28 +223,12 @@ private:
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
     graph_analysis::Vertex::Ptr mpSelectedVertex;
-    graph_analysis::Vertex::Ptr mpFocusedVertex;
-    graph_analysis::Vertex::Ptr mpStartVertex;
-    graph_analysis::Vertex::Ptr mpStartPort;
-    graph_analysis::Vertex::Ptr mpEndVertex;
-    graph_analysis::Vertex::Ptr mpEndPort;
     graph_analysis::Edge::Ptr mpSelectedEdge;
-    graph_analysis::Edge::Ptr mpFocusedEdge;
 
     bool mVertexSelected;
-    bool mVertexFocused;
     bool mEdgeSelected;
-    bool mEdgeFocused;
 
-    PropertyDialog* mpPropertyDialog;
     bool mDragDrop;
-    qreal mMaxNodeHeight, mMaxNodeWidth;
-
-    // icons
-    IconMap mIconMap;
-    void loadIcon(QIcon& icon, std::string file);
-
-    LayerWidget* mpLayerWidget;
 };
 
 } // end namespace gui

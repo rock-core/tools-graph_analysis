@@ -12,8 +12,6 @@
 namespace graph_analysis {
 namespace gui {
 
-    class GraphWidget;
-
 /**
  * @file ActionCommander.hpp
  * @class ActionCommander

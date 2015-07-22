@@ -56,10 +56,6 @@ namespace graph_analysis {
 namespace io {
 
 class GVGraph;
-class YamlWriter;
-class GexfWriter;
-class GexfReader;
-class YamlReader;
 
 } // end namespace io
 
@@ -67,7 +63,7 @@ namespace gui {
 
 class NodeItem;
 class EdgeItem;
-class AddNodeDialog;
+class ViewWidget;
 
 /**
  *
@@ -89,7 +85,7 @@ public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
-    LayerWidget(GraphWidget* graphWidget, graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr());
+    LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr());
     ~LayerWidget();
 
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
@@ -164,7 +160,7 @@ private:
     graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
-    GraphWidget* mpGraphWidget;
+    ViewWidget* mpViewWidget;
 };
 
 } // end namespace gui

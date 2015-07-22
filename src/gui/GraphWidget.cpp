@@ -109,13 +109,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
-    , mVertexFocused(false)
     , mEdgeSelected(false)
-    , mEdgeFocused(false)
     , mDragDrop(false)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
-    , mpLayerWidget(new LayerWidget(this, mpGraph))
 {
 
 }
@@ -134,25 +129,21 @@ GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
-    , mVertexFocused(false)
     , mEdgeSelected(false)
-    , mEdgeFocused(false)
     , mDragDrop(false)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
-    , mpLayerWidget(new LayerWidget(this, mpGraph))
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
 }
 
+GraphWidget::~GraphWidget()
+{
+}
+
+/*
 void GraphWidget::loadIcon(QIcon& icon, std::string file)
 {
     icon.addFile(QString::fromUtf8(file.c_str()), QSize(), QIcon::Normal, QIcon::Off);
-}
-
-GraphWidget::~GraphWidget()
-{
 }
 
 Vertex::Ptr GraphWidget::createVertex(const std::string& type, const std::string& label)
@@ -405,6 +396,7 @@ void GraphWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
         mEdgeItemMap.erase(it);
     }
 }
+ */
 
 } // end namespace gui
 } // end namespace graph_analysis

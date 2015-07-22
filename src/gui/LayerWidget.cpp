@@ -38,6 +38,7 @@
 **
 ****************************************************************************/
 
+#include "ViewWidget.hpp"
 #include "LayerWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
@@ -79,7 +80,7 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-LayerWidget::LayerWidget(GraphWidget* graphWidget, graph_analysis::BaseGraph::Ptr graph)
+LayerWidget::LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph)
     : mpGraph(graph)
     , mpGVGraph(0)
     , mFiltered(false)
@@ -88,7 +89,7 @@ LayerWidget::LayerWidget(GraphWidget* graphWidget, graph_analysis::BaseGraph::Pt
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpGraphWidget(graphWidget)
+    , mpViewWidget(viewWidget)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -125,16 +126,16 @@ LayerWidget::~LayerWidget()
 
 void LayerWidget::showContextMenu(const QPoint& pos)
 {
-    ActionCommander comm(mpGraphWidget);
+    ActionCommander comm(mpViewWidget);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(mpGraphWidget->getIcon("refresh")), this);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(mpGraphWidget->getIcon("shuffle")), this);
-    QAction *actionImport  = comm.addAction("Import", SLOT(importGraph()), *(mpGraphWidget->getIcon("import")));
-    QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(mpGraphWidget->getIcon("export")));
-    QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(mpGraphWidget->getIcon("reset")));
-    QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(mpGraphWidget->getIcon("layout")), this);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialog()), *(mpGraphWidget->getIcon("reload")));
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(mpViewWidget->getIcon("refresh")), this);
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(mpViewWidget->getIcon("shuffle")), this);
+    QAction *actionImport  = comm.addAction("Import", SLOT(importGraph()), *(mpViewWidget->getIcon("import")));
+    QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(mpViewWidget->getIcon("export")));
+    QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(mpViewWidget->getIcon("reset")));
+    QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(mpViewWidget->getIcon("layout")), this);
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialog()), *(mpViewWidget->getIcon("reload")));
 
     contextMenu.addAction(actionImport);
     contextMenu.addAction(actionExport);
@@ -143,7 +144,7 @@ void LayerWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionReset);
     contextMenu.addAction(actionLayout);
-    if(!mpGraphWidget->dialogIsRunning())
+    if(!mpViewWidget->dialogIsRunning())
     {
         contextMenu.addSeparator();
         contextMenu.addAction(actionReloadPropertyDialog);
