@@ -183,12 +183,8 @@ protected:
  */
 
 protected:
-//    void updateGVGraph();
-    void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
-    QMainWindow* mpMainWindow;
-    QStackedWidget* mpStackedWidget;
-    graph_analysis::BaseGraph::Ptr mpGraph, mpLayoutingGraph;
+    graph_analysis::BaseGraph::Ptr mpGraph;
 
     /// io components
     /// layouting
