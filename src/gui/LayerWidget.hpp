@@ -100,6 +100,22 @@ public:
     void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
     double  getScaleFactor () const { return mScaleFactor; }
 
+    bool getPortLayerToggle     () { return mPortLayerToggle;    }
+    bool getClusterLayerToggle  () { return mClusterLayerToggle; }
+
+    inline bool toggledOut(graph_analysis::Vertex::Ptr vertex)
+    {
+        bool result =   (!mPortLayerToggle && "graph_analysis::PortVertex" == vertex->getClassName())
+                            ||
+                        (!mPortLayerToggle && "graph_analysis::InputPortVertex" == vertex->getClassName())
+                            ||
+                        (!mPortLayerToggle && "graph_analysis::OutputPortVertex" == vertex->getClassName())
+                            ||
+                        (!mClusterLayerToggle && "graph_analysis::ClusterVertex" == vertex->getClassName())
+                    ;
+        return result;
+    }
+
 public slots:
     void shuffle();
     void zoomIn();
@@ -109,6 +125,9 @@ public slots:
     void setLayout(QString layoutName);
     void refresh();
     void changeLayout();
+
+    void togglePortLayer(bool toggle);
+    void toggleClusterLayer(bool toggle);
 
 protected:
 
@@ -134,6 +153,8 @@ protected:
 
 private:
     ViewWidget* mpViewWidget;
+    bool mPortLayerToggle;
+    bool mClusterLayerToggle;
 };
 
 } // end namespace gui

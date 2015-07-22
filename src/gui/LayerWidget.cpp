@@ -82,6 +82,8 @@ namespace gui {
 LayerWidget::LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph)
     : GraphWidget(graph)
     , mpViewWidget(viewWidget)
+    , mPortLayerToggle(true)
+    , mClusterLayerToggle(true)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -243,7 +245,12 @@ void LayerWidget::updateFromGraph()
             continue;
         }
 
-        if( mNodeItemMap.count(vertex))
+        if(mNodeItemMap.count(vertex))
+        {
+            continue;
+        }
+
+        if(toggledOut(vertex))
         {
             continue;
         }
@@ -266,7 +273,7 @@ void LayerWidget::updateFromGraph()
             continue;
         }
 
-        if( mEdgeItemMap.count(edge))
+        if(mEdgeItemMap.count(edge))
         {
             continue;
         }
@@ -274,6 +281,15 @@ void LayerWidget::updateFromGraph()
         // Registering new node edge items
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
+
+        if(
+            toggledOut(source)
+                ||
+            toggledOut(target)
+        )
+        {
+            continue;
+        }
 
         NodeItem* sourceNodeItem = mNodeItemMap[ source ];
         NodeItem* targetNodeItem = mNodeItemMap[ target ];
@@ -580,6 +596,18 @@ void LayerWidget::setLayout(QString layoutName)
 {
     mLayout = layoutName;
     updateFromGraph();
+}
+
+void LayerWidget::togglePortLayer(bool toggle)
+{
+    mPortLayerToggle = toggle;
+    refresh();
+}
+
+void LayerWidget::toggleClusterLayer(bool toggle)
+{
+    mClusterLayerToggle = toggle;
+    refresh();
 }
 
 } // end namespace gui

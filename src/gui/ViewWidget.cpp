@@ -1290,7 +1290,7 @@ void ViewWidget::updateFromGraph()
             continue;
         }
 
-        if( mNodeItemMap.count(vertex))
+        if(mNodeItemMap.count(vertex))
         {
             continue;
         }
@@ -1317,7 +1317,7 @@ void ViewWidget::updateFromGraph()
             continue;
         }
 
-        if( mEdgeItemMap.count(edge))
+        if(mEdgeItemMap.count(edge))
         {
             continue;
         }
@@ -1391,7 +1391,7 @@ void ViewWidget::updateFromGraph()
             continue;
         }
 
-        if( mEdgeItemMap.count(edge))
+        if(mEdgeItemMap.count(edge))
         {
             continue;
         }

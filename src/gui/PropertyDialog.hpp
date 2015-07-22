@@ -10,6 +10,7 @@
 #define PROPERTYDIALOG_H
 
 #include <vector>
+#include <QLabel>
 #include <QObject>
 #include <QCloseEvent>
 #include <QMainWindow>
@@ -383,11 +384,46 @@ public:
         }
 
         addFrame(horizontalLayoutLayer);
-        horizontalLayoutLayer->addSpacing(WIDTH / 2);
+
+        verticalLayoutComponentsLayer = new QVBoxLayout();
+        horizontalLayoutLayer->addLayout(verticalLayoutComponentsLayer);
+        verticalLayoutComponentsLayer->setObjectName(QString::fromUtf8("verticalLayoutComponentsLayer"));
+        verticalLayoutComponentsLayer->setContentsMargins(0, PADDING, 0, 0);
+        int verticalLayoutComponentsLayerLeftover;
+        {
+            mpLayersLabel = new QLabel(horizontalLayoutLayerWidget);
+            mpLayersLabel->setObjectName(QString::fromUtf8("mpComponentsLabel"));
+
+            verticalLayoutComponentsLayer->addWidget(mpLayersLabel);
+
+            mpToggleClusterLayerButton = new QPushButton(horizontalLayoutLayerWidget);
+            mpToggleClusterLayerButton->setObjectName(QString::fromUtf8("mpToggleClusterLayerButton"));
+            mpToggleClusterLayerButton->setCheckable(true);
+            mpToggleClusterLayerButton->setChecked(mpLayerWidget->getClusterLayerToggle());
+            mpToggleClusterLayerButton->setToolTip(QString("toggles the visibility of the clusters layer"));
+
+            verticalLayoutComponentsLayer->addWidget(mpToggleClusterLayerButton);
+
+            mpTogglePortLayerButton = new QPushButton(horizontalLayoutLayerWidget);
+            mpTogglePortLayerButton->setObjectName(QString::fromUtf8("mpTogglePortLayerButton"));
+            mpTogglePortLayerButton->setCheckable(true);
+            mpTogglePortLayerButton->setChecked(mpLayerWidget->getPortLayerToggle());
+            mpTogglePortLayerButton->setToolTip(QString("toggles the visibility of the ports layer"));
+
+            verticalLayoutComponentsLayer->addWidget(mpTogglePortLayerButton);
+
+            // adding bottom padding
+            verticalLayoutComponentsLayerLeftover = 3 * linePoints + 8 * buttonPoints;
+            if(commonExtraPadding > verticalLayoutComponentsLayerLeftover)
+            {
+                commonExtraPadding = verticalLayoutComponentsLayerLeftover;
+            }
+        }
 
         verticalLayout->addSpacing(verticalLayoutLeftover - commonExtraPadding);
         verticalLayoutFocus->addSpacing(verticalLayoutFocusLeftover - commonExtraPadding);
         verticalLayoutLayer->addSpacing(verticalLayoutLayerLeftover - commonExtraPadding);
+        verticalLayoutComponentsLayer->addSpacing(verticalLayoutComponentsLayerLeftover - commonExtraPadding);
 
         retranslateUi(Dialog);
 
@@ -414,6 +450,8 @@ public:
         PropertyDialog::connect(mpRemoveNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFocusedVertex()));
         PropertyDialog::connect(mpRenameEdgeButton, SIGNAL(clicked()), mpViewWidget, SLOT(changeFocusedEdgeLabel()));
         PropertyDialog::connect(mpRemoveEdgeButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFocusedEdge()));
+        PropertyDialog::connect(mpTogglePortLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(togglePortLayer(bool)));
+        PropertyDialog::connect(mpToggleClusterLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleClusterLayer(bool)));
         PropertyDialog::connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
 
         QMetaObject::connectSlotsByName(Dialog);
@@ -451,6 +489,9 @@ public:
         mpRemoveNodeButton->setText(QApplication::translate("Dialog", "Remove Node", 0, QApplication::UnicodeUTF8));
         mpRenameEdgeButton->setText(QApplication::translate("Dialog", "Rename Edge", 0, QApplication::UnicodeUTF8));
         mpRemoveEdgeButton->setText(QApplication::translate("Dialog", "Remove Edge", 0, QApplication::UnicodeUTF8));
+        mpLayersLabel->setText(QApplication::translate("Dialog", "Visible Layers:", 0, QApplication::UnicodeUTF8));
+        mpTogglePortLayerButton->setText(QApplication::translate("Dialog", "Ports Layer", 0, QApplication::UnicodeUTF8));
+        mpToggleClusterLayerButton->setText(QApplication::translate("Dialog", "Clusters Layer", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
     void setVertexFocused(bool vertexFocused)
@@ -497,6 +538,7 @@ private:
     QWidget *horizontalLayoutLayerWidget;
     QVBoxLayout *verticalLayout;
     QVBoxLayout *verticalLayoutLayer;
+    QVBoxLayout *verticalLayoutComponentsLayer;
     QVBoxLayout *verticalLayoutFocus;
     QHBoxLayout *horizontalLayout;
     QHBoxLayout *horizontalLayoutLayer;
@@ -523,6 +565,9 @@ private:
     QPushButton *mpRenameEdgeButton;
     QPushButton *mpRemoveEdgeButton;
     QPushButton *mpSwapPortsButton;
+    QLabel *mpLayersLabel;
+    QPushButton *mpTogglePortLayerButton;
+    QPushButton *mpToggleClusterLayerButton;
     QFrames mFrames;
     bool mVertexFocused;
     bool mEdgeFocused;
