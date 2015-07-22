@@ -127,7 +127,7 @@ void LayerWidget::showContextMenu(const QPoint& pos)
     QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(mpViewWidget->getIcon("export")));
     QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(mpViewWidget->getIcon("reset")));
     QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(mpViewWidget->getIcon("layout")), this);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialog()), *(mpViewWidget->getIcon("reload")));
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(mpViewWidget->getIcon("reload")));
 
     contextMenu.addAction(actionImport);
     contextMenu.addAction(actionExport);

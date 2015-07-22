@@ -385,7 +385,7 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mIconMap["layout"]);
     QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop", SLOT(setDragDrop()), mIconMap["dragndrop"]);
     QAction *actionUnsetDragDrop = comm.addAction("Move-around", SLOT(unsetDragDrop()), mIconMap["move"]);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialog()), mIconMap["reload"]);
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), mIconMap["reload"]);
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)

@@ -382,6 +382,7 @@ public:
             }
         }
 
+        addFrame(horizontalLayoutLayer);
         horizontalLayoutLayer->addSpacing(WIDTH / 2);
 
         verticalLayout->addSpacing(verticalLayoutLeftover - commonExtraPadding);
@@ -417,8 +418,8 @@ public:
 
         QMetaObject::connectSlotsByName(Dialog);
 
-        Dialog->setFixedSize(WIDTH + 20, 20 + mHeight - commonExtraPadding);
-        tabWidget->setGeometry(QRect(5, 5, WIDTH + 10, 10 + mHeight - commonExtraPadding));
+        Dialog->setFixedSize(WIDTH + 20, 45 + mHeight - commonExtraPadding);
+        tabWidget->setGeometry(QRect(5, 30, WIDTH + 10, 10 + mHeight - commonExtraPadding));
         tabWidget->setCurrentIndex(mpStackedWidget->currentIndex());
         horizontalLayoutWidget->setGeometry(QRect(0, 0, WIDTH, mHeight - commonExtraPadding));
         horizontalLayoutLayerWidget->setGeometry(QRect(0, 0, WIDTH / 2, mHeight - commonExtraPadding));
@@ -426,7 +427,7 @@ public:
 
     void retranslateUi(CustomDialog *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", " Properties", 0, QApplication::UnicodeUTF8));
+        Dialog->setWindowTitle(QApplication::translate("Dialog", " Command Panel", 0, QApplication::UnicodeUTF8));
         mpAddNodeButton->setText(QApplication::translate("Dialog", "Add Node", 0, QApplication::UnicodeUTF8));
         mpRefreshButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
         mpRefreshLayerButton->setText(QApplication::translate("Dialog", "Refresh", 0, QApplication::UnicodeUTF8));
