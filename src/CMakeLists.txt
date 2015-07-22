@@ -23,6 +23,7 @@ rock_library(graph_analysis
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
         gui/GraphWidget.cpp
+        gui/ViewWidget.cpp
         gui/LayerWidget.cpp
         gui/AddNodeDialog.cpp
         gui/SwapPortsDialog.cpp
@@ -90,6 +91,7 @@ rock_library(graph_analysis
         gui/layeritem/Label.hpp
         gui/layeritem/Resource.hpp
         gui/GraphWidget.hpp
+        gui/ViewWidget.hpp
         gui/LayerWidget.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
@@ -139,7 +141,7 @@ rock_library(graph_analysis
     DEPS_PLAIN
         Boost_REGEX
     MOC
-        gui/GraphWidget.hpp
+        gui/ViewWidget.hpp
         gui/LayerWidget.hpp
         gui/AddNodeDialog.hpp
         gui/PropertyDialog.hpp

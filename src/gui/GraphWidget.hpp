@@ -50,8 +50,6 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
-//#include <boost/thread/mutex.hpp> // no need to: SLOT calls are executed sequentially
-    // more details @ http://doc.qt.io/qt-4.8/threads-qobject.html#signals-and-slots-across-threads
 
 namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
@@ -92,7 +90,6 @@ class LayerWidget;
  */
 class GraphWidget : public QGraphicsView
 {
-    Q_OBJECT
 public:
     typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap;
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
@@ -190,63 +187,6 @@ public:
     void swapPorts(graph_analysis::Vertex::Ptr concernedVertex);
 
     bool dialogIsRunning();
-
-public slots:
-    void shuffle();
-    void zoomIn();
-    void zoomOut();
-    void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
-    void addPortSelected();
-    void addPortFocused();
-    void renamePortFocused();
-    void removePortsFocused();
-    void renamePortSelected();
-    void removePortsSelected();
-    void removePortFocused();
-    void removePortSelected();
-    void showContextMenu(const QPoint& pos);
-
-    void setLayout(QString layoutName);
-    void refresh();
-    void changeFocusedVertexLabel();
-    void changeSelectedVertexLabel();
-    void resetGraph();
-    void changeLayout();
-    void removeSelectedVertex();
-    void removeFocusedVertex();
-    void changeFocusedEdgeLabel();
-    void changeSelectedEdgeLabel();
-    void removeFocusedEdge();
-    void removeSelectedEdge();
-    void swapPortsFocused();
-    void swapPortsSelected();
-    void importGraph();
-    void exportGraph();
-    void updateDragDrop(bool dragDrop);
-    void syncDragDrop();
-    void setDragDrop();
-    void unsetDragDrop();
-    void reloadPropertyDialog();
-    void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
-
-    void importGraphLayer();
-    void resetGraphLayer();
-
-    void changeFocusedEdgeLabelMainWindow();
-    void removeFocusedEdgeMainWindow();
-    void changeFocusedVertexLabelMainWindow();
-    void removeFocusedVertexMainWindow();
-    void addPortFocusedMainWindow();
-    void swapPortsFocusedMainWindow();
-    void renamePortFocusedMainWindow();
-    void removePortFocusedMainWindow();
-    void removePortsFocusedMainWindow();
-    void addNodeAdhocMainWindow();
-    void refreshMainWindow();
-    void shuffleMainWindow();
-    void changeLayoutMainWindow();
-    void toggleDragDrop();
-    void reloadPropertyDialogMainWindow();
 
 protected:
 

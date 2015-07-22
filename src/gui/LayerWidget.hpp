@@ -82,7 +82,7 @@ class AddNodeDialog;
     }
  \endverbatim
  */
-class LayerWidget : public QGraphicsView
+class LayerWidget : public GraphWidget
 {
     Q_OBJECT
 public:

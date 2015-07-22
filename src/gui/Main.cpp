@@ -39,7 +39,7 @@
 ****************************************************************************/
 
 #include <graph_analysis/gui/NodeItem.hpp>
-#include <graph_analysis/gui/GraphWidget.hpp>
+#include <graph_analysis/gui/ViewWidget.hpp>
 
 #include <QTime>
 #include <QHBoxLayout>
@@ -186,7 +186,7 @@ int main(int argc, char **argv)
 
     QMainWindow mainWindow;
     mainWindow.setMinimumSize(850, 400);
-    GraphWidget* widget = new GraphWidget(&mainWindow, &mainWindow);
+    ViewWidget* widget = new ViewWidget(&mainWindow, &mainWindow);
     widget->reset();
 
     using namespace graph_analysis;
