@@ -89,7 +89,6 @@ public:
     typedef std::map <std::string, io::Reader*> ReaderMap;
     typedef std::map <std::string, QIcon> IconMap;
 
-    ViewWidget(QWidget *parent = 0);
     ViewWidget(QMainWindow *mainWindow, QWidget *parent = 0);
     ~ViewWidget();
 

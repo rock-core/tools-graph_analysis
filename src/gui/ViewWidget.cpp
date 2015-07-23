@@ -96,20 +96,6 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-ViewWidget::ViewWidget(QWidget *parent)
-    : GraphWidget(parent)
-    , mpMainWindow(0)
-    , mpStackedWidget(new QStackedWidget())
-    , mpLayoutingGraph()
-    , mVertexFocused(false)
-    , mEdgeFocused(false)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
-    , mpLayerWidget(new LayerWidget(this, mpGraph))
-{
-
-}
-
 ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     : GraphWidget(parent)
     , mpMainWindow(mainWindow)
