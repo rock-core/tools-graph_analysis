@@ -123,6 +123,7 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
             recomputeMaxOutputPortWidth();
         }
     }
+    updateWidth();
 }
 
 void Resource::changeLabel(const std::string& label)
