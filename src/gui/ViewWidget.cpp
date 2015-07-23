@@ -87,6 +87,8 @@
 #include <base/Time.hpp>
 //#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
 #define DEFAULT_PATH_TO_ICONS "icons/"
+// StatusBar standard timeout (in ms)
+#define DEFAULT_TIMEOUT 6900
 
 // comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
 #define CLEAR_BY_BACKGROUND
@@ -106,6 +108,7 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mpLayerWidget(new LayerWidget(this, mpGraph))
+    , mpStatus(mpMainWindow->statusBar())
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -307,11 +310,8 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     bar->addMenu(NodeMenu);
     bar->addMenu(EdgeMenu);
 
-    mpStatus = mpMainWindow->statusBar();
-    mpStatus->addPermanentWidget(new QLabel("Ready!"));
-    mpStatus->setLayoutDirection(Qt::RightToLeft);
-
     mpMainWindow->setWindowTitle(tr("Graph Analysis"));
+    mpStatus->addWidget(new QLabel("Ready!"));
 }
 
 void ViewWidget::updateStatus(const std::string& message, int timeout)
@@ -322,14 +322,12 @@ void ViewWidget::updateStatus(const std::string& message, int timeout)
 void ViewWidget::importGraphLayer()
 {
     importGraph();
-//    mpLayerWidget->setGraph(mpGraph); // already contained above
     mpLayerWidget->refresh();
 }
 
 void ViewWidget::resetGraphLayer()
 {
     resetGraph();
-//    mpLayerWidget->setGraph(mpGraph); // already contained above
     mpLayerWidget->refresh();
 }
 
@@ -454,29 +452,32 @@ void ViewWidget::addPortSelected()
 
 void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
 {
+    updateStatus(std::string("adding a port to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'...");
+
     NodeItem *item = mNodeItemMap[vertex];
     if(!item)
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::addPort: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
+        updateStatus(std::string("Failed to add a port to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
     }
     bool ok;
     QStringList ports_options;
     ports_options << tr("input");
     ports_options << tr("output");
 
-    QString strPortID = QInputDialog::getItem(this, tr("Choose Port Type"),
+    QString strPortType = QInputDialog::getItem(this, tr("Choose Port Type"),
                                          tr("Port Type:"), ports_options,
                                          0, false, &ok);
-    if (ok && !strPortID.isEmpty())
+    if (ok && !strPortType.isEmpty())
     {
         graph_analysis::Vertex::Ptr portVertex;
-        if("input" == strPortID)
+        if("input" == strPortType)
         {
             portVertex = VertexTypeManager::getInstance()->createVertex("inputport", "newInputPort");
         }
-        else // ("output" == strPortID)
+        else // ("output" == strPortType)
         {
             portVertex = VertexTypeManager::getInstance()->createVertex("outputport", "newOutputPort");
         }
@@ -485,8 +486,13 @@ void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
         createEdge(vertex, portVertex, "portRegistrationEdge");
         mPortMap[portVertex] = item;
         mPortIDMap[portVertex] = item->addPort(portVertex);
+        updateStatus(std::string("Added an ") + strPortType.toStdString() + " port to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+        item->update();
     }
-    item->update();
+    else
+    {
+        updateStatus(std::string("Failed to add an ") + strPortType.toStdString() + " port to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
+    }
 }
 
 void ViewWidget::renamePortFocused()
@@ -501,6 +507,7 @@ void ViewWidget::renamePortSelected()
 
 void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
 {
+    updateStatus(std::string("renaming a port in vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
@@ -512,6 +519,7 @@ void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
     if(!portCount)
     {
         QMessageBox::critical(this, tr("Cannot Rename a Port"), tr("The selected vertex had no ports!"));
+        updateStatus(std::string("Failed to rename a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no ports!", DEFAULT_TIMEOUT);
         return;
     }
     RenamePortDialog dialog(item);
@@ -523,6 +531,11 @@ void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
         std::stringstream ss(strPortID);
         ss >> portID;
         item->setPortLabel(portID, newLabel);
+        updateStatus(std::string("Renamed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to rename a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
     }
 }
 
