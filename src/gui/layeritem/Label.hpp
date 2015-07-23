@@ -57,13 +57,13 @@ protected:
 
     void keyPressEvent(::QKeyEvent* event)
     {
-        qDebug("KEYPRESS LABLE");
+        LOG_DEBUG_S << "KEYPRESS LABLE";
         QGraphicsTextItem::keyPressEvent(event);
     }
 
     void focusOutEvent(QFocusEvent* event)
     {
-        qDebug("Lost focus");
+        LOG_DEBUG_S << "Lost focus";
         ::QGraphicsTextItem::focusOutEvent(event);
     }
 
@@ -71,7 +71,7 @@ protected:
     {
         if(change == QGraphicsItem::ItemSelectedChange)
         {
-             qDebug("itemChange '%s', selected=%s", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str());
+             LOG_DEBUG_S << "itemChange '" <<  this->toPlainText().toStdString() << "', selected=" << value.toString().toStdString();
         }
         if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
         {

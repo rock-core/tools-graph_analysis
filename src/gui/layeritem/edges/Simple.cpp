@@ -89,12 +89,12 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
     QPolygonF polygon = item->boundingRect();
 
     // QVector<QPointF>::iterator cit = polygon.begin();
-    //qDebug("Polygon");
+    //LOG_DEBUG_S << "Polygon";
     //for(;cit < polygon.end(); ++cit)
     //{
     //    QPointF inScene = mpTargetNodeItem->mapToScene(*cit);
-    //    qDebug("local coord: %.3f/%.3f", (cit)->x(), (cit)->y());
-    //    qDebug("scene coord: %.3f/%.3f", inScene.x(), inScene.y());
+    //    LOG_DEBUG_S << "local coord: " << (cit)->x() << " / " << (cit)->y();
+    //    LOG_DEBUG_S << "scene coord: " << inScene.x() << " / " << inScene.y();
     //}
 
     // Intersection with target
@@ -112,10 +112,10 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
         if( intersectType == QLineF::BoundedIntersection)
         {
             // intersection found
-            // qDebug("Intersection found: at %.3f / %.3f",intersectionPoint.x(), intersectionPoint.y());
+            // LOG_DEBUG_S << "Intersection found: " << intersectionPoint.x() << " / " << intersectionPoint.y());
             break;
         } else {
-            // no intersection fonuu
+            // no intersection found
             p1 = p2;
         }
     }
@@ -125,7 +125,7 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
 void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-//    qDebug("Hover ENTER event for %s", mpEdge->toString().c_str());
+//    LOG_DEBUG_S << "Hover ENTER event for " << mpEdge->toString();
     mpGraphWidget->setSelectedEdge(mpEdge);
     mpGraphWidget->setEdgeSelected(true);
     QGraphicsItem::hoverEnterEvent(event);
@@ -134,7 +134,7 @@ void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = mPenDefault;
-//    qDebug("Hover LEAVE event for %s", mpEdge->toString().c_str());
+//    LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
     mpGraphWidget->setEdgeSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }

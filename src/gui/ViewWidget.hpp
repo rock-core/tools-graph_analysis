@@ -156,7 +156,7 @@ public:
     void swapPorts(graph_analysis::Vertex::Ptr concernedVertex);
 
     bool dialogIsRunning();
-    void updateStatus(const std::string& message = std::string(), int timeout = 0);
+    inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
 
 public slots:
     void shuffle();

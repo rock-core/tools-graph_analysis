@@ -44,9 +44,6 @@ void Resource::updateLabel()
 
 QRectF Resource::boundingRect() const
 {
-    //QRectF boundingRect( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
-    //return childrenBoundingRect() | boundingRect;
-
     QRectF childrenRect = childrenBoundingRect();
     return childrenRect;
 }
@@ -116,33 +113,25 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     if(dragDrop)
     {
         setFlag(ItemIsMovable, false);
-//        if(mpGraphWidget->getDragInitiated() && mpGraphWidget->getDragSource() != mpVertex)
-//        {
-//            mpGraphWidget->setSelectedVertex(mpVertex);
-//            mpGraphWidget->setVertexSelected(true);
-//            mpGraphWidget->endNewEdgeHere();
-//        }
     }
     else
     {
         setFlag(ItemIsMovable);
     }
-    qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
+    LOG_DEBUG_S << "Hover ENTER event for " << mpVertex->toString();
     mPen = QPen(Qt::green);
 
     mpGraphWidget->setSelectedVertex(mpVertex);
     mpGraphWidget->setVertexSelected(true);
-//    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
 
     QGraphicsItem::hoverEnterEvent(event);
 }
 
 void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
+    LOG_DEBUG_S << "Hover LEAVE event for " << mpVertex->toString();
     mPen = mPenDefault;
     mpGraphWidget->setVertexSelected(false);
-//    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
