@@ -19,7 +19,7 @@ public:
 
     virtual ~Vertex() {}
 
-    Vertex(const std::string& label = "");
+    Vertex(const std::string& label = std::string());
 
     /**
      * Clone this vertex -- the returned vertex will have no

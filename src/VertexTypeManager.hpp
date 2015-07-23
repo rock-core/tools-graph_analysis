@@ -45,7 +45,7 @@ public:
     // Register visualization class
     // takes ownership of graphicsItem
     void registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered = false);
-    Vertex::Ptr createVertex(const vertex::Type&, const std::string& label = "");
+    Vertex::Ptr createVertex(const vertex::Type&, const std::string& label = std::string());
     std::set<std::string> getSupportedTypes();
 };
 

@@ -106,35 +106,14 @@ public:
     GraphWidget(QMainWindow *mainWindow, QWidget *parent = 0);
     ~GraphWidget();
 
-    Vertex::Ptr createVertex(const std::string& type, const std::string& label = "");
-    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
-    Vertex::Ptr createStandaloneVertex(const std::string& type, const std::string& label = "");
-    Edge::Ptr createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
-    void    addVertex(graph_analysis::Vertex::Ptr vertex);
-    void removeVertex(graph_analysis::Vertex::Ptr vertex);
-    void    addEdge(graph_analysis::Edge::Ptr edge);
-    void removeEdge(graph_analysis::Edge::Ptr edge);
-    void toYmlFile(const std::string& filename);
-    void gvRender (const std::string& filename);
-    void toDotFile(const std::string& filename);
-    void toXmlFile(const std::string& filename);
-    void fromXmlFile(const std::string& filename);
-    void fromYmlFile(const std::string& filename);
-
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
-    void enableVertex (graph_analysis::Vertex::Ptr vertex);
-    void disableVertex(graph_analysis::Vertex::Ptr vertex);
-    void enableEdge (graph_analysis::Edge::Ptr edge);
-    void disableEdge(graph_analysis::Edge::Ptr edge);
-
     graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
 
-    void reset(bool keepData = false);
-    void clear();
-    void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
-//    void standAloneLayouting();
+    virtual void reset(bool keepData = false) = 0;
+    virtual void clear() = 0;
+    virtual void updateFromGraph() = 0; // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
 
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
     void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
@@ -155,7 +134,6 @@ public:
     bool getEdgeSelected () { return mEdgeSelected; }
 
     bool getDragDrop() { return mDragDrop; }
-    void clearFocus();
 
     virtual void setVertexFocused(bool focused) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setVertexFocused is not reimplemented");  }
     virtual void setEdgeFocused  (bool focused) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEdgeFocused is not reimplemented");    }

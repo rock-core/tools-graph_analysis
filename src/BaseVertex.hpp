@@ -16,7 +16,7 @@ namespace graph_analysis
 class BaseVertex : public Vertex
 {
 public:
-    BaseVertex(const std::string& label = "");
+    BaseVertex(const std::string& label = std::string());
     /** Get class name
      * \return class name
      */

@@ -52,7 +52,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
 
     libgexf::FileWriter writer;
     boost::xpressive::sregex regex = boost::xpressive::as_xpr(".gexf");
-    std::string replace = "";
+    std::string replace("");
     std::string name = boost::xpressive::regex_replace(filename, regex, replace);
 
     name = name + ".gexf";

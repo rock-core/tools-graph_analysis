@@ -74,7 +74,7 @@ public:
 class VertexRegexFilter : public RegexFilter< ::graph_analysis::Vertex::Ptr >
 {
 public:
-    VertexRegexFilter(const std::string& regex = "", Type type = CONTENT, bool invert = false);
+    VertexRegexFilter(const std::string& regex = std::string(), Type type = CONTENT, bool invert = false);
 
     virtual std::string getName() const;
 };
@@ -86,7 +86,7 @@ public:
 class EdgeRegexFilter : public RegexFilter< ::graph_analysis::Edge::Ptr >
 {
 public:
-    EdgeRegexFilter(const std::string& regex = "", Type type = CONTENT, bool invert = false);
+    EdgeRegexFilter(const std::string& regex = std::string(), Type type = CONTENT, bool invert = false);
 
     virtual std::string getName() const;
 };

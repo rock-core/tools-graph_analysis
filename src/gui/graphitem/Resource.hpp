@@ -61,7 +61,7 @@ protected:
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
     void focusInEvent(QFocusEvent* event);
     void focusOutEvent(QFocusEvent* event);
-    void dieOnPort(NodeItem::portID_t  portID, const std::string& caller = "");
+    void dieOnPort(NodeItem::portID_t  portID, const std::string& caller = std::string());
     void displaceOutputPorts(qreal delta);
     void shiftOutputPorts(qreal delta);
     void recomputeMaxInputPortWidth(void);

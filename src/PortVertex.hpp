@@ -16,7 +16,7 @@ namespace graph_analysis
 class PortVertex : public Vertex
 {
 public:
-    PortVertex(const std::string& label = "");
+    PortVertex(const std::string& label = std::string());
     /** Get class name
      * \return class name
      */

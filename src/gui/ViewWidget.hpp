@@ -93,10 +93,10 @@ public:
     ViewWidget(QMainWindow *mainWindow, QWidget *parent = 0);
     ~ViewWidget();
 
-    Vertex::Ptr createVertex(const std::string& type, const std::string& label = "");
-    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
-    Vertex::Ptr createStandaloneVertex(const std::string& type, const std::string& label = "");
-    Edge::Ptr createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = "");
+    Vertex::Ptr createVertex(const std::string& type, const std::string& label = std::string());
+    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
+    Vertex::Ptr createStandaloneVertex(const std::string& type, const std::string& label = std::string());
+    Edge::Ptr createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
     void    addVertex(graph_analysis::Vertex::Ptr vertex);
     void removeVertex(graph_analysis::Vertex::Ptr vertex);
     void    addEdge(graph_analysis::Edge::Ptr edge);

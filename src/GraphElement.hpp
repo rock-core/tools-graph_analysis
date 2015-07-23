@@ -22,7 +22,7 @@ public:
     /**
      * \brief Default constructor
      */
-    GraphElement(const std::string& label = "");
+    GraphElement(const std::string& label = std::string());
 
     virtual ~GraphElement() {};
 
