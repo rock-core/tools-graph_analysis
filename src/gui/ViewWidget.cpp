@@ -56,10 +56,12 @@
 #include <QDir>
 #include <QTime>
 #include <QMenu>
+#include <QLabel>
 #include <sstream>
 #include <QMenuBar>
 #include <QAction>
 #include <QKeyEvent>
+#include <QStatusBar>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
@@ -319,7 +321,16 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     bar->addMenu(NodeMenu);
     bar->addMenu(EdgeMenu);
 
+    mpStatus = mpMainWindow->statusBar();
+    mpStatus->addPermanentWidget(new QLabel("Ready!"));
+    mpStatus->setLayoutDirection(Qt::RightToLeft);
+
     mpMainWindow->setWindowTitle(tr("Graph Analysis"));
+}
+
+void ViewWidget::updateStatus(const std::string& message, int timeout)
+{
+    mpStatus->showMessage(QString(message.c_str()), timeout);
 }
 
 void ViewWidget::importGraphLayer()
