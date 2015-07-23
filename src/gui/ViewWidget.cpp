@@ -551,17 +551,20 @@ void ViewWidget::removePortSelected()
 
 void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
 {
+    updateStatus(std::string("removing a port from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::removePort: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
+        updateStatus(std::string("Failed to remove a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": " + error_msg + "!", DEFAULT_TIMEOUT);
         throw std::runtime_error(error_msg);
     }
     int portCount = item->getPortCount();
     if(!portCount)
     {
         QMessageBox::critical(this, tr("Cannot Remove a Port"), tr("The selected vertex had no ports!"));
+        updateStatus(std::string("Failed to remove a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no ports!", DEFAULT_TIMEOUT);
         return;
     }
     bool ok;
@@ -613,6 +616,11 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
         }
         // remove port graphics
         item->removePort(portID);
+        updateStatus(std::string("Removed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to remove a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
     }
 }
 
@@ -1940,17 +1948,20 @@ void ViewWidget::removePortsSelected()
 
 void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
 {
+    updateStatus(std::string("removing all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::removePorts: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
+        updateStatus(std::string("Failed to remove all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
         throw std::runtime_error(error_msg);
     }
     int nports = item->getPortCount();
     if(!nports)
     {
         QMessageBox::critical(this, tr("No Ports to Remove"), "The cluster is already empty!");
+        updateStatus(std::string("Failed to remove all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': there are no ports!", DEFAULT_TIMEOUT);
         return;
     }
     else
@@ -2000,6 +2011,7 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
             default:
             break;
         }
+        updateStatus(std::string("Removed all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
     }
 }
 
