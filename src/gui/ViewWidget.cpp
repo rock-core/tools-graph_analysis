@@ -626,6 +626,7 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
 
 void ViewWidget::importGraph()
 {
+    updateStatus(std::string("importing graph..."));
     QString selectedFilter;
     QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"), &selectedFilter);
 
@@ -646,6 +647,8 @@ void ViewWidget::importGraph()
             else
             {
                 QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+                updateStatus(std::string("Failed to import graph: from input file '") + label.toStdString() + "': unsupported file format!", DEFAULT_TIMEOUT);
+                return;
             }
         }
         else
@@ -659,11 +662,17 @@ void ViewWidget::importGraph()
                 fromXmlFile(label.toStdString() + ".gexf");
             }
         }
+        updateStatus(std::string("Imported graph: from input file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to import graph: aborted by user - an empty input filename was provided!"), DEFAULT_TIMEOUT);
     }
 }
 
 void ViewWidget::exportGraph()
 {
+    updateStatus(std::string("exporting graph..."));
     QString selectedFilter;
     QString label =  QFileDialog::getSaveFileName(this, tr("Choose Export File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"), &selectedFilter);
 
@@ -688,6 +697,8 @@ void ViewWidget::exportGraph()
             else
             {
                 QMessageBox::critical(this, tr("Graph Export Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
+                updateStatus(std::string("Failed to export graph: to output file '") + label.toStdString() + "': unsupported file format!", DEFAULT_TIMEOUT);
+                return;
             }
         }
         else
@@ -705,6 +716,11 @@ void ViewWidget::exportGraph()
                 toDotFile(label.toStdString() + ".dot");
             }
         }
+        updateStatus(std::string("Exported graph: to output file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to export graph: aborted by user - an empty output filename was provided!"), DEFAULT_TIMEOUT);
     }
 }
 
