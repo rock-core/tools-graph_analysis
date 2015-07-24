@@ -105,6 +105,7 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     , mpLayoutingGraph()
     , mVertexFocused(false)
     , mEdgeFocused(false)
+    , mInitialized(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mpLayerWidget(new LayerWidget(this, mpGraph))
@@ -1382,11 +1383,21 @@ void ViewWidget::clear()
 
 void ViewWidget::refresh()
 {
-    updateStatus(std::string("refreshing graph..."));
+    if(mInitialized)
+    {
+        updateStatus(std::string("refreshing graph..."));
+    }
     reset(true /*keepData*/);
     updateFromGraph();
     update();
-    updateStatus(std::string("Refreshed graph!"), DEFAULT_TIMEOUT);
+    if(mInitialized)
+    {
+        updateStatus(std::string("Refreshed graph!"), DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        mInitialized = true;
+    }
 }
 
 void ViewWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
