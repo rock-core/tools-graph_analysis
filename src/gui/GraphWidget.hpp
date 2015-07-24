@@ -193,7 +193,6 @@ protected:
 
     bool mVertexSelected;
     bool mEdgeSelected;
-    bool mInitialized;
 
     bool mDragDrop;
 };

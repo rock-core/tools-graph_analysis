@@ -253,6 +253,7 @@ private:
 
     bool mVertexFocused;
     bool mEdgeFocused;
+    bool mInitialized;
 
     PropertyDialog* mpPropertyDialog;
     qreal mMaxNodeHeight, mMaxNodeWidth;
