@@ -610,5 +610,10 @@ void LayerWidget::toggleClusterLayer(bool toggle)
     refresh();
 }
 
+void LayerWidget::updateStatus(const std::string& message, int timeout)
+{
+    mpViewWidget->updateStatus(message, timeout);
+}
+
 } // end namespace gui
 } // end namespace graph_analysis

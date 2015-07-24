@@ -634,6 +634,7 @@ void ViewWidget::importGraph()
     {
         // removing trailing whitespaces in the filename
         label = label.trimmed();
+        updateStatus(std::string("Imported graph: from input file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT); // moved up out of sync reasons
         if(label.contains('.'))
         {
             if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
@@ -662,7 +663,6 @@ void ViewWidget::importGraph()
                 fromXmlFile(label.toStdString() + ".gexf");
             }
         }
-        updateStatus(std::string("Imported graph: from input file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
     }
     else
     {
@@ -680,6 +680,7 @@ void ViewWidget::exportGraph()
     {
         // removing trailing whitespaces in the filename
         label = label.trimmed();
+        updateStatus(std::string("Exported graph: to output file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT); // moved up out of sync reasons
         if(label.contains('.'))
         {
             if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
@@ -716,7 +717,6 @@ void ViewWidget::exportGraph()
                 toDotFile(label.toStdString() + ".dot");
             }
         }
-        updateStatus(std::string("Exported graph: to output file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
     }
     else
     {
@@ -726,11 +726,13 @@ void ViewWidget::exportGraph()
 
 void ViewWidget::reloadPropertyDialog()
 {
+    updateStatus(std::string("reloading command panel..."));
     if(mpPropertyDialog)
     {
         delete mpPropertyDialog;
     }
     mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpMainWindow, mpStackedWidget, mDragDrop);
+    updateStatus(std::string("Reloaded command panel!"), DEFAULT_TIMEOUT);
 }
 
 Edge::Ptr ViewWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
@@ -779,6 +781,7 @@ Vertex::Ptr ViewWidget::createStandaloneVertex(const std::string& type, const st
 
 void ViewWidget::addNodeAdhoc(QObject *pos)
 {
+    updateStatus(std::string("adding new node..."));
     QPoint *position = (QPoint *)pos;
     AddNodeDialog nodeDialog;
     if(nodeDialog.isValid())
@@ -792,30 +795,51 @@ void ViewWidget::addNodeAdhoc(QObject *pos)
         nodeItem->setPos((double) position->x(), (double) position->y());
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
+        updateStatus(std::string("Added new node '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to add new node: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
 void ViewWidget::changeFocusedVertexLabel()
 {
+    updateStatus(std::string("renaming focused node..."));
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input Node Label"),
                                          tr("New Label:"), QLineEdit::Normal,
                                          QString(mpFocusedVertex->getLabel().c_str()), &ok);
     if (ok && !label.isEmpty())
     {
-        changeVertexLabel(mpFocusedVertex, label.toStdString());
+        std::string old_label = mpFocusedVertex->toString();
+        std::string new_label = label.toStdString();
+        changeVertexLabel(mpFocusedVertex, new_label);
+        updateStatus(std::string("Renamed focused node '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to rename focused node: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
 void ViewWidget::changeSelectedVertexLabel()
 {
+    updateStatus(std::string("renaming selected node..."));
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input Node Label"),
                                          tr("New Label:"), QLineEdit::Normal,
                                          QString(mpSelectedVertex->getLabel().c_str()), &ok);
     if (ok && !label.isEmpty())
     {
-        changeVertexLabel(mpSelectedVertex, label.toStdString());
+        std::string old_label = mpSelectedVertex->toString();
+        std::string new_label = label.toStdString();
+        changeVertexLabel(mpSelectedVertex, new_label);
+        updateStatus(std::string("Renamed selected node '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to rename selected node: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
@@ -834,25 +858,41 @@ void ViewWidget::changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std
 
 void ViewWidget::changeFocusedEdgeLabel()
 {
+    updateStatus(std::string("renaming focused edge..."));
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input Edge Label"),
                                          tr("New Label:"), QLineEdit::Normal,
                                           QString(mpFocusedEdge->getLabel().c_str()), &ok);
     if (ok && !label.isEmpty())
     {
-        changeEdgeLabel(mpFocusedEdge, label.toStdString());
+        std::string old_label = mpFocusedEdge->toString();
+        std::string new_label = label.toStdString();
+        changeEdgeLabel(mpFocusedEdge, new_label);
+        updateStatus(std::string("Renamed focused edge '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to rename focused edge: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
 void ViewWidget::changeSelectedEdgeLabel()
 {
+    updateStatus(std::string("renaming selected edge..."));
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input Edge Label"),
                                          tr("New Label:"), QLineEdit::Normal,
                                           QString(mpSelectedEdge->getLabel().c_str()), &ok);
     if (ok && !label.isEmpty())
     {
-        changeEdgeLabel(mpSelectedEdge, label.toStdString());
+        std::string old_label = mpSelectedEdge->toString();
+        std::string new_label = label.toStdString();
+        changeEdgeLabel(mpSelectedEdge, new_label);
+        updateStatus(std::string("Renamed selected edge '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to rename selected edge: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
@@ -885,6 +925,8 @@ void ViewWidget::removeSelectedEdge()
 
 void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
 {
+    std::string concernedEdgeLabel = concernedEdge->toString();
+    updateStatus(std::string("removing edge '") + concernedEdgeLabel + "'...");
     EdgeItem *edge = mEdgeItemMap[concernedEdge];
     if(!edge)
     {
@@ -934,6 +976,7 @@ void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
     }
     mpLayoutingGraph->removeEdge(concernedEdge);
     syncEdgeItemMap(concernedEdge);
+    updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::removeFocusedVertex()
@@ -949,6 +992,8 @@ void ViewWidget::removeSelectedVertex()
 
 void ViewWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
 {
+    std::string concernedVertexLabel = concernedVertex->toString();
+    updateStatus(std::string("removing node '") + concernedVertexLabel + "'...");
     // removing possible (default?) edges of this cluster node within the main graph (and its port-vertices)
     if("graph_analysis::ClusterVertex" != concernedVertex->getClassName())
     {
@@ -1004,10 +1049,12 @@ void ViewWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
     }
     scene()->removeItem(item);
     mpGraph->removeVertex(concernedVertex);
+    updateStatus(std::string("Removed node '") + concernedVertexLabel + "'!", DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::changeLayout()
 {
+    updateStatus(std::string("changing graph layout..."));
     bool ok;
     QStringList options;
     std::set<std::string> supportedLayouts = mpGVGraph->getSupportedLayouts();
@@ -1024,11 +1071,17 @@ void ViewWidget::changeLayout()
         std::string desiredLayout = layout.toStdString();
         reset(true /*keepData*/);
         setLayout(QString(desiredLayout.c_str()));
+        updateStatus(std::string("Changed graph layout to '") + desiredLayout + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to change graph layout: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
 void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int portID)
 {
+    updateStatus(std::string("drag-n-drop: setting source node to '") + startVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...");
     if("graph_analysis::ClusterVertex" != startVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::gui::ViewWidget::setStartVertex: expected startVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
@@ -1039,10 +1092,12 @@ void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int por
     mpStartVertex   = startVertex;
     NodeItem *item  = mNodeItemMap[startVertex];
     mpStartPort     = item->getPort(portID);
+    updateStatus(std::string("Drag-n-drop: set source node to '") + startVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...", DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
 {
+    updateStatus(std::string("drag-n-drop: setting target node to '") + endVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...");
     if("graph_analysis::ClusterVertex" != endVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::gui::ViewWidget::setEndVertex: expected endVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
@@ -1061,19 +1116,36 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
     mpEndPort       = item->getPort(portID);
     NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
     NodeItem *targetNodeItem = item;
+    updateStatus(std::string("Drag-n-drop: set target node to '") + endVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...", DEFAULT_TIMEOUT);
     if(sourceNodeItem == targetNodeItem)
     {
         // preventing self-edges and handling it into ports swapping
         NodeItem::portID_t start_portID = mPortIDMap[mpStartPort];
         NodeItem::portID_t   end_portID = mPortIDMap[mpEndPort];
+        updateStatus(std::string("drag-n-drop: found identical source and target node '") + endVertex->toString()
+                        + "' -> swapping ports of IDs " + boost::lexical_cast<std::string>(start_portID) + " and "
+                        + boost::lexical_cast<std::string>(end_portID) + "..."
+                    );
         if(mpStartPort->getClassName() != mpEndPort->getClassName())
         {
             std::string error_msg = std::string("The two ports are of different types '") + mpStartPort->getClassName() + "' and '" + mpEndPort->getClassName() + "'";
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: failed to initiate ports swapping: " << error_msg;
             QMessageBox::critical(this, tr("Ports Swapping Failed"), QString(error_msg.c_str()));
+            updateStatus(std::string("Drag-n-drop failed: tried to swap ports '") + mpStartPort->toString() + "' and '"
+                            + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID) + " and "
+                            + boost::lexical_cast<std::string>(end_portID) + " respectively, of different types '"
+                            + mpStartPort->getClassName() + "' and '" + mpEndPort->getClassName() + "' respectively!"
+                            , DEFAULT_TIMEOUT
+                        );
             return;
         }
         sourceNodeItem->swapPorts(start_portID, end_portID);
+        updateStatus(std::string("Drag-n-drop: swapped ports '") + mpStartPort->toString() + "' and '"
+                        + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID)
+                        + " and " + boost::lexical_cast<std::string>(end_portID) + " respectively and of consistent type '"
+                        + mpStartPort->getClassName() + "'!"
+                        , DEFAULT_TIMEOUT
+                    );
     }
     else
     {
@@ -1083,6 +1155,9 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
                                             + mpStartPort->getClassName() + "'";
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
+            updateStatus(std::string("Drag-n-drop failed: '") + error_msg + "'!"
+                            , DEFAULT_TIMEOUT
+                        );
             return;
         }
         if("graph_analysis::InputPortVertex" != mpEndPort->getClassName())
@@ -1091,6 +1166,9 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
                                             + mpEndPort->getClassName() + "'";
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
+            updateStatus(std::string("Drag-n-drop failed: '") + error_msg + "'!"
+                            , DEFAULT_TIMEOUT
+                        );
             return;
         }
         addEdgeAdHoc();
@@ -1099,13 +1177,29 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
 
 void ViewWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fields are properly set already
 {
+    updateStatus(std::string("drag-n-drop: adding edge..."));
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
                                          tr("New Edge Label:"), QLineEdit::Normal,
                                          QString("newEdge"), &ok);
     if (ok && !label.isEmpty())
     {
-        spawnEdge(label.toStdString()); // assumes the concerned edge-creation member fields are properly set already
+        std::string edge_label = label.toStdString();
+        spawnEdge(edge_label); // assumes the concerned edge-creation member fields are properly set already
+        NodeItem::portID_t start_portID = mPortIDMap[mpStartPort];
+        NodeItem::portID_t   end_portID = mPortIDMap[mpEndPort];
+        updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between ports '"
+                        + mpStartPort->toString() + "' and '"
+                        + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID)
+                        + " and " + boost::lexical_cast<std::string>(end_portID) + " respectively and of consistent type '"
+                        + mpStartPort->getClassName() +  "' of clusters '"
+                        + mpStartVertex->toString() + "' and '" + mpEndVertex->toString() + "'!"
+                        , DEFAULT_TIMEOUT
+                    );
+    }
+    else
+    {
+        updateStatus(std::string("Drag-n-drop failed: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
@@ -1151,6 +1245,7 @@ void ViewWidget::toYmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toYmlFile: export failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export Failed"), QString(e.what()));
+        updateStatus(std::string("Yaml Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
     }
 }
 
@@ -1164,6 +1259,7 @@ void ViewWidget::toDotFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toDotFile: export via graphviz failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
+        updateStatus(std::string("Dot Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
     }
 }
 
@@ -1177,6 +1273,7 @@ void ViewWidget::gvRender(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toDotFile: export via graphviz failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
+        updateStatus(std::string("Dot Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
     }
 }
 
@@ -1190,6 +1287,7 @@ void ViewWidget::toXmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toXmlFile: export to .gexf failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export to .gexf Failed"), QString(e.what()));
+        updateStatus(std::string("Gexf Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
     }
 }
 
@@ -1204,6 +1302,7 @@ void ViewWidget::fromXmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::fromXmlFile: import from .gexf failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Import from .gexf Failed"), QString(e.what()));
+        updateStatus(std::string("Gexf Graph import failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
         return;
     }
 
@@ -1228,6 +1327,7 @@ void ViewWidget::fromYmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::fromYmlFile: import from .yaml failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Import from .yaml Failed"), QString(e.what()));
+        updateStatus(std::string("Yaml Graph import failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
         return;
     }
 
@@ -1282,9 +1382,11 @@ void ViewWidget::clear()
 
 void ViewWidget::refresh()
 {
+    updateStatus(std::string("refreshing graph..."));
     reset(true /*keepData*/);
     updateFromGraph();
     update();
+    updateStatus(std::string("Refreshed graph!"), DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
@@ -1586,6 +1688,7 @@ void ViewWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void ViewWidget::updateDragDrop(bool dragDrop)
 {
+    updateStatus(std::string("toggling drag-n-drop mode to ") + (dragDrop ? "true" : "false") + "...");
     mDragDrop = dragDrop;
     NodeItemMap::iterator it = mNodeItemMap.begin();
     for(; mNodeItemMap.end() != it; ++it)
@@ -1597,6 +1700,7 @@ void ViewWidget::updateDragDrop(bool dragDrop)
             current->setFlag(QGraphicsItem::ItemIsMovable, !mDragDrop);
         }
     }
+    updateStatus(std::string("Toggled drag-n-drop mode to ") + (dragDrop ? "true" : "false") + "...", DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::syncDragDrop()
@@ -1615,6 +1719,7 @@ void ViewWidget::syncDragDrop()
 
 void ViewWidget::setDragDrop()
 {
+    updateStatus(std::string("toggling drag-n-drop mode to true..."));
     mDragDrop = true;
     mpPropertyDialog->setDragDrop(true);
     if(mVertexSelected)
@@ -1632,10 +1737,12 @@ void ViewWidget::setDragDrop()
             current->setFlag(QGraphicsItem::ItemIsMovable, false);
         }
     }
+    updateStatus(std::string("Toggled drag-n-drop mode to true!"), DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::unsetDragDrop()
 {
+    updateStatus(std::string("toggling drag-n-drop mode to false..."));
     mDragDrop = false;
     mpPropertyDialog->setDragDrop(false);
     NodeItemMap::iterator it = mNodeItemMap.begin();
@@ -1648,6 +1755,7 @@ void ViewWidget::unsetDragDrop()
             current->setFlag(QGraphicsItem::ItemIsMovable);
         }
     }
+    updateStatus(std::string("Toggled drag-n-drop mode to false!"), DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::itemMoved()
@@ -1864,10 +1972,13 @@ void ViewWidget::scaleView(qreal scaleFactor)
         return;
     }
     scale(scaleFactor, scaleFactor);
+    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
+    updateStatus(status_msg, DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::shuffle()
 {
+    updateStatus(std::string("shuflling all the nodes..."));
     foreach (QGraphicsItem *item, scene()->items())
     {
         if (qgraphicsitem_cast<NodeItem* >(item))
@@ -1875,6 +1986,7 @@ void ViewWidget::shuffle()
             item->setPos(-150 * mScaleFactor + mScaleFactor * (qrand() % 300), -150 * mScaleFactor + mScaleFactor * (qrand() % 300));
         }
     }
+    updateStatus(std::string("Shuflled all nodes!"), DEFAULT_TIMEOUT);
 }
 
 void ViewWidget::zoomIn()
@@ -1889,9 +2001,11 @@ void ViewWidget::zoomOut()
 
 void ViewWidget::resetGraph()
 {
+    updateStatus(std::string("resetting the graph..."));
     if(mpGraph->empty())
     {
         QMessageBox::information(this, tr("Nothing to Reset"), "The graph is already empty!");
+        updateStatus(std::string("Failed to reset graph: the graph was already empty!"), DEFAULT_TIMEOUT);
     }
     else
     {
@@ -1900,9 +2014,11 @@ void ViewWidget::resetGraph()
         {
             case QMessageBox::Yes:
                 reset();
+                updateStatus(std::string("The graph was reset!"), DEFAULT_TIMEOUT);
             break;
 
             default:
+                updateStatus(std::string("Failed to reset graph: aborted by user!"), DEFAULT_TIMEOUT);
             break;
         }
     }
@@ -1933,6 +2049,7 @@ void ViewWidget::clearNodeFocus()
     {
         NodeItem *item = mNodeItemMap[mpFocusedVertex];
         item->releaseFocus();
+        updateStatus(std::string("Cleared node focus off node '") + mpFocusedVertex->toString() + "'!", DEFAULT_TIMEOUT);
     }
 }
 
@@ -1942,6 +2059,7 @@ void ViewWidget::clearEdgeFocus()
     {
         EdgeItem *item = mEdgeItemMap[mpFocusedEdge];
         item->releaseFocus();
+        updateStatus(std::string("Cleared edge focus off edge '") + mpFocusedEdge->toString() + "'!", DEFAULT_TIMEOUT);
     }
 }
 
@@ -1949,6 +2067,11 @@ void ViewWidget::clearFocus()
 {
     clearNodeFocus();
     clearEdgeFocus();
+    updateStatus(std::string("Cleared focuses: ")
+                    + "off node '" + mpFocusedVertex->toString()
+                    + "' and off edge '" + mpFocusedEdge->toString() + "'!"
+                    , DEFAULT_TIMEOUT
+                );
 }
 
 
@@ -2022,12 +2145,13 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
                 }
                 // remove ports graphics
                 item->removePorts();
+                updateStatus(std::string("Removed all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
             break;
 
             default:
+                updateStatus(std::string("Failed to remove all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
             break;
         }
-        updateStatus(std::string("Removed all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
     }
 }
 
@@ -2052,6 +2176,7 @@ void ViewWidget::swapPortsSelected()
 
 void ViewWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
 {
+    updateStatus(std::string("swapping ports within node '") + concernedVertex->toString() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
@@ -2062,7 +2187,8 @@ void ViewWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
     int portCount = item->getPortCount();
     if(portCount < 2)
     {
-        QMessageBox::critical(this, tr("Cannot Swap Ports"), tr("The selected vertex had not enough ports!"));
+        QMessageBox::critical(this, tr("Cannot Swap Ports"), tr("The selected vertex did not have enough ports!"));
+        updateStatus(std::string("Failed to swap ports within node '") + concernedVertex->toString() + "': this vertex did not have enough ports!", DEFAULT_TIMEOUT);
         return;
     }
     SwapPortsDialog dialog(item);
@@ -2086,12 +2212,22 @@ void ViewWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
             {
                 LOG_ERROR_S << "graph_analysis::gui::ViewWidget::swapPorts: swapping operation failed: " << e.what();
                 QMessageBox::critical(this, tr("Swapping Failed"), QString(e.what()));
+                updateStatus(std::string("Failed to swap ports within node '") + concernedVertex->toString() + "': " + std::string(e.what()) + "!", DEFAULT_TIMEOUT);
             }
         }
         else
         {
             QMessageBox::information(this, tr("Swapped Ports In-place"), tr("identical ports were selected!"));
         }
+        updateStatus(std::string("Swapped ports of IDs ") + boost::lexical_cast<std::string>(port1ID) + " and "
+                        + boost::lexical_cast<std::string>(port2ID) + " within node '" + concernedVertex->toString()
+                        + "'!"
+                        , DEFAULT_TIMEOUT
+                    );
+    }
+    else
+    {
+        updateStatus(std::string("Failed to swap ports within node '") + concernedVertex->toString() + "': aborted by user!", DEFAULT_TIMEOUT);
     }
 }
 

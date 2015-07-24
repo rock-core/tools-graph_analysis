@@ -103,6 +103,8 @@ public:
     bool getPortLayerToggle     () { return mPortLayerToggle;    }
     bool getClusterLayerToggle  () { return mClusterLayerToggle; }
 
+
+    inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
     inline bool toggledOut(graph_analysis::Vertex::Ptr vertex)
     {
         bool result =   (!mPortLayerToggle && "graph_analysis::PortVertex" == vertex->getClassName())
