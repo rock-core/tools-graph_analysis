@@ -102,6 +102,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
     , mEdgeSelected(false)
+    , mInitialized(false)
     , mDragDrop(false)
 {
 }
@@ -118,6 +119,7 @@ GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
     , mEdgeSelected(false)
+    , mInitialized(false)
     , mDragDrop(false)
 {
 }

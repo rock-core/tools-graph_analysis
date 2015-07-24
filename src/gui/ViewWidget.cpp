@@ -61,7 +61,6 @@
 #include <QMenuBar>
 #include <QAction>
 #include <QKeyEvent>
-#include <QStatusBar>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
@@ -87,8 +86,6 @@
 #include <base/Time.hpp>
 //#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
 #define DEFAULT_PATH_TO_ICONS "icons/"
-// StatusBar standard timeout (in ms)
-#define DEFAULT_TIMEOUT 6900
 
 // comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
 #define CLEAR_BY_BACKGROUND
@@ -105,7 +102,6 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     , mpLayoutingGraph()
     , mVertexFocused(false)
     , mEdgeFocused(false)
-    , mInitialized(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mpLayerWidget(new LayerWidget(this, mpGraph))
@@ -313,11 +309,6 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
 
     mpMainWindow->setWindowTitle(tr("Graph Analysis"));
     mpStatus->addWidget(new QLabel("Ready!"));
-}
-
-void ViewWidget::updateStatus(const std::string& message, int timeout)
-{
-    mpStatus->showMessage(QString(message.c_str()), timeout);
 }
 
 void ViewWidget::importGraphLayer()

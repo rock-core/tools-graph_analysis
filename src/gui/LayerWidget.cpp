@@ -38,7 +38,6 @@
 **
 ****************************************************************************/
 
-#include "ViewWidget.hpp"
 #include "LayerWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
@@ -160,6 +159,7 @@ void LayerWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
 
 void LayerWidget::changeLayout()
 {
+    updateStatus(std::string("changing layers graph view layout..."));
     bool ok;
     QStringList options;
     std::set<std::string> supportedLayouts = mpGVGraph->getSupportedLayouts();
@@ -176,6 +176,11 @@ void LayerWidget::changeLayout()
         std::string desiredLayout = layout.toStdString();
         reset(true /*keepData*/);
         setLayout(QString(desiredLayout.c_str()));
+        updateStatus(std::string("Changed layers graph view layout to '") + desiredLayout + "'!", DEFAULT_TIMEOUT);
+    }
+    else
+    {
+        updateStatus(std::string("Failed to change layers graph view layout: aborted by user!"), DEFAULT_TIMEOUT);
     }
 }
 
@@ -210,9 +215,11 @@ void LayerWidget::clear()
 }
 void LayerWidget::refresh()
 {
+    updateStatus(std::string("refreshing layers graph view..."));
     reset(true /*keepData*/);
     updateFromGraph();
     update();
+    updateStatus(std::string("Refreshed layers graph view!"), DEFAULT_TIMEOUT);
 }
 
 void LayerWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
@@ -536,9 +543,12 @@ void LayerWidget::scaleView(qreal scaleFactor)
 {
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
     if (factor < 0.07 || factor > 100)
+    {
         return;
-
+    }
     scale(scaleFactor, scaleFactor);
+    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
+    updateStatus(status_msg, DEFAULT_TIMEOUT);
 }
 
 void LayerWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
@@ -575,11 +585,13 @@ void LayerWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
 
 void LayerWidget::shuffle()
 {
+    updateStatus(std::string("shuflling all the nodes in the layers graph view..."));
     foreach (QGraphicsItem *item, scene()->items())
     {
         if (qgraphicsitem_cast<NodeItem* >(item))
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }
+    updateStatus(std::string("Shuflled all nodes in the layers graph view!"), DEFAULT_TIMEOUT);
 }
 
 void LayerWidget::zoomIn()
@@ -608,11 +620,6 @@ void LayerWidget::toggleClusterLayer(bool toggle)
 {
     mClusterLayerToggle = toggle;
     refresh();
-}
-
-void LayerWidget::updateStatus(const std::string& message, int timeout)
-{
-    mpViewWidget->updateStatus(message, timeout);
 }
 
 } // end namespace gui

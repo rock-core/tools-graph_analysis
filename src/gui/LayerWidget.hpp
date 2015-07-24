@@ -41,7 +41,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
 #define GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
 
-#include "GraphWidget.hpp"
+#include "ViewWidget.hpp"
 
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
@@ -61,7 +61,6 @@ namespace gui {
 
 class NodeItem;
 class EdgeItem;
-class ViewWidget;
 
 /**
  *
@@ -104,7 +103,11 @@ public:
     bool getClusterLayerToggle  () { return mClusterLayerToggle; }
 
 
-    inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
+    inline void updateStatus(const std::string& message = std::string(), int timeout = 0)
+    {
+        mpViewWidget->updateStatus(message, timeout);
+    }
+
     inline bool toggledOut(graph_analysis::Vertex::Ptr vertex)
     {
         bool result =   (!mPortLayerToggle && "graph_analysis::PortVertex" == vertex->getClassName())

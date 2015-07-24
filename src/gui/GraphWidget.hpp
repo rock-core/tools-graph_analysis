@@ -51,6 +51,9 @@
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 
+// StatusBar standard timeout (in ms)
+#define DEFAULT_TIMEOUT 6900
+
 namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
 namespace io {
@@ -190,6 +193,7 @@ protected:
 
     bool mVertexSelected;
     bool mEdgeSelected;
+    bool mInitialized;
 
     bool mDragDrop;
 };

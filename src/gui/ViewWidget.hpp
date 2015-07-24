@@ -45,6 +45,7 @@
 
 #include <map>
 #include <QIcon>
+#include <QStatusBar>
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <QStackedWidget>
@@ -155,7 +156,10 @@ public:
     void swapPorts(graph_analysis::Vertex::Ptr concernedVertex);
 
     bool dialogIsRunning();
-    inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
+    inline void updateStatus(const std::string& message = std::string(), int timeout = 0)
+    {
+        mpStatus->showMessage(QString(message.c_str()), timeout);
+    }
 
 public slots:
     void shuffle();
@@ -249,7 +253,6 @@ private:
 
     bool mVertexFocused;
     bool mEdgeFocused;
-    bool mInitialized;
 
     PropertyDialog* mpPropertyDialog;
     qreal mMaxNodeHeight, mMaxNodeWidth;
