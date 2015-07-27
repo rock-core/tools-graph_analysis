@@ -2070,11 +2070,14 @@ void ViewWidget::clearFocus()
 {
     clearNodeFocus();
     clearEdgeFocus();
-    updateStatus(std::string("Cleared focuses: ")
-                    + "off node '" + mpFocusedVertex->toString()
-                    + "' and off edge '" + mpFocusedEdge->toString() + "'!"
-                    , DEFAULT_TIMEOUT
-                );
+    if(mVertexFocused && mpFocusedEdge)
+    {
+        updateStatus(std::string("Cleared focuses: ")
+                        + "off node '" + mpFocusedVertex->toString()
+                        + "' and off edge '" + mpFocusedEdge->toString() + "'!"
+                        , DEFAULT_TIMEOUT
+                    );
+    }
 }
 
 
