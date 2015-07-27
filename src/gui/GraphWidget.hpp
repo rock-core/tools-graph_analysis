@@ -153,7 +153,6 @@ protected:
 
     virtual void keyPressEvent(QKeyEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::keyPressEvent is not reimplemented"); }
     virtual void mousePressEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mousePressEvent is not reimplemented"); }
-    virtual void mouseDoubleClickEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mouseDoubleClickEvent is not reimplemented"); }
     virtual void mouseReleaseEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mouseReleaseEvent is not reimplemented"); }
 
 protected:
