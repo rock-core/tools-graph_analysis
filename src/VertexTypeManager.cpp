@@ -45,6 +45,7 @@ void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node,
     } catch(...)
     {
         mClassVisualizationMap[type] = node;
+        mRegisteredTypes.insert(type);
     }
     LOG_WARN_S << "graph_analysis::VertexTypeManager::registerType: type '" + type + "' is already registered.";
     if(throwOnAlreadyRegistered)

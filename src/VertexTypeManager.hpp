@@ -22,6 +22,7 @@ namespace graph_analysis {
     class ClusterVertex;
 
 namespace vertex {
+    // datatype for vertex type specification
     typedef std::string Type;
 } // end namespace vertex
 
@@ -34,18 +35,35 @@ public:
     typedef std::map<vertex::Type, Vertex::Ptr> ClassVisualizationMap;
 
 private:
+    /// registration map - stores the registered types, mapping them to the example vertex instances (i.e. from which new ones to be forked on request)
     ClassVisualizationMap mClassVisualizationMap;
+    /// registration list - maintains a complete list of all registered types
     std::set<std::string> mRegisteredTypes;
+    /**
+     * \brief internal method for type identification
+     * \param type requested vertex type
+     * \param throwOnDefault flag indicating whether exceptions shall be thrown when fed with unregistered types; on false it silently picks the default type
+     * \return smart pointer to the witness vertex instance of the requested type
+     */
     Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnDefault = false);
 
 public:
+    /// constructor
     VertexTypeManager();
+    /// destructor
     ~VertexTypeManager();
 
     // Register visualization class
     // takes ownership of graphicsItem
     void registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered = false);
-    Vertex::Ptr createVertex(const vertex::Type&, const std::string& label = std::string());
+    /**
+     * \brief clones a new vertex of a specified type
+     * \param type the requested vertex type
+     * \param label the requested vertex label
+     * \return smart pointer to the newly created vertex instance
+     */
+    Vertex::Ptr createVertex(const vertex::Type& type, const std::string& label = std::string());
+    /// lists the registered types
     std::set<std::string> getSupportedTypes();
 };
 
