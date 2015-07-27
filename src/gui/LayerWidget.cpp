@@ -427,34 +427,57 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
             case Qt::Key_Right:
                 rotate(qreal( 1.13));
             break;
+
+            case Qt::Key_R:
+                mpViewWidget->resetGraph();
+            break;
+
+            case Qt::Key_S:
+                mpViewWidget->exportGraph();
+            break;
+
+            case Qt::Key_I:
+            case Qt::Key_O:
+                mpViewWidget->importGraph();
+            break;
+
+            case Qt::Key_P:
+                if(!mpViewWidget->dialogIsRunning())
+                {
+                    mpViewWidget->reloadPropertyDialog();
+                }
+            break;
         }
     }
-
-    switch (event->key())
+    else
     {
-    //case Qt::Key_Up:
-    //    break;
-    //case Qt::Key_Down:
-    //    break;
-    //case Qt::Key_Left:
-    //    break;
-    //case Qt::Key_Right:
-    //    break;
-    case Qt::Key_Plus:
-        zoomIn();
-    break;
-    case Qt::Key_Minus:
-        zoomOut();
-    break;
-    case Qt::Key_Space:
-    case Qt::Key_Enter:
-            refresh();
-    break;
+        switch (event->key())
+        {
+        //case Qt::Key_Up:
+        //    break;
+        //case Qt::Key_Down:
+        //    break;
+        //case Qt::Key_Left:
+        //    break;
+        //case Qt::Key_Right:
+        //    break;
+        case Qt::Key_Plus:
+            zoomIn();
+        break;
+        case Qt::Key_Minus:
+            zoomOut();
+        break;
+        case Qt::Key_Space:
+        case Qt::Key_Enter:
+        case Qt::Key_R:
+                refresh();
+        break;
 
-    case Qt::Key_S:
-        shuffle();
-    break;
-    //default:
+        case Qt::Key_S:
+            shuffle();
+        break;
+        //default:
+        }
     }
 
     QGraphicsView::keyPressEvent(event);
