@@ -2,6 +2,10 @@
 #define GRAPH_ANALYSIS_IO_GVGRAPH_HPP
 
 #include <set>
+// As of cgraph version 2.35 the WITH_CGRAPH option is always true
+// added here to remain compatible with older cgraph versions
+#include <graphviz/cgraph.h>
+#define WITH_CGRAPH
 #include <graphviz/gvc.h>
 #include <graph_analysis/BaseGraph.hpp>
 
@@ -18,7 +22,12 @@ static inline Agraph_t* _agopen(const std::string& name, Agdesc_t kind)
     // second arg: type of graph
     // third arg: (optional) reference to functions for reading, memory, etc. -- 
     //    0 for default
+#ifdef GRAPHVIZ_DEPRECATED
+#warning "You are using a graphviz version < 2.36.0 -- limited support only"
+    return agopen(const_cast<char*>(name.c_str()), kind);
+#else
     return agopen(const_cast<char*>(name.c_str()), kind, 0);
+#endif
 }
 
 static inline Agnode_t* _agnode(Agraph_t* g, const std::string& name)

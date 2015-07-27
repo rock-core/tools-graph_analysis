@@ -97,7 +97,7 @@ rock_library(graph_analysis
         VertexIterator.hpp
         WeightedEdge.hpp
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf numeric gsl
+        lemon snap base-lib gexf numeric gsl libgvc
     DEPS_PLAIN
         Boost_REGEX
     MOC
@@ -107,7 +107,7 @@ rock_library(graph_analysis
     UI
         gui/graph_analysis_gui.ui
 )
-target_link_libraries(graph_analysis glpk gvc)
+target_link_libraries(graph_analysis glpk cgraph)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)
 if(graph_analysis-linker_flags)
     set(graph_analysis-linker_flags "${graph_analysis-linker_flags} -Wl,--exclude-libs=libsnap.a" )
