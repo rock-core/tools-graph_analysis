@@ -9,9 +9,9 @@ namespace graph_analysis
 {
 
 /**
- * \brief A Port vertex inherited to allow storing data of Port type
+ * \brief An OutputPort vertex inherited to allow storing data of output Port type
  * \details For the purpose of storing data with a vertex, this storage type inherits
- * from class Vertex
+ * from class PortVertex
  */
 class OutputPortVertex : public PortVertex
 {
