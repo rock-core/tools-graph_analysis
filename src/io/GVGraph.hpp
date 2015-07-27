@@ -191,18 +191,25 @@ public:
     std::string getUniqueName(Edge::Ptr edge) const;
 
 private:
+    /// GraphViz to-file rendering context
     GVC_t* mpContext;
+    /// main GraphViz graph instance
     Agraph_t* mpGVGraph;
+    /// graph_analysis to-be-rendered graph
     BaseGraph::Ptr mpBaseGraph;
 
+    /// GraphViz nodes map
     std::map<GraphElementId, Agnode_t*> mNodes;
+    /// GraphViz edges map
     std::map<GraphElementId, Agedge_t*> mEdges;
 
     /// DPI setting
     double mDPI;
     /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
+    /// boolean witness for layouting; true when already layouted; false otherwise
     bool mAppliedLayout;
+    /// list of supported GraphViz layouting engines
     static std::set<std::string> msSupportedLayouts;
     static GraphElementId msEdgeId;
 };

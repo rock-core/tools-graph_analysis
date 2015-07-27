@@ -6,6 +6,12 @@
 namespace graph_analysis {
 namespace io {
 
+void YamlWriter::write(const std::string& filename, const BaseGraph& graph) const
+{
+    BaseGraph graph_copy = graph;
+    write(filename, BaseGraph::Ptr(&graph_copy));
+}
+
 void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
     std::string file(filename);

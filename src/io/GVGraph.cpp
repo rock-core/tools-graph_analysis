@@ -31,7 +31,6 @@ GVGraph::GVGraph(BaseGraph::Ptr baseGraph, const std::string& name, double node_
     , mpGVGraph(_agopen(name, Agdirected)) // see also agstrictdirected graph -- one edgde between two nodes, see libgraph doc
     , mpBaseGraph(baseGraph)
     , mAppliedLayout(false)
-
 {
     //Set graph attributes
     setGraphAttribute("overlap", "false");
