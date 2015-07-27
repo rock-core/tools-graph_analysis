@@ -71,7 +71,7 @@
 
 void help_setup(std::stringstream& ss, const std::string& cmd)
 {
-    ss << "usage: " << cmd << " [ --help ]" << std::endl;
+    ss << "usage: " << cmd << " [--help]" << std::endl;
     ss << std::endl;
     ss << "Options:" << std::endl;
     ss << "-------"  << std::endl;
