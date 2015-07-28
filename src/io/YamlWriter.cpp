@@ -9,14 +9,14 @@ namespace io {
 void YamlWriter::write(const std::string& filename, const BaseGraph& graph) const
 {
     BaseGraph graph_copy = graph;
-    write(filename, BaseGraph::Ptr(&graph_copy));
+    write(filename, BaseGraph::Ptr(&graph_copy)); // reusing code
 }
 
 void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
     std::string file(filename);
     if(std::string::npos == file.find(".yml") && std::string::npos == file.find(".yaml"))
-    {
+    {   // forcing proper file extension
         file += std::string(".yml");
     }
     const char *fname = file.c_str();
@@ -28,10 +28,10 @@ void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         throw std::runtime_error(error_msg);
     }
     LOG_INFO("graph_analysis::io::YamlWriter: rendering graph to file \"%s\" ", fname);
-
+    // no file header
     VertexIterator::Ptr nodeIt = graph->getVertexIterator();
     fout << "nodes:\n";
-    while(nodeIt->next())
+    while(nodeIt->next()) // outputting nodes
     {
         Vertex::Ptr vertex = nodeIt->current();
         exportVertex(graph, fout, vertex);
@@ -39,7 +39,7 @@ void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
 
     EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
     fout << "edges:" << std::endl;
-    while(edgeIt->next())
+    while(edgeIt->next()) // outputting edges
     {
         Edge::Ptr edge = edgeIt->current();
         exportEdge(graph, fout, edge);

@@ -11,6 +11,7 @@ namespace graph_analysis {
 
 VertexTypeManager::VertexTypeManager()
 {
+    // registering known implemented class-types
     mClassVisualizationMap = boost::assign::map_list_of
         ("base",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
         ("graph_analysis::BaseVertex",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
@@ -23,11 +24,12 @@ VertexTypeManager::VertexTypeManager()
         ("cluster",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
         ("graph_analysis::ClusterVertex",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
         ;
+    // initializing the list of registered types (non-repeatingly, non-verbously)
     mRegisteredTypes.clear();
     ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
     for(; mClassVisualizationMap.end() != it; ++it)
     {
-        if("graph_analysis::" != it->first.substr(0, std::string("graph_analysis::").length()))
+        if("graph_analysis::" != it->first.substr(0, std::string("graph_analysis::").length())) // filters out verbose (&& duplicate!) types
         {
             mRegisteredTypes.insert(it->first);
         }

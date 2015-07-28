@@ -11,18 +11,19 @@ void YamlReader::read(const std::string& filename, BaseGraph::Ptr graph)
     std::ifstream fin(fname);
     if(!fin.is_open() || fin.fail() || fin.eof())
     {
+        // error checking
         std::string error_msg = std::string("graph_analysis::io::YamlReader: failed to open input file ") + filename + " for graph import  OR  the same input file was empty";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
     LOG_INFO("graph_analysis::io::YamlWriter: importing graph from file \"%s\" ", fname);
 
-
     graph->clear();
     VertexMap vMap;
     std::string line;
     std::getline(fin, line);
     std::stringstream nodeStream, edgeStream;
+    // tokenizing the nodes list string and the edges list string respectively
     while(!fin.eof())
     {
         if(std::string::npos != line.find("nodes:"))
@@ -51,6 +52,7 @@ void YamlReader::read(const std::string& filename, BaseGraph::Ptr graph)
             std::getline(fin, line);
         }
     }
+    // parsing nodes and then parsing edges from the respectively tokenized information
     parseNodes(nodeStream, graph, vMap);
     parseEdges(edgeStream, graph, vMap);
 }
@@ -62,6 +64,7 @@ void YamlReader::parseNodes(std::stringstream& nodeStream, const BaseGraph::Ptr&
     std::string idWord, labelWord, typeWord;
     while(!nodeStream.eof())
     {
+        // looking for initial '-' character, preceding an individual node
         do
         {
             nodeStream >> c;
@@ -72,10 +75,12 @@ void YamlReader::parseNodes(std::stringstream& nodeStream, const BaseGraph::Ptr&
             break;
         }
 
-        idWord = nextToken("id:", nodeStream, graph);
-        typeWord = nextToken("type:", nodeStream, graph);
-        labelWord = nextToken("label:", nodeStream, graph);
-        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(typeWord, labelWord); // (new Vertex(labelWord));
+        // parsing one node (one by one, all properties)
+        idWord = nextToken("id:", nodeStream);
+        typeWord = nextToken("type:", nodeStream);
+        labelWord = nextToken("label:", nodeStream);
+        // storing results
+        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(typeWord, labelWord);
         vMap[idWord] = vertex;
         graph->addVertex(vertex);
     }
@@ -87,6 +92,7 @@ void YamlReader::parseEdges(std::stringstream& edgeStream, const BaseGraph::Ptr&
     std::string fromNodeWord, toNodeWord, labelWord;
     while(!edgeStream.eof())
     {
+        // looking for initial '-' character, preceding an individual edge
         do
         {
             edgeStream >> c;
@@ -97,9 +103,11 @@ void YamlReader::parseEdges(std::stringstream& edgeStream, const BaseGraph::Ptr&
             break;
         }
 
-        fromNodeWord = nextToken("fromNodeId:", edgeStream, graph);
-        toNodeWord = nextToken("toNodeId:", edgeStream, graph);
-        labelWord = nextToken("label:", edgeStream, graph);
+        // parsing one edge (one by one, all properties)
+        fromNodeWord = nextToken("fromNodeId:", edgeStream);
+        toNodeWord = nextToken("toNodeId:", edgeStream);
+        labelWord = nextToken("label:", edgeStream);
+        // storing results
         Vertex::Ptr sourceVertex = vMap[fromNodeWord]; // NOTE: assumes the .yml (.yaml) file is valid
         Vertex::Ptr targetvertex = vMap[toNodeWord]; // NOTE: assumes the .yml (.yaml) file is valid
         Edge::Ptr edge(new Edge(sourceVertex, targetvertex, labelWord));
@@ -107,7 +115,7 @@ void YamlReader::parseEdges(std::stringstream& edgeStream, const BaseGraph::Ptr&
     }
 }
 
-std::string YamlReader::nextToken(const std::string& keyword, std::stringstream& stream, const BaseGraph::Ptr& graph) const
+std::string YamlReader::nextToken(const std::string& keyword, std::stringstream& stream) const
 {
     if(stream.eof())
     {
