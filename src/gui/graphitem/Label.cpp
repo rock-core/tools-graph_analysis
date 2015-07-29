@@ -111,8 +111,10 @@ void Label::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
 {
     if((event->buttons() & Qt::LeftButton) && -1 != mPortID)
     {
+        // starting a mouse drag action if the mouse move is long enough
         if((event->pos() - mDragStartPosition).manhattanLength() < QApplication::startDragDistance())
         {
+            // skipping if the mouse move is not yet long enough
             return;
         }
         if(!mpGraphWidget)
@@ -125,6 +127,7 @@ void Label::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
             LOG_ERROR_S << error_msg;
             throw std::runtime_error(error_msg);
         }
+        // sending the mouse drag event and meanwhile setting the starting node in the corresponding member field of the managing widget
         QDrag *drag = new QDrag(event->widget());
         QMimeData *mimeData = new QMimeData;
         mimeData->setText("edge");
@@ -142,10 +145,10 @@ void Label::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     if(-1 == mPortID)
     {
+        // filtering out again the labels of cluster nodes
         event->ignore();
         return;
     }
-//        event->setAccepted(event->mimeData()->hasFormat("text/plain"));
     if(event->mimeData()->hasFormat("text/plain"))
     {
         event->acceptProposedAction();
@@ -156,10 +159,10 @@ void Label::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
     if(-1 == mPortID)
     {
+        // filtering out again the labels of cluster nodes
         event->ignore();
         return;
     }
-//        event->setAccepted(event->mimeData()->hasFormat("text/plain"));
     if(event->mimeData()->hasFormat("text/plain"))
     {
         event->acceptProposedAction();
@@ -168,6 +171,7 @@ void Label::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void Label::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+    // finalizing the mouse drag and drop
     if("edge" == event->mimeData()->text())
     {
         if(!mpGraphWidget)
