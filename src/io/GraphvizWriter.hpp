@@ -6,15 +6,33 @@
 namespace graph_analysis {
 namespace io {
 
+/**
+ * \class GraphvizWriter
+ * \file GraphvizWriter.hpp
+ * \brief Renders graph to file using GraphViz renderToFile() interface
+ */
 class GraphvizWriter : public Writer
 {
+    /// layouting engine to re-arrange the graph through GraphViz rendering
     std::string mLayout;
 public:
+    /// constructor
     GraphvizWriter(const std::string& layout = "dot");
+    /// destructor
     ~GraphvizWriter();
 
+    /**
+     * \brief outputs the given graph to the given file
+     * \param filename requested output filename
+     * \param graph requested graph to be printed
+     */
     void write(const std::string& filename, const BaseGraph& graph) const;
 
+    /**
+     * \brief outputs the given graph to the given file
+     * \param filename requested output filename
+     * \param graph smart pointer to the requested graph to be printed
+     */
     void write(const std::string& filename, const BaseGraph::Ptr& graph) const;
 };
 

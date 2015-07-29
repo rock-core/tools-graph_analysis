@@ -15,7 +15,6 @@ namespace io {
 
 /**
  * \class YamlReader
- * \author Clasian
  * \file YamlReader.hpp
  * \brief Parses an inputfile with custom YAML/yml format to requested graph (i.e. custom yml that simply lists the nodes with their properties and then lists edges and their properties)
  */

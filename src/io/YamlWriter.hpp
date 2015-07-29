@@ -11,7 +11,6 @@ namespace io {
 
 /**
  * \class YamlWriter
- * \author Clasian
  * \file YamlWriter.hpp
  * \brief Renders requested graph to custom YAML/yml format (i.e. custom yml that simply lists the nodes with their properties and then lists edges and their properties)
  */
