@@ -12,11 +12,17 @@
 #include <exception>
 #include "Label.hpp"
 
-#define max(X, Y) X > Y ? X : Y
+/// inline maximum test
+#define max(X, Y) (X > Y ? X : Y)
+/// single port height constant
 #define ADJUST 23.69
+/// error tolerance constant for in-scene positions equality check
 #define EPSILON 0.001
+/// guaranteed minimum spacing between input and output ports constant
 #define SEPARATOR 69.
+/// bounding rectangular rounding port graphics constant
 #define PORT_BORDER 3.
+/// bounding rectangular rounding node graphics constant
 #define NODE_BORDER 12.
 
 namespace graph_analysis {
