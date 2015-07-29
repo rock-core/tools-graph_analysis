@@ -153,8 +153,6 @@ void Resource::updateLabel()
 
 QRectF Resource::boundingRect() const
 {
-    //QRectF boundingRect( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
-    //return childrenBoundingRect() | boundingRect;
     QRectF childrenRect = childrenBoundingRect();
     return childrenRect;
 }
@@ -176,6 +174,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     updateWidth(false); // in case the main label change triggered redrawing
 //    qreal rect_width, max_width = mLabel->boundingRect().width();
     QRectF rect;
+    // Drawing ports
     foreach(Tuple tuple, mLabels)
     {
         rect = portBoundingRect(tuple.first);
@@ -186,10 +185,12 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     rect = boundingRect();
     if(mLabels.size() && !mHeightAdjusted)
     {
+        // adjusts bottom padding if there are ports at all and if it hasn't been done already
         rect.adjust(0., 0., 0., NODE_BORDER - PORT_BORDER);
         mHeightAdjusted = true;
     }
-    painter->drawRoundedRect(rect, NODE_BORDER, NODE_BORDER); //-7,-7,20,20);
+    painter->drawRoundedRect(rect, NODE_BORDER, NODE_BORDER);
+    // 3D details
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
 //    {
@@ -206,8 +207,10 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    painter->setPen(QPen(Qt::black, 0));
 //    painter->drawEllipse(-10, -10, 20, 20);
 
+    // updating the size of the supporting board
     mpBoard->resize(rect.width(), rect.height());
     this->update(rect);
+    // triggering edges to update
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
@@ -303,11 +306,15 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
+    // creating and inserting graphical representation
     Label *label = new Label(node->getLabel(), this, mpGraphWidget, mID);
     mLabels[mID] = label;
+    // registering the supplied port vertex too
     mVertices[mID] = node;
+    // port type discrimination witness
     bool isInputPort = "graph_analysis::InputPortVertex" == node->getClassName();
     qreal width = label->boundingRect().width();
+    // alligning the new port with all the other ports of its kind
     if(isInputPort)
     {
         if(width > mMaxInputPortWidth)
@@ -369,12 +376,13 @@ void Resource::removePort(NodeItem::portID_t portID)
     dieOnPort(portID, "removePort");
     graphitem::Label *label_to_delete = mLabels[portID];
     graph_analysis::Vertex::Ptr port_to_delete = mVertices[portID];
-    // shifting up all ports initially under the port-to-be-removed
     prepareGeometryChange();
+    // port type boolean witness
     bool isInputPort = "graph_analysis::InputPortVertex" == port_to_delete->getClassName();
     if(isInputPort)
     {
-        bool maxInputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxInputPortWidth;
+        bool maxInputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxInputPortWidth; // tells whether max width shall be recomputed later on
+        // shifting up all input ports initially under the port-to-be-removed
         Labels::iterator it = mLabels.begin();
         for(++it; mLabels.end() != it; ++it)
         {
@@ -385,6 +393,7 @@ void Resource::removePort(NodeItem::portID_t portID)
                 label->setPos(label->pos() - QPointF(0., ADJUST));
             }
         }
+        // actual port removal
         mLabels.erase(mLabels.find(portID));
         mVertices.erase(mVertices.find(portID));
         removeFromGroup(label_to_delete);
@@ -402,7 +411,8 @@ void Resource::removePort(NodeItem::portID_t portID)
     }
     else // "graph_analysis::OutputPortVertex" == port_to_delete->getClassName();
     {
-        bool maxOutputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxOutputPortWidth;
+        bool maxOutputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxOutputPortWidth; // tells whether max width shall be recomputed later on
+        // shifting up all output ports initially under the port-to-be-removed
         Labels::iterator it = mLabels.begin();
         for(++it; mLabels.end() != it; ++it)
         {
@@ -413,6 +423,7 @@ void Resource::removePort(NodeItem::portID_t portID)
                 label->setPos(label->pos() - QPointF(0., ADJUST));
             }
         }
+        // actual port removal
         mLabels.erase(mLabels.find(portID));
         mVertices.erase(mVertices.find(portID));
         removeFromGroup(label_to_delete);
@@ -492,6 +503,7 @@ void Resource::syncLabel(NodeItem::portID_t portID)
 {
     if(-1 == portID)
     {
+        // syncs main node label
         std::string label = mLabel->toPlainText().toStdString();
         if(mpVertex->getLabel() != label)
         {
@@ -504,7 +516,7 @@ void Resource::syncLabel(NodeItem::portID_t portID)
     Label *label = mLabels[portID];
     graph_analysis::Vertex::Ptr port = mVertices[portID];
     std::string tag = label->toPlainText().toStdString();
-    if(port->getLabel() != tag)
+    if(port->getLabel() != tag) // checking whether synchronization is required
     {
         port->setLabel(tag);
         qreal width = label->boundingRect().width();
@@ -538,10 +550,12 @@ void Resource::syncLabel(NodeItem::portID_t portID)
 QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
 {
     dieOnPort(portID, "portBoundingRect");
-    QRectF result = boundingRect();
+    QRectF result = boundingRect(); // full node bounding rect is used a source region to crop out from
     Labels::iterator it = mLabels.find(portID);
     graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+    // boolean type witness
     bool isInputPort = "graph_analysis::InputPortVertex" == current_port->getClassName();
+    // conditionally shifting both horizontally and vertically the 2 defining corners of the result rectangle
 #ifndef LABEL_SWAPPING
     int offset = std::distance(mLabels.begin(), it);
     result.adjust(
@@ -644,6 +658,7 @@ void Resource::dieOnPort(NodeItem::portID_t portID, const std::string& caller)
 {
     if(mLabels.count(portID))
     {
+        // portID was found; no problems here
         return;
     }
 
@@ -668,10 +683,12 @@ void Resource::shiftPortUp(NodeItem::portID_t portID)
         dieOnPort(portID, "shiftPortUp");
     }
 
+    // looking for the closest upper neighbouring port of the same port type
     const qreal y = tuple->second->pos().y();
     qreal delta = y - mLabel->pos().y();
-    if(abs(delta - 2. * ADJUST) < EPSILON) // safety belt against loss in floating point precision
+    if(abs(delta - 2. * ADJUST) < EPSILON) // using EPSILON as safety belt against loss in floating point precision
     {
+        // the indicated port was top most; doing nothing
         return;
     }
     // iterating for closest upper label
@@ -696,10 +713,12 @@ void Resource::shiftPortDown(NodeItem::portID_t portID)
         dieOnPort(portID, "shiftPortDown");
     }
 
+    // looking for the closest lower neighbouring port of the same port type
     const qreal y = tuple->second->pos().y();
     qreal delta = y - mLabel->pos().y();
-    if(abs(delta - (double)(1 + mLabels.size()) * ADJUST) < EPSILON) // safety belt against loss in floating point precision
+    if(abs(delta - (double)(1 + mLabels.size()) * ADJUST) < EPSILON) // using EPSILON as safety belt against loss in floating point precision
     {
+        // the indicated port was bottom most; doing nothing
         return;
     }
     // iterating for closest lower label

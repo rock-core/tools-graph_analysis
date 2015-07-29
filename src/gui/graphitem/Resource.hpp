@@ -72,7 +72,7 @@ public:
     void removePort(NodeItem::portID_t portID);
     /// syncs the updated text label of the port label in the scene with the corresponding internal port vertex label (both being indicated by the same provided port ID)
     void syncLabel(NodeItem::portID_t portID);
-    /// calls a qt routine for warning the scene of upcoming graphical changes
+    /// calls a qt routine for warning the scene of upcoming graphical changes; the method it internally calls is otherwise protected and inaccessible to unrelated classes
     inline void prepareChange() { prepareGeometryChange(); }
     /// retrieves the bounding polygon around the area occupied by the port node specified by the given ID in the scene
     QPolygonF   portBoundingPolygon (NodeItem::portID_t portID);
