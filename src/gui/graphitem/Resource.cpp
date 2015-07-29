@@ -66,6 +66,7 @@ void Resource::recomputeMaxInputPortWidth(void)
     mMaxInputPortWidth = 0;
     for(++it; mLabels.end() != it; ++it)
     {
+        // iterates through the labels of input ports to find their max width
         Label *label = it->second;
         graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
         if("graph_analysis::InputPortVertex" == current_port->getClassName())
@@ -85,6 +86,7 @@ void Resource::recomputeMaxOutputPortWidth(void)
     mMaxOutputPortWidth = 0;
     for(++it; mLabels.end() != it; ++it)
     {
+        // iterates through the labels of output ports to find their max width
         Label *label = it->second;
         graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
         if("graph_analysis::OutputPortVertex" == current_port->getClassName())
@@ -111,10 +113,12 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
     {
         if(post_width > mMaxInputPortWidth)
         {
+            // updates max input port width if applicable
             mMaxInputPortWidth = post_width;
         }
         else if(abs(pre_width - mMaxInputPortWidth) < EPSILON)
         {
+            // recomputes it from scratch if it was max from before (now changed to a lower width)
             recomputeMaxInputPortWidth();
         }
     }
@@ -122,10 +126,12 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
     {
         if(post_width > mMaxOutputPortWidth)
         {
+            // updates max output port width if applicable
             mMaxOutputPortWidth = post_width;
         }
         else if(abs(pre_width - mMaxOutputPortWidth) < EPSILON)
         {
+            // recomputes it from scratch if it was max from before (now changed to a lower width)
             recomputeMaxOutputPortWidth();
         }
     }
@@ -135,34 +141,14 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
 void Resource::changeLabel(const std::string& label)
 {
     mpVertex->setLabel(label);
-    qreal pre_width = mLabel->boundingRect().width();
     mLabel->setPlainText(QString(label.c_str()));
-    qreal post_width = mLabel->boundingRect().width();
-    if(post_width > pre_width)
-    {
-        updateWidth();
-        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-    }
-    else if(!mLabels.size())
-    {
-        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-    }
+    updateWidth();
 }
 
 void Resource::updateLabel()
 {
-    qreal pre_width = mLabel->boundingRect().width();
     mLabel->setPlainText(QString(mpVertex->getLabel().c_str()));
-    qreal post_width = mLabel->boundingRect().width();
-    if(post_width > pre_width)
-    {
-        updateWidth();
-        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-    }
-    else if(!mLabels.size())
-    {
-        this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-    }
+    updateWidth();
 }
 
 QRectF Resource::boundingRect() const
