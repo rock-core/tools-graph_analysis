@@ -27,21 +27,6 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     //mLabel->setZValue(-100.0);
 }
 
-void Resource::changeLabel(const std::string& label)
-{
-    delete mLabel;
-    mpVertex->setLabel(label);
-    mLabel = new Label(mpVertex->toString(), this);
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-}
-
-void Resource::updateLabel()
-{
-    delete mLabel;
-    mLabel = new Label(mpVertex->toString(), this);
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-}
-
 QRectF Resource::boundingRect() const
 {
     QRectF childrenRect = childrenBoundingRect();
@@ -65,7 +50,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     //painter->setBrush(mPen.brush());
 
     //painter->drawEllipse(-7, -7, 20, 20);
-    painter->drawRect(boundingRect()); //-7,-7,20,20);
+    painter->drawRect(boundingRect());
 
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
@@ -88,11 +73,6 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
-    bool dragDrop = mpGraphWidget->getDragDrop();
-    if(dragDrop)
-    {
-//        mpGraphWidget->startNewEdgeHere();
-    }
     QGraphicsItem::mousePressEvent(event);
 }
 
@@ -109,15 +89,6 @@ void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    bool dragDrop = mpGraphWidget->getDragDrop();
-    if(dragDrop)
-    {
-        setFlag(ItemIsMovable, false);
-    }
-    else
-    {
-        setFlag(ItemIsMovable);
-    }
     LOG_DEBUG_S << "Hover ENTER event for " << mpVertex->toString();
     mPen = QPen(Qt::green);
 
