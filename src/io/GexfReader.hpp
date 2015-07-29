@@ -10,10 +10,20 @@
 namespace graph_analysis {
 namespace io {
 
+/**
+ * \class GexfReader
+ * \file GexfReader.hpp
+ * \brief Parses an input gexf file to the requested target graph
+ */
 class GexfReader : public Reader
 {
     typedef std::map < libgexf::t_id, Vertex::Ptr > VertexMap;
 public:
+    /**
+     * \brief reads the graph from the given file and stores it to the provided graph argument
+     * \param filename provided input filename
+     * \param graph target graph to store the parsed graph
+     */
     void read(const std::string& filename, BaseGraph::Ptr graph);
 };
 

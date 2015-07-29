@@ -10,8 +10,15 @@
 namespace graph_analysis {
 namespace io {
 
+void GexfWriter::write(const std::string& filename, const BaseGraph& graph) const
+{
+    BaseGraph graph_copy = graph;
+    write(filename, BaseGraph::Ptr(&graph_copy)); // reusing code
+}
+
 void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
+    // loading gexf lib main components
     libgexf::GEXF gexf;
     libgexf::DirectedGraph& digraph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
@@ -24,6 +31,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     data.addNodeAttributeColumn(labelAttr, "label", "STRING");
     data.addEdgeAttributeColumn(labelAttr, "label", "STRING");
 
+    // loading the nodes and their attributes to the gexf components
     VertexIterator::Ptr vit = graph->getVertexIterator();
     while(vit->next())
     {
@@ -36,6 +44,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         data.setNodeValue(nodeIdString, labelAttr, vertex->getLabel());
     }
 
+    // loading the edges and their attributes to the gexf components
     EdgeIterator::Ptr eit = graph->getEdgeIterator();
     while(eit->next())
     {
@@ -50,6 +59,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         data.setEdgeValue(edgeId, labelAttr, edge->getLabel());
     }
 
+    // calling the gexf lib renderer
     libgexf::FileWriter writer;
     boost::xpressive::sregex regex = boost::xpressive::as_xpr(".gexf");
     std::string replace("");
@@ -61,9 +71,11 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
 
     if(std::string::npos != name.find(' '))
     {
+        // disregarding the formatting stage for filenames containing blanks
         return;
     }
 
+    // the formatting stage
     std::string formattedFile = name + ".formatted";
     std::string command = "`which xmllint` --encode UTF-8 --format " + name + " > " + formattedFile;
 

@@ -6,9 +6,25 @@
 namespace graph_analysis {
 namespace io {
 
+/**
+ * \class GexfWriter
+ * \file GexfWriter.hpp
+ * \brief Renders requested graph to GEXF standard format
+ */
 class GexfWriter : public Writer
 {
 public:
+    /**
+     * \brief outputs the given graph to the given file
+     * \param filename requested output filename
+     * \param graph requested graph to be printed
+     */
+    void write(const std::string& filename, const BaseGraph& graph) const;
+    /**
+     * \brief outputs the given graph to the given file
+     * \param filename requested output filename
+     * \param graph smart pointer to the requested graph to be printed
+     */
     void write(const std::string& filename, const BaseGraph::Ptr& graph) const;
 };
 

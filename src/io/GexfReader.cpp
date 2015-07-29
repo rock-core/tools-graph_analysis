@@ -10,18 +10,22 @@ namespace io {
 
 void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
 {
+    // loading relevant gexf lib components
     libgexf::FileReader* reader = new libgexf::FileReader();
     reader->init(filename.c_str());
     reader->slurp(); // TODO: gexf.xsd schema needs to be downloaded and locally stored for a viable validation test with libgexf::SchemaValidator (see http://gexf.net/format/schema.html)
 
+    // unwrapping the already parsed graph
     libgexf::GEXF gexf = reader->getGEXFCopy();
     libgexf::DirectedGraph& gexf_graph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
     std::string classAttr = CLASS;
     std::string labelAttr = LABEL;
 
+    // storing the graph elements to the internal baseGraph
     graph->clear();
     VertexMap vertexMap;
+    // storing the nodes and their properties
     libgexf::NodeIter* node_it = gexf_graph.getNodes();
     while(node_it->hasNext())
     {
@@ -32,6 +36,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         graph->addVertex(vertex);
         vertexMap[current] = vertex;
     }
+    // storing the edges and their properties
     libgexf::EdgeIter* edge_it = gexf_graph.getEdges();
     while(edge_it->hasNext())
     {
