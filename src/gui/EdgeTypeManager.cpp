@@ -16,7 +16,7 @@ EdgeTypeManager::EdgeTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
         ("default", dynamic_cast<EdgeItem*>(new graphitem::edges::Simple()))
-        (LAYER_EDGE_TYPE, dynamic_cast<EdgeItem*>(new layeritem::edges::Simple()))
+        (LAYER_EDGE_TYPE, dynamic_cast<EdgeItem*>(new layeritem::edges::Simple())) // layering graphical edge instance
     ;
 }
 
@@ -54,11 +54,13 @@ EdgeItem* EdgeTypeManager::graphicsItemByType(const edge::Type& type)
 
 EdgeItem* EdgeTypeManager::createItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge, const std::string& type)
 {
+    // type is currently disregarded (there is so far a unique implementation to use ports)
     return graphicsItemByType(edge->getClassName())->createNewItem(graphWidget, sourceNode, sourceNodePortID, targetNode, targetNodePortID, edge);
 }
 
 EdgeItem* EdgeTypeManager::createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type)
 {
+    // conditionally returning a clone of the default when type is an empty string; using type in the types map otherwise
     return (type.empty() ? graphicsItemByType(edge->getClassName()) : graphicsItemByType(type))->createNewItem(graphWidget, sourceNode, targetNode, edge);
 }
 
