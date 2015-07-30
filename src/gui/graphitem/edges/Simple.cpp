@@ -23,7 +23,10 @@ Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePor
 void Simple::adjust()
 {
     if (!mpSourceNodeItem || !mpTargetNodeItem)
+    {
+        // skipping when one of the endpoints is invalid
         return;
+    }
 
     prepareGeometryChange();
 
@@ -31,9 +34,9 @@ void Simple::adjust()
     mSourcePoint = mpSourceNodeItem->mapToScene(mpSourceNodeItem->portBoundingRect(mSourceNodePortID).center());
     mTargetPoint = mpTargetNodeItem->mapToScene(mpTargetNodeItem->portBoundingRect(mTargetNodePortID).center());
 
-//    QPointF centerPos((mTargetPoint.x() - mSourcePoint.x())/2.0, (mTargetPoint.y() - mSourcePoint.y())/2.0);
-
+    // initial complete line
     QLineF line(mSourcePoint, mTargetPoint);
+    // adjusting endpoints of the line above
     QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line, mSourceNodePortID);
     QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line, mTargetNodePortID);
 
@@ -67,7 +70,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
         return;
     }
 
-    // Make sure no edge is drawn when items collide
+    // Make sure no edge is drawn when endpoint items collide
     if( mpSourceNodeItem->collidesWithItem(mpTargetNodeItem) )
     {
         return;
@@ -77,7 +80,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     painter->setPen(mPen);
     painter->drawLine(mLine);
 
-    // Draw the arrows
+    // Draw the arrow(s)
     double angle = ::acos(mLine.dx() / mLine.length());
     if (mLine.dy() >= 0)
         angle = TwoPi - angle;
@@ -95,6 +98,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
 
 QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, int portID)
 {
+    // retrieves the entire node bounding box when the ID fed is not a valid port ID; retrieves only the respective port bounding box otherwise
     QPolygonF polygon = (-1 == portID) ? item->boundingRect() : item->portBoundingPolygon(portID);
 
     // QVector<QPointF>::iterator cit = polygon.begin();
@@ -110,7 +114,7 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, int por
     QPointF p1 = item->mapToScene(polygon.first());
     QPointF p2;
     QPointF intersectionPoint;
-
+    // iterates through the node boundaries until intersection is found; this fact is guaranteed to happen since one of the endpoints of 'line' lies in the center of the convex body analysed
     for(int i = 1; i < polygon.count(); ++i)
     {
         p2 = item->mapToScene(polygon.at(i));
@@ -121,7 +125,6 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, int por
         if(intersectType == QLineF::BoundedIntersection)
         {
             // intersection found
-            // qDebug("Intersection found: at %.3f / %.3f",intersectionPoint.x(), intersectionPoint.y());
             break;
         } else {
             // no intersection found
