@@ -13,6 +13,7 @@ namespace gui {
 namespace graphitem {
 
 class Label;
+
 /**
  * \class Resource
  * \file Resource.hpp
