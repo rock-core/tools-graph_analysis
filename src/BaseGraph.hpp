@@ -87,8 +87,8 @@ public:
     std::string getImplementationTypeName() const { return ImplementationTypeTxt[mImplementationType]; }
 
     /**
-     * @brief tests whether the graph is void/empty
-     * @return true when the graph is empty (does not contain a single vertex); false otherwise
+     * \brief tests whether the graph is void/empty
+     * \return true when the graph is empty (does not contain a single vertex); false otherwise
      */
     bool empty();
 
