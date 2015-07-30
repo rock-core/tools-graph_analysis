@@ -62,13 +62,20 @@
 
 // choosing the test graph to display
 #define TESTNO TEST_IMPORT
+
+// uncomment if Graphviz render is to be tested
 //#define RENDER
+
+// commment out to cancel graph import on init
 #define IMPORT
+
+// hardwired import filename for init
 #define FILENAME  "../../resources/gexf/export_samples/port__types_test.gexf"
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 //#define LAYOUT "dot"
 
+// prints verbose help message regarding usage of 'cmd' to string stream 'ss'
 void help_setup(std::stringstream& ss, const std::string& cmd)
 {
     ss << "usage: " << cmd << " [--help]" << std::endl;
@@ -181,6 +188,7 @@ int main(int argc, char **argv)
 
     using namespace graph_analysis::gui;
 
+    // setting up qt application
     QApplication app(argc, argv);
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
@@ -191,6 +199,7 @@ int main(int argc, char **argv)
 
     using namespace graph_analysis;
 
+    // setting up graph filtering
     filters::VertexRegexFilter sourceNodeFilter(".*");
     filters::VertexRegexFilter targetNodeFilter(".*");
     filters::EdgeRegexFilter edgeFilter(".*");
@@ -200,7 +209,7 @@ int main(int argc, char **argv)
     edgeFilters.push_back(filter);
     widget->setEdgeFilters(edgeFilters);
 
-
+    // setting up the graph instance on init
     int testNo = TESTNO;
     switch(testNo)
     {
@@ -270,12 +279,21 @@ int main(int argc, char **argv)
 
         case TEST_IMPORT:
         {
-            // working on a void graph
+            /*
+             * TEST_IMPORT:
+             * -----------
+             *      working on a void graph
+             */
         }
         break;
 
         case TEST_TYPES:
         {
+            /*
+             * TEST_TYPES:
+             * ----------
+             *      tests vertex types differenciation
+             */
             Vertex::Ptr c0 = widget->createVertex("cluster", "c0");
             Vertex::Ptr c1 = widget->createVertex("cluster", "c1");
             Vertex::Ptr c2 = widget->createVertex("cluster", "c2");
@@ -306,6 +324,11 @@ int main(int argc, char **argv)
 
         case TEST_TYPES_FAIL:
         {
+            /*
+             * TEST_TYPES_FAIL:
+             * ---------------
+             *      willingly using an invalid vertex type
+             */
             Vertex::Ptr c0 = widget->createVertex("coconut", "c0");
             Vertex::Ptr c0p0 = widget->createVertex("port", "c0p0");
         }
@@ -313,7 +336,11 @@ int main(int argc, char **argv)
 
         case TEST_PORTS_EDGES_INTERACTION_DEPTH1:
         {
-            /* firstly manipulating the conceptual view of the graph */
+            /*
+             * TEST_PORTS_EDGES_INTERACTION_DEPTH1:
+             * -----------------------------------
+             *      firstly manipulating the conceptual view of the graph
+             */
             // 2 cluster nodes: c0, c1
             Vertex::Ptr c0 = widget->createVertex("cluster", "c0");
             Vertex::Ptr c1 = widget->createVertex("cluster", "c1");
@@ -333,7 +360,11 @@ int main(int argc, char **argv)
 
         case TEST_PORTS_EDGES_INTERACTION_DEPTH2:
         {
-            /* manipulating the conceptual view of the graph */
+            /*
+             * TEST_PORTS_EDGES_INTERACTION_DEPTH2:
+             * -----------------------------------
+             *      manipulating the conceptual view of the graph
+             */
             // 3 cluster nodes: c0, c1, c2
             Vertex::Ptr c0 = widget->createVertex("cluster", "c0");
             Vertex::Ptr c1 = widget->createVertex("cluster", "c1");
@@ -383,6 +414,7 @@ int main(int argc, char **argv)
 #else
     widget->updateFromGraph();
 #endif
+
 #ifdef RENDER
     widget->toFile("graph.dot");
 #endif
