@@ -75,7 +75,10 @@ NodeItem* EdgeItem::targetNodeItem() const
 void EdgeItem::adjust()
 {
     if (!mpSourceNodeItem || !mpTargetNodeItem)
+    {
+        // skipping when one of the endpoints is invalid
         return;
+    }
 
     QLineF line(mapFromItem(mpSourceNodeItem, 0, 0), mapFromItem(mpTargetNodeItem, 0, 0));
     qreal length = line.length();
@@ -138,7 +141,7 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
 }
 
-QPainterPath EdgeItem::shape() const 
+QPainterPath EdgeItem::shape() const
 {
     return mPainterPath;
     return ::QGraphicsItem::shape();
