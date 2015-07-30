@@ -30,33 +30,56 @@ namespace gui {
 
     class NodeItem;
 
+/**
+ * \class AddNodeDialog
+ * \file AddNodeDialog.hpp
+ * \brief pop-up dialog manager for adding a node to the graph
+ */
 class AddNodeDialog : public QObject
 {
     Q_OBJECT
 public:
+    /// empty constructor
     AddNodeDialog();
+    /// destructor
     ~AddNodeDialog(){}
+    /// sets up the provided qt dialog instance
     void setupUi(QDialog *Dialog);
+    /// sets up visible titles for the scene (e.g. buttons labels)
     void retranslateUi(QDialog *Dialog);
+    /// getter method for boolean validation witness
     bool isValid() { return mValid; }
+    /// getter method for the node label dialog result
     std::string getNodeLabel() { return mNodeLabel; }
+    /// getter method for the node type dialog result
     std::string getNodeType () { return mNodeType;  }
 
 public slots:
+    /// slot for listening for whenever the user presses "Ok" in the resulting pop-up dialog window
     void nodeAccept();
+    /// slot for listening for whenever the user presses "Cancel" (or ESC/close window corner button) in the resulting pop-up dialog window
     void nodeReject();
 
 private:
+    /// main qt dialog instance to be used
     QDialog mDialog;
+    /// stores the node label user-interaction result
     std::string mNodeLabel;
+    /// stores the node type user-interaction result
     std::string mNodeType;
 
+    /// boolean witness for validation; true whenever the user-interaction ends with the "Ok" button being pressed; false otherwise
     bool mValid;
-    QDialogButtonBox *buttonBox;
-    QLabel *label;
-    QLineEdit *lineEdit;
-    QLabel *label_2;
-    QComboBox *comboBox;
+    /// in-scene set of buttons for this pop-window ("Ok" and "Cancel")
+    QDialogButtonBox *mpButtonBox;
+    /// in scene label displaying "Node Label:"
+    QLabel *mpNodeLabel;
+    /// in scene label displaying "Node Type:"
+    QLabel *mpNodeTypeLabel;
+    /// GUI element where the user types the desired node label
+    QLineEdit *mpLineEdit;
+    /// GUI element from which the user selects the desired node type
+    QComboBox *mpComboBox;
 };
 
 } // end namespace gui
