@@ -10,9 +10,19 @@ namespace gui {
 namespace layeritem {
 namespace edges {
 
+/**
+ * \class EdgeLabel
+ * \file EdgeLabel.hpp
+ * \brief graphical edge text label implementation - specific to layer widget graphical implementation
+ */
 class EdgeLabel : public QGraphicsTextItem
 {
 public:
+    /**
+     * \brief constructor
+     * \param label required text label
+     * \param item parent graphical edge item
+     */
     EdgeLabel(const std::string& label, QGraphicsItem* item)
         : QGraphicsTextItem(QString(label.c_str()), item)
     {
@@ -20,6 +30,11 @@ public:
         setTextInteractionFlags(Qt::NoTextInteraction);
     }
 
+    /**
+     * \brief toggles direct editing options of the displayed text
+     * \param on boolean flag - true when the editing mode is to be turned on; false otherwise
+     * \param selectAll boolean flag - true when in editing mode the whole text shall be initially automatically selected; false otherwise
+     */
     void setTextInteraction(bool on, bool selectAll = false)
     {
         if(on && textInteractionFlags() == Qt::NoTextInteraction)
@@ -44,12 +59,14 @@ public:
         }
     }
 
+    /// updates displayed text string to 'label'
     void setText(const QString& label)
     {
         setPlainText(label);
     }
 
 protected:
+    /// qt mouse double-click callback
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
     {
     //    if(textInteractionFlags() == Qt::TextEditorInteraction)
@@ -62,18 +79,21 @@ protected:
     //    QGraphicsTextItem::mouseDoubleClickEvent(event);
     }
 
+    /// qt keys press callback
     void keyPressEvent(::QKeyEvent* event)
     {
         LOG_DEBUG_S << "KEYPRESS LABLE";
         QGraphicsTextItem::keyPressEvent(event);
     }
 
+    /// qt focus LEAVE callback
     void focusOutEvent(QFocusEvent* event)
     {
         LOG_DEBUG_S << "Lost focus";
         ::QGraphicsTextItem::focusOutEvent(event);
     }
 
+    /// qt item change callback
     QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
     {
         if(change == QGraphicsItem::ItemSelectedChange)

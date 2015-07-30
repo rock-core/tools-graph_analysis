@@ -6,6 +6,7 @@
 #include <QColor>
 #include <QGraphicsLineItem>
 
+/// string under which to register this edge item implementation in the factory
 #define LAYER_EDGE_TYPE "LayerEdge"
 
 namespace graph_analysis {
@@ -15,6 +16,11 @@ namespace edges {
 
 class EdgeLabel;
 
+/**
+ * \class Simple
+ * \file Simple.hpp
+ * \brief graphical edge implementation - specific to layer widget graphical implementation
+ */
 class Simple : public graph_analysis::gui::EdgeItem
 {
     Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr vertex);

@@ -59,6 +59,7 @@ public:
         }
     }
 
+    /// updates displayed text string to 'label'
     void setText(const QString& label)
     {
         setPlainText(label);
@@ -85,6 +86,7 @@ protected:
         QGraphicsTextItem::keyPressEvent(event);
     }
 
+    /// qt focus LEAVE callback
     void focusOutEvent(QFocusEvent* event)
     {
         qDebug("Lost focus");
