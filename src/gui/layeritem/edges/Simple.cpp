@@ -18,7 +18,10 @@ Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetN
 void Simple::adjust()
 {
     if (!mpSourceNodeItem || !mpTargetNodeItem)
+    {
+        // skipping when one of the endpoints is invalid
         return;
+    }
 
     prepareGeometryChange();
 
@@ -26,16 +29,21 @@ void Simple::adjust()
     mTargetPoint = mpTargetNodeItem->getCenterPosition();
     mSourcePoint = mpSourceNodeItem->getCenterPosition();
 
-    QPointF centerPos((mTargetPoint.x() - mSourcePoint.x())/2.0, (mTargetPoint.y() - mSourcePoint.y())/2.0);
-
+    // initial complete line
     QLineF line(mSourcePoint, mTargetPoint);
+    // adjusting endpoints of the line above
     QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line);
     QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line);
 
     mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
-    mpLabel->setPos( mLine.pointAt(0.5) );
-
+    adjustLabel();
 }
+
+void Simple::adjustLabel()
+{
+    mpLabel->setPos( mLine.pointAt(0.5) - QPointF(mpLabel->boundingRect().width() / 2., 0) );
+}
+
 
 QRectF Simple::boundingRect() const
 {
@@ -58,7 +66,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
         return;
     }
 
-    // Make sure no edge is drawn when items collide
+    // Make sure no edge is drawn when endpoint items collide
     if( mpSourceNodeItem->collidesWithItem(mpTargetNodeItem) )
     {
         return;
@@ -68,7 +76,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     painter->setPen(mPen);
     painter->drawLine(mLine);
 
-    // Draw the arrows
+    // Draw the arrow(s)
     double angle = ::acos(mLine.dx() / mLine.length());
     if (mLine.dy() >= 0)
         angle = TwoPi - angle;
@@ -101,7 +109,7 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
     QPointF p1 = item->mapToScene(polygon.first());
     QPointF p2;
     QPointF intersectionPoint;
-
+    // iterates through the node boundaries until intersection is found; this fact is guaranteed to happen since one of the endpoints of 'line' lies in the center of the convex body analysed
     for(int i = 1; i < polygon.count(); ++i)
     {
         p2 = item->mapToParent(polygon.at(i));
@@ -112,7 +120,6 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
         if( intersectType == QLineF::BoundedIntersection)
         {
             // intersection found
-            // LOG_DEBUG_S << "Intersection found: " << intersectionPoint.x() << " / " << intersectionPoint.y());
             break;
         } else {
             // no intersection found
@@ -125,7 +132,7 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
 void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-//    LOG_DEBUG_S << "Hover ENTER event for " << mpEdge->toString();
+    LOG_DEBUG_S << "Hover ENTER event for " << mpEdge->toString();
     mpGraphWidget->setSelectedEdge(mpEdge);
     mpGraphWidget->setEdgeSelected(true);
     QGraphicsItem::hoverEnterEvent(event);
@@ -134,7 +141,7 @@ void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = mPenDefault;
-//    LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
+    LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
     mpGraphWidget->setEdgeSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }
