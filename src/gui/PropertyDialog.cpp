@@ -72,12 +72,12 @@ void PropertyDialog::updateMainWidget(int index)
 
 void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 {
-    int commonExtraPadding;
-    int nframes = DEFAULT_NFRAMES;
-    int nbuttons = DEFAULT_NBUTTONS;
-    int linePoints  = DEFAULT_LINE_POINTS;
-    int buttonPoints  = DEFAULT_BUTTON_POINTS;
-    mHeight = 31 + linePoints * nframes + buttonPoints * nbuttons;
+    int commonExtraPadding; // used to determine the least common extra space (and have it subtracted from all layouts heights in the end)
+    int nframes = DEFAULT_NFRAMES; // known number of maximum frames in a single vertical layout
+    int nbuttons = DEFAULT_NBUTTONS; // known number of maximum buttons in a single vertical layout
+    int linePoints  = DEFAULT_LINE_POINTS; // known number of points per frame line height
+    int buttonPoints  = DEFAULT_BUTTON_POINTS; // known number of points per button height
+    mHeight = 31 + linePoints * nframes + buttonPoints * nbuttons; // total over-estimated panel height
     commonExtraPadding = mHeight;
     if (Dialog->objectName().isEmpty())
     {
@@ -179,7 +179,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayout->addWidget(mpDragDropButton);
 
         // adding bottom padding
-        verticalLayoutLeftover = 0 * linePoints + 1 * buttonPoints;
+        verticalLayoutLeftover = 0 * linePoints + 1 * buttonPoints; // this vertical layout lacks 0 * frames and 1 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutLeftover)
         {
             commonExtraPadding = verticalLayoutLeftover;
@@ -293,7 +293,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayoutFocus->addWidget(mpRemoveEdgeButton);
 
         // adding bottom padding
-        verticalLayoutFocusLeftover = 3 * linePoints + 0 * buttonPoints;
+        verticalLayoutFocusLeftover = 3 * linePoints + 0 * buttonPoints; // this vertical layout lacks 3 * frames and 0 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutFocusLeftover)
         {
             commonExtraPadding = verticalLayoutFocusLeftover;
@@ -374,7 +374,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayoutLayer->addWidget(mpLayoutLayerButton);
 
         // adding bottom padding
-        verticalLayoutLayerLeftover = 2 * linePoints + 3 * buttonPoints;
+        verticalLayoutLayerLeftover = 2 * linePoints + 3 * buttonPoints; // this vertical layout lacks 2 * frames and 3 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutLayerLeftover)
         {
             commonExtraPadding = verticalLayoutLayerLeftover;
@@ -413,7 +413,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayoutComponentsLayer->addWidget(mpTogglePortLayerButton);
 
         // adding bottom padding
-        verticalLayoutComponentsLayerLeftover = 3 * linePoints + 8 * buttonPoints;
+        verticalLayoutComponentsLayerLeftover = 3 * linePoints + 8 * buttonPoints; // this vertical layout lacks 3 * frames and 8 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutComponentsLayerLeftover)
         {
             commonExtraPadding = verticalLayoutComponentsLayerLeftover;
