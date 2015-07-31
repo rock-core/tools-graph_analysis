@@ -63,31 +63,41 @@ class EdgeItem;
 class GraphWidget;
 class QGraphicsSceneMouseEvent;
 
+/**
+ * \class NodeItem
+ * \file NodeItem.hpp
+ * \brief graphical node representation interface
+ */
 class NodeItem : public QGraphicsItemGroup
 {
 public:
-    typedef long long portID_t;
-    typedef std::map<portID_t, graphitem::Label*> Labels;
-    typedef std::pair<portID_t, graphitem::Label*> Tuple;
-    typedef std::map<portID_t, graph_analysis::Vertex::Ptr> Vertices;
-    typedef std::pair<portID_t, graph_analysis::Vertex::Ptr> VTuple;
+    typedef long long portID_t; // counter datatype for attributing ID-s to ports in the case of implementing cluster node items
+    typedef std::map<portID_t, graphitem::Label*> Labels; // map of ports labels in a cluster node
+    typedef std::pair<portID_t, graphitem::Label*> Tuple; // item of a map of ports labels in a cluster node
+    typedef std::map<portID_t, graph_analysis::Vertex::Ptr> Vertices; // map of port vertices in a cluster node
+    typedef std::pair<portID_t, graph_analysis::Vertex::Ptr> VTuple; // item of map of port vertices in a cluster node
 protected:
+    /**
+     * \brief constructor
+     * \param graphWidget the parent and managing graph widget
+     * \param vertex the internal conceptual vertex
+     */
     NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
 
 public:
+    /// empty constructor
     NodeItem() {}
 
+    /// destructor
     virtual ~NodeItem() {};
 
     enum { Type = UserType + 1 };
     int type() const { return Type; }
 
+    /// computes the force field values for each edge (w.r.t. the force field automatic re-arranging algorithm)
     void calculateForces();
+    /// actuator method used the the same force field (automatic re-arranging) algorithm
     bool advance();
-    virtual QPolygonF portBoundingPolygon   (portID_t portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingPolygon is not reimplemented");    }
-    virtual QRectF    portBoundingRect      (portID_t portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingRect is not reimplemented");       }
-    virtual void setPortLabel(portID_t portID, const std::string& label) { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortLabel is not reimplemented"); }
-    virtual void unselect() { throw std::runtime_error("graph_analysis::gui::NodeItem::unselect is not reimplemented"); }
 
     /**
      * Get the center position of this node item
@@ -95,12 +105,24 @@ public:
      * \return center position of this node item in the scene
      */
     virtual QPointF getCenterPosition() const;
+
+    /// fancy toString method: prepends the pointer address to the underlying vertex toString()
+    std::string getId() const;
+
+    /// getter method for retrieving the underlying conceptual graph vertex
+    graph_analysis::Vertex::Ptr getVertex() { return mpVertex; }
+    /// setter method for updating the underlying conceptual graph vertex
+    void setVertex(graph_analysis::Vertex::Ptr vertex) { mpVertex = vertex; }
+    /// getter method for retrieving the parent managing graph widget
+    GraphWidget* getGraphWidget() { return mpGraphWidget; }
+
+    /// virtual methods
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::gui::NodeItem::createNewItem is not reimplemented"); }
 
-    std::string getId() const;
-    graph_analysis::Vertex::Ptr getVertex() { return mpVertex; }
-    void setVertex(graph_analysis::Vertex::Ptr vertex) { mpVertex = vertex; }
-    GraphWidget* getGraphWidget() { return mpGraphWidget; }
+    virtual QPolygonF portBoundingPolygon   (portID_t portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingPolygon is not reimplemented");    }
+    virtual QRectF    portBoundingRect      (portID_t portID)  { throw std::runtime_error("graph_analysis::gui::NodeItem::portBoundingRect is not reimplemented");       }
+    virtual void setPortLabel(portID_t portID, const std::string& label) { throw std::runtime_error("graph_analysis::gui::NodeItem::setPortLabel is not reimplemented"); }
+    virtual void unselect() { throw std::runtime_error("graph_analysis::gui::NodeItem::unselect is not reimplemented"); }
 
     virtual void changeLabel(const std::string& label)  { throw std::runtime_error("graph_analysis::gui::NodeItem::changeLabel is not reimplemented");  }
     virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented");  }
@@ -123,10 +145,14 @@ public:
     virtual Vertices    getVertices()   { throw std::runtime_error("graph_analysis::gui::NodeItem::getVertices is not reimplemented"); }
 
 protected:
+    /// qt item change callback
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
+    /// underlying graph vertex
     graph_analysis::Vertex::Ptr mpVertex;
+    /// target position (updated by the force field algorithm)
     QPointF mNewPos;
+    /// parent managing graph widget
     GraphWidget* mpGraphWidget;
 };
 
