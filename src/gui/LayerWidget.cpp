@@ -233,6 +233,17 @@ void LayerWidget::enableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Enabled an edge of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
+void LayerWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
+{
+    mpSubGraph->disable(vertex);
+    LOG_DEBUG_S << "Disabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
+}
+void LayerWidget::disableEdge(graph_analysis::Edge::Ptr edge)
+{
+    mpSubGraph->disable(edge);
+    LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
+}
+
 void LayerWidget::updateFromGraph()
 {
     if(mpGraph->empty())
@@ -285,7 +296,7 @@ void LayerWidget::updateFromGraph()
             continue;
         }
 
-        // Registering new node edge items
+        // Registering new edge items
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
 
@@ -382,7 +393,7 @@ void LayerWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
     {
-        //Use ScrollHand Drag Mode to enable Panning
+        //Use ScrollHand Drag Mode to end Panning
         setDragMode(NoDrag);
         QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
         QGraphicsView::mouseReleaseEvent(&fake);
@@ -407,41 +418,41 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
     {
         switch (event->key())
         {
-            case Qt::Key_Q:
+            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
             case Qt::Key_W:
                 exit(0);
             break;
 
-            case Qt::Key_Plus:
+            case Qt::Key_Plus: // CTRL+ zooms in
                 zoomIn();
             break;
 
-            case Qt::Key_Minus:
+            case Qt::Key_Minus: // CTRL+- zooms out
                 zoomOut();
             break;
 
-            case Qt::Key_Left:
+            case Qt::Key_Left: // CTRL+LeftArrow rotates the view counterclockwise
                 rotate(qreal(-1.13));
             break;
 
-            case Qt::Key_Right:
+            case Qt::Key_Right: // CTRL+RightArrow rotates the view clockwise
                 rotate(qreal( 1.13));
             break;
 
-            case Qt::Key_R:
+            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
                 mpViewWidget->resetGraph();
             break;
 
-            case Qt::Key_S:
+            case Qt::Key_S: // CTRL+S saves the graph to file
                 mpViewWidget->exportGraph();
             break;
 
-            case Qt::Key_I:
+            case Qt::Key_I: // CTRL+O or CTRL+I opens a graph from file
             case Qt::Key_O:
                 mpViewWidget->importGraph();
             break;
 
-            case Qt::Key_P:
+            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
                 if(!mpViewWidget->dialogIsRunning())
                 {
                     mpViewWidget->reloadPropertyDialog();
@@ -461,19 +472,19 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
         //    break;
         //case Qt::Key_Right:
         //    break;
-        case Qt::Key_Plus:
+        case Qt::Key_Plus: // '+' zooms-in
             zoomIn();
         break;
-        case Qt::Key_Minus:
+        case Qt::Key_Minus: // '-' zooms-out
             zoomOut();
         break;
-        case Qt::Key_Space:
+        case Qt::Key_Space: // Space, newline and 'R'/'r' refresh the view
         case Qt::Key_Enter:
         case Qt::Key_R:
                 refresh();
         break;
 
-        case Qt::Key_S:
+        case Qt::Key_S: // 'S'/'s' shuffle the nodes
             shuffle();
         break;
         //default:

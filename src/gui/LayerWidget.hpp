@@ -75,6 +75,12 @@ class EdgeItem;
     }
  \endverbatim
  */
+
+/**
+ * \class LayerWidget
+ * \file LayerWidget.hpp
+ * \brief layers graph view widget implementation
+ */
 class LayerWidget : public GraphWidget
 {
     Q_OBJECT
@@ -82,32 +88,50 @@ public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
 
+    /**
+     * \brief constructor
+     * \param viewWidget managing view graph widget
+     * \param graph underlying base graph
+     */
     LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ));
+    /// destructor
     ~LayerWidget();
 
+    /// getter method for retrieving the note scene items map
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
+    /// getter method for retrieving the edge scene items map
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
 
+    /// getter method for retrieving the underlying base graph
     graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
+    /// setter method for updating the underlying base graph
     void setGraph(graph_analysis::BaseGraph::Ptr graph);
 
+    /// deletes all internal information; when keepData is set, the underlying base graph is spared (it won't get reset)
     void reset(bool keepData = false);
+    /// resets all graphical scene storage elements
     void clear();
+    /// respawns all graphical elements by the underlying base graph
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
 
+    /// setter method for updating the scaling factor
     void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
+    /// getter method for retrieving the scaling factor
     double  getScaleFactor () const { return mScaleFactor; }
 
+    /// getter method for retrieving toggling witness of the entire ports layer
     bool getPortLayerToggle     () { return mPortLayerToggle;    }
+    /// getter method for retrieving toggling witness of the entire clusters layer
     bool getClusterLayerToggle  () { return mClusterLayerToggle; }
 
-
+    /// method for updating the informative message in the StatusBar of the managing view widget
     inline void updateStatus(const std::string& message = std::string(), int timeout = 0)
     {
         mpViewWidget->updateStatus(message, timeout);
     }
 
+    /// method for deciding whether a vertex is currently being toggled out of the scene by layer discrimination
     inline bool toggledOut(graph_analysis::Vertex::Ptr vertex)
     {
         bool result =   (!mPortLayerToggle && "graph_analysis::PortVertex" == vertex->getClassName())
@@ -122,43 +146,71 @@ public:
     }
 
 public slots:
+    /// shuffles all the nodes in the layers graph view
     void shuffle();
+    /// zooms-into the layers graph scene
     void zoomIn();
+    /// zooms-out of the layers graph scene
     void zoomOut();
+    /// pulls-out the layers graph context menu on right-click
     void showContextMenu(const QPoint& pos);
 
+    /// sets and layouts on the provided 'layoutName' the layers graph view
     void setLayout(QString layoutName);
+    /// refreshes the scene from scratch
     void refresh();
+    /// prompts the user for a new layout and performs re-layouting
     void changeLayout();
 
+    /// setter method for updating the ports layer toggle
     void togglePortLayer(bool toggle);
+    /// setter method for updating the clusters layer toggle
     void toggleClusterLayer(bool toggle);
 
 protected:
 
+    /// setter method for updating the node filters
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
+    /// setter method for updating the edge filters
     void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
+    /// enables the provided vertex (its corresponding node scene-item gets displayed at re-rendering)
     void enableVertex(graph_analysis::Vertex::Ptr vertex);
+    /// disables the provided vertex (its corresponding node scene-item gets filtered out at re-rendering)
+    void disableVertex(graph_analysis::Vertex::Ptr vertex);
+    /// enables the provided edge (its corresponding edge scene-item gets displayed at re-rendering)
     void enableEdge(graph_analysis::Edge::Ptr edge);
+    /// enables the provided edge (its corresponding edge scene-item gets filtered out at re-rendering)
+    void disableEdge(graph_analysis::Edge::Ptr edge);
 
+    /// adds a new vertex to the underlying base graph
     void addVertex(graph_analysis::Vertex::Ptr vertex);
+    /// adds a new edge to the underlying base graph
     void addEdge(graph_analysis::Edge::Ptr edge);
 
+    /// qt mouse press callback
     void mousePressEvent(QMouseEvent *event);
+    /// qt mouse release callback
     void mouseReleaseEvent(QMouseEvent *event);
+    /// qt keys press callback
     void keyPressEvent(QKeyEvent *event);
+    /// qt timer callback
     void timerEvent(QTimerEvent *event);
 #ifndef QT_NO_WHEELEVENT
+    /// qt mouse wheel spin callback
     void wheelEvent(QWheelEvent *event);
 #endif
     void drawBackground(QPainter *painter, const QRectF& rect);
 
+    /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);
 
 private:
+    /// managing view widget
     ViewWidget* mpViewWidget;
+    /// ports layer toggle: when true, port nodes get displayed; false when they get hidden
     bool mPortLayerToggle;
+    /// clusters layer toggle: when true, cluster nodes get displayed; false when they get hidden
     bool mClusterLayerToggle;
 };
 
