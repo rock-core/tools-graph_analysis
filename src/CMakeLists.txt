@@ -28,6 +28,7 @@ rock_library(graph_analysis
         gui/AddNodeDialog.cpp
         gui/SwapPortsDialog.cpp
         gui/RenamePortDialog.cpp
+        gui/PropertyDialog.cpp
         gui/ActionCommander.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
