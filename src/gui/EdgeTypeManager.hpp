@@ -33,7 +33,7 @@ public:
     typedef std::map<edge::Type, EdgeItem*> ClassVisualizationMap;
 
 private:
-    /// registration map - stores the registered types, mapping them to the example vertex instances (i.e. from which new ones to be forked on request)
+    /// registration map - stores the registered types, mapping them to the example edge instances (i.e. from which new ones to be forked on request)
     ClassVisualizationMap mClassVisualizationMap;
     /// internal method to query the instance map
     EdgeItem* graphicsItemByType(const edge::Type& type);
@@ -56,7 +56,7 @@ public:
      * \param targetNode edge target port node
      * \param targetNodePortID edge target port node ID
      * \param edge underlying conceptual edge
-     * \param type optional type parameter
+     * \param type optional preferred type
      * \return smart pointer to the newly created graphical edge instance
      */
     EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());

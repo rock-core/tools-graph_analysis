@@ -17,7 +17,7 @@ NodeTypeManager::NodeTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
         ("default", dynamic_cast<NodeItem*>(new graphitem::Resource()))
-        (LAYER_NODE_TYPE, dynamic_cast<NodeItem*>(new layeritem::Resource()))
+        (LAYER_NODE_TYPE, dynamic_cast<NodeItem*>(new layeritem::Resource())) // layering graphical node instance
         // Change behaviour and appearance of edge if needed
         // ("graph_analysis::Vertex", dynamic_cast<NodeItem*>(new graphitem::Simple()))
     ;
@@ -66,6 +66,7 @@ NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type, bool throw
 
 NodeItem* NodeTypeManager::createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex, const std::string& type)
 {
+    // conditionally returning a clone of the default when type is an empty string; using type in the types map otherwise
     return (type.empty() ? graphicsItemByType(vertex->getClassName()) : graphicsItemByType(type))->createNewItem(graphWidget, vertex);
 }
 
