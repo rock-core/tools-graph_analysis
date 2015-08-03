@@ -144,7 +144,7 @@ public slots:
     /// sets and layouts on the provided 'layoutName' the layers graph view
     void setLayout(QString layoutName);
     /// refreshes the scene from scratch
-    void refresh();
+    void refresh(bool status = true);
     /// prompts the user for a new layout and performs re-layouting
     void changeLayout();
 

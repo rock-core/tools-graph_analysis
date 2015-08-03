@@ -289,7 +289,7 @@ public slots:
     /// re-layouts the graph view with the given layouting engine 'layoutName'
     void setLayout(QString layoutName);
     /// refreshes the scene from scratch
-    void refresh();
+    void refresh(bool status = true);
     /// deletes the entire graph
     void resetGraph();
     /// prompts the user for a new layout and performs re-layouting

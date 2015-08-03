@@ -213,13 +213,19 @@ void LayerWidget::clear()
     mEdgeItemMap.clear();
     scene()->clear();
 }
-void LayerWidget::refresh()
+void LayerWidget::refresh(bool status)
 {
-    updateStatus(std::string("refreshing layers graph view..."));
+    if(status)
+    {
+        updateStatus(std::string("refreshing layers graph view..."));
+    }
     reset(true /*keepData*/);
     updateFromGraph();
     update();
-    updateStatus(std::string("Refreshed layers graph view!"), DEFAULT_TIMEOUT);
+    if(status)
+    {
+        updateStatus(std::string("Refreshed layers graph view!"), DEFAULT_TIMEOUT);
+    }
 }
 
 void LayerWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)

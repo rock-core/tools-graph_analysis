@@ -129,7 +129,7 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
 
-    // setting up the Reader- and Writer- Maps
+    // setting up the Reader- and WriterMaps
     io::YamlWriter *yamlWriter = new io::YamlWriter();
     mWriterMap["yaml"]  = yamlWriter;
     mWriterMap["Yaml"]  = yamlWriter;
@@ -466,6 +466,7 @@ void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
                                          0, false, &ok);
     if (ok && !strPortType.isEmpty())
     {
+        // creating the port vertex
         graph_analysis::Vertex::Ptr portVertex;
         if("input" == strPortType)
         {
@@ -475,6 +476,7 @@ void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
         {
             portVertex = VertexTypeManager::getInstance()->createVertex("outputport", "newOutputPort");
         }
+        // creating its affiliated graphics and registering it
         mpGraph->addVertex(portVertex);
         enableVertex(portVertex);
         createEdge(vertex, portVertex, "portRegistrationEdge");
@@ -657,6 +659,7 @@ void ViewWidget::importGraph()
                 fromXmlFile(label.toStdString() + ".gexf");
             }
         }
+        mpLayerWidget->refresh(false);
     }
     else
     {
@@ -1307,7 +1310,7 @@ void ViewWidget::fromXmlFile(const std::string& filename)
 
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
-    refresh();
+    refresh(false);
 }
 
 void ViewWidget::fromYmlFile(const std::string& filename)
@@ -1332,7 +1335,7 @@ void ViewWidget::fromYmlFile(const std::string& filename)
 
     mpSubGraph->enableAllVertices();
     mpSubGraph->enableAllEdges();
-    refresh();
+    refresh(false);
 }
 
 void ViewWidget::reset(bool keepData)
@@ -1374,22 +1377,22 @@ void ViewWidget::clear()
     scene()->clear();
 }
 
-void ViewWidget::refresh()
+void ViewWidget::refresh(bool status)
 {
-    if(mInitialized)
+    if(status && mInitialized)
     {
         updateStatus(std::string("refreshing graph..."));
     }
     reset(true /*keepData*/);
     updateFromGraph();
     update();
-    if(mInitialized)
-    {
-        updateStatus(std::string("Refreshed graph!"), DEFAULT_TIMEOUT);
-    }
-    else
+    if(!mInitialized)
     {
         mInitialized = true;
+    }
+    else if(status)
+    {
+        updateStatus(std::string("Refreshed graph!"), DEFAULT_TIMEOUT);
     }
 }
 
