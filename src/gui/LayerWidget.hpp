@@ -97,11 +97,6 @@ public:
     /// destructor
     ~LayerWidget();
 
-    /// getter method for retrieving the note scene items map
-    NodeItemMap& nodeItemMap() { return mNodeItemMap; }
-    /// getter method for retrieving the edge scene items map
-    EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
-
     /// getter method for retrieving the underlying base graph
     graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
     /// setter method for updating the underlying base graph

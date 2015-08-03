@@ -41,6 +41,8 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
+#include "NodeItem.hpp"
+
 #include <map>
 #include <QIcon>
 #include <QMainWindow>
@@ -92,25 +94,46 @@ class LayerWidget;
     }
  \endverbatim
  */
+
+/**
+ * \class GraphWidget
+ * \file GraphWidget.hpp
+ * \brief graph view widget interface
+ */
 class GraphWidget : public QGraphicsView
 {
 public:
-    typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap;
-    typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> PortMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, int> PortIDMap;
-    typedef std::map <std::string, io::Writer*> WriterMap;
-    typedef std::map <std::string, io::Reader*> ReaderMap;
-    typedef std::map <std::string, QIcon> IconMap;
+    typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap; // meant to map default edges to their correspondent initial edges in the base graph
+    typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap; // maps conceptual edges to the graphical edges in the scene
+    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap; // maps conceptual cluster vertices to graphical nodes in the scene
+    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> PortMap; // maps conceptual port vertices to their graphical node in the scene
+    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::portID_t> PortIDMap; // maps conceptual port vertices to their port ID
+    typedef std::map <std::string, io::Writer*> WriterMap; // maps specific keywords to graph exporters
+    typedef std::map <std::string, io::Reader*> ReaderMap; // maps specific keywords to graph importers
+    typedef std::map <std::string, QIcon> IconMap; // maps specific keywords to qt loaded icons
 
+    /// empty constructor
     GraphWidget(QWidget *parent = 0);
+    /**
+     * \brief constructor
+     * \param graph underlying base graph
+     * \param parent qt parent widget
+     */
     GraphWidget(graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ), QWidget *parent = 0);
+    /**
+     * \brief constructor
+     * \param mainWindow main qt application window
+     * \param parent qt parent widget
+     */
     GraphWidget(QMainWindow *mainWindow, QWidget *parent = 0);
+    /// destructor
     ~GraphWidget();
 
+    /// getter method for retrieving the note scene items map
     NodeItemMap& nodeItemMap() { return mNodeItemMap; }
+    /// getter method for retrieving the edge scene items map
     EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
+
 
     graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
 

@@ -108,9 +108,6 @@ public:
     void fromXmlFile(const std::string& filename);
     void fromYmlFile(const std::string& filename);
 
-    NodeItemMap& nodeItemMap() { return mNodeItemMap; }
-    EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
-
     void enableVertex (graph_analysis::Vertex::Ptr vertex);
     void disableVertex(graph_analysis::Vertex::Ptr vertex);
     void enableEdge (graph_analysis::Edge::Ptr edge);
