@@ -97,8 +97,6 @@ public:
     /// destructor
     ~LayerWidget();
 
-    /// getter method for retrieving the underlying base graph
-    graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
     /// setter method for updating the underlying base graph
     void setGraph(graph_analysis::BaseGraph::Ptr graph);
 
@@ -109,11 +107,6 @@ public:
     /// respawns all graphical elements by the underlying base graph
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
-
-    /// setter method for updating the scaling factor
-    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
-    /// getter method for retrieving the scaling factor
-    double  getScaleFactor () const { return mScaleFactor; }
 
     /// getter method for retrieving toggling witness of the entire ports layer
     bool getPortLayerToggle     () { return mPortLayerToggle;    }
@@ -163,11 +156,6 @@ public slots:
     void toggleClusterLayer(bool toggle);
 
 protected:
-
-    /// setter method for updating the node filters
-    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
-    /// setter method for updating the edge filters
-    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
     /// enables the provided vertex (its corresponding node scene-item gets displayed at re-rendering)
     void enableVertex(graph_analysis::Vertex::Ptr vertex);

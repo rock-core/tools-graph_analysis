@@ -107,6 +107,7 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     , mMaxNodeWidth (0)
     , mpLayerWidget(new LayerWidget(this, mpGraph))
     , mpStatus(mpMainWindow->statusBar())
+    , mDragDrop(false)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));

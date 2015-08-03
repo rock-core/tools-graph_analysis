@@ -585,38 +585,6 @@ void LayerWidget::scaleView(qreal scaleFactor)
     updateStatus(status_msg, DEFAULT_TIMEOUT);
 }
 
-void LayerWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
-{
-    mpVertexFilter->clear();
-
-    BOOST_FOREACH(Filter<Vertex::Ptr>::Ptr filter, filters)
-    {
-        mpVertexFilter->add(filter);
-    }
-    mGraphView.setVertexFilter(mpVertexFilter);
-    if(!mFiltered)
-    {
-        mpSubGraph = mGraphView.apply(mpGraph);
-        mFiltered = true;
-    }
-}
-
-void LayerWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
-{
-    mpEdgeFilter->clear();
-
-    BOOST_FOREACH(Filter<Edge::Ptr>::Ptr filter, filters)
-    {
-        mpEdgeFilter->add(filter);
-    }
-    mGraphView.setEdgeFilter(mpEdgeFilter);
-    if(!mFiltered)
-    {
-        mpSubGraph = mGraphView.apply(mpGraph);
-        mFiltered = true;
-    }
-}
-
 void LayerWidget::shuffle()
 {
     updateStatus(std::string("shuflling all the nodes in the layers graph view..."));

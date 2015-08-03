@@ -113,8 +113,6 @@ public:
     void enableEdge (graph_analysis::Edge::Ptr edge);
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
-
     void reset(bool keepData = false);
     void clear();
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
@@ -157,6 +155,8 @@ public:
     {
         mpStatus->showMessage(QString(message.c_str()), timeout);
     }
+
+    bool getDragDrop() { return mDragDrop; }
 
 public slots:
     void shuffle();
@@ -262,6 +262,7 @@ private:
     LayerWidget* mpLayerWidget;
     QStatusBar* mpStatus;
 
+    bool mDragDrop;
 };
 
 } // end namespace gui
