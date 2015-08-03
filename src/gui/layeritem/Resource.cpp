@@ -18,6 +18,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
 {
+    setFlag(ItemIsMovable);
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
