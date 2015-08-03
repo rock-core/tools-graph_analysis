@@ -80,14 +80,12 @@ class EdgeItem;
  * \class LayerWidget
  * \file LayerWidget.hpp
  * \brief layers graph view widget implementation
+ * \details maintains and displays a layered view of its base graph
  */
 class LayerWidget : public GraphWidget
 {
     Q_OBJECT
 public:
-    typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap;
-
     /**
      * \brief constructor
      * \param viewWidget managing view graph widget
