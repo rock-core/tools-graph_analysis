@@ -105,6 +105,9 @@ public:
     /// getter method: retrieves the conceptual port vertices labels map
     Vertices    getVertices()   { return mVertices; }
 
+    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
+    inline void refreshLayerWidget();
+
 protected:
     /// used to claim scene focus (mainly when double-clicked)
     void grabFocus();

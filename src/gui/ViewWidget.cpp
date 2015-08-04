@@ -470,6 +470,8 @@ void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
         createEdge(vertex, portVertex, "portRegistrationEdge");
         mPortMap[portVertex] = item;
         mPortIDMap[portVertex] = item->addPort(portVertex);
+        // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+        updateLayerWidget();
         updateStatus(std::string("Added an ") + strPortType.toStdString() + " port to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
         item->update();
     }
@@ -516,6 +518,8 @@ void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
         ss >> portID;
         // having identified the port to be renamed, ordering its re-labeling
         item->setPortLabel(portID, newLabel);
+        // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+        refreshLayerWidget();
         updateStatus(std::string("Renamed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", DEFAULT_TIMEOUT);
     }
     else
@@ -601,6 +605,8 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
         }
         // remove port graphics
         item->removePort(portID);
+        // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+        refreshLayerWidget();
         updateStatus(std::string("Removed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
     }
     else
@@ -844,6 +850,8 @@ void ViewWidget::changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std
         throw std::runtime_error(error_msg);
     }
     nodeItem->updateLabel();
+    // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+    refreshLayerWidget();
 }
 
 void ViewWidget::changeFocusedEdgeLabel()
@@ -900,6 +908,8 @@ void ViewWidget::changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const 
     graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edge->getLabel();
     edgeLabel->setPlainText(QString(label.c_str()));
     edge->adjustLabel();
+    // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+    refreshLayerWidget();
 }
 
 void ViewWidget::removeFocusedEdge()
@@ -2163,6 +2173,8 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
                 }
                 // remove ports graphics
                 item->removePorts();
+                // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+                refreshLayerWidget();
                 updateStatus(std::string("Removed all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
             break;
 
@@ -2410,6 +2422,11 @@ inline void ViewWidget::updateLayerWidget()
 }
 
 inline void ViewWidget::refreshLayerWidget()
+{
+    mpLayerWidget->refresh();
+}
+
+void ViewWidget::refreshLayersWidget()
 {
     mpLayerWidget->refresh();
 }

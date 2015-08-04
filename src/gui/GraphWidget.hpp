@@ -185,6 +185,7 @@ public:
     virtual void setFocusedVertex   (graph_analysis::Vertex::Ptr)   { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedVertex is not reimplemented"); }
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
     virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
+    virtual void refreshLayersWidget() { throw std::runtime_error("graph_analysis::gui::GraphWidget::refreshLayerWidget is not reimplemented"); }
 
 protected:
 

@@ -237,10 +237,8 @@ public:
     /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
     bool getDragDrop() { return mDragDrop; }
 
-    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
-    inline void refreshLayerWidget();
-    /// updates the (read-only) layers graph view in the omologuous widget mpLayerWidget
-    inline void updateLayerWidget();
+    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget (meant to be used from the outside)
+    void refreshLayersWidget();
 
 public slots:
     /// shuffles all the nodes in the diagram graph view
@@ -349,6 +347,11 @@ public slots:
     void reloadPropertyDialogMainWindow();
 
 protected:
+    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
+    inline void refreshLayerWidget();
+    /// updates the (read-only) layers graph view in the omologuous widget mpLayerWidget
+    inline void updateLayerWidget();
+
     /// qt mouse press callback
     void mousePressEvent(QMouseEvent* event);
     /// qt mouse release callback
