@@ -435,11 +435,11 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     PropertyDialog::connect(mpShuffleButton, SIGNAL(clicked()), mpViewWidget, SLOT(shuffle()));
     PropertyDialog::connect(mpShuffleLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(shuffle()));
     PropertyDialog::connect(mpImportButton, SIGNAL(clicked()), mpViewWidget, SLOT(importGraph()));
-    PropertyDialog::connect(mpImportLayerButton, SIGNAL(clicked()), mpViewWidget, SLOT(importGraphLayer()));
+    PropertyDialog::connect(mpImportLayerButton, SIGNAL(clicked()), mpViewWidget, SLOT(importGraph()));
     PropertyDialog::connect(mpExportButton, SIGNAL(clicked()), mpViewWidget, SLOT(exportGraph()));
     PropertyDialog::connect(mpExportLayerButton, SIGNAL(clicked()), mpViewWidget, SLOT(exportGraph()));
     PropertyDialog::connect(mpResetButton,  SIGNAL(clicked()), mpViewWidget, SLOT(resetGraph()));
-    PropertyDialog::connect(mpResetLayerButton,  SIGNAL(clicked()), mpViewWidget, SLOT(resetGraphLayer()));
+    PropertyDialog::connect(mpResetLayerButton,  SIGNAL(clicked()), mpViewWidget, SLOT(resetGraph()));
     PropertyDialog::connect(mpLayoutButton,  SIGNAL(clicked()), mpViewWidget, SLOT(changeLayout()));
     PropertyDialog::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpLayerWidget, SLOT(changeLayout()));
     PropertyDialog::connect(mpAddNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(addNodeAdhoc()));

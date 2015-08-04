@@ -966,7 +966,7 @@ void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
     // does not forget to delete the default edge
     mpLayoutingGraph->removeEdge(concernedEdge);
     syncEdgeItemMap(concernedEdge);
-    // does not forget to refresh the parallel read-only view of this mpGraph (the one in the layers graph widget)
+    // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
     refreshLayerWidget();
     updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", DEFAULT_TIMEOUT);
 }
