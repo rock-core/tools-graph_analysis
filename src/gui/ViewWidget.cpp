@@ -313,18 +313,6 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     mpStatus->addWidget(new QLabel("Ready!"));
 }
 
-void ViewWidget::importGraphLayer()
-{
-    importGraph();
-    mpLayerWidget->refresh();
-}
-
-void ViewWidget::resetGraphLayer()
-{
-    resetGraph();
-    mpLayerWidget->refresh();
-}
-
 void ViewWidget::loadIcon(QIcon& icon, std::string file)
 {
     icon.addFile(QString::fromUtf8(file.c_str()), QSize(), QIcon::Normal, QIcon::Off);

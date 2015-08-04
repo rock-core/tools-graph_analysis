@@ -313,11 +313,6 @@ public slots:
     /// spawns a new edge
     void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
 
-    /// triggers base graph loading from a file prompted from the user and updates the layers widget too
-    void importGraphLayer();
-    /// triggers entire graph erasing and updates the layers widget too
-    void resetGraphLayer();
-
     // safety slot wrappers - triggered from the main window Menu Bar
     /// triggers changeFocusedEdgeLabel() if any edge is being focused on
     void changeFocusedEdgeLabelMainWindow();
