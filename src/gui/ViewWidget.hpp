@@ -237,8 +237,11 @@ public:
     /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
     bool getDragDrop() { return mDragDrop; }
 
-    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget (meant to be used from the outside)
-    void refreshLayersWidget();
+    /**
+     * \brief refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget (meant to be used from the outside)
+     * \param status controls Status Bar interaction: when false, refreshing goes silently (no updates on the Status Bar); when true, otherwise
+     */
+    void refreshLayersWidget(bool status = true);
 
 public slots:
     /// shuffles all the nodes in the diagram graph view

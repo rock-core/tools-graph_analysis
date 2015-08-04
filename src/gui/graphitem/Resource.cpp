@@ -510,7 +510,7 @@ void Resource::syncLabel(NodeItem::portID_t portID)
             mpVertex->setLabel(label);
             updateWidth();
             // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-            refreshLayerWidget();
+            refreshLayerWidget(false); // refreshing silently (no update on the Status Bar)
         }
         return;
     }
@@ -546,7 +546,7 @@ void Resource::syncLabel(NodeItem::portID_t portID)
         }
         updateWidth();
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        refreshLayerWidget();
+        refreshLayerWidget(false); // refreshing silently (no update on the Status Bar)
         update();
     }
 }
@@ -739,9 +739,9 @@ void Resource::shiftPortDown(NodeItem::portID_t portID)
     }
 }
 
-inline void Resource::refreshLayerWidget()
+inline void Resource::refreshLayerWidget(bool status)
 {
-    mpGraphWidget->refreshLayersWidget();
+    mpGraphWidget->refreshLayersWidget(status);
 }
 
 //void Resource::keyPressEvent(QKeyEvent* event)

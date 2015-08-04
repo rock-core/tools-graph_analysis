@@ -2426,9 +2426,9 @@ inline void ViewWidget::refreshLayerWidget()
     mpLayerWidget->refresh();
 }
 
-void ViewWidget::refreshLayersWidget()
+void ViewWidget::refreshLayersWidget(bool status)
 {
-    mpLayerWidget->refresh();
+    mpLayerWidget->refresh(status);
 }
 
 void ViewWidget::toggleDragDrop()
