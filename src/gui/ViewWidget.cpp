@@ -526,6 +526,7 @@ void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
         int portID;
         std::stringstream ss(strPortID);
         ss >> portID;
+        // having identified the port to be renamed, ordering its re-labeling
         item->setPortLabel(portID, newLabel);
         updateStatus(std::string("Renamed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", DEFAULT_TIMEOUT);
     }
@@ -630,7 +631,6 @@ void ViewWidget::importGraph()
     {
         // removing trailing whitespaces in the filename
         label = label.trimmed();
-        updateStatus(std::string("Imported graph: from input file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT); // moved up out of sync reasons
         if(label.contains('.'))
         {
             if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
@@ -659,6 +659,7 @@ void ViewWidget::importGraph()
                 fromXmlFile(label.toStdString() + ".gexf");
             }
         }
+        updateStatus(std::string("Imported graph: from input file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
         mpLayerWidget->refresh(false);
     }
     else
@@ -677,7 +678,6 @@ void ViewWidget::exportGraph()
     {
         // removing trailing whitespaces in the filename
         label = label.trimmed();
-        updateStatus(std::string("Exported graph: to output file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT); // moved up out of sync reasons
         if(label.contains('.'))
         {
             if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
@@ -714,6 +714,7 @@ void ViewWidget::exportGraph()
                 toDotFile(label.toStdString() + ".dot");
             }
         }
+        updateStatus(std::string("Exported graph: to output file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
     }
     else
     {
@@ -735,6 +736,7 @@ void ViewWidget::reloadPropertyDialog()
 Edge::Ptr ViewWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
 {
     Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
+    // registering new edge
     mpGraph->addEdge(edge);
     enableEdge(edge);
     return edge;
@@ -751,6 +753,7 @@ Vertex::Ptr ViewWidget::createVertex(const std::string& type, const std::string&
         throw std::runtime_error(error_msg);
     }
     graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
+    // registering new vertex
     mpGraph->addVertex(vertex);
     enableVertex(vertex);
     return vertex;
@@ -759,7 +762,7 @@ Vertex::Ptr ViewWidget::createVertex(const std::string& type, const std::string&
 Edge::Ptr ViewWidget::createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
 {
     Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
-    return edge;
+    return edge; // without registration!
 }
 
 Vertex::Ptr ViewWidget::createStandaloneVertex(const std::string& type, const std::string& label)
@@ -773,13 +776,13 @@ Vertex::Ptr ViewWidget::createStandaloneVertex(const std::string& type, const st
         throw std::runtime_error(error_msg);
     }
     graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
-    return vertex;
+    return vertex; // without registration!
 }
 
 void ViewWidget::addNodeAdhoc(QObject *pos)
 {
     updateStatus(std::string("adding new node..."));
-    QPoint *position = (QPoint *)pos;
+    QPoint *position = (QPoint *)pos; // the scene position where to place the new node
     AddNodeDialog nodeDialog;
     if(nodeDialog.isValid())
     {
@@ -787,7 +790,7 @@ void ViewWidget::addNodeAdhoc(QObject *pos)
         mpGraph->addVertex(vertex);
         mpLayoutingGraph->addVertex(vertex);
         enableVertex(vertex);
-        // Registering the new node item
+        // Registering and repositioning the new node item
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
         nodeItem->setPos((double) position->x(), (double) position->y());
         mNodeItemMap[vertex] = nodeItem;
@@ -945,6 +948,7 @@ void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
         throw std::runtime_error(error_msg);
     }
 
+    // locating and deleting the main edge in mpGraph correspondent to the concerned edge
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
@@ -971,6 +975,7 @@ void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
             break; // assuming there is a single correspondent edge in the main graph mpGraph
         }
     }
+    // does not forget to delete the default edge
     mpLayoutingGraph->removeEdge(concernedEdge);
     syncEdgeItemMap(concernedEdge);
     updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", DEFAULT_TIMEOUT);
@@ -1221,7 +1226,6 @@ void ViewWidget::spawnEdge(const std::string& label) // assumes the concerned ed
         scene()->addItem(edgeItem);
         edgeItem->adjust();
         mEdgeItemMap[default_edge] = edgeItem;
-//            mpGVGraph->addEdge(default_edge); // not vital since the mpGVGraph gets updated every single time before (rendering with) layouting engines
     }
     else
     {
@@ -1345,6 +1349,7 @@ void ViewWidget::reset(bool keepData)
     if(!keepData)
     {
         mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
+        // forgets not to update the layers widget main graph handle
         mpLayerWidget->setGraph(mpGraph);
         mpSubGraph = mGraphView.apply(mpGraph);
         mFiltered = true;
@@ -1522,6 +1527,7 @@ void ViewWidget::updateFromGraph()
         }
     }
 
+    // re-iterating the edges for rendering the physical ones
     edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
@@ -1546,7 +1552,7 @@ void ViewWidget::updateFromGraph()
         {
             NodeItem* sourceNodeItem = mPortMap[ source ];
             NodeItem* targetNodeItem = mPortMap[ target ];
-            // physical edge - processing was deflected until after all ports will have been registered
+            // physical edge - processing was deflected until now - i.e. after all ports will have been registered
             Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
             mpLayoutingGraph->addEdge(default_edge);
             EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[source], targetNodeItem, mPortIDMap[target], default_edge);
@@ -1557,6 +1563,7 @@ void ViewWidget::updateFromGraph()
         }
     }
 
+    // computing max node height and width for informing GraphViz of max dimensions w.r.t. immediately subsequent layouting
     NodeItemMap::iterator node_it = mNodeItemMap.begin();
     for(; mNodeItemMap.end() != node_it; ++node_it)
     {
@@ -1573,8 +1580,10 @@ void ViewWidget::updateFromGraph()
         }
     }
 
+    // the mode is synchronized with the current state in the other layers (i.e. the mode that was active right before graphical graph reloading)
     syncDragDrop();
 
+    // layouting - i.e. loading the designated layouting base graph into GraphViz then repositioning the correspoding scene nodes
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -1598,6 +1607,7 @@ void ViewWidget::updateFromGraph()
                 {
                     LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
                 }
+                // repositioning node in a scaled fashion
                 nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
             }
         }
@@ -1639,23 +1649,24 @@ void ViewWidget::removeEdge(Edge::Ptr edge)
 void ViewWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
 #ifdef CLEAR_BY_BACKGROUND
-    bool defocusNodes = !(
+    // deciding whether nodes or edges shall be unfocused
+    bool unfocusNodes = !(
                             (mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex)
                             ||
                             (mVertexFocused && mEdgeSelected)
                         )
                         ;
-    bool defocusEdges = !(
+    bool unfocusEdges = !(
                             (mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge)
                             ||
                             (mVertexSelected && mEdgeFocused)
                         )
                         ;
-    if(defocusNodes)
+    if(unfocusNodes)
     {
         clearNodeFocus();
     }
-    if(defocusEdges)
+    if(unfocusEdges)
     {
         clearEdgeFocus();
     }
@@ -1667,10 +1678,11 @@ void ViewWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
     {
-        //Use ScrollHand Drag Mode to enable Panning
+        // Use ScrollHand Drag Mode to enable Panning
         setDragMode(ScrollHandDrag);
+        // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
         QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mousePressEvent(&fake);
+        QGraphicsView::mousePressEvent(&fake); // initiates scroll-button panning
     }
     else
     {
@@ -1682,10 +1694,11 @@ void ViewWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
     {
-        //Use ScrollHand Drag Mode to desable Panning
+        // Use ScrollHand Drag Mode to desable Panning
         setDragMode(NoDrag);
+        // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
         QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mouseReleaseEvent(&fake);
+        QGraphicsView::mouseReleaseEvent(&fake); // terminates scroll-button panning
     }
     else
     {
@@ -1778,71 +1791,73 @@ void ViewWidget::keyPressEvent(QKeyEvent *event)
     // check for a keys combination
     Qt::KeyboardModifiers modifiers = event->modifiers();
 
-    if(modifiers & Qt::ControlModifier)
+    if(modifiers & Qt::ControlModifier) // key combinations while holding 'CTRL' pressed
     {
         switch(event->key())
         {
-            case Qt::Key_Q:
+            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
             case Qt::Key_W:
                 exit(0);
             break;
 
-            case Qt::Key_Plus:
+            case Qt::Key_Plus: // CTRL+ zooms in
                 zoomIn();
             break;
 
-            case Qt::Key_Minus:
+            case Qt::Key_Minus: // CTRL+- zooms out
                 zoomOut();
             break;
 
-            case Qt::Key_R:
+            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
                 resetGraph();
             break;
 
+            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
             case Qt::Key_S:
                 exportGraph();
             break;
 
-            case Qt::Key_A:
+            case Qt::Key_A: // CTRL+A prompts the user to add a node
                 if(!mDragDrop)
                 {
                     addNodeAdhoc();
                 }
             break;
 
-            case Qt::Key_I:
+            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  or CTRL+L (load graph) opens a graph from file
             case Qt::Key_O:
+            case Qt::Key_L:
                 importGraph();
             break;
 
-            case Qt::Key_P:
+            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
                 if(!mpPropertyDialog->isRunning())
                 {
                     reloadPropertyDialog();
                 }
             break;
 
-            case Qt::Key_Left:
+            case Qt::Key_Left: // CTRL+LeftArrow rotates the view counterclockwise
                 if(!mDragDrop)
                 {
                     rotate(qreal(-1.13));
                 }
             break;
 
-            case Qt::Key_Right:
+            case Qt::Key_Right: // CTRL+RightArrow rotates the view clockwise
                 if(!mDragDrop)
                 {
                     rotate(qreal( 1.13));
                 }
             break;
 
-            case Qt::Key_CapsLock:
+            case Qt::Key_CapsLock: // CTRL+CapsLock or CTRL+D toggles the active mode (drag-n-drop mode v. move-around mode)
             case Qt::Key_D:
                 mDragDrop ? unsetDragDrop() : setDragDrop();
             break;
         }
     }
-    else if(!mDragDrop)
+    else if(!mDragDrop) // simple keys (move-around mode only!)
     {
         switch(event->key())
         {
@@ -1854,40 +1869,35 @@ void ViewWidget::keyPressEvent(QKeyEvent *event)
         //    break;
         //case Qt::Key_Right:
         //    break;
-        case Qt::Key_Plus:
+        case Qt::Key_Plus: // '+' zooms-in
             zoomIn();
         break;
 
-        case Qt::Key_Minus:
+        case Qt::Key_Minus: // '-' zooms-out
             zoomOut();
         break;
 
-        case Qt::Key_Space:
+        case Qt::Key_Space: // Space, newline and 'R'/'r' refresh the view
         case Qt::Key_Enter:
         case Qt::Key_R:
             refresh();
         break;
 
-        case Qt::Key_S:
+        case Qt::Key_S: // 'S'/'s' shuffle the nodes
             shuffle();
         break;
 
-        case Qt::Key_L:
+        case Qt::Key_L: // 'L'/'l' changes the layout
             changeLayout();
         break;
-
-        //default:
         }
     }
 
-    switch(event->key())
+    switch(event->key()) // simple keys (permanent)
     {
-
-    case Qt::Key_Escape:
+    case Qt::Key_Escape: // clears node and edge focus
         clearFocus();
     break;
-
-    //default:
     }
 
     QGraphicsView::keyPressEvent(event);
@@ -2099,6 +2109,7 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
 {
     updateStatus(std::string("removing all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
+    // error checking on ports removal
     if(!item)
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::removePorts: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
@@ -2115,6 +2126,7 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
     }
     else
     {
+        // prompting the user for all ports deletion
         QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Complete Ports-Removal"), tr((QString("All ports in node '") + QString(concernedVertex->getLabel().c_str()) + QString("' will be deleted! Are you sure you want to continue?")).toAscii()), QMessageBox::Yes | QMessageBox::No);
         EdgeIterator::Ptr edgeIt;
         graph_analysis::Vertex::Ptr cluster;

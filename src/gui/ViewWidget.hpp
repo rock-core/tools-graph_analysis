@@ -288,7 +288,7 @@ public slots:
 
     /// re-layouts the graph view with the given layouting engine 'layoutName'
     void setLayout(QString layoutName);
-    /// refreshes the scene from scratch
+    /// refreshes the scene from scratch - updates the Status bar iff status is set (true)
     void refresh(bool status = true);
     /// deletes the entire graph
     void resetGraph();

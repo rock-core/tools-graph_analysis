@@ -80,7 +80,7 @@ class EdgeItem;
  * \class LayerWidget
  * \file LayerWidget.hpp
  * \brief layers graph view widget implementation
- * \details maintains and displays a layered view of its base graph
+ * \details maintains and displays a layered view of its base graph (the latter is treated as read-only with the exception of its setter method)
  */
 class LayerWidget : public GraphWidget
 {
@@ -143,7 +143,7 @@ public slots:
 
     /// sets and layouts on the provided 'layoutName' the layers graph view
     void setLayout(QString layoutName);
-    /// refreshes the scene from scratch
+    /// refreshes the scene from scratch - updates the Status bar iff status is set (true)
     void refresh(bool status = true);
     /// prompts the user for a new layout and performs re-layouting
     void changeLayout();

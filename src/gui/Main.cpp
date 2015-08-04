@@ -149,10 +149,12 @@ void help_setup(std::stringstream& ss, const std::string& cmd)
     ss << "    CTRL+Q   (CTRL+q)-   quit" << std::endl;
     ss << "    CTRL+W   (CTRL+w)-   quit" << std::endl;
     ss << "    CTRL+R   (CTRL+r)-   reset graph" << std::endl;
+    ss << "    CTRL+E   (CTRL+e)-   save (export graph)" << std::endl;
     ss << "    CTRL+S   (CTRL+s)-   save (export graph)" << std::endl;
     ss << "    CTRL+A   (CTRL+a)-   add new node to graph" << std::endl;
     ss << "    CTRL+I   (CTRL+i)-   open (import graph)" << std::endl;
     ss << "    CTRL+O   (CTRL+o)-   open (import graph)" << std::endl;
+    ss << "    CTRL+L   (CTRL+l)-   open (import graph)" << std::endl;
     ss << "    CTRL+P   (CTRL+p)-   reload buttons panel (if closed)" << std::endl;
     ss << "    CTRL+Left        -   rotate view anti-clockwise" << std::endl;
     ss << "    CTRL+Right       -   rotate view clockwise" << std::endl;

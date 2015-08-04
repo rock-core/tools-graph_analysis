@@ -417,7 +417,7 @@ void LayerWidget::itemMoved()
 
 void LayerWidget::keyPressEvent(QKeyEvent *event)
 {
-    // check for a combination of user clicks
+    // check for a combination of user presses
     Qt::KeyboardModifiers modifiers = event->modifiers();
 
     if(modifiers & Qt::ControlModifier)
@@ -449,12 +449,14 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
                 mpViewWidget->resetGraph();
             break;
 
-            case Qt::Key_S: // CTRL+S saves the graph to file
+            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
+            case Qt::Key_S:
                 mpViewWidget->exportGraph();
             break;
 
-            case Qt::Key_I: // CTRL+O or CTRL+I opens a graph from file
+            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  or CTRL+L (load graph) opens a graph from file
             case Qt::Key_O:
+            case Qt::Key_L:
                 mpViewWidget->importGraph();
             break;
 
@@ -493,7 +495,10 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_S: // 'S'/'s' shuffle the nodes
             shuffle();
         break;
-        //default:
+
+        case Qt::Key_L: // 'L'/'l' changes the layout
+            changeLayout();
+        break;
         }
     }
 
