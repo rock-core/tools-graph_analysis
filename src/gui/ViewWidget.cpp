@@ -967,7 +967,7 @@ void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
     mpLayoutingGraph->removeEdge(concernedEdge);
     syncEdgeItemMap(concernedEdge);
     // does not forget to refresh the parallel read-only view of this mpGraph (the one in the layers graph widget)
-    mpLayerWidget->refresh();
+    refreshLayerWidget();
     updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", DEFAULT_TIMEOUT);
 }
 
@@ -2365,7 +2365,7 @@ void ViewWidget::refreshMainWindow()
     break;
 
     case 1:
-        mpLayerWidget->refresh();
+        refreshLayerWidget();
     break;
     }
 }
@@ -2396,6 +2396,11 @@ void ViewWidget::changeLayoutMainWindow()
         mpLayerWidget->changeLayout();
     break;
     }
+}
+
+inline void ViewWidget::refreshLayerWidget()
+{
+    mpLayerWidget->refresh();
 }
 
 void ViewWidget::toggleDragDrop()
