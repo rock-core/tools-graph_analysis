@@ -183,6 +183,15 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpVerticalLayout->addWidget(mpDragDropButton);
 
+        mpMoveAroundButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpMoveAroundButton->setObjectName(QString::fromUtf8("mpMoveAroundButton"));
+        mpMoveAroundButton->setIcon(*(mpViewWidget->getIcon("move")));
+        mpMoveAroundButton->setCheckable(true);
+        mpMoveAroundButton->setChecked(!dragDropIsChecked);
+        mpMoveAroundButton->setToolTip(QString("toggles the move-around mode"));
+
+        mpVerticalLayout->addWidget(mpMoveAroundButton);
+
         // adding bottom padding
         verticalLayoutLeftover = 0 * linePoints + 1 * buttonPoints; // this vertical layout lacks 0 * frames and 1 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutLeftover)
@@ -298,7 +307,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayoutFocus->addWidget(mpRemoveEdgeButton);
 
         // adding bottom padding
-        verticalLayoutFocusLeftover = 3 * linePoints + 0 * buttonPoints; // this vertical layout lacks 3 * frames and 0 buttons (out of the maximum no. of each)
+        verticalLayoutFocusLeftover = 3 * linePoints + 1 * buttonPoints; // this vertical layout lacks 3 * frames and 1 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutFocusLeftover)
         {
             commonExtraPadding = verticalLayoutFocusLeftover;
@@ -379,7 +388,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayoutLayer->addWidget(mpLayoutLayerButton);
 
         // adding bottom padding
-        verticalLayoutLayerLeftover = 2 * linePoints + 3 * buttonPoints; // this vertical layout lacks 2 * frames and 3 buttons (out of the maximum no. of each)
+        verticalLayoutLayerLeftover = 2 * linePoints + 4 * buttonPoints; // this vertical layout lacks 2 * frames and 4 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutLayerLeftover)
         {
             commonExtraPadding = verticalLayoutLayerLeftover;
@@ -418,7 +427,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayoutComponentsLayer->addWidget(mpTogglePortLayerButton);
 
         // adding bottom padding
-        verticalLayoutComponentsLayerLeftover = 3 * linePoints + 8 * buttonPoints; // this vertical layout lacks 3 * frames and 8 buttons (out of the maximum no. of each)
+        verticalLayoutComponentsLayerLeftover = 3 * linePoints + 9 * buttonPoints; // this vertical layout lacks 3 * frames and 9 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutComponentsLayerLeftover)
         {
             commonExtraPadding = verticalLayoutComponentsLayerLeftover;
@@ -449,6 +458,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     PropertyDialog::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpLayerWidget, SLOT(changeLayout()));
     PropertyDialog::connect(mpAddNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(addNodeAdhoc()));
     PropertyDialog::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpViewWidget, SLOT(updateDragDrop(bool)));
+    PropertyDialog::connect(mpMoveAroundButton, SIGNAL(toggled(bool)), mpViewWidget, SLOT(updateMoveAround(bool)));
     PropertyDialog::connect(mpRenameNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(changeFocusedVertexLabel()));
     PropertyDialog::connect(mpAddPortButton, SIGNAL(clicked()), mpViewWidget, SLOT(addPortFocused()));
     PropertyDialog::connect(mpSwapPortsButton, SIGNAL(clicked()), mpViewWidget, SLOT(swapPortsFocused()));
@@ -489,6 +499,7 @@ void PropertyDialog::retranslateUi(CustomDialog *Dialog)
     mpLayoutButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     mpLayoutLayerButton->setText(QApplication::translate("Dialog", "Layout", 0, QApplication::UnicodeUTF8));
     mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
+    mpMoveAroundButton->setText(QApplication::translate("Dialog", "Move-around", 0, QApplication::UnicodeUTF8));
     mpRenameNodeButton->setText(QApplication::translate("Dialog", "Rename Node", 0, QApplication::UnicodeUTF8));
     mpAddPortButton->setText(QApplication::translate("Dialog", "Add Port", 0, QApplication::UnicodeUTF8));
     mpRenamePortButton->setText(QApplication::translate("Dialog", "Rename a Port", 0, QApplication::UnicodeUTF8));

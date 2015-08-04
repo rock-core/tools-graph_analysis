@@ -32,7 +32,7 @@
 #define WIDTH 306
 #define PADDING 7
 #define DEFAULT_NFRAMES 3
-#define DEFAULT_NBUTTONS 9
+#define DEFAULT_NBUTTONS 10
 #define DEFAULT_LINE_POINTS 15
 #define DEFAULT_BUTTON_POINTS 31
 
@@ -72,7 +72,23 @@ public:
     /// getter method for retrieving running status; returns true when the main panel is still in the scene; false otherwise
     bool isRunning() { return (&mDialog)->isVisible(); }
     /// setter method for drag-n-drop button boolean state - used by the viewWidget to sync the drag-n-drop mode with its button switch here in the command panel
-    void setDragDrop(bool toggle) { mpDragDropButton->setChecked(toggle); }
+    void setDragDrop(bool toggle)
+    {
+        mpDragDropButton->setChecked(toggle);
+        mpMoveAroundButton->setChecked(!toggle);
+    }
+    /// releases the mpDragDropButton
+    void uncheckDragDrop(bool toggle)
+    {
+        mpDragDropButton->setChecked(!toggle);
+    }
+
+    /// releases the mpMoveAroundButton
+    void uncheckMoveAround(bool toggle)
+    {
+        mpMoveAroundButton->setChecked(!toggle);
+    }
+
     /// adds a horizontal separator
     void addFrame(QVBoxLayout* verticalLayout);
     /// adds a vertical separator
@@ -157,6 +173,8 @@ private:
     QPushButton *mpLayoutLayerButton;
     /// button for toggling the drag-n-drop mode in the diagram view tab
     QPushButton *mpDragDropButton;
+    /// button for toggling the move-around mode in the diagram view tab
+    QPushButton *mpMoveAroundButton;
     /// button for renaming the focused node in the diagram view tab
     QPushButton *mpRenameNodeButton;
     /// button for adding a port to the focused node in the diagram view tab

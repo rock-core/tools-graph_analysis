@@ -275,7 +275,8 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export_white"]);
     QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset_white"]);
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), mIconMap["layout_white"]);
-    QAction *actionToggleDragDrop = comm.addAction("Toggle Drag-n-Drop", SLOT(toggleDragDrop()), mIconMap["dragndrop_white"]);
+    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mIconMap["dragndrop_white"]);
+    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), mIconMap["move_white"]);
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), mIconMap["reload_white"]);
 
     // loading different actions in different menus
@@ -289,7 +290,8 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     MainMenu->addAction(actionReset);
     MainMenu->addAction(actionLayout);
     MainMenu->addSeparator();
-    MainMenu->addAction(actionToggleDragDrop);
+    MainMenu->addAction(actionDragDrop);
+    MainMenu->addAction(actionMoveAround);
     MainMenu->addSeparator();
     MainMenu->addAction(actionReloadPropertyDialog);
 
@@ -1712,7 +1714,19 @@ void ViewWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+void ViewWidget::updateMoveAround(bool moveAround)
+{
+    mpPropertyDialog->uncheckDragDrop(moveAround);
+    setDragDrop(!moveAround);
+}
+
 void ViewWidget::updateDragDrop(bool dragDrop)
+{
+    mpPropertyDialog->uncheckMoveAround(dragDrop);
+    setDragDrop(dragDrop);
+}
+
+void ViewWidget::setDragDrop(bool dragDrop)
 {
     updateStatus(std::string("toggling drag-n-drop mode to ") + (dragDrop ? "true" : "false") + "...");
     mDragDrop = dragDrop;

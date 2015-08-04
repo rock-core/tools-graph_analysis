@@ -310,8 +310,12 @@ public slots:
     void importGraph();
     /// prompts the user for saving the base graph to a file
     void exportGraph();
+    /// updates drag-n-drop witness value to 'dragDrop' and warns and adapts the other involved components
+    void setDragDrop(bool dragDrop);
     /// updates drag-n-drop witness value to 'dragDrop'
     void updateDragDrop(bool dragDrop);
+    /// updates move-around witness value to 'moveAround'
+    void updateMoveAround(bool moveAround);
     /// toggles mDragDrop boolean witness
     void toggleDragDrop();
     /// synchronizes the drag-n-drop mode in graph view with the state of the drag-n-drop witness in the property dialog/panel
