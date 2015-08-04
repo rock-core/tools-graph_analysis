@@ -1041,6 +1041,8 @@ void ViewWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
     }
     scene()->removeItem(item);
     mpGraph->removeVertex(concernedVertex);
+    // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+    refreshLayerWidget();
     updateStatus(std::string("Removed node '") + concernedVertexLabel + "'!", DEFAULT_TIMEOUT);
 }
 
