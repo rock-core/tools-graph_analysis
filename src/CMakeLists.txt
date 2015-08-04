@@ -53,6 +53,8 @@ rock_library(graph_analysis
         Vertex.cpp
         BaseVertex.cpp
         PortVertex.cpp
+        PropertyVertex.cpp
+        OperationVertex.cpp
         InputPortVertex.cpp
         OutputPortVertex.cpp
         ClusterVertex.cpp
@@ -130,6 +132,8 @@ rock_library(graph_analysis
         Vertex.hpp
         BaseVertex.hpp
         PortVertex.hpp
+        PropertyVertex.hpp
+        OperationVertex.hpp
         InputPortVertex.hpp
         OutputPortVertex.hpp
         ClusterVertex.hpp
