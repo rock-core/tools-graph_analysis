@@ -783,6 +783,8 @@ void ViewWidget::addNodeAdhoc(QObject *pos)
         nodeItem->setPos((double) position->x(), (double) position->y());
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
+        // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+        updateLayerWidget();
         updateStatus(std::string("Added new node '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
     }
     else
@@ -1182,8 +1184,8 @@ void ViewWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fi
         spawnEdge(edge_label); // assumes the concerned edge-creation member fields are properly set already
         NodeItem::portID_t start_portID = mPortIDMap[mpStartPort];
         NodeItem::portID_t   end_portID = mPortIDMap[mpEndPort];
-        // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        refreshLayerWidget();
+        // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+        updateLayerWidget();
         updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between ports '"
                         + mpStartPort->toString() + "' and '"
                         + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID)
