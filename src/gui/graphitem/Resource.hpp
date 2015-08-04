@@ -108,6 +108,9 @@ public:
     /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
     inline void refreshLayerWidget(bool status = true);
 
+    /// updates the temporary text currently being displayed on the Status Bar in the main viewWidget
+    void updateStatus(const std::string& message = std::string(), int timeout = 0);
+
 protected:
     /// used to claim scene focus (mainly when double-clicked)
     void grabFocus();

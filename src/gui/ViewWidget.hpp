@@ -234,6 +234,12 @@ public:
         mpStatus->showMessage(QString(message.c_str()), timeout);
     }
 
+    /// setter method for updating the temporary text currently being displayed on the Status Bar
+    void updateStatus(const QString& message = QString(), int timeout = 0)
+    {
+        mpStatus->showMessage(message, timeout);
+    }
+
     /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
     bool getDragDrop() { return mDragDrop; }
 

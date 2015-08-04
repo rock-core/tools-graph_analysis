@@ -739,6 +739,11 @@ void Resource::shiftPortDown(NodeItem::portID_t portID)
     }
 }
 
+void Resource::updateStatus(const std::string& message, int timeout)
+{
+    mpGraphWidget->updateStatus(QString(message.c_str()), timeout);
+}
+
 inline void Resource::refreshLayerWidget(bool status)
 {
     mpGraphWidget->refreshLayersWidget(status);

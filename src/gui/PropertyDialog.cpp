@@ -70,6 +70,11 @@ void PropertyDialog::updateMainWidget(int index)
     mpStackedWidget->setCurrentIndex(index);
 }
 
+inline void PropertyDialog::updateStatus(const std::string& message, int timeout)
+{
+    mpViewWidget->updateStatus(QString(message.c_str()), timeout);
+}
+
 void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 {
     int commonExtraPadding; // used to determine the least common extra space (and have it subtracted from all layouts heights in the end)

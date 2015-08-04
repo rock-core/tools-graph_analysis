@@ -93,6 +93,9 @@ public:
     /// getter method for the edge-being-focused boolean witness
     bool getEdgeFocused  () { return mEdgeFocused;   }
 
+    /// updates the temporary text currently being displayed on the Status Bar in the main viewWidget
+    inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
+
 public slots:
     /// switches the central widget to the widget of the given index: 0 for the ViewWidget; 1 for the LayerWidget
     void updateMainWidget(int index);
