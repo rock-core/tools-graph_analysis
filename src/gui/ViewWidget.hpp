@@ -239,6 +239,8 @@ public:
 
     /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
     inline void refreshLayerWidget();
+    /// updates the (read-only) layers graph view in the omologuous widget mpLayerWidget
+    inline void updateLayerWidget();
 
 public slots:
     /// shuffles all the nodes in the diagram graph view

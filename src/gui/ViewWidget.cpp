@@ -1182,6 +1182,8 @@ void ViewWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fi
         spawnEdge(edge_label); // assumes the concerned edge-creation member fields are properly set already
         NodeItem::portID_t start_portID = mPortIDMap[mpStartPort];
         NodeItem::portID_t   end_portID = mPortIDMap[mpEndPort];
+        // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+        refreshLayerWidget();
         updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between ports '"
                         + mpStartPort->toString() + "' and '"
                         + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID)
@@ -1300,7 +1302,7 @@ void ViewWidget::fromXmlFile(const std::string& filename)
     }
 
     mpGraph = graph;
-    mpLayerWidget->setGraph(mpGraph);
+    updateLayerWidget();
     mpSubGraph = mGraphView.apply(mpGraph);
     mFiltered = true;
 
@@ -1325,7 +1327,7 @@ void ViewWidget::fromYmlFile(const std::string& filename)
     }
 
     mpGraph = graph;
-    mpLayerWidget->setGraph(mpGraph);
+    updateLayerWidget();
     mpSubGraph = mGraphView.apply(mpGraph);
     mFiltered = true;
 
@@ -1342,7 +1344,7 @@ void ViewWidget::reset(bool keepData)
     {
         mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
         // forgets not to update the layers widget main graph handle
-        mpLayerWidget->setGraph(mpGraph);
+        updateLayerWidget();
         mpSubGraph = mGraphView.apply(mpGraph);
         mFiltered = true;
     }
@@ -2398,6 +2400,11 @@ void ViewWidget::changeLayoutMainWindow()
         mpLayerWidget->changeLayout();
     break;
     }
+}
+
+inline void ViewWidget::updateLayerWidget()
+{
+    mpLayerWidget->setGraph(mpGraph);
 }
 
 inline void ViewWidget::refreshLayerWidget()
