@@ -169,6 +169,10 @@ private:
     NodeItem::portID_t mInPorts;
     /// output ports counter
     NodeItem::portID_t mOutPorts;
+    /// properties counter
+    NodeItem::portID_t mProps;
+    /// operations counter
+    NodeItem::portID_t mOps;
     /// current max width of input ports
     qreal mMaxInputPortWidth;
     /// current max width of output ports
