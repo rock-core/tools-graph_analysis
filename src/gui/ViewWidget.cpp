@@ -1496,19 +1496,22 @@ void ViewWidget::updateFromGraph()
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
 
-        if("graph_analysis::OutputPortVertex" == source->getClassName() && "graph_analysis::InputPortVertex" == target->getClassName())
+        std::string sourceClassName = source->getClassName();
+        std::string targetClassName = target->getClassName();
+
+        if("graph_analysis::OutputPortVertex" == sourceClassName && "graph_analysis::InputPortVertex" == targetClassName)
         {
             // physical edge - processing deflected until after all ports will have been registered
             continue;
         }
         else if (
-                    ("graph_analysis::PortVertex" == source->getClassName() && "graph_analysis::ClusterVertex" == target->getClassName())
+                    ("graph_analysis::PortVertex" == sourceClassName && "graph_analysis::ClusterVertex" == targetClassName)
                 )
         {
             // semantical edge: links a cluster vertex to one of its ports
             std::string warn_msg = std::string("graph_analysis::ViewWidget::updateFromGraph: found reversed edge from source Port vertex '") +
-                                        source->toString() + "' of type '" + source->getClassName() + "' to target Cluster vertex '" +
-                                        target->toString() + "' of type '" + target->getClassName() + "'!";
+                                        source->toString() + "' of type '" + sourceClassName + "' to target Cluster vertex '" +
+                                        target->toString() + "' of type '" + targetClassName + "'!";
             LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
             NodeItem* targetNodeItem = mNodeItemMap[ target ];
             if(!targetNodeItem)
@@ -1520,17 +1523,21 @@ void ViewWidget::updateFromGraph()
         }
         else if (
                     (
-                        "graph_analysis::ClusterVertex" == source->getClassName()
+                        "graph_analysis::ClusterVertex" == sourceClassName
                             &&
                         (
-                            "graph_analysis::InputPortVertex" == target->getClassName()
+                            "graph_analysis::InputPortVertex" == targetClassName
                                 ||
-                            "graph_analysis::OutputPortVertex" == target->getClassName()
+                            "graph_analysis::OutputPortVertex" == targetClassName
+                                ||
+                            "graph_analysis::PropertyVertex" == targetClassName
+                                ||
+                            "graph_analysis::OperationVertex" == targetClassName
                         )
                     )
                 )
         {
-            // semantical edge: links a cluster vertex to one of its ports
+            // semantical edge: links a cluster vertex to one of its features
             NodeItem* sourceNodeItem = mNodeItemMap[ source ];
             if(!sourceNodeItem)
             {
@@ -1543,8 +1550,8 @@ void ViewWidget::updateFromGraph()
         {
             // invalid edge
             std::string error_msg = std::string("graph_analysis::ViewWidget::updateFromGraph: found invalid edge from source vertex '") +
-                                        source->toString() + "' of type '" + source->getClassName() + "' to target vertex '" +
-                                        target->toString() + "' of type '" + target->getClassName() + "'!";
+                                        source->toString() + "' of type '" + sourceClassName + "' to target vertex '" +
+                                        target->toString() + "' of type '" + targetClassName + "'!";
             LOG_ERROR_S << error_msg;
             throw std::runtime_error(error_msg);
         }

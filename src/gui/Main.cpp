@@ -70,7 +70,7 @@
 #define IMPORT
 
 // hardwired import filename for init
-#define FILENAME  "../../resources/gexf/export_samples/port__types_test.gexf"
+#define FILENAME  "../../resources/gexf/export_samples/props__and__operations_test.gexf"
 
 //  possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 //#define LAYOUT "dot"
