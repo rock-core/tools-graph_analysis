@@ -21,7 +21,7 @@
 /// guaranteed minimum spacing between input and output ports constant
 #define SEPARATOR 69.
 /// bounding rectangular rounding port graphics constant
-#define PORT_BORDER 6.
+#define PORT_BORDER 8.
 /// bounding rectangular rounding node graphics constant
 #define NODE_BORDER 12.
 
@@ -64,9 +64,9 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 
 void Resource::recomputeMaxInputPortWidth(void)
 {
-    Labels::iterator it = mLabels.begin();
     mMaxInputPortWidth = 0;
-    for(++it; mLabels.end() != it; ++it)
+    Labels::iterator it = mLabels.begin();
+    for(; mLabels.end() != it; ++it)
     {
         // iterates through the labels of input ports to find their max width
         Label *label = it->second;
@@ -90,7 +90,7 @@ void Resource::recomputeMaxOutputPortWidth(void)
 {
     Labels::iterator it = mLabels.begin();
     mMaxOutputPortWidth = 0;
-    for(++it; mLabels.end() != it; ++it)
+    for(; mLabels.end() != it; ++it)
     {
         // iterates through the labels of output ports to find their max width
         Label *label = it->second;
@@ -119,7 +119,8 @@ void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
     qreal pre_width = port_label->boundingRect().width();
     port_label->setPlainText(QString(label.c_str()));
     qreal post_width = port_label->boundingRect().width();
-    if("graph_analysis::InputPortVertex" == port->getClassName())
+    std::string type = port->getClassName();
+    if("graph_analysis::InputPortVertex" == type)
     {
         if(post_width > mMaxInputPortWidth)
         {
@@ -188,11 +189,11 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     foreach(Tuple tuple, mLabels)
     {
         rect = portBoundingRect(tuple.first);
-        std::string kind = mVertices[tuple.first]->getClassName();
+        std::string type = mVertices[tuple.first]->getClassName();
         bool isPort = (
-                        "graph_analysis::InputPortVertex" == kind
+                        "graph_analysis::InputPortVertex" == type
                             ||
-                        "graph_analysis::OutputPortVertex" == kind
+                        "graph_analysis::OutputPortVertex" == type
                     );
         if(isPort)
         {
@@ -339,6 +340,26 @@ void Resource::updateWidth(bool active)
     }
 }
 
+void Resource::pushDownNonPortFeatures()
+{
+    // shifting down labels initially under the delimiter line (i.e. all properties, operations)
+    Labels::iterator it = mLabels.begin();
+    for(; mLabels.end() != it; ++it)
+    {
+        Label *label = it->second;
+        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        std::string current_type = current_port->getClassName();
+        if(
+            "graph_analysis::PropertyVertex" == current_type
+                ||
+            "graph_analysis::OperationVertex" == current_type
+        )
+        {
+            label->setPos(label->pos() + QPointF(0., ADJUST));
+        }
+    }
+}
+
 NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
 {
     if(!
@@ -382,6 +403,7 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
         label->setPos(mLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
         if(mInPorts > mOutPorts)
         {
+            pushDownNonPortFeatures();
             mHeightAdjusted = false;
             updateHeight();
         }
@@ -401,6 +423,7 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
         label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
         if(mOutPorts > mInPorts)
         {
+            pushDownNonPortFeatures();
             mHeightAdjusted = false;
             updateHeight();
         }
@@ -470,17 +493,31 @@ void Resource::removePort(NodeItem::portID_t portID)
     graph_analysis::Vertex::Ptr port_to_delete = mVertices[portID];
     prepareGeometryChange();
     // port type boolean witness
-    bool isInputPort = "graph_analysis::InputPortVertex" == port_to_delete->getClassName();
+    std::string type = port_to_delete->getClassName();
+    // evaluating the side to remove a feature from
+    bool isInputPort =  "graph_analysis::InputPortVertex" == type
+                            ||
+                        "graph_analysis::PropertyVertex" == type
+                        ;
     if(isInputPort)
     {
         bool maxInputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxInputPortWidth; // tells whether max width shall be recomputed later on
-        // shifting up all input ports initially under the port-to-be-removed
+        // shifting up all labels initially under the port-to-be-removed
         Labels::iterator it = mLabels.begin();
-        for(++it; mLabels.end() != it; ++it)
+        for(; mLabels.end() != it; ++it)
         {
             Label *label = it->second;
             graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
-            if("graph_analysis::InputPortVertex" == current_port->getClassName() && label->pos().y() > label_to_delete->pos().y())
+            std::string current_type = current_port->getClassName();
+            if(
+                (
+                    "graph_analysis::InputPortVertex" == current_type
+                        ||
+                    "graph_analysis::PropertyVertex" == current_type
+                )
+                    &&
+                label->pos().y() > label_to_delete->pos().y()
+            )
             {
                 label->setPos(label->pos() - QPointF(0., ADJUST));
             }
@@ -495,22 +532,43 @@ void Resource::removePort(NodeItem::portID_t portID)
             recomputeMaxInputPortWidth();
             updateWidth();
         }
-        if(--mInPorts >= mOutPorts)
+        // decrementing the respective counter
+        if("graph_analysis::InputPortVertex" == type)
         {
-            mHeightAdjusted = false;
-            updateHeight();
+            if(--mInPorts >= mOutPorts)
+            {
+                mHeightAdjusted = false;
+                updateHeight();
+            }
+        }
+        else // if("graph_analysis::PropertyPortVertex" == type)
+        {
+            if(--mProps >= mOps)
+            {
+                mHeightAdjusted = false;
+                updateHeight();
+            }
         }
     }
-    else // "graph_analysis::OutputPortVertex" == port_to_delete->getClassName();
+    else // "graph_analysis::OutputPortVertex" == port_to_delete->getClassName() || "graph_analysis::OperationVertex" == port_to_delete->getClassName();
     {
         bool maxOutputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxOutputPortWidth; // tells whether max width shall be recomputed later on
         // shifting up all output ports initially under the port-to-be-removed
         Labels::iterator it = mLabels.begin();
-        for(++it; mLabels.end() != it; ++it)
+        for(; mLabels.end() != it; ++it)
         {
             Label *label = it->second;
             graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
-            if("graph_analysis::OutputPortVertex" == current_port->getClassName() && label->pos().y() > label_to_delete->pos().y())
+            std::string current_type = current_port->getClassName();
+            if(
+                (
+                    "graph_analysis::OutputPortVertex" == current_type
+                        ||
+                    "graph_analysis::OperationVertex" == current_type
+                )
+                    &&
+                label->pos().y() > label_to_delete->pos().y()
+            )
             {
                 label->setPos(label->pos() - QPointF(0., ADJUST));
             }
@@ -525,10 +583,22 @@ void Resource::removePort(NodeItem::portID_t portID)
             recomputeMaxOutputPortWidth();
             updateWidth();
         }
-        if(--mOutPorts >= mInPorts)
+        // decrementing the respective counter
+        if("graph_analysis::OutputPortVertex" == type)
         {
-            mHeightAdjusted = false;
-            updateHeight();
+            if(--mOutPorts >= mInPorts)
+            {
+                mHeightAdjusted = false;
+                updateHeight();
+            }
+        }
+        else // if("graph_analysis::OperationPortVertex" == type)
+        {
+            if(--mOps >= mProps)
+            {
+                mHeightAdjusted = false;
+                updateHeight();
+            }
         }
     }
     this->update();
@@ -578,6 +648,8 @@ void Resource::removePorts()
     mVertices.clear();
     mInPorts = 0;
     mOutPorts = 0;
+    mProps = 0;
+    mOps = 0;
     mHeightAdjusted = false;
     mMaxInputPortWidth = 0.;
     mMaxOutputPortWidth = 0.;
@@ -650,11 +722,11 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
     Labels::iterator it = mLabels.find(portID);
     graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
     // boolean type witnesses
-    std::string kind = current_port->getClassName();
-    bool isInputPort    =   "graph_analysis::InputPortVertex"   ==  kind;
-    bool isOutputPort   =   "graph_analysis::OutputPortVertex"  ==  kind;
-    bool isProperty     =   "graph_analysis::PropertyVertex"    ==  kind;
-//  bool isOperation    =   "graph_analysis::OperationVertex"   ==  kind;
+    std::string type = current_port->getClassName();
+    bool isInputPort    =   "graph_analysis::InputPortVertex"   ==  type;
+    bool isOutputPort   =   "graph_analysis::OutputPortVertex"  ==  type;
+    bool isProperty     =   "graph_analysis::PropertyVertex"    ==  type;
+//  bool isOperation    =   "graph_analysis::OperationVertex"   ==  type;
     bool isPort = isInputPort || isOutputPort;
     // conditionally shifting both horizontally and vertically the 2 defining corners of the result rectangle
     if(isPort)
