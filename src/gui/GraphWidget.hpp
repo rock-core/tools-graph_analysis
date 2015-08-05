@@ -107,7 +107,7 @@ public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap; // maps conceptual edges to the graphical edges in the scene
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap; // maps conceptual cluster vertices to graphical nodes in the scene
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> PortMap; // maps conceptual port vertices to their graphical node in the scene
-    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::portID_t> PortIDMap; // maps conceptual port vertices to their port ID
+    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::id_t> PortIDMap; // maps conceptual port vertices to their port ID
     typedef std::map <std::string, io::Writer*> WriterMap; // maps specific keywords to graph exporters
     typedef std::map <std::string, io::Reader*> ReaderMap; // maps specific keywords to graph importers
     typedef std::map <std::string, QIcon> IconMap; // maps specific keywords to qt loaded icons
@@ -211,9 +211,9 @@ protected:
 
     // Mapping with data model
     // Allow mapping of semantically port vertices to their (cluster) nodes in the scene
-    PortMap mPortMap;
+    PortMap mFeatureMap;
     // stores ports IDs given their source vertices
-    PortIDMap mPortIDMap;
+    PortIDMap mFeatureIDMap;
     // Allow mapping from graph vertices to nodes in the scene
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene

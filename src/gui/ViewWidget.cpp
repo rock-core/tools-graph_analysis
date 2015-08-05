@@ -485,8 +485,8 @@ void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
         mpGraph->addVertex(portVertex);
         enableVertex(portVertex);
         createEdge(vertex, portVertex, "portRegistrationEdge");
-        mPortMap[portVertex] = item;
-        mPortIDMap[portVertex] = item->addPort(portVertex);
+        mFeatureMap[portVertex] = item;
+        mFeatureIDMap[portVertex] = item->addFeature(portVertex);
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         updateLayerWidget();
         updateStatus(std::string("Added an ") + strPortType.toStdString() + " port to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
@@ -518,7 +518,7 @@ void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    int portCount = item->getPortCount();
+    int portCount = item->getFeatureCount();
     if(!portCount)
     {
         QMessageBox::critical(this, tr("Cannot Rename a Port"), tr("The selected vertex had no ports!"));
@@ -534,7 +534,7 @@ void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
         std::stringstream ss(strPortID);
         ss >> portID;
         // having identified the port to be renamed, ordering its re-labeling
-        item->setPortLabel(portID, newLabel);
+        item->setFeatureLabel(portID, newLabel);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         refreshLayerWidget();
         updateStatus(std::string("Renamed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", DEFAULT_TIMEOUT);
@@ -566,7 +566,7 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
         updateStatus(std::string("Failed to remove a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": " + error_msg + "!", DEFAULT_TIMEOUT);
         throw std::runtime_error(error_msg);
     }
-    int portCount = item->getPortCount();
+    int portCount = item->getFeatureCount();
     if(!portCount)
     {
         QMessageBox::critical(this, tr("Cannot Remove a Port"), tr("The selected vertex had no ports!"));
@@ -590,7 +590,7 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
         int portID;
         ss >> portID;
         // remove conceptual edges
-        EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getPort(portID));
+        EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getFeature(portID));
         while(edgeIt->next())
         {
             Edge::Ptr edge = edgeIt->current();
@@ -621,7 +621,7 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
             }
         }
         // remove port graphics
-        item->removePort(portID);
+        item->removeFeature(portID);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         refreshLayerWidget();
         updateStatus(std::string("Removed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
@@ -974,8 +974,8 @@ void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
         {
             continue;
         }
-        NodeItem * sourceNodeItem = mPortMap[edge->getSourceVertex()];
-        NodeItem * targetNodeItem = mPortMap[edge->getTargetVertex()];
+        NodeItem * sourceNodeItem = mFeatureMap[edge->getSourceVertex()];
+        NodeItem * targetNodeItem = mFeatureMap[edge->getTargetVertex()];
         if(!sourceNodeItem || !targetNodeItem)
         {
             std::string error_msg = std::string("graph_analysis::gui::ViewWidget::removeSelectedEdge: the iterated-over edge '")
@@ -1114,7 +1114,7 @@ void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int por
     }
     mpStartVertex   = startVertex;
     NodeItem *item  = mNodeItemMap[startVertex];
-    mpStartPort     = item->getPort(portID);
+    mpStartPort     = item->getFeature(portID);
     updateStatus(std::string("Drag-n-drop: set source node to '") + startVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...", DEFAULT_TIMEOUT);
 }
 
@@ -1136,15 +1136,15 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    mpEndPort       = item->getPort(portID);
+    mpEndPort       = item->getFeature(portID);
     NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
     NodeItem *targetNodeItem = item;
     updateStatus(std::string("Drag-n-drop: set target node to '") + endVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...", DEFAULT_TIMEOUT);
     if(sourceNodeItem == targetNodeItem)
     {
         // preventing self-edges and handling it into ports swapping
-        NodeItem::portID_t start_portID = mPortIDMap[mpStartPort];
-        NodeItem::portID_t   end_portID = mPortIDMap[mpEndPort];
+        NodeItem::id_t start_portID = mFeatureIDMap[mpStartPort];
+        NodeItem::id_t   end_portID = mFeatureIDMap[mpEndPort];
         updateStatus(std::string("drag-n-drop: found identical source and target node '") + endVertex->toString()
                         + "' -> swapping ports of IDs " + boost::lexical_cast<std::string>(start_portID) + " and "
                         + boost::lexical_cast<std::string>(end_portID) + "..."
@@ -1162,7 +1162,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
                         );
             return;
         }
-        sourceNodeItem->swapPorts(start_portID, end_portID);
+        sourceNodeItem->swapFeatures(start_portID, end_portID);
         updateStatus(std::string("Drag-n-drop: swapped ports '") + mpStartPort->toString() + "' and '"
                         + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID)
                         + " and " + boost::lexical_cast<std::string>(end_portID) + " respectively and of consistent type '"
@@ -1209,8 +1209,8 @@ void ViewWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fi
     {
         std::string edge_label = label.toStdString();
         spawnEdge(edge_label); // assumes the concerned edge-creation member fields are properly set already
-        NodeItem::portID_t start_portID = mPortIDMap[mpStartPort];
-        NodeItem::portID_t   end_portID = mPortIDMap[mpEndPort];
+        NodeItem::id_t start_portID = mFeatureIDMap[mpStartPort];
+        NodeItem::id_t   end_portID = mFeatureIDMap[mpEndPort];
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         updateLayerWidget();
         updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between ports '"
@@ -1245,7 +1245,7 @@ void ViewWidget::spawnEdge(const std::string& label) // assumes the concerned ed
         Edge::Ptr default_edge(new Edge(mpStartVertex, mpEndVertex, label));
         mpLayoutingGraph->addEdge(default_edge);
 
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[mpStartPort], targetNodeItem, mPortIDMap[mpEndPort], default_edge);
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[mpStartPort], targetNodeItem, mFeatureIDMap[mpEndPort], default_edge);
         scene()->addItem(edgeItem);
         edgeItem->adjust();
         mEdgeItemMap[default_edge] = edgeItem;
@@ -1399,8 +1399,8 @@ void ViewWidget::clear()
 
     mNodeItemMap.clear();
     mEdgeItemMap.clear();
-    mPortIDMap.clear();
-    mPortMap.clear();
+    mFeatureIDMap.clear();
+    mFeatureMap.clear();
     mEdgeMap.clear();
     scene()->clear();
 }
@@ -1504,23 +1504,23 @@ void ViewWidget::updateFromGraph()
             // physical edge - processing deflected until after all ports will have been registered
             continue;
         }
-        else if (
-                    ("graph_analysis::PortVertex" == sourceClassName && "graph_analysis::ClusterVertex" == targetClassName)
-                )
-        {
-            // semantical edge: links a cluster vertex to one of its ports
-            std::string warn_msg = std::string("graph_analysis::ViewWidget::updateFromGraph: found reversed edge from source Port vertex '") +
-                                        source->toString() + "' of type '" + sourceClassName + "' to target Cluster vertex '" +
-                                        target->toString() + "' of type '" + targetClassName + "'!";
-            LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
-            NodeItem* targetNodeItem = mNodeItemMap[ target ];
-            if(!targetNodeItem)
-            {
-                continue;
-            }
-            mPortMap[source] = targetNodeItem;
-            mPortIDMap[source] = targetNodeItem->addPort(source);
-        }
+//        else if (   // disabled Port vertices (only specialized InputPorts/OutputPortsVertex allowed
+//                    ("graph_analysis::PortVertex" == sourceClassName && "graph_analysis::ClusterVertex" == targetClassName)
+//                )
+//        {
+//            // semantical edge: links a cluster vertex to one of its ports
+//            std::string warn_msg = std::string("graph_analysis::ViewWidget::updateFromGraph: found reversed edge from source Port vertex '") +
+//                                        source->toString() + "' of type '" + sourceClassName + "' to target Cluster vertex '" +
+//                                        target->toString() + "' of type '" + targetClassName + "'!";
+//            LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
+//            NodeItem* targetNodeItem = mNodeItemMap[ target ];
+//            if(!targetNodeItem)
+//            {
+//                continue;
+//            }
+//            mFeatureMap[source] = targetNodeItem;
+//            mFeatureIDMap[source] = targetNodeItem->addFeature(source);
+//        }
         else if (
                     (
                         "graph_analysis::ClusterVertex" == sourceClassName
@@ -1543,8 +1543,8 @@ void ViewWidget::updateFromGraph()
             {
                 continue;
             }
-            mPortMap[target] = sourceNodeItem;
-            mPortIDMap[target] = sourceNodeItem->addPort(target);
+            mFeatureMap[target] = sourceNodeItem;
+            mFeatureIDMap[target] = sourceNodeItem->addFeature(target);
         }
         else
         {
@@ -1580,12 +1580,12 @@ void ViewWidget::updateFromGraph()
 
         if("graph_analysis::OutputPortVertex" == source->getClassName() && "graph_analysis::InputPortVertex" == target->getClassName())
         {
-            NodeItem* sourceNodeItem = mPortMap[ source ];
-            NodeItem* targetNodeItem = mPortMap[ target ];
+            NodeItem* sourceNodeItem = mFeatureMap[ source ];
+            NodeItem* targetNodeItem = mFeatureMap[ target ];
             // physical edge - processing was deflected until now - i.e. after all ports will have been registered
             Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
             mpLayoutingGraph->addEdge(default_edge);
-            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mPortIDMap[source], targetNodeItem, mPortIDMap[target], default_edge);
+            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
             scene()->addItem(edgeItem);
             mEdgeItemMap[default_edge] = edgeItem;
             mpGVGraph->addEdge(default_edge);
@@ -2159,7 +2159,7 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
         updateStatus(std::string("Failed to remove all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
         throw std::runtime_error(error_msg);
     }
-    int nports = item->getPortCount();
+    int nports = item->getFeatureCount();
     if(!nports)
     {
         QMessageBox::critical(this, tr("No Ports to Remove"), "The cluster is already empty!");
@@ -2208,7 +2208,7 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
                     }
                 }
                 // remove ports graphics
-                item->removePorts();
+                item->removeFeatures();
                 // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
                 refreshLayerWidget();
                 updateStatus(std::string("Removed all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
@@ -2250,7 +2250,7 @@ void ViewWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    int portCount = item->getPortCount();
+    int portCount = item->getFeatureCount();
     if(portCount < 2)
     {
         QMessageBox::critical(this, tr("Cannot Swap Ports"), tr("The selected vertex did not have enough ports!"));
@@ -2272,7 +2272,7 @@ void ViewWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
         {
             try
             {
-                item->swapPorts(port1ID, port2ID);
+                item->swapFeatures(port1ID, port2ID);
             }
             catch(std::runtime_error e)
             {

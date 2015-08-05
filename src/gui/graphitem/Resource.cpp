@@ -110,9 +110,9 @@ void Resource::recomputeMaxOutputPortWidth(void)
     }
 }
 
-void Resource::setPortLabel(NodeItem::portID_t portID, const std::string& label)
+void Resource::setFeatureLabel(NodeItem::id_t portID, const std::string& label)
 {
-    dieOnPort(portID, "setPortLabel");
+    dieOnFeature(portID, "setPortLabel");
     graph_analysis::Vertex::Ptr port = mVertices[portID];
     port->setLabel(label);
     Label *port_label = mLabels[portID];
@@ -188,7 +188,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     // Drawing ports
     foreach(Tuple tuple, mLabels)
     {
-        rect = portBoundingRect(tuple.first);
+        rect = featureBoundingRect(tuple.first);
         std::string type = mVertices[tuple.first]->getClassName();
         bool isPort = (
                         "graph_analysis::InputPortVertex" == type
@@ -360,7 +360,7 @@ void Resource::pushDownNonPortFeatures()
     }
 }
 
-NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
+NodeItem::id_t Resource::addFeature(Vertex::Ptr node)
 {
     if(!
         (
@@ -466,7 +466,7 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
             updateHeight();
         }
     }
-    NodeItem::portID_t portID = mID;
+    NodeItem::id_t portID = mID;
     // test if the IDs overflowed
     if(++mID < 0)
     {
@@ -477,7 +477,7 @@ NodeItem::portID_t Resource::addPort(Vertex::Ptr node)
     return portID; // returning this port's offset in the vector of ports
 }
 
-void Resource::removePort(NodeItem::portID_t portID)
+void Resource::removeFeature(NodeItem::id_t portID)
 {
     int nports = mLabels.size();
     if(!nports)
@@ -488,7 +488,7 @@ void Resource::removePort(NodeItem::portID_t portID)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    dieOnPort(portID, "removePort");
+    dieOnFeature(portID, "removePort");
     graphitem::Label *label_to_delete = mLabels[portID];
     graph_analysis::Vertex::Ptr port_to_delete = mVertices[portID];
     prepareGeometryChange();
@@ -604,10 +604,10 @@ void Resource::removePort(NodeItem::portID_t portID)
     this->update();
 }
 
-void Resource::swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2)
+void Resource::swapFeatures(NodeItem::id_t port1, NodeItem::id_t port2)
 {
-    dieOnPort(port1, "swapPorts");
-    dieOnPort(port2, "swapPorts");
+    dieOnFeature(port1, "swapPorts");
+    dieOnFeature(port2, "swapPorts");
 
     graph_analysis::Vertex::Ptr vertex1 = mVertices[port1];
     graph_analysis::Vertex::Ptr vertex2 = mVertices[port2];
@@ -637,7 +637,7 @@ void Resource::swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2)
 #endif
 }
 
-void Resource::removePorts()
+void Resource::removeFeatures()
 {
     foreach(Tuple tuple, mLabels)
     {
@@ -658,13 +658,13 @@ void Resource::removePorts()
     update();
 }
 
-graph_analysis::Vertex::Ptr Resource::getPort(NodeItem::portID_t portID)
+graph_analysis::Vertex::Ptr Resource::getFeature(NodeItem::id_t portID)
 {
-    dieOnPort(portID, "getPort");
+    dieOnFeature(portID, "getPort");
     return mVertices[portID];
 }
 
-void Resource::syncLabel(NodeItem::portID_t portID)
+void Resource::syncLabel(NodeItem::id_t portID)
 {
     if(-1 == portID)
     {
@@ -679,7 +679,7 @@ void Resource::syncLabel(NodeItem::portID_t portID)
         }
         return;
     }
-    dieOnPort(portID, "syncLabel");
+    dieOnFeature(portID, "syncLabel");
     Label *label = mLabels[portID];
     graph_analysis::Vertex::Ptr port = mVertices[portID];
     std::string tag = label->toPlainText().toStdString();
@@ -721,9 +721,9 @@ void Resource::syncLabel(NodeItem::portID_t portID)
     }
 }
 
-QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
+QRectF Resource::featureBoundingRect(NodeItem::id_t portID)
 {
-    dieOnPort(portID, "portBoundingRect");
+    dieOnFeature(portID, "portBoundingRect");
     QRectF result = boundingRect(); // full node bounding rect is used a source region to crop out from
     Labels::iterator it = mLabels.find(portID);
     graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
@@ -768,9 +768,9 @@ QRectF Resource::portBoundingRect(NodeItem::portID_t portID)
     return result;
 }
 
-QPolygonF Resource::portBoundingPolygon(NodeItem::portID_t portID)
+QPolygonF Resource::featureBoundingPolygon(NodeItem::id_t portID)
 {
-    return QPolygonF(portBoundingRect(portID));
+    return QPolygonF(featureBoundingRect(portID));
 }
 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
@@ -846,7 +846,7 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
-void Resource::dieOnPort(NodeItem::portID_t portID, const std::string& caller)
+void Resource::dieOnFeature(NodeItem::id_t portID, const std::string& caller)
 {
     if(mLabels.count(portID))
     {
@@ -867,12 +867,12 @@ void Resource::unselect()
     hoverLeaveEvent(new QGraphicsSceneHoverEvent());
 }
 
-void Resource::shiftPortUp(NodeItem::portID_t portID)
+void Resource::shiftFeatureUp(NodeItem::id_t portID)
 {
     Labels::iterator tuple = mLabels.find(portID);
     if(mLabels.end() == tuple)
     {
-        dieOnPort(portID, "shiftPortUp");
+        dieOnFeature(portID, "shiftPortUp");
     }
 
     // looking for the closest upper neighbouring port of the same port type
@@ -891,18 +891,18 @@ void Resource::shiftPortUp(NodeItem::portID_t portID)
         delta = y - tuple.second->pos().y();
         if(abs(delta - ADJUST) < EPSILON && vertexType == mVertices[tuple.first]->getClassName())
         {
-            swapPorts(tuple.first, portID);
+            swapFeatures(tuple.first, portID);
             return;
         }
     }
 }
 
-void Resource::shiftPortDown(NodeItem::portID_t portID)
+void Resource::shiftFeatureDown(NodeItem::id_t portID)
 {
     Labels::iterator tuple = mLabels.find(portID);
     if(mLabels.end() == tuple)
     {
-        dieOnPort(portID, "shiftPortDown");
+        dieOnFeature(portID, "shiftPortDown");
     }
 
     // looking for the closest lower neighbouring port of the same port type
@@ -921,7 +921,7 @@ void Resource::shiftPortDown(NodeItem::portID_t portID)
         delta = tuple.second->pos().y() - y;
         if(abs(delta - ADJUST) < EPSILON && vertexType == mVertices[tuple.first]->getClassName())
         {
-            swapPorts(tuple.first, portID);
+            swapFeatures(tuple.first, portID);
             return;
         }
     }

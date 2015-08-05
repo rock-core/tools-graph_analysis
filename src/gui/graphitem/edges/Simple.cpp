@@ -31,8 +31,8 @@ void Simple::adjust()
     prepareGeometryChange();
 
     // Compute center of port nodes
-    mSourcePoint = mpSourceNodeItem->mapToScene(mpSourceNodeItem->portBoundingRect(mSourceNodePortID).center());
-    mTargetPoint = mpTargetNodeItem->mapToScene(mpTargetNodeItem->portBoundingRect(mTargetNodePortID).center());
+    mSourcePoint = mpSourceNodeItem->mapToScene(mpSourceNodeItem->featureBoundingRect(mSourceNodePortID).center());
+    mTargetPoint = mpTargetNodeItem->mapToScene(mpTargetNodeItem->featureBoundingRect(mTargetNodePortID).center());
 
     // initial complete line
     QLineF line(mSourcePoint, mTargetPoint);
@@ -99,7 +99,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
 QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, int portID)
 {
     // retrieves the entire node bounding box when the ID fed is not a valid port ID; retrieves only the respective port bounding box otherwise
-    QPolygonF polygon = (-1 == portID) ? item->boundingRect() : item->portBoundingPolygon(portID);
+    QPolygonF polygon = (-1 == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
 
     // QVector<QPointF>::iterator cit = polygon.begin();
     //qDebug("Polygon");

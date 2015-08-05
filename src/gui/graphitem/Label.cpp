@@ -73,11 +73,11 @@ void Label::keyPressEvent(::QKeyEvent* event)
         switch(event->key())
         {
             case Qt::Key_Up:
-                ((NodeItem *)parentItem())->shiftPortUp(mPortID);
+                ((NodeItem *)parentItem())->shiftFeatureUp(mPortID);
             break;
 
             case Qt::Key_Down:
-                ((NodeItem *)parentItem())->shiftPortDown(mPortID);
+                ((NodeItem *)parentItem())->shiftFeatureDown(mPortID);
             break;
         }
     }

@@ -43,11 +43,11 @@ public:
     ///syncs the graphical text label from the internal mpVertex label
     void updateLabel();
     /**
-     * \brief sets the label of a given port
-     * \param portID ID of the concerned port component
+     * \brief sets the label of a given feature
+     * \param id ID of the concerned feature component
      * \param label new text label to be stored and displayed in place
      */
-    void setPortLabel(NodeItem::portID_t portID, const std::string& label);
+    void setFeatureLabel(NodeItem::id_t id, const std::string& label);
 
     /// retrieves the bounding rectangular box around the area occupied by the node in the scene
     virtual QRectF boundingRect() const;
@@ -59,26 +59,26 @@ public:
     /// node cloning/spawning method used by the factory to produce new nodes
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { return new Resource(graphWidget, vertex); }
 
-    /// returns the no. of ports currently in the node
-    unsigned  getPortCount() { return mLabels.size(); }
+    /// returns the no. of features currently in the node
+    unsigned  getFeatureCount() { return mLabels.size(); }
     /**
-     * \brief getter for the port of a given ID
-     * \param portID the requested ID
-     * \return the port vertex having the requested port ID
+     * \brief getter for the feature of a given ID
+     * \param id the requested ID to look up
+     * \return the feature vertex having the requested feature ID
      */
-    graph_analysis::Vertex::Ptr getPort(NodeItem::portID_t portID);
-    /// adds a new given port vertex to the node ports (and displays it)
-    portID_t addPort(Vertex::Ptr node);
-    /// removes a port vertex (indicated by port ID) from the node ports (removes it from the scene too)
-    void removePort(NodeItem::portID_t portID);
-    /// syncs the updated text label of the port label in the scene with the corresponding internal port vertex label (both being indicated by the same provided port ID)
-    void syncLabel(NodeItem::portID_t portID);
+    graph_analysis::Vertex::Ptr getFeature(NodeItem::id_t id);
+    /// adds a new given feature vertex to the node features (and displays it)
+    id_t addFeature(Vertex::Ptr node);
+    /// removes a feature vertex (indicated by feature ID) from the node features (removes it from the scene too)
+    void removeFeature(NodeItem::id_t id);
+    /// syncs the updated text label of the feature label in the scene with the corresponding internal feature vertex label (both being indicated by the same provided feature ID)
+    void syncLabel(NodeItem::id_t id);
     /// calls a qt routine for warning the scene of upcoming graphical changes; the method it internally calls is otherwise protected and inaccessible to unrelated classes
     inline void prepareChange() { prepareGeometryChange(); }
-    /// retrieves the bounding polygon around the area occupied by the port node specified by the given ID in the scene
-    QPolygonF   portBoundingPolygon (NodeItem::portID_t portID);
-    /// retrieves the bounding rectangular box around the area occupied by the port node specified by the given ID in the scene (it does that using portBoundingRect)
-    QRectF      portBoundingRect    (NodeItem::portID_t portID);
+    /// retrieves the bounding polygon around the area occupied by the feature node specified by the given ID in the scene
+    QPolygonF   featureBoundingPolygon (NodeItem::id_t id);
+    /// retrieves the bounding rectangular box around the area occupied by the feature node specified by the given ID in the scene (it does that using featureBoundingRect)
+    QRectF      featureBoundingRect    (NodeItem::id_t id);
 
     /// willingly gives up scene focus
     void releaseFocus();
@@ -89,20 +89,20 @@ public:
     void updateWidth (bool active = true);
     /// recomputes node's height; makes the node vertically shrink or expand
     void updateHeight();
-    /// swaps 2 ports positions indicated by their IDs
-    void swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2);
-    /// removes all ports
-    void removePorts();
+    /// swaps 2 features positions indicated by their IDs
+    void swapFeatures(NodeItem::id_t feature1, NodeItem::id_t feature2);
+    /// removes all features
+    void removeFeatures();
     /// willingly gives up hovering selection
     void unselect();
-    /// pushes indicated port (by its port ID) one position upper (unless it's the top most port)
-    void shiftPortUp(NodeItem::portID_t portID);
-    /// pushes indicated port (by its port ID) one position lower (unless it's the bottom most port)
-    void shiftPortDown(NodeItem::portID_t portID);
+    /// pushes indicated feature (by its feature ID) one position upper (unless it's the top most feature)
+    void shiftFeatureUp(NodeItem::id_t id);
+    /// pushes indicated feature (by its feature ID) one position lower (unless it's the bottom most feature)
+    void shiftFeatureDown(NodeItem::id_t id);
 
-    /// getter method: retrieves the grahical (port) labels map
+    /// getter method: retrieves the grahical (feature) labels map
     Labels      getLabels()     { return mLabels;   }
-    /// getter method: retrieves the conceptual port vertices labels map
+    /// getter method: retrieves the conceptual feature vertices labels map
     Vertices    getVertices()   { return mVertices; }
 
     /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
@@ -128,11 +128,11 @@ protected:
     /// qt focus LEAVE callback
     void focusOutEvent(QFocusEvent* event);
     /**
-     * \brief checks for the port existence (indicated by its port ID); throws on reason: the given 'portID' is not registered in the port maps
-     * \param portID ID of the needed port
+     * \brief checks for the feature existence (indicated by its feature ID); throws on reason: the given 'id' is not registered in the feature maps
+     * \param id ID of the needed feature
      * \param caller text name of the caller method (for which the error checking is being performed)
      */
-    void dieOnPort(NodeItem::portID_t  portID, const std::string& caller = std::string());
+    void dieOnFeature(NodeItem::id_t  id, const std::string& caller = std::string());
     /// shifts right all output ports with delta; counting from the left node boundary
     void displaceOutputPorts(qreal delta);
     /// shifts right all output ports with delta; takes effect relative to the current output ports displacement
@@ -152,9 +152,9 @@ private:
     QGraphicsWidget *mpBoard;
     /// main node text label
     Label *mLabel;
-    /// port labels map
+    /// feature labels map
     Labels mLabels;
-    /// conceptual port vertices
+    /// conceptual feature vertices
     Vertices mVertices;
     /// qt drawing pen
     QPen mPen;
@@ -164,23 +164,23 @@ private:
     bool mFocused;
     /// boolean flag: true when current node is being the seleted node of the scene (is being hovered on); false otherwise
     bool mSelected;
-    /// boolean flag: true when extra bottom padding has been already added (preventing the bottom most ports from getting graphically represented outside of their node); false otherwise
+    /// boolean flag: true when extra bottom padding has been already added (preventing the bottom most features from getting graphically represented outside of their node); false otherwise
     bool mHeightAdjusted;
-    /// current auto-incremented port ID
-    NodeItem::portID_t mID;
+    /// current auto-incremented feature ID
+    NodeItem::id_t mID;
     /// input ports counter
-    NodeItem::portID_t mInPorts;
+    NodeItem::id_t mInPorts;
     /// output ports counter
-    NodeItem::portID_t mOutPorts;
+    NodeItem::id_t mOutPorts;
     /// properties counter
-    NodeItem::portID_t mProps;
+    NodeItem::id_t mProps;
     /// operations counter
-    NodeItem::portID_t mOps;
+    NodeItem::id_t mOps;
     /// current max width of input ports
     qreal mMaxInputPortWidth;
     /// current max width of output ports
     qreal mMaxOutputPortWidth;
-    /// current width of ports separator (displacement between the 2 kinds of ports)
+    /// current width of ports separator (displacement between the 2 types of ports)
     qreal mSeparator;
 };
 
