@@ -501,11 +501,11 @@ void PropertyDialog::retranslateUi(CustomDialog *Dialog)
     mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
     mpMoveAroundButton->setText(QApplication::translate("Dialog", "Move-around", 0, QApplication::UnicodeUTF8));
     mpRenameNodeButton->setText(QApplication::translate("Dialog", "Rename Node", 0, QApplication::UnicodeUTF8));
-    mpAddPortButton->setText(QApplication::translate("Dialog", "Add Port", 0, QApplication::UnicodeUTF8));
-    mpRenamePortButton->setText(QApplication::translate("Dialog", "Rename a Port", 0, QApplication::UnicodeUTF8));
-    mpRemovePortButton->setText(QApplication::translate("Dialog", "Remove a Port", 0, QApplication::UnicodeUTF8));
-    mpSwapPortsButton->setText(QApplication::translate("Dialog", "Swap Ports", 0, QApplication::UnicodeUTF8));
-    mpRemovePortsButton->setText(QApplication::translate("Dialog", "Remove Ports", 0, QApplication::UnicodeUTF8));
+    mpAddPortButton->setText(QApplication::translate("Dialog", "Add Feature", 0, QApplication::UnicodeUTF8));
+    mpRenamePortButton->setText(QApplication::translate("Dialog", "Rename a Feature", 0, QApplication::UnicodeUTF8));
+    mpRemovePortButton->setText(QApplication::translate("Dialog", "Remove a Feature", 0, QApplication::UnicodeUTF8));
+    mpSwapPortsButton->setText(QApplication::translate("Dialog", "Swap Features", 0, QApplication::UnicodeUTF8));
+    mpRemovePortsButton->setText(QApplication::translate("Dialog", "Remove Features", 0, QApplication::UnicodeUTF8));
     mpRemoveNodeButton->setText(QApplication::translate("Dialog", "Remove Node", 0, QApplication::UnicodeUTF8));
     mpRenameEdgeButton->setText(QApplication::translate("Dialog", "Rename Edge", 0, QApplication::UnicodeUTF8));
     mpRemoveEdgeButton->setText(QApplication::translate("Dialog", "Remove Edge", 0, QApplication::UnicodeUTF8));

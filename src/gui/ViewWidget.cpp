@@ -263,11 +263,11 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeFocusedEdgeMainWindow()), mIconMap["remove_white"]);
     QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeFocusedVertexLabelMainWindow()), mIconMap["label_white"]);
     QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertexMainWindow()), mIconMap["remove_white"]);
-    QAction *actionAddPort     = comm.addAction("Add Port", SLOT(addPortFocusedMainWindow()), mIconMap["addPort_white"]);
-    QAction *actionSwapPorts   = comm.addAction("Swap Ports", SLOT(swapPortsFocusedMainWindow()), mIconMap["swap_white"]);
-    QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel_white"]);
-    QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortFocusedMainWindow()), mIconMap["remove_white"]);
-    QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll_white"]);
+    QAction *actionAddPort     = comm.addAction("Add Feature", SLOT(addPortFocusedMainWindow()), mIconMap["addPort_white"]);
+    QAction *actionSwapPorts   = comm.addAction("Swap Features", SLOT(swapPortsFocusedMainWindow()), mIconMap["swap_white"]);
+    QAction *actionRenamePort  = comm.addAction("Rename a Feature", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel_white"]);
+    QAction *actionRemovePort  = comm.addAction("Remove a Feature", SLOT(removePortFocusedMainWindow()), mIconMap["remove_white"]);
+    QAction *actionRemovePorts = comm.addAction("Remove Features", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll_white"]);
     QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode_white"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh_white"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle_white"]);
@@ -350,11 +350,11 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
     QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
     QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
-    QAction *actionAddPort     = comm.addAction("Add Port", SLOT(addPortSelected()), mIconMap["addPort"]);
-    QAction *actionSwapPorts   = comm.addAction("Swap Ports", SLOT(swapPortsSelected()), mIconMap["swap"]);
-    QAction *actionRenamePort  = comm.addAction("Rename a Port", SLOT(renamePortSelected()), mIconMap["portLabel"]);
-    QAction *actionRemovePort  = comm.addAction("Remove a Port", SLOT(removePortSelected()), mIconMap["remove"]);
-    QAction *actionRemovePorts = comm.addAction("Remove Ports", SLOT(removePortsSelected()), mIconMap["removeAll"]);
+    QAction *actionAddPort     = comm.addAction("Add Feature", SLOT(addPortSelected()), mIconMap["addPort"]);
+    QAction *actionSwapPorts   = comm.addAction("Swap Features", SLOT(swapPortsSelected()), mIconMap["swap"]);
+    QAction *actionRenamePort  = comm.addAction("Rename a Feature", SLOT(renamePortSelected()), mIconMap["portLabel"]);
+    QAction *actionRemovePort  = comm.addAction("Remove a Feature", SLOT(removePortSelected()), mIconMap["remove"]);
+    QAction *actionRemovePorts = comm.addAction("Remove Features", SLOT(removePortsSelected()), mIconMap["removeAll"]);
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
@@ -450,7 +450,14 @@ void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
     QStringList ports_options;
     ports_options << tr("input");
     ports_options << tr("output");
-
+    ports_options << tr("property");
+    ports_options << tr("operation");
+    // while the set of all possible types would be
+//    std::set<std::string> options = VertexTypeManager::getInstance()->getSupportedTypes();
+//    foreach(std::string option, options)
+//    {
+//        ports_options << tr(option.c_str());
+//    }
     QString strPortType = QInputDialog::getItem(this, tr("Choose Port Type"),
                                          tr("Port Type:"), ports_options,
                                          0, false, &ok);
@@ -462,9 +469,17 @@ void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
         {
             portVertex = VertexTypeManager::getInstance()->createVertex("inputport", "newInputPort");
         }
-        else // ("output" == strPortType)
+        else if("output" == strPortType)
         {
             portVertex = VertexTypeManager::getInstance()->createVertex("outputport", "newOutputPort");
+        }
+        else if("property" == strPortType)
+        {
+            portVertex = VertexTypeManager::getInstance()->createVertex("property", "newProperty");
+        }
+        else // ("operation" == strPortType)
+        {
+            portVertex = VertexTypeManager::getInstance()->createVertex("operation", "newOperation");
         }
         // creating its affiliated graphics and registering it
         mpGraph->addVertex(portVertex);

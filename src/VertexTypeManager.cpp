@@ -23,6 +23,10 @@ VertexTypeManager::VertexTypeManager()
         ("graph_analysis::OutputPortVertex",    Vertex::Ptr ((Vertex *) (new OutputPortVertex())))
         ("cluster",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
         ("graph_analysis::ClusterVertex",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
+        ("property",    Vertex::Ptr ((Vertex *) (new PropertyVertex())))
+        ("graph_analysis::PropertyVertex",    Vertex::Ptr ((Vertex *) (new PropertyVertex())))
+        ("operation",    Vertex::Ptr ((Vertex *) (new OperationVertex())))
+        ("graph_analysis::OperationVertex",    Vertex::Ptr ((Vertex *) (new OperationVertex())))
         ;
     // initializing the list of registered types (non-repeatingly, non-verbously)
     mRegisteredTypes.clear();

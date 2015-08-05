@@ -10,6 +10,8 @@
 #include <graph_analysis/PortVertex.hpp>
 #include <graph_analysis/InputPortVertex.hpp>
 #include <graph_analysis/OutputPortVertex.hpp>
+#include <graph_analysis/PropertyVertex.hpp>
+#include <graph_analysis/OperationVertex.hpp>
 #include <graph_analysis/ClusterVertex.hpp>
 
 namespace graph_analysis {
