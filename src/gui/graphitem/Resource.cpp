@@ -617,6 +617,7 @@ void Resource::swapPorts(NodeItem::portID_t port1, NodeItem::portID_t port2)
                                     + vertex1->getClassName() + "' and '" + vertex2->getClassName() + "'";
         LOG_WARN_S << "graph_analysis::gui:graphitem::Resource::swapPorts: " << error_msg;
         QMessageBox::critical(mpGraphWidget, QString("Swapping Failed"), QString((error_msg).c_str()));
+        updateStatus("", 1); // clearing the Status Bar
         return;
     }
     Label *label1 = mLabels[port1];
@@ -686,7 +687,12 @@ void Resource::syncLabel(NodeItem::portID_t portID)
     {
         port->setLabel(tag);
         qreal width = label->boundingRect().width();
-        if("graph_analysis::InputPortVertex" == port->getClassName())
+        std::string type = port->getClassName();
+        if(
+            "graph_analysis::InputPortVertex" == type
+                ||
+            "graph_analysis::PropertyVertex" == type
+        )
         {
             if(width > mMaxInputPortWidth)
             {
@@ -697,7 +703,7 @@ void Resource::syncLabel(NodeItem::portID_t portID)
                 recomputeMaxInputPortWidth();
             }
         }
-        else // ("graph_analysis::OutputPortVertex" == port->getClassName())
+        else // ("graph_analysis::OutputPortVertex" == port->getClassName() || graph_analysis::OperationVertex" == port->getClassName())
         {
             if(width > mMaxOutputPortWidth)
             {
