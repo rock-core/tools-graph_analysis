@@ -328,10 +328,19 @@ void LayerWidget::updateFromGraph()
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
-
+        // filtering out "circo" layouting engine on filtered graphs (using "dot" instead)
+        bool fakeLayout =   // when true, will replace circo with the default (internally, "dot")
+                            "circo" == mLayout.toLower()
+                                &&
+                            (
+                                !mFeatureLayerToggle
+                                    ||
+                                !mClusterLayerToggle
+                            )
+                            ;
         LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
         base::Time start = base::Time::now();
-        mpGVGraph->applyLayout(mLayout.toStdString());
+        mpGVGraph->applyLayout(fakeLayout ? "dot" : mLayout.toStdString());
         base::Time delay = base::Time::now() - start;
         QApplication::restoreOverrideCursor();
         LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
