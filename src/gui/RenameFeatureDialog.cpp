@@ -1,4 +1,4 @@
-#include "RenamePortDialog.hpp"
+#include "RenameFeatureDialog.hpp"
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -6,7 +6,7 @@
 namespace graph_analysis {
 namespace gui {
 
-RenamePortDialog::RenamePortDialog(NodeItem *nodeItem)
+RenameFeatureDialog::RenameFeatureDialog(NodeItem *nodeItem)
 : mpNodeItem(nodeItem)
 , mValid(false)
 {
@@ -14,7 +14,7 @@ RenamePortDialog::RenamePortDialog(NodeItem *nodeItem)
     mDialog.exec();
 }
 
-void RenamePortDialog::setupUi(QDialog *Dialog)
+void RenameFeatureDialog::setupUi(QDialog *Dialog)
 {
     if (Dialog->objectName().isEmpty())
         Dialog->setObjectName(QString::fromUtf8("Dialog"));
@@ -30,11 +30,11 @@ void RenamePortDialog::setupUi(QDialog *Dialog)
     mpLineEdit = new QLineEdit(Dialog);
     mpLineEdit->setObjectName(QString::fromUtf8("mpLineEdit"));
     mpLineEdit->setGeometry(QRect(120, 20, 291, 27));
-    mpPortLabel = new QLabel(Dialog);
-    mpPortLabel->setObjectName(QString::fromUtf8("mpPortLabel"));
-    mpPortLabel->setGeometry(QRect(20, 70, 91, 31));
+    mpFeatureLabel = new QLabel(Dialog);
+    mpFeatureLabel->setObjectName(QString::fromUtf8("mpFeatureLabel"));
+    mpFeatureLabel->setGeometry(QRect(20, 70, 91, 31));
     mpComboBox = new QComboBox(Dialog);
-    // fetching all ports in the concerned cluster node
+    // fetching all features in the concerned cluster node
     foreach(NodeItem::VTuple tuple, mpNodeItem->getVertices())
     {
         std::string item = boost::lexical_cast<std::string>(tuple.first) + ": " + tuple.second->getLabel();
@@ -54,21 +54,21 @@ void RenamePortDialog::setupUi(QDialog *Dialog)
     QMetaObject::connectSlotsByName(Dialog);
 } // setupUi
 
-void RenamePortDialog::retranslateUi(QDialog *Dialog)
+void RenameFeatureDialog::retranslateUi(QDialog *Dialog)
 {
-    Dialog->setWindowTitle(QApplication::translate("Dialog", "Rename Port", 0, QApplication::UnicodeUTF8));
+    Dialog->setWindowTitle(QApplication::translate("Dialog", "Rename Feature", 0, QApplication::UnicodeUTF8));
     mpNewLabel->setText(QApplication::translate("Dialog", "New Label:", 0, QApplication::UnicodeUTF8));
-    mpPortLabel->setText(QApplication::translate("Dialog", "Port ID:", 0, QApplication::UnicodeUTF8));
+    mpFeatureLabel->setText(QApplication::translate("Dialog", "Feature ID:", 0, QApplication::UnicodeUTF8));
 } // retranslateUi
 
-void RenamePortDialog::renameAccept()
+void RenameFeatureDialog::renameAccept()
 {
     mValid = true;
     mNewLabel = mpLineEdit->text().toStdString();
-    mPortID  = mpComboBox->currentText().toStdString();
+    mFeatureID  = mpComboBox->currentText().toStdString();
 }
 
-void RenamePortDialog::renameReject()
+void RenameFeatureDialog::renameReject()
 {
     mValid = false;
 }

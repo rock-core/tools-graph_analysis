@@ -106,8 +106,8 @@ public:
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
 
-    /// getter method for retrieving toggling witness of the entire ports layer
-    bool getPortLayerToggle     () { return mPortLayerToggle;    }
+    /// getter method for retrieving toggling witness of the entire features layer
+    bool getFeatureLayerToggle     () { return mFeatureLayerToggle;    }
     /// getter method for retrieving toggling witness of the entire clusters layer
     bool getClusterLayerToggle  () { return mClusterLayerToggle; }
 
@@ -120,11 +120,15 @@ public:
     /// method for deciding whether a vertex is currently being toggled out of the scene by layer discrimination
     inline bool toggledOut(graph_analysis::Vertex::Ptr vertex)
     {
-        bool result =   (!mPortLayerToggle && "graph_analysis::PortVertex" == vertex->getClassName())
+        bool result =   (!mFeatureLayerToggle && "graph_analysis::PortVertex" == vertex->getClassName())
                             ||
-                        (!mPortLayerToggle && "graph_analysis::InputPortVertex" == vertex->getClassName())
+                        (!mFeatureLayerToggle && "graph_analysis::InputPortVertex" == vertex->getClassName())
                             ||
-                        (!mPortLayerToggle && "graph_analysis::OutputPortVertex" == vertex->getClassName())
+                        (!mFeatureLayerToggle && "graph_analysis::OutputPortVertex" == vertex->getClassName())
+                            ||
+                        (!mFeatureLayerToggle && "graph_analysis::PropertyVertex" == vertex->getClassName())
+                            ||
+                        (!mFeatureLayerToggle && "graph_analysis::OperationVertex" == vertex->getClassName())
                             ||
                         (!mClusterLayerToggle && "graph_analysis::ClusterVertex" == vertex->getClassName())
                     ;
@@ -148,8 +152,8 @@ public slots:
     /// prompts the user for a new layout and performs re-layouting
     void changeLayout();
 
-    /// setter method for updating the ports layer toggle
-    void togglePortLayer(bool toggle);
+    /// setter method for updating the features layer toggle
+    void toggleFeatureLayer(bool toggle);
     /// setter method for updating the clusters layer toggle
     void toggleClusterLayer(bool toggle);
 
@@ -189,8 +193,8 @@ protected:
 private:
     /// managing view widget
     ViewWidget* mpViewWidget;
-    /// ports layer toggle: when true, port nodes get displayed; false when they get hidden
-    bool mPortLayerToggle;
+    /// features layer toggle: when true, feature nodes get displayed; false when they get hidden
+    bool mFeatureLayerToggle;
     /// clusters layer toggle: when true, cluster nodes get displayed; false when they get hidden
     bool mClusterLayerToggle;
 };

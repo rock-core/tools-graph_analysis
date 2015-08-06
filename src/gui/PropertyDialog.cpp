@@ -44,11 +44,11 @@ void PropertyDialog::setVertexFocused(bool vertexFocused)
     {
         // enabling/disabling concerned focus-oriented node specific buttons
         mpRenameNodeButton -> setEnabled(vertexFocused);
-        mpAddPortButton    -> setEnabled(vertexFocused);
-        mpRenamePortButton -> setEnabled(vertexFocused);
-        mpRemovePortButton -> setEnabled(vertexFocused);
-        mpRemovePortsButton-> setEnabled(vertexFocused);
-        mpSwapPortsButton  -> setEnabled(vertexFocused);
+        mpAddFeatureButton    -> setEnabled(vertexFocused);
+        mpRenameFeatureButton -> setEnabled(vertexFocused);
+        mpRemoveFeatureButton -> setEnabled(vertexFocused);
+        mpRemoveFeaturesButton-> setEnabled(vertexFocused);
+        mpSwapFeaturesButton  -> setEnabled(vertexFocused);
         mpRemoveNodeButton -> setEnabled(vertexFocused);
     }
     mVertexFocused = vertexFocused;
@@ -224,55 +224,55 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpVerticalLayoutFocus->addWidget(mpRenameNodeButton);
 
-        mpAddPortButton = new QPushButton(mpHorizontalLayoutWidget);
-        mpAddPortButton->setObjectName(QString::fromUtf8("mpAddPortButton"));
-        mpAddPortButton->setIcon(*(mpViewWidget->getIcon("addPort")));
-        mpAddPortButton->setEnabled(mVertexFocused);
-        mpAddPortButton->setCheckable(false);
-        mpAddPortButton->setChecked(false);
-        mpAddPortButton->setToolTip(QString("adds a port to the selected vertex"));
+        mpAddFeatureButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpAddFeatureButton->setObjectName(QString::fromUtf8("mpAddFeatureButton"));
+        mpAddFeatureButton->setIcon(*(mpViewWidget->getIcon("addFeature")));
+        mpAddFeatureButton->setEnabled(mVertexFocused);
+        mpAddFeatureButton->setCheckable(false);
+        mpAddFeatureButton->setChecked(false);
+        mpAddFeatureButton->setToolTip(QString("adds a feature to the selected vertex"));
 
-        mpVerticalLayoutFocus->addWidget(mpAddPortButton);
+        mpVerticalLayoutFocus->addWidget(mpAddFeatureButton);
 
-        mpSwapPortsButton = new QPushButton(mpHorizontalLayoutWidget);
-        mpSwapPortsButton->setObjectName(QString::fromUtf8("mpSwapPortsButton"));
-        mpSwapPortsButton->setIcon(*(mpViewWidget->getIcon("swap")));
-        mpSwapPortsButton->setEnabled(mVertexFocused);
-        mpSwapPortsButton->setCheckable(false);
-        mpSwapPortsButton->setChecked(false);
-        mpSwapPortsButton->setToolTip(QString("interchanges the positions of two ports of the selected vertex"));
+        mpSwapFeaturesButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpSwapFeaturesButton->setObjectName(QString::fromUtf8("mpSwapFeaturesButton"));
+        mpSwapFeaturesButton->setIcon(*(mpViewWidget->getIcon("swap")));
+        mpSwapFeaturesButton->setEnabled(mVertexFocused);
+        mpSwapFeaturesButton->setCheckable(false);
+        mpSwapFeaturesButton->setChecked(false);
+        mpSwapFeaturesButton->setToolTip(QString("interchanges the positions of two features of the selected vertex"));
 
-        mpVerticalLayoutFocus->addWidget(mpSwapPortsButton);
+        mpVerticalLayoutFocus->addWidget(mpSwapFeaturesButton);
 
-        mpRenamePortButton = new QPushButton(mpHorizontalLayoutWidget);
-        mpRenamePortButton->setObjectName(QString::fromUtf8("mpRenamePortButton"));
-        mpRenamePortButton->setIcon(*(mpViewWidget->getIcon("portLabel")));
-        mpRenamePortButton->setEnabled(mVertexFocused);
-        mpRenamePortButton->setCheckable(false);
-        mpRenamePortButton->setChecked(false);
-        mpRenamePortButton->setToolTip(QString("changes the label of a port of the selected vertex"));
+        mpRenameFeatureButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpRenameFeatureButton->setObjectName(QString::fromUtf8("mpRenameFeatureButton"));
+        mpRenameFeatureButton->setIcon(*(mpViewWidget->getIcon("featureLabel")));
+        mpRenameFeatureButton->setEnabled(mVertexFocused);
+        mpRenameFeatureButton->setCheckable(false);
+        mpRenameFeatureButton->setChecked(false);
+        mpRenameFeatureButton->setToolTip(QString("changes the label of a feature of the selected vertex"));
 
-        mpVerticalLayoutFocus->addWidget(mpRenamePortButton);
+        mpVerticalLayoutFocus->addWidget(mpRenameFeatureButton);
 
-        mpRemovePortButton = new QPushButton(mpHorizontalLayoutWidget);
-        mpRemovePortButton->setObjectName(QString::fromUtf8("mpRemovePortButton"));
-        mpRemovePortButton->setIcon(*(mpViewWidget->getIcon("remove")));
-        mpRemovePortButton->setEnabled(mVertexFocused);
-        mpRemovePortButton->setCheckable(false);
-        mpRemovePortButton->setChecked(false);
-        mpRemovePortButton->setToolTip(QString("removes a port of the selected vertex"));
+        mpRemoveFeatureButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpRemoveFeatureButton->setObjectName(QString::fromUtf8("mpRemoveFeatureButton"));
+        mpRemoveFeatureButton->setIcon(*(mpViewWidget->getIcon("remove")));
+        mpRemoveFeatureButton->setEnabled(mVertexFocused);
+        mpRemoveFeatureButton->setCheckable(false);
+        mpRemoveFeatureButton->setChecked(false);
+        mpRemoveFeatureButton->setToolTip(QString("removes a feature of the selected vertex"));
 
-        mpVerticalLayoutFocus->addWidget(mpRemovePortButton);
+        mpVerticalLayoutFocus->addWidget(mpRemoveFeatureButton);
 
-        mpRemovePortsButton = new QPushButton(mpHorizontalLayoutWidget);
-        mpRemovePortsButton->setObjectName(QString::fromUtf8("mpRemovePortsButton"));
-        mpRemovePortsButton->setIcon(*(mpViewWidget->getIcon("removeAll")));
-        mpRemovePortsButton->setEnabled(mVertexFocused);
-        mpRemovePortsButton->setCheckable(false);
-        mpRemovePortsButton->setChecked(false);
-        mpRemovePortsButton->setToolTip(QString("removes all ports of the selected vertex"));
+        mpRemoveFeaturesButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpRemoveFeaturesButton->setObjectName(QString::fromUtf8("mpRemoveFeaturesButton"));
+        mpRemoveFeaturesButton->setIcon(*(mpViewWidget->getIcon("removeAll")));
+        mpRemoveFeaturesButton->setEnabled(mVertexFocused);
+        mpRemoveFeaturesButton->setCheckable(false);
+        mpRemoveFeaturesButton->setChecked(false);
+        mpRemoveFeaturesButton->setToolTip(QString("removes all features of the selected vertex"));
 
-        mpVerticalLayoutFocus->addWidget(mpRemovePortsButton);
+        mpVerticalLayoutFocus->addWidget(mpRemoveFeaturesButton);
 
         mpRemoveNodeButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRemoveNodeButton->setObjectName(QString::fromUtf8("mpRemoveNodeButton"));
@@ -418,13 +418,13 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpVerticalLayoutComponentsLayer->addWidget(mpToggleClusterLayerButton);
 
-        mpTogglePortLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
-        mpTogglePortLayerButton->setObjectName(QString::fromUtf8("mpTogglePortLayerButton"));
-        mpTogglePortLayerButton->setCheckable(true);
-        mpTogglePortLayerButton->setChecked(mpLayerWidget->getPortLayerToggle());
-        mpTogglePortLayerButton->setToolTip(QString("toggles the visibility of the ports layer"));
+        mpToggleFeatureLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
+        mpToggleFeatureLayerButton->setObjectName(QString::fromUtf8("mpToggleFeatureLayerButton"));
+        mpToggleFeatureLayerButton->setCheckable(true);
+        mpToggleFeatureLayerButton->setChecked(mpLayerWidget->getFeatureLayerToggle());
+        mpToggleFeatureLayerButton->setToolTip(QString("toggles the visibility of the features layer"));
 
-        mpVerticalLayoutComponentsLayer->addWidget(mpTogglePortLayerButton);
+        mpVerticalLayoutComponentsLayer->addWidget(mpToggleFeatureLayerButton);
 
         // adding bottom padding
         verticalLayoutComponentsLayerLeftover = 3 * linePoints + 9 * buttonPoints; // this vertical layout lacks 3 * frames and 9 buttons (out of the maximum no. of each)
@@ -460,15 +460,15 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     PropertyDialog::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpViewWidget, SLOT(updateDragDrop(bool)));
     PropertyDialog::connect(mpMoveAroundButton, SIGNAL(toggled(bool)), mpViewWidget, SLOT(updateMoveAround(bool)));
     PropertyDialog::connect(mpRenameNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(changeFocusedVertexLabel()));
-    PropertyDialog::connect(mpAddPortButton, SIGNAL(clicked()), mpViewWidget, SLOT(addPortFocused()));
-    PropertyDialog::connect(mpSwapPortsButton, SIGNAL(clicked()), mpViewWidget, SLOT(swapPortsFocused()));
-    PropertyDialog::connect(mpRenamePortButton, SIGNAL(clicked()), mpViewWidget, SLOT(renamePortFocused()));
-    PropertyDialog::connect(mpRemovePortButton, SIGNAL(clicked()), mpViewWidget, SLOT(removePortFocused()));
-    PropertyDialog::connect(mpRemovePortsButton, SIGNAL(clicked()), mpViewWidget, SLOT(removePortsFocused()));
+    PropertyDialog::connect(mpAddFeatureButton, SIGNAL(clicked()), mpViewWidget, SLOT(addFeatureFocused()));
+    PropertyDialog::connect(mpSwapFeaturesButton, SIGNAL(clicked()), mpViewWidget, SLOT(swapFeaturesFocused()));
+    PropertyDialog::connect(mpRenameFeatureButton, SIGNAL(clicked()), mpViewWidget, SLOT(renameFeatureFocused()));
+    PropertyDialog::connect(mpRemoveFeatureButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFeatureFocused()));
+    PropertyDialog::connect(mpRemoveFeaturesButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFeaturesFocused()));
     PropertyDialog::connect(mpRemoveNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFocusedVertex()));
     PropertyDialog::connect(mpRenameEdgeButton, SIGNAL(clicked()), mpViewWidget, SLOT(changeFocusedEdgeLabel()));
     PropertyDialog::connect(mpRemoveEdgeButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFocusedEdge()));
-    PropertyDialog::connect(mpTogglePortLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(togglePortLayer(bool)));
+    PropertyDialog::connect(mpToggleFeatureLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleFeatureLayer(bool)));
     PropertyDialog::connect(mpToggleClusterLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleClusterLayer(bool)));
     PropertyDialog::connect(mpTabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
 
@@ -501,16 +501,16 @@ void PropertyDialog::retranslateUi(CustomDialog *Dialog)
     mpDragDropButton->setText(QApplication::translate("Dialog", "Drag'n'Drop", 0, QApplication::UnicodeUTF8));
     mpMoveAroundButton->setText(QApplication::translate("Dialog", "Move-around", 0, QApplication::UnicodeUTF8));
     mpRenameNodeButton->setText(QApplication::translate("Dialog", "Rename Node", 0, QApplication::UnicodeUTF8));
-    mpAddPortButton->setText(QApplication::translate("Dialog", "Add Feature", 0, QApplication::UnicodeUTF8));
-    mpRenamePortButton->setText(QApplication::translate("Dialog", "Rename a Feature", 0, QApplication::UnicodeUTF8));
-    mpRemovePortButton->setText(QApplication::translate("Dialog", "Remove a Feature", 0, QApplication::UnicodeUTF8));
-    mpSwapPortsButton->setText(QApplication::translate("Dialog", "Swap Features", 0, QApplication::UnicodeUTF8));
-    mpRemovePortsButton->setText(QApplication::translate("Dialog", "Remove Features", 0, QApplication::UnicodeUTF8));
+    mpAddFeatureButton->setText(QApplication::translate("Dialog", "Add Feature", 0, QApplication::UnicodeUTF8));
+    mpRenameFeatureButton->setText(QApplication::translate("Dialog", "Rename a Feature", 0, QApplication::UnicodeUTF8));
+    mpRemoveFeatureButton->setText(QApplication::translate("Dialog", "Remove a Feature", 0, QApplication::UnicodeUTF8));
+    mpSwapFeaturesButton->setText(QApplication::translate("Dialog", "Swap Features", 0, QApplication::UnicodeUTF8));
+    mpRemoveFeaturesButton->setText(QApplication::translate("Dialog", "Remove Features", 0, QApplication::UnicodeUTF8));
     mpRemoveNodeButton->setText(QApplication::translate("Dialog", "Remove Node", 0, QApplication::UnicodeUTF8));
     mpRenameEdgeButton->setText(QApplication::translate("Dialog", "Rename Edge", 0, QApplication::UnicodeUTF8));
     mpRemoveEdgeButton->setText(QApplication::translate("Dialog", "Remove Edge", 0, QApplication::UnicodeUTF8));
     mpLayersLabel->setText(QApplication::translate("Dialog", "Visible Layers:", 0, QApplication::UnicodeUTF8));
-    mpTogglePortLayerButton->setText(QApplication::translate("Dialog", "Ports Layer", 0, QApplication::UnicodeUTF8));
+    mpToggleFeatureLayerButton->setText(QApplication::translate("Dialog", "Features Layer", 0, QApplication::UnicodeUTF8));
     mpToggleClusterLayerButton->setText(QApplication::translate("Dialog", "Clusters Layer", 0, QApplication::UnicodeUTF8));
 } // retranslateUi
 

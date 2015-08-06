@@ -81,7 +81,7 @@ namespace gui {
 LayerWidget::LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph)
     : GraphWidget(graph)
     , mpViewWidget(viewWidget)
-    , mPortLayerToggle(true)
+    , mFeatureLayerToggle(true)
     , mClusterLayerToggle(true)
 {
     // Add seed for force layout
@@ -623,9 +623,9 @@ void LayerWidget::setLayout(QString layoutName)
     updateFromGraph();
 }
 
-void LayerWidget::togglePortLayer(bool toggle)
+void LayerWidget::toggleFeatureLayer(bool toggle)
 {
-    mPortLayerToggle = toggle;
+    mFeatureLayerToggle = toggle;
     refresh();
 }
 

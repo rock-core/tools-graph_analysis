@@ -177,26 +177,26 @@ private:
     QPushButton *mpMoveAroundButton;
     /// button for renaming the focused node in the diagram view tab
     QPushButton *mpRenameNodeButton;
-    /// button for adding a port to the focused node in the diagram view tab
-    QPushButton *mpAddPortButton;
-    /// button for renaming a port of the focused node in the diagram view tab
-    QPushButton *mpRenamePortButton;
-    /// button for removing a port of the focused node in the diagram view tab
-    QPushButton *mpRemovePortButton;
-    /// button for removing all ports of the focused node in the diagram view tab
-    QPushButton *mpRemovePortsButton;
+    /// button for adding a feature to the focused node in the diagram view tab
+    QPushButton *mpAddFeatureButton;
+    /// button for renaming a feature of the focused node in the diagram view tab
+    QPushButton *mpRenameFeatureButton;
+    /// button for removing a feature of the focused node in the diagram view tab
+    QPushButton *mpRemoveFeatureButton;
+    /// button for removing all features of the focused node in the diagram view tab
+    QPushButton *mpRemoveFeaturesButton;
     /// button for removing the focused node in the diagram view tab
     QPushButton *mpRemoveNodeButton;
     /// button for renaming the focused edge in the diagram view tab
     QPushButton *mpRenameEdgeButton;
     /// button for removing the focused edge in the diagram view tab
     QPushButton *mpRemoveEdgeButton;
-    /// button for swapping two ports of the focused node in the diagram view tab
-    QPushButton *mpSwapPortsButton;
+    /// button for swapping two features of the focused node in the diagram view tab
+    QPushButton *mpSwapFeaturesButton;
     /// GUI label displaying "Visible Layers:" in the layers view tab on top of the filtering commands
     QLabel *mpLayersLabel;
-    /// button for toggling visibility of port vertices in the layers view tab
-    QPushButton *mpTogglePortLayerButton;
+    /// button for toggling visibility of feature vertices in the layers view tab
+    QPushButton *mpToggleFeatureLayerButton;
     /// button for toggling visibility of cluster vertices in the layers view tab
     QPushButton *mpToggleClusterLayerButton;
     /// set of seeparators in all layouts used

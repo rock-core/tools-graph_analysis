@@ -47,8 +47,8 @@
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
-#include "SwapPortsDialog.hpp"
-#include "RenamePortDialog.hpp"
+#include "SwapFeaturesDialog.hpp"
+#include "RenameFeatureDialog.hpp"
 
 #include <set>
 #include <math.h>

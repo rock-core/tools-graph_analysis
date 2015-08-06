@@ -82,7 +82,7 @@ class LayerWidget;
  * \class ViewWidget
  * \file ViewWidget.hpp
  * \brief diagram view graph widget implementation
- * \details maintains and displays a diagram with clusternodes, their ports and the links (edges) between their ports
+ * \details maintains and displays a diagram with clusternodes, their features and the links (edges) between their ports
  */
 class ViewWidget : public GraphWidget
 {
@@ -189,10 +189,10 @@ public:
     /// getter method - retrieves available handle on the au-pair layers graph widget
     LayerWidget* getLayerWidget() { return mpLayerWidget; }
 
-    /// setter method - updates drag-n-drop starting vertex and the relevant source port ID
-    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int portID);
-    /// setter method - updates drag-n-drop   ending vertex and the relevant target port ID
-    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int portID);
+    /// setter method - updates drag-n-drop starting vertex and the relevant source feature ID
+    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int featureID);
+    /// setter method - updates drag-n-drop   ending vertex and the relevant target feature ID
+    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int featureID);
 
     /// getter method - retrieves a qt icon registered at the given keyword in the icons map
     QIcon* getIcon(std::string key) { return &(mIconMap[key]); }
@@ -203,18 +203,18 @@ public:
     void clearEdgeFocus();
     /// forcefully focuses out of any edge and/or node that might be currently focused on
     void clearFocus();
-    /// adds a port to the provided cluster vertex
-    void addPort(graph_analysis::Vertex::Ptr vertex);
+    /// adds a feature to the provided cluster vertex
+    void addFeature(graph_analysis::Vertex::Ptr vertex);
     /// renames given vertex to the new given label 'label' (also updates the corresponding graphical representation)
     void changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std::string& label);
-    /// prompts the user for renaming a port vertex of the given cluster vertex
-    void renamePort (graph_analysis::Vertex::Ptr concernedVertex);
-    /// prompts the user for removing a port vertex of the given cluster vertex
-    void removePort (graph_analysis::Vertex::Ptr concernedVertex);
-    /// prompts the user for removing all ports vertex of the given cluster vertex
-    void removePorts(graph_analysis::Vertex::Ptr concernedVertex);
-    /// prompts the user for swapping two ports of the given vertex
-    void swapPorts(graph_analysis::Vertex::Ptr concernedVertex);
+    /// prompts the user for renaming a feature vertex of the given cluster vertex
+    void renameFeature (graph_analysis::Vertex::Ptr concernedVertex);
+    /// prompts the user for removing a feature vertex of the given cluster vertex
+    void removeFeature (graph_analysis::Vertex::Ptr concernedVertex);
+    /// prompts the user for removing all features vertex of the given cluster vertex
+    void removeFeatures(graph_analysis::Vertex::Ptr concernedVertex);
+    /// prompts the user for swapping two features of the given vertex
+    void swapFeatures(graph_analysis::Vertex::Ptr concernedVertex);
     /// deletes the given cluster vertex
     void clearVertex(graph_analysis::Vertex::Ptr concernedVertex);
 
@@ -258,22 +258,22 @@ public slots:
     void zoomOut();
     /// prompts the used for adding a new node to the scene (the underlying graph also gets updated) optionally at a given position (e.g. mouse pointer position in the scene)
     void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
-    /// prompts the user for adding a port to the currently selected node (i.e. node being hovered over)
-    void addPortSelected();
-    /// prompts the user for adding a port to the currently focused node (i.e. previously double clicked node)
-    void addPortFocused();
-    /// prompts the user for renaming a port of the currently focused node (i.e. previously double clicked node)
-    void renamePortFocused();
-    /// prompts the user for removing a port of the currently focused node (i.e. previously double clicked node)
-    void removePortFocused();
-    /// prompts the user for removing all ports of the currently focused node (i.e. previously double clicked node)
-    void removePortsFocused();
-    /// prompts the user for renaming a port of the currently selected node (i.e. node being hovered over)
-    void renamePortSelected();
-    /// prompts the user for removing a port of the currently selected node (i.e. node being hovered over)
-    void removePortSelected();
-    /// prompts the user for removing all ports of the currently selected node (i.e. node being hovered over)
-    void removePortsSelected();
+    /// prompts the user for adding a feature to the currently selected node (i.e. node being hovered over)
+    void addFeatureSelected();
+    /// prompts the user for adding a feature to the currently focused node (i.e. previously double clicked node)
+    void addFeatureFocused();
+    /// prompts the user for renaming a feature of the currently focused node (i.e. previously double clicked node)
+    void renameFeatureFocused();
+    /// prompts the user for removing a feature of the currently focused node (i.e. previously double clicked node)
+    void removeFeatureFocused();
+    /// prompts the user for removing all features of the currently focused node (i.e. previously double clicked node)
+    void removeFeaturesFocused();
+    /// prompts the user for renaming a feature of the currently selected node (i.e. node being hovered over)
+    void renameFeatureSelected();
+    /// prompts the user for removing a feature of the currently selected node (i.e. node being hovered over)
+    void removeFeatureSelected();
+    /// prompts the user for removing all features of the currently selected node (i.e. node being hovered over)
+    void removeFeaturesSelected();
     /// prompts the user for renaming the currently focused node (i.e. previously double clicked node)
     void changeFocusedVertexLabel();
     /// prompts the user for renaming the currently selected node (i.e. node being hovered over)
@@ -282,10 +282,10 @@ public slots:
     void removeFocusedVertex();
     /// deletes the currently selected node (i.e. node being hovered over)
     void removeSelectedVertex();
-    /// prompts the user for swapping two ports of the currently focused node (i.e. previously double clicked node)
-    void swapPortsFocused();
-    /// prompts the user for swapping two ports of the currently selected node (i.e. node being hovered over)
-    void swapPortsSelected();
+    /// prompts the user for swapping two features of the currently focused node (i.e. previously double clicked node)
+    void swapFeaturesFocused();
+    /// prompts the user for swapping two features of the currently selected node (i.e. node being hovered over)
+    void swapFeaturesSelected();
     /// prompts the user for renaming the currently focused edge (i.e. previously double clicked edge)
     void changeFocusedEdgeLabel();
     /// prompts the user for renaming the currently selected edge (i.e. edge being hovered over)
@@ -338,16 +338,16 @@ public slots:
     void changeFocusedVertexLabelMainWindow();
     /// triggers removeFocusedVertex() if any node is being focused on
     void removeFocusedVertexMainWindow();
-    /// triggers addPortFocused() if any node is being focused on
-    void addPortFocusedMainWindow();
-    /// triggers swapPortsFocused() if any node is being focused on
-    void swapPortsFocusedMainWindow();
-    /// triggers renamePortFocused() if any node is being focused on
-    void renamePortFocusedMainWindow();
-    /// triggers removePortFocused() if any node is being focused on
-    void removePortFocusedMainWindow();
-    /// triggers removePortsFocused() if any node is being focused on
-    void removePortsFocusedMainWindow();
+    /// triggers addFeatureFocused() if any node is being focused on
+    void addFeatureFocusedMainWindow();
+    /// triggers swapFeaturesFocused() if any node is being focused on
+    void swapFeaturesFocusedMainWindow();
+    /// triggers renameFeatureFocused() if any node is being focused on
+    void renameFeatureFocusedMainWindow();
+    /// triggers removeFeatureFocused() if any node is being focused on
+    void removeFeatureFocusedMainWindow();
+    /// triggers removeFeaturesFocused() if any node is being focused on
+    void removeFeaturesFocusedMainWindow();
     /// triggers addNodeAdhoc() (with no mouse pointer position)
     void addNodeAdhocMainWindow();
     /// triggers refresh() in the currently displayed graph widget
@@ -404,12 +404,12 @@ private:
     graph_analysis::Vertex::Ptr mpFocusedVertex;
     /// drag-n-drop source cluster vertex
     graph_analysis::Vertex::Ptr mpStartVertex;
-    /// drag-n-drop source port vertex
-    graph_analysis::Vertex::Ptr mpStartPort;
+    /// drag-n-drop source feature vertex
+    graph_analysis::Vertex::Ptr mpStartFeature;
     /// drag-n-drop target cluster vertex
     graph_analysis::Vertex::Ptr mpEndVertex;
-    /// drag-n-drop target port vertex
-    graph_analysis::Vertex::Ptr mpEndPort;
+    /// drag-n-drop target feature vertex
+    graph_analysis::Vertex::Ptr mpEndFeature;
     /// currently focused edge (i.e. has been double-clicked)
     graph_analysis::Edge::Ptr mpFocusedEdge;
 

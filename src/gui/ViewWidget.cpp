@@ -47,8 +47,8 @@
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
-#include "SwapPortsDialog.hpp"
-#include "RenamePortDialog.hpp"
+#include "SwapFeaturesDialog.hpp"
+#include "RenameFeatureDialog.hpp"
 
 #include <set>
 #include <math.h>
@@ -184,13 +184,13 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["label"], pathToIcons + "label.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["portLabel"], pathToIcons + "portLabel.png");
+    loadIcon(mIconMap["featureLabel"], pathToIcons + "featureLabel.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["remove"], pathToIcons + "remove.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["removeAll"], pathToIcons + "removeAll.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["addPort"], pathToIcons + "addPort.png");
+    loadIcon(mIconMap["addFeature"], pathToIcons + "addFeature.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["move"], pathToIcons + "move.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
@@ -221,13 +221,13 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["label_white"], pathToIcons + "label_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["portLabel_white"], pathToIcons + "portLabel_white.png");
+    loadIcon(mIconMap["featureLabel_white"], pathToIcons + "featureLabel_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["remove_white"], pathToIcons + "remove_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["removeAll_white"], pathToIcons + "removeAll_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["addPort_white"], pathToIcons + "addPort_white.png");
+    loadIcon(mIconMap["addFeature_white"], pathToIcons + "addFeature_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["move_white"], pathToIcons + "move_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
@@ -263,11 +263,11 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeFocusedEdgeMainWindow()), mIconMap["remove_white"]);
     QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeFocusedVertexLabelMainWindow()), mIconMap["label_white"]);
     QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertexMainWindow()), mIconMap["remove_white"]);
-    QAction *actionAddPort     = comm.addAction("Add Feature", SLOT(addPortFocusedMainWindow()), mIconMap["addPort_white"]);
-    QAction *actionSwapPorts   = comm.addAction("Swap Features", SLOT(swapPortsFocusedMainWindow()), mIconMap["swap_white"]);
-    QAction *actionRenamePort  = comm.addAction("Rename a Feature", SLOT(renamePortFocusedMainWindow()), mIconMap["portLabel_white"]);
-    QAction *actionRemovePort  = comm.addAction("Remove a Feature", SLOT(removePortFocusedMainWindow()), mIconMap["remove_white"]);
-    QAction *actionRemovePorts = comm.addAction("Remove Features", SLOT(removePortsFocusedMainWindow()), mIconMap["removeAll_white"]);
+    QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureFocusedMainWindow()), mIconMap["addFeature_white"]);
+    QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesFocusedMainWindow()), mIconMap["swap_white"]);
+    QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureFocusedMainWindow()), mIconMap["featureLabel_white"]);
+    QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureFocusedMainWindow()), mIconMap["remove_white"]);
+    QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesFocusedMainWindow()), mIconMap["removeAll_white"]);
     QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode_white"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh_white"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle_white"]);
@@ -296,11 +296,11 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     MainMenu->addAction(actionReloadPropertyDialog);
 
     NodeMenu->addAction(actionChangeLabel);
-    NodeMenu->addAction(actionAddPort);
-    NodeMenu->addAction(actionSwapPorts);
-    NodeMenu->addAction(actionRenamePort);
-    NodeMenu->addAction(actionRemovePort);
-    NodeMenu->addAction(actionRemovePorts);
+    NodeMenu->addAction(actionAddFeature);
+    NodeMenu->addAction(actionSwapFeatures);
+    NodeMenu->addAction(actionRenameFeature);
+    NodeMenu->addAction(actionRemoveFeature);
+    NodeMenu->addAction(actionRemoveFeatures);
     NodeMenu->addAction(actionRemoveNode);
 
     EdgeMenu->addAction(actionChangeEdgeLabel);
@@ -350,11 +350,11 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
     QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
     QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
-    QAction *actionAddPort     = comm.addAction("Add Feature", SLOT(addPortSelected()), mIconMap["addPort"]);
-    QAction *actionSwapPorts   = comm.addAction("Swap Features", SLOT(swapPortsSelected()), mIconMap["swap"]);
-    QAction *actionRenamePort  = comm.addAction("Rename a Feature", SLOT(renamePortSelected()), mIconMap["portLabel"]);
-    QAction *actionRemovePort  = comm.addAction("Remove a Feature", SLOT(removePortSelected()), mIconMap["remove"]);
-    QAction *actionRemovePorts = comm.addAction("Remove Features", SLOT(removePortsSelected()), mIconMap["removeAll"]);
+    QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureSelected()), mIconMap["addFeature"]);
+    QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesSelected()), mIconMap["swap"]);
+    QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureSelected()), mIconMap["featureLabel"]);
+    QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureSelected()), mIconMap["remove"]);
+    QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesSelected()), mIconMap["removeAll"]);
     QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
@@ -379,11 +379,11 @@ void ViewWidget::showContextMenu(const QPoint& pos)
             contextMenu.addSeparator();
         }
         contextMenu.addAction(actionChangeLabel);
-        contextMenu.addAction(actionAddPort);
-        contextMenu.addAction(actionSwapPorts);
-        contextMenu.addAction(actionRenamePort);
-        contextMenu.addAction(actionRemovePort);
-        contextMenu.addAction(actionRemovePorts);
+        contextMenu.addAction(actionAddFeature);
+        contextMenu.addAction(actionSwapFeatures);
+        contextMenu.addAction(actionRenameFeature);
+        contextMenu.addAction(actionRemoveFeature);
+        contextMenu.addAction(actionRemoveFeatures);
         contextMenu.addAction(actionRemoveNode);
     }
     if(mVertexSelected || mEdgeSelected)
@@ -424,173 +424,173 @@ bool ViewWidget::dialogIsRunning()
     return mpPropertyDialog->isRunning();
 }
 
-void ViewWidget::addPortFocused()
+void ViewWidget::addFeatureFocused()
 {
-    addPort(mpFocusedVertex);
+    addFeature(mpFocusedVertex);
 }
 
-void ViewWidget::addPortSelected()
+void ViewWidget::addFeatureSelected()
 {
-    addPort(mpSelectedVertex);
+    addFeature(mpSelectedVertex);
 }
 
-void ViewWidget::addPort(graph_analysis::Vertex::Ptr vertex)
+void ViewWidget::addFeature(graph_analysis::Vertex::Ptr vertex)
 {
-    updateStatus(std::string("adding a port to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'...");
+    updateStatus(std::string("adding a feature to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'...");
 
     NodeItem *item = mNodeItemMap[vertex];
     if(!item)
     {
-        std::string error_msg = std::string("graph_analysis::ViewWidget::addPort: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
+        std::string error_msg = std::string("graph_analysis::ViewWidget::addFeature: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
-        updateStatus(std::string("Failed to add a port to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to add a feature to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
     }
     bool ok;
-    QStringList ports_options;
-    ports_options << tr("input");
-    ports_options << tr("output");
-    ports_options << tr("property");
-    ports_options << tr("operation");
+    QStringList features_options;
+    features_options << tr("input");
+    features_options << tr("output");
+    features_options << tr("property");
+    features_options << tr("operation");
     // while the set of all possible types would be
 //    std::set<std::string> options = VertexTypeManager::getInstance()->getSupportedTypes();
 //    foreach(std::string option, options)
 //    {
-//        ports_options << tr(option.c_str());
+//        features_options << tr(option.c_str());
 //    }
-    QString strPortType = QInputDialog::getItem(this, tr("Choose Port Type"),
-                                         tr("Port Type:"), ports_options,
+    QString strFeatureType = QInputDialog::getItem(this, tr("Choose Feature Type"),
+                                         tr("Feature Type:"), features_options,
                                          0, false, &ok);
-    if (ok && !strPortType.isEmpty())
+    if (ok && !strFeatureType.isEmpty())
     {
-        // creating the port vertex
-        graph_analysis::Vertex::Ptr portVertex;
-        if("input" == strPortType)
+        // creating the feature vertex
+        graph_analysis::Vertex::Ptr featureVertex;
+        if("input" == strFeatureType)
         {
-            portVertex = VertexTypeManager::getInstance()->createVertex("inputport", "newInputPort");
+            featureVertex = VertexTypeManager::getInstance()->createVertex("inputport", "newInputPort");
         }
-        else if("output" == strPortType)
+        else if("output" == strFeatureType)
         {
-            portVertex = VertexTypeManager::getInstance()->createVertex("outputport", "newOutputPort");
+            featureVertex = VertexTypeManager::getInstance()->createVertex("outputport", "newOutputPort");
         }
-        else if("property" == strPortType)
+        else if("property" == strFeatureType)
         {
-            portVertex = VertexTypeManager::getInstance()->createVertex("property", "newProperty");
+            featureVertex = VertexTypeManager::getInstance()->createVertex("property", "newProperty");
         }
-        else // ("operation" == strPortType)
+        else // ("operation" == strFeatureType)
         {
-            portVertex = VertexTypeManager::getInstance()->createVertex("operation", "newOperation");
+            featureVertex = VertexTypeManager::getInstance()->createVertex("operation", "newOperation");
         }
         // creating its affiliated graphics and registering it
-        mpGraph->addVertex(portVertex);
-        enableVertex(portVertex);
-        createEdge(vertex, portVertex, "portRegistrationEdge");
-        mFeatureMap[portVertex] = item;
-        mFeatureIDMap[portVertex] = item->addFeature(portVertex);
+        mpGraph->addVertex(featureVertex);
+        enableVertex(featureVertex);
+        createEdge(vertex, featureVertex, "featureRegistrationEdge");
+        mFeatureMap[featureVertex] = item;
+        mFeatureIDMap[featureVertex] = item->addFeature(featureVertex);
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         updateLayerWidget();
-        updateStatus(std::string("Added an ") + strPortType.toStdString() + " port to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Added an ") + strFeatureType.toStdString() + " feature to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
         item->update();
     }
     else
     {
-        updateStatus(std::string("Failed to add an ") + strPortType.toStdString() + " port to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to add an ") + strFeatureType.toStdString() + " feature to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
     }
 }
 
-void ViewWidget::renamePortFocused()
+void ViewWidget::renameFeatureFocused()
 {
-    renamePort(mpFocusedVertex);
+    renameFeature(mpFocusedVertex);
 }
 
-void ViewWidget::renamePortSelected()
+void ViewWidget::renameFeatureSelected()
 {
-    renamePort(mpSelectedVertex);
+    renameFeature(mpSelectedVertex);
 }
 
-void ViewWidget::renamePort(graph_analysis::Vertex::Ptr concernedVertex)
+void ViewWidget::renameFeature(graph_analysis::Vertex::Ptr concernedVertex)
 {
-    updateStatus(std::string("renaming a port in vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
+    updateStatus(std::string("renaming a feature in vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
-        std::string error_msg = std::string("graph_analysis::ViewWidget::renamePort: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        std::string error_msg = std::string("graph_analysis::ViewWidget::renameFeature: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    int portCount = item->getFeatureCount();
-    if(!portCount)
+    int featureCount = item->getFeatureCount();
+    if(!featureCount)
     {
-        QMessageBox::critical(this, tr("Cannot Rename a Port"), tr("The selected vertex had no ports!"));
-        updateStatus(std::string("Failed to rename a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no ports!", DEFAULT_TIMEOUT);
+        QMessageBox::critical(this, tr("Cannot Rename a Feature"), tr("The selected vertex had no features!"));
+        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", DEFAULT_TIMEOUT);
         return;
     }
-    RenamePortDialog dialog(item);
+    RenameFeatureDialog dialog(item);
     if(dialog.isValid())
     {
         std::string newLabel    = dialog.getNewLabel();
-        std::string strPortID   = dialog.getPortID();
-        int portID;
-        std::stringstream ss(strPortID);
-        ss >> portID;
-        // having identified the port to be renamed, ordering its re-labeling
-        item->setFeatureLabel(portID, newLabel);
+        std::string strFeatureID   = dialog.getFeatureID();
+        int featureID;
+        std::stringstream ss(strFeatureID);
+        ss >> featureID;
+        // having identified the feature to be renamed, ordering its re-labeling
+        item->setFeatureLabel(featureID, newLabel);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         refreshLayerWidget();
-        updateStatus(std::string("Renamed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Renamed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", DEFAULT_TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to rename a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
     }
 }
 
-void ViewWidget::removePortFocused()
+void ViewWidget::removeFeatureFocused()
 {
-    removePort(mpFocusedVertex);
+    removeFeature(mpFocusedVertex);
 }
 
-void ViewWidget::removePortSelected()
+void ViewWidget::removeFeatureSelected()
 {
-    removePort(mpSelectedVertex);
+    removeFeature(mpSelectedVertex);
 }
 
-void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
+void ViewWidget::removeFeature(graph_analysis::Vertex::Ptr concernedVertex)
 {
-    updateStatus(std::string("removing a port from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
+    updateStatus(std::string("removing a feature from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
-        std::string error_msg = std::string("graph_analysis::ViewWidget::removePort: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        std::string error_msg = std::string("graph_analysis::ViewWidget::removeFeature: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
-        updateStatus(std::string("Failed to remove a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": " + error_msg + "!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": " + error_msg + "!", DEFAULT_TIMEOUT);
         throw std::runtime_error(error_msg);
     }
-    int portCount = item->getFeatureCount();
-    if(!portCount)
+    int featureCount = item->getFeatureCount();
+    if(!featureCount)
     {
-        QMessageBox::critical(this, tr("Cannot Remove a Port"), tr("The selected vertex had no ports!"));
-        updateStatus(std::string("Failed to remove a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no ports!", DEFAULT_TIMEOUT);
+        QMessageBox::critical(this, tr("Cannot Remove a Feature"), tr("The selected vertex had no features!"));
+        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", DEFAULT_TIMEOUT);
         return;
     }
     bool ok;
-    QStringList ports_options;
+    QStringList features_options;
     foreach(NodeItem::VTuple tuple, item->getVertices())
     {
         graph_analysis::Vertex::Ptr vertex = tuple.second;
         std::string option = boost::lexical_cast<std::string>(tuple.first) + ": " + vertex->getLabel();
-        ports_options << tr(option.c_str());
+        features_options << tr(option.c_str());
     }
-    QString strPortID = QInputDialog::getItem(this, tr("Remove a Port"),
-                                         tr("Port ID:"), ports_options,
+    QString strFeatureID = QInputDialog::getItem(this, tr("Remove a Feature"),
+                                         tr("Feature ID:"), features_options,
                                          0, false, &ok);
-    if (ok && !strPortID.isEmpty())
+    if (ok && !strFeatureID.isEmpty())
     {
-        std::stringstream ss(strPortID.toStdString());
-        int portID;
-        ss >> portID;
+        std::stringstream ss(strFeatureID.toStdString());
+        int featureID;
+        ss >> featureID;
         // remove conceptual edges
-        EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getFeature(portID));
+        EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getFeature(featureID));
         while(edgeIt->next())
         {
             Edge::Ptr edge = edgeIt->current();
@@ -609,8 +609,8 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
                         edgeItem
                             &&
                         (
-                            (item == edgeItem->sourceNodeItem() && portID == edgeItem->getSourcePortID()) ||
-                            (item == edgeItem->targetNodeItem() && portID == edgeItem->getTargetPortID())
+                            (item == edgeItem->sourceNodeItem() && featureID == edgeItem->getSourcePortID()) ||
+                            (item == edgeItem->targetNodeItem() && featureID == edgeItem->getTargetPortID())
                         )
                     )
                     {
@@ -620,15 +620,15 @@ void ViewWidget::removePort(graph_analysis::Vertex::Ptr concernedVertex)
                     }
             }
         }
-        // remove port graphics
-        item->removeFeature(portID);
+        // remove feature graphics
+        item->removeFeature(featureID);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         refreshLayerWidget();
-        updateStatus(std::string("Removed the port of local ID '" + boost::lexical_cast<std::string>(portID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Removed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to remove a port of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
     }
 }
 
@@ -1015,7 +1015,7 @@ void ViewWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
 {
     std::string concernedVertexLabel = concernedVertex->toString();
     updateStatus(std::string("removing node '") + concernedVertexLabel + "'...");
-    // removing possible (default?) edges of this cluster node within the main graph (and its port-vertices)
+    // removing possible (default?) edges of this cluster node within the main graph (and its feature-vertices)
     if("graph_analysis::ClusterVertex" != concernedVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::clearVertex: the supplied vertex '") + concernedVertex->getLabel()
@@ -1027,24 +1027,24 @@ void ViewWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();
-        Vertex::Ptr portVertex;
+        Vertex::Ptr featureVertex;
         Vertex::Ptr sourceVertex = edge->getSourceVertex();
         Vertex::Ptr targetVertex = edge->getTargetVertex();
         if(sourceVertex != concernedVertex)
         {
-            portVertex = sourceVertex;
+            featureVertex = sourceVertex;
         }
         else
         {
-            portVertex = targetVertex;
+            featureVertex = targetVertex;
         }
-        // removing all edges of the portVertex
-        EdgeIterator::Ptr edgeIterator = mpGraph->getEdgeIterator(portVertex);
+        // removing all edges of the featureVertex
+        EdgeIterator::Ptr edgeIterator = mpGraph->getEdgeIterator(featureVertex);
         while(edgeIterator->next())
         {
             mpGraph->removeEdge(edgeIterator->current());
         }
-        mpGraph->removeVertex(portVertex);
+        mpGraph->removeVertex(featureVertex);
         // already removed the edge itself up above //       mpGraph->removeEdge(edge);
     }
     // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
@@ -1102,9 +1102,9 @@ void ViewWidget::changeLayout()
     }
 }
 
-void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int portID)
+void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int featureID)
 {
-    updateStatus(std::string("drag-n-drop: setting source node to '") + startVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...");
+    updateStatus(std::string("drag-n-drop: setting source node to '") + startVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...");
     if("graph_analysis::ClusterVertex" != startVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::gui::ViewWidget::setStartVertex: expected startVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
@@ -1114,13 +1114,13 @@ void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int por
     }
     mpStartVertex   = startVertex;
     NodeItem *item  = mNodeItemMap[startVertex];
-    mpStartPort     = item->getFeature(portID);
-    updateStatus(std::string("Drag-n-drop: set source node to '") + startVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...", DEFAULT_TIMEOUT);
+    mpStartFeature     = item->getFeature(featureID);
+    updateStatus(std::string("Drag-n-drop: set source node to '") + startVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...", DEFAULT_TIMEOUT);
 }
 
-void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
+void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int featureID)
 {
-    updateStatus(std::string("drag-n-drop: setting target node to '") + endVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...");
+    updateStatus(std::string("drag-n-drop: setting target node to '") + endVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...");
     if("graph_analysis::ClusterVertex" != endVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::gui::ViewWidget::setEndVertex: expected endVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
@@ -1136,46 +1136,46 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    mpEndPort       = item->getFeature(portID);
+    mpEndFeature       = item->getFeature(featureID);
     NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
     NodeItem *targetNodeItem = item;
-    updateStatus(std::string("Drag-n-drop: set target node to '") + endVertex->toString() + "' (port=" + boost::lexical_cast<std::string>(portID) + ")...", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Drag-n-drop: set target node to '") + endVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...", DEFAULT_TIMEOUT);
     if(sourceNodeItem == targetNodeItem)
     {
-        // preventing self-edges and handling it into ports swapping
-        NodeItem::id_t start_portID = mFeatureIDMap[mpStartPort];
-        NodeItem::id_t   end_portID = mFeatureIDMap[mpEndPort];
+        // preventing self-edges and handling it into features swapping
+        NodeItem::id_t start_featureID = mFeatureIDMap[mpStartFeature];
+        NodeItem::id_t   end_featureID = mFeatureIDMap[mpEndFeature];
         updateStatus(std::string("drag-n-drop: found identical source and target node '") + endVertex->toString()
-                        + "' -> swapping ports of IDs " + boost::lexical_cast<std::string>(start_portID) + " and "
-                        + boost::lexical_cast<std::string>(end_portID) + "..."
+                        + "' -> swapping features of IDs " + boost::lexical_cast<std::string>(start_featureID) + " and "
+                        + boost::lexical_cast<std::string>(end_featureID) + "..."
                     );
-        if(mpStartPort->getClassName() != mpEndPort->getClassName())
+        if(mpStartFeature->getClassName() != mpEndFeature->getClassName())
         {
-            std::string error_msg = std::string("The two ports are of different types '") + mpStartPort->getClassName() + "' and '" + mpEndPort->getClassName() + "'";
-            LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: failed to initiate ports swapping: " << error_msg;
-            QMessageBox::critical(this, tr("Ports Swapping Failed"), QString(error_msg.c_str()));
-            updateStatus(std::string("Drag-n-drop failed: tried to swap ports '") + mpStartPort->toString() + "' and '"
-                            + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID) + " and "
-                            + boost::lexical_cast<std::string>(end_portID) + " respectively, of different types '"
-                            + mpStartPort->getClassName() + "' and '" + mpEndPort->getClassName() + "' respectively!"
+            std::string error_msg = std::string("The two features are of different types '") + mpStartFeature->getClassName() + "' and '" + mpEndFeature->getClassName() + "'";
+            LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: failed to initiate features swapping: " << error_msg;
+            QMessageBox::critical(this, tr("Features Swapping Failed"), QString(error_msg.c_str()));
+            updateStatus(std::string("Drag-n-drop failed: tried to swap features '") + mpStartFeature->toString() + "' and '"
+                            + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID) + " and "
+                            + boost::lexical_cast<std::string>(end_featureID) + " respectively, of different types '"
+                            + mpStartFeature->getClassName() + "' and '" + mpEndFeature->getClassName() + "' respectively!"
                             , DEFAULT_TIMEOUT
                         );
             return;
         }
-        sourceNodeItem->swapFeatures(start_portID, end_portID);
-        updateStatus(std::string("Drag-n-drop: swapped ports '") + mpStartPort->toString() + "' and '"
-                        + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID)
-                        + " and " + boost::lexical_cast<std::string>(end_portID) + " respectively and of consistent type '"
-                        + mpStartPort->getClassName() + "'!"
+        sourceNodeItem->swapFeatures(start_featureID, end_featureID);
+        updateStatus(std::string("Drag-n-drop: swapped features '") + mpStartFeature->toString() + "' and '"
+                        + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID)
+                        + " and " + boost::lexical_cast<std::string>(end_featureID) + " respectively and of consistent type '"
+                        + mpStartFeature->getClassName() + "'!"
                         , DEFAULT_TIMEOUT
                     );
     }
     else
     {
-        if("graph_analysis::OutputPortVertex" != mpStartPort->getClassName())
+        if("graph_analysis::OutputFeatureVertex" != mpStartFeature->getClassName())
         {
-            std::string error_msg = std::string("Expected associated source portVertex to be of type 'graph_analysis::OutputPortVertex'; instead, found type '")
-                                            + mpStartPort->getClassName() + "'";
+            std::string error_msg = std::string("Expected associated source featureVertex to be of type 'graph_analysis::OutputFeatureVertex'; instead, found type '")
+                                            + mpStartFeature->getClassName() + "'";
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
             updateStatus(std::string("Drag-n-drop failed: '") + error_msg + "'!"
@@ -1183,10 +1183,10 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int portID)
                         );
             return;
         }
-        if("graph_analysis::InputPortVertex" != mpEndPort->getClassName())
+        if("graph_analysis::InputFeatureVertex" != mpEndFeature->getClassName())
         {
-            std::string error_msg = std::string("Expected associated target portVertex to be of type 'graph_analysis::InputPortVertex'; instead, found type '")
-                                            + mpEndPort->getClassName() + "'";
+            std::string error_msg = std::string("Expected associated target featureVertex to be of type 'graph_analysis::InputFeatureVertex'; instead, found type '")
+                                            + mpEndFeature->getClassName() + "'";
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
             updateStatus(std::string("Drag-n-drop failed: '") + error_msg + "'!"
@@ -1209,15 +1209,15 @@ void ViewWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fi
     {
         std::string edge_label = label.toStdString();
         spawnEdge(edge_label); // assumes the concerned edge-creation member fields are properly set already
-        NodeItem::id_t start_portID = mFeatureIDMap[mpStartPort];
-        NodeItem::id_t   end_portID = mFeatureIDMap[mpEndPort];
+        NodeItem::id_t start_featureID = mFeatureIDMap[mpStartFeature];
+        NodeItem::id_t   end_featureID = mFeatureIDMap[mpEndFeature];
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         updateLayerWidget();
-        updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between ports '"
-                        + mpStartPort->toString() + "' and '"
-                        + mpEndPort->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_portID)
-                        + " and " + boost::lexical_cast<std::string>(end_portID) + " respectively and of consistent type '"
-                        + mpStartPort->getClassName() +  "' of clusters '"
+        updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between features '"
+                        + mpStartFeature->toString() + "' and '"
+                        + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID)
+                        + " and " + boost::lexical_cast<std::string>(end_featureID) + " respectively and of consistent type '"
+                        + mpStartFeature->getClassName() +  "' of clusters '"
                         + mpStartVertex->toString() + "' and '" + mpEndVertex->toString() + "'!"
                         , DEFAULT_TIMEOUT
                     );
@@ -1236,16 +1236,16 @@ void ViewWidget::spawnEdge(const std::string& label) // assumes the concerned ed
     {
         if(sourceNodeItem == targetNodeItem)
         {
-            // preventing self-edges (handled it into ports swapping already)
+            // preventing self-edges (handled it into features swapping already)
             return;
         }
-        Edge::Ptr edge(new Edge(mpStartPort, mpEndPort, label));
+        Edge::Ptr edge(new Edge(mpStartFeature, mpEndFeature, label));
         mpGraph->addEdge(edge);
         enableEdge(edge);
         Edge::Ptr default_edge(new Edge(mpStartVertex, mpEndVertex, label));
         mpLayoutingGraph->addEdge(default_edge);
 
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[mpStartPort], targetNodeItem, mFeatureIDMap[mpEndPort], default_edge);
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[mpStartFeature], targetNodeItem, mFeatureIDMap[mpEndFeature], default_edge);
         scene()->addItem(edgeItem);
         edgeItem->adjust();
         mEdgeItemMap[default_edge] = edgeItem;
@@ -1501,15 +1501,15 @@ void ViewWidget::updateFromGraph()
 
         if("graph_analysis::OutputPortVertex" == sourceClassName && "graph_analysis::InputPortVertex" == targetClassName)
         {
-            // physical edge - processing deflected until after all ports will have been registered
+            // physical edge - processing deflected until after all features will have been registered
             continue;
         }
 //        else if (   // disabled Port vertices (only specialized InputPorts/OutputPortsVertex allowed
 //                    ("graph_analysis::PortVertex" == sourceClassName && "graph_analysis::ClusterVertex" == targetClassName)
 //                )
 //        {
-//            // semantical edge: links a cluster vertex to one of its ports
-//            std::string warn_msg = std::string("graph_analysis::ViewWidget::updateFromGraph: found reversed edge from source Port vertex '") +
+//            // semantical edge: links a cluster vertex to one of its features
+//            std::string warn_msg = std::string("graph_analysis::ViewWidget::updateFromGraph: found reversed edge from source feature vertex '") +
 //                                        source->toString() + "' of type '" + sourceClassName + "' to target Cluster vertex '" +
 //                                        target->toString() + "' of type '" + targetClassName + "'!";
 //            LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
@@ -1582,7 +1582,7 @@ void ViewWidget::updateFromGraph()
         {
             NodeItem* sourceNodeItem = mFeatureMap[ source ];
             NodeItem* targetNodeItem = mFeatureMap[ target ];
-            // physical edge - processing was deflected until now - i.e. after all ports will have been registered
+            // physical edge - processing was deflected until now - i.e. after all features will have been registered
             Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
             mpLayoutingGraph->addEdge(default_edge);
             EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
@@ -2137,39 +2137,39 @@ void ViewWidget::clearFocus()
 }
 
 
-void ViewWidget::removePortsFocused()
+void ViewWidget::removeFeaturesFocused()
 {
-    removePorts(mpFocusedVertex);
+    removeFeatures(mpFocusedVertex);
 }
 
-void ViewWidget::removePortsSelected()
+void ViewWidget::removeFeaturesSelected()
 {
-    removePorts(mpSelectedVertex);
+    removeFeatures(mpSelectedVertex);
 }
 
-void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
+void ViewWidget::removeFeatures(graph_analysis::Vertex::Ptr concernedVertex)
 {
-    updateStatus(std::string("removing all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
+    updateStatus(std::string("removing all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
-    // error checking on ports removal
+    // error checking on features removal
     if(!item)
     {
-        std::string error_msg = std::string("graph_analysis::ViewWidget::removePorts: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        std::string error_msg = std::string("graph_analysis::ViewWidget::removeFeatures: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
-        updateStatus(std::string("Failed to remove all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
         throw std::runtime_error(error_msg);
     }
-    int nports = item->getFeatureCount();
-    if(!nports)
+    int nfeatures = item->getFeatureCount();
+    if(!nfeatures)
     {
-        QMessageBox::critical(this, tr("No Ports to Remove"), "The cluster is already empty!");
-        updateStatus(std::string("Failed to remove all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': there are no ports!", DEFAULT_TIMEOUT);
+        QMessageBox::critical(this, tr("No Features to Remove"), "The cluster is already empty!");
+        updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': there are no features!", DEFAULT_TIMEOUT);
         return;
     }
     else
     {
-        // prompting the user for all ports deletion
-        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Complete Ports-Removal"), tr((QString("All ports in node '") + QString(concernedVertex->getLabel().c_str()) + QString("' will be deleted! Are you sure you want to continue?")).toAscii()), QMessageBox::Yes | QMessageBox::No);
+        // prompting the user for all features deletion
+        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Complete Features-Removal"), tr((QString("All Features in node '") + QString(concernedVertex->getLabel().c_str()) + QString("' will be deleted! Are you sure you want to continue?")).toAscii()), QMessageBox::Yes | QMessageBox::No);
         EdgeIterator::Ptr edgeIt;
         graph_analysis::Vertex::Ptr cluster;
         switch(button)
@@ -2207,15 +2207,15 @@ void ViewWidget::removePorts(graph_analysis::Vertex::Ptr concernedVertex)
                         syncEdgeItemMap(edge);
                     }
                 }
-                // remove ports graphics
+                // remove features graphics
                 item->removeFeatures();
                 // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
                 refreshLayerWidget();
-                updateStatus(std::string("Removed all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+                updateStatus(std::string("Removed all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
             break;
 
             default:
-                updateStatus(std::string("Failed to remove all ports from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
+                updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
             break;
         }
     }
@@ -2230,70 +2230,70 @@ void ViewWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
     }
 }
 
-void ViewWidget::swapPortsFocused()
+void ViewWidget::swapFeaturesFocused()
 {
-    swapPorts(mpFocusedVertex);
+    swapFeatures(mpFocusedVertex);
 }
 
-void ViewWidget::swapPortsSelected()
+void ViewWidget::swapFeaturesSelected()
 {
-    swapPorts(mpSelectedVertex);
+    swapFeatures(mpSelectedVertex);
 }
 
-void ViewWidget::swapPorts(graph_analysis::Vertex::Ptr concernedVertex)
+void ViewWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVertex)
 {
-    updateStatus(std::string("swapping ports within node '") + concernedVertex->toString() + "'...");
+    updateStatus(std::string("swapping features within node '") + concernedVertex->toString() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
-        std::string error_msg = std::string("graph_analysis::ViewWidget::swapPorts: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
+        std::string error_msg = std::string("graph_analysis::ViewWidget::swapFeatures: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    int portCount = item->getFeatureCount();
-    if(portCount < 2)
+    int featureCount = item->getFeatureCount();
+    if(featureCount < 2)
     {
-        QMessageBox::critical(this, tr("Cannot Swap Ports"), tr("The selected vertex did not have enough ports!"));
-        updateStatus(std::string("Failed to swap ports within node '") + concernedVertex->toString() + "': this vertex did not have enough ports!", DEFAULT_TIMEOUT);
+        QMessageBox::critical(this, tr("Cannot Swap Features"), tr("The selected vertex did not have enough features!"));
+        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': this vertex did not have enough features!", DEFAULT_TIMEOUT);
         return;
     }
-    SwapPortsDialog dialog(item);
+    SwapFeaturesDialog dialog(item);
     if(dialog.isValid())
     {
-        std::string strPort1ID   = dialog.getPort1ID();
-        std::string strPort2ID   = dialog.getPort2ID();
-        int port1ID;
-        std::stringstream ss1(strPort1ID);
-        ss1 >> port1ID;
-        int port2ID;
-        std::stringstream ss2(strPort2ID);
-        ss2 >> port2ID;
-        if(port1ID - port2ID)
+        std::string strFeature1ID   = dialog.getFeature1ID();
+        std::string strFeature2ID   = dialog.getFeature2ID();
+        int feature1ID;
+        std::stringstream ss1(strFeature1ID);
+        ss1 >> feature1ID;
+        int feature2ID;
+        std::stringstream ss2(strFeature2ID);
+        ss2 >> feature2ID;
+        if(feature1ID - feature2ID)
         {
             try
             {
-                item->swapFeatures(port1ID, port2ID);
+                item->swapFeatures(feature1ID, feature2ID);
             }
             catch(std::runtime_error e)
             {
-                LOG_ERROR_S << "graph_analysis::gui::ViewWidget::swapPorts: swapping operation failed: " << e.what();
+                LOG_ERROR_S << "graph_analysis::gui::ViewWidget::swapFeatures: swapping operation failed: " << e.what();
                 QMessageBox::critical(this, tr("Swapping Failed"), QString(e.what()));
-                updateStatus(std::string("Failed to swap ports within node '") + concernedVertex->toString() + "': " + std::string(e.what()) + "!", DEFAULT_TIMEOUT);
+                updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': " + std::string(e.what()) + "!", DEFAULT_TIMEOUT);
             }
         }
         else
         {
-            QMessageBox::information(this, tr("Swapped Ports In-place"), tr("identical ports were selected!"));
+            QMessageBox::information(this, tr("Swapped Features In-place"), tr("identical features were selected!"));
         }
-        updateStatus(std::string("Swapped ports of IDs ") + boost::lexical_cast<std::string>(port1ID) + " and "
-                        + boost::lexical_cast<std::string>(port2ID) + " within node '" + concernedVertex->toString()
+        updateStatus(std::string("Swapped features of IDs ") + boost::lexical_cast<std::string>(feature1ID) + " and "
+                        + boost::lexical_cast<std::string>(feature2ID) + " within node '" + concernedVertex->toString()
                         + "'!"
                         , DEFAULT_TIMEOUT
                     );
     }
     else
     {
-        updateStatus(std::string("Failed to swap ports within node '") + concernedVertex->toString() + "': aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': aborted by user!", DEFAULT_TIMEOUT);
     }
 }
 
@@ -2345,63 +2345,63 @@ void ViewWidget::removeFocusedVertexMainWindow()
     }
 }
 
-void ViewWidget::addPortFocusedMainWindow()
+void ViewWidget::addFeatureFocusedMainWindow()
 {
     if(mVertexFocused)
     {
-        addPortFocused();
+        addFeatureFocused();
     }
     else
     {
-        QMessageBox::information(this, tr("Cannot Add a Port to the Focused Node"), tr("Cannot Add a Port to the Focused Node: no node is focused on!"));
+        QMessageBox::information(this, tr("Cannot Add a Feature to the Focused Node"), tr("Cannot Add a Feature to the Focused Node: no node is focused on!"));
     }
 }
 
-void ViewWidget::swapPortsFocusedMainWindow()
+void ViewWidget::swapFeaturesFocusedMainWindow()
 {
     if(mVertexFocused)
     {
-        swapPortsFocused();
+        swapFeaturesFocused();
     }
     else
     {
-        QMessageBox::information(this, tr("Cannot Swap Ports of the Focused Node"), tr("Cannot Swap Ports of the Focused Node: no node is focused on!"));
+        QMessageBox::information(this, tr("Cannot Swap Features of the Focused Node"), tr("Cannot Swap Features of the Focused Node: no node is focused on!"));
     }
 }
 
-void ViewWidget::renamePortFocusedMainWindow()
+void ViewWidget::renameFeatureFocusedMainWindow()
 {
     if(mVertexFocused)
     {
-        renamePortFocused();
+        renameFeatureFocused();
     }
     else
     {
-        QMessageBox::information(this, tr("Cannot Rename a Port of the Focused Node"), tr("Cannot Rename a Port of the Focused Node: no node is focused on!"));
+        QMessageBox::information(this, tr("Cannot Rename a Feature of the Focused Node"), tr("Cannot Rename a Feature of the Focused Node: no node is focused on!"));
     }
 }
 
-void ViewWidget::removePortFocusedMainWindow()
+void ViewWidget::removeFeatureFocusedMainWindow()
 {
     if(mVertexFocused)
     {
-        removePortFocused();
+        removeFeatureFocused();
     }
     else
     {
-        QMessageBox::information(this, tr("Cannot Remove a Port of the Focused Node"), tr("Cannot Remove a Port of the Focused Node: no node is focused on!"));
+        QMessageBox::information(this, tr("Cannot Remove a Feature of the Focused Node"), tr("Cannot Remove a Feature of the Focused Node: no node is focused on!"));
     }
 }
 
-void ViewWidget::removePortsFocusedMainWindow()
+void ViewWidget::removeFeaturesFocusedMainWindow()
 {
     if(mVertexFocused)
     {
-        removePortsFocused();
+        removeFeaturesFocused();
     }
     else
     {
-        QMessageBox::information(this, tr("Cannot Remove the Ports of the Focused Node"), tr("Cannot Remove the Ports of the Focused Node: no node is focused on!"));
+        QMessageBox::information(this, tr("Cannot Remove the Features of the Focused Node"), tr("Cannot Remove the Features of the Focused Node: no node is focused on!"));
     }
 }
 

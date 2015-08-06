@@ -26,8 +26,8 @@ rock_library(graph_analysis
         gui/ViewWidget.cpp
         gui/LayerWidget.cpp
         gui/AddNodeDialog.cpp
-        gui/SwapPortsDialog.cpp
-        gui/RenamePortDialog.cpp
+        gui/SwapFeaturesDialog.cpp
+        gui/RenameFeatureDialog.cpp
         gui/PropertyDialog.cpp
         gui/ActionCommander.cpp
         gui/Main.cpp
@@ -100,8 +100,8 @@ rock_library(graph_analysis
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
         gui/AddNodeDialog.hpp
-        gui/SwapPortsDialog.hpp
-        gui/RenamePortDialog.hpp
+        gui/SwapFeaturesDialog.hpp
+        gui/RenameFeatureDialog.hpp
         gui/PropertyDialog.hpp
         gui/CustomDialog.hpp
         io/GexfWriter.hpp
@@ -150,16 +150,16 @@ rock_library(graph_analysis
         gui/LayerWidget.hpp
         gui/AddNodeDialog.hpp
         gui/PropertyDialog.hpp
-        gui/SwapPortsDialog.hpp
-        gui/RenamePortDialog.hpp
+        gui/SwapFeaturesDialog.hpp
+        gui/RenameFeatureDialog.hpp
     DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
         gui/add_node_dialog_gui.ui
         gui/property_dialog_gui.ui
-        gui/swap_ports_dialog_gui.ui
-        gui/rename_port_dialog_gui.ui
+        gui/swap_features_dialog_gui.ui
+        gui/rename_feature_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk gvc)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

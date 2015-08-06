@@ -6,8 +6,8 @@
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef RENAMEPORTDIALOG_H
-#define RENAMEPORTDIALOG_H
+#ifndef SWAPFEATURESDIALOG_H
+#define SWAPFEATURESDIALOG_H
 
 #include <set>
 #include <string>
@@ -21,7 +21,6 @@
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
@@ -31,42 +30,42 @@ namespace gui {
     class NodeItem;
 
 /**
- * \class RenamePortDialog
- * \file RenamePortDialog.hpp
- * \brief pop-up dialog manager for renaming a port of a cluster node
+ * \class SwapFeaturesDialog
+ * \file SwapFeaturesDialog.hpp
+ * \brief pop-up dialog manager for swapping two features of a cluster node
  */
-class RenamePortDialog : public QObject
+class SwapFeaturesDialog : public QObject
 {
     Q_OBJECT
 public:
     /// constructor; stores the concerned cluster node reference
-    RenamePortDialog(NodeItem *nodeItem);
+    SwapFeaturesDialog(NodeItem *nodeItem);
     /// destructor
-    ~RenamePortDialog(){}
+    ~SwapFeaturesDialog(){}
     /// sets up the provided qt dialog instance
     void setupUi(QDialog *Dialog);
     /// sets up visible titles for the scene (e.g. buttons labels)
     void retranslateUi(QDialog *Dialog);
     /// getter method for boolean validation witness
     bool isValid() { return mValid; }
-    /// getter method for the new port label dialog result
-    std::string getNewLabel() { return mNewLabel; }
-    /// getter method for the node type dialog result
-    std::string getPortID () { return mPortID;  }
+    /// getter method for the first feature ID dialog result
+    std::string getFeature1ID () { return mFeature1ID;  }
+    /// getter method for the second feature ID dialog result
+    std::string getFeature2ID () { return mFeature2ID;  }
 
 public slots:
     /// slot for listening for whenever the user presses "Ok" in the resulting pop-up dialog window
-    void renameAccept();
+    void swapAccept();
     /// slot for listening for whenever the user presses "Cancel" (or ESC/close window corner button) in the resulting pop-up dialog window
-    void renameReject();
+    void swapReject();
 
 private:
     /// main qt dialog instance to be used
     QDialog mDialog;
-    /// stores the new port label user-interaction result
-    std::string mNewLabel;
-    /// stores the port node ID user-interaction result
-    std::string mPortID;
+    /// stores the chosen first feature ID as text user-interaction result
+    std::string mFeature1ID;
+    /// stores the chosen second feature ID as text user-interaction result
+    std::string mFeature2ID;
 
     /// concerned cluster node
     NodeItem *mpNodeItem;
@@ -74,16 +73,20 @@ private:
     bool mValid;
     /// in-scene set of buttons for this pop-window ("Ok" and "Cancel")
     QDialogButtonBox *mpButtonBox;
-    /// in scene label displaying "New Label:"
-    QLabel *mpNewLabel;
-    /// in scene label displaying "Port ID:"
-    QLabel *mpPortLabel;
-    /// GUI element where the user types the new desired port label
-    QLineEdit *mpLineEdit;
-    /// GUI element from which the user selects the desired port to be renamed
-    QComboBox *mpComboBox;
+    /// in scene label displaying "Feature ID:"
+    QLabel *mpFeature1Label;
+    /// in scene label displaying "Feature ID:"
+    QLabel *mpFeature2Label;
+    /// in scene label displaying "Warning:" in case full label swapping is not supported (i.e. edges are not affected by swapping - deprecated)
+    QLabel *mpWarningLabel;
+    /// in scene label displaying the warning message in case full label swapping is not supported (i.e. edges are not affected by swapping - deprecated)
+    QLabel *mpWarningTextLabel;
+    /// GUI element from which the user selects the first desired feature for swapping
+    QComboBox *mpComboBox1;
+    /// GUI element from which the user selects the second desired feature for swapping
+    QComboBox *mpComboBox2;
 };
 
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // RENAMEPORTDIALOG_H
+#endif // SWAPFEATURESDIALOG_H
