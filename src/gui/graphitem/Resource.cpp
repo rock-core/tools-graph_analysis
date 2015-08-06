@@ -73,8 +73,6 @@ void Resource::recomputeMaxInputPortWidth(void)
         graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
         if(
             "graph_analysis::InputPortVertex" == current_port->getClassName()
-                ||
-            "graph_analysis::PropertyVertex" == current_port->getClassName()
         )
         {
             qreal current_width = label->boundingRect().width();
@@ -97,8 +95,6 @@ void Resource::recomputeMaxOutputPortWidth(void)
         graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
         if(
             "graph_analysis::OutputPortVertex" == current_port->getClassName()
-                ||
-            "graph_analysis::OperationVertex" == current_port->getClassName()
         )
         {
             qreal current_width = label->boundingRect().width();
@@ -112,7 +108,7 @@ void Resource::recomputeMaxOutputPortWidth(void)
 
 void Resource::setFeatureLabel(NodeItem::id_t portID, const std::string& label)
 {
-    dieOnFeature(portID, "setPortLabel");
+    dieOnFeature(portID, "setFeatureLabel");
     graph_analysis::Vertex::Ptr port = mVertices[portID];
     port->setLabel(label);
     Label *port_label = mLabels[portID];
@@ -374,7 +370,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr node)
         )
     )
     {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::addPort: provided port node is not of a sub-type of PortVertex, but of inadmissible type '")
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::addFeature: provided port node is not of a sub-type of PortVertex, but of inadmissible type '")
                                 + node->getClassName() + "'!";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
@@ -397,7 +393,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr node)
         }
         if(mInPorts + 1 < 0)
         {
-            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: input ports counter overflowed";
+            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addFeature: input ports counter overflowed";
             mInPorts = 0;
         }
         label->setPos(mLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
@@ -417,7 +413,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr node)
         }
         if(mOutPorts + 1 < 0)
         {
-            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: output ports counter overflowed";
+            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addFeature: output ports counter overflowed";
             mOutPorts = 0;
         }
         label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
@@ -437,7 +433,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr node)
         }
         if(mProps + 1 < 0)
         {
-            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: properties counter overflowed";
+            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addFeature: properties counter overflowed";
             mProps = 0;
         }
         label->setPos(mLabel->pos() + QPointF(0., qreal(3 + max(mInPorts, mOutPorts) + (++mProps)) * ADJUST));
@@ -456,7 +452,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr node)
         }
         if(mOps + 1 < 0)
         {
-            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: operations counter overflowed";
+            LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addFeature: operations counter overflowed";
             mOps = 0;
         }
         label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(3 + max(mInPorts, mOutPorts) + (++mOps)) * ADJUST));
@@ -470,7 +466,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr node)
     // test if the IDs overflowed
     if(++mID < 0)
     {
-        LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addPort: port IDs counter overflowed";
+        LOG_WARN_S << "graph_analysis::gui::grapitem::Resource::addFeature: port IDs counter overflowed";
         mID = 0; // implicitely assumes that (2^63 - 1) features' graphical representation to fit in the meantime inside the node shall be enough
     }
 
@@ -482,13 +478,13 @@ void Resource::removeFeature(NodeItem::id_t portID)
     int nports = mLabels.size();
     if(!nports)
     {
-        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::removePort: node '")
+        std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::removeFeature: node '")
                                         + getLabel()
                                         + "' has no ports whatsoever!";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    dieOnFeature(portID, "removePort");
+    dieOnFeature(portID, "removeFeature");
     graphitem::Label *label_to_delete = mLabels[portID];
     graph_analysis::Vertex::Ptr port_to_delete = mVertices[portID];
     prepareGeometryChange();
@@ -606,16 +602,16 @@ void Resource::removeFeature(NodeItem::id_t portID)
 
 void Resource::swapFeatures(NodeItem::id_t port1, NodeItem::id_t port2)
 {
-    dieOnFeature(port1, "swapPorts");
-    dieOnFeature(port2, "swapPorts");
+    dieOnFeature(port1, "swapFeatures");
+    dieOnFeature(port2, "swapFeatures");
 
     graph_analysis::Vertex::Ptr vertex1 = mVertices[port1];
     graph_analysis::Vertex::Ptr vertex2 = mVertices[port2];
     if(vertex1->getClassName() != vertex2->getClassName())
     {
-        std::string error_msg = std::string("illegal swapping operation was requested in between ports of different types '")
+        std::string error_msg = std::string("illegal swapping operation was requested in between features of different types '")
                                     + vertex1->getClassName() + "' and '" + vertex2->getClassName() + "'";
-        LOG_WARN_S << "graph_analysis::gui:graphitem::Resource::swapPorts: " << error_msg;
+        LOG_WARN_S << "graph_analysis::gui:graphitem::Resource::swapFeatures: " << error_msg;
         QMessageBox::critical(mpGraphWidget, QString("Swapping Failed"), QString((error_msg).c_str()));
         updateStatus("", 1); // clearing the Status Bar
         return;
@@ -660,7 +656,7 @@ void Resource::removeFeatures()
 
 graph_analysis::Vertex::Ptr Resource::getFeature(NodeItem::id_t portID)
 {
-    dieOnFeature(portID, "getPort");
+    dieOnFeature(portID, "getFeature");
     return mVertices[portID];
 }
 
@@ -723,7 +719,7 @@ void Resource::syncLabel(NodeItem::id_t portID)
 
 QRectF Resource::featureBoundingRect(NodeItem::id_t portID)
 {
-    dieOnFeature(portID, "portBoundingRect");
+    dieOnFeature(portID, "featureBoundingRect");
     QRectF result = boundingRect(); // full node bounding rect is used a source region to crop out from
     Labels::iterator it = mLabels.find(portID);
     graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
@@ -872,7 +868,7 @@ void Resource::shiftFeatureUp(NodeItem::id_t portID)
     Labels::iterator tuple = mLabels.find(portID);
     if(mLabels.end() == tuple)
     {
-        dieOnFeature(portID, "shiftPortUp");
+        dieOnFeature(portID, "shiftFeatureUp");
     }
 
     // looking for the closest upper neighbouring port of the same port type
@@ -902,7 +898,7 @@ void Resource::shiftFeatureDown(NodeItem::id_t portID)
     Labels::iterator tuple = mLabels.find(portID);
     if(mLabels.end() == tuple)
     {
-        dieOnFeature(portID, "shiftPortDown");
+        dieOnFeature(portID, "shiftFeatureDown");
     }
 
     // looking for the closest lower neighbouring port of the same port type
