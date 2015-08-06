@@ -1457,7 +1457,7 @@ void ViewWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
-            LOG_DEBUG_S << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex);
+            LOG_DEBUG_S << "graph_analysis::gui::ViewWidget: Filtered out vertex: " << vertex->toString();
             continue;
         }
 
@@ -1566,7 +1566,7 @@ void ViewWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(edge))
         {
-            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
+            LOG_DEBUG_S << "graph_analysis::gui::ViewWidget: Filtered out edge: " << edge->toString();
             continue;
         }
 
@@ -1636,6 +1636,7 @@ void ViewWidget::updateFromGraph()
                 if(!nodeItem)
                 {
                     LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
+                    continue;
                 }
                 // repositioning node in a scaled fashion
                 nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());

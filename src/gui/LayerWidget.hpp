@@ -98,7 +98,7 @@ public:
     /// setter method for updating the underlying base graph
     void setGraph(graph_analysis::BaseGraph::Ptr graph);
 
-    /// deletes all internal information; when keepData is set, the underlying base graph is spared (it won't get reset)
+    /// deletes all internal information; disregards keepData as the underlying base graph is treated as read-only (except by its dedicated setter method)
     void reset(bool keepData = false);
     /// resets all graphical scene storage elements
     void clear();

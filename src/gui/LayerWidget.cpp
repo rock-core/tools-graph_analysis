@@ -188,11 +188,6 @@ void LayerWidget::reset(bool keepData)
 {
     clear();
 
-    if(!keepData)
-    {
-        mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
-    }
-
     if(mpGVGraph)
     {
         delete mpGVGraph;
@@ -265,7 +260,7 @@ void LayerWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
-            LOG_DEBUG_S << "Filtered out a vertex of filtering value: " << mpSubGraph->enabled(vertex);
+            LOG_DEBUG_S << "graph_analysis::gui::LayerWidget: Filtered out vertex: " << vertex->toString();
             continue;
         }
 
@@ -293,7 +288,7 @@ void LayerWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(edge))
         {
-            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
+            LOG_DEBUG_S << "graph_analysis::gui::LayerWidget: Filtered out edge: " << edge->toString();
             continue;
         }
 
@@ -353,6 +348,7 @@ void LayerWidget::updateFromGraph()
                 if(!nodeItem)
                 {
                     LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
+                    continue;
                 }
 
                 nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
@@ -625,14 +621,18 @@ void LayerWidget::setLayout(QString layoutName)
 
 void LayerWidget::toggleFeatureLayer(bool toggle)
 {
+    updateStatus(std::string("toggling the features layer to ") + (toggle ? "true" : "false" ) + "...");
     mFeatureLayerToggle = toggle;
-    refresh();
+    refresh(false);
+    updateStatus(std::string("Toggled the features layer to ") + (toggle ? "true" : "false" ) + "!", DEFAULT_TIMEOUT);
 }
 
 void LayerWidget::toggleClusterLayer(bool toggle)
 {
+    updateStatus(std::string("toggling the clusters layer to ") + (toggle ? "true" : "false" ) + "...");
     mClusterLayerToggle = toggle;
-    refresh();
+    refresh(false);
+    updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", DEFAULT_TIMEOUT);
 }
 
 } // end namespace gui
