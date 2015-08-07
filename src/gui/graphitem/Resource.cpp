@@ -295,7 +295,7 @@ void Resource::displaceOutputPorts(qreal delta)
     }
 }
 
-void Resource::updateHeight()
+void Resource::updateHeight(void)
 {
     QRectF rect = boundingRect();
     int slotCount = 1; // one for the node label
@@ -330,10 +330,9 @@ void Resource::updateWidth(bool active)
 {
     qreal max_width = mLabel->boundingRect().width();
     // iterating over properties/operations to increase max_width if needed
-    foreach(Tuple tuple, mLabels)
+    foreach(VTuple tuple, mVertices)
     {
-        graphitem::Label *label = tuple.second;
-        graph_analysis::Vertex::Ptr feature = mVertices[tuple.first]; // TODO: optimization: iterate over mVertices instead
+        graph_analysis::Vertex::Ptr feature = tuple.second;
         std::string type = feature->getClassName();
         if(
             "graph_analysis::PropertyVertex" == type
@@ -341,6 +340,7 @@ void Resource::updateWidth(bool active)
             "graph_analysis::OperationVertex" == type
         )
         {
+            graphitem::Label *label = mLabels[tuple.first];
             qreal width = label->boundingRect().width();
             if(width > max_width)
             {
@@ -503,7 +503,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
         pushDownOperations(!mProps ? 3 : 1);
         label->setPos(mLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (++mProps)) * ADJUST));
         mHeightAdjusted = false;
-        updateHeight(); // TODO: optimization adding an extra lane to the height shall work too
+        updateHeight();
     }
     else // if(/*bool isOperation = */"graph_analysis::OperationVertex" == feature_type)
     {
@@ -516,7 +516,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
         NodeItem::id_t maxports = max(mInPorts, mOutPorts);
         label->setPos(mLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (mProps ? 2 + mProps : 0) + (++mOps)) * ADJUST));
         mHeightAdjusted = false;
-        updateHeight(); // TODO: optimization adding an extra lane to the height shall work too
+        updateHeight();
     }
     NodeItem::id_t featureID = mID;
     // test if the IDs overflowed
@@ -797,7 +797,6 @@ void Resource::syncLabel(NodeItem::id_t featureID)
             {
                 recomputeMaxInputPortWidth();
             }
-            updateWidth();
         }
         else if("graph_analysis::OutputPortVertex" == type)
         {
@@ -809,8 +808,8 @@ void Resource::syncLabel(NodeItem::id_t featureID)
             {
                 recomputeMaxOutputPortWidth();
             }
-            updateWidth();
         }
+        updateWidth();
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         refreshLayerWidget(false); // refreshing silently (no update on the Status Bar)
         update();

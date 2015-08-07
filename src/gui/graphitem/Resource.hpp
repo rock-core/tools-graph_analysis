@@ -88,7 +88,7 @@ public:
      */
     void updateWidth (bool active = true);
     /// recomputes node's height; makes the node vertically shrink or expand
-    void updateHeight();
+    void updateHeight(void);
     /// swaps 2 features positions indicated by their IDs
     void swapFeatures(NodeItem::id_t feature1, NodeItem::id_t feature2);
     /// removes all features
