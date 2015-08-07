@@ -39,7 +39,7 @@ public:
      * \brief getter method for retrieving the currently displayed main text label
      * \return the current string label
      */
-    std::string  getLabel() { return mLabel->toPlainText().toStdString(); }
+    std::string  getLabel() { return mpLabel->toPlainText().toStdString(); }
     ///syncs the graphical text label from the internal mpVertex label
     void updateLabel();
     /**
@@ -153,7 +153,19 @@ private:
     /// background child widget
     QGraphicsWidget *mpBoard;
     /// main node text label
-    Label *mLabel;
+    Label *mpLabel;
+    /// ports text label; displays "Ports:" in italics
+    Label *mpPortsLabel;
+    /// properties text label; displays "Properties:" in italics
+    Label *mpPropsLabel;
+    /// operations text label; displays "Operations:" in italics
+    Label *mpOpsLabel;
+    /// constant width in the scene of text label "Ports:"
+    qreal mWidthPortsLabel;
+    /// constant width in the scene of text label "Properties:"
+    qreal mWidthPropsLabel;
+    /// constant width in the scene of text label "Operations:"
+    qreal mWidthOpsLabel;
     /// feature labels map
     Labels mLabels;
     /// conceptual feature vertices

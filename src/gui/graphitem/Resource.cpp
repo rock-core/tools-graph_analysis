@@ -1,6 +1,7 @@
 #include "Resource.hpp"
 
 #include <cmath>
+#include <QFont>
 #include <QStyle>
 #include <QPainter>
 #include <QMessageBox>
@@ -45,15 +46,29 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mMaxOutputPortWidth(0.)
     , mSeparator(SEPARATOR)
 {
-    //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
-//    setFlag(ItemIsFocusable);
-    mLabel = new Label(vertex->toString(), this);
-    //setHandlesChildEvents(false);
-    //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
-    //mLabel->setParentItem(this);
-    //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
-    //mLabel->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    //mLabel->setZValue(-100.0);
+    mpLabel = new Label(vertex->toString(), this);
+    QFont mainLabelFont;
+    mainLabelFont.setBold(true);
+    mpLabel->setFont(mainLabelFont);
+
+    QFont labelFont;
+    labelFont.setItalic(true);
+//    labelFont.setUnderline(true);
+
+    mpPortsLabel = new Label("Ports:", this);
+    mpPortsLabel->setFont(labelFont);
+    mpPortsLabel->setPos(mpLabel->pos() + QPointF(0., ADJUST));
+
+    mpPropsLabel = new Label("Properties:", this);
+    mpPropsLabel->setFont(labelFont);
+
+    mpOpsLabel = new Label("Operations:", this);
+    mpOpsLabel->setFont(labelFont);
+
+    mWidthPortsLabel = mpPortsLabel->boundingRect().width();
+    mWidthPropsLabel = mpPropsLabel->boundingRect().width();
+    mWidthOpsLabel   = mpOpsLabel  ->boundingRect().width();
+
     setFlag(ItemIsMovable);
 
     mpBoard = new QGraphicsWidget(this);
@@ -146,13 +161,13 @@ void Resource::setFeatureLabel(NodeItem::id_t featureID, const std::string& labe
 void Resource::changeLabel(const std::string& label)
 {
     mpVertex->setLabel(label);
-    mLabel->setPlainText(QString(label.c_str()));
+    mpLabel->setPlainText(QString(label.c_str()));
     updateWidth();
 }
 
 void Resource::updateLabel()
 {
-    mLabel->setPlainText(QString(mpVertex->getLabel().c_str()));
+    mpLabel->setPlainText(QString(mpVertex->getLabel().c_str()));
     updateWidth();
 }
 
@@ -177,7 +192,40 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     //painter->drawEllipse(-7, -7, 20, 20);
     painter->setPen(QPen(Qt::black, 0));
     updateWidth(false); // in case the main label change triggered redrawing
-//    qreal rect_width, max_width = mLabel->boundingRect().width();
+//    qreal rect_width, max_width = mpLabel->boundingRect().width();
+    int maxPorts = max(mInPorts, mOutPorts);
+    // enabling or disabling text labels in italics - "Ports:" goes first
+    if(mInPorts || mOutPorts)
+    {
+        mpPortsLabel->show();
+    }
+    else
+    {
+        mpPortsLabel->hide();
+    }
+
+    // enabling or disabling text labels in italics - "Properties:" goes second
+    if(mProps)
+    {
+        mpPropsLabel->show();
+        mpPropsLabel->setPos(mpLabel->pos() = QPointF(0., qreal(2 + (maxPorts ? 1 + maxPorts : 0)) * ADJUST));
+    }
+    else
+    {
+        mpPropsLabel->hide();
+    }
+
+    // enabling or disabling text labels in italics
+    if(mOps)
+    {
+        mpOpsLabel->show();
+        mpOpsLabel->setPos(mpLabel->pos() = QPointF(0., qreal(2 + (maxPorts ? 1 + maxPorts : 0) + (mProps ? 2 + mProps : 0)) * ADJUST));
+    }
+    else
+    {
+        mpOpsLabel->hide();
+    }
+
     QRectF rect;
     // Drawing features
     foreach(VTuple tuple, mVertices)
@@ -201,10 +249,10 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     // Drawing of border: back to transparent background
     painter->setPen(mPen);
     rect = boundingRect();
-    if(max(mInPorts, mOutPorts) && max(mProps, mOps))
+    if(maxPorts && max(mProps, mOps))
     {
         // drawing the line separator if both ports and properties(or operations) are present
-        qreal offset = (qreal(2.5) + qreal(max(mInPorts, mOutPorts))) * ADJUST;
+        qreal offset = (qreal(2.5) + qreal(maxPorts)) * ADJUST;
         painter->drawRect(rect.adjusted (
                                             0.,
                                             offset,
@@ -216,7 +264,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     if(mProps && mOps)
     {
         // drawing the line separator of properties and operations (iff both are represented)
-        qreal offset = (qreal(2.5) + qreal(max(mInPorts, mOutPorts)) + 2 + mProps) * ADJUST;
+        qreal offset = (qreal(2.5) + qreal(maxPorts) + 2 + mProps) * ADJUST;
         painter->drawRect(rect.adjusted (
                                             0.,
                                             offset,
@@ -324,7 +372,7 @@ void Resource::updateHeight(void)
 
 void Resource::updateWidth(bool active)
 {
-    qreal max_width = mLabel->boundingRect().width();
+    qreal max_width = max(max(mpLabel->boundingRect().width(), mWidthPortsLabel), max(mWidthPropsLabel, mWidthOpsLabel));
     // iterating over properties/operations to increase max_width if needed
     foreach(VTuple tuple, mVertices)
     {
@@ -456,7 +504,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
             LOG_ERROR_S << error_msg;
             throw std::runtime_error(error_msg);
         }
-        label->setPos(mLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
+        label->setPos(mpLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
         if(mInPorts > mOutPorts)
         {
             pushDownNonPortFeatures(1 == mInPorts ? 2 : 1);
@@ -477,7 +525,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
             LOG_ERROR_S << error_msg;
             throw std::runtime_error(error_msg);
         }
-        label->setPos(mLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
+        label->setPos(mpLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
         if(mOutPorts > mInPorts)
         {
             pushDownNonPortFeatures(1 == mOutPorts ? 2 : 1);
@@ -495,7 +543,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
         }
         NodeItem::id_t maxports = max(mInPorts, mOutPorts);
         pushDownOperations(!mProps ? 3 : 1);
-        label->setPos(mLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (++mProps)) * ADJUST));
+        label->setPos(mpLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (++mProps)) * ADJUST));
         mHeightAdjusted = false;
         updateHeight();
     }
@@ -508,7 +556,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
             throw std::runtime_error(error_msg);
         }
         NodeItem::id_t maxports = max(mInPorts, mOutPorts);
-        label->setPos(mLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (mProps ? 2 + mProps : 0) + (++mOps)) * ADJUST));
+        label->setPos(mpLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (mProps ? 2 + mProps : 0) + (++mOps)) * ADJUST));
         mHeightAdjusted = false;
         updateHeight();
     }
@@ -746,7 +794,7 @@ void Resource::removeFeatures()
     mHeightAdjusted = false;
     mMaxInputPortWidth = 0.;
     mMaxOutputPortWidth = 0.;
-    mpBoard->resize(mLabel->boundingRect().size());
+    mpBoard->resize(mpLabel->boundingRect().size());
     update();
 }
 
@@ -761,7 +809,7 @@ void Resource::syncLabel(NodeItem::id_t featureID)
     if(-1 == featureID)
     {
         // syncs main node label
-        std::string label = mLabel->toPlainText().toStdString();
+        std::string label = mpLabel->toPlainText().toStdString();
         if(mpVertex->getLabel() != label)
         {
             mpVertex->setLabel(label);
@@ -836,7 +884,7 @@ QRectF Resource::featureBoundingRect(NodeItem::id_t featureID)
                         qreal(3 + offset) * ADJUST - result.height()
                     ); // forward enumeration
 #else
-        qreal offset = mLabels[featureID]->pos().y() - mLabel->pos().y();
+        qreal offset = mLabels[featureID]->pos().y() - mpLabel->pos().y();
         result.adjust(
                         isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
                         offset,
@@ -848,7 +896,7 @@ QRectF Resource::featureBoundingRect(NodeItem::id_t featureID)
     else
     {
         Label *feature = mLabels[featureID];
-        qreal offset = feature->pos().y() - mLabel->pos().y();
+        qreal offset = feature->pos().y() - mpLabel->pos().y();
         result.adjust(
                         0.,
                         offset,
@@ -968,7 +1016,7 @@ void Resource::shiftFeatureUp(NodeItem::id_t featureID)
 
     // looking for the closest upper neighbouring feature of the same feature type
     const qreal y = tuple->second->pos().y();
-    qreal delta = y - mLabel->pos().y();
+    qreal delta = y - mpLabel->pos().y();
     if(abs(delta - 2. * ADJUST) < EPSILON) // using EPSILON as safety belt against loss in floating point precision
     {
         // the indicated feature was top most; doing nothing
@@ -998,7 +1046,7 @@ void Resource::shiftFeatureDown(NodeItem::id_t featureID)
 
     // looking for the closest lower neighbouring feature of the same feature type
     const qreal y = tuple->second->pos().y();
-    qreal delta = y - mLabel->pos().y();
+    qreal delta = y - mpLabel->pos().y();
     // iterating for closest lower label
     graph_analysis::Vertex::Ptr vertex = mVertices[featureID];
     const std::string vertexType = vertex->getClassName();
