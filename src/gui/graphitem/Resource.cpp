@@ -201,7 +201,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     }
     else
     {
-        mpPortsLabel->hide();
+        mpPortsLabel->hide(); // never resetting position on hide operation keeps the cluster node larger than its visible obvious inner elements on screen
     }
 
     // enabling or disabling text labels in italics - "Properties:" goes second
@@ -213,6 +213,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     else
     {
         mpPropsLabel->hide();
+        mpPropsLabel->setPos(mpLabel->pos());
     }
 
     // enabling or disabling text labels in italics
@@ -224,6 +225,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     else
     {
         mpOpsLabel->hide();
+        mpOpsLabel->setPos(mpLabel->pos());
     }
 
     QRectF rect;
