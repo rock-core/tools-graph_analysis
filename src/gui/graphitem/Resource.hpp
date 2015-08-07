@@ -68,7 +68,7 @@ public:
      */
     graph_analysis::Vertex::Ptr getFeature(NodeItem::id_t id);
     /// adds a new given feature vertex to the node features (and displays it)
-    id_t addFeature(Vertex::Ptr node);
+    id_t addFeature(Vertex::Ptr vertex);
     /// removes a feature vertex (indicated by feature ID) from the node features (removes it from the scene too)
     void removeFeature(NodeItem::id_t id);
     /// syncs the updated text label of the feature label in the scene with the corresponding internal feature vertex label (both being indicated by the same provided feature ID)
@@ -135,7 +135,7 @@ protected:
      * \param caller text name of the caller method (for which the error checking is being performed)
      */
     void dieOnFeature(NodeItem::id_t  id, const std::string& caller = std::string());
-    /// shifts right all output ports with delta; counting from the left node boundary
+    /// shifts right all output ports with delta; counting from the left cluster node boundary
     void displaceOutputPorts(qreal delta);
     /// shifts right all output ports with delta; takes effect relative to the current output ports displacement
     void shiftOutputPorts(qreal delta);
