@@ -65,16 +65,15 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 void Resource::recomputeMaxInputPortWidth(void)
 {
     mMaxInputPortWidth = 0;
-    Labels::iterator it = mLabels.begin();
-    for(; mLabels.end() != it; ++it)
+    foreach(VTuple tuple, mVertices)
     {
-        // iterates through the labels of input ports to find their max width
-        Label *label = it->second;
-        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        // iterates through the input ports features to find their max width
+        graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
             "graph_analysis::InputPortVertex" == current_port->getClassName()
         )
         {
+            Label *label = mLabels[tuple.first];
             qreal current_width = label->boundingRect().width();
             if(mMaxInputPortWidth < current_width)
             {
@@ -86,17 +85,16 @@ void Resource::recomputeMaxInputPortWidth(void)
 
 void Resource::recomputeMaxOutputPortWidth(void)
 {
-    Labels::iterator it = mLabels.begin();
     mMaxOutputPortWidth = 0;
-    for(; mLabels.end() != it; ++it)
+    foreach(VTuple tuple, mVertices)
     {
-        // iterates through the labels of output ports to find their max width
-        Label *label = it->second;
-        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        // iterates through the output ports features to find their max width
+        graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
             "graph_analysis::OutputPortVertex" == current_port->getClassName()
         )
         {
+            Label *label = mLabels[tuple.first];
             qreal current_width = label->boundingRect().width();
             if(mMaxOutputPortWidth < current_width)
             {
@@ -182,10 +180,10 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    qreal rect_width, max_width = mLabel->boundingRect().width();
     QRectF rect;
     // Drawing features
-    foreach(Tuple tuple, mLabels)
+    foreach(VTuple tuple, mVertices)
     {
         rect = featureBoundingRect(tuple.first);
-        std::string type = mVertices[tuple.first]->getClassName();
+        std::string type = tuple.second->getClassName();
         bool isPort = (
                         "graph_analysis::InputPortVertex" == type
                             ||
@@ -264,15 +262,14 @@ void Resource::shiftOutputPorts(qreal delta)
     {
         return;
     }
-    Labels::iterator it = mLabels.begin();
-    for(; mLabels.end() != it; ++it)
+    foreach(VTuple tuple, mVertices)
     {
-        Label *label = it->second;
-        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
             "graph_analysis::OutputPortVertex" == current_port->getClassName()
         )
         {
+            Label *label = mLabels[tuple.first];
             label->setPos(label->pos() + QPointF(delta, 0.));
         }
     }
@@ -280,15 +277,14 @@ void Resource::shiftOutputPorts(qreal delta)
 
 void Resource::displaceOutputPorts(qreal delta)
 {
-    Labels::iterator it = mLabels.begin();
-    for(; mLabels.end() != it; ++it)
+    foreach(VTuple tuple, mVertices)
     {
-        Label *label = it->second;
-        graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
+        graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
             "graph_analysis::OutputPortVertex" == current_port->getClassName()
         )
         {
+            Label *label = mLabels[tuple.first];
             QPointF position = label->pos();
             label->setPos(position + QPointF(delta - position.x(), 0.));
         }
@@ -382,16 +378,15 @@ void Resource::pushDownOperations(NodeItem::id_t times)
         return;
     }
     // shifting down labels initially under the second delimiter line (i.e. all operations)
-    Labels::iterator it = mLabels.begin();
-    for(; mLabels.end() != it; ++it)
+    foreach(VTuple tuple, mVertices)
     {
-        Label *label = it->second;
-        graph_analysis::Vertex::Ptr current_operation = mVertices[it->first]; // TODO: optimization: iterate over mVertices instead
+        graph_analysis::Vertex::Ptr current_operation = tuple.second; // TODO: optimization: iterate over mVertices instead
         std::string current_type = current_operation->getClassName();
         if(
             "graph_analysis::OperationVertex" == current_type
         )
         {
+            Label *label = mLabels[tuple.first];
             label->setPos(label->pos() + QPointF(0., qreal(times) * ADJUST));
         }
     }
@@ -405,11 +400,9 @@ void Resource::pushDownNonPortFeatures(NodeItem::id_t times)
         return;
     }
     // shifting down labels initially under the delimiter line (i.e. all properties, operations)
-    Labels::iterator it = mLabels.begin();
-    for(; mLabels.end() != it; ++it)
+    foreach(VTuple tuple, mVertices)
     {
-        Label *label = it->second;
-        graph_analysis::Vertex::Ptr current_feature = mVertices[it->first]; // TODO: optimization: iterate over mVertices instead
+        graph_analysis::Vertex::Ptr current_feature = tuple.second; // TODO: optimization: iterate over mVertices instead
         std::string current_type = current_feature->getClassName();
         if(
             "graph_analysis::PropertyVertex" == current_type
@@ -417,6 +410,7 @@ void Resource::pushDownNonPortFeatures(NodeItem::id_t times)
             "graph_analysis::OperationVertex" == current_type
         )
         {
+            Label *label = mLabels[tuple.first];
             label->setPos(label->pos() + QPointF(0., qreal(times) * ADJUST));
         }
     }
@@ -554,14 +548,12 @@ void Resource::removeFeature(NodeItem::id_t featureID)
         for(; mLabels.end() != it; ++it)
         {
             Label *label = it->second;
-            graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
-            std::string current_type = current_port->getClassName();
             if(
-                (
-                    "graph_analysis::InputPortVertex" == current_type
-                )
-                    &&
                 label->pos().y() > label_to_delete->pos().y()
+                    &&
+                (
+                    "graph_analysis::InputPortVertex" == mVertices[it->first]->getClassName()
+                )
             )
             {
                 label->setPos(label->pos() - QPointF(0., ADJUST));
@@ -593,14 +585,12 @@ void Resource::removeFeature(NodeItem::id_t featureID)
         for(; mLabels.end() != it; ++it)
         {
             Label *label = it->second;
-            graph_analysis::Vertex::Ptr current_port = mVertices[it->first];
-            std::string current_type = current_port->getClassName();
             if(
-                (
-                    "graph_analysis::OutputPortVertex" == current_type
-                )
-                    &&
                 label->pos().y() > label_to_delete->pos().y()
+                    &&
+                (
+                    "graph_analysis::OutputPortVertex" == mVertices[it->first]->getClassName()
+                )
             )
             {
                 label->setPos(label->pos() - QPointF(0., ADJUST));
@@ -637,19 +627,22 @@ void Resource::removeFeature(NodeItem::id_t featureID)
             for(; mLabels.end() != it; ++it)
             {
                 Label *label = it->second;
-                graph_analysis::Vertex::Ptr current_feature = mVertices[it->first];
-                std::string current_type = current_feature->getClassName();
                 if(
-                    (
-                        "graph_analysis::PropertyVertex" == current_type
-                            ||
-                        "graph_analysis::OperationVertex" == current_type
-                    )
-                        &&
                     label->pos().y() > label_to_delete->pos().y()
                 )
                 {
-                    label->setPos(label->pos() - QPointF(0., ADJUST));
+                    graph_analysis::Vertex::Ptr current_feature = mVertices[it->first];
+                    std::string current_type = current_feature->getClassName();
+                    if(
+                        (
+                            "graph_analysis::PropertyVertex" == current_type
+                                ||
+                            "graph_analysis::OperationVertex" == current_type
+                        )
+                    )
+                    {
+                        label->setPos(label->pos() - QPointF(0., ADJUST));
+                    }
                 }
             }
         }
@@ -671,14 +664,12 @@ void Resource::removeFeature(NodeItem::id_t featureID)
             for(; mLabels.end() != it; ++it)
             {
                 Label *label = it->second;
-                graph_analysis::Vertex::Ptr current_feature = mVertices[it->first];
-                std::string current_type = current_feature->getClassName();
                 if(
-                    (
-                        "graph_analysis::OperationVertex" == current_type
-                    )
-                        &&
                     label->pos().y() > label_to_delete->pos().y()
+                        &&
+                    (
+                        "graph_analysis::OperationVertex" == mVertices[it->first]->getClassName()
+                    )
                 )
                 {
                     label->setPos(label->pos() - QPointF(0., ADJUST));
@@ -741,6 +732,10 @@ void Resource::removeFeatures()
         graphitem::Label *label = tuple.second;
         this->removeFromGroup(label);
         scene()->removeItem(label);
+        if(label)
+        {
+            delete label;
+        }
     }
     mLabels.clear();
     mVertices.clear();
