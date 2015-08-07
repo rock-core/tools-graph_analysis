@@ -14,7 +14,7 @@
 
 /// inline maximum test
 #define max(X, Y) (X > Y ? X : Y)
-/// single port height constant
+/// single feature height constant
 #define ADJUST 23.69
 /// error tolerance constant for in-scene positions equality check
 #define EPSILON 0.001
@@ -109,13 +109,13 @@ void Resource::recomputeMaxOutputPortWidth(void)
 void Resource::setFeatureLabel(NodeItem::id_t featureID, const std::string& label)
 {
     dieOnFeature(featureID, "setFeatureLabel");
-    graph_analysis::Vertex::Ptr port = mVertices[featureID];
-    port->setLabel(label);
-    Label *port_label = mLabels[featureID];
-    qreal pre_width = port_label->boundingRect().width();
-    port_label->setPlainText(QString(label.c_str()));
-    qreal post_width = port_label->boundingRect().width();
-    std::string type = port->getClassName();
+    graph_analysis::Vertex::Ptr feature = mVertices[featureID];
+    feature->setLabel(label);
+    Label *feature_label = mLabels[featureID];
+    qreal pre_width = feature_label->boundingRect().width();
+    feature_label->setPlainText(QString(label.c_str()));
+    qreal post_width = feature_label->boundingRect().width();
+    std::string type = feature->getClassName();
     if("graph_analysis::InputPortVertex" == type)
     {
         if(post_width > mMaxInputPortWidth)
@@ -129,7 +129,7 @@ void Resource::setFeatureLabel(NodeItem::id_t featureID, const std::string& labe
             recomputeMaxInputPortWidth();
         }
     }
-    else // ("graph_analysis::OutputPortVertex" == port->getClassName())
+    else if("graph_analysis::OutputPortVertex" == type)
     {
         if(post_width > mMaxOutputPortWidth)
         {
