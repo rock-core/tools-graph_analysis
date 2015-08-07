@@ -112,8 +112,10 @@ public:
     void updateStatus(const std::string& message = std::string(), int timeout = 0);
 
 protected:
+    /// shifts down one lane all operations features - useful e.g. when a new property is inserted on top of them at runtime
+    void pushDownOperations(NodeItem::id_t times = 1);
     /// shifts down one lane all non-ports features (properties and operations) - useful e.g. when a new port is inserted on top of them at runtime
-    void pushDownNonPortFeatures();
+    void pushDownNonPortFeatures(NodeItem::id_t times = 1);
 
     /// used to claim scene focus (mainly when double-clicked)
     void grabFocus();

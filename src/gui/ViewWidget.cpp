@@ -111,6 +111,7 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    mScaleFactor *= 1.69;
 
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
