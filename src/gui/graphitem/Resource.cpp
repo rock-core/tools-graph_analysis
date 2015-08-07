@@ -195,7 +195,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //    qreal rect_width, max_width = mpLabel->boundingRect().width();
     int maxPorts = max(mInPorts, mOutPorts);
     // enabling or disabling text labels in italics - "Ports:" goes first
-    if(mInPorts || mOutPorts)
+    if(maxPorts) // /* equivalent to */ if(mInPorts || mOutPorts)
     {
         mpPortsLabel->show();
     }
@@ -208,7 +208,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     if(mProps)
     {
         mpPropsLabel->show();
-        mpPropsLabel->setPos(mpLabel->pos() = QPointF(0., qreal(2 + (maxPorts ? 1 + maxPorts : 0)) * ADJUST));
+        mpPropsLabel->setPos(mpLabel->pos() = QPointF(0., qreal(1 + (maxPorts ? 2 + maxPorts : 0)) * ADJUST));
     }
     else
     {
@@ -216,11 +216,11 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
         mpPropsLabel->setPos(mpLabel->pos());
     }
 
-    // enabling or disabling text labels in italics
+    // enabling or disabling text labels in italics - "Operations:" goes third (last)
     if(mOps)
     {
         mpOpsLabel->show();
-        mpOpsLabel->setPos(mpLabel->pos() = QPointF(0., qreal(2 + (maxPorts ? 1 + maxPorts : 0) + (mProps ? 2 + mProps : 0)) * ADJUST));
+        mpOpsLabel->setPos(mpLabel->pos() = QPointF(0., qreal(1 + (maxPorts ? 2 + maxPorts : 0) + (mProps ? 2 + mProps : 0)) * ADJUST));
     }
     else
     {
@@ -266,7 +266,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     if(mProps && mOps)
     {
         // drawing the line separator of properties and operations (iff both are represented)
-        qreal offset = (qreal(2.5) + qreal(maxPorts) + 2 + mProps) * ADJUST;
+        qreal offset = (qreal(2.5) + qreal((maxPorts ? maxPorts + 2 : 0) + mProps)) * ADJUST;
         painter->drawRect(rect.adjusted (
                                             0.,
                                             offset,
@@ -509,7 +509,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
         label->setPos(mpLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
         if(mInPorts > mOutPorts)
         {
-            pushDownNonPortFeatures(1 == mInPorts ? 2 : 1);
+            pushDownNonPortFeatures(1 == mInPorts ? 3 : 1);
             mHeightAdjusted = false;
             updateHeight();
         }
@@ -530,7 +530,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
         label->setPos(mpLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
         if(mOutPorts > mInPorts)
         {
-            pushDownNonPortFeatures(1 == mOutPorts ? 2 : 1);
+            pushDownNonPortFeatures(1 == mOutPorts ? 3 : 1);
             mHeightAdjusted = false;
             updateHeight();
         }
@@ -545,7 +545,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
         }
         NodeItem::id_t maxports = max(mInPorts, mOutPorts);
         pushDownOperations(!mProps ? 3 : 1);
-        label->setPos(mpLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (++mProps)) * ADJUST));
+        label->setPos(mpLabel->pos() + QPointF(0., qreal(1 + (maxports ? 2 + maxports : 0) + (++mProps)) * ADJUST));
         mHeightAdjusted = false;
         updateHeight();
     }
@@ -558,7 +558,7 @@ NodeItem::id_t Resource::addFeature(Vertex::Ptr vertex)
             throw std::runtime_error(error_msg);
         }
         NodeItem::id_t maxports = max(mInPorts, mOutPorts);
-        label->setPos(mpLabel->pos() + QPointF(0., qreal(2 + (maxports ? 1 + maxports : 0) + (mProps ? 2 + mProps : 0) + (++mOps)) * ADJUST));
+        label->setPos(mpLabel->pos() + QPointF(0., qreal(1 + (maxports ? 2 + maxports : 0) + (mProps ? 2 + mProps : 0) + (++mOps)) * ADJUST));
         mHeightAdjusted = false;
         updateHeight();
     }
@@ -622,7 +622,7 @@ void Resource::removeFeature(NodeItem::id_t featureID)
         // decrementing the respective counter
         if(--mInPorts >= mOutPorts)
         {
-            pushDownNonPortFeatures(-1); // pushing them up
+            pushDownNonPortFeatures(mInPorts ? -1 : -3); // pushing them up
             mHeightAdjusted = false;
             updateHeight();
         }
@@ -659,7 +659,7 @@ void Resource::removeFeature(NodeItem::id_t featureID)
         // decrementing the respective counter
         if(--mOutPorts >= mInPorts)
         {
-            pushDownNonPortFeatures(-1); // pushing them up
+            pushDownNonPortFeatures(mOutPorts ? -1 : -3); // pushing them up
             mHeightAdjusted = false;
             updateHeight();
         }
