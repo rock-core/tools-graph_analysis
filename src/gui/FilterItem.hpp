@@ -27,11 +27,11 @@ public:
     ~FilterItem() {};
 
     /// retrieves the bounding rectangular box around the area occupied by the node in the scene
-    virtual QRectF boundingRect() const;
+    QRectF boundingRect() const;
     /// retrieves the path of the bounding rectangular box around the area occupied by the node in the scene
-    virtual QPainterPath shape() const;
+    QPainterPath shape() const;
     /// qt node painting method - here the node components get placed in the scene
-    virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
 
 protected:
     /// qt mouse double-click callback
@@ -42,9 +42,11 @@ protected:
     void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
 
     /// qt hovering ENTER callback
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     /// qt hovering LEAVE callback
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    /// qt item change callback
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
     /// main node text label

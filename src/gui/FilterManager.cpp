@@ -1,6 +1,9 @@
 
 #include "FilterManager.hpp"
 
+#include <QRectF>
+#include <QSizeF>
+
 namespace graph_analysis {
 namespace gui {
 
@@ -20,6 +23,9 @@ FilterManager::FilterManager(QWidget *parent)
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
     setMinimumWidth(195);
+//    QRectF scene_rect = sceneRect();
+//    scene_rect.adjust(0., 0., , 0.);
+//    setSceneRect(QRectF(QPointF(0., 0.), QSizeF(20, 20)));
 //    setMinimumSize(400, 400);
 //    setWindowTitle(tr("Graphview"));
 

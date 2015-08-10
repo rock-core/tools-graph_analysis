@@ -3,6 +3,7 @@
 #include <QStyle>
 #include <QPainter>
 #include <QStyleOption>
+#include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
 #include <graph_analysis/gui/layeritem/Label.hpp>
 
@@ -102,6 +103,27 @@ void FilterItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     mPen = mPenDefault;
     QGraphicsItem::hoverLeaveEvent(event);
 }
+
+QVariant FilterItem::itemChange(GraphicsItemChange change, const QVariant &value)
+ {
+     if (change == ItemPositionChange && scene())
+     {
+         // value is the new position.
+         QPointF newPos = value.toPointF();
+         newPos.setX(0.);
+         qreal y = newPos.y();
+         if(0. > y)
+         {
+             newPos.setY(0.);
+         }
+         else if(90. < y)
+         {
+             newPos.setY(90.);
+         }
+         return newPos;
+     }
+     return QGraphicsItem::itemChange(change, value);
+ }
 
 //void FilterItem::keyPressEvent(QKeyEvent* event)
 //{
