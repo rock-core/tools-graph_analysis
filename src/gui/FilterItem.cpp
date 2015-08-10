@@ -13,8 +13,11 @@
 namespace graph_analysis {
 namespace gui {
 
-FilterItem::FilterItem(FilterManager *manager, const std::string& filter)
+const FilterItem::filter_size_t FilterItem::sHeight = 30.;
+
+FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::string& filter)
     : mpFilterManager(manager)
+    , mIndex(index)
     , mPen(Qt::black)
     , mPenDefault(Qt::black)
 {
@@ -122,7 +125,7 @@ QVariant FilterItem::itemChange(GraphicsItemChange change, const QVariant &value
          }
          else
          {
-             qreal maxY = (qreal)(mpFilterManager->filterCount() - 1) * 30.;
+             qreal maxY = (qreal)(mpFilterManager->filterCount() - 1) * FilterItem::sHeight;
              if(maxY < y)
              {
                  newPos.setY(maxY);

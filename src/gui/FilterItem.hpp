@@ -23,8 +23,12 @@ class FilterManager;
 class FilterItem : public QGraphicsItemGroup
 {
 public:
+    typedef unsigned int filter_size_t;
+    typedef unsigned int filter_index_t;
+
+    static const filter_size_t sHeight;
     /// constructor
-    FilterItem(FilterManager *manager, const std::string& filter = std::string());
+    FilterItem(FilterManager *manager, filter_index_t index, const std::string& filter = std::string());
     /// destructor
     ~FilterItem() {};
 
@@ -53,6 +57,8 @@ protected:
 private:
     /// parent widget
     FilterManager* mpFilterManager;
+    /// index in the vector of filters (indirectly indicates position)
+    filter_index_t mIndex;
     /// main node text label
     layeritem::Label* mLabel;
     /// qt drawing pen

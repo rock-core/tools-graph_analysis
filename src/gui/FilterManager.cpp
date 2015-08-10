@@ -41,9 +41,9 @@ FilterManager::~FilterManager()
 
 void FilterManager::addFilter(const std::string& label)
 {
-    mFilters.push_back(new FilterItem(this, label));
+    mFilters.push_back(new FilterItem(this, mFilters.size(), label));
     scene()->addItem(mFilters.back());
-    mFilters.back()->setPos( 0.,  30. * (qreal)(mFilters.size() - 1));
+    mFilters.back()->setPos( 0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
 }
 
 } // end namespace gui

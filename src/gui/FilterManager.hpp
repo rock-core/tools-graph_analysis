@@ -11,8 +11,8 @@ namespace gui {
 
 class FilterManager : public QGraphicsView
 {
-    typedef std::vector<FilterItem*> Filters;
 public:
+    typedef std::vector<FilterItem*> Filters;
     FilterManager(QWidget *parent = 0);
     ~FilterManager();
 
