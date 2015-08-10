@@ -145,9 +145,9 @@ public:
     /// renders the base graph to gexf format file 'filename'
     void toXmlFile(const std::string& filename);
     /// loads base graph from gexf format file 'filename'
-    void fromXmlFile(const std::string& filename);
+    int fromXmlFile(const std::string& filename);
     /// loads base graph from custo yml format file 'filename'
-    void fromYmlFile(const std::string& filename);
+    int fromYmlFile(const std::string& filename);
 
     /// enables the given vertex in the base graph
     void enableVertex (graph_analysis::Vertex::Ptr vertex);
