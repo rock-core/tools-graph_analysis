@@ -13,6 +13,8 @@ namespace layeritem {
     class Label;
 } // end namespace layeritem
 
+class FilterManager;
+
 /**
  * \file FilterItem.hpp
  * \class FilterItem
@@ -22,7 +24,7 @@ class FilterItem : public QGraphicsItemGroup
 {
 public:
     /// constructor
-    FilterItem(const std::string& filter = std::string());
+    FilterItem(FilterManager *manager, const std::string& filter = std::string());
     /// destructor
     ~FilterItem() {};
 
@@ -49,6 +51,8 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
+    /// parent widget
+    FilterManager* mpFilterManager;
     /// main node text label
     layeritem::Label* mLabel;
     /// qt drawing pen

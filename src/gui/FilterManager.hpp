@@ -1,7 +1,9 @@
 #ifndef FILTERMANAGER_HPP
 #define FILTERMANAGER_HPP
 
+#include <vector>
 #include <QGraphicsView>
+
 #include "FilterItem.hpp"
 
 namespace graph_analysis {
@@ -9,14 +11,16 @@ namespace gui {
 
 class FilterManager : public QGraphicsView
 {
+    typedef std::vector<FilterItem*> Filters;
 public:
     FilterManager(QWidget *parent = 0);
     ~FilterManager();
 
+    int filterCount() { return mFilters.size(); }
+    void addFilter(const std::string& label);
+
 private:
-    FilterItem *filter1;
-    FilterItem *filter2;
-    FilterItem *filter3;
+    Filters mFilters;
 };
 
 } // end namespace gui

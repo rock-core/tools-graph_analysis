@@ -29,19 +29,21 @@ FilterManager::FilterManager(QWidget *parent)
 //    setMinimumSize(400, 400);
 //    setWindowTitle(tr("Graphview"));
 
-    filter1 = new FilterItem("filter1");
-    filter2 = new FilterItem("filter2");
-    filter3 = new FilterItem("filter3");
-    scene()->addItem(filter1);
-    scene()->addItem(filter2);
-    scene()->addItem(filter3);
-    filter1->setPos( 0.,  0.);
-    filter2->setPos( 0., 30.);
-    filter3->setPos( 0., 60.);
+    // populating the filter board with 3 example filters: filter1, filter2 and filter3
+    addFilter("filter1");
+    addFilter("filter2");
+    addFilter("filter3");
 }
 
 FilterManager::~FilterManager()
 {
+}
+
+void FilterManager::addFilter(const std::string& label)
+{
+    mFilters.push_back(new FilterItem(this, label));
+    scene()->addItem(mFilters.back());
+    mFilters.back()->setPos( 0.,  30. * (qreal)(mFilters.size() - 1));
 }
 
 } // end namespace gui

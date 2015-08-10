@@ -1,4 +1,5 @@
 #include "FilterItem.hpp"
+#include "FilterManager.hpp"
 
 #include <QStyle>
 #include <QPainter>
@@ -12,8 +13,9 @@
 namespace graph_analysis {
 namespace gui {
 
-FilterItem::FilterItem(const std::string& filter)
-    : mPen(Qt::black)
+FilterItem::FilterItem(FilterManager *manager, const std::string& filter)
+    : mpFilterManager(manager)
+    , mPen(Qt::black)
     , mPenDefault(Qt::black)
 {
     setFlag(ItemIsMovable);
@@ -76,12 +78,14 @@ void FilterItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option
 void FilterItem::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
+    setZValue(0.);
     QGraphicsItem::mousePressEvent(event);
 }
 
 void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
+    setZValue(-1);
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
@@ -116,9 +120,13 @@ QVariant FilterItem::itemChange(GraphicsItemChange change, const QVariant &value
          {
              newPos.setY(0.);
          }
-         else if(90. < y)
+         else
          {
-             newPos.setY(90.);
+             qreal maxY = (qreal)(mpFilterManager->filterCount() - 1) * 30.;
+             if(maxY < y)
+             {
+                 newPos.setY(maxY);
+             }
          }
          return newPos;
      }
