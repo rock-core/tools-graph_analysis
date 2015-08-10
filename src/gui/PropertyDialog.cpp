@@ -3,7 +3,6 @@
 #include "LayerWidget.hpp"
 #include "PropertyDialog.hpp"
 
-
 namespace graph_analysis {
 namespace gui {
 
@@ -400,7 +399,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     mpVerticalLayoutComponentsLayer = new QVBoxLayout();
     mpHorizontalLayoutLayer->addLayout(mpVerticalLayoutComponentsLayer);
     mpVerticalLayoutComponentsLayer->setObjectName(QString::fromUtf8("mpVerticalLayoutComponentsLayer"));
-    mpVerticalLayoutComponentsLayer->setContentsMargins(0, PADDING, 0, 0);
+    mpVerticalLayoutComponentsLayer->setContentsMargins(0, PADDING, 0, PADDING);
 
     // right hand-side in the layers view tab; filtering specific commands
     int verticalLayoutComponentsLayerLeftover;
@@ -432,13 +431,16 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         {
             commonExtraPadding = verticalLayoutComponentsLayerLeftover;
         }
+
+        mpFilterManager = new FilterManager();
+        mpVerticalLayoutComponentsLayer->addWidget(mpFilterManager);
     }
 
     // filling in the gaps at the bottom of each vertical layout
     mpVerticalLayout->addSpacing(verticalLayoutLeftover - commonExtraPadding);
     mpVerticalLayoutFocus->addSpacing(verticalLayoutFocusLeftover - commonExtraPadding);
     mpVerticalLayoutLayer->addSpacing(verticalLayoutLayerLeftover - commonExtraPadding);
-    mpVerticalLayoutComponentsLayer->addSpacing(verticalLayoutComponentsLayerLeftover - commonExtraPadding);
+//    mpVerticalLayoutComponentsLayer->addSpacing(verticalLayoutComponentsLayerLeftover - commonExtraPadding);
 
     // setting the proper titles to all gui components
     retranslateUi(Dialog);

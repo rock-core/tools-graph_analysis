@@ -12,8 +12,8 @@ void YamlReader::read(const std::string& filename, BaseGraph::Ptr graph)
     if(!fin.is_open() || fin.fail() || fin.eof())
     {
         // error checking
-        std::string error_msg = std::string("graph_analysis::io::YamlReader: failed to open input file ") + filename + " for graph import  OR  the same input file was empty";
-        LOG_ERROR_S << error_msg;
+        std::string error_msg = std::string("failed to open input file ") + filename + " for graph import - no such file";
+        LOG_WARN_S << "graph_analysis::io::YamlReader: " << error_msg;
         throw std::runtime_error(error_msg);
     }
     LOG_INFO("graph_analysis::io::YamlWriter: importing graph from file \"%s\" ", fname);

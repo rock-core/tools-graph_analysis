@@ -10,6 +10,7 @@
 #define PROPERTYDIALOG_H
 
 #include "CustomDialog.hpp"
+#include "FilterManager.hpp"
 
 #include <vector>
 #include <QLabel>
@@ -27,6 +28,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QGraphicsView>
 #include <QtGui/QStackedWidget>
 
 #define WIDTH 306
@@ -199,7 +201,9 @@ private:
     QPushButton *mpToggleFeatureLayerButton;
     /// button for toggling visibility of cluster vertices in the layers view tab
     QPushButton *mpToggleClusterLayerButton;
-    /// set of seeparators in all layouts used
+    /// widget for the filters view
+    FilterManager *mpFilterManager;
+    /// set of separators in all layouts used
     QFrames mFrames;
     /// boolean witness: true when a node is being focused on; false otherwise
     bool mVertexFocused;

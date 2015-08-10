@@ -25,6 +25,8 @@ rock_library(graph_analysis
         gui/GraphWidget.cpp
         gui/ViewWidget.cpp
         gui/LayerWidget.cpp
+        gui/FilterManager.cpp
+        gui/FilterItem.cpp
         gui/AddNodeDialog.cpp
         gui/SwapFeaturesDialog.cpp
         gui/RenameFeatureDialog.cpp
@@ -96,6 +98,8 @@ rock_library(graph_analysis
         gui/GraphWidget.hpp
         gui/ViewWidget.hpp
         gui/LayerWidget.hpp
+        gui/FilterManager.hpp
+        gui/FilterItem.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
