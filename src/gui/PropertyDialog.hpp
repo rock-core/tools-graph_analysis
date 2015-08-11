@@ -15,6 +15,7 @@
 #include <vector>
 #include <QLabel>
 #include <QObject>
+#include <QGridLayout>
 #include <QCloseEvent>
 #include <QMainWindow>
 #include <QtGui/QAction>
@@ -195,14 +196,30 @@ private:
     QPushButton *mpRemoveEdgeButton;
     /// button for swapping two features of the focused node in the diagram view tab
     QPushButton *mpSwapFeaturesButton;
-    /// GUI label displaying "Visible Layers:" in the layers view tab on top of the filtering commands
+    /// GUI label displaying "Visible Layers:" in the layers view tab on top of the layer filtering commands
     QLabel *mpLayersLabel;
     /// button for toggling visibility of feature vertices in the layers view tab
     QPushButton *mpToggleFeatureLayerButton;
     /// button for toggling visibility of cluster vertices in the layers view tab
     QPushButton *mpToggleClusterLayerButton;
-    /// widget for the filters view
+    /// GUI label displaying "Custom Filters:" in the layers view tab on top of the FilterItems widget and of filtering buttons bar
+    QLabel *mpFiltersLabel;
+    /// widget with FilterItems on the right and their corresponding checkboxes on the left
+    QWidget *mpFiltersBox;
+    /// horizontal box to accommodate both the FilterItem-s manager (to the right) and the grid with row-wise correspondent check-boxes (to the left)
+    QHBoxLayout *mpFiltersBoxLayout;
+    /// the check boxes vertical panel
+    QWidget *mpCheckBoxColumn;
+    /// the vertical grid layout for the check boxes widget
+    QGridLayout *mpCheckBoxColumnLayout;
+    /// widget for the filters view (holds the FilterItem-s)
     FilterManager *mpFilterManager;
+    /// buttons bar for FilterItems
+    QWidget *mpFilterButtonsWidget;
+    /// horizontal layout for the filter buttons bar
+    QHBoxLayout *mpFilterButtonsWidgetLayout;
+    /// button for adding a FilterItem to the filters view in the layers tab
+    QPushButton *mpAddFilterButton;
     /// set of separators in all layouts used
     QFrames mFrames;
     /// boolean witness: true when a node is being focused on; false otherwise

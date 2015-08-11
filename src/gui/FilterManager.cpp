@@ -24,12 +24,14 @@ FilterManager::FilterManager(QWidget *parent)
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
-    setMinimumWidth(195);
+    setFixedWidth(110);
+//    setMinimumWidth(110);
 //    QRectF scene_rect = sceneRect();
 //    scene_rect.adjust(0., 0., , 0.);
 //    setSceneRect(QRectF(QPointF(0., 0.), QSizeF(20, 20)));
 //    setMinimumSize(400, 400);
 //    setWindowTitle(tr("Graphview"));
+
 
     // populating the filter board with 3 example filters: filter1, filter2 and filter3
     addFilter("filter1");

@@ -405,7 +405,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     int verticalLayoutComponentsLayerLeftover;
     {
         mpLayersLabel = new QLabel(mpHorizontalLayoutLayerWidget);
-        mpLayersLabel->setObjectName(QString::fromUtf8("mpComponentsLabel"));
+        mpLayersLabel->setObjectName(QString::fromUtf8("mpLayersLabel"));
 
         mpVerticalLayoutComponentsLayer->addWidget(mpLayersLabel);
 
@@ -432,8 +432,42 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
             commonExtraPadding = verticalLayoutComponentsLayerLeftover;
         }
 
+        mpFiltersLabel = new QLabel(mpHorizontalLayoutLayerWidget);
+        mpFiltersLabel->setObjectName(QString::fromUtf8("mpFiltersLabel"));
+
+        mpVerticalLayoutComponentsLayer->addWidget(mpFiltersLabel);
+
+        mpFiltersBox = new QWidget();
+        mpFiltersBoxLayout = new QHBoxLayout();
+        mpFiltersBox->setLayout(mpFiltersBoxLayout);
+
+        mpCheckBoxColumn = new QWidget();
+        mpCheckBoxColumnLayout = new QGridLayout();
+        mpCheckBoxColumn->setLayout(mpCheckBoxColumnLayout);
+
+        mpFiltersBoxLayout->addWidget(mpCheckBoxColumn);
+
+
         mpFilterManager = new FilterManager();
-        mpVerticalLayoutComponentsLayer->addWidget(mpFilterManager);
+        mpFiltersBoxLayout->addWidget(mpFilterManager);
+
+        mpVerticalLayoutComponentsLayer->addWidget(mpFiltersBox);
+
+        mpFilterButtonsWidget = new QWidget();
+        mpFilterButtonsWidgetLayout = new QHBoxLayout();
+        mpFilterButtonsWidget->setLayout(mpFilterButtonsWidgetLayout);
+
+        mpVerticalLayoutComponentsLayer->addWidget(mpFilterButtonsWidget);
+
+        mpAddFilterButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpAddFilterButton->setObjectName(QString::fromUtf8("mpAddFilterButton"));
+        mpAddFilterButton->setIcon(*(mpViewWidget->getIcon("addFeature")));
+        mpAddFilterButton->setEnabled(true);
+        mpAddFilterButton->setCheckable(false);
+        mpAddFilterButton->setChecked(false);
+        mpAddFilterButton->setToolTip(QString("adds a custom filter to the filters manager"));
+
+        mpFilterButtonsWidgetLayout->addWidget(mpAddFilterButton);
     }
 
     // filling in the gaps at the bottom of each vertical layout
@@ -512,6 +546,7 @@ void PropertyDialog::retranslateUi(CustomDialog *Dialog)
     mpRenameEdgeButton->setText(QApplication::translate("Dialog", "Rename Edge", 0, QApplication::UnicodeUTF8));
     mpRemoveEdgeButton->setText(QApplication::translate("Dialog", "Remove Edge", 0, QApplication::UnicodeUTF8));
     mpLayersLabel->setText(QApplication::translate("Dialog", "Visible Layers:", 0, QApplication::UnicodeUTF8));
+    mpFiltersLabel->setText(QApplication::translate("Dialog", "Custom Filters:", 0, QApplication::UnicodeUTF8));
     mpToggleFeatureLayerButton->setText(QApplication::translate("Dialog", "Features Layer", 0, QApplication::UnicodeUTF8));
     mpToggleClusterLayerButton->setText(QApplication::translate("Dialog", "Clusters Layer", 0, QApplication::UnicodeUTF8));
 } // retranslateUi
