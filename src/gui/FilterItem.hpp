@@ -46,6 +46,8 @@ public:
 protected:
     /// qt mouse double-click callback
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
+    /// qt mouse move callback
+    void mouseMoveEvent(::QGraphicsSceneMouseEvent* event);
     /// qt mouse press callback
     void mousePressEvent(::QGraphicsSceneMouseEvent* event);
     /// qt mouse release callback

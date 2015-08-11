@@ -79,12 +79,30 @@ void FilterItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option
 //    painter->drawEllipse(-10, -10, 20, 20);
 }
 
-
 void FilterItem::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
     setZValue(0.);
     QGraphicsItem::mousePressEvent(event);
+}
+
+void FilterItem::mouseMoveEvent(::QGraphicsSceneMouseEvent* event)
+{
+    LOG_DEBUG_S << "Mouse move";
+    // testing for new index displacement on neighbouring filters (TODO: add one for final index placement of current filter in mouse release)
+    qreal y = pos().y(); // refreshing after having adapted the height
+    const unsigned int offset = (unsigned int)(y / (qreal)FilterItem::sHeight);
+    if(offset != mIndex && FilterItem::sDisplacementThreshold > y - (qreal)(offset * FilterItem::sHeight))
+    {
+        mpFilterManager->pushDown(offset); // offset -> offset + 1
+        mIndex = offset;
+    }
+    else if(offset + 1 != mIndex && FilterItem::sDisplacementThreshold > (qreal)((offset + 1) * FilterItem::sHeight) - y)
+    {
+        mpFilterManager->pushUp(offset + 1); // offset + 1 -> offset
+        mIndex = offset + 1;
+    }
+    QGraphicsItem::mouseMoveEvent(event);
 }
 
 void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
@@ -134,19 +152,6 @@ QVariant FilterItem::itemChange(GraphicsItemChange change, const QVariant &value
             {
                 newPos.setY(maxY);
             }
-        }
-        // testing for new index displacement on neighbouring filters (TODO: add one for final index placement of current filter in mouse release)
-        y = newPos.y(); // refreshing after having adapted the height
-        const unsigned int offset = (int)(y / (qreal)FilterItem::sHeight);
-        if(offset != mIndex && FilterItem::sDisplacementThreshold > y - (qreal)(offset * FilterItem::sHeight))
-        {
-            mpFilterManager->pushDown(offset); // offset -> offset + 1
-            mIndex = offset;
-        }
-        else if(offset + 1 != mIndex && FilterItem::sDisplacementThreshold > (qreal)((offset + 1) * FilterItem::sHeight) - y)
-        {
-            mpFilterManager->pushUp(offset + 1); // offset + 1 -> offset
-            mIndex = offset + 1;
         }
         return newPos;
     }
