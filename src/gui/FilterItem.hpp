@@ -27,6 +27,8 @@ public:
     typedef unsigned int filter_index_t;
 
     static const filter_size_t sHeight;
+    static const qreal sDisplacementWeight;
+    static const qreal sDisplacementThreshold;
     /// constructor
     FilterItem(FilterManager *manager, filter_index_t index, const std::string& filter = std::string());
     /// destructor
@@ -38,6 +40,8 @@ public:
     QPainterPath shape() const;
     /// qt node painting method - here the node components get placed in the scene
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
+
+    void setIndex(filter_index_t index) { mIndex = index; }
 
 protected:
     /// qt mouse double-click callback

@@ -3,6 +3,8 @@
 
 #include <QRectF>
 #include <QSizeF>
+#include <base/Logging.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -44,6 +46,53 @@ void FilterManager::addFilter(const std::string& label)
     mFilters.push_back(new FilterItem(this, mFilters.size(), label));
     scene()->addItem(mFilters.back());
     mFilters.back()->setPos( 0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
+}
+
+void FilterManager::pushDown(FilterItem::filter_index_t index)
+{
+    dieOnIndex(index, "pushDown");
+    if(mFilters.size() - 1 == index)
+    {
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::pushDown: the provided index = " << index << " is bottom-most already! Skipping...";
+        return;
+    }
+    FilterItem* cached_filter = mFilters[index];
+    mFilters[index] = mFilters[index + 1];
+    mFilters[index + 1] = cached_filter;
+
+    cached_filter->setPos(cached_filter->pos() + QPointF(0., (qreal)FilterItem::sHeight));
+    cached_filter->setIndex(index + 1);
+//    mFilters[index]->setIndex(index);
+}
+
+void FilterManager::pushUp(FilterItem::filter_index_t index)
+{
+    dieOnIndex(index, "pushUp");
+    if(0 == index)
+    {
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::pushUp: the provided index = " << index << " is top-most already! Skipping...";
+        return;
+    }
+    FilterItem* cached_filter = mFilters[index];
+    mFilters[index] = mFilters[index - 1];
+    mFilters[index - 1] = cached_filter;
+
+    cached_filter->setPos(cached_filter->pos() - QPointF(0., (qreal)FilterItem::sHeight));
+    cached_filter->setIndex(index - 1);
+//    mFilters[index]->setIndex(index);
+}
+
+void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)
+{
+    if(index < 0 || index >= mFilters.size())
+    {
+        std::string method = ("" == caller) ? "dieOnIndex" : caller;
+        std::string error_msg = std::string("graph_analysis::gui::FilterManager::") + method + ": the supplied index: "
+                                        + boost::lexical_cast<std::string>(index)
+                                        + " is out of bounds";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
 }
 
 } // end namespace gui

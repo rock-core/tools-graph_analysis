@@ -995,7 +995,7 @@ void Resource::dieOnFeature(NodeItem::id_t featureID, const std::string& caller)
         return;
     }
 
-    std::string method = ("" == caller) ? "die" : caller;
+    std::string method = ("" == caller) ? "dieOnFeature" : caller;
     std::string error_msg = std::string("graph_analysis::gui::graphitem::Resource::") + method + ": the supplied featureID: "
                                     + boost::lexical_cast<std::string>(featureID)
                                     + " is not registered";

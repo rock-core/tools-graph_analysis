@@ -2,6 +2,7 @@
 #define FILTERMANAGER_HPP
 
 #include <vector>
+#include <string>
 #include <QGraphicsView>
 
 #include "FilterItem.hpp"
@@ -18,6 +19,9 @@ public:
 
     int filterCount() { return mFilters.size(); }
     void addFilter(const std::string& label);
+    void pushDown(FilterItem::filter_index_t index);
+    void pushUp(FilterItem::filter_index_t index);
+    void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());
 
 private:
     Filters mFilters;

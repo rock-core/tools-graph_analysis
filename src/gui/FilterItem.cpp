@@ -13,7 +13,9 @@
 namespace graph_analysis {
 namespace gui {
 
-const FilterItem::filter_size_t FilterItem::sHeight = 30.;
+const FilterItem::filter_size_t FilterItem::sHeight = 30;
+const qreal FilterItem::sDisplacementWeight = 0.169;
+const qreal FilterItem::sDisplacementThreshold = FilterItem::sDisplacementWeight * (qreal)FilterItem::sHeight;
 
 FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::string& filter)
     : mpFilterManager(manager)
@@ -89,6 +91,7 @@ void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
     setZValue(-1);
+    setPos(0., (qreal)(FilterItem::sHeight * mIndex));
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
@@ -112,29 +115,43 @@ void FilterItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 }
 
 QVariant FilterItem::itemChange(GraphicsItemChange change, const QVariant &value)
- {
-     if (change == ItemPositionChange && scene())
-     {
-         // value is the new position.
-         QPointF newPos = value.toPointF();
-         newPos.setX(0.);
-         qreal y = newPos.y();
-         if(0. > y)
-         {
-             newPos.setY(0.);
-         }
-         else
-         {
-             qreal maxY = (qreal)(mpFilterManager->filterCount() - 1) * FilterItem::sHeight;
-             if(maxY < y)
-             {
-                 newPos.setY(maxY);
-             }
-         }
-         return newPos;
-     }
-     return QGraphicsItem::itemChange(change, value);
- }
+{
+    if (change == ItemPositionChange && scene())
+    {
+        // value is the new position.
+        QPointF newPos = value.toPointF();
+        // adjusting the new position to fall inside the height boundaries and alligned on the x = 0 axis
+        newPos.setX(0.);
+        qreal y = newPos.y();
+        if(0. > y)
+        {
+            newPos.setY(0.);
+        }
+        else
+        {
+            qreal maxY = (qreal)(mpFilterManager->filterCount() - 1) * FilterItem::sHeight;
+            if(maxY < y)
+            {
+                newPos.setY(maxY);
+            }
+        }
+        // testing for new index displacement on neighbouring filters (TODO: add one for final index placement of current filter in mouse release)
+        y = newPos.y(); // refreshing after having adapted the height
+        const unsigned int offset = (int)(y / (qreal)FilterItem::sHeight);
+        if(offset != mIndex && FilterItem::sDisplacementThreshold > y - (qreal)(offset * FilterItem::sHeight))
+        {
+            mpFilterManager->pushDown(offset); // offset -> offset + 1
+            mIndex = offset;
+        }
+        else if(offset + 1 != mIndex && FilterItem::sDisplacementThreshold > (qreal)((offset + 1) * FilterItem::sHeight) - y)
+        {
+            mpFilterManager->pushUp(offset + 1); // offset + 1 -> offset
+            mIndex = offset + 1;
+        }
+        return newPos;
+    }
+    return QGraphicsItem::itemChange(change, value);
+}
 
 //void FilterItem::keyPressEvent(QKeyEvent* event)
 //{
