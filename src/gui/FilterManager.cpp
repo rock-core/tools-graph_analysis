@@ -4,13 +4,15 @@
 #include <QRectF>
 #include <QSizeF>
 #include <base/Logging.hpp>
+#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 namespace graph_analysis {
 namespace gui {
 
-FilterManager::FilterManager(QWidget *parent)
+FilterManager::FilterManager(QGridLayout *checkBoxGrid, QWidget *parent)
     : QGraphicsView(parent)
+    , mpCheckBoxGrid(checkBoxGrid)
 {
     QGraphicsScene *custom_scene = new QGraphicsScene(this);
     custom_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -32,6 +34,17 @@ FilterManager::FilterManager(QWidget *parent)
 //    setMinimumSize(400, 400);
 //    setWindowTitle(tr("Graphview"));
 
+    // calibrating check boxes widths and spacing
+//    QCheckBox dummy;
+//    int checkBoxHeight = dummy.size().height(); // is platform dependent
+//    int vertical_spacing = FilterItem::sHeight - checkBoxHeight;
+//    if(vertical_spacing < 0)
+//    {
+//        vertical_spacing = 0;
+//        LOG_WARN_S << "graph_analysis::gui::FilterManager::FilterManager: the default check-box height on this platform is greater than the hardwired constant filter height FilterItem::sHeight = " << FilterItem::sHeight;
+//    }
+//    mpCheckBoxGrid->setContentsMargins(0., (qreal)vertical_spacing / 2., 0., 0.);
+    mpCheckBoxGrid->setVerticalSpacing(0);
 
     // populating the filter board with 3 example filters: filter1, filter2 and filter3
     addFilter("filter1");
@@ -45,9 +58,16 @@ FilterManager::~FilterManager()
 
 void FilterManager::addFilter(const std::string& label)
 {
+    // introducing a new filter item
     mFilters.push_back(new FilterItem(this, mFilters.size(), label));
     scene()->addItem(mFilters.back());
     mFilters.back()->setPos( 0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
+    // introducing its corresponding enabling checkbox
+    QCheckBox *newCheckBox = new QCheckBox();
+    mpCheckBoxGrid->addWidget(newCheckBox, mCheckBoxes.size(), 0);
+    mpCheckBoxGrid->setRowMinimumHeight(mCheckBoxes.size(), FilterItem::sHeight);
+    mpCheckBoxGrid->setRowStretch(mCheckBoxes.size(), 0);
+    mCheckBoxes.push_back(newCheckBox);
 }
 
 void FilterManager::pushDown(FilterItem::filter_index_t index)
@@ -64,7 +84,6 @@ void FilterManager::pushDown(FilterItem::filter_index_t index)
 
     cached_filter->setPos(cached_filter->pos() + QPointF(0., (qreal)FilterItem::sHeight));
     cached_filter->setIndex(index + 1);
-//    mFilters[index]->setIndex(index);
 }
 
 void FilterManager::pushUp(FilterItem::filter_index_t index)
@@ -81,7 +100,6 @@ void FilterManager::pushUp(FilterItem::filter_index_t index)
 
     cached_filter->setPos(cached_filter->pos() - QPointF(0., (qreal)FilterItem::sHeight));
     cached_filter->setIndex(index - 1);
-//    mFilters[index]->setIndex(index);
 }
 
 void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)

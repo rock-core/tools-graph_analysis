@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <QCheckBox>
+#include <QGridLayout>
 #include <QGraphicsView>
 
 #include "FilterItem.hpp"
@@ -14,7 +16,9 @@ class FilterManager : public QGraphicsView
 {
 public:
     typedef std::vector<FilterItem*> Filters;
-    FilterManager(QWidget *parent = 0);
+    typedef std::vector<QCheckBox*>  CheckBoxes;
+
+    FilterManager(QGridLayout *checkBoxGrid, QWidget *parent = 0);
     ~FilterManager();
 
     int filterCount() { return mFilters.size(); }
@@ -25,6 +29,8 @@ public:
 
 private:
     Filters mFilters;
+    QGridLayout *mpCheckBoxGrid;
+    CheckBoxes mCheckBoxes;
 };
 
 } // end namespace gui

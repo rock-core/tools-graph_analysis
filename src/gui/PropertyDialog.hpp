@@ -196,6 +196,14 @@ private:
     QPushButton *mpRemoveEdgeButton;
     /// button for swapping two features of the focused node in the diagram view tab
     QPushButton *mpSwapFeaturesButton;
+    /// widget for grouping together the type-based layer filtering components
+    QWidget *mpLayersFilters;
+    /// vertical layout for the mpLayersFilters
+    QVBoxLayout *mpLayersFiltersLayout;
+    /// widget for grouping together the custom label-based filtering components
+    QWidget *mpCustomFilters;
+    /// vertical layout for the mpCustomFilters
+    QVBoxLayout *mpCustomFiltersLayout;
     /// GUI label displaying "Visible Layers:" in the layers view tab on top of the layer filtering commands
     QLabel *mpLayersLabel;
     /// button for toggling visibility of feature vertices in the layers view tab

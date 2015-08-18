@@ -404,10 +404,17 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     // right hand-side in the layers view tab; filtering specific commands
     int verticalLayoutComponentsLayerLeftover;
     {
+        mpLayersFilters = new QWidget();
+        mpLayersFiltersLayout = new QVBoxLayout();
+        mpLayersFiltersLayout->setSpacing(5);
+        mpLayersFiltersLayout->setContentsMargins(0., 0., 0., 0.);
+        mpLayersFilters->setLayout(mpLayersFiltersLayout);
+        mpVerticalLayoutComponentsLayer->addWidget(mpLayersFilters);
+
         mpLayersLabel = new QLabel(mpHorizontalLayoutLayerWidget);
         mpLayersLabel->setObjectName(QString::fromUtf8("mpLayersLabel"));
 
-        mpVerticalLayoutComponentsLayer->addWidget(mpLayersLabel);
+        mpLayersFiltersLayout->addWidget(mpLayersLabel);
 
         mpToggleClusterLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
         mpToggleClusterLayerButton->setObjectName(QString::fromUtf8("mpToggleClusterLayerButton"));
@@ -415,7 +422,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpToggleClusterLayerButton->setChecked(mpLayerWidget->getClusterLayerToggle());
         mpToggleClusterLayerButton->setToolTip(QString("toggles the visibility of the clusters layer"));
 
-        mpVerticalLayoutComponentsLayer->addWidget(mpToggleClusterLayerButton);
+        mpLayersFiltersLayout->addWidget(mpToggleClusterLayerButton);
 
         mpToggleFeatureLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
         mpToggleFeatureLayerButton->setObjectName(QString::fromUtf8("mpToggleFeatureLayerButton"));
@@ -423,7 +430,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpToggleFeatureLayerButton->setChecked(mpLayerWidget->getFeatureLayerToggle());
         mpToggleFeatureLayerButton->setToolTip(QString("toggles the visibility of the features layer"));
 
-        mpVerticalLayoutComponentsLayer->addWidget(mpToggleFeatureLayerButton);
+        mpLayersFiltersLayout->addWidget(mpToggleFeatureLayerButton);
 
         // adding bottom padding
         verticalLayoutComponentsLayerLeftover = 3 * linePoints + 9 * buttonPoints; // this vertical layout lacks 3 * frames and 9 buttons (out of the maximum no. of each)
@@ -432,33 +439,46 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
             commonExtraPadding = verticalLayoutComponentsLayerLeftover;
         }
 
+        mpCustomFilters = new QWidget();
+        mpCustomFiltersLayout = new QVBoxLayout();
+        mpCustomFiltersLayout->setSpacing(5);
+        mpCustomFiltersLayout->setContentsMargins(0., 0., 0., 0.);
+        mpCustomFilters->setLayout(mpCustomFiltersLayout);
+        mpVerticalLayoutComponentsLayer->addWidget(mpCustomFilters);
+
         mpFiltersLabel = new QLabel(mpHorizontalLayoutLayerWidget);
         mpFiltersLabel->setObjectName(QString::fromUtf8("mpFiltersLabel"));
 
-        mpVerticalLayoutComponentsLayer->addWidget(mpFiltersLabel);
+        mpCustomFiltersLayout->addWidget(mpFiltersLabel);
 
         mpFiltersBox = new QWidget();
-        mpFiltersBox->setMinimumHeight(170);
+//        mpFiltersBox->setMinimumHeight(170);
         mpFiltersBoxLayout = new QHBoxLayout();
+        mpFiltersBoxLayout->setSpacing(0);
+        mpFiltersBoxLayout->setContentsMargins(0., 0., 0., 0.);
         mpFiltersBox->setLayout(mpFiltersBoxLayout);
 
         mpCheckBoxColumn = new QWidget();
-        mpCheckBoxColumnLayout = new QGridLayout();
+
+        mpCheckBoxColumnLayout = new QGridLayout(mpCheckBoxColumn);
+        mpCheckBoxColumnLayout->setVerticalSpacing(0);
+        mpCheckBoxColumnLayout->setContentsMargins(0., 0., 0., 0.);
         mpCheckBoxColumn->setLayout(mpCheckBoxColumnLayout);
 
         mpFiltersBoxLayout->addWidget(mpCheckBoxColumn);
 
-
-        mpFilterManager = new FilterManager();
+        mpFilterManager = new FilterManager(mpCheckBoxColumnLayout);
         mpFiltersBoxLayout->addWidget(mpFilterManager);
 
-        mpVerticalLayoutComponentsLayer->addWidget(mpFiltersBox);
+        mpCustomFiltersLayout->addWidget(mpFiltersBox);
 
         mpFilterButtonsWidget = new QWidget();
         mpFilterButtonsWidgetLayout = new QHBoxLayout();
+        mpFilterButtonsWidgetLayout->setSpacing(0);
+        mpFilterButtonsWidgetLayout->setContentsMargins(0., 0., 0., 0.);
         mpFilterButtonsWidget->setLayout(mpFilterButtonsWidgetLayout);
 
-        mpVerticalLayoutComponentsLayer->addWidget(mpFilterButtonsWidget);
+        mpCustomFiltersLayout->addWidget(mpFilterButtonsWidget);
 
         mpAddFilterButton = new QPushButton(mpHorizontalLayoutWidget);
         mpAddFilterButton->setObjectName(QString::fromUtf8("mpAddFilterButton"));
