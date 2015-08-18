@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <QCheckBox>
-#include <QGridLayout>
 #include <QGraphicsView>
 
 #include "FilterItem.hpp"
@@ -18,7 +17,7 @@ public:
     typedef std::vector<FilterItem*> Filters;
     typedef std::vector<QCheckBox*>  CheckBoxes;
 
-    FilterManager(QGridLayout *checkBoxGrid, QWidget *parent = 0);
+    FilterManager(QWidget *checkBoxGrid, QWidget *parent = 0);
     ~FilterManager();
 
     int filterCount() { return mFilters.size(); }
@@ -29,7 +28,7 @@ public:
 
 private:
     Filters mFilters;
-    QGridLayout *mpCheckBoxGrid;
+    QWidget *mpCheckBoxGrid;
     CheckBoxes mCheckBoxes;
 };
 

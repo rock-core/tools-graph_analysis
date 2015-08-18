@@ -10,7 +10,7 @@
 namespace graph_analysis {
 namespace gui {
 
-FilterManager::FilterManager(QGridLayout *checkBoxGrid, QWidget *parent)
+FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     : QGraphicsView(parent)
     , mpCheckBoxGrid(checkBoxGrid)
 {
@@ -34,18 +34,6 @@ FilterManager::FilterManager(QGridLayout *checkBoxGrid, QWidget *parent)
 //    setMinimumSize(400, 400);
 //    setWindowTitle(tr("Graphview"));
 
-    // calibrating check boxes widths and spacing
-//    QCheckBox dummy;
-//    int checkBoxHeight = dummy.size().height(); // is platform dependent
-//    int vertical_spacing = FilterItem::sHeight - checkBoxHeight;
-//    if(vertical_spacing < 0)
-//    {
-//        vertical_spacing = 0;
-//        LOG_WARN_S << "graph_analysis::gui::FilterManager::FilterManager: the default check-box height on this platform is greater than the hardwired constant filter height FilterItem::sHeight = " << FilterItem::sHeight;
-//    }
-//    mpCheckBoxGrid->setContentsMargins(0., (qreal)vertical_spacing / 2., 0., 0.);
-    mpCheckBoxGrid->setVerticalSpacing(0);
-
     // populating the filter board with 3 example filters: filter1, filter2 and filter3
     addFilter("filter1");
     addFilter("filter2");
@@ -63,10 +51,7 @@ void FilterManager::addFilter(const std::string& label)
     scene()->addItem(mFilters.back());
     mFilters.back()->setPos( 0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
     // introducing its corresponding enabling checkbox
-    QCheckBox *newCheckBox = new QCheckBox();
-    mpCheckBoxGrid->addWidget(newCheckBox, mCheckBoxes.size(), 0);
-    mpCheckBoxGrid->setRowMinimumHeight(mCheckBoxes.size(), FilterItem::sHeight);
-    mpCheckBoxGrid->setRowStretch(mCheckBoxes.size(), 0);
+    QCheckBox *newCheckBox = new QCheckBox(mpCheckBoxGrid);
     mCheckBoxes.push_back(newCheckBox);
 }
 

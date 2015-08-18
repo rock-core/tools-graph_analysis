@@ -221,8 +221,6 @@ private:
     QScrollArea *mpCheckBoxArea;
     /// the check boxes vertical panel
     QWidget *mpCheckBoxColumn;
-    /// the vertical grid layout for the check boxes widget
-    QGridLayout *mpCheckBoxColumnLayout;
     /// widget for the filters view (holds the FilterItem-s)
     FilterManager *mpFilterManager;
     /// buttons bar for FilterItems
