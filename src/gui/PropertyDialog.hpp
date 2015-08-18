@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QGridLayout>
 #include <QCloseEvent>
+#include <QScrollArea>
 #include <QMainWindow>
 #include <QtGui/QAction>
 #include <QtGui/QDialog>
@@ -216,6 +217,8 @@ private:
     QWidget *mpFiltersBox;
     /// horizontal box to accommodate both the FilterItem-s manager (to the right) and the grid with row-wise correspondent check-boxes (to the left)
     QHBoxLayout *mpFiltersBoxLayout;
+    /// scrollable frame to wrap the check-boxes widget
+    QScrollArea *mpCheckBoxArea;
     /// the check boxes vertical panel
     QWidget *mpCheckBoxColumn;
     /// the vertical grid layout for the check boxes widget

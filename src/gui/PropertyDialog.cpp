@@ -458,14 +458,16 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpFiltersBoxLayout->setContentsMargins(0., 0., 0., 0.);
         mpFiltersBox->setLayout(mpFiltersBoxLayout);
 
+        mpCheckBoxArea = new QScrollArea();
         mpCheckBoxColumn = new QWidget();
+        mpCheckBoxArea->setWidget(mpCheckBoxColumn);
 
         mpCheckBoxColumnLayout = new QGridLayout(mpCheckBoxColumn);
         mpCheckBoxColumnLayout->setVerticalSpacing(0);
         mpCheckBoxColumnLayout->setContentsMargins(0., 0., 0., 0.);
         mpCheckBoxColumn->setLayout(mpCheckBoxColumnLayout);
 
-        mpFiltersBoxLayout->addWidget(mpCheckBoxColumn);
+        mpFiltersBoxLayout->addWidget(mpCheckBoxArea);
 
         mpFilterManager = new FilterManager(mpCheckBoxColumnLayout);
         mpFiltersBoxLayout->addWidget(mpFilterManager);
