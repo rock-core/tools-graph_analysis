@@ -220,6 +220,14 @@ private:
     QHBoxLayout *mpFilterButtonsWidgetLayout;
     /// button for adding a FilterItem to the filters view in the layers tab
     QPushButton *mpAddFilterButton;
+    /// button for renaming a FilterItem from the filters view in the layers tab
+    QPushButton *mpRenameFilterButton;
+    /// button for swapping two FilterItems in the filters view in the layers tab
+    QPushButton *mpSwapFiltersButton;
+    /// button for removing a FilterItem from the filters view in the layers tab
+    QPushButton *mpRemoveFilterButton;
+    /// button for removing all FilterItems from the filters view in the layers tab
+    QPushButton *mpRemoveFiltersButton;
     /// set of separators in all layouts used
     QFrames mFrames;
     /// boolean witness: true when a node is being focused on; false otherwise

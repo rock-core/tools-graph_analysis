@@ -438,6 +438,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpVerticalLayoutComponentsLayer->addWidget(mpFiltersLabel);
 
         mpFiltersBox = new QWidget();
+        mpFiltersBox->setMinimumHeight(170);
         mpFiltersBoxLayout = new QHBoxLayout();
         mpFiltersBox->setLayout(mpFiltersBoxLayout);
 
@@ -468,6 +469,46 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpAddFilterButton->setToolTip(QString("adds a custom filter to the filters manager"));
 
         mpFilterButtonsWidgetLayout->addWidget(mpAddFilterButton);
+
+        mpRenameFilterButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpRenameFilterButton->setObjectName(QString::fromUtf8("mpRenameFilterButton"));
+        mpRenameFilterButton->setIcon(*(mpViewWidget->getIcon("featureLabel")));
+        mpRenameFilterButton->setEnabled(true);
+        mpRenameFilterButton->setCheckable(false);
+        mpRenameFilterButton->setChecked(false);
+        mpRenameFilterButton->setToolTip(QString("renames a custom filter in the filters manager"));
+
+        mpFilterButtonsWidgetLayout->addWidget(mpRenameFilterButton);
+
+        mpSwapFiltersButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpSwapFiltersButton->setObjectName(QString::fromUtf8("mpSwapFiltersButton"));
+        mpSwapFiltersButton->setIcon(*(mpViewWidget->getIcon("swap")));
+        mpSwapFiltersButton->setEnabled(true);
+        mpSwapFiltersButton->setCheckable(false);
+        mpSwapFiltersButton->setChecked(false);
+        mpSwapFiltersButton->setToolTip(QString("swaps two custom filters in the filters manager"));
+
+        mpFilterButtonsWidgetLayout->addWidget(mpSwapFiltersButton);
+
+        mpRemoveFilterButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpRemoveFilterButton->setObjectName(QString::fromUtf8("mpRemoveFilterButton"));
+        mpRemoveFilterButton->setIcon(*(mpViewWidget->getIcon("remove")));
+        mpRemoveFilterButton->setEnabled(true);
+        mpRemoveFilterButton->setCheckable(false);
+        mpRemoveFilterButton->setChecked(false);
+        mpRemoveFilterButton->setToolTip(QString("removes a custom filter from the filters manager"));
+
+        mpFilterButtonsWidgetLayout->addWidget(mpRemoveFilterButton);
+
+        mpRemoveFiltersButton = new QPushButton(mpHorizontalLayoutWidget);
+        mpRemoveFiltersButton->setObjectName(QString::fromUtf8("mpRemoveFiltersButton"));
+        mpRemoveFiltersButton->setIcon(*(mpViewWidget->getIcon("removeAll")));
+        mpRemoveFiltersButton->setEnabled(true);
+        mpRemoveFiltersButton->setCheckable(false);
+        mpRemoveFiltersButton->setChecked(false);
+        mpRemoveFiltersButton->setToolTip(QString("removess all custom filters from the filters manager"));
+
+        mpFilterButtonsWidgetLayout->addWidget(mpRemoveFiltersButton);
     }
 
     // filling in the gaps at the bottom of each vertical layout
