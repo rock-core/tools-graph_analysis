@@ -25,18 +25,15 @@ FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
-    setFixedWidth(110);
-//    setMinimumWidth(110);
-//    QRectF scene_rect = sceneRect();
-//    scene_rect.adjust(0., 0., , 0.);
-//    setSceneRect(QRectF(QPointF(0., 0.), QSizeF(20, 20)));
-//    setMinimumSize(400, 400);
-//    setWindowTitle(tr("Graphview"));
+//    scale(qreal(0.8), qreal(0.8));
+    setMinimumWidth(110);
+
 
     // populating the filter board with 3 example filters: filter1, filter2 and filter3
     addFilter("filter1");
     addFilter("filter2");
+    addFilter("filter3");
+    addFilter("filter3");
     addFilter("filter3");
 }
 
@@ -49,9 +46,11 @@ void FilterManager::addFilter(const std::string& label)
     // introducing a new filter item
     mFilters.push_back(new FilterItem(this, mFilters.size(), label));
     scene()->addItem(mFilters.back());
-    mFilters.back()->setPos( 0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
+    mFilters.back()->setPos(0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
     // introducing its corresponding enabling checkbox
     QCheckBox *newCheckBox = new QCheckBox(mpCheckBoxGrid);
+    mpCheckBoxGrid->setFixedHeight((mCheckBoxes.size() + 1) * FilterItem::sHeight);
+    newCheckBox->setGeometry(0, mCheckBoxes.size() * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
     mCheckBoxes.push_back(newCheckBox);
 }
 

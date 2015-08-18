@@ -16,6 +16,7 @@
 #include <QLabel>
 #include <QObject>
 #include <QGridLayout>
+#include <QCheckBox>
 #include <QCloseEvent>
 #include <QScrollArea>
 #include <QMainWindow>
@@ -215,8 +216,6 @@ private:
     QLabel *mpFiltersLabel;
     /// widget with FilterItems on the right and their corresponding checkboxes on the left
     QWidget *mpFiltersBox;
-    /// horizontal box to accommodate both the FilterItem-s manager (to the right) and the grid with row-wise correspondent check-boxes (to the left)
-    QHBoxLayout *mpFiltersBoxLayout;
     /// scrollable frame to wrap the check-boxes widget
     QScrollArea *mpCheckBoxArea;
     /// the check boxes vertical panel

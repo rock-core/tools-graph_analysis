@@ -452,20 +452,22 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpCustomFiltersLayout->addWidget(mpFiltersLabel);
 
         mpFiltersBox = new QWidget();
-//        mpFiltersBox->setMinimumHeight(170);
-        mpFiltersBoxLayout = new QHBoxLayout();
-        mpFiltersBoxLayout->setSpacing(0);
-        mpFiltersBoxLayout->setContentsMargins(0., 0., 0., 0.);
-        mpFiltersBox->setLayout(mpFiltersBoxLayout);
+        QSize size(186, 180);
+        mpFiltersBox->resize(size.width(), size.height());
+        mpFiltersBox->setFixedSize(size.width(), size.height());
 
-        mpCheckBoxArea = new QScrollArea();
+        int checkBoxWidth = 45; // pre-estimated size needed by the check boxes grid
+
+        mpCheckBoxArea = new QScrollArea(mpFiltersBox);
+        mpCheckBoxArea->setGeometry(0, 0, checkBoxWidth, size.height());
+        mpCheckBoxArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         mpCheckBoxColumn = new QWidget();
         mpCheckBoxArea->setWidget(mpCheckBoxColumn);
+        mpCheckBoxArea->setMaximumWidth(checkBoxWidth);
+        mpCheckBoxColumn->setGeometry(0, 0, 20, 0);
 
-        mpFiltersBoxLayout->addWidget(mpCheckBoxArea);
-
-        mpFilterManager = new FilterManager(mpCheckBoxColumn);
-        mpFiltersBoxLayout->addWidget(mpFilterManager);
+        mpFilterManager = new FilterManager(mpCheckBoxColumn, mpFiltersBox);
+        mpFilterManager->setGeometry(checkBoxWidth, 0, size.width() - checkBoxWidth, size.height());
 
         mpCustomFiltersLayout->addWidget(mpFiltersBox);
 
