@@ -22,8 +22,7 @@ public:
 
     int filterCount() { return mFilters.size(); }
     void addFilter(const std::string& label);
-    void pushDown(FilterItem::filter_index_t index);
-    void pushUp(FilterItem::filter_index_t index);
+    void swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right);
     void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());
 
 private:

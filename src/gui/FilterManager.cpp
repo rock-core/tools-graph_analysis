@@ -33,8 +33,8 @@ FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     addFilter("filter1");
     addFilter("filter2");
     addFilter("filter3");
-    addFilter("filter3");
-    addFilter("filter3");
+    addFilter("filter4");
+    addFilter("filter5");
 }
 
 FilterManager::~FilterManager()
@@ -54,36 +54,18 @@ void FilterManager::addFilter(const std::string& label)
     mCheckBoxes.push_back(newCheckBox);
 }
 
-void FilterManager::pushDown(FilterItem::filter_index_t index)
+void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right)
 {
-    dieOnIndex(index, "pushDown");
-    if(mFilters.size() - 1 == index)
-    {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::pushDown: the provided index = " << index << " is bottom-most already! Skipping...";
-        return;
-    }
-    FilterItem* cached_filter = mFilters[index];
-    mFilters[index] = mFilters[index + 1];
-    mFilters[index + 1] = cached_filter;
+    dieOnIndex(left , "swapFilters");
+    dieOnIndex(right, "swapFilters");
 
-    cached_filter->setPos(cached_filter->pos() + QPointF(0., (qreal)FilterItem::sHeight));
-    cached_filter->setIndex(index + 1);
-}
+    FilterItem* cached_filter = mFilters[right];
+    mFilters[right] = mFilters[left];
+    mFilters[left ] = cached_filter;
 
-void FilterManager::pushUp(FilterItem::filter_index_t index)
-{
-    dieOnIndex(index, "pushUp");
-    if(0 == index)
-    {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::pushUp: the provided index = " << index << " is top-most already! Skipping...";
-        return;
-    }
-    FilterItem* cached_filter = mFilters[index];
-    mFilters[index] = mFilters[index - 1];
-    mFilters[index - 1] = cached_filter;
-
-    cached_filter->setPos(cached_filter->pos() - QPointF(0., (qreal)FilterItem::sHeight));
-    cached_filter->setIndex(index - 1);
+    mFilters[right]->setIndex(right);
+    cached_filter->setIndex(left);
+    cached_filter->updatePos();
 }
 
 void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)
@@ -93,7 +75,8 @@ void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::stri
         std::string method = ("" == caller) ? "dieOnIndex" : caller;
         std::string error_msg = std::string("graph_analysis::gui::FilterManager::") + method + ": the supplied index: "
                                         + boost::lexical_cast<std::string>(index)
-                                        + " is out of bounds";
+                                        + " is out of bounds [0, "
+                                        + boost::lexical_cast<std::string>(mFilters.size()) + "]";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }

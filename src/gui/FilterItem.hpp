@@ -42,6 +42,7 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
 
     void setIndex(filter_index_t index) { mIndex = index; }
+    void updatePos(void);
 
 protected:
     /// qt mouse double-click callback

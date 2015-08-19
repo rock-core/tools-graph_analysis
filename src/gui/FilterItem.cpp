@@ -37,6 +37,11 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
     //mLabel->setZValue(-100.0);
 }
 
+void FilterItem::updatePos(void)
+{
+    setPos(0., (qreal)(FilterItem::sHeight * mIndex));
+}
+
 QRectF FilterItem::boundingRect() const
 {
     QRectF childrenRect = childrenBoundingRect();
@@ -90,17 +95,15 @@ void FilterItem::mouseMoveEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse move";
     // testing for new index displacement on neighbouring filters (TODO: add one for final index placement of current filter in mouse release)
-    qreal y = pos().y(); // refreshing after having adapted the height
+    qreal y = pos().y();
     const unsigned int offset = (unsigned int)(y / (qreal)FilterItem::sHeight);
     if(offset != mIndex && FilterItem::sDisplacementThreshold > y - (qreal)(offset * FilterItem::sHeight))
     {
-        mpFilterManager->pushDown(offset); // offset -> offset + 1
-        mIndex = offset;
+        mpFilterManager->swapFilters(mIndex, offset); // offset <-> mIndex
     }
     else if(offset + 1 != mIndex && FilterItem::sDisplacementThreshold > (qreal)((offset + 1) * FilterItem::sHeight) - y)
     {
-        mpFilterManager->pushUp(offset + 1); // offset + 1 -> offset
-        mIndex = offset + 1;
+        mpFilterManager->swapFilters(mIndex, offset + 1); // offset + 1 <-> mIndex
     }
     QGraphicsItem::mouseMoveEvent(event);
 }
@@ -109,7 +112,7 @@ void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
     setZValue(-1);
-    setPos(0., (qreal)(FilterItem::sHeight * mIndex));
+    updatePos();
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
