@@ -78,8 +78,20 @@ void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::fil
     mFilters[right]->setIndex(right);
     cached_filter->setIndex(left);
     cached_filter->updatePos();
-    refreshToolTip(left);
-    refreshToolTip(right);
+
+    // swapping their checkboxes references too (much faster than toggling their values + updating tooltips)
+//    refreshToolTip(left);
+//    refreshToolTip(right);
+    QCheckBox *cached_checkbox = mCheckBoxes[right];
+    mCheckBoxes[right] = mCheckBoxes[left];
+    mCheckBoxes[left] = cached_checkbox;
+
+    // updating the checkbox indices map
+    mCheckBoxIndexMap[mCheckBoxes[left ]] =  left;
+    mCheckBoxIndexMap[mCheckBoxes[right]] = right;
+    // updating the position on the screen
+    mCheckBoxes[left ]->setGeometry(0, left  * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
+    mCheckBoxes[right]->setGeometry(0, right * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
 }
 
 void FilterManager::refreshToolTip(FilterItem::filter_index_t index)
