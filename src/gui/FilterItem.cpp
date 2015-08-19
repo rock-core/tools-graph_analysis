@@ -27,7 +27,7 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
-    setToolTip(QString(filter.c_str()));
+    setToolTip(QString("Custom Filter '") + QString(filter.c_str()) + QString("'"));
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new layeritem::Label(filter, this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -35,6 +35,12 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
     //mLabel->setFlag(QGraphicsItem::ItemIsSelectable, true);
     //mLabel->setZValue(-100.0);
+}
+
+
+QString FilterItem::getLabel(void)
+{
+    return mLabel->toPlainText();
 }
 
 void FilterItem::updatePos(void)

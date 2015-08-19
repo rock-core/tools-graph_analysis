@@ -24,6 +24,7 @@ public:
     void addFilter(const std::string& label);
     void swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right);
     void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());
+    void updateToolTip(FilterItem::filter_index_t index);
 
 private:
     Filters mFilters;

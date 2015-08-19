@@ -455,15 +455,18 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         QSize size(186, 180);
         mpFiltersBox->resize(size.width(), size.height());
         mpFiltersBox->setFixedSize(size.width(), size.height());
+        mpFiltersBox->setToolTip(QString("Custom Filters Manager Box"));
 
         int checkBoxWidth = 45; // pre-estimated size needed by the check boxes grid
 
         mpCheckBoxArea = new QScrollArea(mpFiltersBox);
         mpCheckBoxArea->setGeometry(0, 0, checkBoxWidth, size.height());
         mpCheckBoxArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        mpCheckBoxArea->setToolTip(QString("Custom Filters Enabling Panel"));
         mpCheckBoxColumn = new QWidget();
         mpCheckBoxArea->setWidget(mpCheckBoxColumn);
         mpCheckBoxArea->setMaximumWidth(checkBoxWidth);
+        mpCheckBoxColumn->setToolTip(QString("Custom Filters Enabling Panel"));
         mpCheckBoxColumn->setGeometry(0, 0, 20, 0);
 
         mpFilterManager = new FilterManager(mpCheckBoxColumn, mpFiltersBox);
@@ -525,7 +528,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpRemoveFiltersButton->setEnabled(true);
         mpRemoveFiltersButton->setCheckable(false);
         mpRemoveFiltersButton->setChecked(false);
-        mpRemoveFiltersButton->setToolTip(QString("removess all custom filters from the filters manager"));
+        mpRemoveFiltersButton->setToolTip(QString("removes all custom filters from the filters manager"));
 
         mpFilterButtonsWidgetLayout->addWidget(mpRemoveFiltersButton);
     }

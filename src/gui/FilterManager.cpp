@@ -17,7 +17,7 @@ FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     QGraphicsScene *custom_scene = new QGraphicsScene(this);
     custom_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(custom_scene);
-
+    setToolTip(QString("Custom Filters Manager Box"));
     setCacheMode(CacheBackground);
 //    setContextMenuPolicy(Qt::CustomContextMenu);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
@@ -25,7 +25,6 @@ FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-//    scale(qreal(0.8), qreal(0.8));
     setMinimumWidth(110);
 
 
@@ -49,9 +48,11 @@ void FilterManager::addFilter(const std::string& label)
     mFilters.back()->setPos(0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
     // introducing its corresponding enabling checkbox
     QCheckBox *newCheckBox = new QCheckBox(mpCheckBoxGrid);
-    mpCheckBoxGrid->setFixedHeight((mCheckBoxes.size() + 1) * FilterItem::sHeight);
-    newCheckBox->setGeometry(0, mCheckBoxes.size() * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
+    unsigned int index = mCheckBoxes.size();
+    mpCheckBoxGrid->setFixedHeight((index + 1) * FilterItem::sHeight);
+    newCheckBox->setGeometry(0, index * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
     mCheckBoxes.push_back(newCheckBox);
+    updateToolTip(index);
 }
 
 void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right)
@@ -66,6 +67,20 @@ void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::fil
     mFilters[right]->setIndex(right);
     cached_filter->setIndex(left);
     cached_filter->updatePos();
+    updateToolTip(left);
+    updateToolTip(right);
+}
+
+void FilterManager::updateToolTip(FilterItem::filter_index_t index)
+{
+    dieOnIndex(index, "updateToolTip");
+    QCheckBox *current_checkbox = mCheckBoxes[index];
+    FilterItem*current_filter   = mFilters   [index];
+
+    QString filter_label = current_filter->getLabel();
+//    bool witness = current_checkbox->isChecked();
+//    current_checkbox->setToolTip((witness ? QString("uncheck to disable filter '") : QString("check to enable filter '")) + filter_label + QString("'"));
+    current_checkbox->setToolTip(QString("(un)check to toggle filter '") + filter_label + QString("'"));
 }
 
 void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)

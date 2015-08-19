@@ -43,6 +43,7 @@ public:
 
     void setIndex(filter_index_t index) { mIndex = index; }
     void updatePos(void);
+    QString getLabel(void);
 
 protected:
     /// qt mouse double-click callback
