@@ -40,19 +40,30 @@ FilterManager::~FilterManager()
 {
 }
 
+void FilterManager::updateToolTips(int state)
+{
+    bool witness = Qt::Unchecked == state ? false : true;
+    unsigned int nfilters = mFilters.size();
+    for(unsigned int i = 0; i < nfilters; ++i)
+    {
+        updateToolTip(i, witness);
+    }
+}
+
 void FilterManager::addFilter(const std::string& label)
 {
     // introducing a new filter item
     mFilters.push_back(new FilterItem(this, mFilters.size(), label));
     scene()->addItem(mFilters.back());
-    mFilters.back()->setPos(0.,  FilterItem::sHeight * (qreal)(mFilters.size() - 1));
+    mFilters.back()->setPos(0., FilterItem::sHeight * (qreal)(mFilters.size() - 1));
     // introducing its corresponding enabling checkbox
     QCheckBox *newCheckBox = new QCheckBox(mpCheckBoxGrid);
     unsigned int index = mCheckBoxes.size();
     mpCheckBoxGrid->setFixedHeight((index + 1) * FilterItem::sHeight);
     newCheckBox->setGeometry(0, index * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
     mCheckBoxes.push_back(newCheckBox);
-    updateToolTip(index);
+    FilterManager::connect(newCheckBox, SIGNAL(stateChanged(int)), this, SLOT(updateToolTips(int)));
+    refreshToolTip(index);
 }
 
 void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right)
@@ -67,20 +78,27 @@ void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::fil
     mFilters[right]->setIndex(right);
     cached_filter->setIndex(left);
     cached_filter->updatePos();
-    updateToolTip(left);
-    updateToolTip(right);
+    refreshToolTip(left);
+    refreshToolTip(right);
 }
 
-void FilterManager::updateToolTip(FilterItem::filter_index_t index)
+void FilterManager::refreshToolTip(FilterItem::filter_index_t index)
+{
+    dieOnIndex(index, "refreshToolTip");
+    QCheckBox *current_checkbox = mCheckBoxes[index];
+    bool witness = current_checkbox->isChecked();
+    updateToolTip(index, witness);
+}
+
+void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness)
 {
     dieOnIndex(index, "updateToolTip");
     QCheckBox *current_checkbox = mCheckBoxes[index];
     FilterItem*current_filter   = mFilters   [index];
 
     QString filter_label = current_filter->getLabel();
-//    bool witness = current_checkbox->isChecked();
-//    current_checkbox->setToolTip((witness ? QString("uncheck to disable filter '") : QString("check to enable filter '")) + filter_label + QString("'"));
-    current_checkbox->setToolTip(QString("(un)check to toggle filter '") + filter_label + QString("'"));
+    current_checkbox->setToolTip((witness ? QString("uncheck to disable filter '") : QString("check to enable filter '")) + filter_label + QString("'"));
+//    current_checkbox->setToolTip(QString("(un)check to toggle filter '") + filter_label + QString("'"));
 }
 
 void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)

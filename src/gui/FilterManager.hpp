@@ -13,6 +13,7 @@ namespace gui {
 
 class FilterManager : public QGraphicsView
 {
+    Q_OBJECT
 public:
     typedef std::vector<FilterItem*> Filters;
     typedef std::vector<QCheckBox*>  CheckBoxes;
@@ -24,7 +25,11 @@ public:
     void addFilter(const std::string& label);
     void swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right);
     void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());
-    void updateToolTip(FilterItem::filter_index_t index);
+    void updateToolTip(FilterItem::filter_index_t index, bool witness);
+    void refreshToolTip(FilterItem::filter_index_t index);
+
+public slots:
+    void updateToolTips(int state);
 
 private:
     Filters mFilters;

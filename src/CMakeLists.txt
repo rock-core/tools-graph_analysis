@@ -150,6 +150,7 @@ rock_library(graph_analysis
     DEPS_PLAIN
         Boost_REGEX
     MOC
+        gui/FilterManager.hpp
         gui/ViewWidget.hpp
         gui/LayerWidget.hpp
         gui/AddNodeDialog.hpp

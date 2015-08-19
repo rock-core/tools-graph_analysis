@@ -37,7 +37,6 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
     //mLabel->setZValue(-100.0);
 }
 
-
 QString FilterItem::getLabel(void)
 {
     return mLabel->toPlainText();

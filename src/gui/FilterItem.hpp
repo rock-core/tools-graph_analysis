@@ -2,6 +2,7 @@
 #define FILTERITEM_HPP
 
 #include <QPen>
+#include <QObject>
 #include <string>
 #include <QGraphicsItem>
 #include <QGraphicsItemGroup>
