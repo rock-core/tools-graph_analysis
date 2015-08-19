@@ -40,14 +40,13 @@ FilterManager::~FilterManager()
 {
 }
 
-void FilterManager::updateToolTips(int state)
+void FilterManager::updateToolTip(int state)
 {
     bool witness = Qt::Unchecked == state ? false : true;
-    unsigned int nfilters = mFilters.size();
-    for(unsigned int i = 0; i < nfilters; ++i)
-    {
-        updateToolTip(i, witness);
-    }
+    QCheckBox *sender = (QCheckBox*)QObject::sender();
+    FilterItem::filter_index_t index = mCheckBoxIndexMap[sender];
+    dieOnIndex(index , "updateToolTip(int)");
+    updateToolTip(index, witness);
 }
 
 void FilterManager::addFilter(const std::string& label)
@@ -62,7 +61,8 @@ void FilterManager::addFilter(const std::string& label)
     mpCheckBoxGrid->setFixedHeight((index + 1) * FilterItem::sHeight);
     newCheckBox->setGeometry(0, index * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
     mCheckBoxes.push_back(newCheckBox);
-    FilterManager::connect(newCheckBox, SIGNAL(stateChanged(int)), this, SLOT(updateToolTips(int)));
+    mCheckBoxIndexMap[newCheckBox] = index;
+    FilterManager::connect(newCheckBox, SIGNAL(stateChanged(int)), this, SLOT(updateToolTip(int)));
     refreshToolTip(index);
 }
 

@@ -17,6 +17,7 @@ class FilterManager : public QGraphicsView
 public:
     typedef std::vector<FilterItem*> Filters;
     typedef std::vector<QCheckBox*>  CheckBoxes;
+    typedef std::map<QCheckBox*, FilterItem::filter_index_t> CheckBoxIndexMap;
 
     FilterManager(QWidget *checkBoxGrid, QWidget *parent = 0);
     ~FilterManager();
@@ -29,12 +30,13 @@ public:
     void refreshToolTip(FilterItem::filter_index_t index);
 
 public slots:
-    void updateToolTips(int state);
+    void updateToolTip(int state);
 
 private:
     Filters mFilters;
     QWidget *mpCheckBoxGrid;
     CheckBoxes mCheckBoxes;
+    CheckBoxIndexMap mCheckBoxIndexMap;
 };
 
 } // end namespace gui
