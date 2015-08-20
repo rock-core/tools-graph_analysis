@@ -137,8 +137,6 @@ void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::fil
     cached_filter->updatePos();
 
     // swapping their checkboxes references too (much faster than toggling their values + updating tooltips)
-//    refreshToolTip(left);
-//    refreshToolTip(right);
     QCheckBox *cached_checkbox = mCheckBoxes[right];
     mCheckBoxes[right] = mCheckBoxes[left];
     mCheckBoxes[left] = cached_checkbox;
@@ -167,7 +165,8 @@ void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness
 
     QString filter_label = current_filter->getLabel();
     current_checkbox->setToolTip((witness ? QString("uncheck to disable filter '") : QString("check to enable filter '")) + filter_label + QString("'"));
-//    current_checkbox->setToolTip(QString("(un)check to toggle filter '") + filter_label + QString("'"));
+
+    mpLayerWidget->refresh();
 }
 
 void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)
@@ -178,7 +177,7 @@ void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::stri
         std::string error_msg = std::string("graph_analysis::gui::FilterManager::") + method + ": the supplied index: "
                                         + boost::lexical_cast<std::string>(index)
                                         + " is out of bounds [0, "
-                                        + boost::lexical_cast<std::string>(mFilters.size()) + "]";
+                                        + boost::lexical_cast<std::string>(mFilters.size() - 1) + "]";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
@@ -216,18 +215,25 @@ void FilterManager::removeFilter(FilterItem *item)
         return;
     }
 
+    FilterItem::filter_index_t index = item->getIndex();
+    delete item;
+    mFilters.erase(mFilters.begin() + index);
+    QCheckBox *checkBoxToErase = mCheckBoxes[index];
+    mCheckBoxIndexMap.erase(checkBoxToErase);
+    delete checkBoxToErase;
+    mCheckBoxes.erase(mCheckBoxes.begin() + index);
 
+    unsigned int nfilters = mFilters.size();
+    for(; index < nfilters; ++index)
+    {
+        FilterItem *item = mFilters[index];
+        item->setIndex(index);
+        item->setPos(0., FilterItem::sHeight * (qreal)index);
+        mCheckBoxes[index]->setGeometry(0, index * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
+    }
 
-
-
-
-
-
-
-
-
-
-
+    mpCheckBoxGrid->setFixedHeight(mFilters.size() * FilterItem::sHeight);
+    setSceneRect(sceneRect().adjusted(0., 0., 0., -(qreal)FilterItem::sHeight));
 }
 
 void FilterManager::addFilter()
@@ -285,16 +291,53 @@ void FilterManager::removeFilters()
     mFilters.clear();
     mCheckBoxes.clear();
     mCheckBoxIndexMap.clear();
+
+    mpCheckBoxGrid->setFixedHeight(0);
 }
 
 void FilterManager::renameFilter()
 {
+    if(!mFilters.size())
+    {
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::renameFilter: cannot rename a regexp filter - there are no filters";
+        QMessageBox::critical(this, tr("Cannot Rename a Filter"), tr("There are no custom regexp filters!"));
+        return;
+    }
+
+
+
+
+
+
 
 }
 
 void FilterManager::removeFilter()
 {
+    if(!mFilters.size())
+    {
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::removeFilter: cannot remove a regexp filter - there are no filters";
+        QMessageBox::critical(this, tr("Cannot Remove a Filter"), tr("There are no custom regexp filters!"));
+        return;
+    }
 
+    bool ok;
+    QStringList filters_options;
+    foreach(FilterItem *item, mFilters)
+    {
+        std::string str_index = boost::lexical_cast<std::string>(item->getIndex());
+        filters_options << QString(str_index.c_str()) + QString(": ") + item->getLabel();
+    }
+    QString strFilterIndex = QInputDialog::getItem(this, tr("Remove a Filter"),
+                                         tr("Filter:"), filters_options,
+                                         0, false, &ok);
+    if (ok && !strFilterIndex.isEmpty())
+    {
+        std::stringstream ss(strFilterIndex.toStdString());
+        FilterItem::filter_index_t filterIndex;
+        ss >> filterIndex;
+        removeFilter(filterIndex);
+    }
 }
 
 void FilterManager::renameSelectedFilter()

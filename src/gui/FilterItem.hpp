@@ -43,6 +43,8 @@ public:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
 
     void setIndex(filter_index_t index) { mIndex = index; }
+    filter_index_t getIndex(void) { return mIndex; }
+
     void updatePos(void);
     QString getLabel(void);
     void setLabel(QString label);
