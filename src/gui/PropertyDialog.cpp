@@ -3,6 +3,8 @@
 #include "LayerWidget.hpp"
 #include "PropertyDialog.hpp"
 
+#include <QScrollBar>
+
 namespace graph_analysis {
 namespace gui {
 
@@ -471,6 +473,12 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpFilterManager = new FilterManager(mpViewWidget, mpLayerWidget, mpCheckBoxColumn, mpFiltersBox);
         mpFilterManager->setGeometry(checkBoxWidth, 0, size.width() - checkBoxWidth, size.height());
+
+        // synchronizing the 2 scroll bars on the check-boxes grid and the scene
+        QScrollBar *checkBoxesScrollBar     =  mpCheckBoxArea->verticalScrollBar();
+        QScrollBar *filterManagerScrollBar  = mpFilterManager->verticalScrollBar();
+        PropertyDialog::connect(checkBoxesScrollBar, SIGNAL(valueChanged(int)), filterManagerScrollBar, SLOT(setValue(int)));
+        PropertyDialog::connect(filterManagerScrollBar, SIGNAL(valueChanged(int)), checkBoxesScrollBar, SLOT(setValue(int)));
 
         mpCustomFiltersLayout->addWidget(mpFiltersBox);
 
