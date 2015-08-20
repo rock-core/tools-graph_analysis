@@ -7,6 +7,8 @@
 #include <QGraphicsView>
 
 #include "FilterItem.hpp"
+#include "ViewWidget.hpp"
+#include "LayerWidget.hpp"
 
 namespace graph_analysis {
 namespace gui {
@@ -19,7 +21,7 @@ public:
     typedef std::vector<QCheckBox*>  CheckBoxes;
     typedef std::map<QCheckBox*, FilterItem::filter_index_t> CheckBoxIndexMap;
 
-    FilterManager(QWidget *checkBoxGrid, QWidget *parent = 0);
+    FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent = 0);
     ~FilterManager();
 
     int filterCount() { return mFilters.size(); }
@@ -35,8 +37,13 @@ public slots:
     void updateToolTip(int state);
     void addFilter();
 
+    /// displays context menu (upon a right click on the scene)
+    void showContextMenu(const QPoint& pos);
+
 private:
     Filters mFilters;
+    ViewWidget *mpViewWidget;
+    LayerWidget *mpLayerWidget;
     QWidget *mpCheckBoxGrid;
     CheckBoxes mCheckBoxes;
     CheckBoxIndexMap mCheckBoxIndexMap;

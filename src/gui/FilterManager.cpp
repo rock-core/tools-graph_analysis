@@ -1,8 +1,10 @@
 
 #include "FilterManager.hpp"
+#include "ActionCommander.hpp"
 #include "AddFilterDialog.hpp"
 
 #include <QRectF>
+#include <QMenu>
 #include <QSizeF>
 #include <base/Logging.hpp>
 #include <boost/foreach.hpp>
@@ -11,8 +13,10 @@
 namespace graph_analysis {
 namespace gui {
 
-FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
+FilterManager::FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent)
     : QGraphicsView(parent)
+    , mpViewWidget(viewWidget)
+    , mpLayerWidget(layerWidget)
     , mpCheckBoxGrid(checkBoxGrid)
 {
     QGraphicsScene *custom_scene = new QGraphicsScene(this);
@@ -20,17 +24,31 @@ FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     setScene(custom_scene);
     setToolTip(QString("Custom Filters Manager Box"));
     setCacheMode(CacheBackground);
-//    setContextMenuPolicy(Qt::CustomContextMenu);
+    setContextMenuPolicy(Qt::CustomContextMenu);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     setMinimumWidth(110);
+
+    // setting up the context menu
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
+            this, SLOT(showContextMenu(const QPoint &)));
 }
 
 FilterManager::~FilterManager()
 {
+}
+
+void FilterManager::showContextMenu(const QPoint& pos)
+{
+    ActionCommander comm(this);
+    QMenu contextMenu(tr("Context menu"), this);
+
+    QAction *actionAddFilter = comm.addAction("Add Regexp Filter", SLOT(addFilter()), *(mpViewWidget->getIcon("addFeature")));
+    contextMenu.addAction(actionAddFilter);
+    contextMenu.exec(mapToGlobal(pos));
 }
 
 void FilterManager::updateToolTip(int state)

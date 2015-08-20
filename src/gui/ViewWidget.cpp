@@ -242,7 +242,7 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
-        this, SLOT(showContextMenu(const QPoint &)));
+            this, SLOT(showContextMenu(const QPoint &)));
     mpStackedWidget->addWidget((QWidget *) this);
     mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
     mpStackedWidget->setCurrentIndex(0);

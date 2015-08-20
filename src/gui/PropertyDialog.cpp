@@ -469,7 +469,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpCheckBoxColumn->setToolTip(QString("Custom Filters Enabling Panel"));
         mpCheckBoxColumn->setGeometry(0, 0, 20, 0);
 
-        mpFilterManager = new FilterManager(mpCheckBoxColumn, mpFiltersBox);
+        mpFilterManager = new FilterManager(mpViewWidget, mpLayerWidget, mpCheckBoxColumn, mpFiltersBox);
         mpFilterManager->setGeometry(checkBoxWidth, 0, size.width() - checkBoxWidth, size.height());
 
         mpCustomFiltersLayout->addWidget(mpFiltersBox);
