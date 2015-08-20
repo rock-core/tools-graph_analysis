@@ -571,6 +571,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     PropertyDialog::connect(mpToggleClusterLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleClusterLayer(bool)));
     PropertyDialog::connect(mpTabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
     PropertyDialog::connect(mpAddFilterButton, SIGNAL(clicked()), mpFilterManager, SLOT(addFilter()));
+    PropertyDialog::connect(mpRemoveFiltersButton, SIGNAL(clicked()), mpFilterManager, SLOT(removeFilters()));
 
     QMetaObject::connectSlotsByName(Dialog);
 

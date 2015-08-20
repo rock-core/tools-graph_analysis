@@ -6,6 +6,7 @@
 #include <QRectF>
 #include <QMenu>
 #include <QSizeF>
+#include <QMessageBox>
 #include <base/Logging.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -47,7 +48,9 @@ void FilterManager::showContextMenu(const QPoint& pos)
     QMenu contextMenu(tr("Context menu"), this);
 
     QAction *actionAddFilter = comm.addAction("Add Regexp Filter", SLOT(addFilter()), *(mpViewWidget->getIcon("addFeature")));
+    QAction *actionRemoveFilters = comm.addAction("Remove All Filters", SLOT(removeFilters()), *(mpViewWidget->getIcon("removeAll")));
     contextMenu.addAction(actionAddFilter);
+    contextMenu.addAction(actionRemoveFilters);
     contextMenu.exec(mapToGlobal(pos));
 }
 
@@ -161,6 +164,49 @@ void FilterManager::addFilter()
         std::string regexp = addFilterDialog.getFilterRegexp();
         bool enable = addFilterDialog.isEnabled();
         addFilter(regexp, enable);
+    }
+}
+
+void FilterManager::removeFilters()
+{
+    if(!mFilters.size())
+    {
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::removeFilters: cannot remove regexp filtes - there are no filters to remove";
+        QMessageBox::critical(this, tr("Cannot Remove Regexp Filters"), tr("The custom regexp filters manager holds no filter whatsoever!"));
+        return;
+    }
+
+    QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Deletion of All Regexp Filters"),
+                                            tr("All Custom Regexp Filters in the Filters Manager will be completely erased! Are you sure you want to continue?"),
+                                            QMessageBox::Yes | QMessageBox::No
+                                        );
+    switch(button)
+    {
+        case QMessageBox::Yes:
+            // resetting will be performed
+        break;
+
+        default:
+            return;
+        break;
+    }
+
+    foreach(FilterItem *item, mFilters)
+    {
+        if(item)
+        {
+            delete item;
+        }
+    }
+    mFilters.clear();
+
+    foreach(QCheckBox *checkBox, mCheckBoxes)
+    {
+
+        if(checkBox)
+        {
+            delete checkBox;
+        }
     }
 }
 

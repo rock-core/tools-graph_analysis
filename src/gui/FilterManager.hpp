@@ -34,8 +34,9 @@ public:
     void refreshToolTip(FilterItem::filter_index_t index);
 
 public slots:
-    void updateToolTip(int state);
     void addFilter();
+    void removeFilters();
+    void updateToolTip(int state);
 
     /// displays context menu (upon a right click on the scene)
     void showContextMenu(const QPoint& pos);
