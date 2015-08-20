@@ -358,13 +358,6 @@ void FilterManager::removeFilter()
 
 void FilterManager::renameSelectedFilter()
 {
-    if(!mItemSelected)
-    {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::renameSelectedFilter: cannot rename selected regexp filter - no filter is selected";
-        QMessageBox::critical(this, tr("Cannot Rename Selected Regexp Filter"), tr("No custom regexp filter is selected!"));
-        return;
-    }
-
     bool ok;
     QString label = QInputDialog::getText(this, tr("Input Filter Regexp"),
                                          tr("New Regexp:"), QLineEdit::Normal,
