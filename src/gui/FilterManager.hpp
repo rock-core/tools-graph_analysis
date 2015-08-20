@@ -36,8 +36,8 @@ public:
     unsigned int createFilter(const std::string& label);
     void swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right);
     void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());
-    void updateToolTip(FilterItem::filter_index_t index, bool witness);
-    void refreshToolTip(FilterItem::filter_index_t index);
+    void updateToolTip(FilterItem::filter_index_t index, bool witness, bool refresh = true);
+    void refreshToolTip(FilterItem::filter_index_t index, bool refresh = false);
     void renameFilter(FilterItem::filter_index_t index, QString regexp);
     void renameFilter(FilterItem *item, QString regexp);
     void removeFilter(FilterItem::filter_index_t index);

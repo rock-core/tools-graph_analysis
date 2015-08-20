@@ -149,15 +149,15 @@ void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::fil
     mCheckBoxes[right]->setGeometry(0, right * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
 }
 
-void FilterManager::refreshToolTip(FilterItem::filter_index_t index)
+void FilterManager::refreshToolTip(FilterItem::filter_index_t index, bool refresh)
 {
     dieOnIndex(index, "refreshToolTip");
     QCheckBox *current_checkbox = mCheckBoxes[index];
     bool witness = current_checkbox->isChecked();
-    updateToolTip(index, witness);
+    updateToolTip(index, witness, refresh);
 }
 
-void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness)
+void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness, bool refresh)
 {
     dieOnIndex(index, "updateToolTip");
     QCheckBox *current_checkbox = mCheckBoxes[index];
@@ -166,7 +166,10 @@ void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness
     QString filter_label = current_filter->getLabel();
     current_checkbox->setToolTip((witness ? QString("uncheck to disable filter '") : QString("check to enable filter '")) + filter_label + QString("'"));
 
-    mpLayerWidget->refresh();
+    if(refresh)
+    {
+        mpLayerWidget->refresh();
+    }
 }
 
 void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)
@@ -187,6 +190,7 @@ void FilterManager::renameFilter(FilterItem::filter_index_t index, QString regex
 {
     dieOnIndex(index, "renameFilter");
     mFilters[index]->setLabel(regexp);
+    refreshToolTip(index);
 }
 
 void FilterManager::renameFilter(FilterItem *item, QString regexp)
@@ -198,6 +202,7 @@ void FilterManager::renameFilter(FilterItem *item, QString regexp)
         return;
     }
     item->setLabel(regexp);
+    refreshToolTip(item->getIndex());
 }
 
 void FilterManager::removeFilter(FilterItem::filter_index_t index)
@@ -303,6 +308,10 @@ void FilterManager::renameFilter()
         QMessageBox::critical(this, tr("Cannot Rename a Filter"), tr("There are no custom regexp filters!"));
         return;
     }
+
+
+
+
 
 
 
