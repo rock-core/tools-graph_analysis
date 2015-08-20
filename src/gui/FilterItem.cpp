@@ -128,7 +128,9 @@ void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 
 void FilterItem::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
+    mLabel->setTextInteraction(true, true);
     QGraphicsItem::mouseDoubleClickEvent(event);
+    setHandlesChildEvents(false);
 }
 
 void FilterItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

@@ -24,7 +24,7 @@ public:
      * \param item parent NodeItem implementing instance
      */
     Label(const std::string& label, QGraphicsItem* item)
-        : QGraphicsTextItem( QString(label.c_str()), item)
+        : QGraphicsTextItem(QString(label.c_str()), item)
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
         setTextInteractionFlags(Qt::NoTextInteraction);
@@ -85,6 +85,8 @@ protected:
     {
         LOG_DEBUG_S << "Lost focus";
         ::QGraphicsTextItem::focusOutEvent(event);
+        // courtesy of these label items needed by the filter items
+        parentItem()->setHandlesChildEvents(true);
     }
 
     /// qt item changed callback
