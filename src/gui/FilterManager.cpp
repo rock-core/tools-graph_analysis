@@ -2,6 +2,7 @@
 #include "FilterManager.hpp"
 #include "ActionCommander.hpp"
 #include "AddFilterDialog.hpp"
+#include "RenameFilterDialog.hpp"
 
 #include <QRectF>
 #include <QMenu>
@@ -309,16 +310,22 @@ void FilterManager::renameFilter()
         return;
     }
 
-
-
-
-
-
-
-
-
-
-
+    RenameFilterDialog renameFilterDialog(mFilters);
+    if(renameFilterDialog.isValid())
+    {
+        QString newRegexp = renameFilterDialog.getNewRegexp();
+        if(newRegexp.isEmpty())
+        {
+            LOG_WARN_S << "graph_analysis::gui::FilterManager::renameFilter: cannot rename a regexp filter - the provided new regexp is an empty string!";
+            QMessageBox::critical(this, tr("Cannot Rename the Filter"), tr("The provided new regexp is an empty string!"));
+            return;
+        }
+        std::string strFilterIndex = renameFilterDialog.getFilterIndex();
+        int filterIndex;
+        std::stringstream ss(strFilterIndex);
+        ss >> filterIndex;
+        renameFilter(filterIndex, newRegexp);
+    }
 }
 
 void FilterManager::removeFilter()
@@ -362,8 +369,14 @@ void FilterManager::renameSelectedFilter()
     QString label = QInputDialog::getText(this, tr("Input Filter Regexp"),
                                          tr("New Regexp:"), QLineEdit::Normal,
                                          QString(mpSelectedItem->getLabel()), &ok);
-    if (ok && !label.isEmpty())
+    if (ok)
     {
+        if(label.isEmpty())
+        {
+            LOG_WARN_S << "graph_analysis::gui::FilterManager::renameSelectedFilter: cannot rename a regexp filter - the provided new regexp is an empty string!";
+            QMessageBox::critical(this, tr("Cannot Rename the Filter"), tr("The provided new regexp is an empty string!"));
+            return;
+        }
         renameFilter(mpSelectedItem, label);
     }
 }

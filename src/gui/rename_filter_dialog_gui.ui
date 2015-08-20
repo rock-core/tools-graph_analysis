@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Rename Port</string>
+   <string>Rename Filter</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>New Label:</string>
+    <string>New regexp:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
@@ -62,7 +62,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Port ID:</string>
+    <string>Filter:</string>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBox">

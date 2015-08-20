@@ -30,6 +30,7 @@ rock_library(graph_analysis
         gui/AddNodeDialog.cpp
         gui/AddFilterDialog.cpp
         gui/SwapFeaturesDialog.cpp
+        gui/RenameFilterDialog.cpp
         gui/RenameFeatureDialog.cpp
         gui/PropertyDialog.cpp
         gui/ActionCommander.cpp
@@ -107,6 +108,7 @@ rock_library(graph_analysis
         gui/AddNodeDialog.hpp
         gui/AddFilterDialog.hpp
         gui/SwapFeaturesDialog.hpp
+        gui/RenameFilterDialog.hpp
         gui/RenameFeatureDialog.hpp
         gui/PropertyDialog.hpp
         gui/CustomDialog.hpp
@@ -159,6 +161,7 @@ rock_library(graph_analysis
         gui/AddFilterDialog.hpp
         gui/PropertyDialog.hpp
         gui/SwapFeaturesDialog.hpp
+        gui/RenameFilterDialog.hpp
         gui/RenameFeatureDialog.hpp
     DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui
