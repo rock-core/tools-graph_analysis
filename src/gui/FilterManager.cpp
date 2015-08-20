@@ -7,6 +7,7 @@
 #include <QMenu>
 #include <QSizeF>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <base/Logging.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -19,6 +20,7 @@ FilterManager::FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, Q
     , mpViewWidget(viewWidget)
     , mpLayerWidget(layerWidget)
     , mpCheckBoxGrid(checkBoxGrid)
+    , mItemSelected(false)
 {
     QGraphicsScene *custom_scene = new QGraphicsScene(this);
     custom_scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -38,15 +40,15 @@ FilterManager::FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, Q
             this, SLOT(showContextMenu(const QPoint &)));
 
     // example filters
-//    addFilter("filter1");
-//    addFilter("filter2", true);
-//    addFilter("filter3");
-//    addFilter("filter4", true);
-//    addFilter("filter5");
-//    addFilter("filter6");
-//    addFilter("filter7", true);
-//    addFilter("filter8");
-//    addFilter("filter9");
+    addFilter("filter1");
+    addFilter("filter2", true);
+    addFilter("filter3");
+    addFilter("filter4", true);
+    addFilter("filter5");
+    addFilter("filter6");
+    addFilter("filter7", true);
+    addFilter("filter8");
+    addFilter("filter9");
 }
 
 FilterManager::~FilterManager()
@@ -59,9 +61,24 @@ void FilterManager::showContextMenu(const QPoint& pos)
     QMenu contextMenu(tr("Context menu"), this);
 
     QAction *actionAddFilter = comm.addAction("Add Regexp Filter", SLOT(addFilter()), *(mpViewWidget->getIcon("addFeature")));
+    QAction *actionRenameFilter = comm.addAction("Rename one Filter", SLOT(renameFilter()), *(mpViewWidget->getIcon("featureLabel")));
+    QAction *actionRenameSelectedFilter = comm.addAction("Rename Selected Filter", SLOT(renameSelectedFilter()), *(mpViewWidget->getIcon("featureLabel")));
+    QAction *actionRemoveFilter = comm.addAction("Remove one Filter", SLOT(removeFilter()), *(mpViewWidget->getIcon("remove")));
+    QAction *actionRemoveSelectedFilter = comm.addAction("Remove Selected Filter", SLOT(removeSelectedFilter()), *(mpViewWidget->getIcon("remove")));
     QAction *actionRemoveFilters = comm.addAction("Remove All Filters", SLOT(removeFilters()), *(mpViewWidget->getIcon("removeAll")));
+
+    if(mItemSelected)
+    {
+        contextMenu.addAction(actionRenameSelectedFilter);
+        contextMenu.addAction(actionRemoveSelectedFilter);
+        contextMenu.addSeparator();
+    }
+
     contextMenu.addAction(actionAddFilter);
+    contextMenu.addAction(actionRenameFilter);
+    contextMenu.addAction(actionRemoveFilter);
     contextMenu.addAction(actionRemoveFilters);
+
     contextMenu.exec(mapToGlobal(pos));
 }
 
@@ -167,6 +184,52 @@ void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::stri
     }
 }
 
+void FilterManager::renameFilter(FilterItem::filter_index_t index, QString regexp)
+{
+    dieOnIndex(index, "renameFilter");
+    mFilters[index]->setLabel(regexp);
+}
+
+void FilterManager::renameFilter(FilterItem *item, QString regexp)
+{
+    if(!item)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::FilterManager::renameFilter: cannot rename regexp filter - an invalid (null) filter pointer was provided";
+        QMessageBox::critical(this, tr("Cannot Rename Regexp Filter"), tr("An invalid (null) filter pointer was provided!"));
+        return;
+    }
+    item->setLabel(regexp);
+}
+
+void FilterManager::removeFilter(FilterItem::filter_index_t index)
+{
+    dieOnIndex(index, "removeFilter");
+    removeFilter(mFilters[index]);
+}
+
+void FilterManager::removeFilter(FilterItem *item)
+{
+    if(!item)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::FilterManager::removeFilter: cannot remove regexp filter - an invalid (null) filter pointer was provided";
+        QMessageBox::critical(this, tr("Cannot Remove Regexp Filter"), tr("An invalid (null) filter pointer was provided!"));
+        return;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
 void FilterManager::addFilter()
 {
     AddFilterDialog addFilterDialog;
@@ -182,7 +245,7 @@ void FilterManager::removeFilters()
 {
     if(!mFilters.size())
     {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::removeFilters: cannot remove regexp filtes - there are no filters to remove";
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::removeFilters: cannot remove regexp filters - there are no filters to remove";
         QMessageBox::critical(this, tr("Cannot Remove Regexp Filters"), tr("The custom regexp filters manager holds no filter whatsoever!"));
         return;
     }
@@ -209,7 +272,6 @@ void FilterManager::removeFilters()
             delete item;
         }
     }
-    mFilters.clear();
 
     foreach(QCheckBox *checkBox, mCheckBoxes)
     {
@@ -219,6 +281,44 @@ void FilterManager::removeFilters()
             delete checkBox;
         }
     }
+
+    mFilters.clear();
+    mCheckBoxes.clear();
+    mCheckBoxIndexMap.clear();
+}
+
+void FilterManager::renameFilter()
+{
+
+}
+
+void FilterManager::removeFilter()
+{
+
+}
+
+void FilterManager::renameSelectedFilter()
+{
+    if(!mItemSelected)
+    {
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::renameSelectedFilter: cannot rename selected regexp filter - no filter is selected";
+        QMessageBox::critical(this, tr("Cannot Rename Selected Regexp Filter"), tr("No custom regexp filter is selected!"));
+        return;
+    }
+
+    bool ok;
+    QString label = QInputDialog::getText(this, tr("Input Filter Regexp"),
+                                         tr("New Regexp:"), QLineEdit::Normal,
+                                         QString(mpSelectedItem->getLabel()), &ok);
+    if (ok && !label.isEmpty())
+    {
+        renameFilter(mpSelectedItem, label);
+    }
+}
+
+void FilterManager::removeSelectedFilter()
+{
+    removeFilter(mpSelectedItem);
 }
 
 } // end namespace gui

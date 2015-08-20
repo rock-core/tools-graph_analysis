@@ -24,6 +24,12 @@ public:
     FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent = 0);
     ~FilterManager();
 
+    bool getItemSelected(void) { return mItemSelected; }
+    void setItemSelected(bool itemSelected) { mItemSelected = itemSelected; }
+
+    FilterItem * getSelectedItem(void) { return mpSelectedItem; }
+    void setSelectedItem(FilterItem * selectedItem) { mpSelectedItem = selectedItem; }
+
     int filterCount() { return mFilters.size(); }
     void addFilter(const std::string& label, bool enable);
     void addFilter(const std::string& label);
@@ -32,10 +38,18 @@ public:
     void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());
     void updateToolTip(FilterItem::filter_index_t index, bool witness);
     void refreshToolTip(FilterItem::filter_index_t index);
+    void renameFilter(FilterItem::filter_index_t index, QString regexp);
+    void renameFilter(FilterItem *item, QString regexp);
+    void removeFilter(FilterItem::filter_index_t index);
+    void removeFilter(FilterItem *item);
 
 public slots:
     void addFilter();
+    void renameFilter();
+    void removeFilter();
     void removeFilters();
+    void renameSelectedFilter();
+    void removeSelectedFilter();
     void updateToolTip(int state);
 
     /// displays context menu (upon a right click on the scene)
@@ -48,6 +62,8 @@ private:
     QWidget *mpCheckBoxGrid;
     CheckBoxes mCheckBoxes;
     CheckBoxIndexMap mCheckBoxIndexMap;
+    FilterItem *mpSelectedItem;
+    bool mItemSelected;
 };
 
 } // end namespace gui

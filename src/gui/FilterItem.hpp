@@ -45,6 +45,7 @@ public:
     void setIndex(filter_index_t index) { mIndex = index; }
     void updatePos(void);
     QString getLabel(void);
+    void setLabel(QString label);
 
 protected:
     /// qt mouse double-click callback

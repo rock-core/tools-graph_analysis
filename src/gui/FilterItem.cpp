@@ -37,6 +37,11 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
     //mLabel->setZValue(-100.0);
 }
 
+void FilterItem::setLabel(QString label)
+{
+    mLabel->setPlainText(label);
+}
+
 QString FilterItem::getLabel(void)
 {
     return mLabel->toPlainText();
@@ -130,6 +135,8 @@ void FilterItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     LOG_DEBUG_S << "Hover ENTER event for filter " << mLabel->toPlainText().toStdString();
     mPen = QPen(Qt::green);
+    mpFilterManager->setItemSelected(true);
+    mpFilterManager->setSelectedItem(this);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -137,6 +144,7 @@ void FilterItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     LOG_DEBUG_S << "Hover LEAVE event for filter " << mLabel->toPlainText().toStdString();
     mPen = mPenDefault;
+    mpFilterManager->setItemSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
