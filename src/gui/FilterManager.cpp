@@ -1,5 +1,6 @@
 
 #include "FilterManager.hpp"
+#include "AddFilterDialog.hpp"
 
 #include <QRectF>
 #include <QSizeF>
@@ -26,14 +27,6 @@ FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     setMinimumWidth(110);
-
-
-    // populating the filter board with 3 example filters: filter1, filter2 and filter3
-    addFilter("filter1");
-    addFilter("filter2");
-    addFilter("filter3");
-    addFilter("filter4");
-    addFilter("filter5");
 }
 
 FilterManager::~FilterManager()
@@ -51,8 +44,22 @@ void FilterManager::updateToolTip(int state)
 
 void FilterManager::addFilter(const std::string& label)
 {
+    unsigned int index = createFilter(label);
+    refreshToolTip(index);
+}
+
+void FilterManager::addFilter(const std::string& label, bool enable)
+{
+    unsigned int index = createFilter(label);
+    mCheckBoxes[index]->setChecked(enable);
+    updateToolTip(index, enable);
+}
+
+unsigned int FilterManager::createFilter(const std::string& label)
+{
     // introducing a new filter item
-    mFilters.push_back(new FilterItem(this, mFilters.size(), label));
+    std::string regexp = label.empty() ? std::string("CustomRegexpFilter") : label;
+    mFilters.push_back(new FilterItem(this, mFilters.size(), regexp));
     scene()->addItem(mFilters.back());
     mFilters.back()->setPos(0., FilterItem::sHeight * (qreal)(mFilters.size() - 1));
     // introducing its corresponding enabling checkbox
@@ -60,10 +67,11 @@ void FilterManager::addFilter(const std::string& label)
     unsigned int index = mCheckBoxes.size();
     mpCheckBoxGrid->setFixedHeight((index + 1) * FilterItem::sHeight);
     newCheckBox->setGeometry(0, index * FilterItem::sHeight, FilterItem::sHeight, FilterItem::sHeight);
+    newCheckBox->show();
     mCheckBoxes.push_back(newCheckBox);
     mCheckBoxIndexMap[newCheckBox] = index;
     FilterManager::connect(newCheckBox, SIGNAL(stateChanged(int)), this, SLOT(updateToolTip(int)));
-    refreshToolTip(index);
+    return index;
 }
 
 void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right)
@@ -124,6 +132,17 @@ void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::stri
                                         + boost::lexical_cast<std::string>(mFilters.size()) + "]";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
+    }
+}
+
+void FilterManager::addFilter()
+{
+    AddFilterDialog addFilterDialog;
+    if(addFilterDialog.isValid())
+    {
+        std::string regexp = addFilterDialog.getFilterRegexp();
+        bool enable = addFilterDialog.isEnabled();
+        addFilter(regexp, enable);
     }
 }
 

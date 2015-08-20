@@ -220,21 +220,21 @@ private:
     QScrollArea *mpCheckBoxArea;
     /// the check boxes vertical panel
     QWidget *mpCheckBoxColumn;
-    /// widget for the filters view (holds the FilterItem-s)
+    /// widget for the custom regexp filters view (holds the FilterItem-s)
     FilterManager *mpFilterManager;
     /// buttons bar for FilterItems
     QWidget *mpFilterButtonsWidget;
     /// horizontal layout for the filter buttons bar
     QHBoxLayout *mpFilterButtonsWidgetLayout;
-    /// button for adding a FilterItem to the filters view in the layers tab
+    /// button for adding a custom regexp FilterItem to the filters view in the layers tab
     QPushButton *mpAddFilterButton;
-    /// button for renaming a FilterItem from the filters view in the layers tab
+    /// button for renaming a custom regexp FilterItem from the filters view in the layers tab
     QPushButton *mpRenameFilterButton;
-    /// button for swapping two FilterItems in the filters view in the layers tab
+    /// button for swapping two custom regexp FilterItems in the filters view in the layers tab
     QPushButton *mpSwapFiltersButton;
-    /// button for removing a FilterItem from the filters view in the layers tab
+    /// button for removing a custom regexp FilterItem from the filters view in the layers tab
     QPushButton *mpRemoveFilterButton;
-    /// button for removing all FilterItems from the filters view in the layers tab
+    /// button for removing all custom regexp FilterItems from the filters view in the layers tab
     QPushButton *mpRemoveFiltersButton;
     /// set of separators in all layouts used
     QFrames mFrames;

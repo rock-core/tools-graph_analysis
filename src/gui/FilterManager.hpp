@@ -23,7 +23,9 @@ public:
     ~FilterManager();
 
     int filterCount() { return mFilters.size(); }
+    void addFilter(const std::string& label, bool enable);
     void addFilter(const std::string& label);
+    unsigned int createFilter(const std::string& label);
     void swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right);
     void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());
     void updateToolTip(FilterItem::filter_index_t index, bool witness);
@@ -31,6 +33,7 @@ public:
 
 public slots:
     void updateToolTip(int state);
+    void addFilter();
 
 private:
     Filters mFilters;

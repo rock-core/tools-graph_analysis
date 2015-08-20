@@ -19,7 +19,7 @@ class FilterManager;
 /**
  * \file FilterItem.hpp
  * \class FilterItem
- * \brief graphical filter representation class; specific to FilterManager widget in the layers tab
+ * \brief graphical custom regexp filter representation class; specific to FilterManager widget in the layers tab
  */
 class FilterItem : public QGraphicsItemGroup
 {

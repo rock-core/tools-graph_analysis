@@ -488,7 +488,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpAddFilterButton->setEnabled(true);
         mpAddFilterButton->setCheckable(false);
         mpAddFilterButton->setChecked(false);
-        mpAddFilterButton->setToolTip(QString("adds a custom filter to the filters manager"));
+        mpAddFilterButton->setToolTip(QString("adds a custom regexp filter to the filters manager"));
 
         mpFilterButtonsWidgetLayout->addWidget(mpAddFilterButton);
 
@@ -498,7 +498,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpRenameFilterButton->setEnabled(true);
         mpRenameFilterButton->setCheckable(false);
         mpRenameFilterButton->setChecked(false);
-        mpRenameFilterButton->setToolTip(QString("renames a custom filter in the filters manager"));
+        mpRenameFilterButton->setToolTip(QString("renames a custom regexp filter in the filters manager"));
 
         mpFilterButtonsWidgetLayout->addWidget(mpRenameFilterButton);
 
@@ -508,7 +508,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpSwapFiltersButton->setEnabled(true);
         mpSwapFiltersButton->setCheckable(false);
         mpSwapFiltersButton->setChecked(false);
-        mpSwapFiltersButton->setToolTip(QString("swaps two custom filters in the filters manager"));
+        mpSwapFiltersButton->setToolTip(QString("swaps two custom regexp filters in the filters manager"));
 
         mpFilterButtonsWidgetLayout->addWidget(mpSwapFiltersButton);
 
@@ -518,7 +518,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpRemoveFilterButton->setEnabled(true);
         mpRemoveFilterButton->setCheckable(false);
         mpRemoveFilterButton->setChecked(false);
-        mpRemoveFilterButton->setToolTip(QString("removes a custom filter from the filters manager"));
+        mpRemoveFilterButton->setToolTip(QString("removes a custom regexp filter from the filters manager"));
 
         mpFilterButtonsWidgetLayout->addWidget(mpRemoveFilterButton);
 
@@ -528,7 +528,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpRemoveFiltersButton->setEnabled(true);
         mpRemoveFiltersButton->setCheckable(false);
         mpRemoveFiltersButton->setChecked(false);
-        mpRemoveFiltersButton->setToolTip(QString("removes all custom filters from the filters manager"));
+        mpRemoveFiltersButton->setToolTip(QString("removes all custom regexp filters from the filters manager"));
 
         mpFilterButtonsWidgetLayout->addWidget(mpRemoveFiltersButton);
     }
@@ -570,6 +570,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     PropertyDialog::connect(mpToggleFeatureLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleFeatureLayer(bool)));
     PropertyDialog::connect(mpToggleClusterLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleClusterLayer(bool)));
     PropertyDialog::connect(mpTabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
+    PropertyDialog::connect(mpAddFilterButton, SIGNAL(clicked()), mpFilterManager, SLOT(addFilter()));
 
     QMetaObject::connectSlotsByName(Dialog);
 

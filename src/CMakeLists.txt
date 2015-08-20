@@ -28,6 +28,7 @@ rock_library(graph_analysis
         gui/FilterManager.cpp
         gui/FilterItem.cpp
         gui/AddNodeDialog.cpp
+        gui/AddFilterDialog.cpp
         gui/SwapFeaturesDialog.cpp
         gui/RenameFeatureDialog.cpp
         gui/PropertyDialog.cpp
@@ -104,6 +105,7 @@ rock_library(graph_analysis
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
         gui/AddNodeDialog.hpp
+        gui/AddFilterDialog.hpp
         gui/SwapFeaturesDialog.hpp
         gui/RenameFeatureDialog.hpp
         gui/PropertyDialog.hpp
@@ -150,10 +152,11 @@ rock_library(graph_analysis
     DEPS_PLAIN
         Boost_REGEX
     MOC
-        gui/FilterManager.hpp
         gui/ViewWidget.hpp
         gui/LayerWidget.hpp
+        gui/FilterManager.hpp
         gui/AddNodeDialog.hpp
+        gui/AddFilterDialog.hpp
         gui/PropertyDialog.hpp
         gui/SwapFeaturesDialog.hpp
         gui/RenameFeatureDialog.hpp
@@ -162,6 +165,7 @@ rock_library(graph_analysis
     UI
         gui/graph_analysis_gui.ui
         gui/add_node_dialog_gui.ui
+        gui/add_filter_dialog_gui.ui
         gui/property_dialog_gui.ui
         gui/swap_features_dialog_gui.ui
         gui/rename_feature_dialog_gui.ui
