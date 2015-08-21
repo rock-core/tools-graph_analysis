@@ -48,6 +48,7 @@ public:
     void updatePos(void);
     QString getLabel(void);
     void setLabel(QString label);
+    void syncToolTips(void);
 
 protected:
     /// qt mouse double-click callback

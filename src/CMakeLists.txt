@@ -22,6 +22,7 @@ rock_library(graph_analysis
         gui/graphitem/Label.cpp
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
+        gui/layeritem/Label.cpp
         gui/GraphWidget.cpp
         gui/ViewWidget.cpp
         gui/LayerWidget.cpp

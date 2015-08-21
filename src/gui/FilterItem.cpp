@@ -37,9 +37,16 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
     //mLabel->setZValue(-100.0);
 }
 
+void FilterItem::syncToolTips(void)
+{
+    setToolTip(mLabel->toPlainText());
+    mpFilterManager->refreshToolTip(mIndex);
+}
+
 void FilterItem::setLabel(QString label)
 {
     mLabel->setPlainText(label);
+    setToolTip(label);
 }
 
 QString FilterItem::getLabel(void)
