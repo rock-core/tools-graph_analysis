@@ -40,6 +40,17 @@ FilterManager::FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, Q
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(showContextMenu(const QPoint &)));
+
+    // example filters
+    addFilter("filter1");
+    addFilter("filter2", true);
+    addFilter("filter3");
+    addFilter("filter4", true);
+    addFilter("filter5");
+    addFilter("filter6");
+    addFilter("filter7", true);
+    addFilter("filter8");
+    addFilter("filter9");
 }
 
 FilterManager::~FilterManager()
@@ -233,6 +244,7 @@ void FilterManager::removeFilter(FilterItem *item)
 
     mpCheckBoxGrid->setFixedHeight(mFilters.size() * FilterItem::sHeight);
     setSceneRect(sceneRect().adjusted(0., 0., 0., -(qreal)FilterItem::sHeight));
+    mpLayerWidget->refresh();
 }
 
 void FilterManager::addFilter()
@@ -321,6 +333,7 @@ void FilterManager::removeFilters()
     mCheckBoxIndexMap.clear();
 
     mpCheckBoxGrid->setFixedHeight(0);
+    mpLayerWidget->refresh();
 }
 
 void FilterManager::renameFilter()
