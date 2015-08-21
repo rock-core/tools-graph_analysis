@@ -249,6 +249,9 @@ public:
      */
     void refreshLayersWidget(bool status = true);
 
+    /// getter method for the property dialog
+    PropertyDialog* getPropertyDialog(void) { return mpPropertyDialog; }
+
 public slots:
     /// shuffles all the nodes in the diagram graph view
     void shuffle();

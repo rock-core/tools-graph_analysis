@@ -38,16 +38,20 @@
 **
 ****************************************************************************/
 
-#include "LayerWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
+#include "FilterItem.hpp"
+#include "LayerWidget.hpp"
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
 #include "AddNodeDialog.hpp"
+#include "FilterManager.hpp"
+#include "PropertyDialog.hpp"
 
 #include <set>
 #include <math.h>
+#include <string>
 #include <sstream>
 #include <QDir>
 #include <QTime>
@@ -252,6 +256,19 @@ void LayerWidget::updateFromGraph()
         LOG_WARN_S << "graph_analysis::gui::LayerWidget::updateFromGraph was called while mpGraph was still empty";
         return;
     }
+
+    // setting up custom regexp filters
+    std::set<std::string> filters;
+    PropertyDialog *propertyDialog = mpViewWidget->getPropertyDialog();
+    if(propertyDialog)
+    {
+        FilterManager::Filters manager_filters = propertyDialog->getFilterManager()->getFilters();
+        foreach(FilterItem *item, manager_filters)
+        {
+            filters.insert(item->getLabel().toStdString());
+        }
+    }
+
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {

@@ -43,6 +43,7 @@ public:
     void removeFilter(FilterItem::filter_index_t index);
     void removeFilter(FilterItem *item);
     void refreshView(bool updatesStatusBar = true) { mpLayerWidget->refresh(updatesStatusBar); }
+    Filters getFilters(void) { return mFilters; }
 
 public slots:
     void addFilter();
