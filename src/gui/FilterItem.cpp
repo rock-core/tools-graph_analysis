@@ -137,6 +137,7 @@ void FilterItem::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
     mLabel->setTextInteraction(true, true);
     QGraphicsItem::mouseDoubleClickEvent(event);
+    prepareGeometryChange();
     setHandlesChildEvents(false);
 }
 

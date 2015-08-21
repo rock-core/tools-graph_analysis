@@ -73,6 +73,7 @@ QVariant Label::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
     {
         // item received SelectedChange event AND is in editor mode AND is about to be deselected:
         setTextInteraction(false); // leave editor mode
+        parentItem()->update();
     }
     return QGraphicsTextItem::itemChange(change, value);
 }
