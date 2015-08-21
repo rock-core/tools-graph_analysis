@@ -105,7 +105,7 @@ void FilterManager::addFilter(const std::string& label, bool enable)
 {
     unsigned int index = createFilter(label);
     mCheckBoxes[index]->setChecked(enable);
-    updateToolTip(index, enable);
+    updateToolTip(index, enable, enable);
 }
 
 unsigned int FilterManager::createFilter(const std::string& label)
@@ -194,7 +194,7 @@ void FilterManager::renameFilter(FilterItem::filter_index_t index, QString regex
 {
     dieOnIndex(index, "renameFilter");
     mFilters[index]->setLabel(regexp);
-    refreshToolTip(index);
+    refreshToolTip(index, mCheckBoxes[index]->isChecked());
 }
 
 void FilterManager::renameFilter(FilterItem *item, QString regexp)
@@ -206,7 +206,8 @@ void FilterManager::renameFilter(FilterItem *item, QString regexp)
         return;
     }
     item->setLabel(regexp);
-    refreshToolTip(item->getIndex());
+    FilterItem::filter_index_t index = item->getIndex();
+    refreshToolTip(index, mCheckBoxes[index]->isChecked());
 }
 
 void FilterManager::removeFilter(FilterItem::filter_index_t index)

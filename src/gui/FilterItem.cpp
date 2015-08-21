@@ -41,6 +41,7 @@ void FilterItem::syncToolTips(void)
 {
     setToolTip(mLabel->toPlainText());
     mpFilterManager->refreshToolTip(mIndex);
+    mpFilterManager->refreshView(); // calls mpLayerWidget->refresh() for this item
 }
 
 void FilterItem::setLabel(QString label)
