@@ -42,7 +42,7 @@ public:
     void renameFilter(FilterItem *item, QString regexp);
     void removeFilter(FilterItem::filter_index_t index);
     void removeFilter(FilterItem *item);
-    void refreshView(void) { mpLayerWidget->refresh(); }
+    void refreshView(bool updatesStatusBar = true) { mpLayerWidget->refresh(updatesStatusBar); }
 
 public slots:
     void addFilter();
