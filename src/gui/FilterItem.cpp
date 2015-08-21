@@ -39,15 +39,15 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
 
 void FilterItem::syncToolTips(void)
 {
-    setToolTip(mLabel->toPlainText());
+    setToolTip(QString("Custom Filter '") + mLabel->toPlainText() + QString("'"));
     mpFilterManager->refreshToolTip(mIndex);
-    mpFilterManager->refreshView(); // calls mpLayerWidget->refresh() for this item
+    mpFilterManager->refreshView(); // calls mpLayerWidget->refresh() for this item; add 'false' as parameter for silent refreshing (i.e. status bar not involved)
 }
 
 void FilterItem::setLabel(QString label)
 {
     mLabel->setPlainText(label);
-    setToolTip(label);
+    syncToolTips(label);
 }
 
 QString FilterItem::getLabel(void)
