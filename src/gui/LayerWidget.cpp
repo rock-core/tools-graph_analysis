@@ -72,6 +72,7 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
+#include <graph_analysis/filters/RegexFilters.hpp>
 
 #include <exception>
 #include <boost/foreach.hpp>
@@ -107,7 +108,6 @@ LayerWidget::LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr 
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
     // End of setting up filters
-
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
@@ -269,12 +269,28 @@ void LayerWidget::updateFromGraph()
         }
     }
 
+    foreach(std::string regexp, filters)
+    {
+        mpVertexFilter->add(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr((graph_analysis::Filter<graph_analysis::Vertex::Ptr> *) new graph_analysis::filters::VertexRegexFilter(regexp)));
+    }
+
+//    mGraphView.setVertexFilter(mpVertexFilter);
+//    mpSubGraph = mGraphView.apply(mpGraph);
+//    mFiltered = true;
+    // finished setting up the custom regexp filters
+
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
 
         // Check on active filter
+        if(mFiltered && mpVertexFilter->apply(vertex))
+        {
+            LOG_DEBUG_S << "graph_analysis::gui::LayerWidget: Custom-Regex-Filtered out vertex: " << vertex->toString();
+            continue;
+        }
+
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
             LOG_DEBUG_S << "graph_analysis::gui::LayerWidget: Filtered out vertex: " << vertex->toString();
