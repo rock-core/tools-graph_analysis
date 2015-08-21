@@ -454,15 +454,19 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpCustomFiltersLayout->addWidget(mpFiltersLabel);
 
         mpFiltersBox = new QWidget();
-        QSize size(186, 180);
-        mpFiltersBox->resize(size.width(), size.height());
-        mpFiltersBox->setFixedSize(size.width(), size.height());
         mpFiltersBox->setToolTip(QString("Custom Filters Manager Box"));
 
         int checkBoxWidth = 45; // pre-estimated size needed by the check boxes grid
 
         mpCheckBoxArea = new QScrollArea(mpFiltersBox);
-        mpCheckBoxArea->setGeometry(0, 0, checkBoxWidth, size.height());
+//        QScrollBar *checkBoxesHorizontalScrollBar = mpCheckBoxArea->verticalScrollBar();
+        int checkBoxesHorizontalScrollBarHeight = 12; // checkBoxesHorizontalScrollBar->size().height() is surprisingly off (takes an extra frame on top)
+        QSize size(186, 150 + checkBoxesHorizontalScrollBarHeight);
+        mpCheckBoxArea->setGeometry(0, 0, checkBoxWidth, size.height() - checkBoxesHorizontalScrollBarHeight);
+
+        mpFiltersBox->resize(size.width(), size.height());
+        mpFiltersBox->setFixedSize(size.width(), size.height());
+
         mpCheckBoxArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         mpCheckBoxArea->setToolTip(QString("Custom Filters Enabling Panel"));
         mpCheckBoxColumn = new QWidget();
@@ -473,6 +477,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpFilterManager = new FilterManager(mpViewWidget, mpLayerWidget, mpCheckBoxColumn, mpFiltersBox);
         mpFilterManager->setGeometry(checkBoxWidth, 0, size.width() - checkBoxWidth, size.height());
+        mpFilterManager->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
         // synchronizing the 2 scroll bars on the check-boxes grid and the scene
         QScrollBar *checkBoxesScrollBar     =  mpCheckBoxArea->verticalScrollBar();
