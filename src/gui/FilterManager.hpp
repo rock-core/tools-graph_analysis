@@ -45,6 +45,7 @@ public:
 
 public slots:
     void addFilter();
+    void swapFilters();
     void renameFilter();
     void removeFilter();
     void removeFilters();

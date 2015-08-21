@@ -34,7 +34,7 @@ void RenameFilterDialog::setupUi(QDialog *Dialog)
     mpFilterLabel->setObjectName(QString::fromUtf8("mpFilterLabel"));
     mpFilterLabel->setGeometry(QRect(20, 70, 91, 31));
     mpComboBox = new QComboBox(Dialog);
-    // fetching all features in the concerned cluster node
+    // fetching all filters in the concerned provided filters container
     foreach(FilterItem *item, mFilters)
     {
         std::string item_index = boost::lexical_cast<std::string>(item->getIndex());

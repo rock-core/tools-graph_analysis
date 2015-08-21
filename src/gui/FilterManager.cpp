@@ -2,6 +2,7 @@
 #include "FilterManager.hpp"
 #include "ActionCommander.hpp"
 #include "AddFilterDialog.hpp"
+#include "SwapFiltersDialog.hpp"
 #include "RenameFilterDialog.hpp"
 
 #include <QRectF>
@@ -63,6 +64,7 @@ void FilterManager::showContextMenu(const QPoint& pos)
 
     QAction *actionAddFilter = comm.addAction("Add Regexp Filter", SLOT(addFilter()), *(mpViewWidget->getIcon("addFeature")));
     QAction *actionRenameFilter = comm.addAction("Rename one Filter", SLOT(renameFilter()), *(mpViewWidget->getIcon("featureLabel")));
+    QAction *actionSwapFilters = comm.addAction("Swap Filters", SLOT(swapFilters()), *(mpViewWidget->getIcon("swap")));
     QAction *actionRenameSelectedFilter = comm.addAction("Rename Selected Filter", SLOT(renameSelectedFilter()), *(mpViewWidget->getIcon("featureLabel")));
     QAction *actionRemoveFilter = comm.addAction("Remove one Filter", SLOT(removeFilter()), *(mpViewWidget->getIcon("remove")));
     QAction *actionRemoveSelectedFilter = comm.addAction("Remove Selected Filter", SLOT(removeSelectedFilter()), *(mpViewWidget->getIcon("remove")));
@@ -77,6 +79,7 @@ void FilterManager::showContextMenu(const QPoint& pos)
 
     contextMenu.addAction(actionAddFilter);
     contextMenu.addAction(actionRenameFilter);
+    contextMenu.addAction(actionSwapFilters);
     contextMenu.addAction(actionRemoveFilter);
     contextMenu.addAction(actionRemoveFilters);
 
@@ -250,6 +253,35 @@ void FilterManager::addFilter()
         std::string regexp = addFilterDialog.getFilterRegexp();
         bool enable = addFilterDialog.isEnabled();
         addFilter(regexp, enable);
+    }
+}
+
+void FilterManager::swapFilters()
+{
+    if(2 > mFilters.size())
+    {
+        LOG_WARN_S << "graph_analysis::gui::FilterManager::swapFilters: cannot swap regexp filters - there have to be at least two filters";
+        QMessageBox::critical(this, tr("Cannot Swap Filters"), tr("There are no two custom regexp filters!"));
+        return;
+    }
+
+    SwapFiltersDialog swapFiltersDialog(mFilters);
+    if(swapFiltersDialog.isValid())
+    {
+        std::string strFilter1Index = swapFiltersDialog.getFilter1Index();
+        std::string strFilter2Index = swapFiltersDialog.getFilter2Index();
+        FilterItem::filter_index_t filter1Index, filter2Index;
+        std::stringstream ss1(strFilter1Index);
+        ss1 >> filter1Index;
+        std::stringstream ss2(strFilter2Index);
+        ss2 >> filter2Index;
+        if(filter1Index != filter2Index)
+        {
+            swapFilters(filter1Index, filter2Index);
+            FilterItem *left_item = mFilters[filter2Index];
+            left_item->setIndex(filter2Index);
+            left_item->setPos(0., FilterItem::sHeight * (qreal)filter2Index);
+        }
     }
 }
 
