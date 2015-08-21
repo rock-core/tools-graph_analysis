@@ -271,7 +271,14 @@ void LayerWidget::updateFromGraph()
 
     foreach(std::string regexp, filters)
     {
-        mpVertexFilter->add(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr((graph_analysis::Filter<graph_analysis::Vertex::Ptr> *) new graph_analysis::filters::VertexRegexFilter(regexp)));
+        try
+        {
+            mpVertexFilter->add(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr((graph_analysis::Filter<graph_analysis::Vertex::Ptr> *) new graph_analysis::filters::VertexRegexFilter(regexp)));
+        }
+        catch(boost::regex_error e)
+        {
+            LOG_ERROR_S << "graph_analysis::gui::LayerWidget::updateFromGraph: skipping regex '" << regexp << "'. Caught Regex error: " << e.what();
+        }
     }
 
 //    mGraphView.setVertexFilter(mpVertexFilter);
