@@ -47,7 +47,7 @@ void FilterItem::syncToolTips(void)
 void FilterItem::setLabel(QString label)
 {
     mLabel->setPlainText(label);
-    syncToolTips(label);
+    syncToolTips();
 }
 
 QString FilterItem::getLabel(void)

@@ -1,5 +1,6 @@
 #include "Label.hpp"
 #include <graph_analysis/gui/FilterItem.hpp>
+#include <QKeyEvent>
 
 namespace graph_analysis {
 namespace gui {
@@ -51,6 +52,13 @@ void Label::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 void Label::keyPressEvent(::QKeyEvent* event)
 {
     LOG_DEBUG_S << "KEYPRESS LABLE";
+    switch(event->key())
+    {
+        case Qt::Key_Return:
+            return;
+        break;
+    }
+
     QGraphicsTextItem::keyPressEvent(event);
 }
 
