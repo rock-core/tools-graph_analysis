@@ -273,7 +273,7 @@ void LayerWidget::updateFromGraph()
     {
         try
         {
-            mpVertexFilter->add(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr((graph_analysis::Filter<graph_analysis::Vertex::Ptr> *) new graph_analysis::filters::VertexRegexFilter(regexp)));
+            mpVertexFilter->add(graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr((graph_analysis::Filter<graph_analysis::Vertex::Ptr> *) new graph_analysis::filters::VertexRegexFilter(regexp, graph_analysis::filters::CONTENT)));
         }
         catch(boost::regex_error e)
         {

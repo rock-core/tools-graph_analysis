@@ -20,15 +20,22 @@ class FilterManager;
  * \file FilterItem.hpp
  * \class FilterItem
  * \brief graphical custom regexp filter representation class; specific to FilterManager widget in the layers tab
+ * \details holds a graphical regex text item in the scene of all vertically disposed regex filters;
+ *      it is subject to snap-to-grid and vertical-movement-only behaviours
  */
 class FilterItem : public QGraphicsItemGroup
 {
 public:
+    /// datatype for denoting the height (in points) of a graphical filter item
     typedef unsigned int filter_size_t;
+    /// datatype for the filters index counter
     typedef unsigned int filter_index_t;
 
+    /// constant height (in points) of a graphical filter item
     static const filter_size_t sHeight;
+    /// constant displacement procentage (degree up to which two filter items need to overlap in the scene such that one of them gets pushed away)
     static const qreal sDisplacementWeight;
+    /// constant displacement threshold (relative distance up to which overlapping items are away from each other before one of them gets pushed away)
     static const qreal sDisplacementThreshold;
     /// constructor
     FilterItem(FilterManager *manager, filter_index_t index, const std::string& filter = std::string());
@@ -42,12 +49,19 @@ public:
     /// qt node painting method - here the node components get placed in the scene
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
 
+    /// setter method for the filter index
     void setIndex(filter_index_t index) { mIndex = index; }
+    /// getter method for the filter index
     filter_index_t getIndex(void) { return mIndex; }
 
+    /// refreshes position in the scene of this filter item based on its filter index
     void updatePos(void);
+
+    /// getter method for retrieving the text regex of this filter item
     QString getLabel(void);
+    /// setter method for updating the text regex of this filter item
     void setLabel(QString label);
+    /// synchronizes the toolTip-s of this filter item and of its corresponding checkbox in the filters box with the current text regex of this filter item
     void syncToolTips(void);
 
 protected:
@@ -68,11 +82,11 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
-    /// parent widget
+    /// parent managing widget
     FilterManager* mpFilterManager;
-    /// index in the vector of filters (indirectly indicates position)
+    /// index in the vector of filters (indirectly dictates position in the scene)
     filter_index_t mIndex;
-    /// main node text label
+    /// graphical regex text label
     layeritem::Label* mLabel;
     /// qt drawing pen
     QPen mPen;
