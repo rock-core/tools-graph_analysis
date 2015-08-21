@@ -112,15 +112,17 @@ void FilterItem::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 void FilterItem::mouseMoveEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse move";
-    // testing for new index displacement on neighbouring filters (TODO: add one for final index placement of current filter in mouse release)
+    // testing for new index displacement on neighbouring filters (i.e. deciding whether lower or uppper closest item shall be displaced)
     qreal y = pos().y();
     const unsigned int offset = (unsigned int)(y / (qreal)FilterItem::sHeight);
     if(offset != mIndex && FilterItem::sDisplacementThreshold > y - (qreal)(offset * FilterItem::sHeight))
     {
+        // displacing the upper closest item
         mpFilterManager->swapFilters(mIndex, offset); // offset <-> mIndex
     }
     else if(offset + 1 != mIndex && FilterItem::sDisplacementThreshold > (qreal)((offset + 1) * FilterItem::sHeight) - y)
     {
+        // displacing the lower closest item
         mpFilterManager->swapFilters(mIndex, offset + 1); // offset + 1 <-> mIndex
     }
     QGraphicsItem::mouseMoveEvent(event);
@@ -130,12 +132,13 @@ void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
     setZValue(-1);
-    updatePos();
+    updatePos(); // forcing snap-to-grid on item release
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
 void FilterItem::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
+    // shifting to direct text-editor mode on the graphical regexp text
     mLabel->setTextInteraction(true, true);
     QGraphicsItem::mouseDoubleClickEvent(event);
     prepareGeometryChange();
@@ -146,6 +149,7 @@ void FilterItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     LOG_DEBUG_S << "Hover ENTER event for filter " << mLabel->toPlainText().toStdString();
     mPen = QPen(Qt::green);
+    // the item registers as being hovered over in the filters manager
     mpFilterManager->setItemSelected(true);
     mpFilterManager->setSelectedItem(this);
     QGraphicsItem::hoverEnterEvent(event);
@@ -155,6 +159,7 @@ void FilterItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     LOG_DEBUG_S << "Hover LEAVE event for filter " << mLabel->toPlainText().toStdString();
     mPen = mPenDefault;
+    // the item de-registers from being hovered over in the filters manager
     mpFilterManager->setItemSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }
@@ -165,7 +170,7 @@ QVariant FilterItem::itemChange(GraphicsItemChange change, const QVariant &value
     {
         // value is the new position.
         QPointF newPos = value.toPointF();
-        // adjusting the new position to fall inside the height boundaries and alligned on the x = 0 axis
+        // adjusting the new position to fall inside the height boundaries and alligned on the x = 0 axis (i.e. allowing vertical movement only)
         newPos.setX(0.);
         qreal y = newPos.y();
         if(0. > y)
