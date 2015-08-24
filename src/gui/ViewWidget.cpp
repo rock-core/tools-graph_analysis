@@ -1177,9 +1177,9 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int feature
     }
     else
     {
-        if("graph_analysis::OutputFeatureVertex" != mpStartFeature->getClassName())
+        if("graph_analysis::OutputPortVertex" != mpStartFeature->getClassName())
         {
-            std::string error_msg = std::string("Expected associated source featureVertex to be of type 'graph_analysis::OutputFeatureVertex'; instead, found type '")
+            std::string error_msg = std::string("Expected associated source featureVertex to be of type 'graph_analysis::OutputPortVertex'; instead, found type '")
                                             + mpStartFeature->getClassName() + "'";
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
@@ -1188,9 +1188,9 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int feature
                         );
             return;
         }
-        if("graph_analysis::InputFeatureVertex" != mpEndFeature->getClassName())
+        if("graph_analysis::InputPortVertex" != mpEndFeature->getClassName())
         {
-            std::string error_msg = std::string("Expected associated target featureVertex to be of type 'graph_analysis::InputFeatureVertex'; instead, found type '")
+            std::string error_msg = std::string("Expected associated target featureVertex to be of type 'graph_analysis::InputPortVertex'; instead, found type '")
                                             + mpEndFeature->getClassName() + "'";
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
