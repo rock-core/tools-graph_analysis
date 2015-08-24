@@ -9,6 +9,7 @@
 #include <QDrag>
 
 #include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/PortVertex.hpp>
 #include <iostream>
 
 namespace graph_analysis {
@@ -39,9 +40,9 @@ public:
      * \param label text to be displayed
      * \param item parent NodeItem implementing instance
      * \param graphWidget managing widget
-     * \param portID assigned ID; defaults to -1 (denoting label of a cluster node)
+     * \param portID assigned ID; defaults to PortVertex::INVALID_PORT_ID (denoting label of a cluster node)
      */
-    Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0, int portID = -1);
+    Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0, int portID = PortVertex::INVALID_PORT_ID);
     /**
      * \brief toggles direct editing options of the displayed text
      * \param on boolean flag - true when the editing mode is to be turned on; false otherwise

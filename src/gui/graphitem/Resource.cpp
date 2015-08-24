@@ -12,6 +12,7 @@
 #include <base/Logging.hpp>
 #include <exception>
 #include "Label.hpp"
+#include <graph_analysis/PortVertex.hpp>
 
 /// inline maximum test
 #define max(X, Y) (X > Y ? X : Y)
@@ -808,7 +809,7 @@ graph_analysis::Vertex::Ptr Resource::getFeature(NodeItem::id_t featureID)
 
 void Resource::syncLabel(NodeItem::id_t featureID)
 {
-    if(-1 == featureID)
+    if(PortVertex::INVALID_PORT_ID == featureID)
     {
         // syncs main node label
         std::string label = mpLabel->toPlainText().toStdString();

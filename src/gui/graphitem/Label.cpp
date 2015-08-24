@@ -107,7 +107,7 @@ void Label::mousePressEvent(::QGraphicsSceneMouseEvent *event)
 
 void Label::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
 {
-    if((event->buttons() & Qt::LeftButton) && -1 != mPortID)
+    if((event->buttons() & Qt::LeftButton) && PortVertex::INVALID_PORT_ID != mPortID)
     {
         // starting a mouse drag action if the mouse move is long enough
         if((event->pos() - mDragStartPosition).manhattanLength() < QApplication::startDragDistance())
@@ -141,7 +141,7 @@ void Label::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
 
 void Label::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if(-1 == mPortID)
+    if(PortVertex::INVALID_PORT_ID == mPortID)
     {
         // filtering out again the labels of cluster nodes
         event->ignore();
@@ -155,7 +155,7 @@ void Label::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
 void Label::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-    if(-1 == mPortID)
+    if(PortVertex::INVALID_PORT_ID == mPortID)
     {
         // filtering out again the labels of cluster nodes
         event->ignore();

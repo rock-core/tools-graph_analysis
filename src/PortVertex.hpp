@@ -16,6 +16,9 @@ namespace graph_analysis
 class PortVertex : public Vertex
 {
 public:
+    /// invalid port id constant
+    static const int INVALID_PORT_ID;
+
     PortVertex(const std::string& label = std::string());
     /** Get class name
      * \return class name
