@@ -45,7 +45,7 @@
 #include <QApplication>
 #include <base/Logging.hpp>
 
-// hardwired import filename for init
+// hardwired import filename for init; should have an extension
 #define FILENAME  "../../resources/gexf/export_samples/props__and__operations_test.gexf"
 
 graph_analysis::gui::GraphManager *graphManager;

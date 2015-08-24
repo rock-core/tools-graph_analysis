@@ -18,7 +18,7 @@ GraphManager::GraphManager(const std::string& filename)
     mpViewWidget = new ViewWidget(mpMainWindow, mpMainWindow);
     mpViewWidget->reset();
 
-    // setting up graph filtering
+    // setting up graph regex filtering
     filters::VertexRegexFilter sourceNodeFilter(".*");
     filters::VertexRegexFilter targetNodeFilter(".*");
     filters::EdgeRegexFilter edgeFilter(".*");
@@ -30,7 +30,9 @@ GraphManager::GraphManager(const std::string& filename)
     mpViewWidget->setLayout(mLayout);
     if(!filename.empty())
     {
-        mpViewWidget->fromXmlFile(filename);
+        // loading graph on init from the given filename
+        QString qfile(filename.c_str());
+        mpViewWidget->fromFile(qfile);
     }
     mpMainWindow->show();
 }

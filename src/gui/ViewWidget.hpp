@@ -144,10 +144,15 @@ public:
     void toDotFile(const std::string& filename);
     /// renders the base graph to gexf format file 'filename'
     void toXmlFile(const std::string& filename);
-    /// loads base graph from gexf format file 'filename'
-    int fromXmlFile(const std::string& filename);
-    /// loads base graph from custo yml format file 'filename'
-    int fromYmlFile(const std::string& filename);
+    /**
+     * \brief loads base graph from file 'filename' (either from custom yml format, or gexf standard format)
+     * \param filename the input file to parse the graph from
+     * \param format the string key to use for reader look-up in the readers map
+     * \return error code: 0 when successful; non-zero if anything went wrong
+     */
+    int fromFile(const std::string& filename, const std::string& format);
+    /// loads base graph from file 'filename' - tries the 2 available formats: the custom yml and the standard gexf
+    void fromFile(QString& filename, bool prefers_gexf = true);
 
     /// enables the given vertex in the base graph
     void enableVertex (graph_analysis::Vertex::Ptr vertex);

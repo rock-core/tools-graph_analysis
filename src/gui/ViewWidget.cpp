@@ -633,50 +633,55 @@ void ViewWidget::removeFeature(graph_analysis::Vertex::Ptr concernedVertex)
     }
 }
 
+void ViewWidget::fromFile(QString& filename, bool prefers_gexf)
+{
+    int return_code;
+    // removing trailing whitespaces in the filename
+    filename = filename.trimmed();
+    if(filename.contains('.'))
+    {
+        if(filename.endsWith(QString(".gexf")) || filename.endsWith(QString(".xml")))
+        {
+            return_code = fromFile(filename.toStdString(), "gexf");
+        }
+        else if(filename.endsWith(QString(".yml")) || filename.endsWith(QString(".yaml")))
+        {
+            return_code = fromFile(filename.toStdString(), "yml");
+        }
+        else
+        {
+            QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + filename.toStdString() + "'!").c_str()));
+            updateStatus(std::string("Failed to import graph: from input file '") + filename.toStdString() + "': unsupported file format!", DEFAULT_TIMEOUT);
+            return;
+        }
+    }
+    else
+    {
+        if(prefers_gexf)
+        {
+            return_code = fromFile(filename.toStdString() + ".gexf", "gexf");
+        }
+        else
+        {
+            return_code = fromFile(filename.toStdString() + ".yml", "yml");
+        }
+    }
+    if(!return_code)
+    {
+        updateStatus(std::string("Imported graph: from input file '") + filename.toStdString() + "'!", DEFAULT_TIMEOUT);
+        mpLayerWidget->refresh(false);
+    }
+}
+
 void ViewWidget::importGraph()
 {
     updateStatus(std::string("importing graph..."));
     QString selectedFilter;
-    QString label =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"), &selectedFilter);
+    QString filename =  QFileDialog::getOpenFileName(this, tr("Choose Input File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"), &selectedFilter);
 
-    int return_code;
-    if (!label.isEmpty())
+    if (!filename.isEmpty())
     {
-        // removing trailing whitespaces in the filename
-        label = label.trimmed();
-        if(label.contains('.'))
-        {
-            if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
-            {
-                return_code = fromXmlFile(label.toStdString());
-            }
-            else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
-            {
-                return_code = fromYmlFile(label.toStdString());
-            }
-            else
-            {
-                QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
-                updateStatus(std::string("Failed to import graph: from input file '") + label.toStdString() + "': unsupported file format!", DEFAULT_TIMEOUT);
-                return;
-            }
-        }
-        else
-        {
-            if(selectedFilter.startsWith("YAML"))
-            {
-                return_code = fromYmlFile(label.toStdString() + ".yml");
-            }
-            else // if(selectedFilter.startsWith("GEXF"))
-            {
-                return_code = fromXmlFile(label.toStdString() + ".gexf");
-            }
-        }
-        if(!return_code)
-        {
-            updateStatus(std::string("Imported graph: from input file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
-            mpLayerWidget->refresh(false);
-        }
+        fromFile(filename, selectedFilter.startsWith("GEXF"));
     }
     else
     {
@@ -1320,58 +1325,25 @@ void ViewWidget::toXmlFile(const std::string& filename)
     }
 }
 
-int ViewWidget::fromXmlFile(const std::string& filename)
+int ViewWidget::fromFile(const std::string& filename, const std::string& format)
 {
     graph_analysis::BaseGraph::Ptr graph = BaseGraph::Ptr( new gl::DirectedGraph() );
     try
     {
-        mReaderMap["gexf"]->read(filename, graph);
+        mReaderMap[format]->read(filename, graph);
     }
     catch(std::runtime_error e)
     {
-        LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromXmlFile: import from .gexf failed: " << e.what();
-        QMessageBox::critical(this, tr("Graph Import from .gexf Failed"), QString(e.what()));
-        updateStatus(std::string("Gexf Graph import failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
+        LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromFile: graph import failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph Import Failed"), QString(e.what()));
+        updateStatus(std::string("Graph import failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
         return 1;
     }
     catch(std::string s)
     {
-        LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromXmlFile: import from .gexf failed: " << s;
-        QMessageBox::critical(this, tr("Graph Import from .gexf Failed"), QString(s.c_str()));
-        updateStatus(std::string("Gexf Graph import failed: ") + s, DEFAULT_TIMEOUT);
-        return 1;
-    }
-
-    mpGraph = graph;
-    updateLayerWidget();
-    mpSubGraph = mGraphView.apply(mpGraph);
-    mFiltered = true;
-
-    mpSubGraph->enableAllVertices();
-    mpSubGraph->enableAllEdges();
-    refresh(false);
-    return 0;
-}
-
-int ViewWidget::fromYmlFile(const std::string& filename)
-{
-    graph_analysis::BaseGraph::Ptr graph = BaseGraph::Ptr( new gl::DirectedGraph() );
-    try
-    {
-        mReaderMap["yaml"]->read(filename, graph);
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromYmlFile: import from .yaml failed: " << e.what();
-        QMessageBox::critical(this, tr("Graph Import from .yaml Failed"), QString(e.what()));
-        updateStatus(std::string("Yaml Graph import failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
-        return 1;
-    }
-    catch(std::string s)
-    {
-        LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromXmlFile: import from .gexf failed: " << s;
-        QMessageBox::critical(this, tr("Graph Import from .gexf Failed"), QString(s.c_str()));
-        updateStatus(std::string("Gexf Graph import failed: ") + s, DEFAULT_TIMEOUT);
+        LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromFile: graph import failed: " << s;
+        QMessageBox::critical(this, tr("Graph Import Failed"), QString(s.c_str()));
+        updateStatus(std::string("Graph import failed: ") + s, DEFAULT_TIMEOUT);
         return 1;
     }
 
