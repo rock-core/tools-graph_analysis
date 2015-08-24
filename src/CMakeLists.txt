@@ -23,6 +23,7 @@ rock_library(graph_analysis
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
         gui/layeritem/Label.cpp
+        gui/GraphManager.cpp
         gui/GraphWidget.cpp
         gui/ViewWidget.cpp
         gui/LayerWidget.cpp
@@ -99,6 +100,7 @@ rock_library(graph_analysis
         gui/layeritem/edges/Simple.hpp
         gui/layeritem/Label.hpp
         gui/layeritem/Resource.hpp
+        gui/GraphManager.hpp
         gui/GraphWidget.hpp
         gui/ViewWidget.hpp
         gui/LayerWidget.hpp
