@@ -298,7 +298,7 @@ public slots:
     /// deletes the currently selected edge (i.e. edge being hovered over)
     void removeSelectedEdge();
 
-    /// displays context menu (upon a right click on the scene)
+    /// displays context menu (upon a right click in the scene)
     void showContextMenu(const QPoint& pos);
 
     /// re-layouts the graph view with the given layouting engine 'layoutName'
