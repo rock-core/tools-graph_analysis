@@ -66,7 +66,7 @@ public:
     /// creates a new filter item with the given 'label' as text regex and its corresponding checkbox
     unsigned int createFilter(const std::string& label);
 
-    /// swaps in-place the 2 filters of the given indices
+    /// swaps in-place the 2 filters of the given indices; NOTE: only left gets displaced (right is assumed to still be dragged by the mouse after the swapping)
     void swapFilters(FilterItem::filter_index_t left, FilterItem::filter_index_t right);
     /// error checking method: tests for the 'caller' whether the provided filter 'index' is out of bounds
     void dieOnIndex(FilterItem::filter_index_t index, const std::string& caller = std::string());

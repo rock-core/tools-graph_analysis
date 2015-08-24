@@ -121,13 +121,16 @@ void FilterManager::swapFilters(FilterItem::filter_index_t left, FilterItem::fil
     dieOnIndex(left , "swapFilters");
     dieOnIndex(right, "swapFilters");
 
+    // swapping filters entries
     FilterItem* cached_filter = mFilters[right];
     mFilters[right] = mFilters[left];
     mFilters[left ] = cached_filter;
 
+    // updating their internal indices accordingly
     mFilters[right]->setIndex(right);
     cached_filter->setIndex(left);
-    cached_filter->updatePos();
+    cached_filter->updatePos(); // designed to support filters displacing; therefore one filter's
+    // position gets updated, while the other filter is supposed to still be dragged by the mouse
 
     // swapping their checkboxes references too (much faster than toggling their values + updating tooltips)
     QCheckBox *cached_checkbox = mCheckBoxes[right];
@@ -218,13 +221,15 @@ void FilterManager::removeFilter(FilterItem *item)
     delete item;
     mFilters.erase(mFilters.begin() + index);
     QCheckBox *checkBoxToErase = mCheckBoxes[index];
-    mCheckBoxIndexMap.erase(checkBoxToErase);
+    bool dirty = checkBoxToErase->isChecked();
+    mCheckBoxIndexMap.erase(checkBoxToErase); // NOTE: expensive operation - internally copies all following filters to lower indices
     delete checkBoxToErase;
-    mCheckBoxes.erase(mCheckBoxes.begin() + index);
+    mCheckBoxes.erase(mCheckBoxes.begin() + index); // NOTE: expensive operation - internally copies all following filters to lower indices
 
     unsigned int nfilters = mFilters.size();
     for(; index < nfilters; ++index)
     {
+        // updating internal filters and position in-scene (of them and their checkboxes too!) of previously copied filters
         FilterItem *item = mFilters[index];
         item->setIndex(index);
         item->setPos(0., FilterItem::sHeight * (qreal)index);
@@ -233,7 +238,11 @@ void FilterManager::removeFilter(FilterItem *item)
 
     mpCheckBoxGrid->setFixedHeight(mFilters.size() * FilterItem::sHeight);
     setSceneRect(sceneRect().adjusted(0., 0., 0., -(qreal)FilterItem::sHeight));
-    mpLayerWidget->refresh();
+    if(dirty)
+    {
+        // an unchecked checkbox (i.e. disabled filter) would not require a layers view refresh
+        mpLayerWidget->refresh();
+    }
 }
 
 void FilterManager::addFilter()
@@ -256,6 +265,7 @@ void FilterManager::swapFilters()
         return;
     }
 
+    // prompting the user for the fiters to swap
     SwapFiltersDialog swapFiltersDialog(mFilters);
     if(swapFiltersDialog.isValid())
     {
@@ -269,6 +279,7 @@ void FilterManager::swapFilters()
         if(filter1Index != filter2Index)
         {
             swapFilters(filter1Index, filter2Index);
+            // manually updating internal index and in-scene position of the filter the swapping operation considered under mouse drag
             FilterItem *left_item = mFilters[filter2Index];
             left_item->setIndex(filter2Index);
             left_item->setPos(0., FilterItem::sHeight * (qreal)filter2Index);
@@ -285,6 +296,7 @@ void FilterManager::removeFilters()
         return;
     }
 
+    // prompting for user confirmation on removal of all filters
     QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Deletion of All Regexp Filters"),
                                             tr("All Custom Regexp Filters in the Filters Manager will be completely erased! Are you sure you want to continue?"),
                                             QMessageBox::Yes | QMessageBox::No
@@ -300,6 +312,7 @@ void FilterManager::removeFilters()
         break;
     }
 
+    // memory release
     foreach(FilterItem *item, mFilters)
     {
         if(item)
@@ -334,6 +347,7 @@ void FilterManager::renameFilter()
         return;
     }
 
+    // prompting the user for a filter to change and its new regex
     RenameFilterDialog renameFilterDialog(mFilters);
     if(renameFilterDialog.isValid())
     {
@@ -368,6 +382,7 @@ void FilterManager::removeFilter()
         std::string str_index = boost::lexical_cast<std::string>(item->getIndex());
         filters_options << QString(str_index.c_str()) + QString(": ") + item->getLabel();
     }
+    // prompting the user for the filter to remove
     QString strFilterIndex = QInputDialog::getItem(this, tr("Remove a Filter"),
                                          tr("Filter:"), filters_options,
                                          0, false, &ok);
@@ -383,6 +398,7 @@ void FilterManager::removeFilter()
 void FilterManager::renameSelectedFilter()
 {
     bool ok;
+    // prompting the user for the new regex
     QString label = QInputDialog::getText(this, tr("Input Filter Regexp"),
                                          tr("New Regexp:"), QLineEdit::Normal,
                                          QString(mpSelectedItem->getLabel()), &ok);
