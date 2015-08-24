@@ -13,7 +13,8 @@ namespace layeritem {
 /**
  * \file Label.hpp
  * \class Label
- * \brief graphical node text label and port text label implementation - specific to layer widget graphical implementation
+ * \brief graphical implementation for simple nodes text labels and filter item text labels
+ * \details specific to the layer widget: editable text representation (disregards the ENTER key)
  */
 class Label : public QGraphicsTextItem
 {

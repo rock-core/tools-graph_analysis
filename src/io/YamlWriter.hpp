@@ -10,9 +10,10 @@ namespace graph_analysis {
 namespace io {
 
 /**
- * \class YamlWriter
  * \file YamlWriter.hpp
- * \brief Renders requested graph to custom YAML/yml format (i.e. custom yml that simply lists the nodes with their properties and then lists edges and their properties)
+ * \class YamlWriter
+ * \brief Custom yml graph exporter
+ * \details Exports requested graph to custom YAML/yml format (i.e. custom yml that simply lists the nodes with their properties and then lists edges and their properties)
  */
 class YamlWriter : public Writer
 {

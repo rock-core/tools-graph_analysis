@@ -14,9 +14,11 @@ namespace graph_analysis {
 namespace io {
 
 /**
- * \class YamlReader
  * \file YamlReader.hpp
- * \brief Parses an inputfile with custom YAML/yml format to requested graph (i.e. custom yml that simply lists the nodes with their properties and then lists edges and their properties)
+ * \class YamlReader
+ * \brief Parses an inputfile with custom YAML/yml format to requested graph
+ * \details Parses custom yml that simply lists the nodes with their properties and then lists edges and their properties
+ *      and then forms a base graph out of it
  */
 class YamlReader : public Reader
 {

@@ -16,6 +16,7 @@ namespace gui {
  * \file ActionCommander.hpp
  * \class ActionCommander
  * \brief Creates QAction-s and registers them with given slots of the supplied QObject
+ * \details used to partially automate the code refactoring for the QMenu construction at runtime
  */
 class ActionCommander
 {

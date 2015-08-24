@@ -31,6 +31,7 @@ namespace gui {
  * \file SwapFiltersDialog.hpp
  * \class SwapFiltersDialog
  * \brief pop-up dialog manager for swapping two custom regexp filters in the filters manager in the layers tab of the command panel
+ * \details runs a pop-up dialog for prompting the user for the 2 filters to be swapped
  */
 class SwapFiltersDialog : public QObject
 {

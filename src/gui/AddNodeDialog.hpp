@@ -31,9 +31,11 @@ namespace gui {
     class NodeItem;
 
 /**
- * \class AddNodeDialog
  * \file AddNodeDialog.hpp
+ * \class AddNodeDialog
  * \brief pop-up dialog manager for adding a node to the graph
+ * \details runs a pop-window to prompt the user for the new node
+ *      label and for its type
  */
 class AddNodeDialog : public QObject
 {

@@ -7,9 +7,10 @@ namespace graph_analysis {
 namespace io {
 
 /**
- * \class GexfWriter
  * \file GexfWriter.hpp
- * \brief Renders requested graph to GEXF standard format
+ * \class GexfWriter
+ * \brief exports a given base graph to a given file in GEXF format
+ * \details Renders requested graph to GEXF standard format
  */
 class GexfWriter : public Writer
 {

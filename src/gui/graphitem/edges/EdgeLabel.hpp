@@ -10,9 +10,10 @@ namespace graphitem {
 namespace edges {
 
 /**
- * \class EdgeLabel
  * \file EdgeLabel.hpp
+ * \class EdgeLabel
  * \brief graphical edge text label implementation
+ * \details specific to the diagram editor widget graphical implementation - non-framed non-editable text representation
  */
 class EdgeLabel : public QGraphicsTextItem
 {

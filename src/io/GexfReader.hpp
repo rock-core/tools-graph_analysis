@@ -11,9 +11,10 @@ namespace graph_analysis {
 namespace io {
 
 /**
- * \class GexfReader
  * \file GexfReader.hpp
- * \brief Parses an input gexf file to the requested target graph
+ * \class GexfReader
+ * \brief Imports a base graph from a given GEXF file
+ * \details Parses an input gexf file to the requested target graph (forms a base graph)
  */
 class GexfReader : public Reader
 {

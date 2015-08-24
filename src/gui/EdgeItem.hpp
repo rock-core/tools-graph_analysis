@@ -56,9 +56,10 @@ class GraphWidget;
 class NodeItem;
 
 /**
- * \class EdgeItem
  * \file EdgeItem.hpp
+ * \class EdgeItem
  * \brief graphical edge representation interface
+ * \details used as polymorphic base for several graphical edge implementations
  */
 class EdgeItem : public QGraphicsItemGroup
 {

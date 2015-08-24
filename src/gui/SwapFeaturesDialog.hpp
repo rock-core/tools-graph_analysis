@@ -30,9 +30,11 @@ namespace gui {
     class NodeItem;
 
 /**
- * \class SwapFeaturesDialog
  * \file SwapFeaturesDialog.hpp
+ * \class SwapFeaturesDialog
  * \brief pop-up dialog manager for swapping two features of a cluster node
+ * \details runs a pop-up window to prompt the user for 2 features to be swapped
+ *      of the concerned cluster node
  */
 class SwapFeaturesDialog : public QObject
 {

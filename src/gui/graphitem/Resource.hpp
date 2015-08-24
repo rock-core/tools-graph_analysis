@@ -15,9 +15,11 @@ namespace graphitem {
 class Label;
 
 /**
- * \class Resource
  * \file Resource.hpp
- * \brief graphical node representation class; implements the NodeItem interface
+ * \class Resource
+ * \brief graphical cluster node representation
+ * \details implements the NodeItem interface into a movable cluster node with dynamic, editable
+ *      input and output ports, with operations and properties
  */
 class Resource : public graph_analysis::gui::NodeItem
 {

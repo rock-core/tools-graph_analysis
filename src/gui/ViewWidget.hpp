@@ -79,8 +79,8 @@ class PropertyDialog;
 class LayerWidget;
 
 /**
- * \class ViewWidget
  * \file ViewWidget.hpp
+ * \class ViewWidget
  * \brief diagram view graph widget implementation
  * \details maintains and displays a diagram with clusternodes, their features and the links (edges) between their ports
  */

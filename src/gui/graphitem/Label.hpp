@@ -21,9 +21,10 @@ class GraphWidget;
 namespace graphitem {
 
 /**
- * \class Label
  * \file Label.hpp
+ * \class Label
  * \brief graphical node text label and port text label implementation
+ * \details specific to the diagram editor widget: editable text representation (disregards the ENTER key)
  */
 class Label : public QGraphicsTextItem
 {

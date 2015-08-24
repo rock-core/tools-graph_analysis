@@ -11,9 +11,10 @@ namespace layeritem {
 namespace edges {
 
 /**
- * \class EdgeLabel
  * \file EdgeLabel.hpp
- * \brief graphical edge text label implementation - specific to layer widget graphical implementation
+ * \class EdgeLabel
+ * \brief graphical edge text label implementation
+ * \details specific to layer widget graphical implementation - non-framed non-editable text representation
  */
 class EdgeLabel : public QGraphicsTextItem
 {

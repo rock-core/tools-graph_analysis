@@ -7,9 +7,10 @@ namespace graph_analysis {
 namespace io {
 
 /**
- * \class GraphvizWriter
  * \file GraphvizWriter.hpp
- * \brief Renders graph to file using GraphViz renderToFile() interface
+ * \class GraphvizWriter
+ * \brief graphviz based graph renderer
+ * \details Exports a given base graph to a given dot file using GraphViz renderToFile() interface
  */
 class GraphvizWriter : public Writer
 {

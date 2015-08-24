@@ -32,6 +32,8 @@ namespace gui {
  * \file RenameFilterDialog.hpp
  * \class RenameFilterDialog
  * \brief pop-up dialog manager for renaming a regexp filter in the custom regexp filters manager
+ * \details runs a pop-up window to prompt the user for the new regex
+ *      as well as for the filter item to be edited
  */
 class RenameFilterDialog : public QObject
 {

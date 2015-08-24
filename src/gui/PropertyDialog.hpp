@@ -48,9 +48,9 @@ namespace gui {
     class LayerWidget;
 
 /**
- * \class PropertyDialog
  * \file PropertyDialog.hpp
- * \brief dockable multi-tab command panel
+ * \class PropertyDialog
+ * \brief dockable multi-tab command panel for the entire GUI
  * \details accommodates options/properties for both the diagram view and also the layered conceptual graph view
  */
 class PropertyDialog : public QObject

@@ -96,9 +96,11 @@ class LayerWidget;
  */
 
 /**
- * \class GraphWidget
  * \file GraphWidget.hpp
+ * \class GraphWidget
  * \brief graph view widget interface
+ * \details polymorphics base for the different kinds of graph widgets
+ *      that make use of different kinds of node and edge items implementations
  */
 class GraphWidget : public QGraphicsView
 {

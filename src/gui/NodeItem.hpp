@@ -64,9 +64,10 @@ class GraphWidget;
 class QGraphicsSceneMouseEvent;
 
 /**
- * \class NodeItem
  * \file NodeItem.hpp
+ * \class NodeItem
  * \brief graphical node representation interface
+ * \details used as polymorphic base for several graphical node implementations
  */
 class NodeItem : public QGraphicsItemGroup
 {

@@ -77,8 +77,8 @@ class EdgeItem;
  */
 
 /**
- * \class LayerWidget
  * \file LayerWidget.hpp
+ * \class LayerWidget
  * \brief layers graph view widget implementation
  * \details maintains and displays a layered view of its base graph (the latter is treated as read-only with the exception of its setter method)
  */

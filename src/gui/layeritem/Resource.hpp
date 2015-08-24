@@ -14,9 +14,11 @@ namespace layeritem {
 class Label;
 
 /**
- * \class Resource
  * \file Resource.hpp
- * \brief graphical node representation class; implements the NodeItem interface - specific to layer widget graphical implementation
+ * \class Resource
+ * \brief graphical node representation class
+ * \details implements the NodeItem interface - specific to layer widget graphical implementation -
+ *      non-editable, square-framed movable simple node items containing a single vertex text label
  */
 class Resource : public graph_analysis::gui::NodeItem
 {

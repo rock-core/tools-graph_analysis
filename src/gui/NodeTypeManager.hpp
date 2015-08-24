@@ -21,8 +21,8 @@ class NodeItem;
 class GraphWidget;
 
 /**
- * \class NodeTypeManager
  * \file NodeTypeManager.hpp
+ * \class NodeTypeManager
  * \brief factory for NodeItem-s: clones different types of NodeItem instances (i.e. graphical nodes)
  */
 class NodeTypeManager : public base::Singleton<NodeTypeManager>

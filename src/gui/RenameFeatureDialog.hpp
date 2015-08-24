@@ -31,9 +31,11 @@ namespace gui {
     class NodeItem;
 
 /**
- * \class RenameFeatureDialog
  * \file RenameFeatureDialog.hpp
+ * \class RenameFeatureDialog
  * \brief pop-up dialog manager for renaming a feature of a cluster node
+ * \details runs a pop-up window to prompt the user for the new feature label
+ *      as well as for the desired feature to be edited
  */
 class RenameFeatureDialog : public QObject
 {

@@ -7,9 +7,10 @@ namespace graph_analysis {
 namespace gui {
 
 /**
- * \class CustomDialog
  * \file CustomDialog.hpp
- * \brief Specialized QWidget for the properties/commnand panel; implements a dockable widget with keys (and keys combinations) listener
+ * \class CustomDialog
+ * \brief Specialized QWidget for the properties/commnand panel
+ * \details implements a dockable widget with keypress (and keys combinations) listener
  */
 class CustomDialog : public QDockWidget
 {

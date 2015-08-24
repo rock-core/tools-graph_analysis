@@ -23,8 +23,8 @@ class EdgeItem;
 class GraphWidget;
 
 /**
- * \class EdgeTypeManager
  * \file EdgeTypeManager.hpp
+ * \class EdgeTypeManager
  * \brief factory for EdgeItem-s: clones different types of EdgeItem instances (i.e. graphical edges)
  */
 class EdgeTypeManager : public base::Singleton<EdgeTypeManager>

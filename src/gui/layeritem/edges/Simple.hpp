@@ -17,9 +17,11 @@ namespace edges {
 class EdgeLabel;
 
 /**
- * \class Simple
  * \file Simple.hpp
- * \brief graphical edge implementation - specific to layer widget graphical implementation
+ * \class Simple
+ * \brief graphical edge implementation
+ * \details specific to layer widget graphical implementation: straight direct edge
+ *      holding a text label on top of its middle region
  */
 class Simple : public graph_analysis::gui::EdgeItem
 {

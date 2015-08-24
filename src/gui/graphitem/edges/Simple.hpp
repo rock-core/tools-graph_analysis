@@ -15,9 +15,11 @@ namespace edges {
 class EdgeLabel;
 
 /**
- * \class Simple
  * \file Simple.hpp
+ * \class Simple
  * \brief graphical edge implementation
+ * \details specific to the diagram editor widget: straight direct edge
+ *      holding a text label on top of its middle region
  */
 class Simple : public graph_analysis::gui::EdgeItem
 {

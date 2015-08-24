@@ -28,7 +28,9 @@ namespace gui {
 /**
  * \file AddFilterDialog.hpp
  * \class AddFilterDialog
- * \brief pop-up dialog manager for adding a node to the graph
+ * \brief pop-up dialog manager for adding a custom regex filter to the filters manager
+ * \details runs a pop-up dialog for prompting the user for a filter regex text and for
+ *      whether the new filter should be checked on init or not
  */
 class AddFilterDialog : public QObject
 {
