@@ -34,11 +34,17 @@
 #include <QtGui/QGraphicsView>
 #include <QtGui/QStackedWidget>
 
+// constant panel raw width
 #define WIDTH 306
+// general border width (for several frames/layouts within the panel)
 #define PADDING 7
+// maximum no. of separators   in a vertical layout out of the total 4 such vertical layouts in the 2 tabs
 #define DEFAULT_NFRAMES 3
+// maximum no. of push-buttons in a vertical layout out of the total 4 such vertical layouts in the 2 tabs
 #define DEFAULT_NBUTTONS 10
+// approximated hard-wired height (in points) accounted for a single separator (a.k.a. degenerate frame) including the border area around
 #define DEFAULT_LINE_POINTS 15
+// approximated hard-wired height (in points) accounted for a push-button including the border area around
 #define DEFAULT_BUTTON_POINTS 31
 
 namespace graph_analysis {
