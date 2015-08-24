@@ -54,6 +54,7 @@ void Label::keyPressEvent(::QKeyEvent* event)
     LOG_DEBUG_S << "KEYPRESS LABLE";
     switch(event->key())
     {
+        // one line only per label entry
         case Qt::Key_Return:
             return;
         break;

@@ -81,14 +81,12 @@ void Label::keyPressEvent(::QKeyEvent* event)
             break;
         }
     }
-    else
+    switch(event->key())
     {
-        switch(event->key())
-        {
-            case Qt::Key_Return:
-                return;
-            break;
-        }
+        // one line only per label entry
+        case Qt::Key_Return:
+            return;
+        break;
     }
     QGraphicsTextItem::keyPressEvent(event);
 }
