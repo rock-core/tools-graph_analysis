@@ -87,7 +87,6 @@ class ViewWidget : public GraphWidget
 public:
     /**
      * \brief constructor
-     * \param mainWindow main qt application window
      * \param parent qt parent widget
      */
     ViewWidget(QWidget *parent = 0);

@@ -88,7 +88,6 @@ class LayerWidget : public GraphWidget
 public:
     /**
      * \brief constructor
-     * \param viewWidget managing view graph widget
      * \param graph underlying base graph
      */
     LayerWidget(graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ), QWidget *parent = 0);

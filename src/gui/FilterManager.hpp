@@ -33,12 +33,10 @@ public:
 
     /**
      * \brief constructor
-     * \param viewWidget diagram view widget - central managing widget of the entire GUI
-     * \param layerWidget layers view widget
      * \param checkBoxGrid widget to host the check-boxes at this widget's disposal
      * \param parent optional qt parent widget to assume ownership over this widget
      */
-    FilterManager(LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent = 0);
+    FilterManager(QWidget *checkBoxGrid, QWidget *parent = 0);
     /// destructor
     ~FilterManager();
 
@@ -92,7 +90,7 @@ public:
     /// completely removes the given filter item
     void removeFilter(FilterItem *item);
     /// orders the layers view to refresh; when updatesStatusBar is unset, this takes place silently (the status bar won't get changed)
-    void refreshView(bool updatesStatusBar = true) { mpLayerWidget->refresh(updatesStatusBar); }
+    void refreshView(bool updatesStatusBar = true);
     /// getter method for the array of filters
     Filters getFilters(void) { return mFilters; }
 
@@ -119,8 +117,6 @@ public slots:
 private:
     /// array of registered filters
     Filters mFilters;
-    /// layers widget; target for the refresh orders
-    LayerWidget *mpLayerWidget;
     /// check boxes manager
     QWidget *mpCheckBoxGrid;
     /// array of checkboxes

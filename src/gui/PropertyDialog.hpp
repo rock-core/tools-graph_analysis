@@ -50,9 +50,6 @@
 namespace graph_analysis {
 namespace gui {
 
-    class ViewWidget;
-    class LayerWidget;
-
 /**
  * \file PropertyDialog.hpp
  * \class PropertyDialog
@@ -68,15 +65,11 @@ public:
 
     /**
      * \brief constructor
-     * \param viewWidget diagram view graph widget
-     * \param layerWidget layers view graph widget
-     * \param mainWindow parent main window
-     * \param stackedWidget central widget in the main window (direct managing parent widget of the first two parameter widgets)
      * \param dragDropIsChecked current drag-n-drop mode boolean witness
      * \param vertexFocused boolean witness: true when there is a node currently focused on; false otherwise
      * \param edgeFocused boolean witness:  true when there is an edge currently focused on; false otherwise
      */
-    PropertyDialog(ViewWidget *viewWidget, LayerWidget *layerWidget, QMainWindow *mainWindow, QStackedWidget *stackedWidget, bool dragDropIsChecked = false, bool vertexFocused = false, bool edgeFocused = false);
+    PropertyDialog(bool dragDropIsChecked = false, bool vertexFocused = false, bool edgeFocused = false);
     /// destructor
     ~PropertyDialog();
 
@@ -113,7 +106,7 @@ public:
     /// setter method for the node-being-focused boolean witness
     void setVertexFocused(bool vertexFocused);
     /// setter method for the edge-being-focused boolean witness
-    void setEdgeFocused(bool edgeFocused);
+    void setEdgeFocused  (bool edgeFocused  );
 
     /// getter method for the node-being-focused boolean witness
     bool getVertexFocused() { return mVertexFocused; }
@@ -133,14 +126,6 @@ public slots:
 private:
     /// main qt dialog to be used
     CustomDialog mDialog;
-    /// central widget in the main window (direct managing parent widget of the two widgets: the View- and the Layer-Widget)
-    QStackedWidget* mpStackedWidget;
-    /// diagram view graph widget
-    ViewWidget *mpViewWidget;
-    /// layers view graph widget
-    LayerWidget *mpLayerWidget;
-    /// parent main window
-    QMainWindow *mpMainWindow;
     /// collection of tabs of the entire panel
     QTabWidget *mpTabWidget;
     /// the diagram view tab

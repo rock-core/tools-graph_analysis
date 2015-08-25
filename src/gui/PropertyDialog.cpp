@@ -2,6 +2,8 @@
 #include "ViewWidget.hpp"
 #include "LayerWidget.hpp"
 #include "IconManager.hpp"
+#include "GraphManager.hpp"
+#include "WidgetManager.hpp"
 #include "PropertyDialog.hpp"
 
 #include <QScrollBar>
@@ -9,17 +11,13 @@
 namespace graph_analysis {
 namespace gui {
 
-PropertyDialog::PropertyDialog(ViewWidget *viewWidget, LayerWidget *layerWidget, QMainWindow *mainWindow, QStackedWidget *stackedWidget, bool dragDropIsChecked, bool vertexFocused, bool edgeFocused)
-: mpStackedWidget(stackedWidget)
-, mpViewWidget(viewWidget)
-, mpLayerWidget(layerWidget)
-, mpMainWindow(mainWindow)
-, mVertexFocused(vertexFocused)
-, mEdgeFocused(edgeFocused)
+PropertyDialog::PropertyDialog(bool dragDropIsChecked, bool vertexFocused, bool edgeFocused)
+    : mVertexFocused(vertexFocused)
+    , mEdgeFocused(edgeFocused)
 {
     setupUi(&mDialog, dragDropIsChecked);
     // loads itself as dockable in the main window
-    mpMainWindow->addDockWidget(Qt::RightDockWidgetArea, &mDialog, Qt::Horizontal);
+    WidgetManager::getInstance()->getMainWindow()->addDockWidget(Qt::RightDockWidgetArea, &mDialog, Qt::Horizontal);
 }
 
 PropertyDialog::~PropertyDialog()
@@ -69,12 +67,12 @@ void PropertyDialog::setEdgeFocused(bool edgeFocused)
 
 void PropertyDialog::updateMainWidget(int index)
 {
-    mpStackedWidget->setCurrentIndex(index);
+    WidgetManager::getInstance()->getStackedWidget()->setCurrentIndex(index);
 }
 
 inline void PropertyDialog::updateStatus(const std::string& message, int timeout)
 {
-    mpViewWidget->updateStatus(QString(message.c_str()), timeout);
+    WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
 }
 
 void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
@@ -404,6 +402,10 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     mpVerticalLayoutComponentsLayer->setObjectName(QString::fromUtf8("mpVerticalLayoutComponentsLayer"));
     mpVerticalLayoutComponentsLayer->setContentsMargins(0, PADDING, 0, PADDING);
 
+    // the 2 handles are to be needed throughout the rest of this method
+    LayerWidget *layerWidget = WidgetManager::getInstance() -> getLayerWidget();
+    ViewWidget  * viewWidget = WidgetManager::getInstance() -> getViewWidget();
+
     // right hand-side in the layers view tab; filtering specific commands
     int verticalLayoutComponentsLayerLeftover;
     {
@@ -419,10 +421,11 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpLayersFiltersLayout->addWidget(mpLayersLabel);
 
+
         mpToggleClusterLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
         mpToggleClusterLayerButton->setObjectName(QString::fromUtf8("mpToggleClusterLayerButton"));
         mpToggleClusterLayerButton->setCheckable(true);
-        mpToggleClusterLayerButton->setChecked(mpLayerWidget->getClusterLayerToggle());
+        mpToggleClusterLayerButton->setChecked(layerWidget->getClusterLayerToggle());
         mpToggleClusterLayerButton->setToolTip(QString("toggles the visibility of the clusters layer"));
 
         mpLayersFiltersLayout->addWidget(mpToggleClusterLayerButton);
@@ -430,7 +433,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpToggleFeatureLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
         mpToggleFeatureLayerButton->setObjectName(QString::fromUtf8("mpToggleFeatureLayerButton"));
         mpToggleFeatureLayerButton->setCheckable(true);
-        mpToggleFeatureLayerButton->setChecked(mpLayerWidget->getFeatureLayerToggle());
+        mpToggleFeatureLayerButton->setChecked(layerWidget->getFeatureLayerToggle());
         mpToggleFeatureLayerButton->setToolTip(QString("toggles the visibility of the features layer"));
 
         mpLayersFiltersLayout->addWidget(mpToggleFeatureLayerButton);
@@ -476,7 +479,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpCheckBoxColumn->setToolTip(QString("Custom Filters Enabling Panel"));
         mpCheckBoxColumn->setGeometry(0, 0, 20, 0);
 
-        mpFilterManager = new FilterManager(mpLayerWidget, mpCheckBoxColumn, mpFiltersBox);
+        mpFilterManager = new FilterManager(mpCheckBoxColumn, mpFiltersBox);
         mpFilterManager->setGeometry(checkBoxWidth, 0, size.width() - checkBoxWidth, size.height());
         mpFilterManager->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -557,32 +560,32 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     retranslateUi(Dialog);
 
     // establishing signal-slot connections
-    PropertyDialog::connect(mpRefreshButton, SIGNAL(clicked()), mpViewWidget, SLOT(refresh()));
-    PropertyDialog::connect(mpRefreshLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(refresh()));
-    PropertyDialog::connect(mpShuffleButton, SIGNAL(clicked()), mpViewWidget, SLOT(shuffle()));
-    PropertyDialog::connect(mpShuffleLayerButton, SIGNAL(clicked()), mpLayerWidget, SLOT(shuffle()));
-    PropertyDialog::connect(mpImportButton, SIGNAL(clicked()), mpViewWidget, SLOT(importGraph()));
-    PropertyDialog::connect(mpImportLayerButton, SIGNAL(clicked()), mpViewWidget, SLOT(importGraph()));
-    PropertyDialog::connect(mpExportButton, SIGNAL(clicked()), mpViewWidget, SLOT(exportGraph()));
-    PropertyDialog::connect(mpExportLayerButton, SIGNAL(clicked()), mpViewWidget, SLOT(exportGraph()));
-    PropertyDialog::connect(mpResetButton,  SIGNAL(clicked()), mpViewWidget, SLOT(resetGraph()));
-    PropertyDialog::connect(mpResetLayerButton,  SIGNAL(clicked()), mpViewWidget, SLOT(resetGraph()));
-    PropertyDialog::connect(mpLayoutButton,  SIGNAL(clicked()), mpViewWidget, SLOT(changeLayout()));
-    PropertyDialog::connect(mpLayoutLayerButton,  SIGNAL(clicked()), mpLayerWidget, SLOT(changeLayout()));
-    PropertyDialog::connect(mpAddNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(addNodeAdhoc()));
-    PropertyDialog::connect(mpDragDropButton, SIGNAL(toggled(bool)), mpViewWidget, SLOT(updateDragDrop(bool)));
-    PropertyDialog::connect(mpMoveAroundButton, SIGNAL(toggled(bool)), mpViewWidget, SLOT(updateMoveAround(bool)));
-    PropertyDialog::connect(mpRenameNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(changeFocusedVertexLabel()));
-    PropertyDialog::connect(mpAddFeatureButton, SIGNAL(clicked()), mpViewWidget, SLOT(addFeatureFocused()));
-    PropertyDialog::connect(mpSwapFeaturesButton, SIGNAL(clicked()), mpViewWidget, SLOT(swapFeaturesFocused()));
-    PropertyDialog::connect(mpRenameFeatureButton, SIGNAL(clicked()), mpViewWidget, SLOT(renameFeatureFocused()));
-    PropertyDialog::connect(mpRemoveFeatureButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFeatureFocused()));
-    PropertyDialog::connect(mpRemoveFeaturesButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFeaturesFocused()));
-    PropertyDialog::connect(mpRemoveNodeButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFocusedVertex()));
-    PropertyDialog::connect(mpRenameEdgeButton, SIGNAL(clicked()), mpViewWidget, SLOT(changeFocusedEdgeLabel()));
-    PropertyDialog::connect(mpRemoveEdgeButton, SIGNAL(clicked()), mpViewWidget, SLOT(removeFocusedEdge()));
-    PropertyDialog::connect(mpToggleFeatureLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleFeatureLayer(bool)));
-    PropertyDialog::connect(mpToggleClusterLayerButton, SIGNAL(toggled(bool)), mpLayerWidget, SLOT(toggleClusterLayer(bool)));
+    PropertyDialog::connect(mpRefreshButton, SIGNAL(clicked()), viewWidget, SLOT(refresh()));
+    PropertyDialog::connect(mpRefreshLayerButton, SIGNAL(clicked()), layerWidget, SLOT(refresh()));
+    PropertyDialog::connect(mpShuffleButton, SIGNAL(clicked()), viewWidget, SLOT(shuffle()));
+    PropertyDialog::connect(mpShuffleLayerButton, SIGNAL(clicked()), layerWidget, SLOT(shuffle()));
+    PropertyDialog::connect(mpImportButton, SIGNAL(clicked()), viewWidget, SLOT(importGraph()));
+    PropertyDialog::connect(mpImportLayerButton, SIGNAL(clicked()), viewWidget, SLOT(importGraph()));
+    PropertyDialog::connect(mpExportButton, SIGNAL(clicked()), viewWidget, SLOT(exportGraph()));
+    PropertyDialog::connect(mpExportLayerButton, SIGNAL(clicked()), viewWidget, SLOT(exportGraph()));
+    PropertyDialog::connect(mpResetButton,  SIGNAL(clicked()), viewWidget, SLOT(resetGraph()));
+    PropertyDialog::connect(mpResetLayerButton,  SIGNAL(clicked()), viewWidget, SLOT(resetGraph()));
+    PropertyDialog::connect(mpLayoutButton,  SIGNAL(clicked()), viewWidget, SLOT(changeLayout()));
+    PropertyDialog::connect(mpLayoutLayerButton,  SIGNAL(clicked()), layerWidget, SLOT(changeLayout()));
+    PropertyDialog::connect(mpAddNodeButton, SIGNAL(clicked()), viewWidget, SLOT(addNodeAdhoc()));
+    PropertyDialog::connect(mpDragDropButton, SIGNAL(toggled(bool)), viewWidget, SLOT(updateDragDrop(bool)));
+    PropertyDialog::connect(mpMoveAroundButton, SIGNAL(toggled(bool)), viewWidget, SLOT(updateMoveAround(bool)));
+    PropertyDialog::connect(mpRenameNodeButton, SIGNAL(clicked()), viewWidget, SLOT(changeFocusedVertexLabel()));
+    PropertyDialog::connect(mpAddFeatureButton, SIGNAL(clicked()), viewWidget, SLOT(addFeatureFocused()));
+    PropertyDialog::connect(mpSwapFeaturesButton, SIGNAL(clicked()), viewWidget, SLOT(swapFeaturesFocused()));
+    PropertyDialog::connect(mpRenameFeatureButton, SIGNAL(clicked()), viewWidget, SLOT(renameFeatureFocused()));
+    PropertyDialog::connect(mpRemoveFeatureButton, SIGNAL(clicked()), viewWidget, SLOT(removeFeatureFocused()));
+    PropertyDialog::connect(mpRemoveFeaturesButton, SIGNAL(clicked()), viewWidget, SLOT(removeFeaturesFocused()));
+    PropertyDialog::connect(mpRemoveNodeButton, SIGNAL(clicked()), viewWidget, SLOT(removeFocusedVertex()));
+    PropertyDialog::connect(mpRenameEdgeButton, SIGNAL(clicked()), viewWidget, SLOT(changeFocusedEdgeLabel()));
+    PropertyDialog::connect(mpRemoveEdgeButton, SIGNAL(clicked()), viewWidget, SLOT(removeFocusedEdge()));
+    PropertyDialog::connect(mpToggleFeatureLayerButton, SIGNAL(toggled(bool)), layerWidget, SLOT(toggleFeatureLayer(bool)));
+    PropertyDialog::connect(mpToggleClusterLayerButton, SIGNAL(toggled(bool)), layerWidget, SLOT(toggleClusterLayer(bool)));
     PropertyDialog::connect(mpTabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
     PropertyDialog::connect(mpAddFilterButton, SIGNAL(clicked()), mpFilterManager, SLOT(addFilter()));
     PropertyDialog::connect(mpRenameFilterButton, SIGNAL(clicked()), mpFilterManager, SLOT(renameFilter()));
@@ -595,7 +598,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     // final re-sizing
     Dialog->setFixedSize(WIDTH + 20, 45 + mHeight - commonExtraPadding);
     mpTabWidget->setGeometry(QRect(5, 30, WIDTH + 10, 10 + mHeight - commonExtraPadding));
-    mpTabWidget->setCurrentIndex(mpStackedWidget->currentIndex());
+    mpTabWidget->setCurrentIndex(WidgetManager::getInstance()->getStackedWidget()->currentIndex());
     mpHorizontalLayoutWidget->setGeometry(QRect(0, 0, WIDTH, mHeight - commonExtraPadding));
     mpHorizontalLayoutLayerWidget->setGeometry(QRect(0, 0, WIDTH / 2, mHeight - commonExtraPadding));
 } // setupUi

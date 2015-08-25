@@ -42,7 +42,7 @@ GraphManager::GraphManager(const QString& filename)
     mpStackedWidget->setCurrentIndex(0); // showing mpViewWidget on init
     mpMainWindow->setCentralWidget(mpStackedWidget);
 
-    mpPropertyDialog = new PropertyDialog(mpViewWidget, mpLayerWidget, mpMainWindow, mpStackedWidget);
+    mpPropertyDialog = new PropertyDialog();
     widgetManager->setPropertyDialog(mpPropertyDialog);
 
     // setting up the Menus ToolBar
@@ -144,7 +144,7 @@ void GraphManager::reloadPropertyDialog(void)
     {
         delete mpPropertyDialog;
     }
-    mpPropertyDialog = new PropertyDialog(mpViewWidget, mpLayerWidget, mpMainWindow, mpStackedWidget, mpViewWidget->getDragDrop());
+    mpPropertyDialog = new PropertyDialog(mpViewWidget->getDragDrop(), mpViewWidget->getVertexFocused(), mpViewWidget->getEdgeFocused());
     updateStatus(std::string("Reloaded command panel!"), DEFAULT_TIMEOUT);
 }
 

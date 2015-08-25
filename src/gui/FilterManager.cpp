@@ -1,6 +1,7 @@
 
 #include "FilterManager.hpp"
 #include "IconManager.hpp"
+#include "WidgetManager.hpp"
 #include "ActionCommander.hpp"
 #include "AddFilterDialog.hpp"
 #include "SwapFiltersDialog.hpp"
@@ -18,9 +19,8 @@
 namespace graph_analysis {
 namespace gui {
 
-FilterManager::FilterManager(LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent)
+FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
     : QGraphicsView(parent)
-    , mpLayerWidget(layerWidget)
     , mpCheckBoxGrid(checkBoxGrid)
     , mItemSelected(false)
 {
@@ -82,6 +82,11 @@ void FilterManager::updateToolTip(int state)
     FilterItem::filter_index_t index = mCheckBoxIndexMap[sender];
     dieOnIndex(index , "updateToolTip(int)");
     updateToolTip(index, witness);
+}
+
+void FilterManager::refreshView(bool updatesStatusBar)
+{
+    WidgetManager::getInstance()->getLayerWidget()->refresh(updatesStatusBar);
 }
 
 void FilterManager::addFilter(const std::string& label)
@@ -164,7 +169,7 @@ void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness
 
     if(refresh)
     {
-        mpLayerWidget->refresh();
+        WidgetManager::getInstance()->getLayerWidget()->refresh();
     }
 }
 
@@ -241,7 +246,7 @@ void FilterManager::removeFilter(FilterItem *item)
     if(dirty)
     {
         // an unchecked checkbox (i.e. disabled filter) would not require a layers view refresh
-        mpLayerWidget->refresh();
+        WidgetManager::getInstance()->getLayerWidget()->refresh();
     }
 }
 
@@ -335,7 +340,7 @@ void FilterManager::removeFilters()
     mCheckBoxIndexMap.clear();
 
     mpCheckBoxGrid->setFixedHeight(0);
-    mpLayerWidget->refresh();
+    WidgetManager::getInstance()->getLayerWidget()->refresh();
 }
 
 void FilterManager::renameFilter()
