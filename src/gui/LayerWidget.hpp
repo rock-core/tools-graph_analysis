@@ -91,7 +91,7 @@ public:
      * \param viewWidget managing view graph widget
      * \param graph underlying base graph
      */
-    LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ));
+    LayerWidget(graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ), QWidget *parent = 0);
     /// destructor
     ~LayerWidget();
 
@@ -112,10 +112,7 @@ public:
     bool getClusterLayerToggle  () { return mClusterLayerToggle; }
 
     /// method for updating the informative message in the StatusBar of the managing view widget
-    inline void updateStatus(const std::string& message = std::string(), int timeout = 0)
-    {
-        mpViewWidget->updateStatus(message, timeout);
-    }
+    inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
 
     /// method for deciding whether a vertex is currently being toggled out of the scene by layer discrimination
     inline bool toggledOut(graph_analysis::Vertex::Ptr vertex)
@@ -191,8 +188,6 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    /// managing view widget
-    ViewWidget* mpViewWidget;
     /// features layer toggle: when true, feature nodes get displayed; false when they get hidden
     bool mFeatureLayerToggle;
     /// clusters layer toggle: when true, cluster nodes get displayed; false when they get hidden

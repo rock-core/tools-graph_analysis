@@ -47,17 +47,8 @@ public:
     {
         mpStatus->showMessage(message, timeout);
     }
-
-    /// retrieves a boolean witness telling whether the property dialog/panel is up and running
-    bool dialogIsRunning();
     /// re-loads the property dialog/panel in the scene
     void reloadPropertyDialog(void);
-
-    /**
-     * \brief refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget (meant to be used from the outside)
-     * \param status controls Status Bar interaction: when false, refreshing goes silently (no updates on the Status Bar); when true, otherwise
-     */
-    void refreshLayerWidget(bool status = true);
 
 private:
     /// main window of the qt application

@@ -86,9 +86,8 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-LayerWidget::LayerWidget(ViewWidget* viewWidget, graph_analysis::BaseGraph::Ptr graph)
-    : GraphWidget(graph)
-    , mpViewWidget(viewWidget)
+LayerWidget::LayerWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
+    : GraphWidget(graph, parent)
     , mFeatureLayerToggle(true)
     , mClusterLayerToggle(true)
 {
@@ -126,7 +125,7 @@ LayerWidget::~LayerWidget()
 
 void LayerWidget::showContextMenu(const QPoint& pos)
 {
-    ActionCommander comm(mpViewWidget);
+    ActionCommander comm(WidgetManager::getInstance()->getViewWidget());
     QMenu contextMenu(tr("Context menu"), this);
 
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")), this);
@@ -144,7 +143,7 @@ void LayerWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionReset);
     contextMenu.addAction(actionLayout);
-    if(!WidgetManager::getInstance()->getGraphManager()->dialogIsRunning())
+    if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
     {
         contextMenu.addSeparator();
         contextMenu.addAction(actionReloadPropertyDialog);
@@ -494,24 +493,24 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
-                mpViewWidget->resetGraph();
+                WidgetManager::getInstance()->getViewWidget()->resetGraph();
             break;
 
             case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
             case Qt::Key_S:
-                mpViewWidget->exportGraph();
+                WidgetManager::getInstance()->getViewWidget()->exportGraph();
             break;
 
             case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  or CTRL+L (load graph) opens a graph from file
             case Qt::Key_O:
             case Qt::Key_L:
-                mpViewWidget->importGraph();
+                WidgetManager::getInstance()->getViewWidget()->importGraph();
             break;
 
             case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
-                if(!WidgetManager::getInstance()->getGraphManager()->dialogIsRunning())
+                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
                 {
-                    mpViewWidget->reloadPropertyDialog();
+                    WidgetManager::getInstance()->getGraphManager()->reloadPropertyDialog();
                 }
             break;
         }
@@ -685,6 +684,11 @@ void LayerWidget::toggleClusterLayer(bool toggle)
     mClusterLayerToggle = toggle;
     refresh(false);
     updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", DEFAULT_TIMEOUT);
+}
+
+inline void LayerWidget::updateStatus(const std::string& message, int timeout)
+{
+    WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
 }
 
 } // end namespace gui

@@ -237,7 +237,7 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     {
         contextMenu.addAction(actionSetDragDrop);
     }
-    if(!WidgetManager::getInstance()->getGraphManager()->dialogIsRunning())
+    if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
     {
         contextMenu.addSeparator();
         contextMenu.addAction(actionReloadPropertyDialog);
@@ -2283,7 +2283,7 @@ inline void ViewWidget::updateLayerWidget()
 
 inline void ViewWidget::refreshLayerWidget(bool status)
 {
-    WidgetManager::getInstance()->getGraphManager()->refreshLayerWidget(status);
+    WidgetManager::getInstance()->getLayerWidget()->refresh(status);
 }
 
 void ViewWidget::toggleDragDrop()

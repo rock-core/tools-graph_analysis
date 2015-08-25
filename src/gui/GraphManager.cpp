@@ -22,10 +22,19 @@ GraphManager::GraphManager(const QString& filename)
 {
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
+    WidgetManager *widgetManager = WidgetManager::getInstance();
+    widgetManager->setGraphManager(this);
+    widgetManager->setMainWindow(mpMainWindow);
+    widgetManager->setStackedWidget(mpStackedWidget);
+
     mpMainWindow->setMinimumSize(850, 400);
+
+    mpLayerWidget = new LayerWidget();
+    widgetManager->setLayerWidget(mpLayerWidget);
+
     mpViewWidget = new ViewWidget(mpMainWindow);
+    widgetManager->setViewWidget(mpViewWidget);
 //    mpViewWidget->reset();
-    mpLayerWidget = new LayerWidget(mpViewWidget, mpViewWidget->graph());
 
     mpStackedWidget->addWidget((QWidget *) mpViewWidget);
     mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
@@ -33,14 +42,6 @@ GraphManager::GraphManager(const QString& filename)
     mpMainWindow->setCentralWidget(mpStackedWidget);
 
     mpPropertyDialog = new PropertyDialog(mpViewWidget, mpLayerWidget, mpMainWindow, mpStackedWidget);
-
-    // now that all main widgets are available, registering them all to the WidgetManager
-    WidgetManager *widgetManager = WidgetManager::getInstance();
-    widgetManager->setGraphManager(this);
-    widgetManager->setMainWindow(mpMainWindow);
-    widgetManager->setViewWidget(mpViewWidget);
-    widgetManager->setLayerWidget(mpLayerWidget);
-    widgetManager->setStackedWidget(mpStackedWidget);
     widgetManager->setPropertyDialog(mpPropertyDialog);
 
     // setting up the Menus ToolBar
@@ -144,16 +145,6 @@ void GraphManager::reloadPropertyDialog(void)
     }
     mpPropertyDialog = new PropertyDialog(mpViewWidget, mpLayerWidget, mpMainWindow, mpStackedWidget, mpViewWidget->getDragDrop());
     updateStatus(std::string("Reloaded command panel!"), DEFAULT_TIMEOUT);
-}
-
-bool GraphManager::dialogIsRunning()
-{
-    return mpPropertyDialog->isRunning();
-}
-
-void GraphManager::refreshLayerWidget(bool status)
-{
-    mpLayerWidget->refresh(status);
 }
 
 void GraphManager::helpSetup(std::stringstream& ss, const std::string& cmd)
