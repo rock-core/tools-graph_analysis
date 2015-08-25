@@ -47,10 +47,10 @@ public:
     {
         mpStatus->showMessage(message, timeout);
     }
-    /// re-loads the property dialog/panel in the scene
-    void reloadPropertyDialog(void);
 
 public slots:
+    /// re-loads the property dialog/panel in the scene
+    void reloadPropertyDialog();
     // safety slot wrappers - triggered from the main window Menu Bar
     /// triggers changeFocusedEdgeLabel() if any edge is being focused on
     void changeFocusedEdgeLabelMainWindow();
