@@ -79,7 +79,6 @@ class EdgeItem;
 class AddNodeDialog;
 class ActionCommander;
 class PropertyDialog;
-class LayerWidget;
 
 /**
  *
@@ -112,7 +111,6 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::id_t> FeatureIDMap; // maps conceptual feature vertices to their feature ID
     typedef std::map <std::string, io::Writer*> WriterMap; // maps specific keywords to graph exporters
     typedef std::map <std::string, io::Reader*> ReaderMap; // maps specific keywords to graph importers
-    typedef std::map <std::string, QIcon> IconMap; // maps specific keywords to qt loaded icons
 
     /// empty constructor
     GraphWidget(QWidget *parent = 0);

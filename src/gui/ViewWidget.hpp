@@ -45,11 +45,8 @@
 #include "GraphWidget.hpp"
 
 #include <map>
-#include <QIcon>
-#include <QStatusBar>
 #include <QMainWindow>
 #include <QGraphicsView>
-#include <QStackedWidget>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
@@ -93,7 +90,7 @@ public:
      * \param mainWindow main qt application window
      * \param parent qt parent widget
      */
-    ViewWidget(QMainWindow *mainWindow, QWidget *parent = 0);
+    ViewWidget(QWidget *parent = 0);
     /// destructor
     ~ViewWidget();
 
@@ -196,16 +193,10 @@ public:
     /// getter method - tells whether this graph widget knows about an edge still being focused on
     bool getEdgeFocused () { return mEdgeFocused; }
 
-    /// getter method - retrieves available handle on the au-pair layers graph widget
-    LayerWidget* getLayerWidget() { return mpLayerWidget; }
-
     /// setter method - updates drag-n-drop starting vertex and the relevant source feature ID
-    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   int featureID);
+    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   NodeItem::id_t featureID);
     /// setter method - updates drag-n-drop   ending vertex and the relevant target feature ID
-    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     int featureID);
-
-    /// getter method - retrieves a qt icon registered at the given keyword in the icons map
-    QIcon* getIcon(std::string key) { return &(mIconMap[key]); }
+    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     NodeItem::id_t featureID);
 
     /// forcefully focuses out of any node that might be currently focused on
     void clearNodeFocus();
@@ -235,32 +226,14 @@ public:
     /// synchronizes out the given edge from mEdgeItemMap (i.e. deletes the edge)
     void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
 
-    /// retrieves a boolean witness telling whether the property dialog/panel is up and running
-    bool dialogIsRunning();
-
-    /// setter method for updating the temporary text currently being displayed on the Status Bar
-    inline void updateStatus(const std::string& message = std::string(), int timeout = 0)
-    {
-        mpStatus->showMessage(QString(message.c_str()), timeout);
-    }
-
-    /// setter method for updating the temporary text currently being displayed on the Status Bar
-    void updateStatus(const QString& message = QString(), int timeout = 0)
-    {
-        mpStatus->showMessage(message, timeout);
-    }
-
     /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
     bool getDragDrop() { return mDragDrop; }
 
-    /**
-     * \brief refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget (meant to be used from the outside)
-     * \param status controls Status Bar interaction: when false, refreshing goes silently (no updates on the Status Bar); when true, otherwise
-     */
-    void refreshLayersWidget(bool status = true);
+    /// setter method for updating the temporary text (i.e. for another 'timeout' miliseconds) currently being displayed on the Status Bar to the given 'message'
+    void updateStatus(const std::string& message = std::string(), int timeout = 0);
 
-    /// getter method for the property dialog
-    PropertyDialog* getPropertyDialog(void) { return mpPropertyDialog; }
+    /// setter method for updating the temporary text (i.e. for another 'timeout' miliseconds) currently being displayed on the Status Bar to the given 'message'
+    void updateStatus(const QString& message = QString(), int timeout = 0);
 
 public slots:
     /// shuffles all the nodes in the diagram graph view
@@ -373,8 +346,8 @@ public slots:
     void reloadPropertyDialogMainWindow();
 
 protected:
-    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
-    inline void refreshLayerWidget();
+    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget; when status is false, this takes place quiently (no updates are made on the status bar)
+    inline void refreshLayerWidget(bool status = true);
     /// updates the (read-only) layers graph view in the omologuous widget mpLayerWidget
     inline void updateLayerWidget();
 
@@ -401,10 +374,6 @@ private:
     /// introduces and displays a new edge with the given label
     void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
-    /// main window of the qt application
-    QMainWindow* mpMainWindow;
-    /// parent stacked widget (central widget of the main window)
-    QStackedWidget* mpStackedWidget;
     /// secondary base graph needed for runtime re-layouting
     graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
 
@@ -433,24 +402,11 @@ private:
     /// boolean witness preventing status bar refresh message to interfere with the 'Ready!' message on init
     bool mInitialized;
 
-    /// handle on the property dialog/panel
-    PropertyDialog* mpPropertyDialog;
-
     /// max height of the nodes in the scene (relevant for GraphViz runtime layouting)
     qreal mMaxNodeHeight;
     /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
     qreal mMaxNodeWidth;
 
-    // icons
-    /// qt icons map (with string keywords identifiers)
-    IconMap mIconMap;
-    /// loads icon from image file 'file' to the given qt icon
-    void loadIcon(QIcon& icon, std::string file);
-
-    /// handle on the au-pair layers graph widget
-    LayerWidget* mpLayerWidget;
-    /// status bar
-    QStatusBar* mpStatus;
     /// boolean witness for the drag-n-drop mode: true when drag-n-drop is on; false otherwise (i.e. when move-around mode is on)
     bool mDragDrop;
 };

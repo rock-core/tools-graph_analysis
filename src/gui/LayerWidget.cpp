@@ -42,12 +42,15 @@
 #include "NodeItem.hpp"
 #include "FilterItem.hpp"
 #include "LayerWidget.hpp"
-#include "NodeTypeManager.hpp"
-#include "EdgeTypeManager.hpp"
-#include "ActionCommander.hpp"
+#include "IconManager.hpp"
+#include "GraphManager.hpp"
+#include "WidgetManager.hpp"
 #include "AddNodeDialog.hpp"
 #include "FilterManager.hpp"
 #include "PropertyDialog.hpp"
+#include "NodeTypeManager.hpp"
+#include "EdgeTypeManager.hpp"
+#include "ActionCommander.hpp"
 
 #include <set>
 #include <math.h>
@@ -126,13 +129,13 @@ void LayerWidget::showContextMenu(const QPoint& pos)
     ActionCommander comm(mpViewWidget);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(mpViewWidget->getIcon("refresh")), this);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(mpViewWidget->getIcon("shuffle")), this);
-    QAction *actionImport  = comm.addAction("Import", SLOT(importGraph()), *(mpViewWidget->getIcon("import")));
-    QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(mpViewWidget->getIcon("export")));
-    QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(mpViewWidget->getIcon("reset")));
-    QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(mpViewWidget->getIcon("layout")), this);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(mpViewWidget->getIcon("reload")));
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")), this);
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle")), this);
+    QAction *actionImport  = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import")));
+    QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
+    QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
+    QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")), this);
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")));
 
     contextMenu.addAction(actionImport);
     contextMenu.addAction(actionExport);
@@ -141,7 +144,7 @@ void LayerWidget::showContextMenu(const QPoint& pos)
     contextMenu.addAction(actionShuffle);
     contextMenu.addAction(actionReset);
     contextMenu.addAction(actionLayout);
-    if(!mpViewWidget->dialogIsRunning())
+    if(!WidgetManager::getInstance()->getGraphManager()->dialogIsRunning())
     {
         contextMenu.addSeparator();
         contextMenu.addAction(actionReloadPropertyDialog);
@@ -259,7 +262,7 @@ void LayerWidget::updateFromGraph()
 
     // setting up custom regexp filters
     std::set<std::string> filters;
-    PropertyDialog *propertyDialog = mpViewWidget->getPropertyDialog();
+    PropertyDialog *propertyDialog = WidgetManager::getInstance()->getPropertyDialog();
     if(propertyDialog)
     {
         FilterManager::Filters manager_filters = propertyDialog->getFilterManager()->getFilters();
@@ -506,7 +509,7 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
-                if(!mpViewWidget->dialogIsRunning())
+                if(!WidgetManager::getInstance()->getGraphManager()->dialogIsRunning())
                 {
                     mpViewWidget->reloadPropertyDialog();
                 }

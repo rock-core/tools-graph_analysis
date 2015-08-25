@@ -39,11 +39,12 @@
 ****************************************************************************/
 
 #include "ViewWidget.hpp"
-#include "LayerWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
+#include "IconManager.hpp"
+#include "GraphManager.hpp"
+#include "WidgetManager.hpp"
 #include "AddNodeDialog.hpp"
-#include "PropertyDialog.hpp"
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
@@ -58,7 +59,6 @@
 #include <QMenu>
 #include <QLabel>
 #include <sstream>
-#include <QMenuBar>
 #include <QAction>
 #include <QKeyEvent>
 #include <QFileDialog>
@@ -84,8 +84,6 @@
 #include <exception>
 #include <boost/foreach.hpp>
 #include <base/Time.hpp>
-//#define DEFAULT_PATH_TO_ICONS "../../resources/icons/"
-#define DEFAULT_PATH_TO_ICONS "icons/"
 
 // comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
 #define CLEAR_BY_BACKGROUND
@@ -95,18 +93,14 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
+ViewWidget::ViewWidget(QWidget *parent)
     : GraphWidget(parent)
-    , mpMainWindow(mainWindow)
-    , mpStackedWidget(new QStackedWidget())
     , mpLayoutingGraph()
     , mVertexFocused(false)
     , mEdgeFocused(false)
     , mInitialized(false)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
-    , mpLayerWidget(new LayerWidget(this, mpGraph))
-    , mpStatus(mpMainWindow->statusBar())
     , mDragDrop(false)
 {
     // Add seed for force layout
@@ -130,7 +124,7 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
 
-    // setting up the Reader- and WriterMaps
+    // setting up the Reader and WriterMaps
     io::YamlWriter *yamlWriter = new io::YamlWriter();
     mWriterMap["yaml"]  = yamlWriter;
     mWriterMap["yml"]   = yamlWriter;
@@ -146,161 +140,10 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     io::GraphvizWriter *gvWriter = new io::GraphvizWriter();
     mWriterMap["dot"]  = gvWriter;
 
-    // setting up the icons
-    std::string pathToIcons = DEFAULT_PATH_TO_ICONS;
-    //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
-    loadIcon(mIconMap["addNode"], pathToIcons + "addNode.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["import"], pathToIcons + "import.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["export"], pathToIcons + "export.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["refresh"], pathToIcons + "refresh.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["shuffle"], pathToIcons + "shuffle.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["reset"], pathToIcons + "reset.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["layout"], pathToIcons + "layout.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["dragndrop"], pathToIcons + "dragndrop.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["label"], pathToIcons + "label.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["featureLabel"], pathToIcons + "featureLabel.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["remove"], pathToIcons + "remove.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["removeAll"], pathToIcons + "removeAll.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["addFeature"], pathToIcons + "addFeature.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["move"], pathToIcons + "move.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["reload"], pathToIcons + "reload.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["swap"], pathToIcons + "swap.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["layers"], pathToIcons + "layers.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["properties"], pathToIcons + "properties.png");
-
-    //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
-    loadIcon(mIconMap["addNode_white"], pathToIcons + "addNode_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["import_white"], pathToIcons + "import_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["export_white"], pathToIcons + "export_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["refresh_white"], pathToIcons + "refresh_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["shuffle_white"], pathToIcons + "shuffle_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["reset_white"], pathToIcons + "reset_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["layout_white"], pathToIcons + "layout_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["dragndrop_white"], pathToIcons + "dragndrop_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["label_white"], pathToIcons + "label_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["featureLabel_white"], pathToIcons + "featureLabel_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["remove_white"], pathToIcons + "remove_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["removeAll_white"], pathToIcons + "removeAll_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["addFeature_white"], pathToIcons + "addFeature_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["move_white"], pathToIcons + "move_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["reload_white"], pathToIcons + "reload_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["swap_white"], pathToIcons + "swap_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["layers_white"], pathToIcons + "layers_white.png");
-    //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["properties_white"], pathToIcons + "properties_white.png");
-
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
             this, SLOT(showContextMenu(const QPoint &)));
-    mpStackedWidget->addWidget((QWidget *) this);
-    mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
-    mpStackedWidget->setCurrentIndex(0);
-    mpMainWindow->setCentralWidget(mpStackedWidget);
     reset();
-    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpMainWindow, mpStackedWidget);
-
-    // setting up the Menus ToolBar
-    ActionCommander comm(this);
-    QMenuBar *bar = mpMainWindow->menuBar();
-
-    // needed menus
-    QMenu *MainMenu = new QMenu(tr("&Graph"));
-    QMenu *NodeMenu = new QMenu(tr("&Node"));
-    QMenu *EdgeMenu = new QMenu(tr("&Edge"));
-
-    // needed actions
-    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeFocusedEdgeLabelMainWindow()), mIconMap["label_white"]);
-    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeFocusedEdgeMainWindow()), mIconMap["remove_white"]);
-    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeFocusedVertexLabelMainWindow()), mIconMap["label_white"]);
-    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertexMainWindow()), mIconMap["remove_white"]);
-    QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureFocusedMainWindow()), mIconMap["addFeature_white"]);
-    QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesFocusedMainWindow()), mIconMap["swap_white"]);
-    QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureFocusedMainWindow()), mIconMap["featureLabel_white"]);
-    QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureFocusedMainWindow()), mIconMap["remove_white"]);
-    QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesFocusedMainWindow()), mIconMap["removeAll_white"]);
-    QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), mIconMap["addNode_white"]);
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), mIconMap["refresh_white"]);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), mIconMap["shuffle_white"]);
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mIconMap["import_white"]);
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export_white"]);
-    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset_white"]);
-    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), mIconMap["layout_white"]);
-    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), mIconMap["dragndrop_white"]);
-    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), mIconMap["move_white"]);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), mIconMap["reload_white"]);
-
-    // loading different actions in different menus
-    MainMenu->addAction(actionAddNode);
-    MainMenu->addSeparator();
-    MainMenu->addAction(actionImport);
-    MainMenu->addAction(actionExport);
-    MainMenu->addSeparator();
-    MainMenu->addAction(actionRefresh);
-    MainMenu->addAction(actionShuffle);
-    MainMenu->addAction(actionReset);
-    MainMenu->addAction(actionLayout);
-    MainMenu->addSeparator();
-    MainMenu->addAction(actionDragDrop);
-    MainMenu->addAction(actionMoveAround);
-    MainMenu->addSeparator();
-    MainMenu->addAction(actionReloadPropertyDialog);
-
-    NodeMenu->addAction(actionChangeLabel);
-    NodeMenu->addAction(actionAddFeature);
-    NodeMenu->addAction(actionSwapFeatures);
-    NodeMenu->addAction(actionRenameFeature);
-    NodeMenu->addAction(actionRemoveFeature);
-    NodeMenu->addAction(actionRemoveFeatures);
-    NodeMenu->addAction(actionRemoveNode);
-
-    EdgeMenu->addAction(actionChangeEdgeLabel);
-    EdgeMenu->addAction(actionRemoveEdge);
-
-    // loading menus in the bar
-    bar->addMenu(MainMenu);
-    bar->addMenu(NodeMenu);
-    bar->addMenu(EdgeMenu);
-
-    mpMainWindow->setWindowTitle(tr("Graph Analysis"));
-    mpStatus->addWidget(new QLabel("Ready!"));
-}
-
-void ViewWidget::loadIcon(QIcon& icon, std::string file)
-{
-    icon.addFile(QString::fromUtf8(file.c_str()), QSize(), QIcon::Normal, QIcon::Off);
 }
 
 ViewWidget::~ViewWidget()
@@ -329,25 +172,25 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeSelectedEdgeLabel()), mIconMap["label"]);
-    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), mIconMap["remove"]);
-    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), mIconMap["label"]);
-    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), mIconMap["remove"]);
-    QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureSelected()), mIconMap["addFeature"]);
-    QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesSelected()), mIconMap["swap"]);
-    QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureSelected()), mIconMap["featureLabel"]);
-    QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureSelected()), mIconMap["remove"]);
-    QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesSelected()), mIconMap["removeAll"]);
-    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, mIconMap["addNode"]);
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), mIconMap["refresh"]);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), mIconMap["shuffle"]);
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), mIconMap["import"]);
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), mIconMap["export"]);
-    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), mIconMap["reset"]);
-    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), mIconMap["layout"]);
-    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop", SLOT(setDragDrop()), mIconMap["dragndrop"]);
-    QAction *actionUnsetDragDrop = comm.addAction("Move-around", SLOT(unsetDragDrop()), mIconMap["move"]);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), mIconMap["reload"]);
+    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeSelectedEdgeLabel()), *(IconManager::getInstance()->getIcon("label")));
+    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), *(IconManager::getInstance()->getIcon("remove")));
+    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), *(IconManager::getInstance()->getIcon("label")));
+    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), *(IconManager::getInstance()->getIcon("remove")));
+    QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureSelected()), *(IconManager::getInstance()->getIcon("addFeature")));
+    QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesSelected()), *(IconManager::getInstance()->getIcon("swap")));
+    QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureSelected()), *(IconManager::getInstance()->getIcon("featureLabel")));
+    QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureSelected()), *(IconManager::getInstance()->getIcon("remove")));
+    QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesSelected()), *(IconManager::getInstance()->getIcon("removeAll")));
+    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, *(IconManager::getInstance()->getIcon("addNode")));
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")));
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle")));
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import")));
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
+    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")));
+    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop")));
+    QAction *actionUnsetDragDrop = comm.addAction("Move-around", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move")));
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")));
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)
@@ -394,7 +237,7 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     {
         contextMenu.addAction(actionSetDragDrop);
     }
-    if(!mpPropertyDialog->isRunning())
+    if(!WidgetManager::getInstance()->getGraphManager()->dialogIsRunning())
     {
         contextMenu.addSeparator();
         contextMenu.addAction(actionReloadPropertyDialog);
@@ -402,9 +245,14 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     contextMenu.exec(mapToGlobal(pos));
 }
 
-bool ViewWidget::dialogIsRunning()
+void ViewWidget::updateStatus(const std::string& message, int timeout)
 {
-    return mpPropertyDialog->isRunning();
+    WidgetManager::getInstance()->getGraphManager()->updateStatus(QString(message.c_str()), timeout);
+}
+
+void ViewWidget::updateStatus(const QString& message, int timeout)
+{
+    WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
 }
 
 void ViewWidget::addFeatureFocused()
@@ -655,7 +503,7 @@ void ViewWidget::fromFile(const QString& file, bool prefers_gexf, bool status)
         {
             updateStatus(std::string("Imported graph: from input file '") + filename.toStdString() + "'!", DEFAULT_TIMEOUT);
         }
-        mpLayerWidget->refresh(false);
+        WidgetManager::getInstance()->getLayerWidget()->refresh(false);
     }
 }
 
@@ -731,13 +579,7 @@ void ViewWidget::exportGraph()
 
 void ViewWidget::reloadPropertyDialog()
 {
-    updateStatus(std::string("reloading command panel..."));
-    if(mpPropertyDialog)
-    {
-        delete mpPropertyDialog;
-    }
-    mpPropertyDialog = new PropertyDialog(this, mpLayerWidget, mpMainWindow, mpStackedWidget, mDragDrop);
-    updateStatus(std::string("Reloaded command panel!"), DEFAULT_TIMEOUT);
+    WidgetManager::getInstance()->getGraphManager()->reloadPropertyDialog();
 }
 
 Edge::Ptr ViewWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
@@ -1098,7 +940,7 @@ void ViewWidget::changeLayout()
     }
 }
 
-void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int featureID)
+void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, NodeItem::id_t featureID)
 {
     updateStatus(std::string("drag-n-drop: setting source node to '") + startVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...");
     if("graph_analysis::ClusterVertex" != startVertex->getClassName())
@@ -1114,7 +956,7 @@ void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, int fea
     updateStatus(std::string("Drag-n-drop: set source node to '") + startVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...", DEFAULT_TIMEOUT);
 }
 
-void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, int featureID)
+void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::id_t featureID)
 {
     updateStatus(std::string("drag-n-drop: setting target node to '") + endVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...");
     if("graph_analysis::ClusterVertex" != endVertex->getClassName())
@@ -1718,13 +1560,13 @@ void ViewWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void ViewWidget::updateMoveAround(bool moveAround)
 {
-    mpPropertyDialog->uncheckDragDrop(moveAround);
+    WidgetManager::getInstance()->getPropertyDialog()->uncheckDragDrop(moveAround);
     setDragDrop(!moveAround);
 }
 
 void ViewWidget::updateDragDrop(bool dragDrop)
 {
-    mpPropertyDialog->uncheckMoveAround(dragDrop);
+    WidgetManager::getInstance()->getPropertyDialog()->uncheckMoveAround(dragDrop);
     setDragDrop(dragDrop);
 }
 
@@ -1763,7 +1605,7 @@ void ViewWidget::setDragDrop()
 {
     updateStatus(std::string("toggling drag-n-drop mode to true..."));
     mDragDrop = true;
-    mpPropertyDialog->setDragDrop(true);
+    WidgetManager::getInstance()->getPropertyDialog()->setDragDrop(true);
     if(mVertexSelected)
     {
         NodeItem *item = mNodeItemMap[mpSelectedVertex];
@@ -1786,7 +1628,7 @@ void ViewWidget::unsetDragDrop()
 {
     updateStatus(std::string("toggling drag-n-drop mode to false..."));
     mDragDrop = false;
-    mpPropertyDialog->setDragDrop(false);
+    WidgetManager::getInstance()->getPropertyDialog()->setDragDrop(false);
     NodeItemMap::iterator it = mNodeItemMap.begin();
     for(; mNodeItemMap.end() != it; ++it)
     {
@@ -1853,7 +1695,7 @@ void ViewWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
-                if(!mpPropertyDialog->isRunning())
+                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
                 {
                     reloadPropertyDialog();
                 }
@@ -2073,13 +1915,13 @@ void ViewWidget::setLayout(QString layoutName)
 void ViewWidget::setVertexFocused(bool focused)
 {
     mVertexFocused = focused;
-    mpPropertyDialog->setVertexFocused(focused);
+    WidgetManager::getInstance()->getPropertyDialog()->setVertexFocused(focused);
 }
 
 void ViewWidget::setEdgeFocused(bool focused)
 {
     mEdgeFocused = focused;
-    mpPropertyDialog->setEdgeFocused(focused);
+    WidgetManager::getInstance()->getPropertyDialog()->setEdgeFocused(focused);
 }
 
 void ViewWidget::clearNodeFocus()
@@ -2392,7 +2234,7 @@ void ViewWidget::addNodeAdhocMainWindow()
 
 void ViewWidget::refreshMainWindow()
 {
-    switch(mpStackedWidget->currentIndex())
+    switch(WidgetManager::getInstance()->getStackedWidget()->currentIndex())
     {
     case 0:
         this->refresh();
@@ -2406,45 +2248,42 @@ void ViewWidget::refreshMainWindow()
 
 void ViewWidget::shuffleMainWindow()
 {
-    switch(mpStackedWidget->currentIndex())
+    switch(WidgetManager::getInstance()->getStackedWidget()->currentIndex())
     {
     case 0:
         this->shuffle();
     break;
 
     case 1:
-        mpLayerWidget->shuffle();
+        WidgetManager::getInstance()->getLayerWidget()->shuffle();
     break;
     }
 }
 
 void ViewWidget::changeLayoutMainWindow()
 {
-    switch(mpStackedWidget->currentIndex())
+    switch(WidgetManager::getInstance()->getStackedWidget()->currentIndex())
     {
     case 0:
         this->changeLayout();
     break;
 
     case 1:
-        mpLayerWidget->changeLayout();
+        WidgetManager::getInstance()->getLayerWidget()->changeLayout();
     break;
     }
 }
 
 inline void ViewWidget::updateLayerWidget()
 {
-    mpLayerWidget->setGraph(mpGraph);
+    LayerWidget *layerWidget = WidgetManager::getInstance()->getLayerWidget();
+    layerWidget->setGraph(mpGraph);
+    layerWidget->refresh(false);
 }
 
-inline void ViewWidget::refreshLayerWidget()
+inline void ViewWidget::refreshLayerWidget(bool status)
 {
-    mpLayerWidget->refresh();
-}
-
-void ViewWidget::refreshLayersWidget(bool status)
-{
-    mpLayerWidget->refresh(status);
+    WidgetManager::getInstance()->getGraphManager()->refreshLayerWidget(status);
 }
 
 void ViewWidget::toggleDragDrop()
@@ -2454,7 +2293,7 @@ void ViewWidget::toggleDragDrop()
 
 void ViewWidget::reloadPropertyDialogMainWindow()
 {
-    if(!mpPropertyDialog->isRunning())
+    if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
     {
         reloadPropertyDialog();
     }

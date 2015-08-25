@@ -1,6 +1,7 @@
 
 #include "ViewWidget.hpp"
 #include "LayerWidget.hpp"
+#include "IconManager.hpp"
 #include "PropertyDialog.hpp"
 
 #include <QScrollBar>
@@ -91,7 +92,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     }
     mpTabWidget = new QTabWidget(Dialog);
     mpHorizontalLayoutWidget = new QWidget();
-    int currentIndexHorizontalLayoutWidget =  mpTabWidget->addTab(mpHorizontalLayoutWidget, *(mpViewWidget->getIcon("properties")), "&Properties");
+    int currentIndexHorizontalLayoutWidget =  mpTabWidget->addTab(mpHorizontalLayoutWidget, *(IconManager::getInstance()->getIcon("properties")), "&Properties");
     mpHorizontalLayoutWidget->setObjectName(QString::fromUtf8("mpHorizontalLayoutWidget"));
     QString horizontalLayoutWidgetTip("Command Properties for the Graph View, Focused Node (if any) and Focused Edge (if any)");
     mpTabWidget->setTabToolTip(currentIndexHorizontalLayoutWidget, horizontalLayoutWidgetTip);
@@ -111,7 +112,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpAddNodeButton = new QPushButton(mpHorizontalLayoutWidget);
         mpAddNodeButton->setObjectName(QString::fromUtf8("mpAddNodeButton"));
-        mpAddNodeButton->setIcon(*(mpViewWidget->getIcon("addNode")));
+        mpAddNodeButton->setIcon(*(IconManager::getInstance()->getIcon("addNode")));
         mpAddNodeButton->setCheckable(false);
         mpAddNodeButton->setChecked(false);
         mpAddNodeButton->setToolTip(QString("adds a new node to the graph"));
@@ -121,7 +122,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpImportButton = new QPushButton(mpHorizontalLayoutWidget);
         mpImportButton->setObjectName(QString::fromUtf8("mpImportButton"));
-        mpImportButton->setIcon(*(mpViewWidget->getIcon("import")));
+        mpImportButton->setIcon(*(IconManager::getInstance()->getIcon("import")));
         mpImportButton->setCheckable(false);
         mpImportButton->setChecked(false);
         mpImportButton->setToolTip(QString("opens an existing graph file"));
@@ -130,7 +131,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpExportButton = new QPushButton(mpHorizontalLayoutWidget);
         mpExportButton->setObjectName(QString::fromUtf8("mpExportButton"));
-        mpExportButton->setIcon(*(mpViewWidget->getIcon("export")));
+        mpExportButton->setIcon(*(IconManager::getInstance()->getIcon("export")));
         mpExportButton->setCheckable(false);
         mpExportButton->setChecked(false);
         mpExportButton->setToolTip(QString("saves the graph to file"));
@@ -140,7 +141,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRefreshButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRefreshButton->setObjectName(QString::fromUtf8("mpRefreshButton"));
-        mpRefreshButton->setIcon(*(mpViewWidget->getIcon("refresh")));
+        mpRefreshButton->setIcon(*(IconManager::getInstance()->getIcon("refresh")));
         mpRefreshButton->setCheckable(false);
         mpRefreshButton->setChecked(false);
         mpRefreshButton->setToolTip(QString("reloads the graph view"));
@@ -149,7 +150,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpShuffleButton = new QPushButton(mpHorizontalLayoutWidget);
         mpShuffleButton->setObjectName(QString::fromUtf8("mpShuffleButton"));
-        mpShuffleButton->setIcon(*(mpViewWidget->getIcon("shuffle")));
+        mpShuffleButton->setIcon(*(IconManager::getInstance()->getIcon("shuffle")));
         mpShuffleButton->setCheckable(false);
         mpShuffleButton->setChecked(false);
         mpShuffleButton->setToolTip(QString("randomly spreads around existing vertices in this view"));
@@ -158,7 +159,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpResetButton = new QPushButton(mpHorizontalLayoutWidget);
         mpResetButton->setObjectName(QString::fromUtf8("mpResetButton"));
-        mpResetButton->setIcon(*(mpViewWidget->getIcon("reset")));
+        mpResetButton->setIcon(*(IconManager::getInstance()->getIcon("reset")));
         mpResetButton->setCheckable(false);
         mpResetButton->setChecked(false);
         mpResetButton->setToolTip(QString("completely deletes the graph"));
@@ -167,7 +168,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpLayoutButton = new QPushButton(mpHorizontalLayoutWidget);
         mpLayoutButton->setObjectName(QString::fromUtf8("mpLayoutButton"));
-        mpLayoutButton->setIcon(*(mpViewWidget->getIcon("layout")));
+        mpLayoutButton->setIcon(*(IconManager::getInstance()->getIcon("layout")));
         mpLayoutButton->setCheckable(false);
         mpLayoutButton->setChecked(false);
         mpLayoutButton->setToolTip(QString("applies a new layout to the graph"));
@@ -177,7 +178,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpDragDropButton = new QPushButton(mpHorizontalLayoutWidget);
         mpDragDropButton->setObjectName(QString::fromUtf8("mpDragDropButton"));
-        mpDragDropButton->setIcon(*(mpViewWidget->getIcon("dragndrop")));
+        mpDragDropButton->setIcon(*(IconManager::getInstance()->getIcon("dragndrop")));
         mpDragDropButton->setCheckable(true);
         mpDragDropButton->setChecked(dragDropIsChecked);
         mpDragDropButton->setToolTip(QString("toggles the drag-n-drop mode"));
@@ -186,7 +187,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpMoveAroundButton = new QPushButton(mpHorizontalLayoutWidget);
         mpMoveAroundButton->setObjectName(QString::fromUtf8("mpMoveAroundButton"));
-        mpMoveAroundButton->setIcon(*(mpViewWidget->getIcon("move")));
+        mpMoveAroundButton->setIcon(*(IconManager::getInstance()->getIcon("move")));
         mpMoveAroundButton->setCheckable(true);
         mpMoveAroundButton->setChecked(!dragDropIsChecked);
         mpMoveAroundButton->setToolTip(QString("toggles the move-around mode"));
@@ -217,7 +218,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRenameNodeButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRenameNodeButton->setObjectName(QString::fromUtf8("mpRenameNodeButton"));
-        mpRenameNodeButton->setIcon(*(mpViewWidget->getIcon("label")));
+        mpRenameNodeButton->setIcon(*(IconManager::getInstance()->getIcon("label")));
         mpRenameNodeButton->setEnabled(mVertexFocused);
         mpRenameNodeButton->setCheckable(false);
         mpRenameNodeButton->setChecked(false);
@@ -227,7 +228,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpAddFeatureButton = new QPushButton(mpHorizontalLayoutWidget);
         mpAddFeatureButton->setObjectName(QString::fromUtf8("mpAddFeatureButton"));
-        mpAddFeatureButton->setIcon(*(mpViewWidget->getIcon("addFeature")));
+        mpAddFeatureButton->setIcon(*(IconManager::getInstance()->getIcon("addFeature")));
         mpAddFeatureButton->setEnabled(mVertexFocused);
         mpAddFeatureButton->setCheckable(false);
         mpAddFeatureButton->setChecked(false);
@@ -237,7 +238,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpSwapFeaturesButton = new QPushButton(mpHorizontalLayoutWidget);
         mpSwapFeaturesButton->setObjectName(QString::fromUtf8("mpSwapFeaturesButton"));
-        mpSwapFeaturesButton->setIcon(*(mpViewWidget->getIcon("swap")));
+        mpSwapFeaturesButton->setIcon(*(IconManager::getInstance()->getIcon("swap")));
         mpSwapFeaturesButton->setEnabled(mVertexFocused);
         mpSwapFeaturesButton->setCheckable(false);
         mpSwapFeaturesButton->setChecked(false);
@@ -247,7 +248,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRenameFeatureButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRenameFeatureButton->setObjectName(QString::fromUtf8("mpRenameFeatureButton"));
-        mpRenameFeatureButton->setIcon(*(mpViewWidget->getIcon("featureLabel")));
+        mpRenameFeatureButton->setIcon(*(IconManager::getInstance()->getIcon("featureLabel")));
         mpRenameFeatureButton->setEnabled(mVertexFocused);
         mpRenameFeatureButton->setCheckable(false);
         mpRenameFeatureButton->setChecked(false);
@@ -257,7 +258,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRemoveFeatureButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRemoveFeatureButton->setObjectName(QString::fromUtf8("mpRemoveFeatureButton"));
-        mpRemoveFeatureButton->setIcon(*(mpViewWidget->getIcon("remove")));
+        mpRemoveFeatureButton->setIcon(*(IconManager::getInstance()->getIcon("remove")));
         mpRemoveFeatureButton->setEnabled(mVertexFocused);
         mpRemoveFeatureButton->setCheckable(false);
         mpRemoveFeatureButton->setChecked(false);
@@ -267,7 +268,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRemoveFeaturesButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRemoveFeaturesButton->setObjectName(QString::fromUtf8("mpRemoveFeaturesButton"));
-        mpRemoveFeaturesButton->setIcon(*(mpViewWidget->getIcon("removeAll")));
+        mpRemoveFeaturesButton->setIcon(*(IconManager::getInstance()->getIcon("removeAll")));
         mpRemoveFeaturesButton->setEnabled(mVertexFocused);
         mpRemoveFeaturesButton->setCheckable(false);
         mpRemoveFeaturesButton->setChecked(false);
@@ -277,7 +278,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRemoveNodeButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRemoveNodeButton->setObjectName(QString::fromUtf8("mpRemoveNodeButton"));
-        mpRemoveNodeButton->setIcon(*(mpViewWidget->getIcon("remove")));
+        mpRemoveNodeButton->setIcon(*(IconManager::getInstance()->getIcon("remove")));
         mpRemoveNodeButton->setEnabled(mVertexFocused);
         mpRemoveNodeButton->setCheckable(false);
         mpRemoveNodeButton->setChecked(false);
@@ -289,7 +290,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRenameEdgeButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRenameEdgeButton->setObjectName(QString::fromUtf8("mpRenameEdgeButton"));
-        mpRenameEdgeButton->setIcon(*(mpViewWidget->getIcon("label")));
+        mpRenameEdgeButton->setIcon(*(IconManager::getInstance()->getIcon("label")));
         mpRenameEdgeButton->setEnabled(mEdgeFocused);
         mpRenameEdgeButton->setCheckable(false);
         mpRenameEdgeButton->setChecked(false);
@@ -299,7 +300,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRemoveEdgeButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRemoveEdgeButton->setObjectName(QString::fromUtf8("mpRemoveEdgeButton"));
-        mpRemoveEdgeButton->setIcon(*(mpViewWidget->getIcon("remove")));
+        mpRemoveEdgeButton->setIcon(*(IconManager::getInstance()->getIcon("remove")));
         mpRemoveEdgeButton->setEnabled(mEdgeFocused);
         mpRemoveEdgeButton->setCheckable(false);
         mpRemoveEdgeButton->setChecked(false);
@@ -316,7 +317,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     }
 
     mpHorizontalLayoutLayerWidget = new QWidget();
-    int currentIndexHorizontalLayoutLayerWidget = mpTabWidget->addTab(mpHorizontalLayoutLayerWidget, *(mpViewWidget->getIcon("layers")), "&Layers");
+    int currentIndexHorizontalLayoutLayerWidget = mpTabWidget->addTab(mpHorizontalLayoutLayerWidget, *(IconManager::getInstance()->getIcon("layers")), "&Layers");
     mpHorizontalLayoutLayerWidget->setObjectName(QString::fromUtf8("mpHorizontalLayoutLayerWidget"));
     QString horizontalLayoutLayerWidgetTip("Command Properties for the Layers View");
     mpTabWidget->setTabToolTip(currentIndexHorizontalLayoutLayerWidget, horizontalLayoutLayerWidgetTip);
@@ -335,7 +336,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpImportLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
         mpImportLayerButton->setObjectName(QString::fromUtf8("mpImportLayerButton"));
-        mpImportLayerButton->setIcon(*(mpViewWidget->getIcon("import")));
+        mpImportLayerButton->setIcon(*(IconManager::getInstance()->getIcon("import")));
         mpImportLayerButton->setCheckable(false);
         mpImportLayerButton->setChecked(false);
         mpImportLayerButton->setToolTip(QString("opens an existing graph file"));
@@ -344,7 +345,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpExportLayerButton = new QPushButton(mpHorizontalLayoutWidget);
         mpExportLayerButton->setObjectName(QString::fromUtf8("mpExportLayerButton"));
-        mpExportLayerButton->setIcon(*(mpViewWidget->getIcon("export")));
+        mpExportLayerButton->setIcon(*(IconManager::getInstance()->getIcon("export")));
         mpExportLayerButton->setCheckable(false);
         mpExportLayerButton->setChecked(false);
         mpExportLayerButton->setToolTip(QString("saves the graph to file"));
@@ -354,7 +355,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRefreshLayerButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRefreshLayerButton->setObjectName(QString::fromUtf8("mpRefreshLayerButton"));
-        mpRefreshLayerButton->setIcon(*(mpViewWidget->getIcon("refresh")));
+        mpRefreshLayerButton->setIcon(*(IconManager::getInstance()->getIcon("refresh")));
         mpRefreshLayerButton->setCheckable(false);
         mpRefreshLayerButton->setChecked(false);
         mpRefreshLayerButton->setToolTip(QString("reloads this graph view"));
@@ -363,7 +364,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpShuffleLayerButton = new QPushButton(mpHorizontalLayoutWidget);
         mpShuffleLayerButton->setObjectName(QString::fromUtf8("mpShuffleLayerButton"));
-        mpShuffleLayerButton->setIcon(*(mpViewWidget->getIcon("shuffle")));
+        mpShuffleLayerButton->setIcon(*(IconManager::getInstance()->getIcon("shuffle")));
         mpShuffleLayerButton->setCheckable(false);
         mpShuffleLayerButton->setChecked(false);
         mpShuffleLayerButton->setToolTip(QString("randomly spreads around existing vertices"));
@@ -372,7 +373,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpResetLayerButton = new QPushButton(mpHorizontalLayoutWidget);
         mpResetLayerButton->setObjectName(QString::fromUtf8("mpResetLayerButton"));
-        mpResetLayerButton->setIcon(*(mpViewWidget->getIcon("reset")));
+        mpResetLayerButton->setIcon(*(IconManager::getInstance()->getIcon("reset")));
         mpResetLayerButton->setCheckable(false);
         mpResetLayerButton->setChecked(false);
         mpResetLayerButton->setToolTip(QString("completely deletes the graph"));
@@ -381,7 +382,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpLayoutLayerButton = new QPushButton(mpHorizontalLayoutWidget);
         mpLayoutLayerButton->setObjectName(QString::fromUtf8("mpLayoutLayerButton"));
-        mpLayoutLayerButton->setIcon(*(mpViewWidget->getIcon("layout")));
+        mpLayoutLayerButton->setIcon(*(IconManager::getInstance()->getIcon("layout")));
         mpLayoutLayerButton->setCheckable(false);
         mpLayoutLayerButton->setChecked(false);
         mpLayoutLayerButton->setToolTip(QString("applies a new layout to the graph"));
@@ -475,7 +476,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpCheckBoxColumn->setToolTip(QString("Custom Filters Enabling Panel"));
         mpCheckBoxColumn->setGeometry(0, 0, 20, 0);
 
-        mpFilterManager = new FilterManager(mpViewWidget, mpLayerWidget, mpCheckBoxColumn, mpFiltersBox);
+        mpFilterManager = new FilterManager(mpLayerWidget, mpCheckBoxColumn, mpFiltersBox);
         mpFilterManager->setGeometry(checkBoxWidth, 0, size.width() - checkBoxWidth, size.height());
         mpFilterManager->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
@@ -497,7 +498,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpAddFilterButton = new QPushButton(mpHorizontalLayoutWidget);
         mpAddFilterButton->setObjectName(QString::fromUtf8("mpAddFilterButton"));
-        mpAddFilterButton->setIcon(*(mpViewWidget->getIcon("addFeature")));
+        mpAddFilterButton->setIcon(*(IconManager::getInstance()->getIcon("addFeature")));
         mpAddFilterButton->setEnabled(true);
         mpAddFilterButton->setCheckable(false);
         mpAddFilterButton->setChecked(false);
@@ -507,7 +508,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRenameFilterButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRenameFilterButton->setObjectName(QString::fromUtf8("mpRenameFilterButton"));
-        mpRenameFilterButton->setIcon(*(mpViewWidget->getIcon("featureLabel")));
+        mpRenameFilterButton->setIcon(*(IconManager::getInstance()->getIcon("featureLabel")));
         mpRenameFilterButton->setEnabled(true);
         mpRenameFilterButton->setCheckable(false);
         mpRenameFilterButton->setChecked(false);
@@ -517,7 +518,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpSwapFiltersButton = new QPushButton(mpHorizontalLayoutWidget);
         mpSwapFiltersButton->setObjectName(QString::fromUtf8("mpSwapFiltersButton"));
-        mpSwapFiltersButton->setIcon(*(mpViewWidget->getIcon("swap")));
+        mpSwapFiltersButton->setIcon(*(IconManager::getInstance()->getIcon("swap")));
         mpSwapFiltersButton->setEnabled(true);
         mpSwapFiltersButton->setCheckable(false);
         mpSwapFiltersButton->setChecked(false);
@@ -527,7 +528,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRemoveFilterButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRemoveFilterButton->setObjectName(QString::fromUtf8("mpRemoveFilterButton"));
-        mpRemoveFilterButton->setIcon(*(mpViewWidget->getIcon("remove")));
+        mpRemoveFilterButton->setIcon(*(IconManager::getInstance()->getIcon("remove")));
         mpRemoveFilterButton->setEnabled(true);
         mpRemoveFilterButton->setCheckable(false);
         mpRemoveFilterButton->setChecked(false);
@@ -537,7 +538,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpRemoveFiltersButton = new QPushButton(mpHorizontalLayoutWidget);
         mpRemoveFiltersButton->setObjectName(QString::fromUtf8("mpRemoveFiltersButton"));
-        mpRemoveFiltersButton->setIcon(*(mpViewWidget->getIcon("removeAll")));
+        mpRemoveFiltersButton->setIcon(*(IconManager::getInstance()->getIcon("removeAll")));
         mpRemoveFiltersButton->setEnabled(true);
         mpRemoveFiltersButton->setCheckable(false);
         mpRemoveFiltersButton->setChecked(false);

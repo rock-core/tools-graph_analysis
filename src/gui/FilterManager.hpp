@@ -38,7 +38,7 @@ public:
      * \param checkBoxGrid widget to host the check-boxes at this widget's disposal
      * \param parent optional qt parent widget to assume ownership over this widget
      */
-    FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent = 0);
+    FilterManager(LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent = 0);
     /// destructor
     ~FilterManager();
 
@@ -119,8 +119,6 @@ public slots:
 private:
     /// array of registered filters
     Filters mFilters;
-    /// central widget of the whole program; necessary for retrieving global GUI icons
-    ViewWidget *mpViewWidget;
     /// layers widget; target for the refresh orders
     LayerWidget *mpLayerWidget;
     /// check boxes manager

@@ -39,7 +39,6 @@
 ****************************************************************************/
 
 #include "GraphWidget.hpp"
-#include "LayerWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
 #include "AddNodeDialog.hpp"

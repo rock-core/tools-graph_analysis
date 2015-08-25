@@ -1,6 +1,12 @@
 #include "GraphManager.hpp"
+#include "IconManager.hpp"
+#include "WidgetManager.hpp"
+#include "ActionCommander.hpp"
 
 #include <QTime>
+#include <QMenu>
+#include <QMenuBar>
+#include <QTranslator>
 #include <base/Logging.hpp>
 
 #include <graph_analysis/filters/RegexFilters.hpp>
@@ -10,13 +16,97 @@ namespace gui {
 
 GraphManager::GraphManager(const QString& filename)
     : mpMainWindow(new QMainWindow())
+    , mpStackedWidget(new QStackedWidget())
+    , mpStatus(mpMainWindow->statusBar())
     , mLayout("dot") // other possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 {
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     mpMainWindow->setMinimumSize(850, 400);
-    mpViewWidget = new ViewWidget(mpMainWindow, mpMainWindow);
-    mpViewWidget->reset();
+    mpViewWidget = new ViewWidget(mpMainWindow);
+//    mpViewWidget->reset();
+    mpLayerWidget = new LayerWidget(mpViewWidget, mpViewWidget->graph());
+
+    mpStackedWidget->addWidget((QWidget *) mpViewWidget);
+    mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
+    mpStackedWidget->setCurrentIndex(0); // showing mpViewWidget on init
+    mpMainWindow->setCentralWidget(mpStackedWidget);
+
+    mpPropertyDialog = new PropertyDialog(mpViewWidget, mpLayerWidget, mpMainWindow, mpStackedWidget);
+
+    // now that all main widgets are available, registering them all to the WidgetManager
+    WidgetManager *widgetManager = WidgetManager::getInstance();
+    widgetManager->setGraphManager(this);
+    widgetManager->setMainWindow(mpMainWindow);
+    widgetManager->setViewWidget(mpViewWidget);
+    widgetManager->setLayerWidget(mpLayerWidget);
+    widgetManager->setStackedWidget(mpStackedWidget);
+    widgetManager->setPropertyDialog(mpPropertyDialog);
+
+    // setting up the Menus ToolBar
+    ActionCommander comm(mpViewWidget);
+    QMenuBar *bar = mpMainWindow->menuBar();
+
+    // needed menus
+    QMenu *MainMenu = new QMenu(QObject::tr("&Graph"));
+    QMenu *NodeMenu = new QMenu(QObject::tr("&Node"));
+    QMenu *EdgeMenu = new QMenu(QObject::tr("&Edge"));
+
+    // needed actions
+    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeFocusedEdgeLabelMainWindow()), *(IconManager::getInstance()->getIcon("label_white")));
+    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeFocusedEdgeMainWindow()), *(IconManager::getInstance()->getIcon("remove_white")));
+    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeFocusedVertexLabelMainWindow()), *(IconManager::getInstance()->getIcon("label_white")));
+    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertexMainWindow()), *(IconManager::getInstance()->getIcon("remove_white")));
+    QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureFocusedMainWindow()), *(IconManager::getInstance()->getIcon("addFeature_white")));
+    QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesFocusedMainWindow()), *(IconManager::getInstance()->getIcon("swap_white")));
+    QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureFocusedMainWindow()), *(IconManager::getInstance()->getIcon("featureLabel_white")));
+    QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureFocusedMainWindow()), *(IconManager::getInstance()->getIcon("remove_white")));
+    QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesFocusedMainWindow()), *(IconManager::getInstance()->getIcon("removeAll_white")));
+    QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), *(IconManager::getInstance()->getIcon("addNode_white")));
+    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), *(IconManager::getInstance()->getIcon("refresh_white")));
+    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), *(IconManager::getInstance()->getIcon("shuffle_white")));
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import_white")));
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export_white")));
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset_white")));
+    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), *(IconManager::getInstance()->getIcon("layout_white")));
+    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop_white")));
+    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move_white")));
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), *(IconManager::getInstance()->getIcon("reload_white")));
+
+    // loading different actions in different menus
+    MainMenu->addAction(actionAddNode);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionImport);
+    MainMenu->addAction(actionExport);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionRefresh);
+    MainMenu->addAction(actionShuffle);
+    MainMenu->addAction(actionReset);
+    MainMenu->addAction(actionLayout);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionDragDrop);
+    MainMenu->addAction(actionMoveAround);
+    MainMenu->addSeparator();
+    MainMenu->addAction(actionReloadPropertyDialog);
+
+    NodeMenu->addAction(actionChangeLabel);
+    NodeMenu->addAction(actionAddFeature);
+    NodeMenu->addAction(actionSwapFeatures);
+    NodeMenu->addAction(actionRenameFeature);
+    NodeMenu->addAction(actionRemoveFeature);
+    NodeMenu->addAction(actionRemoveFeatures);
+    NodeMenu->addAction(actionRemoveNode);
+
+    EdgeMenu->addAction(actionChangeEdgeLabel);
+    EdgeMenu->addAction(actionRemoveEdge);
+
+    // loading menus in the bar
+    bar->addMenu(MainMenu);
+    bar->addMenu(NodeMenu);
+    bar->addMenu(EdgeMenu);
+
+    mpMainWindow->setWindowTitle(QObject::tr("Graph Analysis"));
+    mpStatus->addWidget(new QLabel("Ready!"));
 
     // setting up graph regex filtering
     filters::VertexRegexFilter sourceNodeFilter(".*");
@@ -43,6 +133,27 @@ GraphManager::~GraphManager()
         // this instance assumed ownership of the rest of the Qt components instances (it will delete them recursively)
         delete mpMainWindow;
     }
+}
+
+void GraphManager::reloadPropertyDialog(void)
+{
+    updateStatus(std::string("reloading command panel..."));
+    if(mpPropertyDialog)
+    {
+        delete mpPropertyDialog;
+    }
+    mpPropertyDialog = new PropertyDialog(mpViewWidget, mpLayerWidget, mpMainWindow, mpStackedWidget, mpViewWidget->getDragDrop());
+    updateStatus(std::string("Reloaded command panel!"), DEFAULT_TIMEOUT);
+}
+
+bool GraphManager::dialogIsRunning()
+{
+    return mpPropertyDialog->isRunning();
+}
+
+void GraphManager::refreshLayerWidget(bool status)
+{
+    mpLayerWidget->refresh(status);
 }
 
 void GraphManager::helpSetup(std::stringstream& ss, const std::string& cmd)

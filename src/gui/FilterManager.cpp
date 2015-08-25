@@ -1,5 +1,6 @@
 
 #include "FilterManager.hpp"
+#include "IconManager.hpp"
 #include "ActionCommander.hpp"
 #include "AddFilterDialog.hpp"
 #include "SwapFiltersDialog.hpp"
@@ -17,9 +18,8 @@
 namespace graph_analysis {
 namespace gui {
 
-FilterManager::FilterManager(ViewWidget *viewWidget, LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent)
+FilterManager::FilterManager(LayerWidget *layerWidget, QWidget *checkBoxGrid, QWidget *parent)
     : QGraphicsView(parent)
-    , mpViewWidget(viewWidget)
     , mpLayerWidget(layerWidget)
     , mpCheckBoxGrid(checkBoxGrid)
     , mItemSelected(false)
@@ -51,13 +51,13 @@ void FilterManager::showContextMenu(const QPoint& pos)
     ActionCommander comm(this);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionAddFilter = comm.addAction("Add Regexp Filter", SLOT(addFilter()), *(mpViewWidget->getIcon("addFeature")));
-    QAction *actionRenameFilter = comm.addAction("Rename one Filter", SLOT(renameFilter()), *(mpViewWidget->getIcon("featureLabel")));
-    QAction *actionSwapFilters = comm.addAction("Swap Filters", SLOT(swapFilters()), *(mpViewWidget->getIcon("swap")));
-    QAction *actionRenameSelectedFilter = comm.addAction("Rename Selected Filter", SLOT(renameSelectedFilter()), *(mpViewWidget->getIcon("featureLabel")));
-    QAction *actionRemoveFilter = comm.addAction("Remove one Filter", SLOT(removeFilter()), *(mpViewWidget->getIcon("remove")));
-    QAction *actionRemoveSelectedFilter = comm.addAction("Remove Selected Filter", SLOT(removeSelectedFilter()), *(mpViewWidget->getIcon("remove")));
-    QAction *actionRemoveFilters = comm.addAction("Remove All Filters", SLOT(removeFilters()), *(mpViewWidget->getIcon("removeAll")));
+    QAction *actionAddFilter = comm.addAction("Add Regexp Filter", SLOT(addFilter()), *(IconManager::getInstance()->getIcon("addFeature")));
+    QAction *actionRenameFilter = comm.addAction("Rename one Filter", SLOT(renameFilter()), *(IconManager::getInstance()->getIcon("featureLabel")));
+    QAction *actionSwapFilters = comm.addAction("Swap Filters", SLOT(swapFilters()), *(IconManager::getInstance()->getIcon("swap")));
+    QAction *actionRenameSelectedFilter = comm.addAction("Rename Selected Filter", SLOT(renameSelectedFilter()), *(IconManager::getInstance()->getIcon("featureLabel")));
+    QAction *actionRemoveFilter = comm.addAction("Remove one Filter", SLOT(removeFilter()), *(IconManager::getInstance()->getIcon("remove")));
+    QAction *actionRemoveSelectedFilter = comm.addAction("Remove Selected Filter", SLOT(removeSelectedFilter()), *(IconManager::getInstance()->getIcon("remove")));
+    QAction *actionRemoveFilters = comm.addAction("Remove All Filters", SLOT(removeFilters()), *(IconManager::getInstance()->getIcon("removeAll")));
 
     if(mItemSelected)
     {
