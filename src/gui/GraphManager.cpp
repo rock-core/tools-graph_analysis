@@ -400,7 +400,7 @@ void GraphManager::changeLayoutMainWindow()
 
 void GraphManager::reloadPropertyDialogMainWindow()
 {
-    if(mpPropertyDialog->isRunning())
+    if(!mpPropertyDialog->isRunning())
     {
         reloadPropertyDialog();
     }
