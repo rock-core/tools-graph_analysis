@@ -63,20 +63,6 @@ class NodeItem;
 class EdgeItem;
 
 /**
- *
- * \beginverbatim
-    LayerWidget* widget = new LayerWidget;
-
-    // Create vertices
-    for(int i = 0; i < 1; ++i)
-    {
-        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
-        widget->addVertex(vertex);
-    }
- \endverbatim
- */
-
-/**
  * \file LayerWidget.hpp
  * \class LayerWidget
  * \brief layers graph view widget implementation

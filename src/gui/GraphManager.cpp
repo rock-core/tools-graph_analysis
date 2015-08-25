@@ -31,8 +31,8 @@ GraphManager::GraphManager(const QString& filename)
     mpMainWindow->setMinimumSize(850, 400);
 
     mpLayerWidget = new LayerWidget();
-    widgetManager->setLayerWidget(mpLayerWidget);
-
+    widgetManager->setLayerWidget(mpLayerWidget); // shall come before ViewWidget's constructor being called
+    // ViewWidget uses the subordinate LayerWidget in its constructor (to update the common mpGraph base graph instance at ViewWidget init)
     mpViewWidget = new ViewWidget(mpMainWindow);
     widgetManager->setViewWidget(mpViewWidget);
 //    mpViewWidget->reset();
@@ -145,6 +145,7 @@ void GraphManager::reloadPropertyDialog(void)
         delete mpPropertyDialog;
     }
     mpPropertyDialog = new PropertyDialog(mpViewWidget->getDragDrop(), mpViewWidget->getVertexFocused(), mpViewWidget->getEdgeFocused());
+    WidgetManager::getInstance()->setPropertyDialog(mpPropertyDialog); // IMPORTANT!!! - now updating the corresponding field in the WidgetManager
     updateStatus(std::string("Reloaded command panel!"), DEFAULT_TIMEOUT);
 }
 
