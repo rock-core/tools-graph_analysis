@@ -133,36 +133,18 @@ ViewWidget::ViewWidget(QMainWindow *mainWindow, QWidget *parent)
     // setting up the Reader- and WriterMaps
     io::YamlWriter *yamlWriter = new io::YamlWriter();
     mWriterMap["yaml"]  = yamlWriter;
-    mWriterMap["Yaml"]  = yamlWriter;
     mWriterMap["yml"]   = yamlWriter;
-    mWriterMap["Yml"]   = yamlWriter;
-    mWriterMap["YAML"]  = yamlWriter;
-    mWriterMap["YML"]   = yamlWriter;
     io::YamlReader *yamlReader = new io::YamlReader();
     mReaderMap["yaml"]  = yamlReader;
-    mReaderMap["Yaml"]  = yamlReader;
     mReaderMap["yml"]   = yamlReader;
-    mReaderMap["Yml"]   = yamlReader;
-    mReaderMap["YAML"]  = yamlReader;
-    mReaderMap["YML"]   = yamlReader;
     io::GexfWriter *gexfWriter = new io::GexfWriter();
     mWriterMap["gexf"]  = gexfWriter;
-    mWriterMap["Gexf"]  = gexfWriter;
     mWriterMap["xml"]   = gexfWriter;
-    mWriterMap["Xml"]   = gexfWriter;
-    mWriterMap["GEXF"]  = gexfWriter;
-    mWriterMap["XML"]   = gexfWriter;
     io::GexfReader *gexfReader = new io::GexfReader();
     mReaderMap["gexf"]  = gexfReader;
-    mReaderMap["Gexf"]  = gexfReader;
     mReaderMap["xml"]   = gexfReader;
-    mReaderMap["Xml"]   = gexfReader;
-    mReaderMap["GEXF"]  = gexfReader;
-    mReaderMap["XML"]   = gexfReader;
     io::GraphvizWriter *gvWriter = new io::GraphvizWriter();
     mWriterMap["dot"]  = gvWriter;
-    mWriterMap["Dot"]  = gvWriter;
-    mWriterMap["DOT"]  = gvWriter;
 
     // setting up the icons
     std::string pathToIcons = DEFAULT_PATH_TO_ICONS;
