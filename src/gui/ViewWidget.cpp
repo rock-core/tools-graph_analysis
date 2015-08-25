@@ -275,7 +275,7 @@ void ViewWidget::addFeature(graph_analysis::Vertex::Ptr vertex)
         std::string error_msg = std::string("graph_analysis::ViewWidget::addFeature: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
-        updateStatus(std::string("Failed to add a feature to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to add a feature to vertex '") + vertex->toString() + "' of type '" + vertex->getClassName() + "': " + error_msg + "!", GraphManager::TIMEOUT);
     }
     bool ok;
     QStringList features_options;
@@ -320,12 +320,12 @@ void ViewWidget::addFeature(graph_analysis::Vertex::Ptr vertex)
         mFeatureIDMap[featureVertex] = item->addFeature(featureVertex);
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         updateLayerWidget();
-        updateStatus(std::string("Added an ") + strFeatureType.toStdString() + " feature to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Added an ") + strFeatureType.toStdString() + " feature to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", GraphManager::TIMEOUT);
         item->update();
     }
     else
     {
-        updateStatus(std::string("Failed to add an ") + strFeatureType.toStdString() + " feature to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to add an ") + strFeatureType.toStdString() + " feature to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "': aborted by user!", GraphManager::TIMEOUT);
     }
 }
 
@@ -353,7 +353,7 @@ void ViewWidget::renameFeature(graph_analysis::Vertex::Ptr concernedVertex)
     if(!featureCount)
     {
         QMessageBox::critical(this, tr("Cannot Rename a Feature"), tr("The selected vertex had no features!"));
-        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", GraphManager::TIMEOUT);
         return;
     }
     RenameFeatureDialog dialog(item);
@@ -368,11 +368,11 @@ void ViewWidget::renameFeature(graph_analysis::Vertex::Ptr concernedVertex)
         item->setFeatureLabel(featureID, newLabel);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         refreshLayerWidget();
-        updateStatus(std::string("Renamed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Renamed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", GraphManager::TIMEOUT);
     }
 }
 
@@ -394,14 +394,14 @@ void ViewWidget::removeFeature(graph_analysis::Vertex::Ptr concernedVertex)
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::removeFeature: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
-        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": " + error_msg + "!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": " + error_msg + "!", GraphManager::TIMEOUT);
         throw std::runtime_error(error_msg);
     }
     int featureCount = item->getFeatureCount();
     if(!featureCount)
     {
         QMessageBox::critical(this, tr("Cannot Remove a Feature"), tr("The selected vertex had no features!"));
-        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", GraphManager::TIMEOUT);
         return;
     }
     bool ok;
@@ -455,11 +455,11 @@ void ViewWidget::removeFeature(graph_analysis::Vertex::Ptr concernedVertex)
         item->removeFeature(featureID);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         refreshLayerWidget();
-        updateStatus(std::string("Removed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Removed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", GraphManager::TIMEOUT);
     }
 }
 
@@ -481,7 +481,7 @@ void ViewWidget::fromFile(const QString& file, bool prefers_gexf, bool status)
         else
         {
             QMessageBox::critical(this, tr("Graph Import Failed"), QString(std::string(std::string("Unsupported file format for file '") + filename.toStdString() + "'!").c_str()));
-            updateStatus(std::string("Failed to import graph: from input file '") + filename.toStdString() + "': unsupported file format!", DEFAULT_TIMEOUT);
+            updateStatus(std::string("Failed to import graph: from input file '") + filename.toStdString() + "': unsupported file format!", GraphManager::TIMEOUT);
             return;
         }
     }
@@ -501,7 +501,7 @@ void ViewWidget::fromFile(const QString& file, bool prefers_gexf, bool status)
     {
         if(status)
         {
-            updateStatus(std::string("Imported graph: from input file '") + filename.toStdString() + "'!", DEFAULT_TIMEOUT);
+            updateStatus(std::string("Imported graph: from input file '") + filename.toStdString() + "'!", GraphManager::TIMEOUT);
         }
         WidgetManager::getInstance()->getLayerWidget()->refresh(false);
     }
@@ -519,7 +519,7 @@ void ViewWidget::importGraph()
     }
     else
     {
-        updateStatus(std::string("Failed to import graph: aborted by user - an empty input filename was provided!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to import graph: aborted by user - an empty input filename was provided!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -550,7 +550,7 @@ void ViewWidget::exportGraph()
             else
             {
                 QMessageBox::critical(this, tr("Graph Export Failed"), QString(std::string(std::string("Unsupported file format for file '") + label.toStdString() + "'!").c_str()));
-                updateStatus(std::string("Failed to export graph: to output file '") + label.toStdString() + "': unsupported file format!", DEFAULT_TIMEOUT);
+                updateStatus(std::string("Failed to export graph: to output file '") + label.toStdString() + "': unsupported file format!", GraphManager::TIMEOUT);
                 return;
             }
         }
@@ -569,11 +569,11 @@ void ViewWidget::exportGraph()
                 toDotFile(label.toStdString() + ".dot");
             }
         }
-        updateStatus(std::string("Exported graph: to output file '") + label.toStdString() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Exported graph: to output file '") + label.toStdString() + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to export graph: aborted by user - an empty output filename was provided!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to export graph: aborted by user - an empty output filename was provided!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -641,11 +641,11 @@ void ViewWidget::addNodeAdhoc(QObject *pos)
         scene()->addItem(nodeItem);
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
         updateLayerWidget();
-        updateStatus(std::string("Added new node '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Added new node '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to add new node: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to add new node: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -661,11 +661,11 @@ void ViewWidget::changeFocusedVertexLabel()
         std::string old_label = mpFocusedVertex->toString();
         std::string new_label = label.toStdString();
         changeVertexLabel(mpFocusedVertex, new_label);
-        updateStatus(std::string("Renamed focused node '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Renamed focused node '") + old_label + "' to '" + new_label + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to rename focused node: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to rename focused node: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -681,11 +681,11 @@ void ViewWidget::changeSelectedVertexLabel()
         std::string old_label = mpSelectedVertex->toString();
         std::string new_label = label.toStdString();
         changeVertexLabel(mpSelectedVertex, new_label);
-        updateStatus(std::string("Renamed selected node '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Renamed selected node '") + old_label + "' to '" + new_label + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to rename selected node: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to rename selected node: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -716,11 +716,11 @@ void ViewWidget::changeFocusedEdgeLabel()
         std::string old_label = mpFocusedEdge->toString();
         std::string new_label = label.toStdString();
         changeEdgeLabel(mpFocusedEdge, new_label);
-        updateStatus(std::string("Renamed focused edge '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Renamed focused edge '") + old_label + "' to '" + new_label + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to rename focused edge: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to rename focused edge: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -736,11 +736,11 @@ void ViewWidget::changeSelectedEdgeLabel()
         std::string old_label = mpSelectedEdge->toString();
         std::string new_label = label.toStdString();
         changeEdgeLabel(mpSelectedEdge, new_label);
-        updateStatus(std::string("Renamed selected edge '") + old_label + "' to '" + new_label + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Renamed selected edge '") + old_label + "' to '" + new_label + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to rename selected edge: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to rename selected edge: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -830,7 +830,7 @@ void ViewWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
     syncEdgeItemMap(concernedEdge);
     // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
     refreshLayerWidget();
-    updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", GraphManager::TIMEOUT);
 }
 
 void ViewWidget::removeFocusedVertex()
@@ -905,7 +905,7 @@ void ViewWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
     mpGraph->removeVertex(concernedVertex);
     // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
     refreshLayerWidget();
-    updateStatus(std::string("Removed node '") + concernedVertexLabel + "'!", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Removed node '") + concernedVertexLabel + "'!", GraphManager::TIMEOUT);
 }
 
 void ViewWidget::changeLayout()
@@ -927,11 +927,11 @@ void ViewWidget::changeLayout()
         std::string desiredLayout = layout.toStdString();
         reset(true /*keepData*/);
         setLayout(QString(desiredLayout.c_str()));
-        updateStatus(std::string("Changed graph layout to '") + desiredLayout + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Changed graph layout to '") + desiredLayout + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to change graph layout: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to change graph layout: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -948,7 +948,7 @@ void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, NodeIte
     mpStartVertex   = startVertex;
     NodeItem *item  = mNodeItemMap[startVertex];
     mpStartFeature     = item->getFeature(featureID);
-    updateStatus(std::string("Drag-n-drop: set source node to '") + startVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Drag-n-drop: set source node to '") + startVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...", GraphManager::TIMEOUT);
 }
 
 void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::id_t featureID)
@@ -972,7 +972,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::i
     mpEndFeature       = item->getFeature(featureID);
     NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
     NodeItem *targetNodeItem = item;
-    updateStatus(std::string("Drag-n-drop: set target node to '") + endVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Drag-n-drop: set target node to '") + endVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...", GraphManager::TIMEOUT);
     if(sourceNodeItem == targetNodeItem)
     {
         // preventing self-edges and handling it into features swapping
@@ -991,7 +991,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::i
                             + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID) + " and "
                             + boost::lexical_cast<std::string>(end_featureID) + " respectively, of different types '"
                             + mpStartFeature->getClassName() + "' and '" + mpEndFeature->getClassName() + "' respectively!"
-                            , DEFAULT_TIMEOUT
+                            , GraphManager::TIMEOUT
                         );
             return;
         }
@@ -1000,7 +1000,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::i
                         + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID)
                         + " and " + boost::lexical_cast<std::string>(end_featureID) + " respectively and of consistent type '"
                         + mpStartFeature->getClassName() + "'!"
-                        , DEFAULT_TIMEOUT
+                        , GraphManager::TIMEOUT
                     );
     }
     else
@@ -1012,7 +1012,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::i
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
             updateStatus(std::string("Drag-n-drop failed: '") + error_msg + "'!"
-                            , DEFAULT_TIMEOUT
+                            , GraphManager::TIMEOUT
                         );
             return;
         }
@@ -1023,7 +1023,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::i
             LOG_WARN_S << "graph_analysis::gui::ViewWidget::setEndVertex: " << error_msg;
             QMessageBox::critical(this, tr("Edge Creation Failed"), QString(error_msg.c_str()));
             updateStatus(std::string("Drag-n-drop failed: '") + error_msg + "'!"
-                            , DEFAULT_TIMEOUT
+                            , GraphManager::TIMEOUT
                         );
             return;
         }
@@ -1052,12 +1052,12 @@ void ViewWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fi
                         + " and " + boost::lexical_cast<std::string>(end_featureID) + " respectively and of consistent type '"
                         + mpStartFeature->getClassName() +  "' of clusters '"
                         + mpStartVertex->toString() + "' and '" + mpEndVertex->toString() + "'!"
-                        , DEFAULT_TIMEOUT
+                        , GraphManager::TIMEOUT
                     );
     }
     else
     {
-        updateStatus(std::string("Drag-n-drop failed: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Drag-n-drop failed: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -1102,7 +1102,7 @@ void ViewWidget::toYmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toYmlFile: export failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export Failed"), QString(e.what()));
-        updateStatus(std::string("Yaml Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Yaml Graph export failed: ") + std::string(e.what()), GraphManager::TIMEOUT);
     }
 }
 
@@ -1116,7 +1116,7 @@ void ViewWidget::toDotFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toDotFile: export via graphviz failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
-        updateStatus(std::string("Dot Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Dot Graph export failed: ") + std::string(e.what()), GraphManager::TIMEOUT);
     }
 }
 
@@ -1130,7 +1130,7 @@ void ViewWidget::gvRender(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toDotFile: export via graphviz failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export via GraphViz Failed"), QString(e.what()));
-        updateStatus(std::string("Dot Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Dot Graph export failed: ") + std::string(e.what()), GraphManager::TIMEOUT);
     }
 }
 
@@ -1144,7 +1144,7 @@ void ViewWidget::toXmlFile(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::ViewWidget::toXmlFile: export to .gexf failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Export to .gexf Failed"), QString(e.what()));
-        updateStatus(std::string("Gexf Graph export failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Gexf Graph export failed: ") + std::string(e.what()), GraphManager::TIMEOUT);
     }
 }
 
@@ -1159,14 +1159,14 @@ int ViewWidget::fromFile(const std::string& filename, const std::string& format)
     {
         LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromFile: graph import failed: " << e.what();
         QMessageBox::critical(this, tr("Graph Import Failed"), QString(e.what()));
-        updateStatus(std::string("Graph import failed: ") + std::string(e.what()), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Graph import failed: ") + std::string(e.what()), GraphManager::TIMEOUT);
         return 1;
     }
     catch(std::string s)
     {
         LOG_WARN_S << "graph_analysis::gui::ViewWidget::fromFile: graph import failed: " << s;
         QMessageBox::critical(this, tr("Graph Import Failed"), QString(s.c_str()));
-        updateStatus(std::string("Graph import failed: ") + s, DEFAULT_TIMEOUT);
+        updateStatus(std::string("Graph import failed: ") + s, GraphManager::TIMEOUT);
         return 1;
     }
 
@@ -1236,7 +1236,7 @@ void ViewWidget::refresh(bool status)
     }
     else if(status)
     {
-        updateStatus(std::string("Refreshed graph!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Refreshed graph!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -1579,7 +1579,7 @@ void ViewWidget::setDragDrop(bool dragDrop)
             current->setFlag(QGraphicsItem::ItemIsMovable, !mDragDrop);
         }
     }
-    updateStatus(std::string("Toggled drag-n-drop mode to ") + (dragDrop ? "true" : "false") + "...", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Toggled drag-n-drop mode to ") + (dragDrop ? "true" : "false") + "...", GraphManager::TIMEOUT);
 }
 
 void ViewWidget::syncDragDrop()
@@ -1616,7 +1616,7 @@ void ViewWidget::setDragDrop()
             current->setFlag(QGraphicsItem::ItemIsMovable, false);
         }
     }
-    updateStatus(std::string("Toggled drag-n-drop mode to true!"), DEFAULT_TIMEOUT);
+    updateStatus(std::string("Toggled drag-n-drop mode to true!"), GraphManager::TIMEOUT);
 }
 
 void ViewWidget::unsetDragDrop()
@@ -1634,7 +1634,7 @@ void ViewWidget::unsetDragDrop()
             current->setFlag(QGraphicsItem::ItemIsMovable);
         }
     }
-    updateStatus(std::string("Toggled drag-n-drop mode to false!"), DEFAULT_TIMEOUT);
+    updateStatus(std::string("Toggled drag-n-drop mode to false!"), GraphManager::TIMEOUT);
 }
 
 void ViewWidget::itemMoved()
@@ -1849,7 +1849,7 @@ void ViewWidget::scaleView(qreal scaleFactor)
     }
     scale(scaleFactor, scaleFactor);
     std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, DEFAULT_TIMEOUT);
+    updateStatus(status_msg, GraphManager::TIMEOUT);
 }
 
 void ViewWidget::shuffle()
@@ -1862,7 +1862,7 @@ void ViewWidget::shuffle()
             item->setPos(-150 * mScaleFactor + mScaleFactor * (qrand() % 300), -150 * mScaleFactor + mScaleFactor * (qrand() % 300));
         }
     }
-    updateStatus(std::string("Shuflled all nodes!"), DEFAULT_TIMEOUT);
+    updateStatus(std::string("Shuflled all nodes!"), GraphManager::TIMEOUT);
 }
 
 void ViewWidget::zoomIn()
@@ -1881,7 +1881,7 @@ void ViewWidget::resetGraph()
     if(mpGraph->empty())
     {
         QMessageBox::information(this, tr("Nothing to Reset"), "The graph is already empty!");
-        updateStatus(std::string("Failed to reset graph: the graph was already empty!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to reset graph: the graph was already empty!"), GraphManager::TIMEOUT);
     }
     else
     {
@@ -1890,11 +1890,11 @@ void ViewWidget::resetGraph()
         {
             case QMessageBox::Yes:
                 reset();
-                updateStatus(std::string("The graph was reset!"), DEFAULT_TIMEOUT);
+                updateStatus(std::string("The graph was reset!"), GraphManager::TIMEOUT);
             break;
 
             default:
-                updateStatus(std::string("Failed to reset graph: aborted by user!"), DEFAULT_TIMEOUT);
+                updateStatus(std::string("Failed to reset graph: aborted by user!"), GraphManager::TIMEOUT);
             break;
         }
     }
@@ -1925,7 +1925,7 @@ void ViewWidget::clearNodeFocus()
     {
         NodeItem *item = mNodeItemMap[mpFocusedVertex];
         item->releaseFocus();
-        updateStatus(std::string("Cleared node focus off node '") + mpFocusedVertex->toString() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Cleared node focus off node '") + mpFocusedVertex->toString() + "'!", GraphManager::TIMEOUT);
     }
 }
 
@@ -1935,7 +1935,7 @@ void ViewWidget::clearEdgeFocus()
     {
         EdgeItem *item = mEdgeItemMap[mpFocusedEdge];
         item->releaseFocus();
-        updateStatus(std::string("Cleared edge focus off edge '") + mpFocusedEdge->toString() + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Cleared edge focus off edge '") + mpFocusedEdge->toString() + "'!", GraphManager::TIMEOUT);
     }
 }
 
@@ -1948,7 +1948,7 @@ void ViewWidget::clearFocus()
         updateStatus(std::string("Cleared focuses: ")
                         + "off node '" + mpFocusedVertex->toString()
                         + "' and off edge '" + mpFocusedEdge->toString() + "'!"
-                        , DEFAULT_TIMEOUT
+                        , GraphManager::TIMEOUT
                     );
     }
 }
@@ -1973,14 +1973,14 @@ void ViewWidget::removeFeatures(graph_analysis::Vertex::Ptr concernedVertex)
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::removeFeatures: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
         LOG_ERROR_S << error_msg;
-        updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': " + error_msg + "!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': " + error_msg + "!", GraphManager::TIMEOUT);
         throw std::runtime_error(error_msg);
     }
     int nfeatures = item->getFeatureCount();
     if(!nfeatures)
     {
         QMessageBox::critical(this, tr("No Features to Remove"), "The cluster is already empty!");
-        updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': there are no features!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': there are no features!", GraphManager::TIMEOUT);
         return;
     }
     else
@@ -2028,11 +2028,11 @@ void ViewWidget::removeFeatures(graph_analysis::Vertex::Ptr concernedVertex)
                 item->removeFeatures();
                 // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
                 refreshLayerWidget();
-                updateStatus(std::string("Removed all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", DEFAULT_TIMEOUT);
+                updateStatus(std::string("Removed all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", GraphManager::TIMEOUT);
             break;
 
             default:
-                updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': aborted by user!", DEFAULT_TIMEOUT);
+                updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': aborted by user!", GraphManager::TIMEOUT);
             break;
         }
     }
@@ -2071,7 +2071,7 @@ void ViewWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVertex)
     if(featureCount < 2)
     {
         QMessageBox::critical(this, tr("Cannot Swap Features"), tr("The selected vertex did not have enough features!"));
-        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': this vertex did not have enough features!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': this vertex did not have enough features!", GraphManager::TIMEOUT);
         return;
     }
     SwapFeaturesDialog dialog(item);
@@ -2095,7 +2095,7 @@ void ViewWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVertex)
             {
                 LOG_ERROR_S << "graph_analysis::gui::ViewWidget::swapFeatures: swapping operation failed: " << e.what();
                 QMessageBox::critical(this, tr("Swapping Failed"), QString(e.what()));
-                updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': " + std::string(e.what()) + "!", DEFAULT_TIMEOUT);
+                updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': " + std::string(e.what()) + "!", GraphManager::TIMEOUT);
             }
         }
         else
@@ -2105,12 +2105,12 @@ void ViewWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVertex)
         updateStatus(std::string("Swapped features of IDs ") + boost::lexical_cast<std::string>(feature1ID) + " and "
                         + boost::lexical_cast<std::string>(feature2ID) + " within node '" + concernedVertex->toString()
                         + "'!"
-                        , DEFAULT_TIMEOUT
+                        , GraphManager::TIMEOUT
                     );
     }
     else
     {
-        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': aborted by user!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': aborted by user!", GraphManager::TIMEOUT);
     }
 }
 

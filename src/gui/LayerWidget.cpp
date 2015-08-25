@@ -182,11 +182,11 @@ void LayerWidget::changeLayout()
         std::string desiredLayout = layout.toStdString();
         reset(true /*keepData*/);
         setLayout(QString(desiredLayout.c_str()));
-        updateStatus(std::string("Changed layers graph view layout to '") + desiredLayout + "'!", DEFAULT_TIMEOUT);
+        updateStatus(std::string("Changed layers graph view layout to '") + desiredLayout + "'!", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to change layers graph view layout: aborted by user!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Failed to change layers graph view layout: aborted by user!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -225,7 +225,7 @@ void LayerWidget::refresh(bool status)
     update();
     if(status)
     {
-        updateStatus(std::string("Refreshed layers graph view!"), DEFAULT_TIMEOUT);
+        updateStatus(std::string("Refreshed layers graph view!"), GraphManager::TIMEOUT);
     }
 }
 
@@ -640,7 +640,7 @@ void LayerWidget::scaleView(qreal scaleFactor)
     }
     scale(scaleFactor, scaleFactor);
     std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, DEFAULT_TIMEOUT);
+    updateStatus(status_msg, GraphManager::TIMEOUT);
 }
 
 void LayerWidget::shuffle()
@@ -651,7 +651,7 @@ void LayerWidget::shuffle()
         if (qgraphicsitem_cast<NodeItem* >(item))
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }
-    updateStatus(std::string("Shuflled all nodes in the layers graph view!"), DEFAULT_TIMEOUT);
+    updateStatus(std::string("Shuflled all nodes in the layers graph view!"), GraphManager::TIMEOUT);
 }
 
 void LayerWidget::zoomIn()
@@ -675,7 +675,7 @@ void LayerWidget::toggleFeatureLayer(bool toggle)
     updateStatus(std::string("toggling the features layer to ") + (toggle ? "true" : "false" ) + "...");
     mFeatureLayerToggle = toggle;
     refresh(false);
-    updateStatus(std::string("Toggled the features layer to ") + (toggle ? "true" : "false" ) + "!", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Toggled the features layer to ") + (toggle ? "true" : "false" ) + "!", GraphManager::TIMEOUT);
 }
 
 void LayerWidget::toggleClusterLayer(bool toggle)
@@ -683,7 +683,7 @@ void LayerWidget::toggleClusterLayer(bool toggle)
     updateStatus(std::string("toggling the clusters layer to ") + (toggle ? "true" : "false" ) + "...");
     mClusterLayerToggle = toggle;
     refresh(false);
-    updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", DEFAULT_TIMEOUT);
+    updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", GraphManager::TIMEOUT);
 }
 
 inline void LayerWidget::updateStatus(const std::string& message, int timeout)

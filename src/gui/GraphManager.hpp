@@ -28,6 +28,10 @@ class GraphManager : public QObject
 {
     Q_OBJECT
 public:
+
+    /// StatusBar standard timeout (in ms)
+    static const int TIMEOUT;
+
     /// constructor; if filename is not empty, it tries to load a graph on init from it
     GraphManager(const QString& filename = QString());
     /// destructor - frees the main window (which recursively frees all other Qt components)

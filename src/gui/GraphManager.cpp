@@ -15,6 +15,8 @@
 namespace graph_analysis {
 namespace gui {
 
+const int GraphManager::TIMEOUT = 6900; // miliseconds
+
 GraphManager::GraphManager(const QString& filename)
     : mpMainWindow(new QMainWindow())
     , mpStackedWidget(new QStackedWidget())
@@ -146,7 +148,7 @@ void GraphManager::reloadPropertyDialog(void)
     }
     mpPropertyDialog = new PropertyDialog(mpViewWidget->getDragDrop(), mpViewWidget->getVertexFocused(), mpViewWidget->getEdgeFocused());
     WidgetManager::getInstance()->setPropertyDialog(mpPropertyDialog); // IMPORTANT!!! - now updating the corresponding field in the WidgetManager
-    updateStatus(std::string("Reloaded command panel!"), DEFAULT_TIMEOUT);
+    updateStatus(std::string("Reloaded command panel!"), GraphManager::TIMEOUT);
 }
 
 void GraphManager::helpSetup(std::stringstream& ss, const std::string& cmd)
