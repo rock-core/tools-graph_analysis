@@ -190,7 +190,7 @@ void ViewWidget::showContextMenu(const QPoint& pos)
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")));
     QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop")));
     QAction *actionUnsetDragDrop = comm.addAction("Move-around", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move")));
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")));
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphManager());
 
     // (conditionally) adding the actions to the context menu
     if(mEdgeSelected)
@@ -575,11 +575,6 @@ void ViewWidget::exportGraph()
     {
         updateStatus(std::string("Failed to export graph: aborted by user - an empty output filename was provided!"), DEFAULT_TIMEOUT);
     }
-}
-
-void ViewWidget::reloadPropertyDialog()
-{
-    WidgetManager::getInstance()->getGraphManager()->reloadPropertyDialog();
 }
 
 Edge::Ptr ViewWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
@@ -1697,7 +1692,7 @@ void ViewWidget::keyPressEvent(QKeyEvent *event)
             case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
                 if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
                 {
-                    reloadPropertyDialog();
+                    WidgetManager::getInstance()->getGraphManager()->reloadPropertyDialog();
                 }
             break;
 

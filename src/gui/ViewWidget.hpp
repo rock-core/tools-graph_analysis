@@ -310,8 +310,6 @@ public slots:
     void setDragDrop();
     /// sets drag-n-drop to false on all levels
     void unsetDragDrop();
-    /// re-loads the property dialog/panel in the scene
-    void reloadPropertyDialog();
     /// spawns a new edge
     void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
 
