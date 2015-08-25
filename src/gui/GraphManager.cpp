@@ -8,7 +8,7 @@
 namespace graph_analysis {
 namespace gui {
 
-GraphManager::GraphManager(const std::string& filename)
+GraphManager::GraphManager(const QString& filename)
     : mpMainWindow(new QMainWindow())
     , mLayout("dot") // other possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 {
@@ -28,11 +28,10 @@ GraphManager::GraphManager(const std::string& filename)
     edgeFilters.push_back(filter);
     mpViewWidget->setEdgeFilters(edgeFilters);
     mpViewWidget->setLayout(mLayout);
-    if(!filename.empty())
+    if(!filename.isEmpty())
     {
         // loading graph on init from the given filename
-        QString qfile(filename.c_str());
-        mpViewWidget->fromFile(qfile);
+        mpViewWidget->fromFile(filename, true, false);
     }
     mpMainWindow->show();
 }

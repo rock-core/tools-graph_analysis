@@ -151,8 +151,13 @@ public:
      * \return error code: 0 when successful; non-zero if anything went wrong
      */
     int fromFile(const std::string& filename, const std::string& format);
-    /// loads base graph from file 'filename' - tries the 2 available formats: the custom yml and the standard gexf
-    void fromFile(QString& filename, bool prefers_gexf = true);
+    /**
+     * \brief loads base graph from file 'filename' - tries the 2 available formats: the custom yml and the standard gexf
+     * \param file the source filename to parse from
+     * \param prefers_gexf boolean flag telling whether to prefer gexf over custom yml in case the filename has no extension
+     * \param status boolean flag telling whether to update the status bar
+     */
+    void fromFile(const QString& file, bool prefers_gexf = true, bool status = true);
 
     /// enables the given vertex in the base graph
     void enableVertex (graph_analysis::Vertex::Ptr vertex);

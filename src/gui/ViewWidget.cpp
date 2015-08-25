@@ -633,11 +633,11 @@ void ViewWidget::removeFeature(graph_analysis::Vertex::Ptr concernedVertex)
     }
 }
 
-void ViewWidget::fromFile(QString& filename, bool prefers_gexf)
+void ViewWidget::fromFile(const QString& file, bool prefers_gexf, bool status)
 {
     int return_code;
     // removing trailing whitespaces in the filename
-    filename = filename.trimmed();
+    QString filename(file.trimmed());
     if(filename.contains('.'))
     {
         if(filename.endsWith(QString(".gexf")) || filename.endsWith(QString(".xml")))
@@ -666,9 +666,13 @@ void ViewWidget::fromFile(QString& filename, bool prefers_gexf)
             return_code = fromFile(filename.toStdString() + ".yml", "yml");
         }
     }
+
     if(!return_code)
     {
-        updateStatus(std::string("Imported graph: from input file '") + filename.toStdString() + "'!", DEFAULT_TIMEOUT);
+        if(status)
+        {
+            updateStatus(std::string("Imported graph: from input file '") + filename.toStdString() + "'!", DEFAULT_TIMEOUT);
+        }
         mpLayerWidget->refresh(false);
     }
 }

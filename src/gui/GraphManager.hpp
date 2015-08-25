@@ -25,7 +25,7 @@ class GraphManager
 {
 public:
     /// constructor; if filename is not empty, it tries to load a graph on init from it
-    GraphManager(const std::string& filename = std::string());
+    GraphManager(const QString& filename = QString());
     /// destructor - frees the main window (which recursively frees all other Qt components)
     ~GraphManager();
 
