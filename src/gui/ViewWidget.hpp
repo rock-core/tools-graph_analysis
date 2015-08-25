@@ -315,36 +315,6 @@ public slots:
     /// spawns a new edge
     void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
 
-    // safety slot wrappers - triggered from the main window Menu Bar
-    /// triggers changeFocusedEdgeLabel() if any edge is being focused on
-    void changeFocusedEdgeLabelMainWindow();
-    /// triggers removeFocusedEdge() if any edge is being focused on
-    void removeFocusedEdgeMainWindow();
-    /// triggers changeFocusedVertexLabel() if any node is being focused on
-    void changeFocusedVertexLabelMainWindow();
-    /// triggers removeFocusedVertex() if any node is being focused on
-    void removeFocusedVertexMainWindow();
-    /// triggers addFeatureFocused() if any node is being focused on
-    void addFeatureFocusedMainWindow();
-    /// triggers swapFeaturesFocused() if any node is being focused on
-    void swapFeaturesFocusedMainWindow();
-    /// triggers renameFeatureFocused() if any node is being focused on
-    void renameFeatureFocusedMainWindow();
-    /// triggers removeFeatureFocused() if any node is being focused on
-    void removeFeatureFocusedMainWindow();
-    /// triggers removeFeaturesFocused() if any node is being focused on
-    void removeFeaturesFocusedMainWindow();
-    /// triggers addNodeAdhoc() (with no mouse pointer position)
-    void addNodeAdhocMainWindow();
-    /// triggers refresh() in the currently displayed graph widget
-    void refreshMainWindow();
-    /// triggers shuffle() in the currently displayed graph widget
-    void shuffleMainWindow();
-    /// triggers changeLayout() in the currently displayed graph widget
-    void changeLayoutMainWindow();
-    /// reloads the property dialog/panel if it is not running any more
-    void reloadPropertyDialogMainWindow();
-
 protected:
     /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget; when status is false, this takes place quiently (no updates are made on the status bar)
     inline void refreshLayerWidget(bool status = true);

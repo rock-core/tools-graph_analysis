@@ -6,6 +6,7 @@
 #include <QTime>
 #include <QMenu>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QTranslator>
 #include <base/Logging.hpp>
 
@@ -45,7 +46,7 @@ GraphManager::GraphManager(const QString& filename)
     widgetManager->setPropertyDialog(mpPropertyDialog);
 
     // setting up the Menus ToolBar
-    ActionCommander comm(mpViewWidget);
+    ActionCommander comm(this);
     QMenuBar *bar = mpMainWindow->menuBar();
 
     // needed menus
@@ -66,12 +67,12 @@ GraphManager::GraphManager(const QString& filename)
     QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), *(IconManager::getInstance()->getIcon("addNode_white")));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), *(IconManager::getInstance()->getIcon("refresh_white")));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), *(IconManager::getInstance()->getIcon("shuffle_white")));
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import_white")));
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export_white")));
-    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset_white")));
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import_white")), mpViewWidget);
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export_white")), mpViewWidget);
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset_white")), mpViewWidget);
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), *(IconManager::getInstance()->getIcon("layout_white")));
-    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop_white")));
-    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move_white")));
+    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop_white")), mpViewWidget);
+    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move_white")), mpViewWidget);
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), *(IconManager::getInstance()->getIcon("reload_white")));
 
     // loading different actions in different menus
@@ -239,6 +240,173 @@ void GraphManager::helpSetup(std::stringstream& ss, const std::string& cmd)
     ss << "    -*  available in move-around mode only" << std::endl;
     ss << "    -** available in drag-n-drop mode only" << std::endl;
     ss << std::endl;
+}
+
+void GraphManager::changeFocusedEdgeLabelMainWindow()
+{
+    if(mpViewWidget->getEdgeFocused())
+    {
+        mpViewWidget->changeFocusedEdgeLabel();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Rename Focused Edge"), tr("Cannot Rename Focused Edge: no edge is focused on!"));
+    }
+}
+
+void GraphManager::removeFocusedEdgeMainWindow()
+{
+    if(mpViewWidget->getEdgeFocused())
+    {
+        mpViewWidget->removeFocusedEdge();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Remove Focused Edge"), tr("Cannot Remove Focused Edge: no edge is focused on!"));
+    }
+}
+
+void GraphManager::changeFocusedVertexLabelMainWindow()
+{
+    if(mpViewWidget->getVertexFocused())
+    {
+        mpViewWidget->changeFocusedVertexLabel();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Rename Focused Node"), tr("Cannot Rename Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphManager::removeFocusedVertexMainWindow()
+{
+    if(mpViewWidget->getVertexFocused())
+    {
+        mpViewWidget->removeFocusedVertex();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Remove Focused Node"), tr("Cannot Remove Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphManager::addFeatureFocusedMainWindow()
+{
+    if(mpViewWidget->getVertexFocused())
+    {
+        mpViewWidget->addFeatureFocused();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Add a Feature to the Focused Node"), tr("Cannot Add a Feature to the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphManager::swapFeaturesFocusedMainWindow()
+{
+    if(mpViewWidget->getVertexFocused())
+    {
+        mpViewWidget->swapFeaturesFocused();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Swap Features of the Focused Node"), tr("Cannot Swap Features of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphManager::renameFeatureFocusedMainWindow()
+{
+    if(mpViewWidget->getVertexFocused())
+    {
+        mpViewWidget->renameFeatureFocused();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Rename a Feature of the Focused Node"), tr("Cannot Rename a Feature of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphManager::removeFeatureFocusedMainWindow()
+{
+    if(mpViewWidget->getVertexFocused())
+    {
+        mpViewWidget->removeFeatureFocused();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Remove a Feature of the Focused Node"), tr("Cannot Remove a Feature of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphManager::removeFeaturesFocusedMainWindow()
+{
+    if(mpViewWidget->getVertexFocused())
+    {
+        mpViewWidget->removeFeaturesFocused();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Remove the Features of the Focused Node"), tr("Cannot Remove the Features of the Focused Node: no node is focused on!"));
+    }
+}
+
+void GraphManager::addNodeAdhocMainWindow()
+{
+    mpViewWidget->addNodeAdhoc();
+}
+
+void GraphManager::refreshMainWindow()
+{
+    switch(mpStackedWidget->currentIndex())
+    {
+    case 0:
+        mpViewWidget->refresh();
+    break;
+
+    case 1:
+        mpLayerWidget->refresh();
+    break;
+    }
+}
+
+void GraphManager::shuffleMainWindow()
+{
+    switch(mpStackedWidget->currentIndex())
+    {
+    case 0:
+        mpViewWidget->shuffle();
+    break;
+
+    case 1:
+        mpLayerWidget->shuffle();
+    break;
+    }
+}
+
+void GraphManager::changeLayoutMainWindow()
+{
+    switch(mpStackedWidget->currentIndex())
+    {
+    case 0:
+        mpViewWidget->changeLayout();
+    break;
+
+    case 1:
+        mpLayerWidget->changeLayout();
+    break;
+    }
+}
+
+void GraphManager::reloadPropertyDialogMainWindow()
+{
+    if(mpPropertyDialog->isRunning())
+    {
+        reloadPropertyDialog();
+    }
+    else
+    {
+        QMessageBox::information(mpStackedWidget, tr("Cannot Reload Property Dialog"), tr("Cannot Reload Property Dialog: the dialog is still active! It needs closing first."));
+    }
 }
 
 } // end namespace gui
