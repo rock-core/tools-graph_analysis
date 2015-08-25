@@ -7,7 +7,7 @@
 #include <boost/assign/list_of.hpp>
 #include <base/Logging.hpp>
 #include "graphitem/Simple.hpp"
-#include "graphitem/Resource.hpp"
+#include "graphitem/Cluster.hpp"
 #include "layeritem/Resource.hpp"
 
 namespace graph_analysis {
@@ -16,7 +16,7 @@ namespace gui {
 NodeTypeManager::NodeTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
-        ("default", dynamic_cast<NodeItem*>(new graphitem::Resource()))
+        ("default", dynamic_cast<NodeItem*>(new graphitem::Cluster()))
         (LAYER_NODE_TYPE, dynamic_cast<NodeItem*>(new layeritem::Resource())) // layering graphical node instance
         // Change behaviour and appearance of edge if needed
         // ("graph_analysis::Vertex", dynamic_cast<NodeItem*>(new graphitem::Simple()))

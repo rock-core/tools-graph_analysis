@@ -17,7 +17,7 @@ rock_library(graph_analysis
         gui/EdgeTypeManager.cpp
         gui/CustomDialog.cpp
         gui/graphitem/edges/Simple.cpp
-        gui/graphitem/Resource.cpp
+        gui/graphitem/Cluster.cpp
         gui/graphitem/Simple.cpp
         gui/graphitem/Label.cpp
         gui/layeritem/edges/Simple.cpp
@@ -96,7 +96,7 @@ rock_library(graph_analysis
         gui/graphitem/edges/EdgeLabel.hpp
         gui/graphitem/edges/Simple.hpp
         gui/graphitem/Label.hpp
-        gui/graphitem/Resource.hpp
+        gui/graphitem/Cluster.hpp
         gui/graphitem/Simple.hpp
         gui/layeritem/edges/EdgeLabel.hpp
         gui/layeritem/edges/Simple.hpp
