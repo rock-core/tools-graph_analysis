@@ -3,6 +3,7 @@ rock_library(graph_analysis
     SOURCES
         algorithms/CorrelationClustering.cpp
         algorithms/FloydWarshall.cpp
+        algorithms/MinCostFlow.cpp
         boost_graph/DirectedGraph.cpp
         Edge.cpp
         EdgeIterable.cpp
@@ -40,11 +41,13 @@ rock_library(graph_analysis
         VertexIterable.cpp
         VertexIterator.cpp
         WeightedEdge.cpp
+        WeightedVertex.cpp
     HEADERS
         Algorithms.hpp
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
         algorithms/FloydWarshall.hpp
+        algorithms/MinCostFlow.hpp
         boost_graph/DirectedGraph.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
@@ -97,6 +100,7 @@ rock_library(graph_analysis
         VertexIterator.hpp
         WeightedEdge.hpp
         NWeightedEdge.hpp
+        WeightedVertex.hpp
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric gsl libgvc
     DEPS_PLAIN

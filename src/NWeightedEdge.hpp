@@ -16,7 +16,7 @@ class NWeightedEdge : public Edge
 public:
     typedef boost::shared_ptr< NWeightedEdge > Ptr;
 
-    NWeightedEdge(const std::vector<T>& weights)
+    NWeightedEdge(const std::vector<T>& weights = std::vector<T>(Dim))
         : Edge()
         , mWeights(weights)
     {

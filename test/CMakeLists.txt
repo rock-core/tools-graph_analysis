@@ -8,4 +8,5 @@ rock_testsuite(test_graph suite.cpp
     test_GVGraph.cpp
     algorithms/test_CorrelationClustering.cpp
     algorithms/test_FloydWarshall.cpp
+    algorithms/test_MinCostFlow.cpp
     DEPS graph_analysis)
