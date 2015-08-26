@@ -96,6 +96,7 @@ rock_library(graph_analysis
         VertexIterable.hpp
         VertexIterator.hpp
         WeightedEdge.hpp
+        NWeightedEdge.hpp
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric gsl libgvc
     DEPS_PLAIN
