@@ -70,6 +70,15 @@
 #include <base/Logging.hpp>
 
 
+#include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/BaseVertex.hpp>
+#include <graph_analysis/PortVertex.hpp>
+#include <graph_analysis/InputPortVertex.hpp>
+#include <graph_analysis/OutputPortVertex.hpp>
+#include <graph_analysis/ClusterVertex.hpp>
+#include <graph_analysis/PropertyVertex.hpp>
+#include <graph_analysis/OperationVertex.hpp>
+
 #include "layeritem/Resource.hpp"
 #include "layeritem/edges/Simple.hpp"
 #include <graph_analysis/Filter.hpp>
@@ -689,6 +698,23 @@ void LayerWidget::toggleClusterLayer(bool toggle)
 inline void LayerWidget::updateStatus(const std::string& message, int timeout)
 {
     WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
+}
+
+inline bool LayerWidget::toggledOut(graph_analysis::Vertex::Ptr vertex)
+{
+    bool result =   (!mFeatureLayerToggle && graph_analysis::PortVertex::vertexType() == vertex->getClassName())
+                        ||
+                    (!mFeatureLayerToggle && graph_analysis::InputPortVertex::vertexType() == vertex->getClassName())
+                        ||
+                    (!mFeatureLayerToggle && graph_analysis::OutputPortVertex::vertexType() == vertex->getClassName())
+                        ||
+                    (!mFeatureLayerToggle && graph_analysis::PropertyVertex::vertexType() == vertex->getClassName())
+                        ||
+                    (!mFeatureLayerToggle && graph_analysis::OperationVertex::vertexType() == vertex->getClassName())
+                        ||
+                    (!mClusterLayerToggle && graph_analysis::ClusterVertex::vertexType() == vertex->getClassName())
+                ;
+    return result;
 }
 
 } // end namespace gui

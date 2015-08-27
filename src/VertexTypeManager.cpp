@@ -13,27 +13,27 @@ VertexTypeManager::VertexTypeManager()
 {
     // registering known implemented class-types
     mClassVisualizationMap = boost::assign::map_list_of
-        ("base",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
-        ("graph_analysis::BaseVertex",    Vertex::Ptr ((Vertex *) (new BaseVertex())))
-        ("port",    Vertex::Ptr ((Vertex *) (new PortVertex())))
-        ("graph_analysis::PortVertex",    Vertex::Ptr ((Vertex *) (new PortVertex())))
-        ("inputport",    Vertex::Ptr ((Vertex *) (new InputPortVertex())))
-        ("graph_analysis::InputPortVertex",    Vertex::Ptr ((Vertex *) (new InputPortVertex())))
-        ("outputport",    Vertex::Ptr ((Vertex *) (new OutputPortVertex())))
-        ("graph_analysis::OutputPortVertex",    Vertex::Ptr ((Vertex *) (new OutputPortVertex())))
-        ("cluster",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
-        ("graph_analysis::ClusterVertex",    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
-        ("property",    Vertex::Ptr ((Vertex *) (new PropertyVertex())))
-        ("graph_analysis::PropertyVertex",    Vertex::Ptr ((Vertex *) (new PropertyVertex())))
-        ("operation",    Vertex::Ptr ((Vertex *) (new OperationVertex())))
-        ("graph_analysis::OperationVertex",    Vertex::Ptr ((Vertex *) (new OperationVertex())))
+        (std::string("base"),       Vertex::Ptr ((Vertex *) (new BaseVertex())))
+        (graph_analysis::BaseVertex::vertexType(),          Vertex::Ptr ((Vertex *) (new BaseVertex())))
+        (std::string("port"),       Vertex::Ptr ((Vertex *) (new PortVertex())))
+        (graph_analysis::PortVertex::vertexType(),          Vertex::Ptr ((Vertex *) (new PortVertex())))
+        (std::string("inputport"),  Vertex::Ptr ((Vertex *) (new InputPortVertex())))
+        (graph_analysis::InputPortVertex::vertexType(),     Vertex::Ptr ((Vertex *) (new InputPortVertex())))
+        (std::string("outputport"), Vertex::Ptr ((Vertex *) (new OutputPortVertex())))
+        (graph_analysis::OutputPortVertex::vertexType(),    Vertex::Ptr ((Vertex *) (new OutputPortVertex())))
+        (std::string("cluster"),    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
+        (graph_analysis::ClusterVertex::vertexType(),       Vertex::Ptr ((Vertex *) (new ClusterVertex())))
+        (std::string("property"),   Vertex::Ptr ((Vertex *) (new PropertyVertex())))
+        (graph_analysis::PropertyVertex::vertexType(),      Vertex::Ptr ((Vertex *) (new PropertyVertex())))
+        (std::string("operation"),  Vertex::Ptr ((Vertex *) (new OperationVertex())))
+        (graph_analysis::OperationVertex::vertexType(),     Vertex::Ptr ((Vertex *) (new OperationVertex())))
         ;
     // initializing the list of registered types (non-repeatingly, non-verbously)
     mRegisteredTypes.clear();
     ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
     for(; mClassVisualizationMap.end() != it; ++it)
     {
-        if("graph_analysis::" != it->first.substr(0, std::string("graph_analysis::").length())) // filters out verbose (&& duplicate!) types
+        if("graph_analysis::" != it->first.substr(0, std::string("graph_analysis::").length())) // filters out verbose (&& duplicate) types
         {
             mRegisteredTypes.insert(it->first);
         }

@@ -70,6 +70,15 @@
 #include <base/Logging.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/BaseVertex.hpp>
+#include <graph_analysis/PortVertex.hpp>
+#include <graph_analysis/InputPortVertex.hpp>
+#include <graph_analysis/OutputPortVertex.hpp>
+#include <graph_analysis/ClusterVertex.hpp>
+#include <graph_analysis/PropertyVertex.hpp>
+#include <graph_analysis/OperationVertex.hpp>
+
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/GraphIO.hpp>
@@ -849,7 +858,7 @@ void ViewWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
     std::string concernedVertexLabel = concernedVertex->toString();
     updateStatus(std::string("removing node '") + concernedVertexLabel + "'...");
     // removing possible (default?) edges of this cluster node within the main graph (and its feature-vertices)
-    if("graph_analysis::ClusterVertex" != concernedVertex->getClassName())
+    if(graph_analysis::ClusterVertex::vertexType() != concernedVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::ViewWidget::clearVertex: the supplied vertex '") + concernedVertex->getLabel()
                                         + "' is of unexpected type '" + concernedVertex->getClassName() + "'";
@@ -938,7 +947,7 @@ void ViewWidget::changeLayout()
 void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, NodeItem::id_t featureID)
 {
     updateStatus(std::string("drag-n-drop: setting source node to '") + startVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...");
-    if("graph_analysis::ClusterVertex" != startVertex->getClassName())
+    if(graph_analysis::ClusterVertex::vertexType() != startVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::gui::ViewWidget::setStartVertex: expected startVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
                                         + startVertex->getClassName() + "'";
@@ -954,7 +963,7 @@ void ViewWidget::setStartVertex(graph_analysis::Vertex::Ptr startVertex, NodeIte
 void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::id_t featureID)
 {
     updateStatus(std::string("drag-n-drop: setting target node to '") + endVertex->toString() + "' (feature=" + boost::lexical_cast<std::string>(featureID) + ")...");
-    if("graph_analysis::ClusterVertex" != endVertex->getClassName())
+    if(graph_analysis::ClusterVertex::vertexType() != endVertex->getClassName())
     {
         std::string error_msg = std::string("graph_analysis::gui::ViewWidget::setEndVertex: expected endVertex to be of type 'graph_analysis::ClusterVertex'; instead, found type '")
                                         + endVertex->getClassName() + "'";
@@ -1005,7 +1014,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::i
     }
     else
     {
-        if("graph_analysis::OutputPortVertex" != mpStartFeature->getClassName())
+        if(graph_analysis::OutputPortVertex::vertexType() != mpStartFeature->getClassName())
         {
             std::string error_msg = std::string("Expected associated source featureVertex to be of type 'graph_analysis::OutputPortVertex'; instead, found type '")
                                             + mpStartFeature->getClassName() + "'";
@@ -1016,7 +1025,7 @@ void ViewWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, NodeItem::i
                         );
             return;
         }
-        if("graph_analysis::InputPortVertex" != mpEndFeature->getClassName())
+        if(graph_analysis::InputPortVertex::vertexType() != mpEndFeature->getClassName())
         {
             std::string error_msg = std::string("Expected associated target featureVertex to be of type 'graph_analysis::InputPortVertex'; instead, found type '")
                                             + mpEndFeature->getClassName() + "'";
@@ -1282,7 +1291,7 @@ void ViewWidget::updateFromGraph()
             continue;
         }
 
-        if("graph_analysis::ClusterVertex" == vertex->getClassName())
+        if(graph_analysis::ClusterVertex::vertexType() == vertex->getClassName())
         {
             // Registering new Cluster node items only
             NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
@@ -1315,13 +1324,13 @@ void ViewWidget::updateFromGraph()
         std::string sourceClassName = source->getClassName();
         std::string targetClassName = target->getClassName();
 
-        if("graph_analysis::OutputPortVertex" == sourceClassName && "graph_analysis::InputPortVertex" == targetClassName)
+        if(graph_analysis::OutputPortVertex::vertexType() == sourceClassName && graph_analysis::InputPortVertex::vertexType() == targetClassName)
         {
             // physical edge - processing deflected until after all features will have been registered
             continue;
         }
 //        else if (   // disabled Port vertices (only specialized InputPorts/OutputPortsVertex allowed
-//                    ("graph_analysis::PortVertex" == sourceClassName && "graph_analysis::ClusterVertex" == targetClassName)
+//                    (graph_analysis::PortVertex::vertexType() == sourceClassName && graph_analysis::ClusterVertex::vertexType() == targetClassName)
 //                )
 //        {
 //            // semantical edge: links a cluster vertex to one of its features
@@ -1339,16 +1348,16 @@ void ViewWidget::updateFromGraph()
 //        }
         else if (
                     (
-                        "graph_analysis::ClusterVertex" == sourceClassName
+                        graph_analysis::ClusterVertex::vertexType() == sourceClassName
                             &&
                         (
-                            "graph_analysis::InputPortVertex" == targetClassName
+                            graph_analysis::InputPortVertex::vertexType() == targetClassName
                                 ||
-                            "graph_analysis::OutputPortVertex" == targetClassName
+                            graph_analysis::OutputPortVertex::vertexType() == targetClassName
                                 ||
-                            "graph_analysis::PropertyVertex" == targetClassName
+                            graph_analysis::PropertyVertex::vertexType() == targetClassName
                                 ||
-                            "graph_analysis::OperationVertex" == targetClassName
+                            graph_analysis::OperationVertex::vertexType() == targetClassName
                         )
                     )
                 )
@@ -1394,7 +1403,7 @@ void ViewWidget::updateFromGraph()
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
 
-        if("graph_analysis::OutputPortVertex" == source->getClassName() && "graph_analysis::InputPortVertex" == target->getClassName())
+        if(graph_analysis::OutputPortVertex::vertexType() == source->getClassName() && graph_analysis::InputPortVertex::vertexType() == target->getClassName())
         {
             NodeItem* sourceNodeItem = mFeatureMap[ source ];
             NodeItem* targetNodeItem = mFeatureMap[ target ];
@@ -1573,7 +1582,7 @@ void ViewWidget::setDragDrop(bool dragDrop)
     for(; mNodeItemMap.end() != it; ++it)
     {
         NodeItem *current = it->second;
-        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
+        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
         {
             current->setHandlesChildEvents(!mDragDrop);
             current->setFlag(QGraphicsItem::ItemIsMovable, !mDragDrop);
@@ -1588,7 +1597,7 @@ void ViewWidget::syncDragDrop()
     for(; mNodeItemMap.end() != it; ++it)
     {
         NodeItem *current = it->second;
-        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
+        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
         {
             current->setHandlesChildEvents(!mDragDrop);
             current->setFlag(QGraphicsItem::ItemIsMovable, !mDragDrop);
@@ -1610,7 +1619,7 @@ void ViewWidget::setDragDrop()
     for(; mNodeItemMap.end() != it; ++it)
     {
         NodeItem *current = it->second;
-        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
+        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
         {
             current->setHandlesChildEvents(false); // of !mDragDrop
             current->setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -1628,7 +1637,7 @@ void ViewWidget::unsetDragDrop()
     for(; mNodeItemMap.end() != it; ++it)
     {
         NodeItem *current = it->second;
-        if("graph_analysis::ClusterVertex" == current->getVertex()->getClassName())
+        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
         {
             current->setHandlesChildEvents(true); // of !mDragDrop
             current->setFlag(QGraphicsItem::ItemIsMovable);

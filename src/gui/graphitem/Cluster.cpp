@@ -1,5 +1,14 @@
 #include "Cluster.hpp"
 
+#include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/BaseVertex.hpp>
+#include <graph_analysis/PortVertex.hpp>
+#include <graph_analysis/InputPortVertex.hpp>
+#include <graph_analysis/OutputPortVertex.hpp>
+#include <graph_analysis/ClusterVertex.hpp>
+#include <graph_analysis/PropertyVertex.hpp>
+#include <graph_analysis/OperationVertex.hpp>
+
 #include <cmath>
 #include <QFont>
 #include <QStyle>
@@ -86,7 +95,7 @@ void Cluster::recomputeMaxInputPortWidth(void)
         // iterates through the input ports features to find their max width
         graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
-            "graph_analysis::InputPortVertex" == current_port->getClassName()
+            graph_analysis::InputPortVertex::vertexType() == current_port->getClassName()
         )
         {
             Label *label = mLabels[tuple.first];
@@ -107,7 +116,7 @@ void Cluster::recomputeMaxOutputPortWidth(void)
         // iterates through the output ports features to find their max width
         graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
-            "graph_analysis::OutputPortVertex" == current_port->getClassName()
+            graph_analysis::OutputPortVertex::vertexType() == current_port->getClassName()
         )
         {
             Label *label = mLabels[tuple.first];
@@ -130,7 +139,7 @@ void Cluster::setFeatureLabel(NodeItem::id_t featureID, const std::string& label
     feature_label->setPlainText(QString(label.c_str()));
     qreal post_width = feature_label->boundingRect().width();
     std::string type = feature->getClassName();
-    if("graph_analysis::InputPortVertex" == type)
+    if(graph_analysis::InputPortVertex::vertexType() == type)
     {
         if(post_width > mMaxInputPortWidth)
         {
@@ -143,7 +152,7 @@ void Cluster::setFeatureLabel(NodeItem::id_t featureID, const std::string& label
             recomputeMaxInputPortWidth();
         }
     }
-    else if("graph_analysis::OutputPortVertex" == type)
+    else if(graph_analysis::OutputPortVertex::vertexType() == type)
     {
         if(post_width > mMaxOutputPortWidth)
         {
@@ -236,9 +245,9 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
         rect = featureBoundingRect(tuple.first);
         std::string type = tuple.second->getClassName();
         bool isPort = (
-                        "graph_analysis::InputPortVertex" == type
+                        graph_analysis::InputPortVertex::vertexType() == type
                             ||
-                        "graph_analysis::OutputPortVertex" == type
+                        graph_analysis::OutputPortVertex::vertexType() == type
                     );
         if(isPort)
         {
@@ -317,7 +326,7 @@ void Cluster::shiftOutputPorts(qreal delta)
     {
         graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
-            "graph_analysis::OutputPortVertex" == current_port->getClassName()
+            graph_analysis::OutputPortVertex::vertexType() == current_port->getClassName()
         )
         {
             Label *label = mLabels[tuple.first];
@@ -332,7 +341,7 @@ void Cluster::displaceOutputPorts(qreal delta)
     {
         graph_analysis::Vertex::Ptr current_port = tuple.second;
         if(
-            "graph_analysis::OutputPortVertex" == current_port->getClassName()
+            graph_analysis::OutputPortVertex::vertexType() == current_port->getClassName()
         )
         {
             Label *label = mLabels[tuple.first];
@@ -382,9 +391,9 @@ void Cluster::updateWidth(bool active)
         graph_analysis::Vertex::Ptr feature = tuple.second;
         std::string type = feature->getClassName();
         if(
-            "graph_analysis::PropertyVertex" == type
+            graph_analysis::PropertyVertex::vertexType() == type
                 ||
-            "graph_analysis::OperationVertex" == type
+            graph_analysis::OperationVertex::vertexType() == type
         )
         {
             graphitem::Label *label = mLabels[tuple.first];
@@ -434,7 +443,7 @@ void Cluster::pushDownOperations(NodeItem::id_t times)
         graph_analysis::Vertex::Ptr current_operation = tuple.second; // TODO: optimization: iterate over mVertices instead
         std::string current_type = current_operation->getClassName();
         if(
-            "graph_analysis::OperationVertex" == current_type
+            graph_analysis::OperationVertex::vertexType() == current_type
         )
         {
             Label *label = mLabels[tuple.first];
@@ -456,9 +465,9 @@ void Cluster::pushDownNonPortFeatures(NodeItem::id_t times)
         graph_analysis::Vertex::Ptr current_feature = tuple.second; // TODO: optimization: iterate over mVertices instead
         std::string current_type = current_feature->getClassName();
         if(
-            "graph_analysis::PropertyVertex" == current_type
+            graph_analysis::PropertyVertex::vertexType() == current_type
                 ||
-            "graph_analysis::OperationVertex" == current_type
+            graph_analysis::OperationVertex::vertexType() == current_type
         )
         {
             Label *label = mLabels[tuple.first];
@@ -472,13 +481,13 @@ NodeItem::id_t Cluster::addFeature(Vertex::Ptr vertex)
     std::string feature_type = vertex->getClassName();
     if(!
         (
-            "graph_analysis::InputPortVertex"   == feature_type
+            graph_analysis::InputPortVertex::vertexType()   == feature_type
                 ||
-            "graph_analysis::OutputPortVertex"  == feature_type
+            graph_analysis::OutputPortVertex::vertexType()  == feature_type
                 ||
-            "graph_analysis::PropertyVertex"  == feature_type
+            graph_analysis::PropertyVertex::vertexType()  == feature_type
                 ||
-            "graph_analysis::OperationVertex"  == feature_type
+            graph_analysis::OperationVertex::vertexType()  == feature_type
         )
     )
     {
@@ -494,7 +503,7 @@ NodeItem::id_t Cluster::addFeature(Vertex::Ptr vertex)
     mVertices[mID] = vertex;
     qreal width = label->boundingRect().width();
     // alligning the new feature with all the other features
-    if(/*bool isInputPort = */"graph_analysis::InputPortVertex" == feature_type)
+    if(/*bool isInputPort = */graph_analysis::InputPortVertex::vertexType() == feature_type)
     {
         if(width > mMaxInputPortWidth)
         {
@@ -515,7 +524,7 @@ NodeItem::id_t Cluster::addFeature(Vertex::Ptr vertex)
             updateHeight();
         }
     }
-    else if(/*bool isOutputPort = */"graph_analysis::OutputPortVertex" == feature_type)
+    else if(/*bool isOutputPort = */graph_analysis::OutputPortVertex::vertexType() == feature_type)
     {
         if(width > mMaxOutputPortWidth)
         {
@@ -536,7 +545,7 @@ NodeItem::id_t Cluster::addFeature(Vertex::Ptr vertex)
             updateHeight();
         }
     }
-    else if(/*bool isProperty = */"graph_analysis::PropertyVertex" == feature_type)
+    else if(/*bool isProperty = */graph_analysis::PropertyVertex::vertexType() == feature_type)
     {
         if(mProps + 1 < 0)
         {
@@ -550,7 +559,7 @@ NodeItem::id_t Cluster::addFeature(Vertex::Ptr vertex)
         mHeightAdjusted = false;
         updateHeight();
     }
-    else // if(/*bool isOperation = */"graph_analysis::OperationVertex" == feature_type)
+    else // if(/*bool isOperation = */graph_analysis::OperationVertex::vertexType() == feature_type)
     {
         if(mOps + 1 < 0)
         {
@@ -591,7 +600,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
     // feature type
     std::string type = feature_to_delete->getClassName();
     // evaluating the side to remove a feature from
-    if(/*bool isInputPort = */"graph_analysis::InputPortVertex" == type)
+    if(/*bool isInputPort = */graph_analysis::InputPortVertex::vertexType() == type)
     {
         bool maxInputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxInputPortWidth; // tells whether max width shall be recomputed later on
         // shifting up all labels initially under the port-to-be-removed
@@ -603,7 +612,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
                 label->pos().y() > label_to_delete->pos().y()
                     &&
                 (
-                    "graph_analysis::InputPortVertex" == mVertices[it->first]->getClassName()
+                    graph_analysis::InputPortVertex::vertexType() == mVertices[it->first]->getClassName()
                 )
             )
             {
@@ -628,7 +637,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
             updateHeight();
         }
     }
-    else if(/*bool isOutputPort = */"graph_analysis::OutputPortVertex" == type)
+    else if(/*bool isOutputPort = */graph_analysis::OutputPortVertex::vertexType() == type)
     {
         bool maxOutputPortWidthIsDirty = label_to_delete->boundingRect().width() == mMaxOutputPortWidth; // tells whether max width shall be recomputed later on
         // shifting up all output ports initially under the port-to-be-removed
@@ -640,7 +649,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
                 label->pos().y() > label_to_delete->pos().y()
                     &&
                 (
-                    "graph_analysis::OutputPortVertex" == mVertices[it->first]->getClassName()
+                    graph_analysis::OutputPortVertex::vertexType() == mVertices[it->first]->getClassName()
                 )
             )
             {
@@ -665,7 +674,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
             updateHeight();
         }
     }
-    else if(/*bool isProperty = */"graph_analysis::PropertyVertex" == type)
+    else if(/*bool isProperty = */graph_analysis::PropertyVertex::vertexType() == type)
     {
         // shifting up all concerned features initially under the feature-to-be-removed
         if(1 == mProps)
@@ -686,9 +695,9 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
                     std::string current_type = current_feature->getClassName();
                     if(
                         (
-                            "graph_analysis::PropertyVertex" == current_type
+                            graph_analysis::PropertyVertex::vertexType() == current_type
                                 ||
-                            "graph_analysis::OperationVertex" == current_type
+                            graph_analysis::OperationVertex::vertexType() == current_type
                         )
                     )
                     {
@@ -706,7 +715,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
         mHeightAdjusted = false;
         updateHeight();
     }
-    else // if(/*bool isOperation = */"graph_analysis::OperationVertex" == type)
+    else // if(/*bool isOperation = */graph_analysis::OperationVertex::vertexType() == type)
     {
         // shifting up all concerned operation features initially under the operation-to-be-removed
         if(1 != mOps)
@@ -719,7 +728,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
                     label->pos().y() > label_to_delete->pos().y()
                         &&
                     (
-                        "graph_analysis::OperationVertex" == mVertices[it->first]->getClassName()
+                        graph_analysis::OperationVertex::vertexType() == mVertices[it->first]->getClassName()
                     )
                 )
                 {
@@ -832,7 +841,7 @@ void Cluster::syncLabel(NodeItem::id_t featureID)
         qreal width = label->boundingRect().width();
         std::string type = feature->getClassName();
         if(
-            "graph_analysis::InputPortVertex" == type
+            graph_analysis::InputPortVertex::vertexType() == type
         )
         {
             if(width > mMaxInputPortWidth)
@@ -844,7 +853,7 @@ void Cluster::syncLabel(NodeItem::id_t featureID)
                 recomputeMaxInputPortWidth();
             }
         }
-        else if("graph_analysis::OutputPortVertex" == type)
+        else if(graph_analysis::OutputPortVertex::vertexType() == type)
         {
             if(width > mMaxOutputPortWidth)
             {
@@ -870,10 +879,10 @@ QRectF Cluster::featureBoundingRect(NodeItem::id_t featureID)
     graph_analysis::Vertex::Ptr current_feature = mVertices[it->first];
     // boolean type witnesses
     std::string type = current_feature->getClassName();
-    bool isInputPort    =   "graph_analysis::InputPortVertex"   ==  type;
-    bool isOutputPort   =   "graph_analysis::OutputPortVertex"  ==  type;
-//  bool isProperty     =   "graph_analysis::PropertyVertex"    ==  type;
-//  bool isOperation    =   "graph_analysis::OperationVertex"   ==  type;
+    bool isInputPort    =   graph_analysis::InputPortVertex::vertexType()   ==  type;
+    bool isOutputPort   =   graph_analysis::OutputPortVertex::vertexType()  ==  type;
+//  bool isProperty     =   graph_analysis::PropertyVertex::vertexType()    ==  type;
+//  bool isOperation    =   graph_analysis::OperationVertex::vertexType()   ==  type;
     bool isPort = isInputPort || isOutputPort;
     // conditionally shifting both horizontally and vertically the 2 defining corners of the result rectangle
     if(isPort)

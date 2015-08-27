@@ -100,22 +100,7 @@ public:
     inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
 
     /// method for deciding whether a vertex is currently being toggled out of the scene by layer discrimination
-    inline bool toggledOut(graph_analysis::Vertex::Ptr vertex)
-    {
-        bool result =   (!mFeatureLayerToggle && "graph_analysis::PortVertex" == vertex->getClassName())
-                            ||
-                        (!mFeatureLayerToggle && "graph_analysis::InputPortVertex" == vertex->getClassName())
-                            ||
-                        (!mFeatureLayerToggle && "graph_analysis::OutputPortVertex" == vertex->getClassName())
-                            ||
-                        (!mFeatureLayerToggle && "graph_analysis::PropertyVertex" == vertex->getClassName())
-                            ||
-                        (!mFeatureLayerToggle && "graph_analysis::OperationVertex" == vertex->getClassName())
-                            ||
-                        (!mClusterLayerToggle && "graph_analysis::ClusterVertex" == vertex->getClassName())
-                    ;
-        return result;
-    }
+    inline bool toggledOut(graph_analysis::Vertex::Ptr vertex);
 
 public slots:
     /// shuffles all the nodes in the layers graph view
