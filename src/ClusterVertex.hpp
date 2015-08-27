@@ -22,6 +22,11 @@ public:
      */
     std::string getClassName() const    { return "graph_analysis::ClusterVertex"; }
 
+    /** Get class type
+     * \return class type
+     */
+    static std::string vertexType() { return "graph_analysis::ClusterVertex"; }
+
 protected:
     /**
      * Create a copy of this vertex

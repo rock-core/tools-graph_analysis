@@ -22,6 +22,11 @@ public:
      */
     virtual std::string getClassName() const { return "graph_analysis::BaseVertex"; }
 
+    /** Get class type
+     * \return class type
+     */
+    static std::string vertexType() { return "graph_analysis::BaseVertex"; }
+
 protected:
     /**
      * Create a copy of this vertex

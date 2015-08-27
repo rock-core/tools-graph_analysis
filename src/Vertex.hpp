@@ -32,6 +32,11 @@ public:
      */
     virtual std::string getClassName() const { return "graph_analysis::Vertex"; }
 
+    /** Get class type
+     * \return class type
+     */
+    static std::string vertexType() { return "graph_analysis::Vertex"; }
+
     /**
      * Convert element to string
      */

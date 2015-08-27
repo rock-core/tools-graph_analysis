@@ -25,6 +25,11 @@ public:
      */
     virtual std::string getClassName() const { return "graph_analysis::PortVertex"; }
 
+    /** Get class type
+     * \return class type
+     */
+    static std::string vertexType() { return "graph_analysis::PortVertex"; }
+
 protected:
     /**
      * Create a copy of this vertex
