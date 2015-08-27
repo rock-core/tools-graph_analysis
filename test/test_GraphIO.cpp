@@ -1,6 +1,8 @@
 #include <boost/test/unit_test.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
+#include <graph_analysis/WeightedVertex.hpp>
+#include <graph_analysis/WeightedEdge.hpp>
 
 using namespace graph_analysis;
 
@@ -105,6 +107,28 @@ BOOST_AUTO_TEST_CASE(gexf)
 
         std::string filename = "/tmp/test-io-" + graph->getImplementationTypeName() + ".gexf";
         io::GraphIO::write(filename, *graph, representation::GEXF);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(dot_with_derived_types)
+{
+    for(int i = BaseGraph::BOOST_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)
+    {
+        BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
+        BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
+
+        BOOST_REQUIRE_MESSAGE(true, "constructing test graph");
+        BOOST_REQUIRE_MESSAGE(true, "    constructing 4 vertices");
+        WeightedVertex::Ptr v0(new WeightedVertex(10.0));
+        WeightedVertex::Ptr v1(new WeightedVertex(15.0));
+        WeightedEdge::Ptr e0(new WeightedEdge(v0, v1, 20.0));
+
+        graph->addEdge(e0);
+
+        std::string filename = "/tmp/test-" + graph->getImplementationTypeName() + "-graphviz-with-derived-types.dot";
+        BOOST_REQUIRE_MESSAGE(true, "Starting rendering to file " << filename);
+        io::GraphIO::write(filename, *graph, representation::GRAPHVIZ);
+        BOOST_REQUIRE_MESSAGE(true, "Rendering completed. Please manually check a complete graph with 4-nodes is contained in file " << filename);
     }
 }
 
