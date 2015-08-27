@@ -19,14 +19,22 @@ namespace algorithms {
 class MinCostFlow
 {
 public:
-    typedef NWeightedEdge<int32_t,3> edge_t;
-    typedef NWeightedVertex<uint32_t,2> vertex_t;
+    typedef NWeightedEdge<int32_t,5> edge_t;
+    typedef NWeightedVertex<int32_t,2> vertex_t;
+
+    enum EdgeIndex { LOWER_BOUND = 0, UPPER_BOUND, COST, RESULT_FLOW };
+    enum VertexIndex { SUPPLY_DEMAND = 0, RESULT_POTENTIAL };
 
     enum Type { NetworkSimplex, CostScaling, CapacityScaling, CycleCanceling };
 
     MinCostFlow(const BaseGraph::Ptr& graph, Type type = NetworkSimplex);
 
-    void run();
+    /**
+     * All results will be added into the graph
+     * access we
+     * \return the total cost
+     */
+    uint32_t run();
 
 private:
     BaseGraph::Ptr mpGraph;

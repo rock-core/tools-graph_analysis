@@ -13,7 +13,7 @@ MinCostFlow::MinCostFlow(const BaseGraph::Ptr& graph, Type type)
 {}
 
 
-void MinCostFlow::run()
+uint32_t MinCostFlow::run()
 {
     switch(mpGraph->getImplementationType())
     {
@@ -41,9 +41,9 @@ void MinCostFlow::run()
                 edge_t::Ptr edge = boost::dynamic_pointer_cast< edge_t >(edgeIt->current());
                 assert(edge);
 
-                lowerMap[diGraph->getArc(edge)] = edge->getWeight(0);
-                upperMap[diGraph->getArc(edge)] = edge->getWeight(1);
-                costMap[diGraph->getArc(edge)]  = edge->getWeight(2);
+                lowerMap[diGraph->getArc(edge)] = edge->getWeight(LOWER_BOUND);
+                upperMap[diGraph->getArc(edge)] = edge->getWeight(UPPER_BOUND);
+                costMap[diGraph->getArc(edge)]  = edge->getWeight(COST);
             }
 
             NodeMap supplyMap(diGraph->raw());
@@ -53,7 +53,7 @@ void MinCostFlow::run()
             {
                 vertex_t::Ptr vertex = boost::dynamic_pointer_cast< vertex_t >(vertexIt->current());
                 assert(vertex);
-                supplyMap[diGraph->getNode(vertex)] = (supply_t) vertex->getWeight(0);
+                supplyMap[diGraph->getNode(vertex)] = (supply_t) vertex->getWeight(SUPPLY_DEMAND);
             }
 
             typedef ::lemon::NetworkSimplex<graph_analysis::lemon::DirectedGraph::graph_t, value_and_cost_t> NetworkSimplex;
@@ -71,13 +71,29 @@ void MinCostFlow::run()
             {
                 case NetworkSimplex::INFEASIBLE:
                     throw std::runtime_error("graph_analysis::algorithms::MinCostFlow: no feasible solution");
-                    break;
                 case NetworkSimplex::OPTIMAL:
-                    throw std::runtime_error("graph_analysis::algorithms::MinCostFlow: optimal solution");
-                    break;
+                {
+                    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+                    while(edgeIt->next())
+                    {
+                        edge_t::Ptr edge = boost::dynamic_pointer_cast< edge_t >(edgeIt->current());
+                        assert(edge);
+
+                        edge->setWeight( simplex.flow( diGraph->getArc(edge)), RESULT_FLOW );
+                    }
+
+                    VertexIterator::Ptr vertexIt = mpGraph->getVertexIterator();
+                    while(vertexIt->next())
+                    {
+                        vertex_t::Ptr vertex = boost::dynamic_pointer_cast< vertex_t >(vertexIt->current());
+                        assert(vertex);
+                        vertex->setWeight( simplex.potential( diGraph->getNode(vertex) ), RESULT_POTENTIAL);
+                    }
+
+                    return simplex.totalCost();
+                }
                 case NetworkSimplex::UNBOUNDED:
                     throw std::runtime_error("graph_analysis::algorithms::MinCostFlow: unbounded solution");
-                    break;
             }
             break;
         }
@@ -86,7 +102,9 @@ void MinCostFlow::run()
         default:
             throw std::runtime_error("graph_analysis::algorithms::MinCostFlow: not implemented for " + mpGraph->getImplementationTypeName());
             break;
+
     }
+    return 0;
 }
 
 } // end namespace algorithms
