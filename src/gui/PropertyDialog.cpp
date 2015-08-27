@@ -1,5 +1,5 @@
 
-#include "ViewWidget.hpp"
+#include "ComponentEditorWidget.hpp"
 #include "LayerWidget.hpp"
 #include "IconManager.hpp"
 #include "GraphManager.hpp"
@@ -404,7 +404,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
     // the 2 handles are to be needed throughout the rest of this method
     LayerWidget *layerWidget = WidgetManager::getInstance() -> getLayerWidget();
-    ViewWidget  * viewWidget = WidgetManager::getInstance() -> getViewWidget();
+    ComponentEditorWidget  * viewWidget = WidgetManager::getInstance() -> getComponentEditorWidget();
 
     // right hand-side in the layers view tab; filtering specific commands
     int verticalLayoutComponentsLayerLeftover;

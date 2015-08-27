@@ -120,7 +120,7 @@ public:
     FilterManager* getFilterManager(void) { return mpFilterManager; }
 
 public slots:
-    /// switches the central widget to the widget of the given index: 0 for the ViewWidget; 1 for the LayerWidget
+    /// switches the central widget to the widget of the given index: 0 for the ComponentEditorWidget; 1 for the LayerWidget
     void updateMainWidget(int index);
 
 private:

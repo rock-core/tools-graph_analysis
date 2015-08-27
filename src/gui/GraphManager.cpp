@@ -33,15 +33,15 @@ GraphManager::GraphManager(const QString& filename)
     mpMainWindow->setMinimumSize(850, 400);
 
     mpLayerWidget = new LayerWidget();
-    widgetManager->setLayerWidget(mpLayerWidget); // shall come before ViewWidget's constructor being called
-    // ViewWidget uses the subordinate LayerWidget in its constructor (to update the common mpGraph base graph instance at ViewWidget init)
-    mpViewWidget = new ViewWidget(mpMainWindow);
-    widgetManager->setViewWidget(mpViewWidget);
-//    mpViewWidget->reset();
+    widgetManager->setLayerWidget(mpLayerWidget); // shall come before ComponentEditorWidget's constructor being called
+    // ComponentEditorWidget uses the subordinate LayerWidget in its constructor (to update the common mpGraph base graph instance at ComponentEditorWidget init)
+    mpComponentEditorWidget = new ComponentEditorWidget(mpMainWindow);
+    widgetManager->setComponentEditorWidget(mpComponentEditorWidget);
+//    mpComponentEditorWidget->reset();
 
-    mpStackedWidget->addWidget((QWidget *) mpViewWidget);
+    mpStackedWidget->addWidget((QWidget *) mpComponentEditorWidget);
     mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
-    mpStackedWidget->setCurrentIndex(0); // showing mpViewWidget on init
+    mpStackedWidget->setCurrentIndex(0); // showing mpComponentEditorWidget on init
     mpMainWindow->setCentralWidget(mpStackedWidget);
 
     mpPropertyDialog = new PropertyDialog();
@@ -69,12 +69,12 @@ GraphManager::GraphManager(const QString& filename)
     QAction *actionAddNode = comm.addAction("Add Node", SLOT(addNodeAdhocMainWindow()), *(IconManager::getInstance()->getIcon("addNode_white")));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refreshMainWindow()), *(IconManager::getInstance()->getIcon("refresh_white")));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffleMainWindow()), *(IconManager::getInstance()->getIcon("shuffle_white")));
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import_white")), mpViewWidget);
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export_white")), mpViewWidget);
-    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset_white")), mpViewWidget);
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import_white")), mpComponentEditorWidget);
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export_white")), mpComponentEditorWidget);
+    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset_white")), mpComponentEditorWidget);
     QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayoutMainWindow()), *(IconManager::getInstance()->getIcon("layout_white")));
-    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop_white")), mpViewWidget);
-    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move_white")), mpViewWidget);
+    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop_white")), mpComponentEditorWidget);
+    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move_white")), mpComponentEditorWidget);
     QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), *(IconManager::getInstance()->getIcon("reload_white")));
 
     // loading different actions in different menus
@@ -120,12 +120,12 @@ GraphManager::GraphManager(const QString& filename)
     filters::EdgeContextFilter::Ptr filter(new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
     std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
     edgeFilters.push_back(filter);
-    mpViewWidget->setEdgeFilters(edgeFilters);
-    mpViewWidget->setLayout(mLayout);
+    mpComponentEditorWidget->setEdgeFilters(edgeFilters);
+    mpComponentEditorWidget->setLayout(mLayout);
     if(!filename.isEmpty())
     {
         // loading graph on init from the given filename
-        mpViewWidget->fromFile(filename, true, false);
+        mpComponentEditorWidget->fromFile(filename, true, false);
     }
     mpMainWindow->show();
 }
@@ -146,7 +146,7 @@ void GraphManager::reloadPropertyDialog(void)
     {
         delete mpPropertyDialog;
     }
-    mpPropertyDialog = new PropertyDialog(mpViewWidget->getDragDrop(), mpViewWidget->getVertexFocused(), mpViewWidget->getEdgeFocused());
+    mpPropertyDialog = new PropertyDialog(mpComponentEditorWidget->getDragDrop(), mpComponentEditorWidget->getVertexFocused(), mpComponentEditorWidget->getEdgeFocused());
     WidgetManager::getInstance()->setPropertyDialog(mpPropertyDialog); // IMPORTANT!!! - now updating the corresponding field in the WidgetManager
     updateStatus(std::string("Reloaded command panel!"), GraphManager::TIMEOUT);
 }
@@ -247,9 +247,9 @@ void GraphManager::helpSetup(std::stringstream& ss, const std::string& cmd)
 
 void GraphManager::changeFocusedEdgeLabelMainWindow()
 {
-    if(mpViewWidget->getEdgeFocused())
+    if(mpComponentEditorWidget->getEdgeFocused())
     {
-        mpViewWidget->changeFocusedEdgeLabel();
+        mpComponentEditorWidget->changeFocusedEdgeLabel();
     }
     else
     {
@@ -259,9 +259,9 @@ void GraphManager::changeFocusedEdgeLabelMainWindow()
 
 void GraphManager::removeFocusedEdgeMainWindow()
 {
-    if(mpViewWidget->getEdgeFocused())
+    if(mpComponentEditorWidget->getEdgeFocused())
     {
-        mpViewWidget->removeFocusedEdge();
+        mpComponentEditorWidget->removeFocusedEdge();
     }
     else
     {
@@ -271,9 +271,9 @@ void GraphManager::removeFocusedEdgeMainWindow()
 
 void GraphManager::changeFocusedVertexLabelMainWindow()
 {
-    if(mpViewWidget->getVertexFocused())
+    if(mpComponentEditorWidget->getVertexFocused())
     {
-        mpViewWidget->changeFocusedVertexLabel();
+        mpComponentEditorWidget->changeFocusedVertexLabel();
     }
     else
     {
@@ -283,9 +283,9 @@ void GraphManager::changeFocusedVertexLabelMainWindow()
 
 void GraphManager::removeFocusedVertexMainWindow()
 {
-    if(mpViewWidget->getVertexFocused())
+    if(mpComponentEditorWidget->getVertexFocused())
     {
-        mpViewWidget->removeFocusedVertex();
+        mpComponentEditorWidget->removeFocusedVertex();
     }
     else
     {
@@ -295,9 +295,9 @@ void GraphManager::removeFocusedVertexMainWindow()
 
 void GraphManager::addFeatureFocusedMainWindow()
 {
-    if(mpViewWidget->getVertexFocused())
+    if(mpComponentEditorWidget->getVertexFocused())
     {
-        mpViewWidget->addFeatureFocused();
+        mpComponentEditorWidget->addFeatureFocused();
     }
     else
     {
@@ -307,9 +307,9 @@ void GraphManager::addFeatureFocusedMainWindow()
 
 void GraphManager::swapFeaturesFocusedMainWindow()
 {
-    if(mpViewWidget->getVertexFocused())
+    if(mpComponentEditorWidget->getVertexFocused())
     {
-        mpViewWidget->swapFeaturesFocused();
+        mpComponentEditorWidget->swapFeaturesFocused();
     }
     else
     {
@@ -319,9 +319,9 @@ void GraphManager::swapFeaturesFocusedMainWindow()
 
 void GraphManager::renameFeatureFocusedMainWindow()
 {
-    if(mpViewWidget->getVertexFocused())
+    if(mpComponentEditorWidget->getVertexFocused())
     {
-        mpViewWidget->renameFeatureFocused();
+        mpComponentEditorWidget->renameFeatureFocused();
     }
     else
     {
@@ -331,9 +331,9 @@ void GraphManager::renameFeatureFocusedMainWindow()
 
 void GraphManager::removeFeatureFocusedMainWindow()
 {
-    if(mpViewWidget->getVertexFocused())
+    if(mpComponentEditorWidget->getVertexFocused())
     {
-        mpViewWidget->removeFeatureFocused();
+        mpComponentEditorWidget->removeFeatureFocused();
     }
     else
     {
@@ -343,9 +343,9 @@ void GraphManager::removeFeatureFocusedMainWindow()
 
 void GraphManager::removeFeaturesFocusedMainWindow()
 {
-    if(mpViewWidget->getVertexFocused())
+    if(mpComponentEditorWidget->getVertexFocused())
     {
-        mpViewWidget->removeFeaturesFocused();
+        mpComponentEditorWidget->removeFeaturesFocused();
     }
     else
     {
@@ -355,7 +355,7 @@ void GraphManager::removeFeaturesFocusedMainWindow()
 
 void GraphManager::addNodeAdhocMainWindow()
 {
-    mpViewWidget->addNodeAdhoc();
+    mpComponentEditorWidget->addNodeAdhoc();
 }
 
 void GraphManager::refreshMainWindow()
@@ -363,7 +363,7 @@ void GraphManager::refreshMainWindow()
     switch(mpStackedWidget->currentIndex())
     {
     case 0:
-        mpViewWidget->refresh();
+        mpComponentEditorWidget->refresh();
     break;
 
     case 1:
@@ -377,7 +377,7 @@ void GraphManager::shuffleMainWindow()
     switch(mpStackedWidget->currentIndex())
     {
     case 0:
-        mpViewWidget->shuffle();
+        mpComponentEditorWidget->shuffle();
     break;
 
     case 1:
@@ -391,7 +391,7 @@ void GraphManager::changeLayoutMainWindow()
     switch(mpStackedWidget->currentIndex())
     {
     case 0:
-        mpViewWidget->changeLayout();
+        mpComponentEditorWidget->changeLayout();
     break;
 
     case 1:

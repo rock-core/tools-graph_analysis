@@ -9,7 +9,7 @@ namespace graph_analysis {
 namespace gui {
 
     class GraphManager;
-    class ViewWidget;
+    class ComponentEditorWidget;
     class LayerWidget;
     class PropertyDialog;
 
@@ -43,9 +43,9 @@ public:
     void setStackedWidget(QStackedWidget *stackedWidget);
 
     /// getter for the diagram editor widget GUI component
-    ViewWidget* getViewWidget(void);
+    ComponentEditorWidget* getComponentEditorWidget(void);
     /// setter for the diagram editor widget GUI component
-    void setViewWidget(ViewWidget *viewWidget);
+    void setComponentEditorWidget(ComponentEditorWidget *viewWidget);
 
     /// getter for the layers viewer widget GUI component
     LayerWidget* getLayerWidget(void);
@@ -63,7 +63,7 @@ private:
     /// main window of the qt application
     QMainWindow *mpMainWindow;
     /// the diagram editor widget GUI component
-    ViewWidget *mpViewWidget;
+    ComponentEditorWidget *mpComponentEditorWidget;
     /// the layers viewer widget GUI component
     LayerWidget *mpLayerWidget;
     /// stacked widget to toggle between the diagram editor and layers viewer (the actual central widget of the main window)

@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPH_MANAGER_HPP
 #define GRAPH_ANALYSIS_GUI_GRAPH_MANAGER_HPP
 
-#include "ViewWidget.hpp"
+#include "ComponentEditorWidget.hpp"
 #include "LayerWidget.hpp"
 #include "PropertyDialog.hpp"
 
@@ -91,7 +91,7 @@ private:
     /// stacked widget to toggle between the diagram editor and layers viewer (the actual central widget of the main window)
     QStackedWidget* mpStackedWidget;
     /// the diagram editor widget GUI component
-    ViewWidget *mpViewWidget;
+    ComponentEditorWidget *mpComponentEditorWidget;
     /// the layers viewer widget GUI component
     LayerWidget *mpLayerWidget;
     /// status bar

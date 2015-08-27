@@ -27,7 +27,7 @@ rock_library(graph_analysis
         gui/WidgetManager.cpp
         gui/GraphManager.cpp
         gui/GraphWidget.cpp
-        gui/ViewWidget.cpp
+        gui/ComponentEditorWidget.cpp
         gui/LayerWidget.cpp
         gui/FilterManager.cpp
         gui/FilterItem.cpp
@@ -106,7 +106,7 @@ rock_library(graph_analysis
         gui/WidgetManager.hpp
         gui/GraphManager.hpp
         gui/GraphWidget.hpp
-        gui/ViewWidget.hpp
+        gui/ComponentEditorWidget.hpp
         gui/LayerWidget.hpp
         gui/FilterManager.hpp
         gui/FilterItem.hpp
@@ -163,7 +163,7 @@ rock_library(graph_analysis
     DEPS_PLAIN
         Boost_REGEX
     MOC
-        gui/ViewWidget.hpp
+        gui/ComponentEditorWidget.hpp
         gui/LayerWidget.hpp
         gui/GraphManager.hpp
         gui/FilterManager.hpp

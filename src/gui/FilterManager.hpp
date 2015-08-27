@@ -7,8 +7,8 @@
 #include <QGraphicsView>
 
 #include "FilterItem.hpp"
-#include "ViewWidget.hpp"
 #include "LayerWidget.hpp"
+#include "ComponentEditorWidget.hpp"
 
 namespace graph_analysis {
 namespace gui {

@@ -41,7 +41,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
 #define GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
 
-#include "ViewWidget.hpp"
+#include "ComponentEditorWidget.hpp"
 
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>

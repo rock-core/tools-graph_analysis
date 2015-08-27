@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef GRAPH_ANALYSIS_GUI_VIEWWIDGET_H
-#define GRAPH_ANALYSIS_GUI_VIEWWIDGET_H
+#ifndef GRAPH_ANALYSIS_GUI_COMPONENTEDITORWIDGET_H
+#define GRAPH_ANALYSIS_GUI_COMPONENTEDITORWIDGET_H
 
 #include "NodeItem.hpp"
 #include "GraphWidget.hpp"
@@ -76,12 +76,12 @@ class PropertyDialog;
 class LayerWidget;
 
 /**
- * \file ViewWidget.hpp
- * \class ViewWidget
- * \brief diagram view graph widget implementation
+ * \file ComponentEditorWidget.hpp
+ * \class ComponentEditorWidget
+ * \brief component editor graph widget implementation
  * \details maintains and displays a diagram with clusternodes, their features and the links (edges) between their ports
  */
-class ViewWidget : public GraphWidget
+class ComponentEditorWidget : public GraphWidget
 {
     Q_OBJECT
 public:
@@ -89,9 +89,9 @@ public:
      * \brief constructor
      * \param parent qt parent widget
      */
-    ViewWidget(QWidget *parent = 0);
+    ComponentEditorWidget(QWidget *parent = 0);
     /// destructor
-    ~ViewWidget();
+    ~ComponentEditorWidget();
 
     /**
      * \brief introduces (creates + adds) a new vertex in the basegraph and enables it
@@ -235,11 +235,11 @@ public:
     void updateStatus(const QString& message = QString(), int timeout = 0);
 
 public slots:
-    /// shuffles all the nodes in the diagram graph view
+    /// shuffles all the nodes in the diagram graph editor
     void shuffle();
-    /// zooms-into the diagram view graph scene
+    /// zooms-into the diagram editor graph scene
     void zoomIn();
-    /// zooms-out of the diagram view graph scene
+    /// zooms-out of the diagram editor graph scene
     void zoomOut();
     /// prompts the used for adding a new node to the scene (the underlying graph also gets updated) optionally at a given position (e.g. mouse pointer position in the scene)
     void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
@@ -283,7 +283,7 @@ public slots:
     /// displays context menu (upon a right click in the scene)
     void showContextMenu(const QPoint& pos);
 
-    /// re-layouts the graph view with the given layouting engine 'layoutName'
+    /// re-layouts the graph editor with the given layouting engine 'layoutName'
     void setLayout(QString layoutName);
     /// refreshes the scene from scratch - updates the Status bar iff status is set (true)
     void refresh(bool status = true);
@@ -303,7 +303,7 @@ public slots:
     void updateMoveAround(bool moveAround);
     /// toggles mDragDrop boolean witness
     void toggleDragDrop();
-    /// synchronizes the drag-n-drop mode in graph view with the state of the drag-n-drop witness in the property dialog/panel
+    /// synchronizes the drag-n-drop mode in graph editor with the state of the drag-n-drop witness in the property dialog/panel
     void syncDragDrop();
     /// sets drag-n-drop to true on all levels
     void setDragDrop();
@@ -313,9 +313,9 @@ public slots:
     void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
 
 protected:
-    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget; when status is false, this takes place quiently (no updates are made on the status bar)
+    /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerWidget; when status is false, this takes place quiently (no updates are made on the status bar)
     inline void refreshLayerWidget(bool status = true);
-    /// updates the (read-only) layers graph view in the omologuous widget mpLayerWidget
+    /// updates the (read-only) layers graph editor in the omologuous widget mpLayerWidget
     inline void updateLayerWidget();
 
     /// qt mouse press callback
@@ -380,4 +380,4 @@ private:
 
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_GUI_VIEWWIDGET_H
+#endif // GRAPH_ANALYSIS_GUI_COMPONENTEDITORWIDGET_H

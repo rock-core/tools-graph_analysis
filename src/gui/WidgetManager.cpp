@@ -11,7 +11,7 @@ namespace gui {
 WidgetManager::WidgetManager()
     : mpGraphManager(NULL)
     , mpMainWindow(NULL)
-    , mpViewWidget(NULL)
+    , mpComponentEditorWidget(NULL)
     , mpLayerWidget(NULL)
     , mpStackedWidget(NULL)
     , mpPropertyDialog(NULL)
@@ -67,19 +67,19 @@ void WidgetManager::setStackedWidget(QStackedWidget *stackedWidget)
     mpStackedWidget = stackedWidget;
 }
 
-ViewWidget* WidgetManager::getViewWidget(void)
+ComponentEditorWidget* WidgetManager::getComponentEditorWidget(void)
 {
-    if(!mpViewWidget)
+    if(!mpComponentEditorWidget)
     {
-        std::string error_msg("graph_analysis::gui::WidgetManager::getViewWidget: mpViewWidget has not been initialized!");
+        std::string error_msg("graph_analysis::gui::WidgetManager::getComponentEditorWidget: mpComponentEditorWidget has not been initialized!");
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    return mpViewWidget;
+    return mpComponentEditorWidget;
 }
-void WidgetManager::setViewWidget(ViewWidget *viewWidget)
+void WidgetManager::setComponentEditorWidget(ComponentEditorWidget *viewWidget)
 {
-    mpViewWidget = viewWidget;
+    mpComponentEditorWidget = viewWidget;
 }
 
 LayerWidget* WidgetManager::getLayerWidget(void)

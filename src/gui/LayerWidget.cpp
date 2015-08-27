@@ -134,7 +134,7 @@ LayerWidget::~LayerWidget()
 
 void LayerWidget::showContextMenu(const QPoint& pos)
 {
-    ActionCommander comm(WidgetManager::getInstance()->getViewWidget());
+    ActionCommander comm(WidgetManager::getInstance()->getComponentEditorWidget());
     QMenu contextMenu(tr("Context menu"), this);
 
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")), this);
@@ -502,18 +502,18 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
             break;
 
             case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
-                WidgetManager::getInstance()->getViewWidget()->resetGraph();
+                WidgetManager::getInstance()->getComponentEditorWidget()->resetGraph();
             break;
 
             case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
             case Qt::Key_S:
-                WidgetManager::getInstance()->getViewWidget()->exportGraph();
+                WidgetManager::getInstance()->getComponentEditorWidget()->exportGraph();
             break;
 
             case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  or CTRL+L (load graph) opens a graph from file
             case Qt::Key_O:
             case Qt::Key_L:
-                WidgetManager::getInstance()->getViewWidget()->importGraph();
+                WidgetManager::getInstance()->getComponentEditorWidget()->importGraph();
             break;
 
             case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
