@@ -76,6 +76,7 @@
 #include <graph_analysis/io/GexfReader.hpp>
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
+#include <graph_analysis/filters/CommonFilters.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 
@@ -97,7 +98,8 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
+    //, mpVertexFilter(new filters::PermitAll< graph_analysis::Vertex::Ptr>( ))
+    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
     , mEdgeSelected(false)

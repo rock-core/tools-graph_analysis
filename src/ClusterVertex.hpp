@@ -20,7 +20,7 @@ public:
     /** Get class name
      * \return class name
      */
-    std::string getClassName() const    { return "graph_analysis::ClusterVertex"; }
+    std::string getClassName() const    { return ClusterVertex::vertexType(); }
 
     /** Get class type
      * \return class type

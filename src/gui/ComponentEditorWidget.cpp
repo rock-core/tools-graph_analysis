@@ -2123,14 +2123,14 @@ void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVe
     }
 }
 
-inline void ComponentEditorWidget::updateLayerViewWidget()
+void ComponentEditorWidget::updateLayerViewWidget()
 {
     LayerViewWidget *layerWidget = WidgetManager::getInstance()->getLayerViewWidget();
     layerWidget->setGraph(mpGraph);
     layerWidget->refresh(false);
 }
 
-inline void ComponentEditorWidget::refreshLayerViewWidget(bool status)
+void ComponentEditorWidget::refreshLayerViewWidget(bool status)
 {
     WidgetManager::getInstance()->getLayerViewWidget()->refresh(status);
 }

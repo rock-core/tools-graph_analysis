@@ -1080,7 +1080,7 @@ void Cluster::updateStatus(const std::string& message, int timeout)
 
 inline void Cluster::refreshLayerViewWidget(bool status)
 {
-    mpGraphWidget->refreshLayersWidget(status);
+    mpGraphWidget->refreshLayerViewWidget(status);
 }
 
 //void Cluster::keyPressEvent(QKeyEvent* event)

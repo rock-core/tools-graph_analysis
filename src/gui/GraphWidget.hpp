@@ -176,14 +176,17 @@ public:
     virtual void setEdgeFocused  (bool focused) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEdgeFocused is not reimplemented");    }
     virtual void clearEdgeFocus() { throw std::runtime_error("graph_analysis::gui::GraphWidget::clearEdgeFocus is not reimplemented"); }
     virtual void clearNodeFocus() { throw std::runtime_error("graph_analysis::gui::GraphWidget::clearNodeFocus is not reimplemented"); }
-    virtual void setStartVertex (graph_analysis::Vertex::Ptr, int) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setStartVertex is not reimplemented"); }
-    virtual void setEndVertex   (graph_analysis::Vertex::Ptr, int) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEndVertex is not reimplemented");   }
+    virtual void setStartVertex (graph_analysis::Vertex::Ptr, NodeItem::id_t) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setStartVertex is not reimplemented"); }
+    virtual void setEndVertex   (graph_analysis::Vertex::Ptr, NodeItem::id_t) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEndVertex is not reimplemented");   }
     virtual void setFocusedEdge     (graph_analysis::Edge::Ptr)     { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedEdge is not reimplemented");   }
     virtual void setFocusedVertex   (graph_analysis::Vertex::Ptr)   { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedVertex is not reimplemented"); }
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
     virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
-    virtual void refreshLayersWidget(bool) { throw std::runtime_error("graph_analysis::gui::GraphWidget::refreshLayerViewWidget is not reimplemented"); }
-    virtual void updateStatus(const QString&, int) { throw std::runtime_error("graph_analysis::gui::GraphWidget::updateStatus is not reimplemented"); }
+    virtual void refreshLayerViewWidget(bool) { throw std::runtime_error("graph_analysis::gui::GraphWidget::refreshLayerViewWidget is not reimplemented"); }
+    ///
+    /// \param msg Message in the statusbar
+    /// \param time Number of milliseconds the message will be held on screen
+    virtual void updateStatus(const QString& msg, int timeInMS) { throw std::runtime_error("graph_analysis::gui::GraphWidget::updateStatus is not reimplemented"); }
 
 protected:
 
