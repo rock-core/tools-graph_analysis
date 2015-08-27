@@ -4,8 +4,7 @@
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <QPen>
-
-#define LAYER_NODE_TYPE "LayerVertex"
+#include <string>
 
 namespace graph_analysis {
 namespace gui {
@@ -26,6 +25,8 @@ private:
     /// constructor; private since instances of this class only spawn via the NodeTypeManager factory class
     Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
 public:
+    /// implementation type indentifier - relevant for registring this implementation in the NodeTypeManager factory
+    static const std::string sType;
     /// empty constructor
     Resource() {}
     /// destructor

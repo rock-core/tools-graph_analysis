@@ -13,6 +13,8 @@ namespace graph_analysis {
 namespace gui {
 namespace layeritem {
 
+const std::string Resource::sType("LayerNode");
+
 Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex)
     , mPen(Qt::blue)

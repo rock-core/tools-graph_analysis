@@ -317,7 +317,7 @@ void LayerWidget::updateFromGraph()
         }
 
         // Registering new node items
-        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, LAYER_NODE_TYPE);
+        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, layeritem::Resource::sType);
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
         mpGVGraph->addNode(vertex);
