@@ -86,7 +86,7 @@ void FilterManager::updateToolTip(int state)
 
 void FilterManager::refreshView(bool updatesStatusBar)
 {
-    WidgetManager::getInstance()->getLayerWidget()->refresh(updatesStatusBar);
+    WidgetManager::getInstance()->getLayerViewWidget()->refresh(updatesStatusBar);
 }
 
 void FilterManager::addFilter(const std::string& label)
@@ -169,7 +169,7 @@ void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness
 
     if(refresh)
     {
-        WidgetManager::getInstance()->getLayerWidget()->refresh();
+        WidgetManager::getInstance()->getLayerViewWidget()->refresh();
     }
 }
 
@@ -246,7 +246,7 @@ void FilterManager::removeFilter(FilterItem *item)
     if(dirty)
     {
         // an unchecked checkbox (i.e. disabled filter) would not require a layers view refresh
-        WidgetManager::getInstance()->getLayerWidget()->refresh();
+        WidgetManager::getInstance()->getLayerViewWidget()->refresh();
     }
 }
 
@@ -340,7 +340,7 @@ void FilterManager::removeFilters()
     mCheckBoxIndexMap.clear();
 
     mpCheckBoxGrid->setFixedHeight(0);
-    WidgetManager::getInstance()->getLayerWidget()->refresh();
+    WidgetManager::getInstance()->getLayerViewWidget()->refresh();
 }
 
 void FilterManager::renameFilter()

@@ -120,7 +120,7 @@ public:
     FilterManager* getFilterManager(void) { return mpFilterManager; }
 
 public slots:
-    /// switches the central widget to the widget of the given index: 0 for the ComponentEditorWidget; 1 for the LayerWidget
+    /// switches the central widget to the widget of the given index: 0 for the ComponentEditorWidget; 1 for the LayerViewWidget
     void updateMainWidget(int index);
 
 private:
@@ -131,7 +131,7 @@ private:
     /// the diagram view tab
     QWidget *mpHorizontalLayoutWidget;
     /// the layers view tab
-    QWidget *mpHorizontalLayoutLayerWidget;
+    QWidget *mpHorizontalLayoutLayerViewWidget;
     /// main layout of the diagram view tab
     QHBoxLayout *mpHorizontalLayout;
     /// main layout of the layers view tab

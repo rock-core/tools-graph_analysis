@@ -32,15 +32,15 @@ GraphManager::GraphManager(const QString& filename)
 
     mpMainWindow->setMinimumSize(850, 400);
 
-    mpLayerWidget = new LayerWidget();
-    widgetManager->setLayerWidget(mpLayerWidget); // shall come before ComponentEditorWidget's constructor being called
-    // ComponentEditorWidget uses the subordinate LayerWidget in its constructor (to update the common mpGraph base graph instance at ComponentEditorWidget init)
+    mpLayerViewWidget = new LayerViewWidget();
+    widgetManager->setLayerViewWidget(mpLayerViewWidget); // shall come before ComponentEditorWidget's constructor being called
+    // ComponentEditorWidget uses the subordinate LayerViewWidget in its constructor (to update the common mpGraph base graph instance at ComponentEditorWidget init)
     mpComponentEditorWidget = new ComponentEditorWidget(mpMainWindow);
     widgetManager->setComponentEditorWidget(mpComponentEditorWidget);
 //    mpComponentEditorWidget->reset();
 
     mpStackedWidget->addWidget((QWidget *) mpComponentEditorWidget);
-    mpStackedWidget->addWidget((QWidget *) mpLayerWidget);
+    mpStackedWidget->addWidget((QWidget *) mpLayerViewWidget);
     mpStackedWidget->setCurrentIndex(0); // showing mpComponentEditorWidget on init
     mpMainWindow->setCentralWidget(mpStackedWidget);
 
@@ -367,7 +367,7 @@ void GraphManager::refreshMainWindow()
     break;
 
     case 1:
-        mpLayerWidget->refresh();
+        mpLayerViewWidget->refresh();
     break;
     }
 }
@@ -381,7 +381,7 @@ void GraphManager::shuffleMainWindow()
     break;
 
     case 1:
-        mpLayerWidget->shuffle();
+        mpLayerViewWidget->shuffle();
     break;
     }
 }
@@ -395,7 +395,7 @@ void GraphManager::changeLayoutMainWindow()
     break;
 
     case 1:
-        mpLayerWidget->changeLayout();
+        mpLayerViewWidget->changeLayout();
     break;
     }
 }

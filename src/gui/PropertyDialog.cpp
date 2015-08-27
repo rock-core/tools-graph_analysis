@@ -1,6 +1,6 @@
 
 #include "ComponentEditorWidget.hpp"
-#include "LayerWidget.hpp"
+#include "LayerViewWidget.hpp"
 #include "IconManager.hpp"
 #include "GraphManager.hpp"
 #include "WidgetManager.hpp"
@@ -314,14 +314,14 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         }
     }
 
-    mpHorizontalLayoutLayerWidget = new QWidget();
-    int currentIndexHorizontalLayoutLayerWidget = mpTabWidget->addTab(mpHorizontalLayoutLayerWidget, *(IconManager::getInstance()->getIcon("layers")), "&Layers");
-    mpHorizontalLayoutLayerWidget->setObjectName(QString::fromUtf8("mpHorizontalLayoutLayerWidget"));
-    QString horizontalLayoutLayerWidgetTip("Command Properties for the Layers View");
-    mpTabWidget->setTabToolTip(currentIndexHorizontalLayoutLayerWidget, horizontalLayoutLayerWidgetTip);
-    mpTabWidget->setTabWhatsThis(currentIndexHorizontalLayoutLayerWidget, horizontalLayoutLayerWidgetTip);
-    mpHorizontalLayoutLayerWidget->setToolTip(horizontalLayoutLayerWidgetTip);
-    mpHorizontalLayoutLayer = new QHBoxLayout(mpHorizontalLayoutLayerWidget);
+    mpHorizontalLayoutLayerViewWidget = new QWidget();
+    int currentIndexHorizontalLayoutLayerViewWidget = mpTabWidget->addTab(mpHorizontalLayoutLayerViewWidget, *(IconManager::getInstance()->getIcon("layers")), "&Layers");
+    mpHorizontalLayoutLayerViewWidget->setObjectName(QString::fromUtf8("mpHorizontalLayoutLayerViewWidget"));
+    QString horizontalLayoutLayerViewWidgetTip("Command Properties for the Layers View");
+    mpTabWidget->setTabToolTip(currentIndexHorizontalLayoutLayerViewWidget, horizontalLayoutLayerViewWidgetTip);
+    mpTabWidget->setTabWhatsThis(currentIndexHorizontalLayoutLayerViewWidget, horizontalLayoutLayerViewWidgetTip);
+    mpHorizontalLayoutLayerViewWidget->setToolTip(horizontalLayoutLayerViewWidgetTip);
+    mpHorizontalLayoutLayer = new QHBoxLayout(mpHorizontalLayoutLayerViewWidget);
     mpHorizontalLayoutLayer->setContentsMargins(5, 0, 5, 0);
     mpVerticalLayoutLayer = new QVBoxLayout();
     mpHorizontalLayoutLayer->addLayout(mpVerticalLayoutLayer);
@@ -332,7 +332,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     int verticalLayoutLayerLeftover;
     {
 
-        mpImportLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
+        mpImportLayerButton = new QPushButton(mpHorizontalLayoutLayerViewWidget);
         mpImportLayerButton->setObjectName(QString::fromUtf8("mpImportLayerButton"));
         mpImportLayerButton->setIcon(*(IconManager::getInstance()->getIcon("import")));
         mpImportLayerButton->setCheckable(false);
@@ -403,7 +403,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     mpVerticalLayoutComponentsLayer->setContentsMargins(0, PADDING, 0, PADDING);
 
     // the 2 handles are to be needed throughout the rest of this method
-    LayerWidget *layerWidget = WidgetManager::getInstance() -> getLayerWidget();
+    LayerViewWidget *layerWidget = WidgetManager::getInstance() -> getLayerViewWidget();
     ComponentEditorWidget  * viewWidget = WidgetManager::getInstance() -> getComponentEditorWidget();
 
     // right hand-side in the layers view tab; filtering specific commands
@@ -416,13 +416,13 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpLayersFilters->setLayout(mpLayersFiltersLayout);
         mpVerticalLayoutComponentsLayer->addWidget(mpLayersFilters);
 
-        mpLayersLabel = new QLabel(mpHorizontalLayoutLayerWidget);
+        mpLayersLabel = new QLabel(mpHorizontalLayoutLayerViewWidget);
         mpLayersLabel->setObjectName(QString::fromUtf8("mpLayersLabel"));
 
         mpLayersFiltersLayout->addWidget(mpLayersLabel);
 
 
-        mpToggleClusterLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
+        mpToggleClusterLayerButton = new QPushButton(mpHorizontalLayoutLayerViewWidget);
         mpToggleClusterLayerButton->setObjectName(QString::fromUtf8("mpToggleClusterLayerButton"));
         mpToggleClusterLayerButton->setCheckable(true);
         mpToggleClusterLayerButton->setChecked(layerWidget->getClusterLayerToggle());
@@ -430,7 +430,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpLayersFiltersLayout->addWidget(mpToggleClusterLayerButton);
 
-        mpToggleFeatureLayerButton = new QPushButton(mpHorizontalLayoutLayerWidget);
+        mpToggleFeatureLayerButton = new QPushButton(mpHorizontalLayoutLayerViewWidget);
         mpToggleFeatureLayerButton->setObjectName(QString::fromUtf8("mpToggleFeatureLayerButton"));
         mpToggleFeatureLayerButton->setCheckable(true);
         mpToggleFeatureLayerButton->setChecked(layerWidget->getFeatureLayerToggle());
@@ -452,7 +452,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
         mpCustomFilters->setLayout(mpCustomFiltersLayout);
         mpVerticalLayoutComponentsLayer->addWidget(mpCustomFilters);
 
-        mpFiltersLabel = new QLabel(mpHorizontalLayoutLayerWidget);
+        mpFiltersLabel = new QLabel(mpHorizontalLayoutLayerViewWidget);
         mpFiltersLabel->setObjectName(QString::fromUtf8("mpFiltersLabel"));
 
         mpCustomFiltersLayout->addWidget(mpFiltersLabel);
@@ -600,7 +600,7 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     mpTabWidget->setGeometry(QRect(5, 30, WIDTH + 10, 10 + mHeight - commonExtraPadding));
     mpTabWidget->setCurrentIndex(WidgetManager::getInstance()->getStackedWidget()->currentIndex());
     mpHorizontalLayoutWidget->setGeometry(QRect(0, 0, WIDTH, mHeight - commonExtraPadding));
-    mpHorizontalLayoutLayerWidget->setGeometry(QRect(0, 0, WIDTH / 2, mHeight - commonExtraPadding));
+    mpHorizontalLayoutLayerViewWidget->setGeometry(QRect(0, 0, WIDTH / 2, mHeight - commonExtraPadding));
 } // setupUi
 
 void PropertyDialog::retranslateUi(CustomDialog *Dialog)

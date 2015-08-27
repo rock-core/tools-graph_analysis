@@ -41,7 +41,7 @@ void FilterItem::syncToolTips(void)
 {
     setToolTip(QString("Custom Filter '") + mLabel->toPlainText() + QString("'"));
     mpFilterManager->refreshToolTip(mIndex);
-    mpFilterManager->refreshView(); // calls mpLayerWidget->refresh() for this item; add 'false' as parameter for silent refreshing (i.e. status bar not involved)
+    mpFilterManager->refreshView(); // calls mpLayerViewWidget->refresh() for this item; add 'false' as parameter for silent refreshing (i.e. status bar not involved)
 }
 
 void FilterItem::setLabel(QString label)

@@ -827,7 +827,7 @@ void Cluster::syncLabel(NodeItem::id_t featureID)
             mpVertex->setLabel(label);
             updateWidth();
             // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-            refreshLayerWidget(false); // refreshing silently (no update on the Status Bar)
+            refreshLayerViewWidget(false); // refreshing silently (no update on the Status Bar)
         }
         return;
     }
@@ -866,7 +866,7 @@ void Cluster::syncLabel(NodeItem::id_t featureID)
         }
         updateWidth();
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        refreshLayerWidget(false); // refreshing silently (no update on the Status Bar)
+        refreshLayerViewWidget(false); // refreshing silently (no update on the Status Bar)
         update();
     }
 }
@@ -1078,7 +1078,7 @@ void Cluster::updateStatus(const std::string& message, int timeout)
     mpGraphWidget->updateStatus(QString(message.c_str()), timeout);
 }
 
-inline void Cluster::refreshLayerWidget(bool status)
+inline void Cluster::refreshLayerViewWidget(bool status)
 {
     mpGraphWidget->refreshLayersWidget(status);
 }

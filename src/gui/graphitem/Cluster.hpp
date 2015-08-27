@@ -107,8 +107,8 @@ public:
     /// getter method: retrieves the conceptual feature vertices labels map
     Vertices    getVertices()   { return mVertices; }
 
-    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerWidget
-    inline void refreshLayerWidget(bool status = true);
+    /// refreshes the (read-only) layers graph view in the omologuous widget mpLayerViewWidget
+    inline void refreshLayerViewWidget(bool status = true);
 
     /// updates the temporary text currently being displayed on the Status Bar in the main viewWidget
     void updateStatus(const std::string& message = std::string(), int timeout = 0);

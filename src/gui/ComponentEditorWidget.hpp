@@ -73,7 +73,7 @@ class EdgeItem;
 class AddNodeDialog;
 class ActionCommander;
 class PropertyDialog;
-class LayerWidget;
+class LayerViewWidget;
 
 /**
  * \file ComponentEditorWidget.hpp
@@ -313,10 +313,10 @@ public slots:
     void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
 
 protected:
-    /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerWidget; when status is false, this takes place quiently (no updates are made on the status bar)
-    inline void refreshLayerWidget(bool status = true);
-    /// updates the (read-only) layers graph editor in the omologuous widget mpLayerWidget
-    inline void updateLayerWidget();
+    /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget; when status is false, this takes place quiently (no updates are made on the status bar)
+    inline void refreshLayerViewWidget(bool status = true);
+    /// updates the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget
+    inline void updateLayerViewWidget();
 
     /// qt mouse press callback
     void mousePressEvent(QMouseEvent* event);

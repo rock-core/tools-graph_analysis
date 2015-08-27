@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_GRAPH_MANAGER_HPP
 
 #include "ComponentEditorWidget.hpp"
-#include "LayerWidget.hpp"
+#include "LayerViewWidget.hpp"
 #include "PropertyDialog.hpp"
 
 #include <string>
@@ -93,7 +93,7 @@ private:
     /// the diagram editor widget GUI component
     ComponentEditorWidget *mpComponentEditorWidget;
     /// the layers viewer widget GUI component
-    LayerWidget *mpLayerWidget;
+    LayerViewWidget *mpLayerViewWidget;
     /// status bar
     QStatusBar* mpStatus;
     /// the property dialog (a.k.a. command panel) dockable GUI component

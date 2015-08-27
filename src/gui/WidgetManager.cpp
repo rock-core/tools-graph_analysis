@@ -12,7 +12,7 @@ WidgetManager::WidgetManager()
     : mpGraphManager(NULL)
     , mpMainWindow(NULL)
     , mpComponentEditorWidget(NULL)
-    , mpLayerWidget(NULL)
+    , mpLayerViewWidget(NULL)
     , mpStackedWidget(NULL)
     , mpPropertyDialog(NULL)
 {
@@ -82,19 +82,19 @@ void WidgetManager::setComponentEditorWidget(ComponentEditorWidget *viewWidget)
     mpComponentEditorWidget = viewWidget;
 }
 
-LayerWidget* WidgetManager::getLayerWidget(void)
+LayerViewWidget* WidgetManager::getLayerViewWidget(void)
 {
-    if(!mpLayerWidget)
+    if(!mpLayerViewWidget)
     {
-        std::string error_msg("graph_analysis::gui::WidgetManager::getLayerWidget: mpLayerWidget has not been initialized!");
+        std::string error_msg("graph_analysis::gui::WidgetManager::getLayerViewWidget: mpLayerViewWidget has not been initialized!");
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    return mpLayerWidget;
+    return mpLayerViewWidget;
 }
-void WidgetManager::setLayerWidget(LayerWidget *layerWidget)
+void WidgetManager::setLayerViewWidget(LayerViewWidget *layerWidget)
 {
-    mpLayerWidget = layerWidget;
+    mpLayerViewWidget = layerWidget;
 }
 
 PropertyDialog* WidgetManager::getPropertyDialog(void)

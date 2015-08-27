@@ -328,7 +328,7 @@ void ComponentEditorWidget::addFeature(graph_analysis::Vertex::Ptr vertex)
         mFeatureMap[featureVertex] = item;
         mFeatureIDMap[featureVertex] = item->addFeature(featureVertex);
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        updateLayerWidget();
+        updateLayerViewWidget();
         updateStatus(std::string("Added an ") + strFeatureType.toStdString() + " feature to vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", GraphManager::TIMEOUT);
         item->update();
     }
@@ -376,7 +376,7 @@ void ComponentEditorWidget::renameFeature(graph_analysis::Vertex::Ptr concernedV
         // having identified the feature to be renamed, ordering its re-labeling
         item->setFeatureLabel(featureID, newLabel);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        refreshLayerWidget();
+        refreshLayerViewWidget();
         updateStatus(std::string("Renamed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", GraphManager::TIMEOUT);
     }
     else
@@ -463,7 +463,7 @@ void ComponentEditorWidget::removeFeature(graph_analysis::Vertex::Ptr concernedV
         // remove feature graphics
         item->removeFeature(featureID);
         // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        refreshLayerWidget();
+        refreshLayerViewWidget();
         updateStatus(std::string("Removed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", GraphManager::TIMEOUT);
     }
     else
@@ -512,7 +512,7 @@ void ComponentEditorWidget::fromFile(const QString& file, bool prefers_gexf, boo
         {
             updateStatus(std::string("Imported graph: from input file '") + filename.toStdString() + "'!", GraphManager::TIMEOUT);
         }
-        WidgetManager::getInstance()->getLayerWidget()->refresh(false);
+        WidgetManager::getInstance()->getLayerViewWidget()->refresh(false);
     }
 }
 
@@ -649,7 +649,7 @@ void ComponentEditorWidget::addNodeAdhoc(QObject *pos)
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        updateLayerWidget();
+        updateLayerViewWidget();
         updateStatus(std::string("Added new node '") + vertex->toString() + "' of type '" + vertex->getClassName() + "'!", GraphManager::TIMEOUT);
     }
     else
@@ -710,7 +710,7 @@ void ComponentEditorWidget::changeVertexLabel(graph_analysis::Vertex::Ptr vertex
     }
     nodeItem->updateLabel();
     // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-    refreshLayerWidget();
+    refreshLayerViewWidget();
 }
 
 void ComponentEditorWidget::changeFocusedEdgeLabel()
@@ -768,7 +768,7 @@ void ComponentEditorWidget::changeEdgeLabel(graph_analysis::Edge::Ptr concernedE
     edgeLabel->setPlainText(QString(label.c_str()));
     edge->adjustLabel();
     // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-    refreshLayerWidget();
+    refreshLayerViewWidget();
 }
 
 void ComponentEditorWidget::removeFocusedEdge()
@@ -838,7 +838,7 @@ void ComponentEditorWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
     mpLayoutingGraph->removeEdge(concernedEdge);
     syncEdgeItemMap(concernedEdge);
     // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-    refreshLayerWidget();
+    refreshLayerViewWidget();
     updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", GraphManager::TIMEOUT);
 }
 
@@ -913,7 +913,7 @@ void ComponentEditorWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVer
     scene()->removeItem(item);
     mpGraph->removeVertex(concernedVertex);
     // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-    refreshLayerWidget();
+    refreshLayerViewWidget();
     updateStatus(std::string("Removed node '") + concernedVertexLabel + "'!", GraphManager::TIMEOUT);
 }
 
@@ -1054,7 +1054,7 @@ void ComponentEditorWidget::addEdgeAdHoc() // assumes the concerned edge-creatio
         NodeItem::id_t start_featureID = mFeatureIDMap[mpStartFeature];
         NodeItem::id_t   end_featureID = mFeatureIDMap[mpEndFeature];
         // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        updateLayerWidget();
+        updateLayerViewWidget();
         updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between features '"
                         + mpStartFeature->toString() + "' and '"
                         + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID)
@@ -1180,7 +1180,7 @@ int ComponentEditorWidget::fromFile(const std::string& filename, const std::stri
     }
 
     mpGraph = graph;
-    updateLayerWidget();
+    updateLayerViewWidget();
     mpSubGraph = mGraphView.apply(mpGraph);
     mFiltered = true;
 
@@ -1198,7 +1198,7 @@ void ComponentEditorWidget::reset(bool keepData)
     {
         mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
         // forgets not to update the layers widget main graph handle
-        updateLayerWidget();
+        updateLayerViewWidget();
         mpSubGraph = mGraphView.apply(mpGraph);
         mFiltered = true;
     }
@@ -2036,7 +2036,7 @@ void ComponentEditorWidget::removeFeatures(graph_analysis::Vertex::Ptr concerned
                 // remove features graphics
                 item->removeFeatures();
                 // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-                refreshLayerWidget();
+                refreshLayerViewWidget();
                 updateStatus(std::string("Removed all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", GraphManager::TIMEOUT);
             break;
 
@@ -2123,16 +2123,16 @@ void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVe
     }
 }
 
-inline void ComponentEditorWidget::updateLayerWidget()
+inline void ComponentEditorWidget::updateLayerViewWidget()
 {
-    LayerWidget *layerWidget = WidgetManager::getInstance()->getLayerWidget();
+    LayerViewWidget *layerWidget = WidgetManager::getInstance()->getLayerViewWidget();
     layerWidget->setGraph(mpGraph);
     layerWidget->refresh(false);
 }
 
-inline void ComponentEditorWidget::refreshLayerWidget(bool status)
+inline void ComponentEditorWidget::refreshLayerViewWidget(bool status)
 {
-    WidgetManager::getInstance()->getLayerWidget()->refresh(status);
+    WidgetManager::getInstance()->getLayerViewWidget()->refresh(status);
 }
 
 void ComponentEditorWidget::toggleDragDrop()

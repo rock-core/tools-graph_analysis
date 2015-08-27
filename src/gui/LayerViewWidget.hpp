@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
-#define GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
+#ifndef GRAPH_ANALYSIS_GUI_LAYERVIEWWIDGET_H
+#define GRAPH_ANALYSIS_GUI_LAYERVIEWWIDGET_H
 
 #include "ComponentEditorWidget.hpp"
 
@@ -63,12 +63,12 @@ class NodeItem;
 class EdgeItem;
 
 /**
- * \file LayerWidget.hpp
- * \class LayerWidget
+ * \file LayerViewWidget.hpp
+ * \class LayerViewWidget
  * \brief layers graph view widget implementation
  * \details maintains and displays a layered view of its base graph (the latter is treated as read-only with the exception of its setter method)
  */
-class LayerWidget : public GraphWidget
+class LayerViewWidget : public GraphWidget
 {
     Q_OBJECT
 public:
@@ -76,9 +76,9 @@ public:
      * \brief constructor
      * \param graph underlying base graph
      */
-    LayerWidget(graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ), QWidget *parent = 0);
+    LayerViewWidget(graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ), QWidget *parent = 0);
     /// destructor
-    ~LayerWidget();
+    ~LayerViewWidget();
 
     /// setter method for updating the underlying base graph
     void setGraph(graph_analysis::BaseGraph::Ptr graph);
@@ -166,4 +166,4 @@ private:
 
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_GUI_LAYERWIDGET_H
+#endif // GRAPH_ANALYSIS_GUI_LAYERVIEWWIDGET_H

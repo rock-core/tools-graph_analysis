@@ -41,7 +41,7 @@
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
 #include "FilterItem.hpp"
-#include "LayerWidget.hpp"
+#include "LayerViewWidget.hpp"
 #include "IconManager.hpp"
 #include "GraphManager.hpp"
 #include "WidgetManager.hpp"
@@ -95,7 +95,7 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-LayerWidget::LayerWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
+LayerViewWidget::LayerViewWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
     : GraphWidget(graph, parent)
     , mFeatureLayerToggle(true)
     , mClusterLayerToggle(true)
@@ -127,12 +127,12 @@ LayerWidget::LayerWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
     updateFromGraph();
 }
 
-LayerWidget::~LayerWidget()
+LayerViewWidget::~LayerViewWidget()
 {
 //    destroy();
 }
 
-void LayerWidget::showContextMenu(const QPoint& pos)
+void LayerViewWidget::showContextMenu(const QPoint& pos)
 {
     ActionCommander comm(WidgetManager::getInstance()->getComponentEditorWidget());
     QMenu contextMenu(tr("Context menu"), this);
@@ -160,7 +160,7 @@ void LayerWidget::showContextMenu(const QPoint& pos)
     contextMenu.exec(mapToGlobal(pos));
 }
 
-void LayerWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
+void LayerViewWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
 {
     mpGraph = graph;
     mpSubGraph = mGraphView.apply(mpGraph);
@@ -172,7 +172,7 @@ void LayerWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
     updateFromGraph();
 }
 
-void LayerWidget::changeLayout()
+void LayerViewWidget::changeLayout()
 {
     updateStatus(std::string("changing layers graph view layout..."));
     bool ok;
@@ -199,7 +199,7 @@ void LayerWidget::changeLayout()
     }
 }
 
-void LayerWidget::reset(bool keepData)
+void LayerViewWidget::reset(bool keepData)
 {
     clear();
 
@@ -207,10 +207,10 @@ void LayerWidget::reset(bool keepData)
     {
         delete mpGVGraph;
     }
-    mpGVGraph = new io::GVGraph(mpGraph, "GVLayerWidget");
+    mpGVGraph = new io::GVGraph(mpGraph, "GVLayerViewWidget");
 }
 
-void LayerWidget::clear()
+void LayerViewWidget::clear()
 {
     // TO-DO: add filtering clearing
     if(mpGVGraph)
@@ -223,7 +223,7 @@ void LayerWidget::clear()
     mEdgeItemMap.clear();
     scene()->clear();
 }
-void LayerWidget::refresh(bool status)
+void LayerViewWidget::refresh(bool status)
 {
     if(status)
     {
@@ -238,33 +238,33 @@ void LayerWidget::refresh(bool status)
     }
 }
 
-void LayerWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
+void LayerViewWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
     mpSubGraph->enable(vertex);
     LOG_DEBUG_S << "Enabled a vertex of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
 }
-void LayerWidget::enableEdge(graph_analysis::Edge::Ptr edge)
+void LayerViewWidget::enableEdge(graph_analysis::Edge::Ptr edge)
 {
     mpSubGraph->enable(edge);
     LOG_DEBUG_S << "Enabled an edge of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void LayerWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
+void LayerViewWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
 {
     mpSubGraph->disable(vertex);
     LOG_DEBUG_S << "Disabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
 }
-void LayerWidget::disableEdge(graph_analysis::Edge::Ptr edge)
+void LayerViewWidget::disableEdge(graph_analysis::Edge::Ptr edge)
 {
     mpSubGraph->disable(edge);
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void LayerWidget::updateFromGraph()
+void LayerViewWidget::updateFromGraph()
 {
     if(mpGraph->empty())
     {
-        LOG_WARN_S << "graph_analysis::gui::LayerWidget::updateFromGraph was called while mpGraph was still empty";
+        LOG_WARN_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph was called while mpGraph was still empty";
         return;
     }
 
@@ -288,7 +288,7 @@ void LayerWidget::updateFromGraph()
         }
         catch(boost::regex_error e)
         {
-            LOG_ERROR_S << "graph_analysis::gui::LayerWidget::updateFromGraph: skipping regex '" << regexp << "'. Caught Regex error: " << e.what();
+            LOG_ERROR_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph: skipping regex '" << regexp << "'. Caught Regex error: " << e.what();
         }
     }
 
@@ -305,13 +305,13 @@ void LayerWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && mpVertexFilter->apply(vertex))
         {
-            LOG_DEBUG_S << "graph_analysis::gui::LayerWidget: Custom-Regex-Filtered out vertex: " << vertex->toString();
+            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered out vertex: " << vertex->toString();
             continue;
         }
 
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
-            LOG_DEBUG_S << "graph_analysis::gui::LayerWidget: Filtered out vertex: " << vertex->toString();
+            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Filtered out vertex: " << vertex->toString();
             continue;
         }
 
@@ -339,7 +339,7 @@ void LayerWidget::updateFromGraph()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(edge))
         {
-            LOG_DEBUG_S << "graph_analysis::gui::LayerWidget: Filtered out edge: " << edge->toString();
+            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Filtered out edge: " << edge->toString();
             continue;
         }
 
@@ -429,17 +429,17 @@ void LayerWidget::updateFromGraph()
     }
 }
 
-void LayerWidget::addVertex(Vertex::Ptr vertex)
+void LayerViewWidget::addVertex(Vertex::Ptr vertex)
 {
     mpGraph->addVertex(vertex);
 }
 
-void LayerWidget::addEdge(Edge::Ptr edge)
+void LayerViewWidget::addEdge(Edge::Ptr edge)
 {
     mpGraph->addEdge(edge);
 }
 
-void LayerWidget::mousePressEvent(QMouseEvent *event)
+void LayerViewWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
     {
@@ -451,7 +451,7 @@ void LayerWidget::mousePressEvent(QMouseEvent *event)
     else QGraphicsView::mousePressEvent(event);
 }
 
-void LayerWidget::mouseReleaseEvent(QMouseEvent *event)
+void LayerViewWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)
     {
@@ -463,7 +463,7 @@ void LayerWidget::mouseReleaseEvent(QMouseEvent *event)
     else QGraphicsView::mouseReleaseEvent(event);
 }
 
-void LayerWidget::itemMoved()
+void LayerViewWidget::itemMoved()
 {
     if (!mTimerId)
     {
@@ -471,7 +471,7 @@ void LayerWidget::itemMoved()
     }
 }
 
-void LayerWidget::keyPressEvent(QKeyEvent *event)
+void LayerViewWidget::keyPressEvent(QKeyEvent *event)
 {
     // check for a combination of user presses
     Qt::KeyboardModifiers modifiers = event->modifiers();
@@ -561,7 +561,7 @@ void LayerWidget::keyPressEvent(QKeyEvent *event)
     QGraphicsView::keyPressEvent(event);
 }
 
-void LayerWidget::timerEvent(QTimerEvent *event)
+void LayerViewWidget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
 
@@ -597,13 +597,13 @@ void LayerWidget::timerEvent(QTimerEvent *event)
 }
 
 #ifndef QT_NO_WHEELEVENT
-void LayerWidget::wheelEvent(QWheelEvent *event)
+void LayerViewWidget::wheelEvent(QWheelEvent *event)
 {
     scaleView(pow((double)2, - event->delta() / 240.0));
 }
 #endif
 
-void LayerWidget::drawBackground(QPainter *painter, const QRectF& rect)
+void LayerViewWidget::drawBackground(QPainter *painter, const QRectF& rect)
 {
     Q_UNUSED(rect);
 
@@ -640,7 +640,7 @@ void LayerWidget::drawBackground(QPainter *painter, const QRectF& rect)
     //painter->drawText(textRect, message);
 }
 
-void LayerWidget::scaleView(qreal scaleFactor)
+void LayerViewWidget::scaleView(qreal scaleFactor)
 {
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
     if (factor < 0.07 || factor > 100)
@@ -652,7 +652,7 @@ void LayerWidget::scaleView(qreal scaleFactor)
     updateStatus(status_msg, GraphManager::TIMEOUT);
 }
 
-void LayerWidget::shuffle()
+void LayerViewWidget::shuffle()
 {
     updateStatus(std::string("shuflling all the nodes in the layers graph view..."));
     foreach (QGraphicsItem *item, scene()->items())
@@ -663,23 +663,23 @@ void LayerWidget::shuffle()
     updateStatus(std::string("Shuflled all nodes in the layers graph view!"), GraphManager::TIMEOUT);
 }
 
-void LayerWidget::zoomIn()
+void LayerViewWidget::zoomIn()
 {
     scaleView(qreal(1.13));
 }
 
-void LayerWidget::zoomOut()
+void LayerViewWidget::zoomOut()
 {
     scaleView(1 / qreal(1.13));
 }
 
-void LayerWidget::setLayout(QString layoutName)
+void LayerViewWidget::setLayout(QString layoutName)
 {
     mLayout = layoutName;
     updateFromGraph();
 }
 
-void LayerWidget::toggleFeatureLayer(bool toggle)
+void LayerViewWidget::toggleFeatureLayer(bool toggle)
 {
     updateStatus(std::string("toggling the features layer to ") + (toggle ? "true" : "false" ) + "...");
     mFeatureLayerToggle = toggle;
@@ -687,7 +687,7 @@ void LayerWidget::toggleFeatureLayer(bool toggle)
     updateStatus(std::string("Toggled the features layer to ") + (toggle ? "true" : "false" ) + "!", GraphManager::TIMEOUT);
 }
 
-void LayerWidget::toggleClusterLayer(bool toggle)
+void LayerViewWidget::toggleClusterLayer(bool toggle)
 {
     updateStatus(std::string("toggling the clusters layer to ") + (toggle ? "true" : "false" ) + "...");
     mClusterLayerToggle = toggle;
@@ -695,12 +695,12 @@ void LayerWidget::toggleClusterLayer(bool toggle)
     updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", GraphManager::TIMEOUT);
 }
 
-inline void LayerWidget::updateStatus(const std::string& message, int timeout)
+inline void LayerViewWidget::updateStatus(const std::string& message, int timeout)
 {
     WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
 }
 
-inline bool LayerWidget::toggledOut(graph_analysis::Vertex::Ptr vertex)
+inline bool LayerViewWidget::toggledOut(graph_analysis::Vertex::Ptr vertex)
 {
     bool result =   (!mFeatureLayerToggle && graph_analysis::PortVertex::vertexType() == vertex->getClassName())
                         ||
