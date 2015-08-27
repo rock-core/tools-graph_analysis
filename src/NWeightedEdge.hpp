@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_NWEIGHTED_EDGE_HPP
 
 #include <iostream>
+#include <graph_analysis/NWeighted.hpp>
 #include <graph_analysis/Edge.hpp>
 
 namespace graph_analysis {
@@ -11,23 +12,24 @@ namespace graph_analysis {
  * a vector of weights
  */
 template<typename T, size_t Dim = 2>
-class NWeightedEdge : public Edge
+class NWeightedEdge : public NWeighted<T,Dim,Edge>
 {
 public:
     typedef boost::shared_ptr< NWeightedEdge > Ptr;
 
-    NWeightedEdge(const std::vector<T>& weights = std::vector<T>(Dim))
-        : Edge()
-        , mWeights(weights)
-    {
-        validateDimensions(mWeights);
-    }
+    NWeightedEdge(const T& weight)
+        : NWeighted<T,Dim,Edge>(weight)
+    {}
 
-    NWeightedEdge(Vertex::Ptr source, Vertex::Ptr target, const std::vector<T>& weights)
-        : Edge(source, target)
-        , mWeights(weights)
+    NWeightedEdge(const std::vector<T>& weights = std::vector<T>(Dim))
+        : NWeighted<T,Dim,Edge>(weights)
+    {}
+
+    NWeightedEdge(const Vertex::Ptr& source, const Vertex::Ptr& target, const std::vector<T>& weights)
+        : NWeighted<T,Dim,Edge>(weights)
     {
-        validateDimensions(mWeights);
+        Edge::setSourceVertex(source);
+        Edge::setTargetVertex(target);
     }
 
     virtual ~NWeightedEdge() {}
@@ -36,75 +38,8 @@ public:
     // \return class name
     virtual std::string getClassName() const { return "graph_analysis::NWeightedEdge"; }
 
-    /**
-     * Convert element to string
-     */
-    virtual std::string toString() const
-    {
-        std::stringstream ss;
-        ss << Edge::toString();
-        ss << ": " << "[";
-        typename std::vector<T>::const_iterator cit = mWeights.begin();
-        for(;; ++cit)
-        {
-            ss << *cit;
-            if(cit + 1 == mWeights.end())
-            {
-                break;
-            } else {
-                ss << ",";
-            }
-        }
-        ss << "]";
-        return ss.str();
-    }
-
-    void setWeights(const std::vector<T>& weights)
-    {
-        validateDimensions(weights);
-        mWeights = weights;
-    }
-
-    std::vector<T> getWeights() const { return mWeights; }
-
-    void setWeight(size_t index, T value)
-    {
-        try {
-            mWeights.at(index) = value;
-        } catch(const std::out_of_range& e)
-        {
-            throw std::out_of_range("graph_analysis::NWeightedEdge::getWeights: " + std::string(e.what()) );
-        }
-    }
-
-    /**
-     * Get weight at given index (dimension)
-     */
-    const T& getWeight(size_t index) const
-    {
-        try {
-            return mWeights.at(index);
-        } catch(const std::out_of_range& e)
-        {
-            throw std::out_of_range("graph_analysis::NWeightedEdge::getWeight: " + std::string(e.what()) );
-        }
-    }
-
 protected:
-
-    void validateDimensions(const std::vector<T>& weights) const
-    {
-        if(weights.size() != Dim)
-        {
-            std::stringstream ss;
-            ss << "graph_analysis::NWeightedEdge: invalid number of weights: expected " << Dim << " got " << weights.size();
-            throw std::invalid_argument(ss.str());
-        }
-    }
-
-    virtual Edge* getClone() const { return new NWeightedEdge(*this); }
-
-    std::vector<T> mWeights;
+    virtual NWeightedEdge<T,Dim>* getClone() const { return new NWeightedEdge<T,Dim>(*this); }
 };
 
 } // end namespace graph_analysis

@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_MIN_COST_FLOW_HPP
 
 #include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/NWeightedEdge.hpp>
+#include <graph_analysis/WeightedEdge.hpp>
 #include <graph_analysis/WeightedVertex.hpp>
 
 namespace graph_analysis {
@@ -20,7 +20,7 @@ class MinCostFlow
 {
 public:
     typedef NWeightedEdge<int32_t,3> edge_t;
-    typedef WeightedVertex vertex_t;
+    typedef NWeightedVertex<uint32_t,2> vertex_t;
 
     enum Type { NetworkSimplex, CostScaling, CapacityScaling, CycleCanceling };
 

@@ -53,7 +53,7 @@ void MinCostFlow::run()
             {
                 vertex_t::Ptr vertex = boost::dynamic_pointer_cast< vertex_t >(vertexIt->current());
                 assert(vertex);
-                supplyMap[diGraph->getNode(vertex)] = (supply_t) vertex->getWeight();
+                supplyMap[diGraph->getNode(vertex)] = (supply_t) vertex->getWeight(0);
             }
 
             typedef ::lemon::NetworkSimplex<graph_analysis::lemon::DirectedGraph::graph_t, value_and_cost_t> NetworkSimplex;
@@ -67,7 +67,18 @@ void MinCostFlow::run()
             //NodeMap
             simplex.supplyMap(supplyMap);
             //simplex.stSupply( node s, node t, NetworkSimplex::Value k)
-            simplex.run();
+            switch( simplex.run() )
+            {
+                case NetworkSimplex::INFEASIBLE:
+                    throw std::runtime_error("graph_analysis::algorithms::MinCostFlow: no feasible solution");
+                    break;
+                case NetworkSimplex::OPTIMAL:
+                    throw std::runtime_error("graph_analysis::algorithms::MinCostFlow: optimal solution");
+                    break;
+                case NetworkSimplex::UNBOUNDED:
+                    throw std::runtime_error("graph_analysis::algorithms::MinCostFlow: unbounded solution");
+                    break;
+            }
             break;
         }
         case BaseGraph::BOOST_DIRECTED_GRAPH:

@@ -56,7 +56,8 @@ BOOST_AUTO_TEST_CASE(nweighted_edge)
 
     BOOST_REQUIRE_MESSAGE(w0->getWeights() == w1->getWeights(), "Edge and clone have same weights after cloning");
 
-    w1->setWeight(0, w1->getWeight(0) + 1.0);
+    w1->setWeight(w1->getWeight(0) + 1.0, 0);
+    w1->setWeight(w1->getWeight(0) + 2.0, 1);
     BOOST_REQUIRE_MESSAGE(w0->getWeights() != w1->getWeights(), "Edge and clone have different weights");
 
     BOOST_REQUIRE_THROW(w0->getWeight(10), std::out_of_range);

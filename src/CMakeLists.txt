@@ -40,8 +40,6 @@ rock_library(graph_analysis
         Vertex.cpp
         VertexIterable.cpp
         VertexIterator.cpp
-        WeightedEdge.cpp
-        WeightedVertex.cpp
     HEADERS
         Algorithms.hpp
         algorithms/CorrelationClustering.hpp
