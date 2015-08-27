@@ -25,6 +25,13 @@ public:
         : NWeighted<T,Dim,Edge>(weights)
     {}
 
+    NWeightedEdge(const Vertex::Ptr& source, const Vertex::Ptr& target, const T& weight)
+        : NWeighted<T,Dim,Edge>(weight)
+    {
+        Edge::setSourceVertex(source);
+        Edge::setTargetVertex(target);
+    }
+
     NWeightedEdge(const Vertex::Ptr& source, const Vertex::Ptr& target, const std::vector<T>& weights)
         : NWeighted<T,Dim,Edge>(weights)
     {
