@@ -33,7 +33,7 @@ private:
      * \param targetNodePortID target ID
      * \param edge internal conceptual edge
      */
-    Simple(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge);
+    Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem::id_t sourceNodePortID, NodeItem* targetNode, NodeItem::id_t targetNodePortID, graph_analysis::Edge::Ptr edge);
 public:
     /// empty constructor
     Simple() {}
@@ -42,9 +42,9 @@ public:
     /// destructor
     virtual ~Simple() {}
     /// getter method for source ID
-    int getSourcePortID() { return mSourceNodePortID; }
+    NodeItem::id_t getSourcePortID() { return mSourceNodePortID; }
     /// getter method for target ID
-    int getTargetPortID() { return mTargetNodePortID; }
+    NodeItem::id_t getTargetPortID() { return mTargetNodePortID; }
     /// adjusts edge segment length and starting and ending points
     virtual void adjust();
 
@@ -70,10 +70,10 @@ protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
 
     /// establishes where the edge line segment shall end at one of the extremities (computes intersection with the rectangular boundary of one of the endpoints)
-    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line, int portID = PortVertex::INVALID_PORT_ID);
+    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID = PortVertex::INVALID_PORT_ID);
 
     /// edge cloning/spawning method used by the factory to produce new edges
-    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge) const { return new Simple(graphWidget, sourceNode, sourceNodePortID, targetNode, targetNodePortID, edge); }
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem::id_t sourceNodePortID, NodeItem* targetNode, NodeItem::id_t targetNodePortID, graph_analysis::Edge::Ptr edge) const { return new Simple(graphWidget, sourceNode, sourceNodePortID, targetNode, targetNodePortID, edge); }
 
     /// the graphical text label
     EdgeLabel* mpLabel;
@@ -86,9 +86,9 @@ protected:
     /// edge graphical line segment
     QLineF mLine;
     /// source ID
-    int mSourceNodePortID;
+    NodeItem::id_t mSourceNodePortID;
     /// target ID
-    int mTargetNodePortID;
+    NodeItem::id_t mTargetNodePortID;
     /// boolean flag: true when current edge is being the focused edge of the scene (has been double clicked); false otherwise
     bool mFocused;
     /// boolean flag: true when current edge is being the seleted edge of the scene (is being hovered on); false otherwise

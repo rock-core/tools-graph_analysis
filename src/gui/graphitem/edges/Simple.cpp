@@ -7,7 +7,7 @@ namespace gui {
 namespace graphitem {
 namespace edges {
 
-Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge)
+Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem::id_t sourceNodePortID, NodeItem* targetNode, NodeItem::id_t targetNodePortID, graph_analysis::Edge::Ptr edge)
     : EdgeItem(graphWidget, sourceNode, targetNode, edge)
     , mpLabel(new EdgeLabel(edge->toString(), this)) // the use of edge->toString() is a feature; not a bug!
     , mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
@@ -96,7 +96,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     painter->drawPolygon(QPolygonF() << mLine.p2() << destArrowP1 << destArrowP2);
 }
 
-QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, int portID)
+QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID)
 {
     // retrieves the entire node bounding box when the ID fed is not a valid port ID; retrieves only the respective port bounding box otherwise
     QPolygonF polygon = (PortVertex::INVALID_PORT_ID == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
