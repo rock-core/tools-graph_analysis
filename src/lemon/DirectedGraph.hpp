@@ -126,7 +126,7 @@ public:
     /**
      * Identifies the connected components
      */
-    SubGraph::Ptr identifyConnectedComponents(BaseGraph::Ptr baseGraph);
+    SubGraph::Ptr identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const;
 
 protected:
     // Property maps to store data associated with vertices and edges

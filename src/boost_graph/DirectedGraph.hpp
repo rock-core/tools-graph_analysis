@@ -105,7 +105,7 @@ public:
     /**
      * Identifies the connected components
      */
-    SubGraph::Ptr identifyConnectedComponents();
+    //SubGraph::Ptr identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const;
 
     /**
      * Get the subgraph -- by default all vertices and edges of the

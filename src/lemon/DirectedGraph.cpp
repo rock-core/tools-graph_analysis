@@ -206,13 +206,14 @@ EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex) const
     return EdgeIterator::Ptr(it);
 }
 
-SubGraph::Ptr DirectedGraph::identifyConnectedComponents(BaseGraph::Ptr baseGraph)
+SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const
 {
-    SubGraph::Ptr subgraph = createSubGraph(baseGraph);
+    graph_analysis::lemon::DirectedGraph::Ptr graph = boost::dynamic_pointer_cast<graph_analysis::lemon::DirectedGraph>(baseGraph->copy());
+    SubGraph::Ptr subgraph = createSubGraph(graph);
 
-    ::lemon::Undirector<DirectedGraph::graph_t> undirected(raw());
+    ::lemon::Undirector<const DirectedGraph::graph_t> undirected(graph->raw());
     // Identify the components
-    graph_t::NodeMap<int> nodeMap(raw(),false);
+    graph_t::NodeMap<int> nodeMap(graph->raw(),false);
     int componentCount = ::lemon::connectedComponents(undirected, nodeMap);
     // Add a single vertex per identified component
     // activate that node in the subgraph
@@ -224,7 +225,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(BaseGraph::Ptr baseGrap
 
         // Activate this node in the subgraph
         // disabling all other will be in the next loop
-        addVertex(vertex);
+        graph->addVertex(vertex);
         subgraph->enable( vertex );
     }
 
@@ -257,7 +258,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(BaseGraph::Ptr baseGrap
 
             // Add an edge to relate vertices to their components
             Edge::Ptr edge( new Edge(sourceVertex, targetVertex) );
-            addEdge(edge);
+            graph->addEdge(edge);
         }
     } else {
         LOG_DEBUG("no component found in graph");
