@@ -21,22 +21,21 @@ public:
     /// maps specific access keywords to loaded qt icons
     typedef std::map <std::string, QIcon> IconMap;
 
-    /// hard-wired path to icons folder (relative to the runnable directory)
-    static std::string DEFAULT_PATH_TO_ICONS;
-
     /// constructor
     IconManager();
     /// destructor
     ~IconManager();
 
     /// getter method - retrieves a qt icon registered at the given keyword in the icons map
-    QIcon* getIcon(std::string key) { return &(mIconMap[key]); }
+    QIcon* getIcon(const std::string& key);
+
+    static std::string getIconRootPath();
 
 private:
     /// qt icons map (with string keywords identifiers)
     IconMap mIconMap;
     /// loads icon from image file 'file' to the given qt icon
-    void loadIcon(QIcon& icon, std::string file);
+    void loadIcon(QIcon& icon, const std::string& file);
 };
 
 

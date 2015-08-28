@@ -9,6 +9,7 @@
   <depend package="base/cmake" />
   <depend package="base/types" />
   <depend package="base/numeric" />
+  <depend package="utilmm" />
   <depend package="boost" />
   <depend package="external/lemon" />
   <depend package="external/snap" />

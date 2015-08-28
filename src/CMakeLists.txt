@@ -159,7 +159,7 @@ rock_library(graph_analysis
         VertexTypeManager.hpp
         WeightedEdge.hpp
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf numeric gsl
+        lemon snap base-lib gexf numeric gsl utilmm
     DEPS_PLAIN
         Boost_REGEX
     MOC
@@ -174,7 +174,6 @@ rock_library(graph_analysis
         gui/SwapFeaturesDialog.hpp
         gui/RenameFilterDialog.hpp
         gui/RenameFeatureDialog.hpp
-    DEPS_PLAIN Boost_REGEX
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui

@@ -1,15 +1,21 @@
-
 #include "IconManager.hpp"
+#include <utilmm/configfile/pkgconfig.hh>
+#include <stdexcept>
 
 namespace graph_analysis {
 namespace gui {
 
-std::string IconManager::DEFAULT_PATH_TO_ICONS("icons/");
+std::string IconManager::getIconRootPath()
+{
+    utilmm::pkgconfig pkg("graph_analysis");
+    return pkg.get("sharedir") + "/icons/";
+}
 
 IconManager::IconManager()
 {
     // setting up all icons
-    std::string pathToIcons = IconManager::DEFAULT_PATH_TO_ICONS;
+    std::string pathToIcons = IconManager::getIconRootPath();
+
     //        taken_from: www.softicons.com         //        commercial_usage: NOT allowed
     loadIcon(mIconMap["addNode"], pathToIcons + "addNode.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
@@ -89,7 +95,18 @@ IconManager::~IconManager()
 {
 }
 
-void IconManager::loadIcon(QIcon& icon, std::string file)
+QIcon* IconManager::getIcon(const std::string& key)
+{
+    IconMap::iterator it = mIconMap.find(key);
+    if(it == mIconMap.end())
+    {
+        throw std::invalid_argument("graph_analysis::gui::IconManager: Could not find a icon named for '" + key + "'");
+    }
+
+    return &it->second;
+}
+
+void IconManager::loadIcon(QIcon& icon, const std::string& file)
 {
     icon.addFile(QString::fromUtf8(file.c_str()), QSize(), QIcon::Normal, QIcon::Off);
 }
