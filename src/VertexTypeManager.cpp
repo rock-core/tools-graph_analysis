@@ -7,6 +7,13 @@
 #include <boost/assign/list_of.hpp>
 #include <base/Logging.hpp>
 
+#include <graph_analysis/PortVertex.hpp>
+#include <graph_analysis/InputPortVertex.hpp>
+#include <graph_analysis/OutputPortVertex.hpp>
+#include <graph_analysis/PropertyVertex.hpp>
+#include <graph_analysis/OperationVertex.hpp>
+#include <graph_analysis/ClusterVertex.hpp>
+
 namespace graph_analysis {
 
 VertexTypeManager::VertexTypeManager()
@@ -14,7 +21,6 @@ VertexTypeManager::VertexTypeManager()
     // registering known implemented class-types
     mClassVisualizationMap = boost::assign::map_list_of
         (std::string("base"),       Vertex::Ptr (new Vertex()))
-        (graph_analysis::BaseVertex::vertexType(),          Vertex::Ptr(new Vertex()))
         (std::string("port"),       Vertex::Ptr ((Vertex *) (new PortVertex())))
         (graph_analysis::PortVertex::vertexType(),          Vertex::Ptr ((Vertex *) (new PortVertex())))
         (std::string("inputport"),  Vertex::Ptr ((Vertex *) (new InputPortVertex())))

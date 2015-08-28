@@ -6,22 +6,15 @@
 #include <string>
 #include <base/Singleton.hpp>
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/BaseVertex.hpp>
-#include <graph_analysis/PortVertex.hpp>
-#include <graph_analysis/InputPortVertex.hpp>
-#include <graph_analysis/OutputPortVertex.hpp>
-#include <graph_analysis/PropertyVertex.hpp>
-#include <graph_analysis/OperationVertex.hpp>
-#include <graph_analysis/ClusterVertex.hpp>
 
 namespace graph_analysis {
 
-    class Vertex;
-    class BaseVertex;
-    class PortVertex;
-    class InputPortVertex;
-    class OutputPortVertex;
-    class ClusterVertex;
+class Vertex;
+class BaseVertex;
+class PortVertex;
+class InputPortVertex;
+class OutputPortVertex;
+class ClusterVertex;
 
 namespace vertex {
     // datatype for vertex type specification
