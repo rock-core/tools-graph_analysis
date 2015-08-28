@@ -121,12 +121,12 @@ void NodeItem::calculateForces()
 
 bool NodeItem::advance()
 {
-    if (mNewPos == pos())
+    if (mNewPos != pos())
     {
-        return false;
+        setPos(mNewPos);
+        return true;
     }
-    setPos(mNewPos);
-    return true;
+    return false;
 }
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)

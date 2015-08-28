@@ -97,8 +97,15 @@ public:
 
     /// computes the force field values for each edge (w.r.t. the force field automatic re-arranging algorithm)
     void calculateForces();
-    /// actuator method used the the same force field (automatic re-arranging) algorithm
-    bool advance();
+
+    /// actuator method the same force field (automatic re-arranging) algorithm
+    void advance(int phase) { if(phase == 2) advance(); }
+
+    /**
+     * Advance the NodeItem
+     * \return True if advancing resulted in an actual change, false otherwise
+     */
+    virtual bool advance();
 
     /**
      * Get the center position of this node item
@@ -138,8 +145,8 @@ public:
     virtual void shiftFeatureDown(id_t)         { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftFeatureDown is not reimplemented");}
     virtual void prepareChange()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::prepareChange is not reimplemented");}
     virtual void releaseFocus ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::releaseFocus is not reimplemented"); }
-    virtual void updateWidth  ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateWidth  is not reimplemented"); }
-    virtual void updateHeight ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateHeight is not reimplemented"); }
+    virtual void updateWidth(bool active = true)                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateWidth  is not reimplemented"); }
+    virtual void updateHeight()                       { throw std::runtime_error("graph_analysis::gui::NodeItem::updateHeight is not reimplemented"); }
     virtual void swapFeatures(id_t, id_t)          { throw std::runtime_error("graph_analysis::gui::NodeItem::swapFeatures is not reimplemented");    }
     virtual void removeFeatures()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::removeFeatures is not reimplemented");  }
     virtual Labels      getLabels()     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabels is not reimplemented");   }

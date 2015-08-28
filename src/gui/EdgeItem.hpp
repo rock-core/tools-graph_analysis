@@ -94,10 +94,24 @@ public:
     graph_analysis::Edge::Ptr getEdge() { return mpEdge; }
     // setter method to update the mPainterPath member field
     void setPainterPath(QPainterPath painterPath) { mPainterPath = painterPath; }
+    virtual EdgeItem* bla(GraphWidget* graphWidget
+            ) const{ return NULL;};
 
     // virtual methods
-    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@4 args) is not reimplemented"); }
-    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem::id_t sourceNodePortID, NodeItem* targetNode, NodeItem::id_t targetNodePortID, graph_analysis::Edge::Ptr edge) const { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@6 args) is not reimplemented"); }
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
+            NodeItem* sourceNode,
+            NodeItem* targetNode,
+            graph_analysis::Edge::Ptr edge) const
+    { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@4 args) is not reimplemented"); }
+
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
+            NodeItem* sourceNode,
+            NodeItem::id_t sourceNodePortID,
+            NodeItem* targetNode,
+            NodeItem::id_t targetNodePortID,
+            graph_analysis::Edge::Ptr edge) const
+    { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@6 args) is not reimplemented"); }
+
     virtual QGraphicsTextItem* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
     virtual NodeItem::id_t getSourcePortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getSourcePortID: is not reimplemented at this level"); }
     virtual NodeItem::id_t getTargetPortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getTargetPortID: is not reimplemented at this level"); }

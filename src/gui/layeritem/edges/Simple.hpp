@@ -62,8 +62,20 @@ protected:
     /// establishes where the edge line segment shall end at one of the extremities (computes intersection with the rectangular boundary of one of the endpoints)
     QPointF getIntersectionPoint(NodeItem* item, const QLineF& line);
 
-    /// edge cloning/spawning method used by the factory to produce new edges
-    virtual EdgeItem* createNewItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge) const { return new Simple(graphWidget, sourceNode, targetNode, edge); }
+    // edge cloning/spawning method used by the factory to produce new edges
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
+            NodeItem* sourceNode,
+            NodeItem* targetNode,
+            graph_analysis::Edge::Ptr edge) const
+    { return new Simple(graphWidget, sourceNode, targetNode, edge); }
+
+    virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
+            NodeItem* sourceNode,
+            NodeItem::id_t sourceNodePortID,
+            NodeItem* targetNode,
+            NodeItem::id_t targetNodePortID,
+            graph_analysis::Edge::Ptr edge) const
+    { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@6 args) is not reimplemented"); }
 
     /// the graphical text label
     EdgeLabel* mpLabel;
