@@ -35,7 +35,7 @@ public:
     /**
      * Convert element to string
      */
-    std::string toString() const;
+    virtual std::string toString() const;
 
 protected:
     /**
