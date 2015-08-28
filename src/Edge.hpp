@@ -16,9 +16,9 @@ class Edge : public GraphElement
 public:
     typedef boost::shared_ptr< Edge > Ptr;
 
-    Edge(const std::string& label = "");
+    Edge(const std::string& label = std::string());
 
-    Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label = "");
+    Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label = std::string());
 
     virtual ~Edge() {}
 
@@ -70,6 +70,16 @@ public:
      */
     static bool areMeeting(Edge::Ptr e0, Edge::Ptr e1);
 
+    /**
+     * Set edge label
+     */
+    void setLabel(const std::string& label) { mLabel = label; }
+
+    /**
+     * Get label
+     */
+    std::string getLabel() const { return mLabel; }
+
 protected:
     /**
      * Get instance of an edge
@@ -79,6 +89,7 @@ protected:
 private:
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
+    std::string mLabel;
 };
 
 } // end namespace graph_analysis

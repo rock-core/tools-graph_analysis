@@ -7,21 +7,36 @@ namespace graph_analysis {
 namespace io {
 
 /**
- * Graphviz writer allows to export a graph as dot
- *
+ * \file GraphvizWriter.hpp
+ * \class GraphvizWriter
+ * \brief graphviz based graph renderer
+ * \details Exports a given base graph to a given dot file using GraphViz renderToFile() interface
  * Vertex and Edges are rendered using their toString() methods
  * For details check GVGraph::getUniqueName
  *
  */
 class GraphvizWriter : public Writer
 {
+    /// layouting engine to re-arrange the graph through GraphViz rendering
     std::string mLayout;
 public:
-    GraphvizWriter(const std::string &layout = "dot");
+    /// constructor
+    GraphvizWriter(const std::string& layout = "dot");
+    /// destructor
     ~GraphvizWriter();
 
+    /**
+     * \brief outputs the given graph to the given file
+     * \param filename requested output filename
+     * \param graph requested graph to be printed
+     */
     void write(const std::string& filename, const BaseGraph& graph) const;
 
+    /**
+     * \brief outputs the given graph to the given file
+     * \param filename requested output filename
+     * \param graph smart pointer to the requested graph to be printed
+     */
     void write(const std::string& filename, const BaseGraph::Ptr& graph) const;
 };
 

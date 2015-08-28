@@ -7,10 +7,15 @@ namespace gui {
 namespace graphitem {
 namespace edges {
 
-Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
-    : EdgeItem(graphWidget, sourceNode, targetNode, edge), mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
+Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem::id_t sourceNodePortID, NodeItem* targetNode, NodeItem::id_t targetNodePortID, graph_analysis::Edge::Ptr edge)
+    : EdgeItem(graphWidget, sourceNode, targetNode, edge)
+    , mpLabel(new EdgeLabel(edge->toString(), this)) // the use of edge->toString() is a feature; not a bug!
+    , mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
+    , mSourceNodePortID(sourceNodePortID)
+    , mTargetNodePortID(targetNodePortID)
+    , mFocused(false)
+    , mSelected(false)
 {
-    mpLabel = new EdgeLabel(edge->toString(), this);
     mPen = mPenDefault; // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
@@ -18,23 +23,30 @@ Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetN
 void Simple::adjust()
 {
     if (!mpSourceNodeItem || !mpTargetNodeItem)
+    {
+        // skipping when one of the endpoints is invalid
         return;
+    }
 
     prepareGeometryChange();
 
-    // Compute center of nodes
-    mTargetPoint = mpTargetNodeItem->getCenterPosition();
-    mSourcePoint = mpSourceNodeItem->getCenterPosition();
+    // Compute center of port nodes
+    mSourcePoint = mpSourceNodeItem->mapToScene(mpSourceNodeItem->featureBoundingRect(mSourceNodePortID).center());
+    mTargetPoint = mpTargetNodeItem->mapToScene(mpTargetNodeItem->featureBoundingRect(mTargetNodePortID).center());
 
-    QPointF centerPos((mTargetPoint.x() - mSourcePoint.x())/2.0, (mTargetPoint.y() - mSourcePoint.y())/2.0);
-
+    // initial complete line
     QLineF line(mSourcePoint, mTargetPoint);
-    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line);
-    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line);
+    // adjusting endpoints of the line above
+    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line, mSourceNodePortID);
+    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line, mTargetNodePortID);
 
     mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
-    mpLabel->setPos( mLine.pointAt(0.5) );
+    adjustLabel();
+}
 
+void Simple::adjustLabel()
+{
+    mpLabel->setPos( mLine.pointAt(0.5) - QPointF(mpLabel->boundingRect().width() / 2., 0) );
 }
 
 QRectF Simple::boundingRect() const
@@ -58,7 +70,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
         return;
     }
 
-    // Make sure no edge is drawn when items collide
+    // Make sure no edge is drawn when endpoint items collide
     if( mpSourceNodeItem->collidesWithItem(mpTargetNodeItem) )
     {
         return;
@@ -68,7 +80,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     painter->setPen(mPen);
     painter->drawLine(mLine);
 
-    // Draw the arrows
+    // Draw the arrow(s)
     double angle = ::acos(mLine.dx() / mLine.length());
     if (mLine.dy() >= 0)
         angle = TwoPi - angle;
@@ -84,9 +96,10 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     painter->drawPolygon(QPolygonF() << mLine.p2() << destArrowP1 << destArrowP2);
 }
 
-QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
+QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID)
 {
-    QPolygonF polygon = item->boundingRect();
+    // retrieves the entire node bounding box when the ID fed is not a valid port ID; retrieves only the respective port bounding box otherwise
+    QPolygonF polygon = (PortVertex::INVALID_PORT_ID == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
 
     // QVector<QPointF>::iterator cit = polygon.begin();
     //qDebug("Polygon");
@@ -101,21 +114,20 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
     QPointF p1 = item->mapToScene(polygon.first());
     QPointF p2;
     QPointF intersectionPoint;
-
+    // iterates through the node boundaries until intersection is found; this fact is guaranteed to happen since one of the endpoints of 'line' lies in the center of the convex body analysed
     for(int i = 1; i < polygon.count(); ++i)
     {
-        p2 = item->mapToParent(polygon.at(i));
+        p2 = item->mapToScene(polygon.at(i));
         QLineF pLine(p1,p2);
-        QLineF::IntersectType intersectType = 
+        QLineF::IntersectType intersectType =
             pLine.intersect(line, &intersectionPoint);
 
-        if( intersectType == QLineF::BoundedIntersection)
+        if(intersectType == QLineF::BoundedIntersection)
         {
             // intersection found
-            // qDebug("Intersection found: at %.3f / %.3f",intersectionPoint.x(), intersectionPoint.y());
             break;
         } else {
-            // no intersection fonuu
+            // no intersection found
             p1 = p2;
         }
     }
@@ -124,8 +136,12 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
 
 void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    qDebug("Hover ENTER event for %s", mpEdge->toString().c_str());
+    if(!mFocused)
+    {
+        mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    }
+    mSelected = true;
+    LOG_DEBUG_S << "Hover ENTER event for " << mpEdge->toString();
     mpGraphWidget->setSelectedEdge(mpEdge);
     mpGraphWidget->setEdgeSelected(true);
     QGraphicsItem::hoverEnterEvent(event);
@@ -133,12 +149,40 @@ void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 
 void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    mPen = mPenDefault;
-    qDebug("Hover LEAVE event for %s", mpEdge->toString().c_str());
+    if(!mFocused)
+    {
+        mPen = mPenDefault;
+    }
+    mSelected = false;
+    LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
     mpGraphWidget->setEdgeSelected(false);
     QGraphicsItem::hoverLeaveEvent(event);
 }
-    
+
+void Simple::grabFocus()
+{
+    mpGraphWidget->clearEdgeFocus();
+    mPen = QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    update();
+    mpGraphWidget->setEdgeFocused(true);
+    mFocused = true;
+    mpGraphWidget->setFocusedEdge(mpEdge);
+}
+
+void Simple::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
+{
+    mFocused ? releaseFocus() : grabFocus();
+    QGraphicsItem::mouseDoubleClickEvent(event);
+}
+
+void Simple::releaseFocus()
+{
+    mPen = mSelected ? QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin) : mPenDefault;
+    update();
+    mFocused = false;
+    mpGraphWidget->setEdgeFocused(false);
+}
+
 } // end namespace edges
 } // end namespace graphitem
 } // end namespace gui

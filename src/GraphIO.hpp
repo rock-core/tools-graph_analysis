@@ -8,13 +8,17 @@ namespace graph_analysis {
 
 namespace representation {
 
-enum Type { UNKNOWN = 0, GEXF, LEMON, GRAPHVIZ, END_MARKER };
+enum Type { UNKNOWN = 0, GEXF, LEMON, YAML, GRAPHVIZ, END_MARKER };
 
 extern std::map<Type, std::string> TypeTxt;
 
 } // end namespace representation
 
 namespace io {
+
+/// GEXF reader/writer common convetions
+const std::string CLASS("0");
+const std::string LABEL("1");
 
 class Writer
 {

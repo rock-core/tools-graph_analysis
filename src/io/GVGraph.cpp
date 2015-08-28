@@ -31,7 +31,6 @@ GVGraph::GVGraph(BaseGraph::Ptr baseGraph, const std::string& name, double node_
     , mpGVGraph(_agopen(name, Agdirected)) // see also agstrictdirected graph -- one edgde between two nodes, see libgraph doc
     , mpBaseGraph(baseGraph)
     , mAppliedLayout(false)
-
 {
     //Set graph attributes
     setGraphAttribute("overlap", "false");
@@ -278,13 +277,19 @@ void GVGraph::applyLayout(const std::string& layout)
 
 }
 
-void GVGraph::renderToFile(const std::string& filename, const std::string& layout)
+void GVGraph::renderToFile(const std::string& filename, const std::string& layout, bool forced)
 {
-    if(!mAppliedLayout)
+    if(forced || !mAppliedLayout)
     {
-        applyLayout();
+        applyLayout(layout);
     }
-    gvRenderFilename(mpContext, mpGVGraph, layout.c_str(), filename.c_str());
+    int rc = gvRenderFilename(mpContext, mpGVGraph, layout.c_str(), filename.c_str());
+    if(-1 == rc)
+    {
+        std::string error_msg = std::string("graph_analysis::io::GVGraph: failed to make graphviz apply layout ") + layout + " for graph rendering";
+        LOG_ERROR_S << error_msg;
+        throw std::runtime_error(error_msg);
+    }
 }
 
 boxf GVGraph::boundingRect() const
@@ -332,7 +337,7 @@ std::vector<GVNode> GVGraph::nodes() const
         double height = ND_height(node) * mDPI;
         double width = ND_width(node) * mDPI;
 
-        GVNode gvNode( mpBaseGraph->getVertex(it->first), 
+        GVNode gvNode( mpBaseGraph->getVertex(it->first),
                 name, x, y, height, width );
         gvNodes.push_back(gvNode);
     }
@@ -356,7 +361,7 @@ std::vector<GVEdge> GVGraph::edges() const
         //Calculate the path from the spline (only one as the graph is strict)
 
         //http://www.graphviz.org/content/edge-position-and-edge-label-position
-        // use 
+        // use
         //  ND_pos ..
         //  ED_spl
         //  GD_..

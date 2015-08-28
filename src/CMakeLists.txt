@@ -16,15 +16,38 @@ rock_library(graph_analysis
         GraphIO.cpp
         gui/EdgeItem.cpp
         gui/EdgeTypeManager.cpp
+        gui/CustomDialog.cpp
         gui/graphitem/edges/Simple.cpp
-        gui/graphitem/Resource.cpp
+        gui/graphitem/Cluster.cpp
         gui/graphitem/Simple.cpp
+        gui/graphitem/Label.cpp
+        gui/layeritem/edges/Simple.cpp
+        gui/layeritem/Resource.cpp
+        gui/layeritem/Label.cpp
+        gui/IconManager.cpp
+        gui/WidgetManager.cpp
+        gui/GraphManager.cpp
         gui/GraphWidget.cpp
+        gui/ComponentEditorWidget.cpp
+        gui/LayerViewWidget.cpp
+        gui/FilterManager.cpp
+        gui/FilterItem.cpp
+        gui/AddNodeDialog.cpp
+        gui/AddFilterDialog.cpp
+        gui/SwapFiltersDialog.cpp
+        gui/SwapFeaturesDialog.cpp
+        gui/RenameFilterDialog.cpp
+        gui/RenameFeatureDialog.cpp
+        gui/PropertyDialog.cpp
+        gui/ActionCommander.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
         gui/NodeTypeManager.cpp
         io/GexfWriter.cpp
+        io/GexfReader.cpp
         io/GraphvizWriter.cpp
+        io/YamlWriter.cpp
+        io/YamlReader.cpp
         io/GVGraph.cpp
         lemon/DirectedGraph.cpp
         lemon/DirectedSubGraph.cpp
@@ -38,8 +61,15 @@ rock_library(graph_analysis
         snap/DirectedGraph.cpp
         SubGraph.cpp
         Vertex.cpp
+        PortVertex.cpp
+        PropertyVertex.cpp
+        OperationVertex.cpp
+        InputPortVertex.cpp
+        OutputPortVertex.cpp
+        ClusterVertex.cpp
         VertexIterable.cpp
         VertexIterator.cpp
+        VertexTypeManager.cpp
     HEADERS
         Algorithms.hpp
         algorithms/CorrelationClustering.hpp
@@ -66,13 +96,36 @@ rock_library(graph_analysis
         gui/graphitem/edges/EdgeLabel.hpp
         gui/graphitem/edges/Simple.hpp
         gui/graphitem/Label.hpp
-        gui/graphitem/Resource.hpp
+        gui/graphitem/Cluster.hpp
         gui/graphitem/Simple.hpp
+        gui/layeritem/edges/EdgeLabel.hpp
+        gui/layeritem/edges/Simple.hpp
+        gui/layeritem/Label.hpp
+        gui/layeritem/Resource.hpp
+        gui/IconManager.hpp
+        gui/WidgetManager.hpp
+        gui/GraphManager.hpp
         gui/GraphWidget.hpp
+        gui/ComponentEditorWidget.hpp
+        gui/LayerViewWidget.hpp
+        gui/FilterManager.hpp
+        gui/FilterItem.hpp
+        gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
+        gui/AddNodeDialog.hpp
+        gui/AddFilterDialog.hpp
+        gui/SwapFiltersDialog.hpp
+        gui/SwapFeaturesDialog.hpp
+        gui/RenameFilterDialog.hpp
+        gui/RenameFeatureDialog.hpp
+        gui/PropertyDialog.hpp
+        gui/CustomDialog.hpp
         io/GexfWriter.hpp
+        io/GexfReader.hpp
         io/GraphvizWriter.hpp
+        io/YamlWriter.hpp
+        io/YamlReader.hpp
         io/GVGraph.hpp
         lemon/ArcIterator.hpp
         lemon/DirectedGraph.hpp
@@ -94,21 +147,43 @@ rock_library(graph_analysis
         SubGraphImpl.hpp
         TypedGraph.hpp
         Vertex.hpp
+        PortVertex.hpp
+        PropertyVertex.hpp
+        OperationVertex.hpp
+        InputPortVertex.hpp
+        OutputPortVertex.hpp
+        ClusterVertex.hpp
         VertexIterable.hpp
         VertexIterator.hpp
+        VertexTypeManager.hpp
         WeightedEdge.hpp
         NWeightedEdge.hpp
         WeightedVertex.hpp
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf numeric gsl libgvc
+        lemon snap base-lib gexf numeric gsl libgvc utilmm
     DEPS_PLAIN
         Boost_REGEX
     MOC
-        gui/GraphWidget.hpp
-    DEPS_PLAIN Boost_REGEX
+        gui/ComponentEditorWidget.hpp
+        gui/LayerViewWidget.hpp
+        gui/GraphManager.hpp
+        gui/FilterManager.hpp
+        gui/AddNodeDialog.hpp
+        gui/AddFilterDialog.hpp
+        gui/PropertyDialog.hpp
+        gui/SwapFiltersDialog.hpp
+        gui/SwapFeaturesDialog.hpp
+        gui/RenameFilterDialog.hpp
+        gui/RenameFeatureDialog.hpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
+        gui/add_node_dialog_gui.ui
+        gui/add_filter_dialog_gui.ui
+        gui/property_dialog_gui.ui
+        gui/swap_filters_dialog_gui.ui
+        gui/swap_features_dialog_gui.ui
+        gui/rename_feature_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk cgraph)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

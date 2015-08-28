@@ -4,12 +4,14 @@ namespace graph_analysis {
 
 Edge::Edge(const std::string& label)
     : GraphElement(label)
+    , mLabel(label)
 {}
 
 Edge::Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label)
     : GraphElement(label)
     , mSourceVertex(source)
     , mTargetVertex(target)
+    , mLabel(label)
 {}
 
 Edge::Ptr Edge::clone() const

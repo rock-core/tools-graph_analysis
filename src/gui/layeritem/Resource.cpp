@@ -1,6 +1,7 @@
 #include "Resource.hpp"
 
 #include <QPainter>
+#include <QGraphicsSceneDragDropEvent>
 #include <QStyle>
 #include <QStyleOption>
 
@@ -10,13 +11,16 @@
 
 namespace graph_analysis {
 namespace gui {
-namespace graphitem {
+namespace layeritem {
+
+const std::string Resource::sType("LayerNode");
 
 Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex)
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
 {
+    setFlag(ItemIsMovable);
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
     mLabel = new Label(vertex->toString(), this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -26,28 +30,10 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     //mLabel->setZValue(-100.0);
 }
 
-void Resource::changeLabel(const std::string &label)
-{
-    delete mLabel;
-    mpVertex->setLabel(label);
-    mLabel = new Label(mpVertex->toString(), this);
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-}
-
-void Resource::updateLabel()
-{
-    delete mLabel;
-    mLabel = new Label(mpVertex->toString(), this);
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-}
-
 QRectF Resource::boundingRect() const
 {
-    //qreal adjust = 0;
-    //QRectF boundingRect( -10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
-    //return childrenBoundingRect() | boundingRect;
-
-    return childrenBoundingRect();
+    QRectF childrenRect = childrenBoundingRect();
+    return childrenRect;
 }
 
 QPainterPath Resource::shape() const
@@ -67,7 +53,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     //painter->setBrush(mPen.brush());
 
     //painter->drawEllipse(-7, -7, 20, 20);
-    painter->drawRect(boundingRect()); //-7,-7,20,20);
+    painter->drawRect(boundingRect());
 
 //    QRadialGradient gradient(-3, -3, 10);
 //    if (option->state & QStyle::State_Sunken)
@@ -81,7 +67,7 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 //        gradient.setColorAt(1, Qt::darkYellow);
 //    }
 //    painter->setBrush(gradient);
-//  
+//
 //    painter->setPen(QPen(Qt::black, 0));
 //    painter->drawEllipse(-10, -10, 20, 20);
 }
@@ -90,7 +76,6 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
-    //mLabel->mouseEvent(event);
     QGraphicsItem::mousePressEvent(event);
 }
 
@@ -99,6 +84,7 @@ void Resource::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
     LOG_DEBUG_S << "Mouse RESOURCE: release";
     QGraphicsItem::mouseReleaseEvent(event);
 }
+
 void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
     QGraphicsItem::mouseDoubleClickEvent(event);
@@ -106,22 +92,20 @@ void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 
 void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug("Hover ENTER event for %s", mpVertex->toString().c_str());
+    LOG_DEBUG_S << "Hover ENTER event for " << mpVertex->toString();
     mPen = QPen(Qt::green);
 
     mpGraphWidget->setSelectedVertex(mpVertex);
     mpGraphWidget->setVertexSelected(true);
-//    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
 
     QGraphicsItem::hoverEnterEvent(event);
 }
 
 void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    qDebug("Hover LEAVE event for %s", mpVertex->toString().c_str());
+    LOG_DEBUG_S << "Hover LEAVE event for " << mpVertex->toString();
     mPen = mPenDefault;
     mpGraphWidget->setVertexSelected(false);
-//    qDebug("Hover event -> set mVertexSelected flag to %d", mpGraphWidget->getVertexSelected());
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
@@ -130,6 +114,6 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 //    LOG_DEBUG_S << "Key RESOURCE: press";
 //}
 
-} // end namespace graphitem
+} // end namespace layeritem
 } // end namespace gui
 } // end namespace graph_analysis

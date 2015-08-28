@@ -1,0 +1,73 @@
+#ifndef GRAPH_ANALYSIS_VERTEX_TYPE_MANAGER_HPP
+#define GRAPH_ANALYSIS_VERTEX_TYPE_MANAGER_HPP
+
+#include <map>
+#include <set>
+#include <string>
+#include <base/Singleton.hpp>
+#include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/BaseVertex.hpp>
+#include <graph_analysis/PortVertex.hpp>
+#include <graph_analysis/InputPortVertex.hpp>
+#include <graph_analysis/OutputPortVertex.hpp>
+#include <graph_analysis/PropertyVertex.hpp>
+#include <graph_analysis/OperationVertex.hpp>
+#include <graph_analysis/ClusterVertex.hpp>
+
+namespace graph_analysis {
+
+    class Vertex;
+    class BaseVertex;
+    class PortVertex;
+    class InputPortVertex;
+    class OutputPortVertex;
+    class ClusterVertex;
+
+namespace vertex {
+    // datatype for vertex type specification
+    typedef std::string Type;
+} // end namespace vertex
+
+/**
+ * \brief Factory for Vertex subclasses
+ */
+class VertexTypeManager : public base::Singleton<VertexTypeManager>
+{
+public:
+    typedef std::map<vertex::Type, Vertex::Ptr> ClassVisualizationMap;
+
+private:
+    /// registration map - stores the registered types, mapping them to the example vertex instances (i.e. from which new ones to be forked on request)
+    ClassVisualizationMap mClassVisualizationMap;
+    /// registration list - maintains a complete list of all registered types
+    std::set<std::string> mRegisteredTypes;
+    /**
+     * \brief internal method for type identification
+     * \param type requested vertex type
+     * \param throwOnDefault flag indicating whether exceptions shall be thrown when fed with unregistered types; on false it silently picks the default type
+     * \return smart pointer to the witness vertex instance of the requested type
+     */
+    Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnDefault = false);
+
+public:
+    /// constructor
+    VertexTypeManager();
+    /// destructor
+    ~VertexTypeManager();
+
+    // Register visualization class
+    // takes ownership of graphicsItem
+    void registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered = false);
+    /**
+     * \brief clones a new vertex of a specified type
+     * \param type the requested vertex type
+     * \param label the requested vertex label
+     * \return smart pointer to the newly created vertex instance
+     */
+    Vertex::Ptr createVertex(const vertex::Type& type, const std::string& label = std::string());
+    /// lists the registered types
+    std::set<std::string> getSupportedTypes();
+};
+
+} // end namespace graph_analysis
+#endif /* GRAPH_ANALYSIS_VERTEX_TYPE_MANAGER_HPP */

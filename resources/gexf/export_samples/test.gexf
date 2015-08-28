@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.1draft http://gexf.net/1.1draft/gexf.xsd" version="1.1">
+  <graph mode="static" defaultedgetype="directed">
+    <attributes class="node" mode="static">
+      <attribute id="0" title="class" type="string"/>
+    </attributes>
+    <attributes class="edge" mode="static">
+      <attribute id="0" title="class" type="string"/>
+    </attributes>
+    <nodes>
+      <node id="0" label="v0">
+        <attvalues>
+          <attvalue for="0" value="v0"/>
+        </attvalues>
+      </node>
+      <node id="1" label="v1">
+        <attvalues>
+          <attvalue for="0" value="v1"/>
+        </attvalues>
+      </node>
+      <node id="2" label="v2">
+        <attvalues>
+          <attvalue for="0" value="v2"/>
+        </attvalues>
+      </node>
+      <node id="3" label="v3">
+        <attvalues>
+          <attvalue for="0" value="v3"/>
+        </attvalues>
+      </node>
+      <node id="4" label="v4">
+        <attvalues>
+          <attvalue for="0" value="v4"/>
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="0" target="1" label="edge0:v0-&gt;v1">
+        <attvalues>
+          <attvalue for="0" value="edge0:v0-&gt;v1"/>
+        </attvalues>
+      </edge>
+      <edge id="1" source="0" target="3" label="edge1:v0-&gt;v3">
+        <attvalues>
+          <attvalue for="0" value="edge1:v0-&gt;v3"/>
+        </attvalues>
+      </edge>
+      <edge id="2" source="1" target="2" label="edge2:v1-&gt;v2">
+        <attvalues>
+          <attvalue for="0" value="edge2:v1-&gt;v2"/>
+        </attvalues>
+      </edge>
+      <edge id="3" source="1" target="4" label="edge3:v1-&gt;v4">
+        <attvalues>
+          <attvalue for="0" value="edge3:v1-&gt;v4"/>
+        </attvalues>
+      </edge>
+      <edge id="4" source="2" target="3" label="edge4:v2-&gt;v3">
+        <attvalues>
+          <attvalue for="0" value="edge4:v2-&gt;v3"/>
+        </attvalues>
+      </edge>
+      <edge id="5" source="3" target="4" label="edge5:v3-&gt;v4">
+        <attvalues>
+          <attvalue for="0" value="edge5:v3-&gt;v4"/>
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

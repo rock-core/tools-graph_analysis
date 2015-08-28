@@ -4,6 +4,8 @@
 
 #include "io/GexfWriter.hpp"
 #include "io/GexfReader.hpp"
+#include "io/YamlWriter.hpp"
+#include "io/YamlReader.hpp"
 
 #include "io/GraphvizWriter.hpp"
 
@@ -15,6 +17,7 @@ std::map<Type, std::string> TypeTxt = boost::assign::map_list_of
     (GEXF, "GEXF")
     (LEMON, "LEMON")
     (GRAPHVIZ, "GRAPHVIZ")
+    (YAML, "YAML")
     ;
 
 } // end namespace representation

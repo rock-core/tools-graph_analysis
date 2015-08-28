@@ -6,3 +6,6 @@ find_package(Rock)
 add_definitions(-DHAVE_STRING_H)
 rock_init(graph_analysis 0.1)
 rock_standard_layout()
+
+install(DIRECTORY resources/icons
+        DESTINATION share/graph_analysis/)

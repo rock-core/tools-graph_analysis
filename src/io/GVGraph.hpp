@@ -20,7 +20,7 @@ static inline Agraph_t* _agopen(const std::string& name, Agdesc_t kind)
     // extern Agraph_t *agopen(char *name, Agdesc_t desc, Agdisc_t * disc);
     // first arg: graph
     // second arg: type of graph
-    // third arg: (optional) reference to functions for reading, memory, etc. -- 
+    // third arg: (optional) reference to functions for reading, memory, etc. --
     //    0 for default
 #ifdef GRAPHVIZ_DEPRECATED
 #warning "You are using a graphviz version < 2.36.0 -- limited support only"
@@ -147,7 +147,7 @@ public:
      * \param defaultValue The return value will be this if the attribute has not been set for the graph
      * \return Current or default value for this attribute
      */
-    std::string getGraphAttribute(const std::string& name, const std::string& defaultValue ="") const;
+    std::string getGraphAttribute(const std::string& name, const std::string& defaultValue = std::string()) const;
 
     /**
      * Set a node attribute by name
@@ -185,7 +185,7 @@ public:
      *  \see http://www.graphviz.org/Documentation.php for available layouts
      */
     void applyLayout(const std::string& layout = "dot");
-    void renderToFile(const std::string& filename, const std::string& layout = "dot");
+    void renderToFile(const std::string& filename, const std::string& layout = "dot", bool forced = false);
 
     boxf boundingRect() const;
     void setRootNode(Vertex::Ptr vertex);
@@ -200,22 +200,29 @@ public:
     std::string getUniqueName(Edge::Ptr edge) const;
 
 private:
+    /// GraphViz to-file rendering context
     GVC_t* mpContext;
+    /// main GraphViz graph instance
     Agraph_t* mpGVGraph;
+    /// graph_analysis to-be-rendered graph
     BaseGraph::Ptr mpBaseGraph;
 
+    /// GraphViz nodes map
     std::map<GraphElementId, Agnode_t*> mNodes;
+    /// GraphViz edges map
     std::map<GraphElementId, Agedge_t*> mEdges;
 
     /// DPI setting
     double mDPI;
     /// ScalingFactor based on assumed screen resolution and graphviz DPI setting
     double mScalingFactor;
+    /// boolean witness for layouting; true when already layouted; false otherwise
     bool mAppliedLayout;
+    /// list of supported GraphViz layouting engines
     static std::set<std::string> msSupportedLayouts;
     static GraphElementId msEdgeId;
 };
 
 } // end namespace io
-} // end namespace graph_analysis 
+} // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_IO_GVGRAPH_HPP

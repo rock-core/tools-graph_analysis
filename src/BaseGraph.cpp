@@ -255,4 +255,10 @@ void BaseGraph::clear()
     }
 }
 
+bool BaseGraph::empty()
+{
+    VertexIterator::Ptr vertexIt = getVertexIterator();
+    return !vertexIt->next();
+}
+
 }

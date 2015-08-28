@@ -22,7 +22,7 @@ public:
     /**
      * \brief Default constructor
      */
-    GraphElement(const std::string& label = "");
+    GraphElement(const std::string& label = std::string());
 
     virtual ~GraphElement() {};
 
@@ -31,13 +31,12 @@ public:
     /**
      * Set a label
      */
-    void setLabel(const std::string &label) { mLabel = label; }
+    void setLabel(const std::string& label) { mLabel = label; }
 
     /**
      * Get label
      */
     const std::string& getLabel() const { return mLabel; }
-
 
     // Get class name
     // \return class name
@@ -87,7 +86,6 @@ public:
 
 protected:
     void disassociateFromAll() { mGraphElementMap.clear(); }
-
     GraphElementMap mGraphElementMap;
 
     GraphElementId mUid;

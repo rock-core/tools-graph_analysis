@@ -1,43 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
-**     of its contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
 #include "GraphWidget.hpp"
@@ -48,6 +8,7 @@
 #include <QStyleOption>
 
 #include <base/Logging.hpp>
+#include <boost/assign/list_of.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -56,7 +17,7 @@ NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     : mpVertex(vertex)
     , mpGraphWidget(graphWidget)
 {
-    setFlag(ItemIsMovable);
+    setFlag(ItemIsMovable, false);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
@@ -70,7 +31,6 @@ void NodeItem::calculateForces()
         mNewPos = pos();
         return;
     }
-
     // Sum up all forces pushing this item away
     qreal xvel = 0;
     qreal yvel = 0;
@@ -78,8 +38,9 @@ void NodeItem::calculateForces()
     {
         NodeItem* node = qgraphicsitem_cast<NodeItem* >(item);
         if (!node)
+        {
             continue;
-
+        }
         QPointF vec = mapToItem(node, 0, 0);
         qreal dx = vec.x();
         qreal dy = vec.y();
@@ -90,26 +51,28 @@ void NodeItem::calculateForces()
             yvel += (dy * 150.0) / l;
         }
     }
-
     // Now subtract all forces pulling items together
     GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
-
     double weight = (mpGraphWidget->edgeItemMap().size() + 1) * 10;
     for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
     {
         EdgeItem* edge = it->second;
         QPointF vec;
         if (edge->sourceNodeItem() == this)
+        {
             vec = mapToItem(edge->targetNodeItem(), 0, 0);
+        }
         else
+        {
             vec = mapToItem(edge->sourceNodeItem(), 0, 0);
+        }
         xvel -= vec.x() / weight;
         yvel -= vec.y() / weight;
     }
-
     if (qAbs(xvel) < 0.1 && qAbs(yvel) < 0.1)
+    {
         xvel = yvel = 0;
-
+    }
     QRectF sceneRect = scene()->sceneRect();
     mNewPos = pos() + QPointF(xvel, yvel);
     mNewPos.setX(qMin(qMax(mNewPos.x(), sceneRect.left() + 10), sceneRect.right() - 10));
@@ -118,14 +81,15 @@ void NodeItem::calculateForces()
 
 bool NodeItem::advance()
 {
-    if (mNewPos == pos())
-        return false;
-
-    setPos(mNewPos);
-    return true;
+    if (mNewPos != pos())
+    {
+        setPos(mNewPos);
+        return true;
+    }
+    return false;
 }
 
-QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
 {
     switch (change)
     {
@@ -135,7 +99,10 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
             for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
             {
                 EdgeItem* edge = it->second;
-                edge->adjust();
+                if(edge)
+                {
+                    edge->adjust();
+                }
             }
             mpGraphWidget->itemMoved();
             break;
@@ -143,7 +110,6 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
         default:
             break;
     };
-
     return QGraphicsItem::itemChange(change, value);
 }
 

@@ -10,16 +10,28 @@
 namespace graph_analysis {
 namespace io {
 
+void GexfWriter::write(const std::string& filename, const BaseGraph& graph) const
+{
+    BaseGraph graph_copy = graph;
+    write(filename, BaseGraph::Ptr(&graph_copy)); // reusing code
+}
+
 void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph) const
 {
+    // loading gexf lib main components
     libgexf::GEXF gexf;
     libgexf::DirectedGraph& digraph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
 
-    std::string classAttr = "0";
+    std::string classAttr = CLASS; // see <graph_analysis/GraphIO.hpp>
     data.addNodeAttributeColumn(classAttr, "class", "STRING");
     data.addEdgeAttributeColumn(classAttr, "class", "STRING");
 
+    std::string labelAttr = LABEL; // see <graph_analysis/GraphIO.hpp>
+    data.addNodeAttributeColumn(labelAttr, "label", "STRING");
+    data.addEdgeAttributeColumn(labelAttr, "label", "STRING");
+
+    // loading the nodes and their attributes to the gexf components
     VertexIterator::Ptr vit = graph->getVertexIterator();
     while(vit->next())
     {
@@ -28,9 +40,11 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         digraph.addNode(nodeIdString);
 
         data.setNodeLabel(nodeIdString, vertex->toString() );
-        data.setNodeValue(nodeIdString, classAttr, vertex->toString());
+        data.setNodeValue(nodeIdString, classAttr, vertex->getClassName());
+        data.setNodeValue(nodeIdString, labelAttr, vertex->getLabel());
     }
 
+    // loading the edges and their attributes to the gexf components
     EdgeIterator::Ptr eit = graph->getEdgeIterator();
     while(eit->next())
     {
@@ -42,17 +56,26 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         digraph.addEdge(edgeId, srcNode, targetNode);
         data.setEdgeLabel(edgeId, edge->toString() );
         data.setEdgeValue(edgeId, classAttr, edge->toString());
+        data.setEdgeValue(edgeId, labelAttr, edge->getLabel());
     }
 
+    // calling the gexf lib renderer
     libgexf::FileWriter writer;
     boost::xpressive::sregex regex = boost::xpressive::as_xpr(".gexf");
-    std::string replace = "";
+    std::string replace("");
     std::string name = boost::xpressive::regex_replace(filename, regex, replace);
 
     name = name + ".gexf";
     writer.init(name, &gexf);
     writer.write();
 
+    if(std::string::npos != name.find(' '))
+    {
+        // disregarding the formatting stage for filenames containing blanks
+        return;
+    }
+
+    // the formatting stage
     std::string formattedFile = name + ".formatted";
     std::string command = "`which xmllint` --encode UTF-8 --format " + name + " > " + formattedFile;
 
@@ -65,7 +88,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
             throw std::runtime_error("graph_analysis::io::GexfWriter::write: Failed to rename file after performing xmlling");
         }
     } else {
-        LOG_INFO("Gexf file '%s' written, but proper formatting failed -- make sure that xmllint is installed", name.c_str()); 
+        LOG_INFO("Gexf file '%s' written, but proper formatting failed -- make sure that xmllint is installed", name.c_str());
     }
 }
 

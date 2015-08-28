@@ -10,9 +10,9 @@ BOOST_AUTO_TEST_SUITE(graph_io)
 /*
  * Note:
  * ----
- * These tests imply that GraphvizWriter class works correctly - it constructs a complete graph with 4 nodes 
+ * These tests imply that GraphvizWriter class works correctly - it constructs a complete graph with 4 nodes
  * and renders it to file of hardwired name "testgraph->dot"
- * (manual dot rendeing of the output .dot file and checking it is assumed)
+ * (manual dot rendering of the output .dot file and checking it is assumed)
  */
 
 BOOST_AUTO_TEST_CASE(dot)

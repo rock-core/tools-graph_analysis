@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.1draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.1draft http://gexf.net/1.1draft/gexf.xsd" version="1.1">
+  <graph mode="static" defaultedgetype="directed">
+    <attributes class="node" mode="static">
+      <attribute id="0" title="label" type="string"/>
+      <attribute id="1" title="class" type="string"/>
+    </attributes>
+    <attributes class="edge" mode="static">
+      <attribute id="0" title="label" type="string"/>
+      <attribute id="1" title="class" type="string"/>
+    </attributes>
+    <nodes>
+      <node id="0" label="c0">
+        <attvalues>
+          <attvalue for="0" value="c0"/>
+          <attvalue for="1" value="c0"/>
+        </attvalues>
+      </node>
+      <node id="1" label="c1">
+        <attvalues>
+          <attvalue for="0" value="c1"/>
+          <attvalue for="1" value="c1"/>
+        </attvalues>
+      </node>
+      <node id="10" label="c1p3">
+        <attvalues>
+          <attvalue for="0" value="c1p3"/>
+          <attvalue for="1" value="c1p3"/>
+        </attvalues>
+      </node>
+      <node id="11" label="c1p4">
+        <attvalues>
+          <attvalue for="0" value="c1p4"/>
+          <attvalue for="1" value="c1p4"/>
+        </attvalues>
+      </node>
+      <node id="12" label="c2p0">
+        <attvalues>
+          <attvalue for="0" value="c2p0"/>
+          <attvalue for="1" value="c2p0"/>
+        </attvalues>
+      </node>
+      <node id="13" label="c2p1">
+        <attvalues>
+          <attvalue for="0" value="c2p1"/>
+          <attvalue for="1" value="c2p1"/>
+        </attvalues>
+      </node>
+      <node id="2" label="c2">
+        <attvalues>
+          <attvalue for="0" value="c2"/>
+          <attvalue for="1" value="c2"/>
+        </attvalues>
+      </node>
+      <node id="3" label="c0p0">
+        <attvalues>
+          <attvalue for="0" value="c0p0"/>
+          <attvalue for="1" value="c0p0"/>
+        </attvalues>
+      </node>
+      <node id="4" label="c0p1">
+        <attvalues>
+          <attvalue for="0" value="c0p1"/>
+          <attvalue for="1" value="c0p1"/>
+        </attvalues>
+      </node>
+      <node id="5" label="c0p2">
+        <attvalues>
+          <attvalue for="0" value="c0p2"/>
+          <attvalue for="1" value="c0p2"/>
+        </attvalues>
+      </node>
+      <node id="6" label="c0p3">
+        <attvalues>
+          <attvalue for="0" value="c0p3"/>
+          <attvalue for="1" value="c0p3"/>
+        </attvalues>
+      </node>
+      <node id="7" label="c1p0">
+        <attvalues>
+          <attvalue for="0" value="c1p0"/>
+          <attvalue for="1" value="c1p0"/>
+        </attvalues>
+      </node>
+      <node id="8" label="c1p1">
+        <attvalues>
+          <attvalue for="0" value="c1p1"/>
+          <attvalue for="1" value="c1p1"/>
+        </attvalues>
+      </node>
+      <node id="9" label="c1p2">
+        <attvalues>
+          <attvalue for="0" value="c1p2"/>
+          <attvalue for="1" value="c1p2"/>
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="0" source="0" target="3" label="c0e0:c0-&gt;c0p0">
+        <attvalues>
+          <attvalue for="0" value="c0e0"/>
+          <attvalue for="1" value="c0e0:c0-&gt;c0p0"/>
+        </attvalues>
+      </edge>
+      <edge id="1" source="0" target="4" label="c0e1:c0-&gt;c0p1">
+        <attvalues>
+          <attvalue for="0" value="c0e1"/>
+          <attvalue for="1" value="c0e1:c0-&gt;c0p1"/>
+        </attvalues>
+      </edge>
+      <edge id="2" source="0" target="5" label="c0e2:c0-&gt;c0p2">
+        <attvalues>
+          <attvalue for="0" value="c0e2"/>
+          <attvalue for="1" value="c0e2:c0-&gt;c0p2"/>
+        </attvalues>
+      </edge>
+      <edge id="3" source="0" target="6" label="c0e3:c0-&gt;c0p3">
+        <attvalues>
+          <attvalue for="0" value="c0e3"/>
+          <attvalue for="1" value="c0e3:c0-&gt;c0p3"/>
+        </attvalues>
+      </edge>
+      <edge id="7" source="1" target="10" label="c1e3:c1-&gt;c1p3">
+        <attvalues>
+          <attvalue for="0" value="c1e3"/>
+          <attvalue for="1" value="c1e3:c1-&gt;c1p3"/>
+        </attvalues>
+      </edge>
+      <edge id="8" source="1" target="11" label="c1e4:c1-&gt;c1p4">
+        <attvalues>
+          <attvalue for="0" value="c1e4"/>
+          <attvalue for="1" value="c1e4:c1-&gt;c1p4"/>
+        </attvalues>
+      </edge>
+      <edge id="4" source="1" target="7" label="c1e0:c1-&gt;c1p0">
+        <attvalues>
+          <attvalue for="0" value="c1e0"/>
+          <attvalue for="1" value="c1e0:c1-&gt;c1p0"/>
+        </attvalues>
+      </edge>
+      <edge id="5" source="1" target="8" label="c1e1:c1-&gt;c1p1">
+        <attvalues>
+          <attvalue for="0" value="c1e1"/>
+          <attvalue for="1" value="c1e1:c1-&gt;c1p1"/>
+        </attvalues>
+      </edge>
+      <edge id="6" source="1" target="9" label="c1e2:c1-&gt;c1p2">
+        <attvalues>
+          <attvalue for="0" value="c1e2"/>
+          <attvalue for="1" value="c1e2:c1-&gt;c1p2"/>
+        </attvalues>
+      </edge>
+      <edge id="15" source="12" target="6" label="edge4:c2p0-&gt;c0p3">
+        <attvalues>
+          <attvalue for="0" value="edge4"/>
+          <attvalue for="1" value="edge4:c2p0-&gt;c0p3"/>
+        </attvalues>
+      </edge>
+      <edge id="9" source="2" target="12" label="c2e0:c2-&gt;c2p0">
+        <attvalues>
+          <attvalue for="0" value="c2e0"/>
+          <attvalue for="1" value="c2e0:c2-&gt;c2p0"/>
+        </attvalues>
+      </edge>
+      <edge id="10" source="2" target="13" label="c2e1:c2-&gt;c2p1">
+        <attvalues>
+          <attvalue for="0" value="c2e1"/>
+          <attvalue for="1" value="c2e1:c2-&gt;c2p1"/>
+        </attvalues>
+      </edge>
+      <edge id="11" source="3" target="7" label="edge0:c0p0-&gt;c1p0">
+        <attvalues>
+          <attvalue for="0" value="edge0"/>
+          <attvalue for="1" value="edge0:c0p0-&gt;c1p0"/>
+        </attvalues>
+      </edge>
+      <edge id="12" source="3" target="8" label="edge1:c0p0-&gt;c1p1">
+        <attvalues>
+          <attvalue for="0" value="edge1"/>
+          <attvalue for="1" value="edge1:c0p0-&gt;c1p1"/>
+        </attvalues>
+      </edge>
+      <edge id="13" source="6" target="10" label="edge2:c0p3-&gt;c1p3">
+        <attvalues>
+          <attvalue for="0" value="edge2"/>
+          <attvalue for="1" value="edge2:c0p3-&gt;c1p3"/>
+        </attvalues>
+      </edge>
+      <edge id="16" source="8" target="13" label="edge5:c1p1-&gt;c2p1">
+        <attvalues>
+          <attvalue for="0" value="edge5"/>
+          <attvalue for="1" value="edge5:c1p1-&gt;c2p1"/>
+        </attvalues>
+      </edge>
+      <edge id="14" source="9" target="5" label="edge3:c1p2-&gt;c0p2">
+        <attvalues>
+          <attvalue for="0" value="edge3"/>
+          <attvalue for="1" value="edge3:c1p2-&gt;c0p2"/>
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>

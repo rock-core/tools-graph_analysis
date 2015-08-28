@@ -2,6 +2,7 @@
 
 namespace graph_analysis {
 
+
 Vertex::Vertex(const std::string& label)
     : GraphElement(label)
 {}
@@ -18,7 +19,9 @@ std::string Vertex::toString() const
     if(!mLabel.empty())
     {
         return mLabel;
-    } else {
+    }
+    else
+    {
         return getClassName();
     }
 }
