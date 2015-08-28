@@ -33,22 +33,23 @@ public:
     virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return false; }
 
     /**
-     * \brief Use this and associated subfilters, to check if this target should be filtered
-     * \return True, if the target vertex of given edge should be filtered, false otherwise
+     * \brief Use this and associated subfilters, to check if this target vertex
+     * is matched by the filter
+     * \return True, if the target vertex of given edge is matched by the filter, false otherwise
      */
-    bool permitsTarget(graph_analysis::Edge::Ptr e) const;
+    bool matchesTarget(graph_analysis::Edge::Ptr e) const;
 
     /**
      * \brief Evaluated the source vertex of the edge
-     * \return True if it should be permitted, false otherwise
+     * \return True if it should be filtered, false otherwise
      */
     virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return false; }
 
     /**
-     * \brief Use this and associated subfilters, to check if this edge's source vertex should be filtered
-     * \return True, if the source vertex of given edge should be filtered, false otherwise
+     * \brief Use this and associated subfilters, to check if this edge's source vertex is matched by the filter
+     * \return True, if the source vertex of given edge is matched by the filter, false otherwise
      */
-    bool permitsSource(graph_analysis::Edge::Ptr e) const;
+    bool matchesSource(graph_analysis::Edge::Ptr e) const;
 };
 
 } // end namespace filters

@@ -26,21 +26,22 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
         while(edgeIterator->next())
         {
             Edge::Ptr edge = edgeIterator->current();
-            if( edgeFilter->permits(edge) )
+            // By default we enable
+            enable(edge);
+
+            if( edgeFilter->matches(edge) )
             {
                 // A context filter should apply to source / target nodes -- no need to filter this edge specifically then
                 if(contextFilter)
                 {
-                    bool filterTarget = contextFilter->permitsTarget(edge);
-                    bool filterSource = contextFilter->permitsSource(edge);
+                    bool filterTarget = contextFilter->matchesTarget(edge);
+                    bool filterSource = contextFilter->matchesSource(edge);
 
                     if(filterSource && filterTarget)
                     {
-                        enable(edge);
+                        disable(edge);
                     }
                 }
-            } else {
-                disable(edge);
             }
         }
     }
@@ -51,11 +52,11 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
         while(vertexIterator->next())
         {
             Vertex::Ptr vertex = vertexIterator->current();
-            if( vertexFilter->permits(vertex) )
+            if( vertexFilter->matches(vertex) )
             {
-                enable(vertex);
-            } else {
                 disable(vertex);
+            } else {
+                enable(vertex);
             }
         }
     }

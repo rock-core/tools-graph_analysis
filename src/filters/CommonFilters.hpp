@@ -14,7 +14,7 @@ template<typename FilterObject>
 class DenyAll : public Filter<FilterObject>
 {
     virtual std::string getName() const { return "graph_analysis::filter::DenyAll"; }
-    virtual bool apply(FilterObject o ) const { return false; }
+    virtual bool apply(FilterObject o ) const { return true; }
 };
 
 /**
@@ -25,9 +25,9 @@ template<>
 class DenyAll<graph_analysis::Edge::Ptr> : public EdgeContextFilter
 {
     virtual std::string getName() const { return "graph_analysis::filter::DenyAll (Edges)"; }
-    virtual bool apply(graph_analysis::Edge::Ptr e) const { return false; }
-    virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return false; }
-    virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return false; }
+    virtual bool apply(graph_analysis::Edge::Ptr e) const { return true; }
+    virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return true; }
+    virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return true; }
 };
 
 /**
@@ -37,7 +37,7 @@ template<typename FilterObject>
 class PermitAll : public Filter<FilterObject>
 {
     virtual std::string getName() const { return "graph_analysis::filter::PermitAll"; }
-    virtual bool apply(FilterObject o ) const { return true; }
+    virtual bool apply(FilterObject o ) const { return false; }
 };
 
 /**
@@ -48,9 +48,9 @@ template<>
 class PermitAll<graph_analysis::Edge::Ptr> : public EdgeContextFilter
 {
     virtual std::string getName() const { return "graph_analysis::filter::PermitAll (Edges)"; }
-    virtual bool apply(graph_analysis::Edge::Ptr e) const { return true; }
-    virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return true; }
-    virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return true; }
+    virtual bool apply(graph_analysis::Edge::Ptr e) const { return false; }
+    virtual bool evaluateTarget(graph_analysis::Edge::Ptr e) const { return false; }
+    virtual bool evaluateSource(graph_analysis::Edge::Ptr e) const { return false; }
 };
 
 } // end namespace filter

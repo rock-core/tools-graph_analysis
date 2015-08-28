@@ -121,13 +121,14 @@ public:
 
     /**
      * \brief Apply all filters, i.e. root filter and children
-     * to the filter object, i.e., test whether filter permits filter object
+     * to the filter object, i.e., test whether filter matches the filter object
      * \param o FilterObject, i.e. target that requires evaluation
      * \param op Chain the subfilter dis/con-junctively using available
      * operators OR and AND
-     * \return True if this item is matched and permitted by any of the filters, false otherwise
+     * \return for OR: True if this item is matched by any of the filters, for AND: True if
+     * this item is matched by all of the filters, false otherwise
      */
-    bool permits(FilterObject o, filters::Operator op = filters::OR) const
+    bool matches(FilterObject o, filters::Operator op = filters::OR) const
     {
 
         bool result = apply(o);
@@ -145,7 +146,7 @@ public:
 
                 FilterType::Ptr filter = *cit;
                 assert(filter);
-                if(filter->permits(o))
+                if(filter->matches(o))
                 {
                     return true;
                 }
@@ -165,7 +166,7 @@ public:
                 assert(filter);
                 // filter should be set to true here, otherwise false
                 // will be returned
-                if(!filter->permits(o))
+                if(!filter->matches(o))
                 {
                     return false;
                 }
@@ -175,7 +176,7 @@ public:
     }
 
     /**
-     * \brief Apply only the main filter to the target object
+     * \brief Apply only the main filter(!) to the target object
      * \param o Filter object, i.e. target object to apply the filter on
      * \return True, if the main filter matches the target/filter object, false otherwise
      */

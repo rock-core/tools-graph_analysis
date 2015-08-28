@@ -3,7 +3,7 @@
 namespace graph_analysis {
 namespace filters {
 
-bool EdgeContextFilter::permitsTarget(graph_analysis::Edge::Ptr e) const
+bool EdgeContextFilter::matchesTarget(graph_analysis::Edge::Ptr e) const
 {
     if(evaluateTarget(e))
     {
@@ -14,7 +14,7 @@ bool EdgeContextFilter::permitsTarget(graph_analysis::Edge::Ptr e) const
     for(; cit != mFilters.end(); ++cit)
     {
         Ptr edgeFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(*cit);
-        if(edgeFilter && edgeFilter->permitsTarget(e) )
+        if(edgeFilter && edgeFilter->matchesTarget(e) )
         {
             return true;
         }
@@ -22,7 +22,7 @@ bool EdgeContextFilter::permitsTarget(graph_analysis::Edge::Ptr e) const
     return false;
 }
 
-bool EdgeContextFilter::permitsSource(graph_analysis::Edge::Ptr e) const
+bool EdgeContextFilter::matchesSource(graph_analysis::Edge::Ptr e) const
 {
     if(evaluateSource(e))
     {
@@ -33,7 +33,7 @@ bool EdgeContextFilter::permitsSource(graph_analysis::Edge::Ptr e) const
     for(; cit != mFilters.end(); ++cit)
     {
         Ptr edgeFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(*cit);
-        if(edgeFilter && edgeFilter->permitsSource(e) )
+        if(edgeFilter && edgeFilter->matchesSource(e) )
         {
             return true;
         }
