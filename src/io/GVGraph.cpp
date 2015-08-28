@@ -73,8 +73,8 @@ GVGraph::GVGraph(BaseGraph::Ptr baseGraph, const std::string& name, double node_
     setNodeAttribute("width", nodePtsWidthTxt);
 
     // First you need to make the label 'known' or rather set a default value
-    // Then you can use it
-    setEdgeAttribute("label", "");
+    // this value should not be an empty string! Then you can use it via agset
+    setEdgeAttribute("label", "o");
 }
 
 GVGraph::~GVGraph()
@@ -208,7 +208,8 @@ GraphElementId GVGraph::addEdge(Edge::Ptr edge)
     {
         bool create = true;
         Agedge_t* gvEdge = _agedge(mpGVGraph, mNodes[sourceId], mNodes[targetId], getUniqueName(edge), create);
-        agset(gvEdge, "label", const_cast<char*>(edge->getLabel().c_str()));
+        // This works after property has been made known via setEdgeAttribute
+        agset(gvEdge, "label", const_cast<char*>(getUniqueName(edge).c_str()));
 
         GraphElementId id = mpBaseGraph->getEdgeId(edge);
         mEdges[id] = gvEdge;

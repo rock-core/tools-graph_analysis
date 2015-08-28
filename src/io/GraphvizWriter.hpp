@@ -6,6 +6,13 @@
 namespace graph_analysis {
 namespace io {
 
+/**
+ * Graphviz writer allows to export a graph as dot
+ *
+ * Vertex and Edges are rendered using their toString() methods
+ * For details check GVGraph::getUniqueName
+ *
+ */
 class GraphvizWriter : public Writer
 {
     std::string mLayout;

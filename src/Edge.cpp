@@ -27,20 +27,7 @@ std::string Edge::getClassName() const
 std::string Edge::toString() const
 {
     std::stringstream ss;
-    ss << (mLabel.empty() ? getClassName() : mLabel) << ":";
-    if(mSourceVertex)
-    {
-        ss << mSourceVertex->toString();
-    } else {
-        ss << "n/a";
-    }
-    ss << "->";
-    if(mTargetVertex)
-    {
-        ss << mTargetVertex->toString();
-    } else {
-        ss << "n/a";
-    }
+    ss << (mLabel.empty() ? getClassName() : mLabel);
     return ss.str();
 }
 
