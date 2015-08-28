@@ -31,7 +31,6 @@
 #include <boost/lexical_cast.hpp>
 
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/BaseVertex.hpp>
 #include <graph_analysis/PortVertex.hpp>
 #include <graph_analysis/InputPortVertex.hpp>
 #include <graph_analysis/OutputPortVertex.hpp>
@@ -1106,7 +1105,7 @@ void ComponentEditorWidget::toXmlFile(const std::string& filename)
 
 int ComponentEditorWidget::fromFile(const std::string& filename, const std::string& format)
 {
-    graph_analysis::BaseGraph::Ptr graph = BaseGraph::Ptr( new gl::DirectedGraph() );
+    graph_analysis::BaseGraph::Ptr graph = BaseGraph::getInstance();
     try
     {
         mReaderMap[format]->read(filename, graph);
@@ -1143,7 +1142,7 @@ void ComponentEditorWidget::reset(bool keepData)
 
     if(!keepData)
     {
-        mpGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
+        mpGraph = BaseGraph::getInstance();
         // forgets not to update the layers widget main graph handle
         updateLayerViewWidget();
         mpSubGraph = mGraphView.apply(mpGraph);
@@ -1156,7 +1155,7 @@ void ComponentEditorWidget::reset(bool keepData)
     }
     mMaxNodeHeight  = 0;
     mMaxNodeWidth   = 0;
-    mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
+    mpLayoutingGraph = BaseGraph::getInstance();
     mpGVGraph = new io::GVGraph(mpLayoutingGraph, "GVComponentEditorWidget");
 }
 

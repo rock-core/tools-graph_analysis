@@ -31,7 +31,6 @@
 
 
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/BaseVertex.hpp>
 #include <graph_analysis/PortVertex.hpp>
 #include <graph_analysis/InputPortVertex.hpp>
 #include <graph_analysis/OutputPortVertex.hpp>

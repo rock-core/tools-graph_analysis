@@ -43,7 +43,7 @@ public:
      * Get a graph instance of the given implementation type
      * \return Ptr to new instance
      */
-    static Ptr getInstance(ImplementationType type);
+    static Ptr getInstance(ImplementationType type = LEMON_DIRECTED_GRAPH);
 
     /**
      * Create a copy of this graph

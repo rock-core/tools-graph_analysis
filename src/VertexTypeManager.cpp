@@ -13,8 +13,8 @@ VertexTypeManager::VertexTypeManager()
 {
     // registering known implemented class-types
     mClassVisualizationMap = boost::assign::map_list_of
-        (std::string("base"),       Vertex::Ptr ((Vertex *) (new BaseVertex())))
-        (graph_analysis::BaseVertex::vertexType(),          Vertex::Ptr ((Vertex *) (new BaseVertex())))
+        (std::string("base"),       Vertex::Ptr (new Vertex()))
+        (graph_analysis::BaseVertex::vertexType(),          Vertex::Ptr(new Vertex()))
         (std::string("port"),       Vertex::Ptr ((Vertex *) (new PortVertex())))
         (graph_analysis::PortVertex::vertexType(),          Vertex::Ptr ((Vertex *) (new PortVertex())))
         (std::string("inputport"),  Vertex::Ptr ((Vertex *) (new InputPortVertex())))
