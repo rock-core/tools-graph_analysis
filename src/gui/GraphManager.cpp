@@ -20,6 +20,8 @@ const int GraphManager::TIMEOUT = 6900; // miliseconds
 GraphManager::GraphManager(const QString& filename)
     : mpMainWindow(new QMainWindow())
     , mpStackedWidget(new QStackedWidget())
+    , mpComponentEditorWidget(NULL)
+    , mpLayerViewWidget(NULL)
     , mpStatus(mpMainWindow->statusBar())
     , mLayout("dot") // other possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
 {
@@ -131,13 +133,7 @@ GraphManager::GraphManager(const QString& filename)
 }
 
 GraphManager::~GraphManager()
-{
-    if(mpMainWindow)
-    {
-        // this instance assumed ownership of the rest of the Qt components instances (it will delete them recursively)
-        delete mpMainWindow;
-    }
-}
+{}
 
 void GraphManager::reloadPropertyDialog(void)
 {
@@ -145,6 +141,7 @@ void GraphManager::reloadPropertyDialog(void)
     if(mpPropertyDialog)
     {
         delete mpPropertyDialog;
+        mpPropertyDialog = NULL;
     }
     mpPropertyDialog = new PropertyDialog(mpComponentEditorWidget->getDragDrop(), mpComponentEditorWidget->getVertexFocused(), mpComponentEditorWidget->getEdgeFocused());
     WidgetManager::getInstance()->setPropertyDialog(mpPropertyDialog); // IMPORTANT!!! - now updating the corresponding field in the WidgetManager

@@ -160,18 +160,15 @@ ComponentEditorWidget::~ComponentEditorWidget()
     WriterMap::iterator it_writer = mWriterMap.begin();
     for(; mWriterMap.end() != it_writer; ++it_writer)
     {
-        if(it_writer->second)
-        {
-            delete it_writer->second;
-        }
+        delete it_writer->second;
+        it_writer->second = NULL;
     }
+
     ReaderMap::iterator it_reader = mReaderMap.begin();
     for(; mReaderMap.end() != it_reader; ++it_reader)
     {
-        if(it_reader->second)
-        {
-            delete it_reader->second;
-        }
+       delete it_reader->second;
+       it_reader->second = NULL;
     }
 }
 
