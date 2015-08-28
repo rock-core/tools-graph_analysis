@@ -96,9 +96,6 @@ public:
     /// getter method for retrieving toggling witness of the entire clusters layer
     bool getClusterLayerToggle  () { return mClusterLayerToggle; }
 
-    /// method for updating the informative message in the StatusBar of the managing view widget
-    inline void updateStatus(const std::string& message = std::string(), int timeout = 0);
-
     /// method for deciding whether a vertex is currently being toggled out of the scene by layer discrimination
     inline bool toggledOut(graph_analysis::Vertex::Ptr vertex);
 

@@ -251,16 +251,6 @@ void ComponentEditorWidget::showContextMenu(const QPoint& pos)
     contextMenu.exec(mapToGlobal(pos));
 }
 
-void ComponentEditorWidget::updateStatus(const std::string& message, int timeout)
-{
-    WidgetManager::getInstance()->getGraphManager()->updateStatus(QString(message.c_str()), timeout);
-}
-
-void ComponentEditorWidget::updateStatus(const QString& message, int timeout)
-{
-    WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
-}
-
 void ComponentEditorWidget::addFeatureFocused()
 {
     addFeature(mpFocusedVertex);
@@ -1860,7 +1850,7 @@ void ComponentEditorWidget::scaleView(qreal scaleFactor)
 
 void ComponentEditorWidget::shuffle()
 {
-    updateStatus(std::string("shuflling all the nodes..."));
+    updateStatus("Shuffelling all nodes ...");
     foreach (QGraphicsItem *item, scene()->items())
     {
         if (qgraphicsitem_cast<NodeItem* >(item))
@@ -1868,7 +1858,7 @@ void ComponentEditorWidget::shuffle()
             item->setPos(-150 * mScaleFactor + mScaleFactor * (qrand() % 300), -150 * mScaleFactor + mScaleFactor * (qrand() % 300));
         }
     }
-    updateStatus(std::string("Shuflled all nodes!"), GraphManager::TIMEOUT);
+    updateStatus("Done shuffelling all nodes", GraphManager::TIMEOUT);
 }
 
 void ComponentEditorWidget::zoomIn()
@@ -1883,7 +1873,7 @@ void ComponentEditorWidget::zoomOut()
 
 void ComponentEditorWidget::resetGraph()
 {
-    updateStatus(std::string("resetting the graph..."));
+    updateStatus(std::string("Resetting the graph ..."));
     if(mpGraph->empty())
     {
         QMessageBox::information(this, tr("Nothing to Reset"), "The graph is already empty!");
@@ -1896,11 +1886,11 @@ void ComponentEditorWidget::resetGraph()
         {
             case QMessageBox::Yes:
                 reset();
-                updateStatus(std::string("The graph was reset!"), GraphManager::TIMEOUT);
+                updateStatus(std::string("Done resetting the graph"), GraphManager::TIMEOUT);
             break;
 
             default:
-                updateStatus(std::string("Failed to reset graph: aborted by user!"), GraphManager::TIMEOUT);
+                updateStatus(std::string("Failed resetting the graph: aborted by user"), GraphManager::TIMEOUT);
             break;
         }
     }
@@ -1972,7 +1962,7 @@ void ComponentEditorWidget::removeFeaturesSelected()
 
 void ComponentEditorWidget::removeFeatures(graph_analysis::Vertex::Ptr concernedVertex)
 {
-    updateStatus(std::string("removing all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
+    updateStatus(std::string("Removing all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     // error checking on features removal
     if(!item)
@@ -1985,14 +1975,14 @@ void ComponentEditorWidget::removeFeatures(graph_analysis::Vertex::Ptr concerned
     int nfeatures = item->getFeatureCount();
     if(!nfeatures)
     {
-        QMessageBox::critical(this, tr("No Features to Remove"), "The cluster is already empty!");
+        QMessageBox::critical(this, tr("No features to remove"), "The cluster is already empty!");
         updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': there are no features!", GraphManager::TIMEOUT);
         return;
     }
     else
     {
         // prompting the user for all features deletion
-        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm Complete Features-Removal"), tr((QString("All Features in node '") + QString(concernedVertex->getLabel().c_str()) + QString("' will be deleted! Are you sure you want to continue?")).toAscii()), QMessageBox::Yes | QMessageBox::No);
+        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm complete features-removal"), tr((QString("All features in node '") + QString(concernedVertex->getLabel().c_str()) + QString("' will be deleted! Are you sure you want to continue?")).toAscii()), QMessageBox::Yes | QMessageBox::No);
         EdgeIterator::Ptr edgeIt;
         graph_analysis::Vertex::Ptr cluster;
         switch(button)
@@ -2065,7 +2055,7 @@ void ComponentEditorWidget::swapFeaturesSelected()
 
 void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVertex)
 {
-    updateStatus(std::string("swapping features within node '") + concernedVertex->toString() + "'...");
+    updateStatus("swapping features within node '" + concernedVertex->toString() + "' ...");
     NodeItem *item = mNodeItemMap[concernedVertex];
     if(!item)
     {
@@ -2077,7 +2067,7 @@ void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVe
     if(featureCount < 2)
     {
         QMessageBox::critical(this, tr("Cannot Swap Features"), tr("The selected vertex did not have enough features!"));
-        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': this vertex did not have enough features!", GraphManager::TIMEOUT);
+        updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': this vertex did not have enough features!", GraphManager::TIMEOUT);
         return;
     }
     SwapFeaturesDialog dialog(item);
@@ -2101,22 +2091,21 @@ void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVe
             {
                 LOG_ERROR_S << "graph_analysis::gui::ComponentEditorWidget::swapFeatures: swapping operation failed: " << e.what();
                 QMessageBox::critical(this, tr("Swapping Failed"), QString(e.what()));
-                updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': " + std::string(e.what()) + "!", GraphManager::TIMEOUT);
+                updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': " + std::string(e.what()) + "!", GraphManager::TIMEOUT);
             }
         }
         else
         {
             QMessageBox::information(this, tr("Swapped Features In-place"), tr("identical features were selected!"));
         }
-        updateStatus(std::string("Swapped features of IDs ") + boost::lexical_cast<std::string>(feature1ID) + " and "
+        updateStatus("Swapped features of IDs " + boost::lexical_cast<std::string>(feature1ID) + " and "
                         + boost::lexical_cast<std::string>(feature2ID) + " within node '" + concernedVertex->toString()
-                        + "'!"
                         , GraphManager::TIMEOUT
                     );
     }
     else
     {
-        updateStatus(std::string("Failed to swap features within node '") + concernedVertex->toString() + "': aborted by user!", GraphManager::TIMEOUT);
+        updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': aborted by user!", GraphManager::TIMEOUT);
     }
 }
 

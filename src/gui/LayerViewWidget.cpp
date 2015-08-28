@@ -134,7 +134,7 @@ void LayerViewWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
 
 void LayerViewWidget::changeLayout()
 {
-    updateStatus(std::string("changing layers graph view layout..."));
+    updateStatus("Changing layers graph view layout ...");
     bool ok;
     QStringList options;
     std::set<std::string> supportedLayouts = mpGVGraph->getSupportedLayouts();
@@ -143,19 +143,19 @@ void LayerViewWidget::changeLayout()
     {
         options << tr(supportedLayout.c_str());
     }
-    QString layout = QInputDialog::getItem(this, tr("Input New Layout"),
-                                         tr("select a layout:"), options,
+    QString layout = QInputDialog::getItem(this, tr("Input new layout"),
+                                         tr("Select a layout:"), options,
                                          0, false, &ok);
     if (ok && !layout.isEmpty())
     {
         std::string desiredLayout = layout.toStdString();
         reset(true /*keepData*/);
         setLayout(QString(desiredLayout.c_str()));
-        updateStatus(std::string("Changed layers graph view layout to '") + desiredLayout + "'!", GraphManager::TIMEOUT);
+        updateStatus("Changed layers graph view layout to '" + desiredLayout + "'", GraphManager::TIMEOUT);
     }
     else
     {
-        updateStatus(std::string("Failed to change layers graph view layout: aborted by user!"), GraphManager::TIMEOUT);
+        updateStatus("Failed to change layers graph view layout: aborted by user", GraphManager::TIMEOUT);
     }
 }
 
@@ -187,14 +187,14 @@ void LayerViewWidget::refresh(bool status)
 {
     if(status)
     {
-        updateStatus(std::string("refreshing layers graph view..."));
+        updateStatus("Refreshing layers graph view ...");
     }
     reset(true /*keepData*/);
     updateFromGraph();
     update();
     if(status)
     {
-        updateStatus(std::string("Refreshed layers graph view!"), GraphManager::TIMEOUT);
+        updateStatus("Done refreshing layers graph view", GraphManager::TIMEOUT);
     }
 }
 
@@ -619,13 +619,13 @@ void LayerViewWidget::scaleView(qreal scaleFactor)
 
 void LayerViewWidget::shuffle()
 {
-    updateStatus(std::string("shuflling all the nodes in the layers graph view..."));
+    updateStatus("Shuffelling all the nodes in the layers graph view...");
     foreach (QGraphicsItem *item, scene()->items())
     {
         if (qgraphicsitem_cast<NodeItem* >(item))
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }
-    updateStatus(std::string("Shuflled all nodes in the layers graph view!"), GraphManager::TIMEOUT);
+    updateStatus("Shuffelled all nodes in the layers graph view", GraphManager::TIMEOUT);
 }
 
 void LayerViewWidget::zoomIn()
@@ -658,11 +658,6 @@ void LayerViewWidget::toggleClusterLayer(bool toggle)
     mClusterLayerToggle = toggle;
     refresh(false);
     updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", GraphManager::TIMEOUT);
-}
-
-inline void LayerViewWidget::updateStatus(const std::string& message, int timeout)
-{
-    WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
 }
 
 inline bool LayerViewWidget::toggledOut(graph_analysis::Vertex::Ptr vertex)

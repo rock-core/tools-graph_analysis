@@ -228,12 +228,6 @@ public:
     /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
     bool getDragDrop() { return mDragDrop; }
 
-    /// setter method for updating the temporary text (i.e. for another 'timeout' miliseconds) currently being displayed on the Status Bar to the given 'message'
-    void updateStatus(const std::string& message = std::string(), int timeout = 0);
-
-    /// setter method for updating the temporary text (i.e. for another 'timeout' miliseconds) currently being displayed on the Status Bar to the given 'message'
-    void updateStatus(const QString& message = QString(), int timeout = 0);
-
 public slots:
     /// shuffles all the nodes in the diagram graph editor
     void shuffle();

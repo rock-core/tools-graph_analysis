@@ -1075,7 +1075,7 @@ void Cluster::shiftFeatureDown(NodeItem::id_t featureID)
 
 void Cluster::updateStatus(const std::string& message, int timeout)
 {
-    mpGraphWidget->updateStatus(QString(message.c_str()), timeout);
+    mpGraphWidget->updateStatus(message, timeout);
 }
 
 inline void Cluster::refreshLayerViewWidget(bool status)
