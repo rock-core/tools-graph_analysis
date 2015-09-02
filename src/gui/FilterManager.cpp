@@ -85,13 +85,10 @@ void FilterManager::updateToolTip(int state)
 
     dieOnIndex(index , "updateToolTip(int)");
     updateToolTip(index, witness);
-
-    WidgetManager::getInstance()->getLayerViewWidget()->refresh();
 }
 
 void FilterManager::refreshView(bool updatesStatusBar)
 {
-    WidgetManager::getInstance()->getLayerViewWidget()->refresh(updatesStatusBar);
 }
 
 void FilterManager::addFilter(const std::string& label)
@@ -171,11 +168,6 @@ void FilterManager::updateToolTip(FilterItem::filter_index_t index, bool witness
 
     QString filter_label = current_filter->getLabel();
     current_checkbox->setToolTip((witness ? QString("uncheck to disable filter '") : QString("check to enable filter '")) + filter_label + QString("'"));
-
-    if(refresh)
-    {
-        WidgetManager::getInstance()->getLayerViewWidget()->refresh();
-    }
 }
 
 void FilterManager::dieOnIndex(FilterItem::filter_index_t index, const std::string& caller)
@@ -248,11 +240,6 @@ void FilterManager::removeFilter(FilterItem *item)
 
     mpCheckBoxGrid->setFixedHeight(mFilters.size() * FilterItem::sHeight);
     setSceneRect(sceneRect().adjusted(0., 0., 0., -(qreal)FilterItem::sHeight));
-    if(dirty)
-    {
-        // an unchecked checkbox (i.e. disabled filter) would not require a layers view refresh
-        WidgetManager::getInstance()->getLayerViewWidget()->refresh();
-    }
 }
 
 void FilterManager::addFilter()
@@ -345,7 +332,6 @@ void FilterManager::removeFilters()
     mCheckBoxIndexMap.clear();
 
     mpCheckBoxGrid->setFixedHeight(0);
-    WidgetManager::getInstance()->getLayerViewWidget()->refresh();
 }
 
 void FilterManager::renameFilter()

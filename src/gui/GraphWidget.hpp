@@ -11,7 +11,7 @@
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
-#include <graph_analysis/lemon/Graph.hpp>
+#include <graph_analysis/gui/GraphWidgetManager.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -19,8 +19,6 @@ namespace io {
 }
 
 namespace gui {
-
-class GraphWidgetManager;
 
 class NodeItem;
 class EdgeItem;
@@ -148,7 +146,6 @@ public:
     virtual void setFocusedVertex   (graph_analysis::Vertex::Ptr)   { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedVertex is not reimplemented"); }
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
     virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
-    virtual void refreshLayerViewWidget(bool) { throw std::runtime_error("graph_analysis::gui::GraphWidget::refreshLayerViewWidget is not reimplemented"); }
 
     /// \param msg Message in the statusbar
     /// \param time Number of milliseconds the message will be held on screen
@@ -158,6 +155,7 @@ public:
 
     virtual void setGraphLayout(const QString& layoutName);
     virtual void refresh(bool all = true);
+    virtual void modeChanged(GraphWidgetManager::Mode mode) {}
 
     virtual QStringList getSupportedLayouts() const;
 

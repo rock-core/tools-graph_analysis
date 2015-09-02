@@ -212,7 +212,7 @@ public slots:
     /// updates move-around witness value to 'moveAround'
     void updateMoveAround(bool moveAround);
     /// toggles mDragDrop boolean witness
-    void toggleDragDrop();
+    void toggleDragDrop() {}
     /// synchronizes the drag-n-drop mode in graph editor with the state of the drag-n-drop witness in the property dialog/panel
     void syncDragDrop();
     /// sets drag-n-drop to true on all levels

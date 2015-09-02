@@ -19,6 +19,7 @@
 #include <graph_analysis/io/GexfReader.hpp>
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -30,6 +31,7 @@ GraphWidgetManager::GraphWidgetManager()
     , mpTabWidget(new QTabWidget())
     , mpStatus(mpMainWindow->statusBar())
     , mLayout("dot") // other possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
+    , mMode(MOVE_MODE)
 {
     // setting up the Reader and WriterMaps
     io::YamlWriter *yamlWriter = new io::YamlWriter();
@@ -74,8 +76,22 @@ GraphWidgetManager::GraphWidgetManager()
     // Edit Menu
     QMenu *editMenu = new QMenu(QObject::tr("&Edit"));
 
-//    QAction *actionDragDrop = comm.addAction("Drag-n-Drop Mode", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop_white")), mpGraphWidgetManager);
-//    QAction *actionMoveAround = comm.addAction("Move-around Mode", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move_white")), mpGraphWidgetManager);
+    QMenu *modesMenu = editMenu->addMenu(QObject::tr("&Mode"));
+    QActionGroup *actionModeGroup = new QActionGroup(this);
+    QAction *actionEditMode = comm.addAction("Edit", SLOT(setEditMode()), *(IconManager::getInstance()->getIcon("edit_mode_white")));
+    actionEditMode->setCheckable(true);
+    QAction *actionConnectMode = comm.addAction("Connect", SLOT(setConnectMode()), *(IconManager::getInstance()->getIcon("connection_mode_white")));
+    actionConnectMode->setCheckable(true);
+    QAction *actionMoveMode = comm.addAction("Move", SLOT(setMoveMode()), *(IconManager::getInstance()->getIcon("move_mode_white")));
+    actionMoveMode->setCheckable(true);
+
+    actionModeGroup->addAction(actionEditMode);
+    actionModeGroup->addAction(actionConnectMode);
+    actionModeGroup->addAction(actionMoveMode);
+
+    modesMenu->addAction(actionEditMode);
+    modesMenu->addAction(actionConnectMode);
+    modesMenu->addAction(actionMoveMode);
 
     QAction *actionAddNode = comm.addAction("Add node", SLOT(addNode()), *(IconManager::getInstance()->getIcon("addNode_white")));
     QAction *actionRenameSelection = comm.addAction("Rename selection", SLOT(renameSelection()), *(IconManager::getInstance()->getIcon("label_white")));
@@ -559,6 +575,16 @@ int GraphWidgetManager::fromFile(const std::string& filename, const std::string&
     mpGraph = graph;
     notifyAll();
     return 0;
+}
+
+void GraphWidgetManager::notifyModeChange(Mode mode)
+{
+    std::vector<GraphWidget*>::iterator it = mGraphWidgets.end();
+    for(; it != mGraphWidgets.end(); ++it)
+    {
+        GraphWidget* graphWidget = *it;
+        graphWidget->modeChanged(mode);
+    }
 }
 
 void GraphWidgetManager::notifyAll()

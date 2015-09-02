@@ -194,3 +194,22 @@ Author: 	Happy Icon Studio (http://www.softicons.com/designers/happy-icon-studio
 License: 	CC Attribution 3.0 United States (http://creativecommons.org/licenses/by/3.0/us/)
 Commercial usage:   	Allowed
 Posted: 	March 12, 2013
+
+connectivity_white.png
+Icon set: 	Html5 Icons
+Author: 	Iconshock (http://www.softicons.com/web-icons/html5-icons-by-iconshock/connectivity-icon)
+License: 	Freeware
+Commercial usage:   	Allowed
+Posted: 	February 01, 2011
+Posted: 	March 12, 2013
+
+
+edit_white.png
+Edit Icon
+Tags:	Edit, Pen
+Icon set: 	Mono General Icons 2
+Author: 	Custom Icon Design
+License: 	Free for non-commercial use
+Commercial usage:   	Not allowed
+Posted: 	March 31, 2014
+

@@ -16,6 +16,8 @@
 namespace graph_analysis {
 namespace gui {
 
+class GraphWidget;
+
 /**
  * \file GraphWidgetManager.hpp
  * \class GraphWidgetManager
@@ -27,6 +29,7 @@ class GraphWidgetManager : public QObject
 {
     Q_OBJECT
 public:
+    enum Mode { CONNECT_MODE, EDIT_MODE, MOVE_MODE };
 
     /// StatusBar standard timeout (in ms)
     static const int TIMEOUT;
@@ -81,10 +84,19 @@ public slots:
     void importGraph();
     void exportGraph();
 
+    void setMoveMode() { setMode(MOVE_MODE); }
+    void setConnectMode() { setMode(CONNECT_MODE); }
+    void setEditMode() { setMode(EDIT_MODE); }
+
+    void setMode(Mode mode) { mMode = mode; notifyModeChange(mode); }
+    Mode getMode() const { return mMode; }
+
+
 protected:
     /// conceptual underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
 
+    void notifyModeChange(Mode mode);
     void notifyAll();
 
     typedef std::map <std::string, io::Writer*> WriterMap; // maps specific keywords to graph exporters
@@ -136,6 +148,8 @@ private:
     std::vector<GraphWidget*> mGraphWidgets;
 
     GraphWidget* currentGraphWidget();
+
+    Mode mMode;
 };
 
 } // end namespace gui

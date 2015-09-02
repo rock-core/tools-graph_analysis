@@ -1,6 +1,8 @@
 
 #include "WidgetManager.hpp"
 #include "GraphWidgetManager.hpp"
+#include "LayerViewWidget.hpp"
+#include "ComponentEditorWidget.hpp"
 
 #include <exception>
 #include <base/Logging.hpp>

@@ -96,77 +96,68 @@ void ComponentEditorWidget::showContextMenu(const QPoint& pos)
     QPoint position = mapTo(this, pos);
     QMenu contextMenu(tr("Context menu"), this);
 
-    QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeSelectedEdgeLabel()), *(IconManager::getInstance()->getIcon("label")));
-    QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), *(IconManager::getInstance()->getIcon("remove")));
-    QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), *(IconManager::getInstance()->getIcon("label")));
-    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), *(IconManager::getInstance()->getIcon("remove")));
-    QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureSelected()), *(IconManager::getInstance()->getIcon("addFeature")));
-    QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesSelected()), *(IconManager::getInstance()->getIcon("swap")));
-    QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureSelected()), *(IconManager::getInstance()->getIcon("featureLabel")));
-    QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureSelected()), *(IconManager::getInstance()->getIcon("remove")));
-    QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesSelected()), *(IconManager::getInstance()->getIcon("removeAll")));
-    QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, *(IconManager::getInstance()->getIcon("addNode")));
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")));
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle")));
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import")));
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
-    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
-    QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")));
-    QAction *actionSetDragDrop = comm.addAction("Drag-n-Drop", SLOT(setDragDrop()), *(IconManager::getInstance()->getIcon("dragndrop")));
-    QAction *actionUnsetDragDrop = comm.addAction("Move-around", SLOT(unsetDragDrop()), *(IconManager::getInstance()->getIcon("move")));
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphWidgetManager());
+    //QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeSelectedEdgeLabel()), *(IconManager::getInstance()->getIcon("label")));
+    //QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), *(IconManager::getInstance()->getIcon("remove")));
+    //QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), *(IconManager::getInstance()->getIcon("label")));
+    //QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeSelectedVertex()), *(IconManager::getInstance()->getIcon("remove")));
+    //QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureSelected()), *(IconManager::getInstance()->getIcon("addFeature")));
+    //QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesSelected()), *(IconManager::getInstance()->getIcon("swap")));
+    //QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureSelected()), *(IconManager::getInstance()->getIcon("featureLabel")));
+    //QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureSelected()), *(IconManager::getInstance()->getIcon("remove")));
+    //QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesSelected()), *(IconManager::getInstance()->getIcon("removeAll")));
+    //QAction *actionAddNode = comm.addMappedAction("Add Node", SLOT(addNodeAdhoc(QObject*)), (QObject*)&position, *(IconManager::getInstance()->getIcon("addNode")));
+    //QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")));
+    //QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle")));
+    //QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import")));
+    //QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
+    //QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
+    //QAction *actionLayout = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")));
+    //QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphWidgetManager());
 
-    // (conditionally) adding the actions to the context menu
-    if(mEdgeSelected)
-    {
-        contextMenu.addAction(actionChangeEdgeLabel);
-        contextMenu.addAction(actionRemoveEdge);
-    }
-    if(mVertexSelected)
-    {
-        if(mEdgeSelected)
-        {
-            contextMenu.addSeparator();
-        }
-        contextMenu.addAction(actionChangeLabel);
-        contextMenu.addAction(actionAddFeature);
-        contextMenu.addAction(actionSwapFeatures);
-        contextMenu.addAction(actionRenameFeature);
-        contextMenu.addAction(actionRemoveFeature);
-        contextMenu.addAction(actionRemoveFeatures);
-        contextMenu.addAction(actionRemoveNode);
-    }
-    if(mVertexSelected || mEdgeSelected)
-    {
-        contextMenu.addSeparator();
-    }
-    contextMenu.addAction(actionAddNode);
-    contextMenu.addSeparator();
-    contextMenu.addAction(actionImport);
-    contextMenu.addAction(actionExport);
-    contextMenu.addSeparator();
-    contextMenu.addAction(actionRefresh);
-    contextMenu.addAction(actionShuffle);
-    if(!mpGraph->empty())
-    {
-        contextMenu.addAction(actionReset);
-    }
-    contextMenu.addAction(actionLayout);
-    contextMenu.addSeparator();
-    if(mDragDrop)
-    {
-        contextMenu.addAction(actionUnsetDragDrop);
-    }
-    else
-    {
-        contextMenu.addAction(actionSetDragDrop);
-    }
-    if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-    {
-        contextMenu.addSeparator();
-        contextMenu.addAction(actionReloadPropertyDialog);
-    }
-    contextMenu.exec(mapToGlobal(pos));
+    //// (conditionally) adding the actions to the context menu
+    //if(mEdgeSelected)
+    //{
+    //    contextMenu.addAction(actionChangeEdgeLabel);
+    //    contextMenu.addAction(actionRemoveEdge);
+    //}
+    //if(mVertexSelected)
+    //{
+    //    if(mEdgeSelected)
+    //    {
+    //        contextMenu.addSeparator();
+    //    }
+    //    contextMenu.addAction(actionChangeLabel);
+    //    contextMenu.addAction(actionAddFeature);
+    //    contextMenu.addAction(actionSwapFeatures);
+    //    contextMenu.addAction(actionRenameFeature);
+    //    contextMenu.addAction(actionRemoveFeature);
+    //    contextMenu.addAction(actionRemoveFeatures);
+    //    contextMenu.addAction(actionRemoveNode);
+    //}
+    //if(mVertexSelected || mEdgeSelected)
+    //{
+    //    contextMenu.addSeparator();
+    //}
+    //contextMenu.addAction(actionAddNode);
+    //contextMenu.addSeparator();
+    //contextMenu.addAction(actionImport);
+    //contextMenu.addAction(actionExport);
+    //contextMenu.addSeparator();
+    //contextMenu.addAction(actionRefresh);
+    //contextMenu.addAction(actionShuffle);
+    //if(!mpGraph->empty())
+    //{
+    //    contextMenu.addAction(actionReset);
+    //}
+    //contextMenu.addAction(actionLayout);
+    //contextMenu.addSeparator();
+
+    //if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
+    //{
+    //    contextMenu.addSeparator();
+    //    contextMenu.addAction(actionReloadPropertyDialog);
+    //}
+    //contextMenu.exec(mapToGlobal(pos));
 }
 
 void ComponentEditorWidget::addFeatureFocused()
@@ -1653,11 +1644,6 @@ void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVe
     {
         updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': aborted by user!", GraphWidgetManager::TIMEOUT);
     }
-}
-
-void ComponentEditorWidget::toggleDragDrop()
-{
-    mDragDrop ? unsetDragDrop() : setDragDrop();
 }
 
 } // end namespace gui

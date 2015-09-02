@@ -1,6 +1,7 @@
 #include "IconManager.hpp"
 #include <utilmm/configfile/pkgconfig.hh>
 #include <stdexcept>
+#include <QFileInfo>
 
 namespace graph_analysis {
 namespace gui {
@@ -31,7 +32,7 @@ IconManager::IconManager()
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["layout"], pathToIcons + "layout.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["dragndrop"], pathToIcons + "dragndrop.png");
+    loadIcon(mIconMap["connection_mode"], pathToIcons + "dragndrop.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["label"], pathToIcons + "label.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
@@ -68,7 +69,11 @@ IconManager::IconManager()
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["layout_white"], pathToIcons + "layout_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
-    loadIcon(mIconMap["dragndrop_white"], pathToIcons + "dragndrop_white.png");
+    loadIcon(mIconMap["connection_mode_white"], pathToIcons + "connectivity_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["move_mode_white"], pathToIcons + "move_white.png");
+    //        taken_from: www.softicons.com         //        commercial_usage: allowed
+    loadIcon(mIconMap["edit_mode_white"], pathToIcons + "edit.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
     loadIcon(mIconMap["label_white"], pathToIcons + "label_white.png");
     //        taken_from: www.softicons.com         //        commercial_usage: allowed
@@ -108,7 +113,13 @@ QIcon* IconManager::getIcon(const std::string& key)
 
 void IconManager::loadIcon(QIcon& icon, const std::string& file)
 {
-    icon.addFile(QString::fromUtf8(file.c_str()), QSize(), QIcon::Normal, QIcon::Off);
+    QFileInfo iconFile(file.c_str());
+    if(iconFile.exists())
+    {
+        icon.addFile(QString::fromUtf8(file.c_str()), QSize(), QIcon::Normal, QIcon::Off);
+    } else {
+        throw std::runtime_error("graph_analysis::gui::IconManager::loadIcon: failed to load icon from '" + file + "'");
+    }
 }
 
 } // end namespace gui
