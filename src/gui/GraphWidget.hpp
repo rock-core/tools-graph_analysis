@@ -61,7 +61,7 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::id_t> FeatureIDMap; // maps conceptual feature vertices to their feature ID
 
     /// empty constructor
-    GraphWidget(GraphWidgetManager* graphWidgetManager, const QString& widgetName, QWidget *parent = 0);
+    GraphWidget(const QString& widgetName, QWidget *parent = 0);
 
     /**
      * \brief constructor
@@ -85,6 +85,7 @@ public:
     /// setter method for updating the underlying base graph
     void setGraph(const graph_analysis::BaseGraph::Ptr& graph) { mpGraph = graph; }
 
+    void setGraphWidgetManager(GraphWidgetManager* graphWidgetManager) { mpGraphWidgetManager = graphWidgetManager; }
     GraphWidgetManager* getGraphWidgetManager() const;
 
     // virtual methods
@@ -93,14 +94,18 @@ public:
     virtual void clear();
     void clearWithDialog();
     virtual void resetLayoutingGraph();
+
     /**
      * Update the current view / filtered subgraph
      */
     virtual void updateView();
+    void updateFilterView();
+    void updateLayoutView();
+
     /**
-     * Update from the underlying graph
+     * Trigger the layouting of the graph widget
      */
-    virtual void updateFromGraph();
+    virtual void updateLayout() { throw std::runtime_error("graph_analysis::gui::GraphWidget::updateLayout: not implemented"); }
 
     /// setter method for updating the node filters
     void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
@@ -166,6 +171,11 @@ protected:
     io::GVGraph* mpGVGraph;
     graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
 
+    /// max height of the nodes in the scene (relevant for GraphViz runtime layouting)
+    qreal mMaxNodeHeight;
+    /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
+    qreal mMaxNodeWidth;
+
     // Supports filtering functionality
     GraphView mGraphView;
     SubGraph::Ptr mpSubGraph;
@@ -206,11 +216,6 @@ protected:
     bool mVertexSelected;
     /// boolean witness for an edge being hovered over: true when an edge is currently being hovered over; false otherwise
     bool mEdgeSelected;
-
-    /// max height of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeHeight;
-    /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeWidth;
 
     GraphWidgetManager* mpGraphWidgetManager;
 

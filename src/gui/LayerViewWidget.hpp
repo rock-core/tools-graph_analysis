@@ -8,16 +8,7 @@
 #include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {
-namespace io {
-
-class GVGraph;
-
-} // end namespace io
-
 namespace gui {
-
-class NodeItem;
-class EdgeItem;
 
 /**
  * \file LayerViewWidget.hpp
@@ -33,7 +24,7 @@ public:
      * \brief constructor
      * \param graph underlying base graph
      */
-    LayerViewWidget(GraphWidgetManager* graphWidgetManager, QWidget *parent = 0);
+    LayerViewWidget(QWidget *parent = 0);
     /// destructor
     virtual ~LayerViewWidget();
 
@@ -43,7 +34,8 @@ public:
     /// deletes all internal information; disregards keepData as the underlying base graph is treated as read-only (except by its dedicated setter method)
 
     /// respawns all graphical elements by the underlying base graph
-    void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
+    /// and trigger the layouting
+    virtual void updateLayout();
     void itemMoved();
 
     /// getter method for retrieving toggling witness of the entire features layer
@@ -101,6 +93,8 @@ protected:
 
     /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);
+
+    void resetLayoutingGraph();
 
 private:
     /// features layer toggle: when true, feature nodes get displayed; false when they get hidden

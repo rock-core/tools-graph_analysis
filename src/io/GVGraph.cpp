@@ -122,7 +122,14 @@ void GVGraph::setEdgeAttribute(const std::string& name, const std::string& value
 
 GraphElementId GVGraph::addNode(graph_analysis::Vertex::Ptr vertex)
 {
-    GraphElementId id = mpBaseGraph->getVertexId(vertex);
+    GraphElementId id;
+    try {
+        id = mpBaseGraph->getVertexId(vertex);
+    } catch(const std::runtime_error& e)
+    {
+        throw std::invalid_argument("graph_analysis::io::GVGraph::addNode: vertex '" + vertex->toString() + "' is not part of the underlying graph");
+    }
+
     if(mNodes.count(id))
     {
         removeNode(vertex);
@@ -210,7 +217,15 @@ GraphElementId GVGraph::addEdge(Edge::Ptr edge)
         // This works after property has been made known via setEdgeAttribute
         agset(gvEdge, "label", const_cast<char*>(getUniqueName(edge).c_str()));
 
-        GraphElementId id = mpBaseGraph->getEdgeId(edge);
+        GraphElementId id;
+
+        try {
+            id = mpBaseGraph->getEdgeId(edge);
+        } catch(const std::runtime_error& e)
+        {
+            throw std::invalid_argument("graph_analysis::io::GVGraph::addEdge: edge '" + edge->toString() + "' is not part of the underlying graph");
+        }
+
         mEdges[id] = gvEdge;
         return id;
     }
@@ -270,8 +285,10 @@ void GVGraph::applyLayout(const std::string& layout)
     if(mAppliedLayout)
     {
         gvFreeLayout(mpContext, mpGVGraph);
+        mpContext = NULL;
     }
 
+    LOG_INFO_S << "Apply layout: " << layout;
     gvLayout(mpContext, mpGVGraph, layout.c_str());
     mAppliedLayout = true;
 

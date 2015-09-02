@@ -27,6 +27,7 @@
 #include <QInputDialog>
 #include <QSignalMapper>
 #include <boost/regex.hpp>
+#include <boost/lexical_cast.hpp>
 #include <base/Logging.hpp>
 
 
@@ -54,13 +55,11 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-LayerViewWidget::LayerViewWidget(GraphWidgetManager* graphWidgetManager, QWidget *parent)
-    : GraphWidget(graphWidgetManager, getName(), parent)
+LayerViewWidget::LayerViewWidget(QWidget *parent)
+    : GraphWidget(getName(), parent)
     , mFeatureLayerToggle(true)
     , mClusterLayerToggle(true)
 {
-    graphWidgetManager->addGraphWidget(this);
-
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
@@ -139,173 +138,212 @@ void LayerViewWidget::disableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void LayerViewWidget::updateFromGraph()
+void LayerViewWidget::updateLayout()
 {
-    if(mpGraph->empty())
-    {
-        LOG_WARN_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph was called while mpGraph was still empty";
-        return;
-    }
-
-    // setting up custom regexp filters
-    using namespace graph_analysis;
-//    mpVertexFilter->clear();
-
-//    PropertyDialog *propertyDialog = WidgetManager::getInstance()->getPropertyDialog();
-//    if(propertyDialog)
-//    {
-//        FilterManager::Filters manager_filters = propertyDialog->getFilterManager()->getFilters();
-//        foreach(FilterItem *item, manager_filters)
-//        {
-//            if(!item->isActivated())
-//            {
-//                continue;
-//            }
-//
-//            std::string regexp = item->getRegexp().toStdString();
-//
-//            try
-//            {
-//                LOG_INFO_S << "Add regexp: " << regexp << " to filter";
-//                filters::VertexRegexFilter::Ptr contentFilter(new filters::VertexRegexFilter(regexp, filters::CONTENT, false));
-//                mpVertexFilter->add(contentFilter);
-//            }
-//            catch(boost::regex_error e)
-//            {
-//                LOG_ERROR_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph: skipping regex '" << regexp << "'. Caught Regex error: " << e.what();
-//            }
-//
-//        }
-//    }
-
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
-        LOG_DEBUG_S << "VERTEX: " << vertex->toString();
-//
-//        // Check on active filter
-//        if(mpVertexFilter->matches(vertex))
-//        {
-//            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered out vertex: " << vertex->toString();
-//            continue;
-//        } else {
-//            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered kept vertex: " << vertex->toString();
-//        }
-//
-//        if(mNodeItemMap.count(vertex))
-//        {
-//            continue;
-//        }
-//
-//        if(toggledOut(vertex))
-//        {
-//            continue;
-//        }
-//
+
         // Registering new node items
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, layeritem::Resource::sType);
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
+
+        mpLayoutingGraph->addVertex(vertex);
         mpGVGraph->addNode(vertex);
     }
 
-//    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
-//    while(edgeIt->next())
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+
+        Vertex::Ptr source = edge->getSourceVertex();
+        Vertex::Ptr target = edge->getTargetVertex();
+
+        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+        NodeItem* targetNodeItem = mNodeItemMap[ target ];
+
+        if(!sourceNodeItem || !targetNodeItem)
+        {
+            continue;
+        }
+
+        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
+        mEdgeItemMap[edge] = edgeItem;
+
+        scene()->addItem(edgeItem);
+
+        mpLayoutingGraph->addEdge(edge);
+        mpGVGraph->addEdge(edge);
+    }
+
+//    if(mpGraph->empty())
 //    {
-//        Edge::Ptr edge = edgeIt->current();
-//
-//        // Check on active filter
-//        if(mFiltered && !mpSubGraph->enabled(edge))
-//        {
-//            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Filtered out edge: " << edge->toString();
-//            continue;
-//        }
-//
-//        if(mEdgeItemMap.count(edge))
-//        {
-//            continue;
-//        }
-//
-//        // Registering new edge items
-//        Vertex::Ptr source = edge->getSourceVertex();
-//        Vertex::Ptr target = edge->getTargetVertex();
-//
-//        if(
-//            toggledOut(source)
-//                ||
-//            toggledOut(target)
-//        )
-//        {
-//            continue;
-//        }
-//
-//        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-//        NodeItem* targetNodeItem = mNodeItemMap[ target ];
-//
-//        if(!sourceNodeItem || !targetNodeItem)
-//        {
-//            continue;
-//        }
-//
-//        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
-//        mEdgeItemMap[edge] = edgeItem;
-//
-//        scene()->addItem(edgeItem);
-//        mpGVGraph->addEdge(edge);
+//        LOG_WARN_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph was called while mpGraph was still empty";
+//        return;
 //    }
 //
-//    if(mLayout.toLower() != "force")
+//    // setting up custom regexp filters
+//    using namespace graph_analysis;
+////    mpVertexFilter->clear();
+//
+////    PropertyDialog *propertyDialog = WidgetManager::getInstance()->getPropertyDialog();
+////    if(propertyDialog)
+////    {
+////        FilterManager::Filters manager_filters = propertyDialog->getFilterManager()->getFilters();
+////        foreach(FilterItem *item, manager_filters)
+////        {
+////            if(!item->isActivated())
+////            {
+////                continue;
+////            }
+////
+////            std::string regexp = item->getRegexp().toStdString();
+////
+////            try
+////            {
+////                LOG_INFO_S << "Add regexp: " << regexp << " to filter";
+////                filters::VertexRegexFilter::Ptr contentFilter(new filters::VertexRegexFilter(regexp, filters::CONTENT, false));
+////                mpVertexFilter->add(contentFilter);
+////            }
+////            catch(boost::regex_error e)
+////            {
+////                LOG_ERROR_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph: skipping regex '" << regexp << "'. Caught Regex error: " << e.what();
+////            }
+////
+////        }
+////    }
+//
+//    VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
+//    while(nodeIt->next())
 //    {
-//        QApplication::setOverrideCursor(Qt::WaitCursor);
-//        // filtering out "circo" layouting engine on filtered graphs (using "dot" instead)
-//        bool fakeLayout =   // when true, will replace circo with the default (internally, "dot")
-//                            "circo" == mLayout.toLower()
-//                                &&
-//                            (
-//                                !mFeatureLayerToggle
-//                                    ||
-//                                !mClusterLayerToggle
-//                            )
-//                            ;
-//        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
-//        base::Time start = base::Time::now();
-//        mpGVGraph->applyLayout(fakeLayout ? "dot" : mLayout.toStdString());
-//        base::Time delay = base::Time::now() - start;
-//        QApplication::restoreOverrideCursor();
-//        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
+//        Vertex::Ptr vertex = nodeIt->current();
+//        LOG_DEBUG_S << "VERTEX: " << vertex->toString();
+////
+////        // Check on active filter
+////        if(mpVertexFilter->matches(vertex))
+////        {
+////            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered out vertex: " << vertex->toString();
+////            continue;
+////        } else {
+////            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered kept vertex: " << vertex->toString();
+////        }
+////
+////        if(mNodeItemMap.count(vertex))
+////        {
+////            continue;
+////        }
+////
+////        if(toggledOut(vertex))
+////        {
+////            continue;
+////        }
+////
+//        // Registering new node items
+//        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, layeritem::Resource::sType);
+//        mNodeItemMap[vertex] = nodeItem;
+//        scene()->addItem(nodeItem);
+//        mpGVGraph->addNode(vertex);
+//    }
 //
-//        {
-//            using namespace graph_analysis::io;
-//            std::vector<GVNode> nodes = mpGVGraph->nodes();
-//            std::vector<GVNode>::const_iterator cit = nodes.begin();
-//            for(; cit != nodes.end(); ++cit)
-//            {
-//                GVNode gvNode = *cit;
-//                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
+////    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+////    while(edgeIt->next())
+////    {
+////        Edge::Ptr edge = edgeIt->current();
+////
+////        // Check on active filter
+////        if(mFiltered && !mpSubGraph->enabled(edge))
+////        {
+////            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Filtered out edge: " << edge->toString();
+////            continue;
+////        }
+////
+////        if(mEdgeItemMap.count(edge))
+////        {
+////            continue;
+////        }
+////
+////        // Registering new edge items
+////        Vertex::Ptr source = edge->getSourceVertex();
+////        Vertex::Ptr target = edge->getTargetVertex();
+////
+////        if(
+////            toggledOut(source)
+////                ||
+////            toggledOut(target)
+////        )
+////        {
+////            continue;
+////        }
+////
+////        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+////        NodeItem* targetNodeItem = mNodeItemMap[ target ];
+////
+////        if(!sourceNodeItem || !targetNodeItem)
+////        {
+////            continue;
+////        }
+////
+////        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
+////        mEdgeItemMap[edge] = edgeItem;
+////
+////        scene()->addItem(edgeItem);
+////        mpGVGraph->addEdge(edge);
+////    }
+////
+////    if(mLayout.toLower() != "force")
+////    {
+////        QApplication::setOverrideCursor(Qt::WaitCursor);
+////        // filtering out "circo" layouting engine on filtered graphs (using "dot" instead)
+////        bool fakeLayout =   // when true, will replace circo with the default (internally, "dot")
+////                            "circo" == mLayout.toLower()
+////                                &&
+////                            (
+////                                !mFeatureLayerToggle
+////                                    ||
+////                                !mClusterLayerToggle
+////                            )
+////                            ;
+////        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
+////        base::Time start = base::Time::now();
+////        mpGVGraph->applyLayout(fakeLayout ? "dot" : mLayout.toStdString());
+////        base::Time delay = base::Time::now() - start;
+////        QApplication::restoreOverrideCursor();
+////        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
+////
+////        {
+////            using namespace graph_analysis::io;
+////            std::vector<GVNode> nodes = mpGVGraph->nodes();
+////            std::vector<GVNode>::const_iterator cit = nodes.begin();
+////            for(; cit != nodes.end(); ++cit)
+////            {
+////                GVNode gvNode = *cit;
+////                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
+////
+////                if(!nodeItem)
+////                {
+////                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
+////                    continue;
+////                }
+////
+////                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
+////            }
+////        }
 //
-//                if(!nodeItem)
-//                {
-//                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
-//                    continue;
-//                }
-//
-//                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
-//            }
-//        }
-
-//        {
-//            using namespace graph_analysis::io;
-//            std::vector<GVEdge> edges = mpGVGraph->edges();
-//            std::vector<GVEdge>::const_iterator cit = edges.begin();
-//            for(; cit != edges.end(); ++cit)
-//            {
-//                GVEdge gvEdge = *cit;
-//                EdgeItem* edgeItem = mEdgeItemMap[ gvEdge.getEdge() ];
-//                edgeItem->setPainterPath( edge.path );
-//            }
-//        }
-    //}
+////        {
+////            using namespace graph_analysis::io;
+////            std::vector<GVEdge> edges = mpGVGraph->edges();
+////            std::vector<GVEdge>::const_iterator cit = edges.begin();
+////            for(; cit != edges.end(); ++cit)
+////            {
+////                GVEdge gvEdge = *cit;
+////                EdgeItem* edgeItem = mEdgeItemMap[ gvEdge.getEdge() ];
+////                edgeItem->setPainterPath( edge.path );
+////            }
+////        }
+//    //}
 }
 
 void LayerViewWidget::addVertex(Vertex::Ptr vertex)
@@ -584,6 +622,15 @@ inline bool LayerViewWidget::toggledOut(graph_analysis::Vertex::Ptr vertex)
                 ;
     return result;
 }
+
+void LayerViewWidget::resetLayoutingGraph()
+{
+    mMaxNodeHeight  = 0;
+    mMaxNodeWidth   = 0;
+
+    GraphWidget::resetLayoutingGraph();
+}
+
 
 } // end namespace gui
 } // end namespace graph_analysis

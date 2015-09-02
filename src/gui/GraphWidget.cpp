@@ -52,7 +52,7 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(GraphWidgetManager* graphWidgetManager, const QString& widgetName, QWidget *parent)
+GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
     : QGraphicsView(parent)
     , mWidgetName(widgetName)
     , mpGraph()
@@ -67,28 +67,19 @@ GraphWidget::GraphWidget(GraphWidgetManager* graphWidgetManager, const QString& 
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
     , mEdgeSelected(false)
-    , mpGraphWidgetManager(graphWidgetManager)
-{}
-
-//GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
-//    : QGraphicsView(parent)
-//    , mpGraph(graph)
-//    , mpGVGraph(0)
-//    , mFiltered(false)
-//    , mTimerId(0)
-//    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-//    , mLayout("dot")
-//    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
-//    , mpEdgeFilter(new filters::EdgeContextFilter())
-//    , mVertexSelected(false)
-//    , mEdgeSelected(false)
-//{
-//}
+    , mpGraphWidgetManager()
+    , mMaxNodeHeight(0)
+    , mMaxNodeWidth (0)
+{
+    mGraphView.setVertexFilter(mpVertexFilter);
+    mGraphView.setEdgeFilter(mpEdgeFilter);
+}
 
 GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     : QGraphicsView(parent)
     , mpGraph()
     , mpGVGraph(0)
+    , mpLayoutingGraph()
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -98,6 +89,8 @@ GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     , mVertexSelected(false)
     , mEdgeSelected(false)
     , mpGraphWidgetManager(0)
+    , mMaxNodeHeight(0)
+    , mMaxNodeWidth (0)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
@@ -115,11 +108,6 @@ void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters
         mpVertexFilter->add(filter);
     }
     mGraphView.setVertexFilter(mpVertexFilter);
-    if(!mFiltered)
-    {
-        mpSubGraph = mGraphView.apply(mpGraph);
-        mFiltered = true;
-    }
 }
 
 void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
@@ -130,11 +118,6 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
         mpEdgeFilter->add(filter);
     }
     mGraphView.setEdgeFilter(mpEdgeFilter);
-    if(!mFiltered)
-    {
-        mpSubGraph = mGraphView.apply(mpGraph);
-        mFiltered = true;
-    }
 }
 
 void GraphWidget::updateStatus(const std::string& message, int timeout) const
@@ -164,7 +147,7 @@ void GraphWidget::clear()
     mEdgeMap.clear();
     scene()->clear();
 
-    resetLayoutingGraph();
+    updateView();
 }
 
 void GraphWidget::reset(bool keepData)
@@ -210,15 +193,76 @@ void GraphWidget::resetLayoutingGraph()
 
 void GraphWidget::updateView()
 {
+    updateFilterView();
+    updateLayoutView();
+}
+
+void GraphWidget::updateFilterView()
+{
     mpSubGraph = mGraphView.apply(mpGraph);
     mFiltered = true;
+}
+
+void GraphWidget::updateLayoutView()
+{
+    resetLayoutingGraph(); 
+
+    // implemented by GraphWidgets
+    // needs to populate the layouting graph as needed
+    updateLayout();
+
+    // apply layouting - i.e. loading the designated layouting base graph into GraphViz then repositioning the correspoding scene nodes
+    if(mLayout.toLower() != "force")
+    {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
+        base::Time start = base::Time::now();
+        mpGVGraph->setNodeAttribute("height", boost::lexical_cast<std::string>(mMaxNodeHeight));
+        mpGVGraph->setNodeAttribute("width" , boost::lexical_cast<std::string>(mMaxNodeWidth ));
+        LOG_INFO_S << "Applying layout: " << mLayout.toStdString();
+        mpGVGraph->applyLayout(mLayout.toStdString());
+        base::Time delay = base::Time::now() - start;
+        QApplication::restoreOverrideCursor();
+        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
+        {
+            using namespace graph_analysis::io;
+            std::vector<GVNode> nodes = mpGVGraph->nodes();
+            std::vector<GVNode>::const_iterator cit = nodes.begin();
+            for(; cit != nodes.end(); ++cit)
+            {
+                GVNode gvNode = *cit;
+                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
+                if(!nodeItem)
+                {
+                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
+                    continue;
+                }
+                // repositioning node in a scaled fashion
+                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
+            }
+        }
+
+        // Edge routing not yet available
+        // {
+        //     using namespace graph_analysis::io;
+        //     std::vector<GVEdge> edges = mpGVGraph->edges();
+        //     std::vector<GVEdge>::const_iterator cit = edges.begin();
+        //     for(; cit != edges.end(); ++cit)
+        //     {
+        //         GVEdge gvEdge = *cit;
+        //         EdgeItem* edgeItem = mEdgeItemMap[ gvEdge.getEdge() ];
+        //         edgeItem->setPainterPath( gvEdge.path );
+        //     }
+        // }
+    }
 }
 
 void GraphWidget::refresh(bool all)
 {
     LOG_DEBUG_S << "Refresh widget: " << getClassName().toStdString();
     reset(true /*keepData*/);
-    updateFromGraph();
+
+    //updateView();
     update();
 }
 

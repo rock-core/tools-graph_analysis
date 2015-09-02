@@ -395,6 +395,7 @@ int GraphWidgetManager::addGraphWidget(GraphWidget* graphWidget)
     if( mGraphWidgets.end() == std::find(mGraphWidgets.begin(), mGraphWidgets.end(), graphWidget))
     {
         graphWidget->setGraph(mpGraph);
+        graphWidget->setGraphWidgetManager(this);
         mGraphWidgets.push_back(graphWidget);
         WidgetManager *widgetManager = WidgetManager::getInstance();
         mpTabWidget->addTab(dynamic_cast<QWidget*>(graphWidget)/*,QIcon*/, graphWidget->getClassName());
@@ -418,9 +419,7 @@ void GraphWidgetManager::resetGraph(bool keepData)
     {
         GraphWidget* graphWidget = *it;
         graphWidget->setGraph(mpGraph);
-
         graphWidget->clear();
-        graphWidget->updateView();
     }
 }
 
@@ -569,7 +568,6 @@ void GraphWidgetManager::notifyAll()
     {
         GraphWidget* graphWidget = *it;
         graphWidget->setGraphLayout(mLayout);
-        graphWidget->updateView();
         graphWidget->refresh(false);
     }
 }

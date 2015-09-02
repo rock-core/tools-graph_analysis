@@ -36,8 +36,8 @@ int main(int argc, char **argv)
         }
     }
 
-    ComponentEditorWidget* componentEditor = new ComponentEditorWidget(&graphManager);
-    LayerViewWidget* layerView = new LayerViewWidget(&graphManager);
+    graphManager.addGraphWidget(new ComponentEditorWidget());
+    graphManager.addGraphWidget(new LayerViewWidget());
 
     int return_code = app.exec();
     return return_code;

@@ -55,17 +55,12 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-ComponentEditorWidget::ComponentEditorWidget(GraphWidgetManager* graphWidgetManager, QWidget *parent)
-    : GraphWidget(graphWidgetManager, getName(), parent)
+ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
+    : LayerViewWidget(parent)
     , mVertexFocused(false)
     , mEdgeFocused(false)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
     , mDragDrop(false)
 {
-
-    graphWidgetManager->addGraphWidget(this);
-
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     mScaleFactor *= 1.69;
@@ -883,217 +878,6 @@ void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void ComponentEditorWidget::updateFromGraph()
-{
-    /* !!! reset(true); shall be called apriori (unless you know what you're doing) !!! */
-    VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
-    while(nodeIt->next())
-    {
-        Vertex::Ptr vertex = nodeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(vertex))
-        {
-            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out vertex: " << vertex->toString();
-            continue;
-        }
-
-        if(mNodeItemMap.count(vertex))
-        {
-            continue;
-        }
-
-        if(graph_analysis::ClusterVertex::vertexType() == vertex->getClassName())
-        {
-            // Registering new Cluster node items only
-            NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
-            mNodeItemMap[vertex] = nodeItem;
-            scene()->addItem(nodeItem);
-            mpLayoutingGraph->addVertex(vertex);
-            mpGVGraph->addNode(vertex);
-        }
-    }
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(edge))
-        {
-            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
-            continue;
-        }
-
-        if(mEdgeItemMap.count(edge))
-        {
-            continue;
-        }
-
-        Vertex::Ptr source = edge->getSourceVertex();
-        Vertex::Ptr target = edge->getTargetVertex();
-
-        std::string sourceClassName = source->getClassName();
-        std::string targetClassName = target->getClassName();
-
-        if(graph_analysis::OutputPortVertex::vertexType() == sourceClassName && graph_analysis::InputPortVertex::vertexType() == targetClassName)
-        {
-            // physical edge - processing deflected until after all features will have been registered
-            continue;
-        }
-//        else if (   // disabled Port vertices (only specialized InputPorts/OutputPortsVertex allowed
-//                    (graph_analysis::PortVertex::vertexType() == sourceClassName && graph_analysis::ClusterVertex::vertexType() == targetClassName)
-//                )
-//        {
-//            // semantical edge: links a cluster vertex to one of its features
-//            std::string warn_msg = std::string("graph_analysis::ComponentEditorWidget::updateFromGraph: found reversed edge from source feature vertex '") +
-//                                        source->toString() + "' of type '" + sourceClassName + "' to target Cluster vertex '" +
-//                                        target->toString() + "' of type '" + targetClassName + "'!";
-//            LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
-//            NodeItem* targetNodeItem = mNodeItemMap[ target ];
-//            if(!targetNodeItem)
-//            {
-//                continue;
-//            }
-//            mFeatureMap[source] = targetNodeItem;
-//            mFeatureIDMap[source] = targetNodeItem->addFeature(source);
-//        }
-        else if (
-                    (
-                        graph_analysis::ClusterVertex::vertexType() == sourceClassName
-                            &&
-                        (
-                            graph_analysis::InputPortVertex::vertexType() == targetClassName
-                                ||
-                            graph_analysis::OutputPortVertex::vertexType() == targetClassName
-                                ||
-                            graph_analysis::PropertyVertex::vertexType() == targetClassName
-                                ||
-                            graph_analysis::OperationVertex::vertexType() == targetClassName
-                        )
-                    )
-                )
-        {
-            // semantical edge: links a cluster vertex to one of its features
-            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-            if(!sourceNodeItem)
-            {
-                continue;
-            }
-            mFeatureMap[target] = sourceNodeItem;
-            mFeatureIDMap[target] = sourceNodeItem->addFeature(target);
-        }
-        else
-        {
-            // invalid edge
-            std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::updateFromGraph: found invalid edge from source vertex '") +
-                                        source->toString() + "' of type '" + sourceClassName + "' to target vertex '" +
-                                        target->toString() + "' of type '" + targetClassName + "'!";
-            LOG_ERROR_S << error_msg;
-            throw std::runtime_error(error_msg);
-        }
-    }
-
-    // re-iterating the edges for rendering the physical ones
-    edgeIt = mpGraph->getEdgeIterator();
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(edge))
-        {
-            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out edge: " << edge->toString();
-            continue;
-        }
-
-        if(mEdgeItemMap.count(edge))
-        {
-            continue;
-        }
-
-        Vertex::Ptr source = edge->getSourceVertex();
-        Vertex::Ptr target = edge->getTargetVertex();
-
-        if(graph_analysis::OutputPortVertex::vertexType() == source->getClassName() && graph_analysis::InputPortVertex::vertexType() == target->getClassName())
-        {
-            NodeItem* sourceNodeItem = mFeatureMap[ source ];
-            NodeItem* targetNodeItem = mFeatureMap[ target ];
-            // physical edge - processing was deflected until now - i.e. after all features will have been registered
-            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
-            mpLayoutingGraph->addEdge(default_edge);
-            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
-            scene()->addItem(edgeItem);
-            mEdgeItemMap[default_edge] = edgeItem;
-            mpGVGraph->addEdge(default_edge);
-            mEdgeMap[default_edge] = edge;
-        }
-    }
-
-    // computing max node height and width for informing GraphViz of max dimensions w.r.t. immediately subsequent layouting
-    NodeItemMap::iterator node_it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != node_it; ++node_it)
-    {
-        QRectF nodeBoundingRect = node_it->second->boundingRect();
-        qreal height = nodeBoundingRect.height();
-        qreal width  = nodeBoundingRect.width();
-        if(mMaxNodeHeight < height)
-        {
-            height = mMaxNodeHeight;
-        }
-        if(mMaxNodeWidth < width)
-        {
-            mMaxNodeWidth = width;
-        }
-    }
-
-    // the mode is synchronized with the current state in the other layers (i.e. the mode that was active right before graphical graph reloading)
-    syncDragDrop();
-
-    // layouting - i.e. loading the designated layouting base graph into GraphViz then repositioning the correspoding scene nodes
-    if(mLayout.toLower() != "force")
-    {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
-        base::Time start = base::Time::now();
-        mpGVGraph->setNodeAttribute("height", boost::lexical_cast<std::string>(mMaxNodeHeight));
-        mpGVGraph->setNodeAttribute("width" , boost::lexical_cast<std::string>(mMaxNodeWidth ));
-        mpGVGraph->applyLayout(mLayout.toStdString());
-        base::Time delay = base::Time::now() - start;
-        QApplication::restoreOverrideCursor();
-        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
-        {
-            using namespace graph_analysis::io;
-            std::vector<GVNode> nodes = mpGVGraph->nodes();
-            std::vector<GVNode>::const_iterator cit = nodes.begin();
-            for(; cit != nodes.end(); ++cit)
-            {
-                GVNode gvNode = *cit;
-                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
-                if(!nodeItem)
-                {
-                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
-                    continue;
-                }
-                // repositioning node in a scaled fashion
-                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
-            }
-        }
-
-//        {
-//            using namespace graph_analysis::io;
-//            std::vector<GVEdge> edges = mpGVGraph->edges();
-//            std::vector<GVEdge>::const_iterator cit = edges.begin();
-//            for(; cit != edges.end(); ++cit)
-//            {
-//                GVEdge gvEdge = *cit;
-//                EdgeItem* edgeItem = mEdgeItemMap[ gvEdge.getEdge() ];
-//                edgeItem->setPainterPath( edge.path );
-//            }
-//        }
-    }
-}
-
 void ComponentEditorWidget::addVertex(Vertex::Ptr vertex)
 {
     mpGraph->addVertex(vertex);
@@ -1636,6 +1420,175 @@ void ComponentEditorWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedE
     }
 }
 
+void ComponentEditorWidget::updateLayout()
+{
+    VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
+    while(nodeIt->next())
+    {
+        Vertex::Ptr vertex = nodeIt->current();
+
+        // Check on active filter
+        if(mFiltered && !mpSubGraph->enabled(vertex))
+        {
+            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out vertex: " << vertex->toString();
+            continue;
+        }
+
+        if(mNodeItemMap.count(vertex))
+        {
+            continue;
+        }
+
+        if(graph_analysis::ClusterVertex::vertexType() == vertex->getClassName())
+        {
+            // Registering new Cluster node items only
+            NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+            mNodeItemMap[vertex] = nodeItem;
+            scene()->addItem(nodeItem);
+            mpLayoutingGraph->addVertex(vertex);
+            mpGVGraph->addNode(vertex);
+        }
+    }
+
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+
+        // Check on active filter
+        if(mFiltered && !mpSubGraph->enabled(edge))
+        {
+            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
+            continue;
+        }
+
+        if(mEdgeItemMap.count(edge))
+        {
+            continue;
+        }
+
+        Vertex::Ptr source = edge->getSourceVertex();
+        Vertex::Ptr target = edge->getTargetVertex();
+
+        std::string sourceClassName = source->getClassName();
+        std::string targetClassName = target->getClassName();
+
+        if(graph_analysis::OutputPortVertex::vertexType() == sourceClassName && graph_analysis::InputPortVertex::vertexType() == targetClassName)
+        {
+            // physical edge - processing deflected until after all features will have been registered
+            continue;
+        }
+//        else if (   // disabled Port vertices (only specialized InputPorts/OutputPortsVertex allowed
+//                    (graph_analysis::PortVertex::vertexType() == sourceClassName && graph_analysis::ClusterVertex::vertexType() == targetClassName)
+//                )
+//        {
+//            // semantical edge: links a cluster vertex to one of its features
+//            std::string warn_msg = std::string("graph_analysis::ComponentEditorWidget::updateLayout: found reversed edge from source feature vertex '") +
+//                                        source->toString() + "' of type '" + sourceClassName + "' to target Cluster vertex '" +
+//                                        target->toString() + "' of type '" + targetClassName + "'!";
+//            LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
+//            NodeItem* targetNodeItem = mNodeItemMap[ target ];
+//            if(!targetNodeItem)
+//            {
+//                continue;
+//            }
+//            mFeatureMap[source] = targetNodeItem;
+//            mFeatureIDMap[source] = targetNodeItem->addFeature(source);
+//        }
+        else if (
+                    (
+                        graph_analysis::ClusterVertex::vertexType() == sourceClassName
+                            &&
+                        (
+                            graph_analysis::InputPortVertex::vertexType() == targetClassName
+                                ||
+                            graph_analysis::OutputPortVertex::vertexType() == targetClassName
+                                ||
+                            graph_analysis::PropertyVertex::vertexType() == targetClassName
+                                ||
+                            graph_analysis::OperationVertex::vertexType() == targetClassName
+                        )
+                    )
+                )
+        {
+            // semantical edge: links a cluster vertex to one of its features
+            NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+            if(!sourceNodeItem)
+            {
+                continue;
+            }
+            mFeatureMap[target] = sourceNodeItem;
+            mFeatureIDMap[target] = sourceNodeItem->addFeature(target);
+        }
+        else
+        {
+            // invalid edge
+            std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::updateLayout: found invalid edge from source vertex '") +
+                                        source->toString() + "' of type '" + sourceClassName + "' to target vertex '" +
+                                        target->toString() + "' of type '" + targetClassName + "'!";
+            LOG_ERROR_S << error_msg;
+            throw std::runtime_error(error_msg);
+        }
+    }
+
+    // re-iterating the edges for rendering the physical ones
+    edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+
+        // Check on active filter
+        if(mFiltered && !mpSubGraph->enabled(edge))
+        {
+            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out edge: " << edge->toString();
+            continue;
+        }
+
+        if(mEdgeItemMap.count(edge))
+        {
+            continue;
+        }
+
+        Vertex::Ptr source = edge->getSourceVertex();
+        Vertex::Ptr target = edge->getTargetVertex();
+
+        if(graph_analysis::OutputPortVertex::vertexType() == source->getClassName() && graph_analysis::InputPortVertex::vertexType() == target->getClassName())
+        {
+            NodeItem* sourceNodeItem = mFeatureMap[ source ];
+            NodeItem* targetNodeItem = mFeatureMap[ target ];
+            // physical edge - processing was deflected until now - i.e. after all features will have been registered
+            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
+            mpLayoutingGraph->addEdge(default_edge);
+            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
+            scene()->addItem(edgeItem);
+            mEdgeItemMap[default_edge] = edgeItem;
+            mpGVGraph->addEdge(default_edge);
+            mEdgeMap[default_edge] = edge;
+        }
+    }
+
+    // computing max node height and width for informing GraphViz of max dimensions w.r.t. immediately subsequent layouting
+    NodeItemMap::iterator node_it = mNodeItemMap.begin();
+    for(; mNodeItemMap.end() != node_it; ++node_it)
+    {
+        QRectF nodeBoundingRect = node_it->second->boundingRect();
+        qreal height = nodeBoundingRect.height();
+        qreal width  = nodeBoundingRect.width();
+        if(mMaxNodeHeight < height)
+        {
+            height = mMaxNodeHeight;
+        }
+        if(mMaxNodeWidth < width)
+        {
+            mMaxNodeWidth = width;
+        }
+    }
+
+    // the mode is synchronized with the current state in the other layers (i.e. the mode that was active right before graphical graph reloading)
+    //syncDragDrop();
+
+}
+
 void ComponentEditorWidget::swapFeaturesFocused()
 {
     swapFeatures(mpFocusedVertex);
@@ -1705,14 +1658,6 @@ void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVe
 void ComponentEditorWidget::toggleDragDrop()
 {
     mDragDrop ? unsetDragDrop() : setDragDrop();
-}
-
-void ComponentEditorWidget::resetLayoutingGraph()
-{
-    mMaxNodeHeight  = 0;
-    mMaxNodeWidth   = 0;
-
-    GraphWidget::resetLayoutingGraph();
 }
 
 } // end namespace gui

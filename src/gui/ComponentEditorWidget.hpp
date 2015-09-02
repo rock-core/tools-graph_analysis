@@ -10,20 +10,11 @@
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
-#include <graph_analysis/lemon/Graph.hpp>
+#include <graph_analysis/gui/LayerViewWidget.hpp>
 
 namespace graph_analysis {
 namespace io {
-
-class Writer;
-class Reader;
 class GVGraph;
-class YamlWriter;
-class GexfWriter;
-class GexfReader;
-class YamlReader;
-class GraphvizWriter;
-
 } // end namespace io
 
 namespace gui {
@@ -41,7 +32,7 @@ class LayerViewWidget;
  * \brief component editor graph widget implementation
  * \details maintains and displays a diagram with clusternodes, their features and the links (edges) between their ports
  */
-class ComponentEditorWidget : public GraphWidget
+class ComponentEditorWidget : public LayerViewWidget
 {
     Q_OBJECT
 public:
@@ -49,7 +40,7 @@ public:
      * \brief constructor
      * \param parent qt parent widget
      */
-    ComponentEditorWidget(GraphWidgetManager* graphWidgetManager, QWidget *parent = 0);
+    ComponentEditorWidget(QWidget *parent = 0);
     /// destructor
     virtual ~ComponentEditorWidget();
 
@@ -163,8 +154,7 @@ public:
     /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
     bool getDragDrop() { return mDragDrop; }
 
-    /// override existing parent methods
-    void resetLayoutingGraph();
+    virtual void updateLayout();
 
 public slots:
     /// shuffles all the nodes in the diagram graph editor

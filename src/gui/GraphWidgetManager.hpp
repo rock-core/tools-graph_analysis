@@ -11,6 +11,7 @@
 #include <QDockWidget>
 #include <QMainWindow>
 #include <QTabWidget>
+#include <graph_analysis/GraphIO.hpp>
 
 namespace graph_analysis {
 namespace gui {
