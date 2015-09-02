@@ -2,7 +2,7 @@
 #include "ComponentEditorWidget.hpp"
 #include "LayerViewWidget.hpp"
 #include "IconManager.hpp"
-#include "GraphManager.hpp"
+#include "GraphWidgetManager.hpp"
 #include "WidgetManager.hpp"
 #include "PropertyDialog.hpp"
 
@@ -67,12 +67,11 @@ void PropertyDialog::setEdgeFocused(bool edgeFocused)
 
 void PropertyDialog::updateMainWidget(int index)
 {
-    WidgetManager::getInstance()->getStackedWidget()->setCurrentIndex(index);
 }
 
 inline void PropertyDialog::updateStatus(const std::string& message, int timeout)
 {
-    WidgetManager::getInstance()->getGraphManager()->updateStatus(message, timeout);
+    WidgetManager::getInstance()->getGraphWidgetManager()->updateStatus(message, timeout);
 }
 
 void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
@@ -575,15 +574,15 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     PropertyDialog::connect(mpAddNodeButton, SIGNAL(clicked()), viewWidget, SLOT(addNodeAdhoc()));
     PropertyDialog::connect(mpDragDropButton, SIGNAL(toggled(bool)), viewWidget, SLOT(updateDragDrop(bool)));
     PropertyDialog::connect(mpMoveAroundButton, SIGNAL(toggled(bool)), viewWidget, SLOT(updateMoveAround(bool)));
-    PropertyDialog::connect(mpRenameNodeButton, SIGNAL(clicked()), viewWidget, SLOT(changeFocusedVertexLabel()));
+    PropertyDialog::connect(mpRenameNodeButton, SIGNAL(clicked()), viewWidget, SLOT(changeSelectedVertexLabel()));
     PropertyDialog::connect(mpAddFeatureButton, SIGNAL(clicked()), viewWidget, SLOT(addFeatureFocused()));
     PropertyDialog::connect(mpSwapFeaturesButton, SIGNAL(clicked()), viewWidget, SLOT(swapFeaturesFocused()));
     PropertyDialog::connect(mpRenameFeatureButton, SIGNAL(clicked()), viewWidget, SLOT(renameFeatureFocused()));
     PropertyDialog::connect(mpRemoveFeatureButton, SIGNAL(clicked()), viewWidget, SLOT(removeFeatureFocused()));
     PropertyDialog::connect(mpRemoveFeaturesButton, SIGNAL(clicked()), viewWidget, SLOT(removeFeaturesFocused()));
     PropertyDialog::connect(mpRemoveNodeButton, SIGNAL(clicked()), viewWidget, SLOT(removeFocusedVertex()));
-    PropertyDialog::connect(mpRenameEdgeButton, SIGNAL(clicked()), viewWidget, SLOT(changeFocusedEdgeLabel()));
-    PropertyDialog::connect(mpRemoveEdgeButton, SIGNAL(clicked()), viewWidget, SLOT(removeFocusedEdge()));
+    PropertyDialog::connect(mpRenameEdgeButton, SIGNAL(clicked()), viewWidget, SLOT(changeSelectedEdgeLabel()));
+    PropertyDialog::connect(mpRemoveEdgeButton, SIGNAL(clicked()), viewWidget, SLOT(removeSelectedEdge()));
     PropertyDialog::connect(mpToggleFeatureLayerButton, SIGNAL(toggled(bool)), layerWidget, SLOT(toggleFeatureLayer(bool)));
     PropertyDialog::connect(mpToggleClusterLayerButton, SIGNAL(toggled(bool)), layerWidget, SLOT(toggleClusterLayer(bool)));
     PropertyDialog::connect(mpTabWidget, SIGNAL(currentChanged(int)), this, SLOT(updateMainWidget(int)));
@@ -598,7 +597,10 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     // final re-sizing
     Dialog->setFixedSize(WIDTH + 20, 45 + mHeight - commonExtraPadding);
     mpTabWidget->setGeometry(QRect(5, 30, WIDTH + 10, 10 + mHeight - commonExtraPadding));
-    mpTabWidget->setCurrentIndex(WidgetManager::getInstance()->getStackedWidget()->currentIndex());
+
+    // TODO: switch properties with panel if needed
+    //mpTabWidget->setCurrentIndex(WidgetManager::getInstance()->getStackedWidget()->currentIndex());
+
     mpHorizontalLayoutWidget->setGeometry(QRect(0, 0, WIDTH, mHeight - commonExtraPadding));
     mpHorizontalLayoutLayerViewWidget->setGeometry(QRect(0, 0, WIDTH / 2, mHeight - commonExtraPadding));
 } // setupUi

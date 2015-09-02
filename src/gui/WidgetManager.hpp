@@ -8,7 +8,8 @@
 namespace graph_analysis {
 namespace gui {
 
-    class GraphManager;
+    class GraphWidgetManager;
+    class GraphWidget;
     class ComponentEditorWidget;
     class LayerViewWidget;
     class PropertyDialog;
@@ -28,19 +29,14 @@ public:
     ~WidgetManager();
 
     /// getter for the graph GUI manager
-    GraphManager* getGraphManager(void);
+    GraphWidgetManager* getGraphWidgetManager(void);
     /// setter for the graph GUI manager
-    void setGraphManager(GraphManager *graphManager);
+    void setGraphWidgetManager(GraphWidgetManager *graphManager);
 
     /// getter for the main window of the qt application
     QMainWindow* getMainWindow(void);
     /// setter for the main window of the qt application
     void setMainWindow(QMainWindow *mainWindow);
-
-    /// getter for the stacked widget to toggle between the diagram editor and layers viewer (the actual central widget of the main window)
-    QStackedWidget* getStackedWidget(void);
-    /// setter for the stacked widget to toggle between the diagram editor and layers viewer (the actual central widget of the main window)
-    void setStackedWidget(QStackedWidget *stackedWidget);
 
     /// getter for the diagram editor widget GUI component
     ComponentEditorWidget* getComponentEditorWidget(void);
@@ -57,9 +53,12 @@ public:
     /// setter for the property dialog (a.k.a. command panel) dockable GUI component
     void setPropertyDialog(PropertyDialog *propertyDialog);
 
+    /// Set widget
+    void setWidget(GraphWidget* widget);
+
 private:
     /// graph GUI manager
-    GraphManager *mpGraphManager;
+    GraphWidgetManager *mpGraphWidgetManager;
     /// main window of the qt application
     QMainWindow *mpMainWindow;
     /// the diagram editor widget GUI component

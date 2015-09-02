@@ -3,7 +3,7 @@
 #include "FilterItem.hpp"
 #include "LayerViewWidget.hpp"
 #include "IconManager.hpp"
-#include "GraphManager.hpp"
+#include "GraphWidgetManager.hpp"
 #include "WidgetManager.hpp"
 #include "AddNodeDialog.hpp"
 #include "FilterManager.hpp"
@@ -54,11 +54,13 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-LayerViewWidget::LayerViewWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
-    : GraphWidget(graph, parent)
+LayerViewWidget::LayerViewWidget(GraphWidgetManager* graphWidgetManager, QWidget *parent)
+    : GraphWidget(graphWidgetManager, getName(), parent)
     , mFeatureLayerToggle(true)
     , mClusterLayerToggle(true)
 {
+    graphWidgetManager->addGraphWidget(this);
+
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
@@ -81,19 +83,14 @@ LayerViewWidget::LayerViewWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *
 
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
         this, SLOT(showContextMenu(const QPoint &)));
-
-    reset(true);
-    updateFromGraph();
 }
 
 LayerViewWidget::~LayerViewWidget()
-{
-//    destroy();
-}
+{}
 
 void LayerViewWidget::showContextMenu(const QPoint& pos)
 {
-    ActionCommander comm(WidgetManager::getInstance()->getComponentEditorWidget());
+/*    ActionCommander comm(WidgetManager::getInstance()->getComponentEditorWidget());
     QMenu contextMenu(tr("Context menu"), this);
 
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")), this);
@@ -102,7 +99,7 @@ void LayerViewWidget::showContextMenu(const QPoint& pos)
     QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
     QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
     QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")), this);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphManager());
+    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphWidgetManager());
 
     contextMenu.addAction(actionImport);
     contextMenu.addAction(actionExport);
@@ -117,84 +114,7 @@ void LayerViewWidget::showContextMenu(const QPoint& pos)
         contextMenu.addAction(actionReloadPropertyDialog);
     }
     contextMenu.exec(mapToGlobal(pos));
-}
-
-void LayerViewWidget::setGraph(graph_analysis::BaseGraph::Ptr graph)
-{
-    mpGraph = graph;
-    mpSubGraph = mGraphView.apply(mpGraph);
-    mFiltered = true;
-
-    mpSubGraph->enableAllVertices();
-    mpSubGraph->enableAllEdges();
-    reset(true);
-    updateFromGraph();
-}
-
-void LayerViewWidget::changeLayout()
-{
-    updateStatus("Changing layers graph view layout ...");
-    bool ok;
-    QStringList options;
-    std::set<std::string> supportedLayouts = mpGVGraph->getSupportedLayouts();
-//    options << tr("circo") << tr("dot") << tr("fdp") << tr("neato") << tr("osage") << tr("sfdp") << tr("twopi"); // [circo, dot, fdp, neato, osage, sfdp, twopi]
-    foreach(std::string supportedLayout, supportedLayouts)
-    {
-        options << tr(supportedLayout.c_str());
-    }
-    QString layout = QInputDialog::getItem(this, tr("Input new layout"),
-                                         tr("Select a layout:"), options,
-                                         0, false, &ok);
-    if (ok && !layout.isEmpty())
-    {
-        std::string desiredLayout = layout.toStdString();
-        reset(true /*keepData*/);
-        setLayout(QString(desiredLayout.c_str()));
-        updateStatus("Changed layers graph view layout to '" + desiredLayout + "'", GraphManager::TIMEOUT);
-    }
-    else
-    {
-        updateStatus("Failed to change layers graph view layout: aborted by user", GraphManager::TIMEOUT);
-    }
-}
-
-void LayerViewWidget::reset(bool keepData)
-{
-    clear();
-
-    if(mpGVGraph)
-    {
-        delete mpGVGraph;
-    }
-    mpGVGraph = new io::GVGraph(mpGraph, "GVLayerViewWidget");
-}
-
-void LayerViewWidget::clear()
-{
-    // TO-DO: add filtering clearing
-    if(mpGVGraph)
-    {
-        mpGVGraph->clearEdges();
-        mpGVGraph->clearNodes();
-    }
-
-    mNodeItemMap.clear();
-    mEdgeItemMap.clear();
-    scene()->clear();
-}
-void LayerViewWidget::refresh(bool status)
-{
-    if(status)
-    {
-        updateStatus("Refreshing layers graph view ...");
-    }
-    reset(true /*keepData*/);
-    updateFromGraph();
-    update();
-    if(status)
-    {
-        updateStatus("Done refreshing layers graph view", GraphManager::TIMEOUT);
-    }
+    */
 }
 
 void LayerViewWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
@@ -229,59 +149,60 @@ void LayerViewWidget::updateFromGraph()
 
     // setting up custom regexp filters
     using namespace graph_analysis;
-    mpVertexFilter->clear();
+//    mpVertexFilter->clear();
 
-    PropertyDialog *propertyDialog = WidgetManager::getInstance()->getPropertyDialog();
-    if(propertyDialog)
-    {
-        FilterManager::Filters manager_filters = propertyDialog->getFilterManager()->getFilters();
-        foreach(FilterItem *item, manager_filters)
-        {
-            if(!item->isActivated())
-            {
-                continue;
-            }
-
-            std::string regexp = item->getRegexp().toStdString();
-
-            try
-            {
-                LOG_INFO_S << "Add regexp: " << regexp << " to filter";
-                filters::VertexRegexFilter::Ptr contentFilter(new filters::VertexRegexFilter(regexp, filters::CONTENT, false));
-                mpVertexFilter->add(contentFilter);
-            }
-            catch(boost::regex_error e)
-            {
-                LOG_ERROR_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph: skipping regex '" << regexp << "'. Caught Regex error: " << e.what();
-            }
-
-        }
-    }
+//    PropertyDialog *propertyDialog = WidgetManager::getInstance()->getPropertyDialog();
+//    if(propertyDialog)
+//    {
+//        FilterManager::Filters manager_filters = propertyDialog->getFilterManager()->getFilters();
+//        foreach(FilterItem *item, manager_filters)
+//        {
+//            if(!item->isActivated())
+//            {
+//                continue;
+//            }
+//
+//            std::string regexp = item->getRegexp().toStdString();
+//
+//            try
+//            {
+//                LOG_INFO_S << "Add regexp: " << regexp << " to filter";
+//                filters::VertexRegexFilter::Ptr contentFilter(new filters::VertexRegexFilter(regexp, filters::CONTENT, false));
+//                mpVertexFilter->add(contentFilter);
+//            }
+//            catch(boost::regex_error e)
+//            {
+//                LOG_ERROR_S << "graph_analysis::gui::LayerViewWidget::updateFromGraph: skipping regex '" << regexp << "'. Caught Regex error: " << e.what();
+//            }
+//
+//        }
+//    }
 
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
-
-        // Check on active filter
-        if(mpVertexFilter->matches(vertex))
-        {
-            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered out vertex: " << vertex->toString();
-            continue;
-        } else {
-            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered kept vertex: " << vertex->toString();
-        }
-
-        if(mNodeItemMap.count(vertex))
-        {
-            continue;
-        }
-
-        if(toggledOut(vertex))
-        {
-            continue;
-        }
-
+        LOG_DEBUG_S << "VERTEX: " << vertex->toString();
+//
+//        // Check on active filter
+//        if(mpVertexFilter->matches(vertex))
+//        {
+//            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered out vertex: " << vertex->toString();
+//            continue;
+//        } else {
+//            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Custom-Regex-Filtered kept vertex: " << vertex->toString();
+//        }
+//
+//        if(mNodeItemMap.count(vertex))
+//        {
+//            continue;
+//        }
+//
+//        if(toggledOut(vertex))
+//        {
+//            continue;
+//        }
+//
         // Registering new node items
         NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, layeritem::Resource::sType);
         mNodeItemMap[vertex] = nodeItem;
@@ -289,89 +210,89 @@ void LayerViewWidget::updateFromGraph()
         mpGVGraph->addNode(vertex);
     }
 
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(edge))
-        {
-            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Filtered out edge: " << edge->toString();
-            continue;
-        }
-
-        if(mEdgeItemMap.count(edge))
-        {
-            continue;
-        }
-
-        // Registering new edge items
-        Vertex::Ptr source = edge->getSourceVertex();
-        Vertex::Ptr target = edge->getTargetVertex();
-
-        if(
-            toggledOut(source)
-                ||
-            toggledOut(target)
-        )
-        {
-            continue;
-        }
-
-        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
-        NodeItem* targetNodeItem = mNodeItemMap[ target ];
-
-        if(!sourceNodeItem || !targetNodeItem)
-        {
-            continue;
-        }
-
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
-        mEdgeItemMap[edge] = edgeItem;
-
-        scene()->addItem(edgeItem);
-        mpGVGraph->addEdge(edge);
-    }
-
-    if(mLayout.toLower() != "force")
-    {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        // filtering out "circo" layouting engine on filtered graphs (using "dot" instead)
-        bool fakeLayout =   // when true, will replace circo with the default (internally, "dot")
-                            "circo" == mLayout.toLower()
-                                &&
-                            (
-                                !mFeatureLayerToggle
-                                    ||
-                                !mClusterLayerToggle
-                            )
-                            ;
-        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
-        base::Time start = base::Time::now();
-        mpGVGraph->applyLayout(fakeLayout ? "dot" : mLayout.toStdString());
-        base::Time delay = base::Time::now() - start;
-        QApplication::restoreOverrideCursor();
-        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
-
-        {
-            using namespace graph_analysis::io;
-            std::vector<GVNode> nodes = mpGVGraph->nodes();
-            std::vector<GVNode>::const_iterator cit = nodes.begin();
-            for(; cit != nodes.end(); ++cit)
-            {
-                GVNode gvNode = *cit;
-                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
-
-                if(!nodeItem)
-                {
-                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
-                    continue;
-                }
-
-                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
-            }
-        }
+//    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+//    while(edgeIt->next())
+//    {
+//        Edge::Ptr edge = edgeIt->current();
+//
+//        // Check on active filter
+//        if(mFiltered && !mpSubGraph->enabled(edge))
+//        {
+//            LOG_DEBUG_S << "graph_analysis::gui::LayerViewWidget: Filtered out edge: " << edge->toString();
+//            continue;
+//        }
+//
+//        if(mEdgeItemMap.count(edge))
+//        {
+//            continue;
+//        }
+//
+//        // Registering new edge items
+//        Vertex::Ptr source = edge->getSourceVertex();
+//        Vertex::Ptr target = edge->getTargetVertex();
+//
+//        if(
+//            toggledOut(source)
+//                ||
+//            toggledOut(target)
+//        )
+//        {
+//            continue;
+//        }
+//
+//        NodeItem* sourceNodeItem = mNodeItemMap[ source ];
+//        NodeItem* targetNodeItem = mNodeItemMap[ target ];
+//
+//        if(!sourceNodeItem || !targetNodeItem)
+//        {
+//            continue;
+//        }
+//
+//        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
+//        mEdgeItemMap[edge] = edgeItem;
+//
+//        scene()->addItem(edgeItem);
+//        mpGVGraph->addEdge(edge);
+//    }
+//
+//    if(mLayout.toLower() != "force")
+//    {
+//        QApplication::setOverrideCursor(Qt::WaitCursor);
+//        // filtering out "circo" layouting engine on filtered graphs (using "dot" instead)
+//        bool fakeLayout =   // when true, will replace circo with the default (internally, "dot")
+//                            "circo" == mLayout.toLower()
+//                                &&
+//                            (
+//                                !mFeatureLayerToggle
+//                                    ||
+//                                !mClusterLayerToggle
+//                            )
+//                            ;
+//        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
+//        base::Time start = base::Time::now();
+//        mpGVGraph->applyLayout(fakeLayout ? "dot" : mLayout.toStdString());
+//        base::Time delay = base::Time::now() - start;
+//        QApplication::restoreOverrideCursor();
+//        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
+//
+//        {
+//            using namespace graph_analysis::io;
+//            std::vector<GVNode> nodes = mpGVGraph->nodes();
+//            std::vector<GVNode>::const_iterator cit = nodes.begin();
+//            for(; cit != nodes.end(); ++cit)
+//            {
+//                GVNode gvNode = *cit;
+//                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
+//
+//                if(!nodeItem)
+//                {
+//                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
+//                    continue;
+//                }
+//
+//                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
+//            }
+//        }
 
 //        {
 //            using namespace graph_analysis::io;
@@ -384,7 +305,7 @@ void LayerViewWidget::updateFromGraph()
 //                edgeItem->setPainterPath( edge.path );
 //            }
 //        }
-    }
+    //}
 }
 
 void LayerViewWidget::addVertex(Vertex::Ptr vertex)
@@ -431,92 +352,92 @@ void LayerViewWidget::itemMoved()
 
 void LayerViewWidget::keyPressEvent(QKeyEvent *event)
 {
-    // check for a combination of user presses
-    Qt::KeyboardModifiers modifiers = event->modifiers();
+//    // check for a combination of user presses
+//    Qt::KeyboardModifiers modifiers = event->modifiers();
+//
+//    if(modifiers & Qt::ControlModifier)
+//    {
+//        switch (event->key())
+//        {
+//            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
+//            case Qt::Key_W:
+//                exit(0);
+//            break;
+//
+//            case Qt::Key_Plus: // CTRL+ zooms in
+//                zoomIn();
+//            break;
+//
+//            case Qt::Key_Minus: // CTRL+- zooms out
+//                zoomOut();
+//            break;
+//
+//            case Qt::Key_Left: // CTRL+LeftArrow rotates the view counterclockwise
+//                rotate(qreal(-1.13));
+//            break;
+//
+//            case Qt::Key_Right: // CTRL+RightArrow rotates the view clockwise
+//                rotate(qreal( 1.13));
+//            break;
+//
+//            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
+//                WidgetManager::getInstance()->getComponentEditorWidget()->resetGraph();
+//            break;
+//
+//            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
+//            case Qt::Key_S:
+//                WidgetManager::getInstance()->getComponentEditorWidget()->exportGraph();
+//            break;
+//
+//            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  or CTRL+L (load graph) opens a graph from file
+//            case Qt::Key_O:
+//            case Qt::Key_L:
+//                WidgetManager::getInstance()->getComponentEditorWidget()->importGraph();
+//            break;
+//
+//            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
+//                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
+//                {
+//                    WidgetManager::getInstance()->getGraphWidgetManager()->reloadPropertyDialog();
+//                }
+//            break;
+//        }
+//    }
+//    else
+//    {
+//        switch (event->key())
+//        {
+//        //case Qt::Key_Up:
+//        //    break;
+//        //case Qt::Key_Down:
+//        //    break;
+//        //case Qt::Key_Left:
+//        //    break;
+//        //case Qt::Key_Right:
+//        //    break;
+//        case Qt::Key_Plus: // '+' zooms-in
+//            zoomIn();
+//        break;
+//        case Qt::Key_Minus: // '-' zooms-out
+//            zoomOut();
+//        break;
+//        case Qt::Key_Space: // Space, newline and 'R'/'r' refresh the view
+//        case Qt::Key_Enter:
+//        case Qt::Key_R:
+//                refresh();
+//        break;
+//
+//        case Qt::Key_S: // 'S'/'s' shuffle the nodes
+//            shuffle();
+//        break;
+//
+//        case Qt::Key_L: // 'L'/'l' changes the layout
+//            changeLayout();
+//        break;
+//        }
+//    }
 
-    if(modifiers & Qt::ControlModifier)
-    {
-        switch (event->key())
-        {
-            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
-            case Qt::Key_W:
-                exit(0);
-            break;
-
-            case Qt::Key_Plus: // CTRL+ zooms in
-                zoomIn();
-            break;
-
-            case Qt::Key_Minus: // CTRL+- zooms out
-                zoomOut();
-            break;
-
-            case Qt::Key_Left: // CTRL+LeftArrow rotates the view counterclockwise
-                rotate(qreal(-1.13));
-            break;
-
-            case Qt::Key_Right: // CTRL+RightArrow rotates the view clockwise
-                rotate(qreal( 1.13));
-            break;
-
-            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
-                WidgetManager::getInstance()->getComponentEditorWidget()->resetGraph();
-            break;
-
-            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
-            case Qt::Key_S:
-                WidgetManager::getInstance()->getComponentEditorWidget()->exportGraph();
-            break;
-
-            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  or CTRL+L (load graph) opens a graph from file
-            case Qt::Key_O:
-            case Qt::Key_L:
-                WidgetManager::getInstance()->getComponentEditorWidget()->importGraph();
-            break;
-
-            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
-                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-                {
-                    WidgetManager::getInstance()->getGraphManager()->reloadPropertyDialog();
-                }
-            break;
-        }
-    }
-    else
-    {
-        switch (event->key())
-        {
-        //case Qt::Key_Up:
-        //    break;
-        //case Qt::Key_Down:
-        //    break;
-        //case Qt::Key_Left:
-        //    break;
-        //case Qt::Key_Right:
-        //    break;
-        case Qt::Key_Plus: // '+' zooms-in
-            zoomIn();
-        break;
-        case Qt::Key_Minus: // '-' zooms-out
-            zoomOut();
-        break;
-        case Qt::Key_Space: // Space, newline and 'R'/'r' refresh the view
-        case Qt::Key_Enter:
-        case Qt::Key_R:
-                refresh();
-        break;
-
-        case Qt::Key_S: // 'S'/'s' shuffle the nodes
-            shuffle();
-        break;
-
-        case Qt::Key_L: // 'L'/'l' changes the layout
-            changeLayout();
-        break;
-        }
-    }
-
-    QGraphicsView::keyPressEvent(event);
+    GraphWidget::keyPressEvent(event);
 }
 
 void LayerViewWidget::timerEvent(QTimerEvent *event)
@@ -607,7 +528,7 @@ void LayerViewWidget::scaleView(qreal scaleFactor)
     }
     scale(scaleFactor, scaleFactor);
     std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, GraphManager::TIMEOUT);
+    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
 }
 
 void LayerViewWidget::shuffle()
@@ -618,7 +539,7 @@ void LayerViewWidget::shuffle()
         if (qgraphicsitem_cast<NodeItem* >(item))
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }
-    updateStatus("Shuffelled all nodes in the layers graph view", GraphManager::TIMEOUT);
+    updateStatus("Shuffelled all nodes in the layers graph view", GraphWidgetManager::TIMEOUT);
 }
 
 void LayerViewWidget::zoomIn()
@@ -631,18 +552,12 @@ void LayerViewWidget::zoomOut()
     scaleView(1 / qreal(1.13));
 }
 
-void LayerViewWidget::setLayout(QString layoutName)
-{
-    mLayout = layoutName;
-    updateFromGraph();
-}
-
 void LayerViewWidget::toggleFeatureLayer(bool toggle)
 {
     updateStatus(std::string("toggling the features layer to ") + (toggle ? "true" : "false" ) + "...");
     mFeatureLayerToggle = toggle;
     refresh(false);
-    updateStatus(std::string("Toggled the features layer to ") + (toggle ? "true" : "false" ) + "!", GraphManager::TIMEOUT);
+    updateStatus(std::string("Toggled the features layer to ") + (toggle ? "true" : "false" ) + "!", GraphWidgetManager::TIMEOUT);
 }
 
 void LayerViewWidget::toggleClusterLayer(bool toggle)
@@ -650,7 +565,7 @@ void LayerViewWidget::toggleClusterLayer(bool toggle)
     updateStatus(std::string("toggling the clusters layer to ") + (toggle ? "true" : "false" ) + "...");
     mClusterLayerToggle = toggle;
     refresh(false);
-    updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", GraphManager::TIMEOUT);
+    updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", GraphWidgetManager::TIMEOUT);
 }
 
 inline bool LayerViewWidget::toggledOut(graph_analysis::Vertex::Ptr vertex)

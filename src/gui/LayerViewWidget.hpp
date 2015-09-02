@@ -1,15 +1,12 @@
 #ifndef GRAPH_ANALYSIS_GUI_LAYERVIEWWIDGET_H
 #define GRAPH_ANALYSIS_GUI_LAYERVIEWWIDGET_H
 
-#include "ComponentEditorWidget.hpp"
-
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
-#include <graph_analysis/lemon/Graph.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 
-namespace gl = graph_analysis::lemon;
 namespace graph_analysis {
 namespace io {
 
@@ -36,17 +33,15 @@ public:
      * \brief constructor
      * \param graph underlying base graph
      */
-    LayerViewWidget(graph_analysis::BaseGraph::Ptr graph = graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ), QWidget *parent = 0);
+    LayerViewWidget(GraphWidgetManager* graphWidgetManager, QWidget *parent = 0);
     /// destructor
-    ~LayerViewWidget();
+    virtual ~LayerViewWidget();
 
-    /// setter method for updating the underlying base graph
-    void setGraph(graph_analysis::BaseGraph::Ptr graph);
+    static QString getName() { return "graph_analysis::gui::LayerView"; }
+    virtual QString getClassName() const { return getName(); }
 
     /// deletes all internal information; disregards keepData as the underlying base graph is treated as read-only (except by its dedicated setter method)
-    void reset(bool keepData = false);
-    /// resets all graphical scene storage elements
-    void clear();
+
     /// respawns all graphical elements by the underlying base graph
     void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
@@ -68,13 +63,6 @@ public slots:
     void zoomOut();
     /// pulls-out the layers graph context menu on right-click
     void showContextMenu(const QPoint& pos);
-
-    /// sets and layouts on the provided 'layoutName' the layers graph view
-    void setLayout(QString layoutName);
-    /// refreshes the scene from scratch - updates the Status bar iff status is set (true)
-    void refresh(bool status = true);
-    /// prompts the user for a new layout and performs re-layouting
-    void changeLayout();
 
     /// setter method for updating the features layer toggle
     void toggleFeatureLayer(bool toggle);

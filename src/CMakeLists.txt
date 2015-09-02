@@ -26,7 +26,7 @@ rock_library(graph_analysis
         gui/layeritem/Label.cpp
         gui/IconManager.cpp
         gui/WidgetManager.cpp
-        gui/GraphManager.cpp
+        gui/GraphWidgetManager.cpp
         gui/GraphWidget.cpp
         gui/ComponentEditorWidget.cpp
         gui/LayerViewWidget.cpp
@@ -104,7 +104,7 @@ rock_library(graph_analysis
         gui/layeritem/Resource.hpp
         gui/IconManager.hpp
         gui/WidgetManager.hpp
-        gui/GraphManager.hpp
+        gui/GraphWidgetManager.hpp
         gui/GraphWidget.hpp
         gui/ComponentEditorWidget.hpp
         gui/LayerViewWidget.hpp
@@ -166,7 +166,7 @@ rock_library(graph_analysis
     MOC
         gui/ComponentEditorWidget.hpp
         gui/LayerViewWidget.hpp
-        gui/GraphManager.hpp
+        gui/GraphWidgetManager.hpp
         gui/FilterManager.hpp
         gui/AddNodeDialog.hpp
         gui/AddFilterDialog.hpp

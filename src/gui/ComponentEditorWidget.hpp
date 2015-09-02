@@ -49,9 +49,12 @@ public:
      * \brief constructor
      * \param parent qt parent widget
      */
-    ComponentEditorWidget(QWidget *parent = 0);
+    ComponentEditorWidget(GraphWidgetManager* graphWidgetManager, QWidget *parent = 0);
     /// destructor
-    ~ComponentEditorWidget();
+    virtual ~ComponentEditorWidget();
+
+    static QString getName() { return "graph_analysis::gui::ComponentEditor"; }
+    virtual QString getClassName() const { return getName(); }
 
     /**
      * \brief introduces (creates + adds) a new vertex in the basegraph and enables it
@@ -92,29 +95,6 @@ public:
     /// removes the given edge from the base graph
     void removeEdge(graph_analysis::Edge::Ptr edge);
 
-    /// renders the base graph to custom yml format file 'filename'
-    void toYmlFile(const std::string& filename);
-    /// renders the base graph to DOT file 'filename' via mpGVGraph directly
-    void gvRender (const std::string& filename);
-    /// renders the base graph to DOT file 'filename' via the dot exporter (graph writer)
-    void toDotFile(const std::string& filename);
-    /// renders the base graph to gexf format file 'filename'
-    void toXmlFile(const std::string& filename);
-    /**
-     * \brief loads base graph from file 'filename' (either from custom yml format, or gexf standard format)
-     * \param filename the input file to parse the graph from
-     * \param format the string key to use for reader look-up in the readers map
-     * \return error code: 0 when successful; non-zero if anything went wrong
-     */
-    int fromFile(const std::string& filename, const std::string& format);
-    /**
-     * \brief loads base graph from file 'filename' - tries the 2 available formats: the custom yml and the standard gexf
-     * \param file the source filename to parse from
-     * \param prefers_gexf boolean flag telling whether to prefer gexf over custom yml in case the filename has no extension
-     * \param status boolean flag telling whether to update the status bar
-     */
-    void fromFile(const QString& file, bool prefers_gexf = true, bool status = true);
-
     /// enables the given vertex in the base graph
     void enableVertex (graph_analysis::Vertex::Ptr vertex);
     /// disables the given vertex in the base graph
@@ -124,12 +104,7 @@ public:
     /// disables the given edge in the base graph
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    /// deletes all internal information; when keepData is set, the underlying base graph is spared (it won't get reset)
-    void reset(bool keepData = false);
-    /// resets all graphical scene storage elements
-    void clear();
     /// respawns all graphical elements by the underlying base graph
-    void updateFromGraph(); // NOTE: one of the filters setters has to be called in beforehand in order to perform filtering within this call
     void itemMoved();
 
     /// setter method - lets this graph widget know which vertex is currently focused on (i.e. was double clicked)
@@ -188,6 +163,9 @@ public:
     /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
     bool getDragDrop() { return mDragDrop; }
 
+    /// override existing parent methods
+    void resetLayoutingGraph();
+
 public slots:
     /// shuffles all the nodes in the diagram graph editor
     void shuffle();
@@ -237,18 +215,6 @@ public slots:
     /// displays context menu (upon a right click in the scene)
     void showContextMenu(const QPoint& pos);
 
-    /// re-layouts the graph editor with the given layouting engine 'layoutName'
-    void setLayout(QString layoutName);
-    /// refreshes the scene from scratch - updates the Status bar iff status is set (true)
-    void refresh(bool status = true);
-    /// deletes the entire graph
-    void resetGraph();
-    /// prompts the user for a new layout and performs re-layouting
-    void changeLayout();
-    /// prompts the user for loading the base graph from a file
-    void importGraph();
-    /// prompts the user for saving the base graph to a file
-    void exportGraph();
     /// updates drag-n-drop witness value to 'dragDrop' and warns and adapts the other involved components
     void setDragDrop(bool dragDrop);
     /// updates drag-n-drop witness value to 'dragDrop'
@@ -268,9 +234,9 @@ public slots:
 
 protected:
     /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget; when status is false, this takes place quiently (no updates are made on the status bar)
-    void refreshLayerViewWidget(bool status = true);
+    //void refreshLayerViewWidget(bool status = true);
     /// updates the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget
-    void updateLayerViewWidget();
+    //void updateLayerViewWidget();
 
     /// qt mouse press callback
     void mousePressEvent(QMouseEvent* event);
@@ -295,14 +261,6 @@ private:
     /// introduces and displays a new edge with the given label
     void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
 
-    /// secondary base graph needed for runtime re-layouting
-    graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
-
-    /// io components
-    /// export
-    WriterMap mWriterMap;
-    /// import
-    ReaderMap mReaderMap;
     /// currently focused vertex (i.e. has been double-clicked)
     graph_analysis::Vertex::Ptr mpFocusedVertex;
     /// drag-n-drop source cluster vertex
@@ -320,13 +278,6 @@ private:
     bool mVertexFocused;
     /// boolean witness telling whether an edge is being focused on
     bool mEdgeFocused;
-    /// boolean witness preventing status bar refresh message to interfere with the 'Ready!' message on init
-    bool mInitialized;
-
-    /// max height of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeHeight;
-    /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeWidth;
 
     /// boolean witness for the drag-n-drop mode: true when drag-n-drop is on; false otherwise (i.e. when move-around mode is on)
     bool mDragDrop;

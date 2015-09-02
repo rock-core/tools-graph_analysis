@@ -40,7 +40,7 @@
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
-#include <graph_analysis/gui/GraphManager.hpp>
+#include <graph_analysis/gui/GraphWidgetManager.hpp>
 
 #include <exception>
 #include <boost/foreach.hpp>
@@ -52,10 +52,12 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(QWidget *parent)
+GraphWidget::GraphWidget(GraphWidgetManager* graphWidgetManager, const QString& widgetName, QWidget *parent)
     : QGraphicsView(parent)
-    , mpGraph(graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ))
+    , mWidgetName(widgetName)
+    , mpGraph()
     , mpGVGraph(0)
+    , mpLayoutingGraph()
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -65,27 +67,27 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
     , mEdgeSelected(false)
-{
-}
+    , mpGraphWidgetManager(graphWidgetManager)
+{}
 
-GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
-    : QGraphicsView(parent)
-    , mpGraph(graph)
-    , mpGVGraph(0)
-    , mFiltered(false)
-    , mTimerId(0)
-    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-    , mLayout("dot")
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mVertexSelected(false)
-    , mEdgeSelected(false)
-{
-}
+//GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
+//    : QGraphicsView(parent)
+//    , mpGraph(graph)
+//    , mpGVGraph(0)
+//    , mFiltered(false)
+//    , mTimerId(0)
+//    , mScaleFactor(DEFAULT_SCALING_FACTOR)
+//    , mLayout("dot")
+//    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
+//    , mpEdgeFilter(new filters::EdgeContextFilter())
+//    , mVertexSelected(false)
+//    , mEdgeSelected(false)
+//{
+//}
 
 GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     : QGraphicsView(parent)
-    , mpGraph(graph_analysis::BaseGraph::Ptr( new gl::DirectedGraph() ))
+    , mpGraph()
     , mpGVGraph(0)
     , mFiltered(false)
     , mTimerId(0)
@@ -95,6 +97,7 @@ GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mVertexSelected(false)
     , mEdgeSelected(false)
+    , mpGraphWidgetManager(0)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
@@ -136,7 +139,182 @@ void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
 
 void GraphWidget::updateStatus(const std::string& message, int timeout) const
 {
-    WidgetManager::getInstance()->getGraphManager()->updateStatus(QString(message.c_str()), timeout);
+    WidgetManager::getInstance()->getGraphWidgetManager()->updateStatus(QString(message.c_str()), timeout);
+}
+
+void GraphWidget::setGraphLayout(const QString& layoutName)
+{
+    mLayout = layoutName;
+    refresh();
+}
+
+void GraphWidget::clear()
+{
+    // TO-DO: add filtering clearing?
+    if(mpGVGraph)
+    {
+        mpGVGraph->clearEdges();
+        mpGVGraph->clearNodes();
+    }
+
+    mNodeItemMap.clear();
+    mEdgeItemMap.clear();
+    mFeatureIDMap.clear();
+    mFeatureMap.clear();
+    mEdgeMap.clear();
+    scene()->clear();
+
+    resetLayoutingGraph();
+}
+
+void GraphWidget::reset(bool keepData)
+{
+    getGraphWidgetManager()->resetGraph(keepData);
+}
+
+void GraphWidget::clearWithDialog()
+{
+    updateStatus(std::string("Clear the graph ..."));
+    if(mpGraph->empty())
+    {
+        QMessageBox::information(this, tr("Nothing to clear"), "The graph is empty");
+        updateStatus("Done clearing the graph", GraphWidgetManager::TIMEOUT);
+    }
+    else
+    {
+        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm clear"), tr("The graph will be erased! Are you sure you want to continue?"), QMessageBox::Yes | QMessageBox::No);
+        switch(button)
+        {
+            case QMessageBox::Yes:
+                reset();
+                updateStatus("Done clearing the graph", GraphWidgetManager::TIMEOUT);
+            break;
+
+            default:
+                updateStatus("Clearing the graph aborted by user", GraphWidgetManager::TIMEOUT);
+            break;
+        }
+    }
+}
+
+void GraphWidget::resetLayoutingGraph()
+{
+    if(mpGVGraph)
+    {
+        delete mpGVGraph;
+    }
+
+    mpLayoutingGraph = BaseGraph::getInstance();
+    mpGVGraph = new io::GVGraph(mpLayoutingGraph, "LayoutingGraph");
+}
+
+void GraphWidget::updateView()
+{
+    mpSubGraph = mGraphView.apply(mpGraph);
+    mFiltered = true;
+}
+
+void GraphWidget::refresh(bool all)
+{
+    LOG_DEBUG_S << "Refresh widget: " << getClassName().toStdString();
+    reset(true /*keepData*/);
+    updateFromGraph();
+    update();
+}
+
+QStringList GraphWidget::getSupportedLayouts() const
+{
+    QStringList options;
+
+    std::set<std::string> supportedLayouts = mpGVGraph->getSupportedLayouts();
+    foreach(std::string supportedLayout, supportedLayouts)
+    {
+        options << tr(supportedLayout.c_str());
+    }
+
+    return options;
+}
+
+
+void GraphWidget::gvRender(const std::string& filename)
+{
+    try
+    {
+        mpGVGraph->renderToFile(filename, mLayout.toStdString());
+    }
+    catch(std::runtime_error e)
+    {
+        LOG_ERROR_S << "graph_analysis::gui::GraphWidgetManager::toDotFile: export via graphviz failed: " << e.what();
+        QMessageBox::critical(this, tr("Graph export via GraphViz failed"), e.what());
+        updateStatus("Dot Graph export failed: " + std::string(e.what()), GraphWidgetManager::TIMEOUT);
+    }
+}
+
+void GraphWidget::keyPressEvent(QKeyEvent* event)
+{
+    // check for a keys combination
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+    if(!mpGraphWidgetManager)
+    {
+        throw std::runtime_error("graph_analysis::gui::GraphWidget::keyPressEvent: GraphWidgetManager is not set for this widget");
+    }
+
+    if(modifiers & Qt::ControlModifier) // key combinations while holding 'CTRL' pressed
+    {
+        switch(event->key())
+        {
+            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
+            case Qt::Key_W:
+                exit(0);
+            break;
+
+            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
+                getGraphWidgetManager()->resetGraph();
+            break;
+
+            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
+            case Qt::Key_S:
+                getGraphWidgetManager()->exportGraph();
+            break;
+
+            case Qt::Key_A: // CTRL+A prompts the user to add a node
+//                if(!mDragDrop)
+//                {
+//                    addNodeAdhoc();
+//                }
+            break;
+
+            case Qt::Key_O:
+            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  
+                getGraphWidgetManager()->importGraph();
+                break;
+            case Qt::Key_L:
+                // CTRL+L (layout graph) opens a graph from file
+                getGraphWidgetManager()->selectLayout();
+                break;
+
+            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
+                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
+                {
+                    WidgetManager::getInstance()->getGraphWidgetManager()->reloadPropertyDialog();
+                }
+            break;
+            case Qt::Key_CapsLock: // CTRL+CapsLock or CTRL+D toggles the active mode (drag-n-drop mode v. move-around mode)
+            case Qt::Key_D:
+                //mDragDrop ? unsetDragDrop() : setDragDrop();
+            break;
+        }
+    }
+    QGraphicsView::keyPressEvent(event);
+}
+
+GraphWidgetManager* GraphWidget::getGraphWidgetManager() const
+{
+    if(!mpGraphWidgetManager)
+    {
+        throw std::runtime_error("graph_analysis::gui::GraphWidget::getGraphWigetManager: widget manager is NULL");
+    }
+    return mpGraphWidgetManager;
 }
 
 } // end namespace gui

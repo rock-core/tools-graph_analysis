@@ -1,11 +1,13 @@
-#include "GraphManager.hpp"
+#include "GraphWidgetManager.hpp"
 
 #include <string>
 #include <sstream>
 #include <QApplication>
+#include <graph_analysis/gui/ComponentEditorWidget.hpp>
+#include <graph_analysis/gui/LayerViewWidget.hpp>
 
 // prints verbose help message regarding usage of 'cmd' to string stream 'ss'
-void help_setup(std::stringstream& ss, const std::string& cmd, graph_analysis::gui::GraphManager& graphManager)
+void help_setup(std::stringstream& ss, const std::string& cmd, graph_analysis::gui::GraphWidgetManager& graphManager)
 {
     graphManager.helpSetup(ss, cmd);
 }
@@ -14,7 +16,9 @@ int main(int argc, char **argv)
 {
     // setting up qt application
     QApplication app(argc, argv);
-    graph_analysis::gui::GraphManager graphManager;
+
+    using namespace graph_analysis::gui;
+    GraphWidgetManager graphManager;
 
     if(argc > 1)
     {
@@ -31,6 +35,9 @@ int main(int argc, char **argv)
             return 0;
         }
     }
+
+    ComponentEditorWidget* componentEditor = new ComponentEditorWidget(&graphManager);
+    LayerViewWidget* layerView = new LayerViewWidget(&graphManager);
 
     int return_code = app.exec();
     return return_code;

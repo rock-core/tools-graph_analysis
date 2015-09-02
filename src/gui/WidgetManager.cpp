@@ -1,6 +1,6 @@
 
 #include "WidgetManager.hpp"
-#include "GraphManager.hpp"
+#include "GraphWidgetManager.hpp"
 
 #include <exception>
 #include <base/Logging.hpp>
@@ -9,7 +9,7 @@ namespace graph_analysis {
 namespace gui {
 
 WidgetManager::WidgetManager()
-    : mpGraphManager(NULL)
+    : mpGraphWidgetManager(NULL)
     , mpMainWindow(NULL)
     , mpComponentEditorWidget(NULL)
     , mpLayerViewWidget(NULL)
@@ -22,19 +22,32 @@ WidgetManager::~WidgetManager()
 {
 }
 
-GraphManager* WidgetManager::getGraphManager(void)
+void WidgetManager::setWidget(GraphWidget* widget)
 {
-    if(!mpGraphManager)
+    if(dynamic_cast<ComponentEditorWidget*>(widget))
     {
-        std::string error_msg("graph_analysis::gui::WidgetManager::getGraphManager: mpGraphManager has not been initialized!");
+        setComponentEditorWidget(dynamic_cast<ComponentEditorWidget*>(widget));
+    } else if (dynamic_cast<LayerViewWidget*>(widget))
+    {
+        setLayerViewWidget(dynamic_cast<LayerViewWidget*>(widget));
+    } else {
+        throw std::invalid_argument("graph_analyis::gui::WidgetManager::setWidget: unsupported widget type");
+    }
+}
+
+GraphWidgetManager* WidgetManager::getGraphWidgetManager(void)
+{
+    if(!mpGraphWidgetManager)
+    {
+        std::string error_msg("graph_analysis::gui::WidgetManager::getGraphWidgetManager: mpGraphWidgetManager has not been initialized!");
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }
-    return mpGraphManager;
+    return mpGraphWidgetManager;
 }
-void WidgetManager::setGraphManager(GraphManager *graphManager)
+void WidgetManager::setGraphWidgetManager(GraphWidgetManager *graphManager)
 {
-    mpGraphManager = graphManager;
+    mpGraphWidgetManager = graphManager;
 }
 
 QMainWindow* WidgetManager::getMainWindow(void)
@@ -50,21 +63,6 @@ QMainWindow* WidgetManager::getMainWindow(void)
 void WidgetManager::setMainWindow(QMainWindow *mainWindow)
 {
     mpMainWindow = mainWindow;
-}
-
-QStackedWidget* WidgetManager::getStackedWidget(void)
-{
-    if(!mpStackedWidget)
-    {
-        std::string error_msg("graph_analysis::gui::WidgetManager::getStackedWidget: mpStackedWidget has not been initialized!");
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    return mpStackedWidget;
-}
-void WidgetManager::setStackedWidget(QStackedWidget *stackedWidget)
-{
-    mpStackedWidget = stackedWidget;
 }
 
 ComponentEditorWidget* WidgetManager::getComponentEditorWidget(void)
