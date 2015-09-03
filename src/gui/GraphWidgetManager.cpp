@@ -34,6 +34,8 @@ GraphWidgetManager::GraphWidgetManager()
     , mLayout("dot") // other possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
     , mMode(MOVE_MODE)
 {
+    resetGraph(false);
+
     // setting up the Reader and WriterMaps
     io::YamlWriter *yamlWriter = new io::YamlWriter();
     mWriterMap["yaml"]  = yamlWriter;
