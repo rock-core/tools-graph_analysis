@@ -39,6 +39,25 @@ QAction* ActionCommander::addAction(const char *title, const char *slot, const Q
     return action;
 }
 
+QAction* ActionCommander::addAction(const char *title, const char *slot, const QIcon& icon, const QKeySequence& keySequence, const QString& statusTip, QObject* object)
+{
+    QAction* action;
+    if(!object)
+    {
+        action = addAction(title, slot, icon);
+    } else {
+        action = addAction(title, slot, icon, object);
+    }
+
+    action->setShortcut(keySequence);
+    if(statusTip != QString())
+    {
+        action->setStatusTip(statusTip);
+    }
+    return action;
+}
+
+
 QAction* ActionCommander::addMappedAction(const char *title, const char *slot, QObject *arg, QObject* object)
 {
     QSignalMapper* signalMapper = new QSignalMapper(object);

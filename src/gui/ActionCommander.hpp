@@ -58,6 +58,20 @@ public:
      * \return pointer to the resulting QAction instance
      */
     QAction* addAction(const char *title, const char *slot, const QIcon& icon, QObject* object);
+
+    /**
+     * \brief creates and registers a basic action with the provided 'object' instead of the mpObject member field
+     * \param title text to be displayed for this action
+     * \param slot string with the slot function name
+     * \param icon small image to be displayed left of the action title
+     * \param keySequence Sequence of keys to trigger this action
+     * \param statusTip Text that shows up as status tip
+     * \param object qt object to register to
+     * \return pointer to the resulting QAction instance
+     * \see http://doc.qt.io/qt-4.8/qkeysequence.html
+     */
+    QAction* addAction(const char *title, const char *slot, const QIcon& icon, const QKeySequence& keySequence, const QString& statusTip = QString(), QObject* object = 0);
+
     /**
      * \brief creates and registers a complex action (with 1 parameter) with the stored 'mpObject' qt object
      * \param title text to be displayed for this action

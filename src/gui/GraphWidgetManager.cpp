@@ -10,6 +10,7 @@
 #include <QTranslator>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QToolBar>
 #include <base/Logging.hpp>
 
 #include <graph_analysis/filters/RegexFilters.hpp>
@@ -66,12 +67,20 @@ GraphWidgetManager::GraphWidgetManager()
 
     // File menu
     QMenu *fileMenu = new QMenu(QObject::tr("&File"));
-    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import_white")));
-    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export_white")));
+    QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import_white")), QKeySequence( QKeySequence::Open ), tr("Import graph from file"));
+
+    QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export_white")), QKeySequence( QKeySequence::SaveAs), tr("Export graph to file"));
 
     fileMenu->addAction(actionImport);
     fileMenu->addAction(actionExport);
     fileMenu->addSeparator();
+
+    QToolBar* toolBar = new QToolBar("Toolbar");
+    toolBar->addAction(actionImport);
+    toolBar->addAction(actionExport);
+    toolBar->setFloatable(true);
+    mpMainWindow->addToolBar(toolBar);
+
 
     // Edit Menu
     QMenu *editMenu = new QMenu(QObject::tr("&Edit"));
@@ -114,7 +123,7 @@ GraphWidgetManager::GraphWidgetManager()
     QMenu *viewMenu = new QMenu(QObject::tr("&View"));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh_white")));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle_white")));
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), *(IconManager::getInstance()->getIcon("reload_white")));
+    //QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), *(IconManager::getInstance()->getIcon("reload_white")));
 
 //    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset_white")), mpGraphWidgetManager);
     QAction *actionSelectLayout = comm.addAction("Layout", SLOT(selectLayout()), *(IconManager::getInstance()->getIcon("layout_white")));
@@ -126,7 +135,7 @@ GraphWidgetManager::GraphWidgetManager()
     viewMenu->addSeparator();
     
     // loading different actions in different menus
-    viewMenu->addAction(actionReloadPropertyDialog);
+    //viewMenu->addAction(actionReloadPropertyDialog);
 
     // loading menus in the bar
     bar->addMenu(fileMenu);
