@@ -36,6 +36,7 @@ class NodeItem : public QGraphicsItemGroup, public VertexGetter
 public:
     typedef long long id_t; // counter datatype for attributing ID-s to features in the case of implementing cluster node items
     typedef std::map<id_t, items::Label*> Labels; // map of features labels in a cluster node
+    typedef std::map<id_t, items::Feature*> Features; // map of features 
     typedef std::pair<id_t, items::Label*> Tuple; // item of a map of features labels in a cluster node
     typedef std::map<id_t, Vertex::Ptr> Vertices; // map of feature vertices in a cluster node
     typedef std::pair<id_t, Vertex::Ptr> VTuple; // item of map of feature vertices in a cluster node

@@ -1180,42 +1180,42 @@ void ComponentEditorWidget::updateLayout()
         }
     }
 
-    // re-iterating the edges for rendering the physical ones
-    edgeIt = mpGraph->getEdgeIterator();
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(edge))
-        {
-            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out edge: " << edge->toString();
-            continue;
-        }
-
-        if(mEdgeItemMap.count(edge))
-        {
-            continue;
-        }
-
-        Vertex::Ptr source = edge->getSourceVertex();
-        Vertex::Ptr target = edge->getTargetVertex();
-
-        if(graph_analysis::OutputPortVertex::vertexType() == source->getClassName() && graph_analysis::InputPortVertex::vertexType() == target->getClassName())
-        {
-            NodeItem* sourceNodeItem = mFeatureMap[ source ];
-            NodeItem* targetNodeItem = mFeatureMap[ target ];
-            // physical edge - processing was deflected until now - i.e. after all features will have been registered
-            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
-            mpLayoutingGraph->addEdge(default_edge);
-
-            //EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
-            //scene()->addItem(edgeItem);
-            //mEdgeItemMap[default_edge] = edgeItem;
-            //mpGVGraph->addEdge(default_edge);
-            //mEdgeMap[default_edge] = edge;
-        }
-    }
+//    // re-iterating the edges for rendering the physical ones
+//    edgeIt = mpGraph->getEdgeIterator();
+//    while(edgeIt->next())
+//    {
+//        Edge::Ptr edge = edgeIt->current();
+//
+//        // Check on active filter
+//        if(mFiltered && !mpSubGraph->enabled(edge))
+//        {
+//            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out edge: " << edge->toString();
+//            continue;
+//        }
+//
+//        if(mEdgeItemMap.count(edge))
+//        {
+//            continue;
+//        }
+//
+//        Vertex::Ptr source = edge->getSourceVertex();
+//        Vertex::Ptr target = edge->getTargetVertex();
+//
+//        if(graph_analysis::OutputPortVertex::vertexType() == source->getClassName() && graph_analysis::InputPortVertex::vertexType() == target->getClassName())
+//        {
+//            NodeItem* sourceNodeItem = mFeatureMap[ source ];
+//            NodeItem* targetNodeItem = mFeatureMap[ target ];
+//            // physical edge - processing was deflected until now - i.e. after all features will have been registered
+//            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
+//            mpLayoutingGraph->addEdge(default_edge);
+//
+//            //EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
+//            //scene()->addItem(edgeItem);
+//            //mEdgeItemMap[default_edge] = edgeItem;
+//            //mpGVGraph->addEdge(default_edge);
+//            //mEdgeMap[default_edge] = edge;
+//        }
+//    }
 
     // computing max node height and width for informing GraphViz of max dimensions w.r.t. immediately subsequent layouting
     NodeItemMap::iterator node_it = mNodeItemMap.begin();

@@ -50,6 +50,8 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mSelected(false)
     , mHeightAdjusted(false)
     , mSeparator(SEPARATOR)
+    , mMaxInputPortWidth(0.)
+    , mMaxOutputPortWidth(0.)
 {
     mpLabel = new Label(vertex->toString(), this);
 
@@ -79,6 +81,7 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 
     mpBoard = new QGraphicsWidget(this);
     mpBoard->setAcceptHoverEvents(true);
+
     QRectF rect = boundingRect();
     mpBoard->resize(rect.width(), rect.height());
 
@@ -112,6 +115,24 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     //painter->drawEllipse(-7, -7, 20, 20);
     painter->setPen(QPen(Qt::black, 0));
     updateWidth(false); // in case the main label change triggered redrawing
+
+    QRectF rect;
+    foreach(items::Feature* feature, mFeatures)
+    {
+        rect = featureBoundingRect(feature);
+        painter->drawRoundedRect(rect, PORT_BORDER, PORT_BORDER);
+    }
+
+    // Drawing of border: back to transparent background
+    painter->setPen(mPen);
+    rect = boundingRect();
+
+    // updating the size of the supporting board
+    mpBoard->resize(rect.width(), rect.height());
+    mpBoard->resize(100,100);
+    this->update(rect);
+    // triggering edges to update
+    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
 
@@ -336,22 +357,28 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
 //    }
 //}
 
-QRectF Cluster::featureBoundingRect(NodeItem::id_t featureID)
+QRectF Cluster::featureBoundingRect(NodeItem::id_t featureId)
 {
-//    dieOnFeature(featureID, "featureBoundingRect");
+    items::Feature* feature = getFeature(featureId);
+    return featureBoundingRect(feature);
+}
+
+QRectF Cluster::featureBoundingRect(items::Feature* feature)
+{
     QRectF result = boundingRect(); // full node bounding rect is used a source region to crop out from
-//    Labels::iterator it = mLabels.find(featureID);
-//    graph_analysis::Vertex::Ptr current_feature = mVertices[it->first];
-//    // boolean type witnesses
-//    std::string type = current_feature->getClassName();
-//    bool isInputPort    =   graph_analysis::InputPortVertex::vertexType()   ==  type;
-//    bool isOutputPort   =   graph_analysis::OutputPortVertex::vertexType()  ==  type;
-////  bool isProperty     =   graph_analysis::PropertyVertex::vertexType()    ==  type;
-////  bool isOperation    =   graph_analysis::OperationVertex::vertexType()   ==  type;
-//    bool isPort = isInputPort || isOutputPort;
-//    // conditionally shifting both horizontally and vertically the 2 defining corners of the result rectangle
-//    if(isPort)
-//    {
+    graph_analysis::Vertex::Ptr featureVertex = feature->getVertex();
+
+    // boolean type witnesses
+    std::string type = featureVertex->getClassName();
+    bool isInputPort    =   graph_analysis::InputPortVertex::vertexType()   ==  type;
+    bool isOutputPort   =   graph_analysis::OutputPortVertex::vertexType()  ==  type;
+    bool isProperty     =   graph_analysis::PropertyVertex::vertexType()    ==  type;
+    bool isOperation    =   graph_analysis::OperationVertex::vertexType()   ==  type;
+
+    bool isPort = isInputPort || isOutputPort;
+    // conditionally shifting both horizontally and vertically the 2 defining corners of the result rectangle
+    if(isPort)
+    {
 //#ifndef LABEL_SWAPPING
 //        int offset = std::distance(mLabels.begin(), it);
 //        result.adjust(
@@ -361,26 +388,25 @@ QRectF Cluster::featureBoundingRect(NodeItem::id_t featureID)
 //                        qreal(3 + offset) * ADJUST - result.height()
 //                    ); // forward enumeration
 //#else
-//        qreal offset = mLabels[featureID]->pos().y() - mpLabel->pos().y();
-//        result.adjust(
-//                        isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
-//                        offset,
-//                        isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
-//                        offset + ADJUST - result.height()
-//                    ); // forward enumeration
+        qreal offset = feature->pos().y() - feature->pos().y();
+        result.adjust(
+                        isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
+                        offset,
+                        isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
+                        offset + ADJUST - result.height()
+                    ); // forward enumeration
 //#endif
-//    }
-//    else
-//    {
-//        Label *feature = mLabels[featureID];
-//        qreal offset = feature->pos().y() - mpLabel->pos().y();
-//        result.adjust(
-//                        0.,
-//                        offset,
-//                        feature->boundingRect().width() - result.width(),
-//                        offset + ADJUST - result.height()
-//                    ); // forward enumeration
-//    }
+    }
+    else
+    {
+        qreal offset = feature->pos().y() - mpLabel->pos().y();
+        result.adjust(
+                        0.,
+                        offset,
+                        feature->boundingRect().width() - result.width(),
+                        offset + ADJUST - result.height()
+                    ); // forward enumeration
+    }
     return result;
 }
 
