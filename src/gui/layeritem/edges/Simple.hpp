@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_GRAPHWIDGET_LAYERITEM_EDGES_SIMPLE_HPP
 #define GRAPH_ANALYSIS_GRAPHWIDGET_LAYERITEM_EDGES_SIMPLE_HPP
 
-#include <graph_analysis/gui/EdgeItem.hpp>
 #include <QPainterPath>
 #include <QColor>
 #include <QGraphicsLineItem>
+#include <graph_analysis/gui/EdgeItem.hpp>
 
 /// string under which to register this edge item implementation in the factory
 #define LAYER_EDGE_TYPE "LayerEdge"
@@ -13,8 +13,6 @@ namespace graph_analysis {
 namespace gui {
 namespace layeritem {
 namespace edges {
-
-class EdgeLabel;
 
 /**
  * \file Simple.hpp
@@ -38,7 +36,7 @@ public:
     /// empty constructor
     Simple() {}
     /// getter method for the graphical text label member field
-    virtual EdgeLabel* getLabel() { return mpLabel; }
+    virtual graph_analysis::gui::items::EdgeLabel* getLabel() { return mpLabel; }
     /// destructor
     virtual ~Simple() {}
 
@@ -78,11 +76,12 @@ protected:
     { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@6 args) is not reimplemented"); }
 
     /// the graphical text label
-    EdgeLabel* mpLabel;
-    /// current qt drawing pen
-    QPen mPen;
+    graph_analysis::gui::items::EdgeLabel* mpLabel;
+
     /// the default qt drawing pen
     QPen mPenDefault;
+    /// current qt drawing pen
+    QPen mPen;
     /// ending arrow tip
     QPolygonF mArrowHead;
     /// edge graphical line segment

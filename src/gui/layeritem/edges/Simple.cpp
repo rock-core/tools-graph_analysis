@@ -1,6 +1,8 @@
 #include "Simple.hpp"
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
+#include <graph_analysis/gui/items/EdgeLabel.hpp>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -8,10 +10,11 @@ namespace layeritem {
 namespace edges {
 
 Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
-    : EdgeItem(graphWidget, sourceNode, targetNode, edge), mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
+    : EdgeItem(graphWidget, sourceNode, targetNode, edge)
+    , mpLabel(new items::EdgeLabel(edge->toString(), this))
+    , mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
+    , mPen(mPenDefault) // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 {
-    mpLabel = new EdgeLabel(edge->toString(), this); // the use of edge->toString() is a feature; not a bug!
-    mPen = mPenDefault; // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
 
@@ -79,14 +82,14 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     // Draw the arrow(s)
     double angle = ::acos(mLine.dx() / mLine.length());
     if (mLine.dy() >= 0)
-        angle = TwoPi - angle;
+        angle = 2*M_PI - angle;
 
     QPointF targetIntersectionPoint = mLine.pointAt(1);
 
-    QPointF destArrowP1 = targetIntersectionPoint + QPointF(sin(angle - Pi / 3) * mArrowSize,
-                                              cos(angle - Pi / 3) * mArrowSize);
-    QPointF destArrowP2 = targetIntersectionPoint + QPointF(sin(angle - Pi + Pi / 3) * mArrowSize,
-                                              cos(angle - Pi + Pi / 3) * mArrowSize);
+    QPointF destArrowP1 = targetIntersectionPoint + QPointF(sin(angle - M_PI / 3) * mArrowSize,
+                                              cos(angle - M_PI / 3) * mArrowSize);
+    QPointF destArrowP2 = targetIntersectionPoint + QPointF(sin(angle - M_PI + M_PI / 3) * mArrowSize,
+                                              cos(angle - M_PI + M_PI / 3) * mArrowSize);
 
     painter->setBrush(mPen.brush());
     painter->drawPolygon(QPolygonF() << mLine.p2() << destArrowP1 << destArrowP2);
@@ -133,8 +136,7 @@ void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     LOG_DEBUG_S << "Hover ENTER event for " << mpEdge->toString();
-    mpGraphWidget->setSelectedEdge(mpEdge);
-    mpGraphWidget->setEdgeSelected(true);
+    mpGraphWidget->setFocusedElement(mpEdge);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -142,7 +144,7 @@ void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = mPenDefault;
     LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
-    mpGraphWidget->setEdgeSelected(false);
+    mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

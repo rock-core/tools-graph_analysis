@@ -45,6 +45,7 @@ public:
     // Register visualization class
     // takes ownership of graphicsItem
     void registerVisualization(const node::Type& type, NodeItem* graphicsItem, bool throwOnAlreadyRegistered = false);
+
     /**
      * \brief clones a new graphical node of a specified type
      * \param graphWidget the managing graph widget to assume parenthood of the to-be-created item
@@ -53,6 +54,12 @@ public:
      * \return smart pointer to the newly created graphical node instance
      */
     NodeItem* createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex, const std::string& type = std::string());
+
+    /**
+     * Get list of supported visualizations
+     * \return a list of supported node visualization types
+     */
+    QStringList getSupportedTypes() const;
 };
 
 } // end namespace gui

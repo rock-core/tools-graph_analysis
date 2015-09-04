@@ -8,9 +8,13 @@
 
 namespace graph_analysis {
 namespace gui {
+
+namespace items {
+    class Label;
+}
+
 namespace layeritem {
 
-class Label;
 
 /**
  * \file Resource.hpp
@@ -57,7 +61,7 @@ protected:
 
 private:
     /// main node text label
-    Label* mLabel;
+    items::Label* mLabel;
     /// qt drawing pen
     QPen mPen;
     /// default qt drawing pen

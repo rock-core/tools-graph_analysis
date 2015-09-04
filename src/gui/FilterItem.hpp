@@ -10,7 +10,7 @@
 namespace graph_analysis {
 namespace gui {
 
-namespace layeritem {
+namespace items {
     class Label;
 } // end namespace layeritem
 
@@ -95,7 +95,7 @@ private:
     /// index in the vector of filters (indirectly dictates position in the scene)
     filter_index_t mIndex;
     /// graphical regex text label
-    layeritem::Label* mLabel;
+    items::Label* mLabel;
     /// qt drawing pen
     QPen mPen;
     /// default qt drawing pen

@@ -52,24 +52,14 @@ public:
      * \brief clones a new graphical edge of a specified type
      * \param graphWidget the managing graph widget to assume parenthood of the to-be-created item
      * \param sourceNode edge source port node
-     * \param sourceNodePortID edge source port node ID
-     * \param targetNode edge target port node
-     * \param targetNodePortID edge target port node ID
-     * \param edge underlying conceptual edge
-     * \param type optional preferred type
-     * \return smart pointer to the newly created graphical edge instance
-     */
-    EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, int sourceNodePortID, NodeItem* targetNode, int targetNodePortID, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());
-    /**
-     * \brief clones a new graphical edge of a specified type
-     * \param graphWidget the managing graph widget to assume parenthood of the to-be-created item
-     * \param sourceNode edge source port node
      * \param targetNode edge target port node
      * \param edge underlying conceptual edge
      * \param type optional type parameter
      * \return smart pointer to the newly created graphical edge instance
      */
     EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());
+
+    QStringList getSupportedTypes() const;
 };
 
 } // end namespace gui

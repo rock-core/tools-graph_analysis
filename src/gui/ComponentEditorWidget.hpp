@@ -77,12 +77,8 @@ public:
      * \return smart pointer to the newly created vertex instance
      */
     Edge::Ptr createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
-    /// adds given vertex to the base graph without enabling it
-    void addVertex(graph_analysis::Vertex::Ptr vertex);
     /// removes the given vertex from the base graph
     void removeVertex(graph_analysis::Vertex::Ptr vertex);
-    /// adds given edge to the base graph without enabling it
-    void addEdge(graph_analysis::Edge::Ptr edge);
     /// removes the given edge from the base graph
     void removeEdge(graph_analysis::Edge::Ptr edge);
 
@@ -131,8 +127,6 @@ public:
     void clearFocus();
     /// adds a feature to the provided cluster vertex
     void addFeature(graph_analysis::Vertex::Ptr vertex);
-    /// renames given vertex to the new given label 'label' (also updates the corresponding graphical representation)
-    void changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std::string& label);
     /// prompts the user for renaming a feature vertex of the given cluster vertex
     void renameFeature (graph_analysis::Vertex::Ptr concernedVertex);
     /// prompts the user for removing a feature vertex of the given cluster vertex
@@ -144,8 +138,6 @@ public:
     /// deletes the given cluster vertex
     void clearVertex(graph_analysis::Vertex::Ptr concernedVertex);
 
-    /// renames given edge to the new given label 'label' (also updates the corresponding graphical representation)
-    void changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const std::string& label);
     /// deletes the given edge
     void clearEdge(graph_analysis::Edge::Ptr concernedEdge);
     /// synchronizes out the given edge from mEdgeItemMap (i.e. deletes the edge)
@@ -181,10 +173,6 @@ public slots:
     void removeFeatureSelected();
     /// prompts the user for removing all features of the currently selected node (i.e. node being hovered over)
     void removeFeaturesSelected();
-    /// prompts the user for renaming the currently focused node (i.e. previously double clicked node)
-    void changeFocusedVertexLabel();
-    /// prompts the user for renaming the currently selected node (i.e. node being hovered over)
-    void changeSelectedVertexLabel();
     /// deletes the currently focused node (i.e. previously double clicked node)
     void removeFocusedVertex();
     /// deletes the currently selected node (i.e. node being hovered over)
@@ -193,11 +181,6 @@ public slots:
     void swapFeaturesFocused();
     /// prompts the user for swapping two features of the currently selected node (i.e. node being hovered over)
     void swapFeaturesSelected();
-    /// prompts the user for renaming the currently focused edge (i.e. previously double clicked edge)
-    void changeFocusedEdgeLabel();
-    /// prompts the user for renaming the currently selected edge (i.e. edge being hovered over)
-    void changeSelectedEdgeLabel();
-    /// deletes the currently focused edge (i.e. previously double clicked edge)
     void removeFocusedEdge();
     /// deletes the currently selected edge (i.e. edge being hovered over)
     void removeSelectedEdge();
@@ -219,9 +202,6 @@ public slots:
     void setDragDrop();
     /// sets drag-n-drop to false on all levels
     void unsetDragDrop();
-    /// spawns a new edge
-    void addEdgeAdHoc(); // assumes the concerned edge-creation member fields are properly set already
-
 protected:
     /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget; when status is false, this takes place quiently (no updates are made on the status bar)
     //void refreshLayerViewWidget(bool status = true);

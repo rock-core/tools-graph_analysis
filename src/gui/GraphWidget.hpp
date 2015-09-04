@@ -1,8 +1,6 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
-#include "NodeItem.hpp"
-
 #include <map>
 #include <QIcon>
 #include <QMainWindow>
@@ -12,6 +10,7 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
+#include <graph_analysis/gui/NodeItem.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -19,12 +18,6 @@ namespace io {
 }
 
 namespace gui {
-
-class NodeItem;
-class EdgeItem;
-class AddNodeDialog;
-class ActionCommander;
-class PropertyDialog;
 
 /**
  *
@@ -86,16 +79,31 @@ public:
     void setGraphWidgetManager(GraphWidgetManager* graphWidgetManager) { mpGraphWidgetManager = graphWidgetManager; }
     GraphWidgetManager* getGraphWidgetManager() const;
 
-    // virtual methods
+    /**
+     * Triggers a reset of the underlying graph
+     * via GraphWidgetManager::resetGraph
+     */
     virtual void reset(bool keepData = false);
 
+    /**
+     * Clear the graph widget and scene
+     */
     virtual void clear();
-    void clearWithDialog();
+
+    /**
+     * Reset the layouting graph, i.e, deletes and reinstanciates it
+     */
     virtual void resetLayoutingGraph();
+
+    /**
+     * Prompt user before clearing the graph
+     */
+    void clearWithDialog();
 
     /**
      * Update the current view / filtered subgraph
      */
+    virtual void update();
     virtual void updateView();
     void updateFilterView();
     void updateLayoutView();
@@ -115,35 +123,26 @@ public:
     /// getter method for retrieving the scaling factor
     double  getScaleFactor () const { return mScaleFactor; }
 
-    /// setter method - lets the graph widget know which vertex is currently being hovered over
-    void setSelectedVertex(graph_analysis::Vertex::Ptr selectedVertex) { mpSelectedVertex = selectedVertex; }
-    /// getter method - retrieves the vertex this graph widget knows was last being hovered over
-    graph_analysis::Vertex::Ptr getSelectedVertex() { return mpSelectedVertex; }
 
-    /// setter method - lets the graph widget know a vertex is currently being hovered over
-    void setVertexSelected (bool selected) { mVertexSelected = selected; }
-    /// getter method - indicates whether this graph widget knows of a vertex currently being hovered over
-    bool getVertexSelected () { return mVertexSelected; }
+    // SELECT/ DESELECT
+    void setFocusedElement(graph_analysis::GraphElement::Ptr element) { mpFocusedElement = element; }
+    GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
+    void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
+    bool isFocused(GraphElement::Ptr element) const { return mpFocusedElement == element; }
 
-    /// setter method - lets the graph widget know which edge is currently being hovered over
-    void setSelectedEdge(graph_analysis::Edge::Ptr selectedEdge) { mpSelectedEdge = selectedEdge; }
-    /// getter method - retrieves the edge this graph widget knows was last being hovered over
-    graph_analysis::Edge::Ptr getSelectedEdge() { return mpSelectedEdge; }
+    void selectElement(graph_analysis::GraphElement::Ptr element);
+    void unselectElement(graph_analysis::GraphElement::Ptr element);
+    void clearElementSelection() { mElementSelection.clear(); }
 
-    /// setter method - lets the graph widget know an edge is currently being hovered over
-    void setEdgeSelected (bool selected) { mEdgeSelected = selected; }
-    /// getter method - indicates whether this graph widget knows of an edge currently being hovered over
-    bool getEdgeSelected () { return mEdgeSelected; }
+    bool isInElementSelection(graph_analysis::GraphElement::Ptr element) { return std::find(mElementSelection.begin(), mElementSelection.end(), element) != mElementSelection.end(); }
+    std::vector<graph_analysis::GraphElement::Ptr> getElementSelection() const { return mElementSelection; }
 
-    // virtual methods
-    virtual void setVertexFocused(bool focused) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setVertexFocused is not reimplemented");  }
-    virtual void setEdgeFocused  (bool focused) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEdgeFocused is not reimplemented");    }
-    virtual void clearEdgeFocus() { throw std::runtime_error("graph_analysis::gui::GraphWidget::clearEdgeFocus is not reimplemented"); }
-    virtual void clearNodeFocus() { throw std::runtime_error("graph_analysis::gui::GraphWidget::clearNodeFocus is not reimplemented"); }
-    virtual void setStartVertex (graph_analysis::Vertex::Ptr, NodeItem::id_t) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setStartVertex is not reimplemented"); }
-    virtual void setEndVertex   (graph_analysis::Vertex::Ptr, NodeItem::id_t) { throw std::runtime_error("graph_analysis::gui::GraphWidget::setEndVertex is not reimplemented");   }
-    virtual void setFocusedEdge     (graph_analysis::Edge::Ptr)     { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedEdge is not reimplemented");   }
-    virtual void setFocusedVertex   (graph_analysis::Vertex::Ptr)   { throw std::runtime_error("graph_analysis::gui::GraphWidget::setFocusedVertex is not reimplemented"); }
+    // EDIT
+    virtual Vertex::Ptr addVertex(const std::string& type, const std::string& label, QPoint* position = 0);
+    void addVertexDialog(QObject* object = 0);
+    virtual Edge::Ptr addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
+    void addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
+
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
     virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
 
@@ -158,6 +157,7 @@ public:
     virtual void modeChanged(GraphWidgetManager::Mode mode) {}
 
     virtual QStringList getSupportedLayouts() const;
+    void renameElement(GraphElement::Ptr element, const std::string& label);
 
 protected:
     QString mWidgetName;
@@ -205,15 +205,8 @@ protected:
     /// edge filters
     graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
-    /// latest selected vertex (hovered over)
-    graph_analysis::Vertex::Ptr mpSelectedVertex;
-    /// latest selected edge (hovered over)
-    graph_analysis::Edge::Ptr mpSelectedEdge;
-
-    /// boolean witness for a vertex being hovered over: true when a vertex is currently being hovered over; false otherwise
-    bool mVertexSelected;
-    /// boolean witness for an edge being hovered over: true when an edge is currently being hovered over; false otherwise
-    bool mEdgeSelected;
+    graph_analysis::GraphElement::Ptr mpFocusedElement;
+    std::vector<graph_analysis::GraphElement::Ptr> mElementSelection;
 
     GraphWidgetManager* mpGraphWidgetManager;
 
@@ -221,9 +214,8 @@ protected:
 
     virtual void keyPressEvent(QKeyEvent*);
 
-    virtual void mousePressEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mousePressEvent is not reimplemented"); }
-    virtual void mouseReleaseEvent(QMouseEvent*) { throw std::runtime_error("graph_analysis::gui::GraphWidget::mouseReleaseEvent is not reimplemented"); }
-
+    virtual void mousePressEvent(QMouseEvent*);
+    virtual void mouseReleaseEvent(QMouseEvent*);
 
 };
 

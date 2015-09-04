@@ -1,7 +1,7 @@
 #include "GraphWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
-#include "AddNodeDialog.hpp"
+#include "AddGraphElement.hpp"
 #include "PropertyDialog.hpp"
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
@@ -38,7 +38,7 @@
 #include <graph_analysis/io/GraphvizWriter.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
-#include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
+#include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 
@@ -58,6 +58,8 @@ GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
     , mpGraph()
     , mpGVGraph(0)
     , mpLayoutingGraph()
+    , mMaxNodeHeight(0)
+    , mMaxNodeWidth (0)
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
@@ -65,11 +67,7 @@ GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
     //, mpVertexFilter(new filters::PermitAll< graph_analysis::Vertex::Ptr>( ))
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mVertexSelected(false)
-    , mEdgeSelected(false)
-    , mpGraphWidgetManager()
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
+    , mpGraphWidgetManager(0)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
@@ -80,17 +78,15 @@ GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     , mpGraph()
     , mpGVGraph(0)
     , mpLayoutingGraph()
+    , mMaxNodeHeight(0)
+    , mMaxNodeWidth (0)
     , mFiltered(false)
     , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mVertexSelected(false)
-    , mEdgeSelected(false)
     , mpGraphWidgetManager(0)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
@@ -146,8 +142,6 @@ void GraphWidget::clear()
     mFeatureMap.clear();
     mEdgeMap.clear();
     scene()->clear();
-
-    updateView();
 }
 
 void GraphWidget::reset(bool keepData)
@@ -189,6 +183,13 @@ void GraphWidget::resetLayoutingGraph()
 
     mpLayoutingGraph = BaseGraph::getInstance();
     mpGVGraph = new io::GVGraph(mpLayoutingGraph, "LayoutingGraph");
+}
+
+void GraphWidget::update()
+{
+    updateView();
+
+    QWidget::update();
 }
 
 void GraphWidget::updateView()
@@ -262,7 +263,6 @@ void GraphWidget::refresh(bool all)
     LOG_DEBUG_S << "Refresh widget: " << getClassName().toStdString();
     reset(true /*keepData*/);
 
-    //updateView();
     update();
 }
 
@@ -359,6 +359,180 @@ GraphWidgetManager* GraphWidget::getGraphWidgetManager() const
         throw std::runtime_error("graph_analysis::gui::GraphWidget::getGraphWigetManager: widget manager is NULL");
     }
     return mpGraphWidgetManager;
+}
+
+void GraphWidget::selectElement(graph_analysis::GraphElement::Ptr element)
+{
+    std::vector<GraphElement::Ptr>::const_iterator cit = std::find(mElementSelection.begin(),
+            mElementSelection.end(), element);
+
+    if(cit == mElementSelection.end())
+    {
+        LOG_DEBUG_S << "Select element: '" << element->toString();
+        mElementSelection.push_back(element);
+    } else {
+        throw std::invalid_argument("graph_analysis::gui::GraphWidget::selectElement: '" + element->toString() + "' already in selection");
+    }
+}
+
+void GraphWidget::unselectElement(graph_analysis::GraphElement::Ptr element)
+{
+    std::vector<GraphElement::Ptr>::iterator it = std::find(mElementSelection.begin(),
+            mElementSelection.end(), element);
+
+    if(it == mElementSelection.end())
+    {
+        throw std::invalid_argument("graph_analysis::gui::GraphWidget::unselectElement: '" + element->toString() + "' not in selection");
+    } else {
+        LOG_DEBUG_S << "Unselect element: '" << element->toString();
+        mElementSelection.erase(it);
+    }
+}
+
+void GraphWidget::mousePressEvent(QMouseEvent* event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        GraphElement::Ptr element = getFocusedElement();
+
+        if(!element )
+        { 
+            clearElementSelection(); 
+            return;
+        }
+
+        // Allow to use SHIFT to create selection group
+        if(event->modifiers() != Qt::ShiftModifier)
+        {
+            clearElementSelection();
+        }
+
+        try {
+            selectElement(element);
+        } catch(const std::runtime_error& e)
+        {
+            unselectElement(element);
+        }
+
+        if(getGraphWidgetManager()->getMode() == GraphWidgetManager::CONNECT_MODE)
+        {
+            QDrag* drag = new QDrag(this);
+            QMimeData* mimeData = new QMimeData;
+
+            // Setting the id of the graph element as mime data
+            std::stringstream ss;
+            ss << element->getId(mpGraph->getId());
+            mimeData->setText(ss.str().c_str());
+            drag->setMimeData(mimeData);
+
+            drag->exec(Qt::CopyAction); // | Qt::MoveAction);
+        }
+    }
+
+
+}
+
+void GraphWidget::mouseReleaseEvent(QMouseEvent*)
+{
+}
+
+void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& label)
+{
+    element->setLabel(label);
+
+    Vertex::Ptr vertex;
+    Edge::Ptr edge;
+
+    if(vertex = boost::dynamic_pointer_cast<Vertex>(element))
+    {
+        NodeItem* nodeItem = mNodeItemMap[vertex];
+        if(!nodeItem)
+        {
+            std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
+            LOG_ERROR_S << error_msg;
+            throw std::runtime_error(error_msg);
+        }
+        nodeItem->setLabel(label);
+    } else if(edge = boost::dynamic_pointer_cast<Edge>(element))
+    {
+        EdgeItem* edgeItem = mEdgeItemMap[edge];
+        if(!edgeItem)
+        {
+            std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided edge '") + edge->getLabel() + "' is not registered with the GUI";
+            LOG_ERROR_S << error_msg;
+            throw std::runtime_error(error_msg);
+        }
+
+        edgeItem->setLabel(label);
+
+        //graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edgeItem->getLabel();
+        //edgeLabel->setPlainText(QString(label.c_str()));
+        //edge->adjustLabel();
+    }
+}
+
+// EDIT
+Vertex::Ptr GraphWidget::addVertex(const std::string& type, const std::string& label, QPoint* position)
+{
+    // Registering new vertex -- base on the given type
+    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
+    mpGraph->addVertex(vertex);
+    return vertex;
+}
+
+void GraphWidget::addVertexDialog(QObject* object)
+{
+    LOG_DEBUG_S << "Add vertex dialog";
+    updateStatus("Adding vertex ...");
+
+    // the scene position where to place the new node
+    QPoint *position = (QPoint *) object;
+    position = new QPoint(100,100);
+
+    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
+    QStringList supportedTypes;
+    std::set<std::string>::const_iterator cit = types.begin();
+    for(; cit != types.end(); ++cit)
+    {
+        supportedTypes << QString(cit->c_str());
+    }
+
+    AddGraphElement graphElementDialog(supportedTypes, this);
+    graphElementDialog.exec();
+    if(graphElementDialog.result() == QDialog::Accepted)
+    {
+        Vertex::Ptr vertex = addVertex(graphElementDialog.getType().toStdString(), graphElementDialog.getLabel().toStdString(), position);
+        updateStatus("Added vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'", GraphWidgetManager::TIMEOUT);
+        refresh();
+    } else
+    {
+        updateStatus("Adding vertex aborted by user", GraphWidgetManager::TIMEOUT);
+    }
+}
+
+Edge::Ptr GraphWidget::addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex)
+{
+    //Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(type, label, sourceVertex, targetVertex);
+    Edge::Ptr edge(new Edge(sourceVertex, targetVertex, label));
+    mpGraph->addEdge(edge);
+    return edge;
+}
+
+void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex)
+{
+    updateStatus("Adding edge ...");
+    QStringList typesList;
+    AddGraphElement graphElementDialog(typesList);// EdgeTypeManager::getInstance()->getSupportedTypes());
+    if(graphElementDialog.result() == QDialog::Accepted)
+    {
+        Edge::Ptr edge = addEdge(graphElementDialog.getType().toStdString(), graphElementDialog.getLabel().toStdString(), sourceVertex, targetVertex);
+        updateStatus("Added edge '" + edge->toString() + "' of type '" + edge->getClassName() + "'",
+                GraphWidgetManager::TIMEOUT);
+        refresh();
+    } else 
+    {
+        updateStatus("Adding edge aborted by user", GraphWidgetManager::TIMEOUT);
+    }
 }
 
 } // end namespace gui

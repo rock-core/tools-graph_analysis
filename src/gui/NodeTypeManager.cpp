@@ -70,5 +70,16 @@ NodeItem* NodeTypeManager::createItem(GraphWidget* graphWidget, graph_analysis::
     return (type.empty() ? graphicsItemByType(vertex->getClassName()) : graphicsItemByType(type))->createNewItem(graphWidget, vertex);
 }
 
+QStringList NodeTypeManager::getSupportedTypes() const
+{
+    QStringList supportedTypes;
+    ClassVisualizationMap::const_iterator cit = mClassVisualizationMap.begin();
+    for(; cit != mClassVisualizationMap.end(); ++cit)
+    {
+        supportedTypes << QString(cit->first.c_str());
+    }
+    return supportedTypes;
+}
+
 } // end namespace gui
 } // end namespace graph_analysis

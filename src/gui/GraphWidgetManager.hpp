@@ -73,9 +73,11 @@ public slots:
 
     void removeSelection();
     void renameSelection();
+    void renameElementDialog(GraphElement::Ptr element);
+
     void addFeature();
     void swapFeatures();
-    void addNode();
+    void addVertex();
 
     int addGraphWidget(GraphWidget* graphWidget);
 
@@ -90,6 +92,11 @@ public slots:
 
     void setMode(Mode mode) { mMode = mode; notifyModeChange(mode); }
     Mode getMode() const { return mMode; }
+
+    /**
+     * Handle tab changes
+     */
+    void tabChanged(int index) { refresh(); }
 
 
 protected:

@@ -19,7 +19,7 @@
 #include <boost/foreach.hpp>
 #include <base/Logging.hpp>
 #include <exception>
-#include "Label.hpp"
+#include <graph_analysis/gui/items/Label.hpp>
 #include <graph_analysis/PortVertex.hpp>
 
 /// inline maximum test
@@ -34,6 +34,8 @@
 #define PORT_BORDER 8.
 /// bounding rectangular rounding node graphics constant
 #define NODE_BORDER 12.
+
+using namespace graph_analysis::gui::items;
 
 namespace graph_analysis {
 namespace gui {
@@ -395,7 +397,7 @@ void Cluster::updateWidth(bool active)
             graph_analysis::OperationVertex::vertexType() == type
         )
         {
-            graphitem::Label *label = mLabels[tuple.first];
+            Label *label = mLabels[tuple.first];
             qreal width = label->boundingRect().width();
             if(width > max_width)
             {
@@ -593,7 +595,7 @@ void Cluster::removeFeature(NodeItem::id_t featureID)
         throw std::runtime_error(error_msg);
     }
     dieOnFeature(featureID, "removeFeature");
-    graphitem::Label *label_to_delete = mLabels[featureID];
+    Label *label_to_delete = mLabels[featureID];
     graph_analysis::Vertex::Ptr feature_to_delete = mVertices[featureID];
     prepareGeometryChange();
     // feature type
@@ -788,7 +790,7 @@ void Cluster::removeFeatures()
 {
     foreach(Tuple tuple, mLabels)
     {
-        graphitem::Label *label = tuple.second;
+        Label *label = tuple.second;
         this->removeFromGroup(label);
         scene()->removeItem(label);
         if(label)
@@ -933,12 +935,11 @@ void Cluster::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
 
 void Cluster::grabFocus()
 {
-    mpGraphWidget->clearNodeFocus();
+    mpGraphWidget->clearFocus();
     mPen = QPen(Qt::red);
     update();
-    mpGraphWidget->setVertexFocused(true);
     mFocused = true;
-    mpGraphWidget->setFocusedVertex(mpVertex);
+    mpGraphWidget->setFocusedElement(mpVertex);
 }
 
 void Cluster::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
@@ -952,7 +953,7 @@ void Cluster::releaseFocus()
     mPen = mSelected ? QPen(Qt::green) : mPenDefault;
     update();
     mFocused = false;
-    mpGraphWidget->setVertexFocused(false);
+    mpGraphWidget->clearFocus();
 }
 
 void Cluster::focusInEvent(QFocusEvent* event)
@@ -975,8 +976,7 @@ void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
         mPen = QPen(Qt::green);
     }
     mSelected = true;
-    mpGraphWidget->setSelectedVertex(mpVertex);
-    mpGraphWidget->setVertexSelected(true);
+    mpGraphWidget->setFocusedElement(mpVertex);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -988,7 +988,7 @@ void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
         mPen = mPenDefault;
     }
     mSelected = false;
-    mpGraphWidget->setVertexSelected(false);
+    mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

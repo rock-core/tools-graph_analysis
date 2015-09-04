@@ -346,16 +346,6 @@ void LayerViewWidget::updateLayout()
 //    //}
 }
 
-void LayerViewWidget::addVertex(Vertex::Ptr vertex)
-{
-    mpGraph->addVertex(vertex);
-}
-
-void LayerViewWidget::addEdge(Edge::Ptr edge)
-{
-    mpGraph->addEdge(edge);
-}
-
 void LayerViewWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MidButton)

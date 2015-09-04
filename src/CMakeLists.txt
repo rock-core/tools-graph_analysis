@@ -14,16 +14,16 @@ rock_library(graph_analysis
         BaseGraph.cpp
         GraphElement.cpp
         GraphIO.cpp
+        gui/AddGraphElement.cpp
         gui/EdgeItem.cpp
         gui/EdgeTypeManager.cpp
         gui/CustomDialog.cpp
         gui/graphitem/edges/Simple.cpp
         gui/graphitem/Cluster.cpp
         gui/graphitem/Simple.cpp
-        gui/graphitem/Label.cpp
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
-        gui/layeritem/Label.cpp
+        gui/items/Label.cpp
         gui/IconManager.cpp
         gui/WidgetManager.cpp
         gui/GraphWidgetManager.cpp
@@ -93,15 +93,12 @@ rock_library(graph_analysis
         GraphView.hpp
         gui/EdgeItem.hpp
         gui/EdgeTypeManager.hpp
-        gui/graphitem/edges/EdgeLabel.hpp
         gui/graphitem/edges/Simple.hpp
-        gui/graphitem/Label.hpp
         gui/graphitem/Cluster.hpp
         gui/graphitem/Simple.hpp
-        gui/layeritem/edges/EdgeLabel.hpp
         gui/layeritem/edges/Simple.hpp
-        gui/layeritem/Label.hpp
         gui/layeritem/Resource.hpp
+        gui/items/Label.cpp
         gui/IconManager.hpp
         gui/WidgetManager.hpp
         gui/GraphWidgetManager.hpp
@@ -110,6 +107,7 @@ rock_library(graph_analysis
         gui/LayerViewWidget.hpp
         gui/FilterManager.hpp
         gui/FilterItem.hpp
+        gui/AddGraphElement.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
@@ -175,6 +173,7 @@ rock_library(graph_analysis
         gui/SwapFeaturesDialog.hpp
         gui/RenameFilterDialog.hpp
         gui/RenameFeatureDialog.hpp
+        gui/AddGraphElement.hpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
@@ -184,6 +183,7 @@ rock_library(graph_analysis
         gui/swap_filters_dialog_gui.ui
         gui/swap_features_dialog_gui.ui
         gui/rename_feature_dialog_gui.ui
+        gui/ui/add_graph_element.ui
 )
 target_link_libraries(graph_analysis glpk cgraph)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

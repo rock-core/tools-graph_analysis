@@ -1,20 +1,18 @@
-#ifndef GRAPH_ANALYSIS_GRAPHWIDGET_LAYERITEM_EDGES_EDGELABEL_HPP
-#define GRAPH_ANALYSIS_GRAPHWIDGET_LAYERITEM_EDGES_EDGELABEL_HPP
+#ifndef GRAPH_ANALYSIS_GUI_ITEMS_EDGELABEL_HPP
+#define GRAPH_ANALYSIS_GUI_ITEMS_EDGELABEL_HPP
 
 #include <QGraphicsTextItem>
 #include <QTextCursor>
-#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
-namespace layeritem {
-namespace edges {
+namespace items {
 
 /**
  * \file EdgeLabel.hpp
  * \class EdgeLabel
  * \brief graphical edge text label implementation
- * \details specific to layer widget graphical implementation - non-framed non-editable text representation
+ * \details specific to the diagram editor widget graphical implementation - non-framed non-editable text representation
  */
 class EdgeLabel : public QGraphicsTextItem
 {
@@ -29,6 +27,7 @@ public:
     {
         setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
         setTextInteractionFlags(Qt::NoTextInteraction);
+        setAcceptDrops(false);
     }
 
     /**
@@ -83,14 +82,14 @@ protected:
     /// qt keys press callback
     void keyPressEvent(::QKeyEvent* event)
     {
-        LOG_DEBUG_S << "KEYPRESS LABLE";
+        qDebug("KEYPRESS LABLE");
         QGraphicsTextItem::keyPressEvent(event);
     }
 
     /// qt focus LEAVE callback
     void focusOutEvent(QFocusEvent* event)
     {
-        LOG_DEBUG_S << "Lost focus";
+        qDebug("Lost focus");
         ::QGraphicsTextItem::focusOutEvent(event);
     }
 
@@ -99,7 +98,7 @@ protected:
     {
         if(change == QGraphicsItem::ItemSelectedChange)
         {
-             LOG_DEBUG_S << "itemChange '" << this->toPlainText().toStdString() << "', selected=" << value.toString().toStdString();
+             qDebug("itemChange '%s', selected=%s", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str());
         }
         if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
         {
@@ -110,8 +109,7 @@ protected:
     }
 };
 
-} // end namespace edges
-} // end namespace layeritem
+} // end namespace items
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_GRAPHWIDGET_LAYERITEM_EDGES_EDGELABEL_HPP
+#endif // GRAPH_ANALYSIS_GUI_ITEMS_EDGELABEL_HPP

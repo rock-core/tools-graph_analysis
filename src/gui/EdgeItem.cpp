@@ -5,9 +5,6 @@
 #include <QPainter>
 #include <base/Logging.hpp>
 
-const double graph_analysis::gui::EdgeItem::Pi = 3.14159265358979323846264338327950288419717;
-double graph_analysis::gui::EdgeItem::TwoPi = 2.0 * Pi;
-
 namespace graph_analysis {
 namespace gui {
 
@@ -85,16 +82,16 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     // Draw the arrows
     double angle = ::acos(line.dx() / line.length());
     if (line.dy() >= 0)
-        angle = TwoPi - angle;
+        angle = 2*M_PI - angle;
 
-    QPointF sourceArrowP1 = mSourcePoint + QPointF(sin(angle + Pi / 3) * mArrowSize,
-                                                  cos(angle + Pi / 3) * mArrowSize);
-    QPointF sourceArrowP2 = mSourcePoint + QPointF(sin(angle + Pi - Pi / 3) * mArrowSize,
-                                                  cos(angle + Pi - Pi / 3) * mArrowSize);
-    QPointF destArrowP1 = mTargetPoint + QPointF(sin(angle - Pi / 3) * mArrowSize,
-                                              cos(angle - Pi / 3) * mArrowSize);
-    QPointF destArrowP2 = mTargetPoint + QPointF(sin(angle - Pi + Pi / 3) * mArrowSize,
-                                              cos(angle - Pi + Pi / 3) * mArrowSize);
+    QPointF sourceArrowP1 = mSourcePoint + QPointF(sin(angle + M_PI / 3) * mArrowSize,
+                                                  cos(angle + M_PI / 3) * mArrowSize);
+    QPointF sourceArrowP2 = mSourcePoint + QPointF(sin(angle + M_PI - M_PI / 3) * mArrowSize,
+                                                  cos(angle + M_PI - M_PI / 3) * mArrowSize);
+    QPointF destArrowP1 = mTargetPoint + QPointF(sin(angle - M_PI / 3) * mArrowSize,
+                                              cos(angle - M_PI / 3) * mArrowSize);
+    QPointF destArrowP2 = mTargetPoint + QPointF(sin(angle - M_PI + M_PI / 3) * mArrowSize,
+                                              cos(angle - M_PI + M_PI / 3) * mArrowSize);
 
     painter->setBrush(Qt::black);
     painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);

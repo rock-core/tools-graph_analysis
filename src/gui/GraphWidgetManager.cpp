@@ -60,6 +60,9 @@ GraphWidgetManager::GraphWidgetManager()
     mpTabWidget->setCurrentIndex(0); 
     mpMainWindow->setCentralWidget(mpTabWidget);
 
+    // Handle tab changes
+    connect(mpTabWidget, SIGNAL( currentChanged(int) ), SLOT( tabChanged(int)) );
+
     //mpPropertyDialog = new PropertyDialog();
     //widgetManager->setPropertyDialog(mpPropertyDialog);
 
@@ -104,7 +107,7 @@ GraphWidgetManager::GraphWidgetManager()
     modesMenu->addAction(actionConnectMode);
     modesMenu->addAction(actionMoveMode);
 
-    QAction *actionAddNode = comm.addAction("Add node", SLOT(addNode()), *(IconManager::getInstance()->getIcon("addNode_white")));
+    QAction *actionAddNode = comm.addAction("Add vertex", SLOT(addVertex()), *(IconManager::getInstance()->getIcon("addNode_white")));
     QAction *actionRenameSelection = comm.addAction("Rename selection", SLOT(renameSelection()), *(IconManager::getInstance()->getIcon("label_white")));
     QAction *actionRemoveSelection  = comm.addAction("Remove selection", SLOT(removeSelection()), *(IconManager::getInstance()->getIcon("remove_white")));
     QAction *actionAddFeature     = comm.addAction("Add feature", SLOT(addFeature()), *(IconManager::getInstance()->getIcon("addFeature_white")));
@@ -292,8 +295,39 @@ void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd
     ss << std::endl;
 }
 
+
+void GraphWidgetManager::renameElementDialog(GraphElement::Ptr element)
+{
+    updateStatus("Renaming '" + element->toString() + "'");
+
+    bool ok;
+    QString label = QInputDialog::getText(currentGraphWidget(), tr("Change label"),
+                                         tr("New label:"), QLineEdit::Normal,
+                                         QString(element->getLabel().c_str()), &ok);
+    if (ok && !label.isEmpty())
+    {
+        std::string old_label = element->toString();
+        std::string new_label = label.toStdString();
+
+        currentGraphWidget()->renameElement(element, new_label);
+        updateStatus("Renamed from '" + old_label + "' to '" + new_label + "'", GraphWidgetManager::TIMEOUT);
+        refresh();
+    }
+    else
+    {
+        updateStatus(std::string("Failed to rename focused node: aborted by user!"), GraphWidgetManager::TIMEOUT);
+    }
+}
+
 void GraphWidgetManager::renameSelection()
 {
+    std::vector<GraphElement::Ptr> elements = currentGraphWidget()->getElementSelection();
+    std::vector<GraphElement::Ptr>::iterator it = elements.begin();
+    for(; it != elements.end(); ++it)
+    {
+        GraphElement::Ptr element = *it;
+        renameElementDialog(element);
+    }
 //    if(mpGraphWidgetManager->getVertexFocused())
 //    {
 //        mpGraphWidgetManager->changeFocusedVertexLabel();
@@ -364,9 +398,9 @@ void GraphWidgetManager::swapFeatures()
 ////    }
 //}
 
-void GraphWidgetManager::addNode()
+void GraphWidgetManager::addVertex()
 {
-    //mpGraphWidgetManager->addNode();
+    currentGraphWidget()->addVertexDialog();
 }
 
 void GraphWidgetManager::refresh()

@@ -10,7 +10,7 @@
 
 namespace graph_analysis {
 namespace gui {
-namespace graphitem {
+namespace items {
 
 Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget, int portID)
     : QGraphicsTextItem( QString(label.c_str()), item)
@@ -22,7 +22,7 @@ Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWi
 //    setTextInteractionFlags(Qt::TextEditorInteraction);
     setFlag(ItemIsMovable, false);
     setAcceptHoverEvents(false);
-    setAcceptDrops(true);
+    setAcceptDrops(false);
 }
 
 void Label::setTextInteraction(bool on, bool selectAll)
@@ -130,7 +130,10 @@ void Label::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
         QMimeData *mimeData = new QMimeData;
         mimeData->setText("edge");
         drag->setMimeData(mimeData);
-        mpGraphWidget->setStartVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
+
+        // Drag and drop
+        //mpGraphWidget->setStartVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
+
         drag->exec(Qt::CopyAction | Qt::MoveAction);
     }
     else
@@ -182,7 +185,9 @@ void Label::dropEvent(QGraphicsSceneDragDropEvent *event)
             LOG_ERROR_S << error_msg;
             throw std::runtime_error(error_msg);
         }
-        mpGraphWidget->setEndVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
+
+        // Drag and drop
+        //mpGraphWidget->setEndVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
         event->acceptProposedAction();
     }
 }
@@ -209,6 +214,6 @@ QVariant Label::itemChange(QGraphicsItem::GraphicsItemChange change, const QVari
     return QGraphicsTextItem::itemChange(change, value);
 }
 
-} // end namespace graphitem
+} // end namespace items
 } // end namespace gui
 } // end namespace graph_analysis

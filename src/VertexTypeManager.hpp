@@ -27,11 +27,11 @@ namespace vertex {
 class VertexTypeManager : public base::Singleton<VertexTypeManager>
 {
 public:
-    typedef std::map<vertex::Type, Vertex::Ptr> ClassVisualizationMap;
+    typedef std::map<vertex::Type, Vertex::Ptr> TypeMap;
 
 private:
     /// registration map - stores the registered types, mapping them to the example vertex instances (i.e. from which new ones to be forked on request)
-    ClassVisualizationMap mClassVisualizationMap;
+    TypeMap mTypeMap;
     /// registration list - maintains a complete list of all registered types
     std::set<std::string> mRegisteredTypes;
     /**

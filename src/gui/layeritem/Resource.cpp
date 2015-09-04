@@ -4,10 +4,9 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QStyle>
 #include <QStyleOption>
+#include <graph_analysis/gui/items/Label.hpp>
 
 #include <base/Logging.hpp>
-
-#include "Label.hpp"
 
 namespace graph_analysis {
 namespace gui {
@@ -22,7 +21,7 @@ Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 {
     setFlag(ItemIsMovable);
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
-    mLabel = new Label(vertex->toString(), this);
+    mLabel = new items::Label(vertex->toString(), this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
     //mLabel->setParentItem(this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
@@ -95,9 +94,7 @@ void Resource::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     LOG_DEBUG_S << "Hover ENTER event for " << mpVertex->toString();
     mPen = QPen(Qt::green);
 
-    mpGraphWidget->setSelectedVertex(mpVertex);
-    mpGraphWidget->setVertexSelected(true);
-
+    mpGraphWidget->setFocusedElement(mpVertex);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -105,7 +102,7 @@ void Resource::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     LOG_DEBUG_S << "Hover LEAVE event for " << mpVertex->toString();
     mPen = mPenDefault;
-    mpGraphWidget->setVertexSelected(false);
+    mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

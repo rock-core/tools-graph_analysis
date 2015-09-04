@@ -6,7 +6,7 @@
 #include <QStyleOption>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
-#include <graph_analysis/gui/layeritem/Label.hpp>
+#include <graph_analysis/gui/items/Label.hpp>
 
 #include <base/Logging.hpp>
 
@@ -29,7 +29,7 @@ FilterItem::FilterItem(FilterManager *manager, filter_index_t index, const std::
     setZValue(-1);
     setToolTip(QString("Custom Filter '") + QString(filter.c_str()) + QString("'"));
     //setFlag(QGraphicsTextItem::ItemIsSelectable, true);
-    mLabel = new layeritem::Label(filter, this);
+    mLabel = new items::Label(filter, this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);
     //mLabel->setParentItem(this);
     //mLabel->setTextInteractionFlags(Qt::TextEditorInteraction);

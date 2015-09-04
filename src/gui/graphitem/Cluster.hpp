@@ -2,17 +2,16 @@
 #define GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_CLUSTER_HPP
 
 #include <vector>
+#include <QPen>
+#include <QGraphicsWidget>
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
-#include <QPen>
-#include <QGraphicsWidget>
+#include <graph_analysis/gui/items/Label.hpp>
 
 namespace graph_analysis {
 namespace gui {
 namespace graphitem {
-
-class Label;
 
 /**
  * \file Cluster.hpp
@@ -41,7 +40,7 @@ public:
      * \brief getter method for retrieving the currently displayed main text label
      * \return the current string label
      */
-    std::string  getLabel() { return mpLabel->toPlainText().toStdString(); }
+    std::string getLabel() { return mpLabel->toPlainText().toStdString(); }
     ///syncs the graphical text label from the internal mpVertex label
     void updateLabel();
     /**
@@ -148,17 +147,18 @@ protected:
     /// qt hovering LEAVE callback
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 
+    //virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 private:
     /// background child widget
     QGraphicsWidget *mpBoard;
     /// main node text label
-    Label *mpLabel;
+    items::Label *mpLabel;
     /// ports text label; displays "Ports:" in italics
-    Label *mpPortsLabel;
+    items::Label *mpPortsLabel;
     /// properties text label; displays "Properties:" in italics
-    Label *mpPropsLabel;
+    items::Label *mpPropsLabel;
     /// operations text label; displays "Operations:" in italics
-    Label *mpOpsLabel;
+    items::Label *mpOpsLabel;
     /// constant width in the scene of text label "Ports:"
     qreal mWidthPortsLabel;
     /// constant width in the scene of text label "Properties:"

@@ -19,8 +19,8 @@ namespace graph_analysis {
 VertexTypeManager::VertexTypeManager()
 {
     // registering known implemented class-types
-    mClassVisualizationMap = boost::assign::map_list_of
-        (std::string("base"),       Vertex::Ptr (new Vertex()))
+    mTypeMap = boost::assign::map_list_of
+        (std::string("default"),       Vertex::Ptr (new Vertex()))
         (std::string("port"),       Vertex::Ptr ((Vertex *) (new PortVertex())))
         (graph_analysis::PortVertex::vertexType(),          Vertex::Ptr ((Vertex *) (new PortVertex())))
         (std::string("inputport"),  Vertex::Ptr ((Vertex *) (new InputPortVertex())))
@@ -36,8 +36,8 @@ VertexTypeManager::VertexTypeManager()
         ;
     // initializing the list of registered types (non-repeatingly, non-verbously)
     mRegisteredTypes.clear();
-    ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
-    for(; mClassVisualizationMap.end() != it; ++it)
+    TypeMap::iterator it = mTypeMap.begin();
+    for(; mTypeMap.end() != it; ++it)
     {
         if("graph_analysis::" != it->first.substr(0, std::string("graph_analysis::").length())) // filters out verbose (&& duplicate) types
         {
@@ -56,7 +56,7 @@ void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node,
         vertexByType(type, true);
     } catch(...)
     {
-        mClassVisualizationMap[type] = node;
+        mTypeMap[type] = node;
         mRegisteredTypes.insert(type);
     }
     LOG_WARN_S << "graph_analysis::VertexTypeManager::registerType: type '" + type + "' is already registered.";
@@ -68,15 +68,15 @@ void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node,
 
 Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throwOnDefault)
 {
-    ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
-    if(it == mClassVisualizationMap.end())
+    TypeMap::iterator it = mTypeMap.find(type);
+    if(it == mTypeMap.end())
     {
-        LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered. Using default type 'base'.";
+        LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered. Using default type 'default'.";
         if(throwOnDefault)
         {
             throw std::runtime_error("graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered");
         }
-        return mClassVisualizationMap["base"];
+        return mTypeMap["default"];
     }
 
     LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' registered.";

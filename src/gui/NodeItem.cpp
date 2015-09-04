@@ -22,6 +22,7 @@ NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
     setToolTip(QString(vertex->getClassName().c_str()));
+    setAcceptDrops(true);
 }
 
 void NodeItem::calculateForces()
@@ -128,6 +129,16 @@ std::string NodeItem::getId() const
     char buffer[512];
     snprintf(buffer,512, "%p-%s",this, mpVertex->toString().c_str());
     return std::string(buffer);
+}
+
+void NodeItem::dropEvent(QGraphicsSceneDragDropEvent* event)
+{
+    const QMimeData* mimeData = event->mimeData();
+    LOG_INFO_S << "Drop event for node item of '" << mpVertex->toString() << "' ";
+    if(mimeData && mimeData->hasText())
+    {
+        LOG_INFO_S << "    drag from source graph element with id: " << mimeData->text().toStdString();
+    }
 }
 
 } // end namespace gui

@@ -7,8 +7,6 @@
 #include <math.h>
 #include <graph_analysis/Edge.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
-#include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
-#include <graph_analysis/gui/layeritem/edges/EdgeLabel.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -16,6 +14,9 @@ namespace gui {
 class GraphWidget;
 class NodeItem;
 
+namespace items {
+    class EdgeLabel;
+}
 /**
  * \file EdgeItem.hpp
  * \class EdgeItem
@@ -72,7 +73,8 @@ public:
             graph_analysis::Edge::Ptr edge) const
     { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@6 args) is not reimplemented"); }
 
-    virtual QGraphicsTextItem* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
+    virtual void setLabel(const std::string&)  { throw std::runtime_error("graph_analysis::gui::EdgeItem::setLabel is not reimplemented");  }
+    virtual graph_analysis::gui::items::EdgeLabel* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
     virtual NodeItem::id_t getSourcePortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getSourcePortID: is not reimplemented at this level"); }
     virtual NodeItem::id_t getTargetPortID() { throw std::runtime_error("graph_analysis::gui::EdgeItem::getTargetPortID: is not reimplemented at this level"); }
     virtual void releaseFocus()   { throw std::runtime_error("graph_analysis::gui::EdgeItem::releaseFocus is not reimplemented");}
@@ -103,10 +105,6 @@ protected:
     qreal mArrowSize;
     /// qt painter path
     QPainterPath mPainterPath;
-
-    /// maths constants
-    static const double Pi;
-    static double TwoPi;
 };
 
 } // end namespace gui

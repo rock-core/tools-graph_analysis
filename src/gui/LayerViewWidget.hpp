@@ -72,11 +72,6 @@ protected:
     /// enables the provided edge (its corresponding edge scene-item gets filtered out at re-rendering)
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    /// adds a new vertex to the underlying base graph
-    void addVertex(graph_analysis::Vertex::Ptr vertex);
-    /// adds a new edge to the underlying base graph
-    void addEdge(graph_analysis::Edge::Ptr edge);
-
     /// qt mouse press callback
     void mousePressEvent(QMouseEvent *event);
     /// qt mouse release callback

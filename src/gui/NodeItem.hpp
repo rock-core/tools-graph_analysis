@@ -4,20 +4,20 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsItem>
 #include <QList>
+#include <QDropEvent>
 #include <set>
 #include <vector>
 #include <string>
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/gui/graphitem/Label.hpp>
 
 #define LABEL_SWAPPING
 
 namespace graph_analysis {
 namespace gui {
 
-namespace graphitem {
+namespace items {
     class Label;
-} // end namespace graphitem
+} // end namespace items
 
 class EdgeItem;
 class GraphWidget;
@@ -33,10 +33,10 @@ class NodeItem : public QGraphicsItemGroup
 {
 public:
     typedef long long id_t; // counter datatype for attributing ID-s to features in the case of implementing cluster node items
-    typedef std::map<id_t, graphitem::Label*> Labels; // map of features labels in a cluster node
-    typedef std::pair<id_t, graphitem::Label*> Tuple; // item of a map of features labels in a cluster node
-    typedef std::map<id_t, graph_analysis::Vertex::Ptr> Vertices; // map of feature vertices in a cluster node
-    typedef std::pair<id_t, graph_analysis::Vertex::Ptr> VTuple; // item of map of feature vertices in a cluster node
+    typedef std::map<id_t, items::Label*> Labels; // map of features labels in a cluster node
+    typedef std::pair<id_t, items::Label*> Tuple; // item of a map of features labels in a cluster node
+    typedef std::map<id_t, Vertex::Ptr> Vertices; // map of feature vertices in a cluster node
+    typedef std::pair<id_t, Vertex::Ptr> VTuple; // item of map of feature vertices in a cluster node
 protected:
     /**
      * \brief constructor
@@ -92,8 +92,7 @@ public:
     virtual void setFeatureLabel(id_t, const std::string&) { throw std::runtime_error("graph_analysis::gui::NodeItem::setFeatureLabel is not reimplemented"); }
     virtual void unselect() { throw std::runtime_error("graph_analysis::gui::NodeItem::unselect is not reimplemented"); }
 
-    virtual void changeLabel(const std::string&)  { throw std::runtime_error("graph_analysis::gui::NodeItem::changeLabel is not reimplemented");  }
-    virtual void updateLabel()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::updateLabel is not reimplemented");  }
+    virtual void setLabel(const std::string& label)  { mpVertex->setLabel(label); }
     virtual void setFeatureCount(unsigned)                 { throw std::runtime_error("graph_analysis::gui::NodeItem::setFeatureCount is not reimplemented"); }
     virtual unsigned  getFeatureCount()                    { throw std::runtime_error("graph_analysis::gui::NodeItem::getFeatureCount is not reimplemented"); }
     virtual id_t  addFeature(Vertex::Ptr)              { throw std::runtime_error("graph_analysis::gui::NodeItem::addFeature is not reimplemented");      }
@@ -115,6 +114,8 @@ public:
 protected:
     /// qt item change callback
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
+
+    virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 
     /// underlying graph vertex
     graph_analysis::Vertex::Ptr mpVertex;

@@ -12,8 +12,6 @@ namespace gui {
 namespace graphitem {
 namespace edges {
 
-class EdgeLabel;
-
 /**
  * \file Simple.hpp
  * \class Simple
@@ -37,8 +35,10 @@ private:
 public:
     /// empty constructor
     Simple() {}
+    /// setter method for the graphical text label
+    virtual void setLabel(const std::string& label);
     /// getter method for the graphical text label member field
-    virtual EdgeLabel* getLabel() { return mpLabel; }
+    virtual graph_analysis::gui::items::EdgeLabel* getLabel() { return mpLabel; }
     /// destructor
     virtual ~Simple() {}
     /// getter method for source ID
@@ -89,7 +89,7 @@ protected:
     { return new Simple(graphWidget, sourceNode, sourceNodePortID, targetNode, targetNodePortID, edge); }
 
     /// the graphical text label
-    EdgeLabel* mpLabel;
+    graph_analysis::gui::items::EdgeLabel* mpLabel;
     /// current qt drawing pen
     QPen mPen;
     /// the default qt drawing pen

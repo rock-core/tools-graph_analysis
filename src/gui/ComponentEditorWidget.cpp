@@ -41,7 +41,7 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
-#include <graph_analysis/gui/graphitem/edges/EdgeLabel.hpp>
+#include <graph_analysis/gui/items/EdgeLabel.hpp>
 
 #include <exception>
 #include <boost/foreach.hpp>
@@ -162,12 +162,14 @@ void ComponentEditorWidget::showContextMenu(const QPoint& pos)
 
 void ComponentEditorWidget::addFeatureFocused()
 {
-    addFeature(mpFocusedVertex);
+    LOG_WARN_S << "ADD FEATURE FOCUSED";
+    //addFeature(mpFocusedVertex);
 }
 
 void ComponentEditorWidget::addFeatureSelected()
 {
-    addFeature(mpSelectedVertex);
+    LOG_WARN_S << "ADD FEATURE SELECTED";
+    //addFeature(mpSelectedVertex);
 }
 
 void ComponentEditorWidget::addFeature(graph_analysis::Vertex::Ptr vertex)
@@ -236,12 +238,14 @@ void ComponentEditorWidget::addFeature(graph_analysis::Vertex::Ptr vertex)
 
 void ComponentEditorWidget::renameFeatureFocused()
 {
-    renameFeature(mpFocusedVertex);
+    LOG_WARN_S << "Rename feature focused";
+    //renameFeature(mpFocusedVertex);
 }
 
 void ComponentEditorWidget::renameFeatureSelected()
 {
-    renameFeature(mpSelectedVertex);
+    LOG_WARN_S << "Rename feature selected";
+    //renameFeature( getSelectedGra);
 }
 
 void ComponentEditorWidget::renameFeature(graph_analysis::Vertex::Ptr concernedVertex)
@@ -282,12 +286,14 @@ void ComponentEditorWidget::renameFeature(graph_analysis::Vertex::Ptr concernedV
 
 void ComponentEditorWidget::removeFeatureFocused()
 {
-    removeFeature(mpFocusedVertex);
+    LOG_WARN_S << "REMOVE FEATURE FOCUSED";
+    //removeFeature(mpFocusedVertex);
 }
 
 void ComponentEditorWidget::removeFeatureSelected()
 {
-    removeFeature(mpSelectedVertex);
+    LOG_WARN_S << "REMOVE FEATURE SELECTED";
+    //removeFeature(mpSelectedVertex);
 }
 
 void ComponentEditorWidget::removeFeature(graph_analysis::Vertex::Ptr concernedVertex)
@@ -437,124 +443,17 @@ void ComponentEditorWidget::addNodeAdhoc(QObject *pos)
     }
 }
 
-void ComponentEditorWidget::changeFocusedVertexLabel()
-{
-    updateStatus(std::string("renaming focused node..."));
-    bool ok;
-    QString label = QInputDialog::getText(this, tr("Input Node Label"),
-                                         tr("New Label:"), QLineEdit::Normal,
-                                         QString(mpFocusedVertex->getLabel().c_str()), &ok);
-    if (ok && !label.isEmpty())
-    {
-        std::string old_label = mpFocusedVertex->toString();
-        std::string new_label = label.toStdString();
-        changeVertexLabel(mpFocusedVertex, new_label);
-        updateStatus(std::string("Renamed focused node '") + old_label + "' to '" + new_label + "'!", GraphWidgetManager::TIMEOUT);
-    }
-    else
-    {
-        updateStatus(std::string("Failed to rename focused node: aborted by user!"), GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void ComponentEditorWidget::changeSelectedVertexLabel()
-{
-    updateStatus(std::string("renaming selected node..."));
-    bool ok;
-    QString label = QInputDialog::getText(this, tr("Input Node Label"),
-                                         tr("New Label:"), QLineEdit::Normal,
-                                         QString(mpSelectedVertex->getLabel().c_str()), &ok);
-    if (ok && !label.isEmpty())
-    {
-        std::string old_label = mpSelectedVertex->toString();
-        std::string new_label = label.toStdString();
-        changeVertexLabel(mpSelectedVertex, new_label);
-        updateStatus(std::string("Renamed selected node '") + old_label + "' to '" + new_label + "'!", GraphWidgetManager::TIMEOUT);
-    }
-    else
-    {
-        updateStatus(std::string("Failed to rename selected node: aborted by user!"), GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void ComponentEditorWidget::changeVertexLabel(graph_analysis::Vertex::Ptr vertex, const std::string& label)
-{
-    vertex->setLabel(label);
-    NodeItem* nodeItem = mNodeItemMap[vertex];
-    if(!nodeItem)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::changeVertexLabel: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    nodeItem->updateLabel();
-}
-
-void ComponentEditorWidget::changeFocusedEdgeLabel()
-{
-    updateStatus(std::string("renaming focused edge..."));
-    bool ok;
-    QString label = QInputDialog::getText(this, tr("Input Edge Label"),
-                                         tr("New Label:"), QLineEdit::Normal,
-                                          QString(mpFocusedEdge->getLabel().c_str()), &ok);
-    if (ok && !label.isEmpty())
-    {
-        std::string old_label = mpFocusedEdge->toString();
-        std::string new_label = label.toStdString();
-        changeEdgeLabel(mpFocusedEdge, new_label);
-        updateStatus(std::string("Renamed focused edge '") + old_label + "' to '" + new_label + "'!", GraphWidgetManager::TIMEOUT);
-    }
-    else
-    {
-        updateStatus(std::string("Failed to rename focused edge: aborted by user!"), GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void ComponentEditorWidget::changeSelectedEdgeLabel()
-{
-    updateStatus(std::string("renaming selected edge..."));
-    bool ok;
-    QString label = QInputDialog::getText(this, tr("Input Edge Label"),
-                                         tr("New Label:"), QLineEdit::Normal,
-                                          QString(mpSelectedEdge->getLabel().c_str()), &ok);
-    if (ok && !label.isEmpty())
-    {
-        std::string old_label = mpSelectedEdge->toString();
-        std::string new_label = label.toStdString();
-        changeEdgeLabel(mpSelectedEdge, new_label);
-        updateStatus(std::string("Renamed selected edge '") + old_label + "' to '" + new_label + "'!", GraphWidgetManager::TIMEOUT);
-    }
-    else
-    {
-        updateStatus(std::string("Failed to rename selected edge: aborted by user!"), GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void ComponentEditorWidget::changeEdgeLabel(graph_analysis::Edge::Ptr concernedEdge, const std::string& label)
-{
-    EdgeItem* edge = mEdgeItemMap[concernedEdge];
-    if(!edge)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::changeEdgeLabel: provided edge '") + concernedEdge->getLabel() + "' is not registered with the GUI";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    concernedEdge->setLabel(label);
-    mEdgeMap[concernedEdge]->setLabel(label);
-    graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edge->getLabel();
-    edgeLabel->setPlainText(QString(label.c_str()));
-    edge->adjustLabel();
-}
-
 void ComponentEditorWidget::removeFocusedEdge()
 {
+    LOG_WARN_S << "REMOVE FOCUSED EDGE";
     clearEdge(mpFocusedEdge);
     clearEdgeFocus();
 }
 
 void ComponentEditorWidget::removeSelectedEdge()
 {
-    clearEdge(mpSelectedEdge);
+    LOG_WARN_S << "REMOVE EDGE";
+    //clearEdge(mpSelectedEdge);
 }
 
 void ComponentEditorWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
@@ -617,13 +516,15 @@ void ComponentEditorWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
 
 void ComponentEditorWidget::removeFocusedVertex()
 {
-    clearVertex(mpFocusedVertex);
-    clearNodeFocus();
+    LOG_WARN_S << "REMOVE FOCUSED VERTEX";
+    //clearVertex(mpFocusedVertex);
+    //clearNodeFocus();
 }
 
 void ComponentEditorWidget::removeSelectedVertex()
 {
-    clearVertex(mpSelectedVertex);
+    LOG_WARN_S << "REMOVE SELECTED VERTEX";
+    //clearVertex(mpSelectedVertex);
 }
 
 void ComponentEditorWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
@@ -781,39 +682,38 @@ void ComponentEditorWidget::setEndVertex(graph_analysis::Vertex::Ptr endVertex, 
                         );
             return;
         }
-        addEdgeAdHoc();
     }
 }
 
-void ComponentEditorWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fields are properly set already
-{
-    updateStatus(std::string("drag-n-drop: adding edge..."));
-    bool ok;
-    QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
-                                         tr("New Edge Label:"), QLineEdit::Normal,
-                                         QString("newEdge"), &ok);
-    if (ok && !label.isEmpty())
-    {
-        std::string edge_label = label.toStdString();
-        spawnEdge(edge_label); // assumes the concerned edge-creation member fields are properly set already
-        NodeItem::id_t start_featureID = mFeatureIDMap[mpStartFeature];
-        NodeItem::id_t   end_featureID = mFeatureIDMap[mpEndFeature];
-        // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-        //updateLayerViewWidget();
-        updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between features '"
-                        + mpStartFeature->toString() + "' and '"
-                        + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID)
-                        + " and " + boost::lexical_cast<std::string>(end_featureID) + " respectively and of consistent type '"
-                        + mpStartFeature->getClassName() +  "' of clusters '"
-                        + mpStartVertex->toString() + "' and '" + mpEndVertex->toString() + "'!"
-                        , GraphWidgetManager::TIMEOUT
-                    );
-    }
-    else
-    {
-        updateStatus(std::string("Drag-n-drop failed: aborted by user!"), GraphWidgetManager::TIMEOUT);
-    }
-}
+//void ComponentEditorWidget::addEdgeAdHoc() // assumes the concerned edge-creation member fields are properly set already
+//{
+//    updateStatus(std::string("drag-n-drop: adding edge..."));
+//    bool ok;
+//    QString label = QInputDialog::getText(this, tr("Input New Edge Label"),
+//                                         tr("New Edge Label:"), QLineEdit::Normal,
+//                                         QString("newEdge"), &ok);
+//    if (ok && !label.isEmpty())
+//    {
+//        std::string edge_label = label.toStdString();
+//        spawnEdge(edge_label); // assumes the concerned edge-creation member fields are properly set already
+//        NodeItem::id_t start_featureID = mFeatureIDMap[mpStartFeature];
+//        NodeItem::id_t   end_featureID = mFeatureIDMap[mpEndFeature];
+//        // does not forget to update the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
+//        //updateLayerViewWidget();
+//        updateStatus(std::string("Drag-n-drop completed: added edge '") + edge_label + "' in between features '"
+//                        + mpStartFeature->toString() + "' and '"
+//                        + mpEndFeature->toString() + "' of IDs " + boost::lexical_cast<std::string>(start_featureID)
+//                        + " and " + boost::lexical_cast<std::string>(end_featureID) + " respectively and of consistent type '"
+//                        + mpStartFeature->getClassName() +  "' of clusters '"
+//                        + mpStartVertex->toString() + "' and '" + mpEndVertex->toString() + "'!"
+//                        , GraphWidgetManager::TIMEOUT
+//                    );
+//    }
+//    else
+//    {
+//        updateStatus(std::string("Drag-n-drop failed: aborted by user!"), GraphWidgetManager::TIMEOUT);
+//    }
+//}
 
 void ComponentEditorWidget::spawnEdge(const std::string& label) // assumes the concerned edge-creation member fields are properly set already
 {
@@ -832,10 +732,10 @@ void ComponentEditorWidget::spawnEdge(const std::string& label) // assumes the c
         Edge::Ptr default_edge(new Edge(mpStartVertex, mpEndVertex, label));
         mpLayoutingGraph->addEdge(default_edge);
 
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[mpStartFeature], targetNodeItem, mFeatureIDMap[mpEndFeature], default_edge);
-        scene()->addItem(edgeItem);
-        edgeItem->adjust();
-        mEdgeItemMap[default_edge] = edgeItem;
+        //EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[mpStartFeature], targetNodeItem, mFeatureIDMap[mpEndFeature], default_edge);
+        //scene()->addItem(edgeItem);
+        //edgeItem->adjust();
+        //mEdgeItemMap[default_edge] = edgeItem;
     }
     else
     {
@@ -869,16 +769,6 @@ void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void ComponentEditorWidget::addVertex(Vertex::Ptr vertex)
-{
-    mpGraph->addVertex(vertex);
-}
-
-void ComponentEditorWidget::addEdge(Edge::Ptr edge)
-{
-    mpGraph->addEdge(edge);
-}
-
 void ComponentEditorWidget::removeVertex(Vertex::Ptr vertex)
 {
     mpGraph->removeVertex(vertex);
@@ -891,29 +781,6 @@ void ComponentEditorWidget::removeEdge(Edge::Ptr edge)
 
 void ComponentEditorWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
-#ifdef CLEAR_BY_BACKGROUND
-    // deciding whether nodes or edges shall be unfocused
-    bool unfocusNodes = !(
-                            (mVertexSelected && mVertexFocused && mpSelectedVertex == mpFocusedVertex)
-                            ||
-                            (mVertexFocused && mEdgeSelected)
-                        )
-                        ;
-    bool unfocusEdges = !(
-                            (mEdgeSelected && mEdgeFocused && mpSelectedEdge == mpFocusedEdge)
-                            ||
-                            (mVertexSelected && mEdgeFocused)
-                        )
-                        ;
-    if(unfocusNodes)
-    {
-        clearNodeFocus();
-    }
-    if(unfocusEdges)
-    {
-        clearEdgeFocus();
-    }
-#endif
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
@@ -925,11 +792,9 @@ void ComponentEditorWidget::mousePressEvent(QMouseEvent *event)
         setDragMode(ScrollHandDrag);
         // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
         QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mousePressEvent(&fake); // initiates scroll-button panning
-    }
-    else
-    {
-        QGraphicsView::mousePressEvent(event);
+        GraphWidget::mousePressEvent(&fake); // initiates scroll-button panning
+    } else {
+        GraphWidget::mousePressEvent(event);
     }
 }
 
@@ -994,6 +859,7 @@ void ComponentEditorWidget::syncDragDrop()
 
 void ComponentEditorWidget::setDragDrop()
 {
+    /*
     updateStatus(std::string("toggling drag-n-drop mode to true..."));
     mDragDrop = true;
     WidgetManager::getInstance()->getPropertyDialog()->setDragDrop(true);
@@ -1013,10 +879,12 @@ void ComponentEditorWidget::setDragDrop()
         }
     }
     updateStatus(std::string("Toggled drag-n-drop mode to true!"), GraphWidgetManager::TIMEOUT);
+    */
 }
 
 void ComponentEditorWidget::unsetDragDrop()
 {
+    /*
     updateStatus(std::string("toggling drag-n-drop mode to false..."));
     mDragDrop = false;
     WidgetManager::getInstance()->getPropertyDialog()->setDragDrop(false);
@@ -1031,6 +899,7 @@ void ComponentEditorWidget::unsetDragDrop()
         }
     }
     updateStatus(std::string("Toggled drag-n-drop mode to false!"), GraphWidgetManager::TIMEOUT);
+    */
 }
 
 void ComponentEditorWidget::itemMoved()
@@ -1321,12 +1190,14 @@ void ComponentEditorWidget::clearFocus()
 
 void ComponentEditorWidget::removeFeaturesFocused()
 {
-    removeFeatures(mpFocusedVertex);
+    LOG_WARN_S << "Remove features focused";
+    //removeFeatures(mpFocusedVertex);
 }
 
 void ComponentEditorWidget::removeFeaturesSelected()
 {
-    removeFeatures(mpSelectedVertex);
+    LOG_WARN_S << "Remove features selected";
+    //removeFeatures(mpSelectedVertex);
 }
 
 void ComponentEditorWidget::removeFeatures(graph_analysis::Vertex::Ptr concernedVertex)
@@ -1550,11 +1421,12 @@ void ComponentEditorWidget::updateLayout()
             // physical edge - processing was deflected until now - i.e. after all features will have been registered
             Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
             mpLayoutingGraph->addEdge(default_edge);
-            EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
-            scene()->addItem(edgeItem);
-            mEdgeItemMap[default_edge] = edgeItem;
-            mpGVGraph->addEdge(default_edge);
-            mEdgeMap[default_edge] = edge;
+
+            //EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
+            //scene()->addItem(edgeItem);
+            //mEdgeItemMap[default_edge] = edgeItem;
+            //mpGVGraph->addEdge(default_edge);
+            //mEdgeMap[default_edge] = edge;
         }
     }
 
@@ -1582,12 +1454,14 @@ void ComponentEditorWidget::updateLayout()
 
 void ComponentEditorWidget::swapFeaturesFocused()
 {
-    swapFeatures(mpFocusedVertex);
+    LOG_WARN_S << "Swap features focused";
+    //swapFeatures(mpFocusedVertex);
 }
 
 void ComponentEditorWidget::swapFeaturesSelected()
 {
-    swapFeatures(mpSelectedVertex);
+    LOG_WARN_S << "Swap features selected";
+    //swapFeatures(mpSelectedVertex);
 }
 
 void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVertex)
