@@ -12,14 +12,22 @@ AddGraphElement::AddGraphElement(const QStringList& types, QWidget* parent)
     this->show();
 
     mUi->typeComboBox->addItems(types);
-    connect(mUi->typeComboBox, SIGNAL(activated(QString)),
-            this, SLOT(typeChanged(QString)));
 }
 
 AddGraphElement::~AddGraphElement()
 {}
 
-QString AddGraphElement::getLabel() const { return mUi->labelLineEdit->text(); }
+QString AddGraphElement::getLabel() const
+{
+    return mUi->labelLineEdit->text();
+}
+
+QString AddGraphElement::getType() const
+{
+    return mUi->typeComboBox->currentText();
+}
+
+
 
 } // end namespace gui
 } // end namespace graph_analysis

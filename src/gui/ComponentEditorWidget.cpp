@@ -4,7 +4,6 @@
 #include "IconManager.hpp"
 #include "GraphWidgetManager.hpp"
 #include "WidgetManager.hpp"
-#include "AddNodeDialog.hpp"
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"

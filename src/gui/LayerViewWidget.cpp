@@ -5,7 +5,6 @@
 #include "IconManager.hpp"
 #include "GraphWidgetManager.hpp"
 #include "WidgetManager.hpp"
-#include "AddNodeDialog.hpp"
 #include "FilterManager.hpp"
 #include "PropertyDialog.hpp"
 #include "NodeTypeManager.hpp"

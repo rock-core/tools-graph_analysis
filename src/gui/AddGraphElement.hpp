@@ -20,10 +20,7 @@ public:
     ~AddGraphElement();
 
     QString getLabel() const;
-    QString getType() const { return mType; }
-
-public slots:
-    void typeChanged(QString type) { mType = type; }
+    QString getType() const;
 
 
 private:

@@ -21,7 +21,6 @@ namespace gui {
 
 class NodeItem;
 class EdgeItem;
-class AddNodeDialog;
 class ActionCommander;
 class PropertyDialog;
 class LayerViewWidget;
@@ -155,8 +154,6 @@ public slots:
     void zoomIn();
     /// zooms-out of the diagram editor graph scene
     void zoomOut();
-    /// prompts the used for adding a new node to the scene (the underlying graph also gets updated) optionally at a given position (e.g. mouse pointer position in the scene)
-    void addNodeAdhoc(QObject *pos = (QObject *) new QPoint(0, 0));
     /// prompts the user for adding a feature to the currently selected node (i.e. node being hovered over)
     void addFeatureSelected();
     /// prompts the user for adding a feature to the currently focused node (i.e. previously double clicked node)

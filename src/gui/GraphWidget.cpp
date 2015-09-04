@@ -474,7 +474,7 @@ void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& la
 // EDIT
 Vertex::Ptr GraphWidget::addVertex(const std::string& type, const std::string& label, QPoint* position)
 {
-    // Registering new vertex -- base on the given type
+    LOG_DEBUG_S << "Add vertex: type: " << type << " label: " << label;
     graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
     mpGraph->addVertex(vertex);
     return vertex;

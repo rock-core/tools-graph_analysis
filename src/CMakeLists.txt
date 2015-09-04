@@ -32,7 +32,6 @@ rock_library(graph_analysis
         gui/LayerViewWidget.cpp
         gui/FilterManager.cpp
         gui/FilterItem.cpp
-        gui/AddNodeDialog.cpp
         gui/AddFilterDialog.cpp
         gui/SwapFiltersDialog.cpp
         gui/SwapFeaturesDialog.cpp
@@ -111,7 +110,6 @@ rock_library(graph_analysis
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
-        gui/AddNodeDialog.hpp
         gui/AddFilterDialog.hpp
         gui/SwapFiltersDialog.hpp
         gui/SwapFeaturesDialog.hpp
@@ -166,7 +164,6 @@ rock_library(graph_analysis
         gui/LayerViewWidget.hpp
         gui/GraphWidgetManager.hpp
         gui/FilterManager.hpp
-        gui/AddNodeDialog.hpp
         gui/AddFilterDialog.hpp
         gui/PropertyDialog.hpp
         gui/SwapFiltersDialog.hpp
@@ -177,7 +174,6 @@ rock_library(graph_analysis
     DEPS_PKGCONFIG QtGui
     UI
         gui/graph_analysis_gui.ui
-        gui/add_node_dialog_gui.ui
         gui/add_filter_dialog_gui.ui
         gui/property_dialog_gui.ui
         gui/swap_filters_dialog_gui.ui
