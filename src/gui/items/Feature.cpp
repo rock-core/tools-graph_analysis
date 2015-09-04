@@ -11,16 +11,38 @@ namespace graph_analysis {
 namespace gui {
 namespace items {
 
-Feature::Feature(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget, GraphElement::Ptr element)
-    : QGraphicsTextItem( QString(label.c_str()), item)
+Feature::Feature(GraphElement::Ptr element, GraphWidget *graphWidget)
+    : QGraphicsTextItem(element->getLabel().c_str())
+    , VertexGetter()
     , mpGraphWidget(graphWidget)
     , mpGraphElement(element)
 {
     setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
     setTextInteractionFlags(Qt::NoTextInteraction);
     setFlag(ItemIsMovable, false);
-    setAcceptHoverEvents(false);
-    setAcceptDrops(false);
+    setAcceptHoverEvents(true);
+    setAcceptDrops(true);
+}
+
+
+Edge::Ptr Feature::getEdge() const
+{
+    Edge::Ptr edge = boost::dynamic_pointer_cast<Edge>(mpGraphElement);
+    if(!edge)
+    {
+        throw std::runtime_error("graph_analysis::gui::items::Feature::getEdge: feature is no associated with an edge");
+    }
+    return edge;
+}
+
+Vertex::Ptr Feature::getVertex() const
+{
+    Vertex::Ptr vertex = boost::dynamic_pointer_cast<Vertex>(mpGraphElement);
+    if(!vertex)
+    {
+        throw std::runtime_error("graph_analysis::gui::items::Feature::getVertex: feature is no associated with an vertex");
+    }
+    return vertex;
 }
 
 void Feature::setTextInteraction(bool on, bool selectAll)
@@ -45,6 +67,21 @@ void Feature::setTextInteraction(bool on, bool selectAll)
         this->setTextCursor(c);
         clearFocus();
     }
+}
+
+
+void Feature::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+    LOG_DEBUG_S << "Feature hover enter: " << mpGraphElement->toString();
+
+    //((QGraphicsItem*) parent())->hoverEnterEvent(event);
+}
+
+void Feature::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+{
+    LOG_DEBUG_S << "Feature hover leave: " << mpGraphElement->toString();
+    //((QGraphicsItem*) parent())->hoverLeaveEvent(event);
+   // sendHoverEvent(QEvent::GraphicsSceneHoverLeave, parent, event);
 }
 
 void Feature::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
@@ -97,8 +134,8 @@ void Feature::keyPressEvent(::QKeyEvent* event)
 //    }
 //}
 
-//void Feature::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
-//{
+void Feature::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
+{
 //    if((event->buttons() & Qt::LeftButton) && PortVertex::INVALID_PORT_ID != mPortID)
 //    {
 //        // starting a mouse drag action if the mouse move is long enough
@@ -132,7 +169,7 @@ void Feature::keyPressEvent(::QKeyEvent* event)
 //    {
 //        QGraphicsItem::mousePressEvent(event);
 //    }
-//}
+}
 
 void Feature::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
@@ -165,12 +202,12 @@ void Feature::dropEvent(QGraphicsSceneDragDropEvent *event)
             // Identify the connection using the underlying vertices -- we assume
             // only vertices are used for dragndrop for now
             GraphElementId sourceId = boost::lexical_cast<GraphElementId>( mimeData->text().toStdString() );
-            Vertex::Ptr sourceVertex = mpGraphWidget->getGraph()->getVertexById(sourceId);
+            Vertex::Ptr sourceVertex = mpGraphWidget->graph()->getVertex(sourceId);
             Vertex::Ptr targetVertex = boost::dynamic_pointer_cast<Vertex>( mpGraphElement );
             if(sourceVertex && targetVertex)
             {  
                 event->acceptProposedAction();
-                addEdgeDialog(sourceVertex, targetVertex);
+                mpGraphWidget->addEdgeDialog(sourceVertex, targetVertex);
             } else {
                 throw std::runtime_error("graph_analysis::gui::items::Feature::dropEvent could not identify underlying vertices");
             }

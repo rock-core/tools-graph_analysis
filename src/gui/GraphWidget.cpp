@@ -523,6 +523,7 @@ void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVert
     updateStatus("Adding edge ...");
     QStringList typesList;
     AddGraphElement graphElementDialog(typesList);// EdgeTypeManager::getInstance()->getSupportedTypes());
+    graphElementDialog.exec();
     if(graphElementDialog.result() == QDialog::Accepted)
     {
         Edge::Ptr edge = addEdge(graphElementDialog.getType().toStdString(), graphElementDialog.getLabel().toStdString(), sourceVertex, targetVertex);
@@ -534,6 +535,25 @@ void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVert
         updateStatus("Adding edge aborted by user", GraphWidgetManager::TIMEOUT);
     }
 }
+
+NodeItem* GraphWidget::getFocusedNodeItem()
+{
+    NodeItemMap::iterator cit = mNodeItemMap.begin();
+    for(; cit != mNodeItemMap.end(); ++cit)
+    {
+        NodeItem* nodeItem = cit->second;
+        if(nodeItem->isUnderMouse())
+        {
+            return nodeItem;
+        }
+    }
+    return NULL;
+}
+
+NodeItem* mFocusedNodeItem;
+
+
+
 
 } // end namespace gui
 } // end namespace graph_analysis

@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/gui/VertexGetter.hpp>
 
 #define LABEL_SWAPPING
 
@@ -17,6 +18,7 @@ namespace gui {
 
 namespace items {
     class Label;
+    class Feature;
 } // end namespace items
 
 class EdgeItem;
@@ -29,7 +31,7 @@ class QGraphicsSceneMouseEvent;
  * \brief graphical node representation interface
  * \details used as polymorphic base for several graphical node implementations
  */
-class NodeItem : public QGraphicsItemGroup
+class NodeItem : public QGraphicsItemGroup, public VertexGetter
 {
 public:
     typedef long long id_t; // counter datatype for attributing ID-s to features in the case of implementing cluster node items
@@ -78,11 +80,11 @@ public:
     std::string getId() const;
 
     /// getter method for retrieving the underlying conceptual graph vertex
-    graph_analysis::Vertex::Ptr getVertex() { return mpVertex; }
+    graph_analysis::Vertex::Ptr getVertex() const { return mpVertex; }
     /// setter method for updating the underlying conceptual graph vertex
     void setVertex(graph_analysis::Vertex::Ptr vertex) { mpVertex = vertex; }
     /// getter method for retrieving the parent managing graph widget
-    GraphWidget* getGraphWidget() { return mpGraphWidget; }
+    GraphWidget* getGraphWidget() const { return mpGraphWidget; }
 
     /// virtual methods
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::gui::NodeItem::createNewItem is not reimplemented"); }
@@ -93,12 +95,14 @@ public:
     virtual void unselect() { throw std::runtime_error("graph_analysis::gui::NodeItem::unselect is not reimplemented"); }
 
     virtual void setLabel(const std::string& label)  { mpVertex->setLabel(label); }
-    virtual void setFeatureCount(unsigned)                 { throw std::runtime_error("graph_analysis::gui::NodeItem::setFeatureCount is not reimplemented"); }
-    virtual unsigned  getFeatureCount()                    { throw std::runtime_error("graph_analysis::gui::NodeItem::getFeatureCount is not reimplemented"); }
-    virtual id_t  addFeature(Vertex::Ptr)              { throw std::runtime_error("graph_analysis::gui::NodeItem::addFeature is not reimplemented");      }
-    virtual void removeFeature(id_t)            { throw std::runtime_error("graph_analysis::gui::NodeItem::removeFeature is not reimplemented");   }
-    virtual graph_analysis::Vertex::Ptr getFeature(id_t)    {throw std::runtime_error("graph_analysis::gui::NodeItem::getFeature is not reimplemented");}
-    virtual std::string  getLabel()                     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabel is not reimplemented");     }
+    virtual std::string getLabel() { return mpVertex->getLabel(); }
+
+    virtual size_t getFeatureCount() { return mFeatures.size(); }
+    virtual id_t addFeature(items::Feature* feature);
+    virtual void removeFeature(id_t);
+    virtual void removeFeatures();
+    virtual items::Feature* getFeature(id_t) const;
+
     virtual void syncLabel(id_t)             { throw std::runtime_error("graph_analysis::gui::NodeItem::syncLabel is not reimplemented");    }
     virtual void shiftFeatureUp(id_t)           { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftFeatureUp is not reimplemented");  }
     virtual void shiftFeatureDown(id_t)         { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftFeatureDown is not reimplemented");}
@@ -107,7 +111,7 @@ public:
     virtual void updateWidth(bool active = true)                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateWidth  is not reimplemented"); }
     virtual void updateHeight()                       { throw std::runtime_error("graph_analysis::gui::NodeItem::updateHeight is not reimplemented"); }
     virtual void swapFeatures(id_t, id_t)          { throw std::runtime_error("graph_analysis::gui::NodeItem::swapFeatures is not reimplemented");    }
-    virtual void removeFeatures()                          { throw std::runtime_error("graph_analysis::gui::NodeItem::removeFeatures is not reimplemented");  }
+
     virtual Labels      getLabels()     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabels is not reimplemented");   }
     virtual Vertices    getVertices()   { throw std::runtime_error("graph_analysis::gui::NodeItem::getVertices is not reimplemented"); }
 
@@ -117,8 +121,18 @@ protected:
 
     virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 
+    /** Check if item or any subitem is underMouse
+     * \return (sub)item that is under the mouse
+     */
+    const items::Feature* getPointedAtFeature() const;
+    Vertex::Ptr getPointedAtVertex() const;
+
     /// underlying graph vertex
     graph_analysis::Vertex::Ptr mpVertex;
+
+    /// Associated features
+    std::vector<items::Feature*> mFeatures;
+
     /// target position (updated by the force field algorithm)
     QPointF mNewPos;
     /// parent managing graph widget

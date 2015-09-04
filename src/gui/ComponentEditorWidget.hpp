@@ -113,21 +113,13 @@ public:
     /// getter method - tells whether this graph widget knows about an edge still being focused on
     bool getEdgeFocused () { return mEdgeFocused; }
 
-    /// setter method - updates drag-n-drop starting vertex and the relevant source feature ID
-    void setStartVertex (graph_analysis::Vertex::Ptr startVertex,   NodeItem::id_t featureID);
-    /// setter method - updates drag-n-drop   ending vertex and the relevant target feature ID
-    void setEndVertex   (graph_analysis::Vertex::Ptr endVertex,     NodeItem::id_t featureID);
-
     /// forcefully focuses out of any node that might be currently focused on
     void clearNodeFocus();
     /// forcefully focuses out of any edge that might be currently focused on
     void clearEdgeFocus();
     /// forcefully focuses out of any edge and/or node that might be currently focused on
     void clearFocus();
-    /// adds a feature to the provided cluster vertex
-    void addFeature(graph_analysis::Vertex::Ptr vertex);
-    /// prompts the user for renaming a feature vertex of the given cluster vertex
-    void renameFeature (graph_analysis::Vertex::Ptr concernedVertex);
+
     /// prompts the user for removing a feature vertex of the given cluster vertex
     void removeFeature (graph_analysis::Vertex::Ptr concernedVertex);
     /// prompts the user for removing all features vertex of the given cluster vertex
@@ -154,10 +146,9 @@ public slots:
     void zoomIn();
     /// zooms-out of the diagram editor graph scene
     void zoomOut();
-    /// prompts the user for adding a feature to the currently selected node (i.e. node being hovered over)
-    void addFeatureSelected();
-    /// prompts the user for adding a feature to the currently focused node (i.e. previously double clicked node)
-    void addFeatureFocused();
+
+    void addFeatureDialog();
+
     /// prompts the user for renaming a feature of the currently focused node (i.e. previously double clicked node)
     void renameFeatureFocused();
     /// prompts the user for removing a feature of the currently focused node (i.e. previously double clicked node)
@@ -172,8 +163,7 @@ public slots:
     void removeFeaturesSelected();
     /// deletes the currently focused node (i.e. previously double clicked node)
     void removeFocusedVertex();
-    /// deletes the currently selected node (i.e. node being hovered over)
-    void removeSelectedVertex();
+
     /// prompts the user for swapping two features of the currently focused node (i.e. previously double clicked node)
     void swapFeaturesFocused();
     /// prompts the user for swapping two features of the currently selected node (i.e. node being hovered over)
@@ -245,6 +235,8 @@ private:
     bool mVertexFocused;
     /// boolean witness telling whether an edge is being focused on
     bool mEdgeFocused;
+
+    NodeItem* mFocusedNodeItem;
 
     /// boolean witness for the drag-n-drop mode: true when drag-n-drop is on; false otherwise (i.e. when move-around mode is on)
     bool mDragDrop;

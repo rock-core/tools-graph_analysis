@@ -24,6 +24,7 @@ rock_library(graph_analysis
         gui/layeritem/edges/Simple.cpp
         gui/layeritem/Resource.cpp
         gui/items/Label.cpp
+        gui/items/Feature.cpp
         gui/IconManager.cpp
         gui/WidgetManager.cpp
         gui/GraphWidgetManager.cpp
@@ -97,7 +98,8 @@ rock_library(graph_analysis
         gui/graphitem/Simple.hpp
         gui/layeritem/edges/Simple.hpp
         gui/layeritem/Resource.hpp
-        gui/items/Label.cpp
+        gui/items/Label.hpp
+        gui/items/Feature.hpp
         gui/IconManager.hpp
         gui/WidgetManager.hpp
         gui/GraphWidgetManager.hpp
@@ -117,6 +119,8 @@ rock_library(graph_analysis
         gui/RenameFeatureDialog.hpp
         gui/PropertyDialog.hpp
         gui/CustomDialog.hpp
+        gui/VertexGetter.hpp
+        gui/EdgeGetter.hpp
         io/GexfWriter.hpp
         io/GexfReader.hpp
         io/GraphvizWriter.hpp

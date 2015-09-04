@@ -130,6 +130,8 @@ public:
     void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
     bool isFocused(GraphElement::Ptr element) const { return mpFocusedElement == element; }
 
+    NodeItem* getFocusedNodeItem();
+
     void selectElement(graph_analysis::GraphElement::Ptr element);
     void unselectElement(graph_analysis::GraphElement::Ptr element);
     void clearElementSelection() { mElementSelection.clear(); }

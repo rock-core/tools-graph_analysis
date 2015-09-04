@@ -9,6 +9,8 @@
 #include <QDrag>
 
 #include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/gui/VertexGetter.hpp>
+#include <graph_analysis/gui/EdgeGetter.hpp>
 #include <graph_analysis/PortVertex.hpp>
 #include <iostream>
 
@@ -27,7 +29,7 @@ namespace items {
  * vertex in a graph
  * \details specific to the diagram editor widget: editable text representation (disregards the ENTER key)
  */
-class Feature : public QGraphicsTextItem
+class Feature : public QGraphicsTextItem, VertexGetter
 {
 private:
     // managing graph widget
@@ -42,7 +44,7 @@ public:
      * \param item parent NodeItem implementing instance
      * \param graphWidget managing widget
      */
-    Feature(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0, GraphElement::Ptr element);
+    Feature(GraphElement::Ptr element, GraphWidget *graphWidget);
 
     /**
      * \brief toggles direct editing options of the displayed text
@@ -52,9 +54,19 @@ public:
     void setTextInteraction(bool on, bool selectAll = false);
 
     /// getter method: retrieves the assigned ID
-    GraphElement::Ptr getGraphElement() { return mpGraphElement; }
+    GraphElement::Ptr getGraphElement() const { return mpGraphElement; }
+
+    Edge::Ptr getEdge() const;
+    Vertex::Ptr getVertex() const;
+
+    int type() const { return UserType + 10; }
 
 protected:
+    /// qt hovering ENTER callback
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    /// qt hovering LEAVE callback
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+
     /// qt mouse double-click callback
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
     /// qt key pressing callback

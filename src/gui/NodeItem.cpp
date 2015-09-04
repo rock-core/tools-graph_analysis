@@ -9,12 +9,15 @@
 
 #include <base/Logging.hpp>
 #include <boost/assign/list_of.hpp>
+#include <graph_analysis/gui/items/Feature.hpp>
 
 namespace graph_analysis {
 namespace gui {
 
 NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : mpVertex(vertex)
+    : QGraphicsItemGroup()
+    , VertexGetter()
+    , mpVertex(vertex)
     , mpGraphWidget(graphWidget)
 {
     setFlag(ItemIsMovable, false);
@@ -139,6 +142,71 @@ void NodeItem::dropEvent(QGraphicsSceneDragDropEvent* event)
     {
         LOG_INFO_S << "    drag from source graph element with id: " << mimeData->text().toStdString();
     }
+}
+
+const items::Feature* NodeItem::getPointedAtFeature() const
+{
+    std::vector<items::Feature*>::const_iterator cit = mFeatures.begin();
+    for(; cit != mFeatures.end(); ++cit)
+    {
+        const items::Feature* feature = *cit;
+        if(feature->isUnderMouse())
+        {
+            return feature;
+        }
+    }
+
+    // by default return current itemgroup parent
+    return NULL;
+}
+
+Vertex::Ptr NodeItem::getPointedAtVertex() const
+{
+    const items::Feature* feature = getPointedAtFeature();
+    if(feature)
+    {
+        return feature->getVertex();
+    } else {
+        return mpVertex;
+    }
+}
+
+NodeItem::id_t NodeItem::addFeature(items::Feature* feature)
+{
+    std::vector<items::Feature*>::const_iterator cit = std::find(mFeatures.begin(), mFeatures.end(), feature);
+    if(cit == mFeatures.end())
+    {
+        mFeatures.push_back(feature);
+        return mFeatures.size() - 1;
+    } else {
+        throw std::invalid_argument("graph_analysis::gui::NodeItem::addFeature: feature already added");
+    }
+}
+
+void NodeItem::removeFeature(id_t pos)
+{
+    if(mFeatures.size() > pos)
+    {
+        // Remove from base graph
+        mpGraphWidget->graph()->removeVertex( mFeatures[pos]->getVertex() );
+        // Remove from node item
+        mFeatures.erase( mFeatures.begin() + pos );
+    } else {
+        throw std::invalid_argument("graph_analysis::gui::NodeItem::removeFeature: index out of bounds");
+    }
+}
+
+void NodeItem::removeFeatures()
+{
+    while(!mFeatures.empty())
+    {
+        removeFeature(0);
+    }
+}
+
+items::Feature* NodeItem::getFeature(NodeItem::id_t pos) const
+{
+    return mFeatures.at(pos);
 }
 
 } // end namespace gui
