@@ -46,6 +46,8 @@ public:
      */
     Feature(GraphElement::Ptr element, GraphWidget *graphWidget);
 
+    //QRectF boundingRect() const { QRectF rectf(0,0,10,10); return rectf; }
+
     /**
      * \brief toggles direct editing options of the displayed text
      * \param on boolean flag - true when the editing mode is to be turned on; false otherwise
@@ -60,6 +62,8 @@ public:
     Vertex::Ptr getVertex() const;
 
     int type() const { return UserType + 10; }
+
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
 protected:
     /// qt hovering ENTER callback

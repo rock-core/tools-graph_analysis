@@ -237,6 +237,13 @@ QVariant Feature::itemChange(QGraphicsItem::GraphicsItemChange change, const QVa
     return QGraphicsTextItem::itemChange(change, value);
 }
 
+void Feature::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+{
+    QRectF rect = boundingRect();
+    painter->drawRoundedRect(rect, 1, 1); //PORT_BORDER, PORT_BORDER);
+    QGraphicsTextItem::paint(painter, option, widget);
+}
+
 } // end namespace items
 } // end namespace gui
 } // end namespace graph_analysis

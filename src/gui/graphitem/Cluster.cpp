@@ -23,6 +23,8 @@
 #include <graph_analysis/gui/items/Feature.hpp>
 #include <graph_analysis/PortVertex.hpp>
 
+#include <QTableWidget>
+
 /// inline maximum test
 #define max(X, Y) (X > Y ? X : Y)
 /// single feature height constant
@@ -63,6 +65,9 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     labelFont.setItalic(true);
 //    labelFont.setUnderline(true);
 
+    Label* label = new Label("Ports:", this);
+    label->setPos(mpLabel->pos() + QPointF(0., ADJUST));
+
     //mpPortsLabel = new Label("Ports:", this);
     //mpPortsLabel->setFont(labelFont);
     //mpPortsLabel->setPos(mpLabel->pos() + QPointF(0., ADJUST));
@@ -85,6 +90,15 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     QRectF rect = boundingRect();
     mpBoard->resize(rect.width(), rect.height());
 
+    QTableWidget* tableWidget = new QTableWidget(10,2, graphWidget);
+    QTableWidgetItem *item0 = new QTableWidgetItem;
+    item0->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    item0->setText("WHAT IS THIS: item0");
+    tableWidget->setItem(0, 0, item0);
+
+
+    //addToGroup(tableWidget);
+
 //    QGraphicsItemGroup::setHandlesChildEvents(false);
 }
 
@@ -97,6 +111,8 @@ void Cluster::updateLabel()
 QRectF Cluster::boundingRect() const
 {
     QRectF childrenRect = childrenBoundingRect();
+    LOG_INFO_S << "Rect: " << childrenRect.x() << "/" << childrenRect.y() 
+        << " w/h: " << childrenRect.width() << "/" << childrenRect.height();
     return childrenRect;
 }
 
@@ -109,29 +125,70 @@ QPainterPath Cluster::shape() const
 
 void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
+  //QPainterPath OuterPath;
+  //OuterPath.setFillRule(Qt::WindingFill);
+  //OuterPath.addEllipse(QPointF(60, 60), 50, 50);
+  //OuterPath.addRect(60, 10, 50, 50);
+
+  //QPainterPath InnerPath;
+  //InnerPath.addEllipse(QPointF(60, 60), 20, 20);
+
+  //QPainterPath FillPath = OuterPath.subtracted(InnerPath);
+
+  //painter->setRenderHint(QPainter::Antialiasing);
+
+  //painter->fillPath(FillPath, Qt::blue);
+  //painter->strokePath(OuterPath.simplified(), QPen(Qt::black, 1));
+  //painter->strokePath(InnerPath, QPen(Qt::black, 3));
+
     // Draws fully filled item
     //painter->setPen(Qt::NoPen);
     //painter->setBrush(mPen.brush());
     //painter->drawEllipse(-7, -7, 20, 20);
-    painter->setPen(QPen(Qt::black, 0));
-    updateWidth(false); // in case the main label change triggered redrawing
+    //painter->setPen(QPen(Qt::black, 1));
+    //updateWidth(false); // in case the main label change triggered redrawing
 
-    QRectF rect;
+    QPainterPath outerPath = shape();
+    //outerPath.setFillRule(Qt::WindingFill);
+    //outerPath.addEllipse(QPointF(60, 60), 50, 50);
+    //outerPath.addRect(60, 10, 50, 50);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    //painter->fillPath(outerPath, Qt::blue);
+    //painter->strokePath(outerPath.simplified(), QPen(Qt::black, 1));
+    painter->drawRoundedRect(boundingRect(), 10,10);
+    //painter->strokePath(InnerPath, QPen(Qt::black, 3));
+
+    qreal xOffset = 0;
+    qreal yOffset = 25;
+    qreal currentX = 0;
+    qreal currentY = 60;
+    int xPosition = 0;
+    int yPosition = 0;
     foreach(items::Feature* feature, mFeatures)
     {
-        rect = featureBoundingRect(feature);
-        painter->drawRoundedRect(rect, PORT_BORDER, PORT_BORDER);
+        feature->setX(currentX + xOffset*xPosition);
+        feature->setY(currentY + yOffset*yPosition++);
+    //    rect.setWidth(80);
+    //    rect.setHeight(20);
+
+        //LOG_DEBUG_S << "Rectangle: x/y " << rect.x() << "/" << rect.y() << " "
+        //    " width/height " << rect.width() << "/" << rect.height();
+    //    painter->drawRoundedRect(rect, 1, 1); //PORT_BORDER, PORT_BORDER);
+
+
+       addToGroup(feature);
     }
 
-    // Drawing of border: back to transparent background
+    //// Drawing of border: back to transparent background
     painter->setPen(mPen);
-    rect = boundingRect();
+    QRectF rect = boundingRect();
 
-    // updating the size of the supporting board
+    //// updating the size of the supporting board
     mpBoard->resize(rect.width(), rect.height());
     mpBoard->resize(100,100);
     this->update(rect);
-    // triggering edges to update
+    //// triggering edges to update
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
 }
 
