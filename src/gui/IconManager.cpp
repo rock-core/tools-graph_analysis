@@ -8,8 +8,13 @@ namespace gui {
 
 std::string IconManager::getIconRootPath()
 {
-    utilmm::pkgconfig pkg("graph_analysis");
-    return pkg.get("sharedir") + "/icons/";
+    try {
+        utilmm::pkgconfig pkg("graph_analysis");
+        return pkg.get("sharedir") + "/icons/";
+    } catch(...)
+    {
+        throw std::runtime_error("graph_analysis::gui::IconManager: graph_analysis is not installed - failed to find icon dir");
+    }
 }
 
 IconManager::IconManager()
