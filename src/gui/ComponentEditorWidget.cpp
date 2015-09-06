@@ -397,60 +397,7 @@ void ComponentEditorWidget::removeSelectedEdge()
 
 void ComponentEditorWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
 {
-    std::string concernedEdgeLabel = concernedEdge->toString();
-    updateStatus(std::string("removing edge '") + concernedEdgeLabel + "'...");
-    EdgeItem *edge = mEdgeItemMap[concernedEdge];
-    if(!edge)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::clearEdge: provided edge '") + concernedEdge->getLabel() + "' is not registered with the GUI";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    scene()->removeItem(edge);
-    const std::string label = concernedEdge->getLabel();
-    const graph_analysis::Vertex::Ptr sourceClusterVertex = concernedEdge->getSourceVertex();
-    const graph_analysis::Vertex::Ptr targetClusterVertex = concernedEdge->getTargetVertex();
-    const NodeItem * sceneSourceNodeItem = mNodeItemMap[sourceClusterVertex];
-    const NodeItem * sceneTargetNodeItem = mNodeItemMap[targetClusterVertex];
-    if(!sceneSourceNodeItem || !sceneTargetNodeItem)
-    {
-        std::string error_msg = std::string("graph_analysis::gui::ComponentEditorWidget::removeSelectedEdge: the selected edge '")
-                                        + label + "' in the layouting graph mpLayoutingGraph has invalid Vertex endpoints or invalid scene items correspondands";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-
-    // locating and deleting the main edge in mpGraph correspondent to the concerned edge
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-        if(label != edge->getLabel())
-        {
-            continue;
-        }
-        NodeItem * sourceNodeItem = mFeatureMap[edge->getSourceVertex()];
-        NodeItem * targetNodeItem = mFeatureMap[edge->getTargetVertex()];
-        if(!sourceNodeItem || !targetNodeItem)
-        {
-            std::string error_msg = std::string("graph_analysis::gui::ComponentEditorWidget::removeSelectedEdge: the iterated-over edge '")
-                                            + label + "' in the main graph mpGraph has invalid Vertex endpoints or invalid scene items correspondands";
-            LOG_ERROR_S << error_msg;
-            throw std::runtime_error(error_msg);
-        }
-        if  (
-                    sourceClusterVertex == sourceNodeItem->getVertex() && sceneSourceNodeItem == sourceNodeItem
-                &&  targetClusterVertex == targetNodeItem->getVertex() && sceneTargetNodeItem == targetNodeItem
-            )
-        {
-            mpGraph->removeEdge(edge);
-            break; // assuming there is a single correspondent edge in the main graph mpGraph
-        }
-    }
-    // does not forget to delete the default edge
-    mpLayoutingGraph->removeEdge(concernedEdge);
-    syncEdgeItemMap(concernedEdge);
-    updateStatus(std::string("Removed edge '") + concernedEdgeLabel + "'!", GraphWidgetManager::TIMEOUT);
+    updateStatus("Removed edge '");
 }
 
 void ComponentEditorWidget::removeFocusedVertex()
@@ -462,95 +409,11 @@ void ComponentEditorWidget::removeFocusedVertex()
 
 void ComponentEditorWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
 {
-    std::string concernedVertexLabel = concernedVertex->toString();
-    updateStatus(std::string("removing node '") + concernedVertexLabel + "'...");
-    // removing possible (default?) edges of this cluster node within the main graph (and its feature-vertices)
-    if(graph_analysis::ClusterVertex::vertexType() != concernedVertex->getClassName())
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::clearVertex: the supplied vertex '") + concernedVertex->getLabel()
-                                        + "' is of unexpected type '" + concernedVertex->getClassName() + "'";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(concernedVertex);
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-        Vertex::Ptr featureVertex;
-        Vertex::Ptr sourceVertex = edge->getSourceVertex();
-        Vertex::Ptr targetVertex = edge->getTargetVertex();
-        if(sourceVertex != concernedVertex)
-        {
-            featureVertex = sourceVertex;
-        }
-        else
-        {
-            featureVertex = targetVertex;
-        }
-        // removing all edges of the featureVertex
-        EdgeIterator::Ptr edgeIterator = mpGraph->getEdgeIterator(featureVertex);
-        while(edgeIterator->next())
-        {
-            mpGraph->removeEdge(edgeIterator->current());
-        }
-        mpGraph->removeVertex(featureVertex);
-        // already removed the edge itself up above //       mpGraph->removeEdge(edge);
-    }
-    // removing default edges (in the secondary/layouting graph and elliminating their corresponding graphical representations off the screen)
-    edgeIt = mpLayoutingGraph->getEdgeIterator(concernedVertex);
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-        EdgeItem *edgeItem = mEdgeItemMap[edge];
-        if(edgeItem)
-        {
-            scene()->removeItem(edgeItem);
-        }
-        syncEdgeItemMap(edge);
-//        mpLayoutingGraph->removeEdge(edge); // commented out since it introduces bugs when mpLayoutingGraph is dirty
-    }
-//    mpLayoutingGraph->removeVertex(concernedVertex); // commented out since it introduces bugs when mpLayoutingGraph is 'dirty'
-    NodeItem *item = mNodeItemMap[concernedVertex];
-    if(!item)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::removeVertex: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    scene()->removeItem(item);
-    mpGraph->removeVertex(concernedVertex);
-    updateStatus(std::string("Removed node '") + concernedVertexLabel + "'!", GraphWidgetManager::TIMEOUT);
+    updateStatus("Removed node '");
 }
 
 void ComponentEditorWidget::spawnEdge(const std::string& label) // assumes the concerned edge-creation member fields are properly set already
 {
-    NodeItem *sourceNodeItem = mNodeItemMap[mpStartVertex];
-    NodeItem *targetNodeItem = mNodeItemMap[mpEndVertex];
-    if(sourceNodeItem && targetNodeItem)
-    {
-        if(sourceNodeItem == targetNodeItem)
-        {
-            // preventing self-edges (handled it into features swapping already)
-            return;
-        }
-        Edge::Ptr edge(new Edge(mpStartFeature, mpEndFeature, label));
-        mpGraph->addEdge(edge);
-        enableEdge(edge);
-        Edge::Ptr default_edge(new Edge(mpStartVertex, mpEndVertex, label));
-        mpLayoutingGraph->addEdge(default_edge);
-
-        //EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[mpStartFeature], targetNodeItem, mFeatureIDMap[mpEndFeature], default_edge);
-        //scene()->addItem(edgeItem);
-        //edgeItem->adjust();
-        //mEdgeItemMap[default_edge] = edgeItem;
-    }
-    else
-    {
-        std::string error_msg = std::string("graph_analysis::gui::ComponentEditorWidget::spawnEdge: could not insert new edge of label '") + label
-                                        + "' since its endpoint vertices are not both registered in mNodeItemMap";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
 }
 
 
@@ -665,49 +528,10 @@ void ComponentEditorWidget::syncDragDrop()
 }
 
 void ComponentEditorWidget::setDragDrop()
-{
-    /*
-    updateStatus(std::string("toggling drag-n-drop mode to true..."));
-    mDragDrop = true;
-    WidgetManager::getInstance()->getPropertyDialog()->setDragDrop(true);
-    if(mVertexSelected)
-    {
-        NodeItem *item = mNodeItemMap[mpSelectedVertex];
-        item->unselect();
-    }
-    NodeItemMap::iterator it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != it; ++it)
-    {
-        NodeItem *current = it->second;
-        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
-        {
-            current->setHandlesChildEvents(false); // of !mDragDrop
-            current->setFlag(QGraphicsItem::ItemIsMovable, false);
-        }
-    }
-    updateStatus(std::string("Toggled drag-n-drop mode to true!"), GraphWidgetManager::TIMEOUT);
-    */
-}
+{}
 
 void ComponentEditorWidget::unsetDragDrop()
-{
-    /*
-    updateStatus(std::string("toggling drag-n-drop mode to false..."));
-    mDragDrop = false;
-    WidgetManager::getInstance()->getPropertyDialog()->setDragDrop(false);
-    NodeItemMap::iterator it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != it; ++it)
-    {
-        NodeItem *current = it->second;
-        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
-        {
-            current->setHandlesChildEvents(true); // of !mDragDrop
-            current->setFlag(QGraphicsItem::ItemIsMovable);
-        }
-    }
-    updateStatus(std::string("Toggled drag-n-drop mode to false!"), GraphWidgetManager::TIMEOUT);
-    */
-}
+{}
 
 void ComponentEditorWidget::itemMoved()
 {

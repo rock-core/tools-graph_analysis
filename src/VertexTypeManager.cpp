@@ -20,29 +20,20 @@ VertexTypeManager::VertexTypeManager()
 {
     // registering known implemented class-types
     mTypeMap = boost::assign::map_list_of
-        (std::string("default"),       Vertex::Ptr (new Vertex()))
-        (std::string("port"),       Vertex::Ptr ((Vertex *) (new PortVertex())))
-        (graph_analysis::PortVertex::vertexType(),          Vertex::Ptr ((Vertex *) (new PortVertex())))
-        (std::string("inputport"),  Vertex::Ptr ((Vertex *) (new InputPortVertex())))
-        (graph_analysis::InputPortVertex::vertexType(),     Vertex::Ptr ((Vertex *) (new InputPortVertex())))
-        (std::string("outputport"), Vertex::Ptr ((Vertex *) (new OutputPortVertex())))
-        (graph_analysis::OutputPortVertex::vertexType(),    Vertex::Ptr ((Vertex *) (new OutputPortVertex())))
-        (std::string("cluster"),    Vertex::Ptr ((Vertex *) (new ClusterVertex())))
-        (graph_analysis::ClusterVertex::vertexType(),       Vertex::Ptr ((Vertex *) (new ClusterVertex())))
-        (std::string("property"),   Vertex::Ptr ((Vertex *) (new PropertyVertex())))
-        (graph_analysis::PropertyVertex::vertexType(),      Vertex::Ptr ((Vertex *) (new PropertyVertex())))
-        (std::string("operation"),  Vertex::Ptr ((Vertex *) (new OperationVertex())))
-        (graph_analysis::OperationVertex::vertexType(),     Vertex::Ptr ((Vertex *) (new OperationVertex())))
+        (std::string("default"),                         Vertex::Ptr (new Vertex()))
+        (graph_analysis::PortVertex::vertexType(),       Vertex::Ptr(new PortVertex()))
+        (graph_analysis::InputPortVertex::vertexType(),  Vertex::Ptr (new InputPortVertex()))
+        (graph_analysis::OutputPortVertex::vertexType(), Vertex::Ptr(new OutputPortVertex()))
+        (graph_analysis::ClusterVertex::vertexType(),    Vertex::Ptr(new ClusterVertex()))
+        (graph_analysis::PropertyVertex::vertexType(),   Vertex::Ptr(new PropertyVertex()))
+        (graph_analysis::OperationVertex::vertexType(),  Vertex::Ptr (new OperationVertex()))
         ;
-    // initializing the list of registered types (non-repeatingly, non-verbously)
-    mRegisteredTypes.clear();
+
+    // initializing the list of default registered types (non-repeatingly, non-verbously)
     TypeMap::iterator it = mTypeMap.begin();
     for(; mTypeMap.end() != it; ++it)
     {
-        if("graph_analysis::" != it->first.substr(0, std::string("graph_analysis::").length())) // filters out verbose (&& duplicate) types
-        {
-            mRegisteredTypes.insert(it->first);
-        }
+        mRegisteredTypes.insert(it->first);
     }
 }
 

@@ -7,6 +7,7 @@
 #include <graph_analysis/ClusterVertex.hpp>
 #include <graph_analysis/PropertyVertex.hpp>
 #include <graph_analysis/OperationVertex.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
 
 #include <cmath>
 #include <QFont>
@@ -61,27 +62,9 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     mainLabelFont.setBold(true);
     mpLabel->setFont(mainLabelFont);
 
-    QFont labelFont;
-    labelFont.setItalic(true);
+    //QFont labelFont;
+    //labelFont.setItalic(true);
 //    labelFont.setUnderline(true);
-
-    Label* label = new Label("Ports:", this);
-    label->setPos(mpLabel->pos() + QPointF(0., ADJUST));
-
-    //mpPortsLabel = new Label("Ports:", this);
-    //mpPortsLabel->setFont(labelFont);
-    //mpPortsLabel->setPos(mpLabel->pos() + QPointF(0., ADJUST));
-
-    //mpPropsLabel = new Label("Properties:", this);
-    //mpPropsLabel->setFont(labelFont);
-
-    //mpOpsLabel = new Label("Operations:", this);
-    //mpOpsLabel->setFont(labelFont);
-
-    //mWidthPortsLabel = mpPortsLabel->boundingRect().width();
-    //mWidthPropsLabel = mpPropsLabel->boundingRect().width();
-    //mWidthOpsLabel   = mpOpsLabel  ->boundingRect().width();
-
     setFlag(ItemIsMovable);
 
     mpBoard = new QGraphicsWidget(this);
@@ -90,14 +73,6 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     QRectF rect = boundingRect();
     mpBoard->resize(rect.width(), rect.height());
 
-    QTableWidget* tableWidget = new QTableWidget(10,2, graphWidget);
-    QTableWidgetItem *item0 = new QTableWidgetItem;
-    item0->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    item0->setText("WHAT IS THIS: item0");
-    tableWidget->setItem(0, 0, item0);
-
-
-    //addToGroup(tableWidget);
 
 //    QGraphicsItemGroup::setHandlesChildEvents(false);
 }
@@ -159,25 +134,75 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     painter->drawRoundedRect(boundingRect(), 10,10);
     //painter->strokePath(InnerPath, QPen(Qt::black, 3));
 
+    qreal ptSize = mpLabel->font().pointSize();
+    LOG_DEBUG_S << "Font: pt size: " << ptSize;
     qreal xOffset = 0;
-    qreal yOffset = 25;
+    qreal yOffset = ptSize * 1.5;
     qreal currentX = 0;
-    qreal currentY = 60;
-    int xPosition = 0;
-    int yPosition = 0;
-    foreach(items::Feature* feature, mFeatures)
+    qreal currentY = ptSize * 2.0;
+    int featureClassCount = 0;
+    qreal lastFeatureYPos = mpLabel->boundingRect().bottom();
+    qreal lastFeatureLabelYPos = 0;
+    // Spaceing between feature label a previous
+    qreal featureLabelOffset = ptSize;
+
+    bool addLabel = true;
+    std::set<std::string> supportedTypes = VertexTypeManager::getInstance()->getSupportedTypes();
+    std::set<std::string>::const_iterator cit = supportedTypes.begin();
+    for(; cit != supportedTypes.end(); ++cit)
     {
-        feature->setX(currentX + xOffset*xPosition);
-        feature->setY(currentY + yOffset*yPosition++);
-    //    rect.setWidth(80);
-    //    rect.setHeight(20);
+        int xPosition = 0;
+        int yPosition = 0;
 
-        //LOG_DEBUG_S << "Rectangle: x/y " << rect.x() << "/" << rect.y() << " "
-        //    " width/height " << rect.width() << "/" << rect.height();
-    //    painter->drawRoundedRect(rect, 1, 1); //PORT_BORDER, PORT_BORDER);
+        std::string supportedType = *cit;
+        foreach(items::Feature* feature, mFeatures)
+        {
+            if(feature->getGraphElement()->getClassName() == *cit)
+            {
+                if(addLabel)
+                {
+                    addLabel = false;
 
+                    std::string labelTxt = supportedType + "s";
+                    QGraphicsTextItem* label = new QGraphicsTextItem(labelTxt.c_str(), this);
+                    label->setY(lastFeatureYPos + featureLabelOffset);
 
-       addToGroup(feature);
+                    QFont labelFont = mpLabel->font();
+                    labelFont.setItalic(true);
+                    label->setFont(labelFont);
+
+                    lastFeatureLabelYPos = label->y() + label->boundingRect().bottom();
+
+                    LOG_DEBUG_S << "Label at: " << label->x() << "/" << label->y()
+                        << " lastFeatureLabelYPos: " << lastFeatureLabelYPos;
+                    addToGroup(label);
+                }
+
+                LOG_DEBUG_S << "X: Feature at: " << currentX << "+" << xOffset << "*" << xPosition
+                    << " lastFeatureYPos" << lastFeatureYPos;
+                feature->setX(currentX + xOffset*xPosition);
+                LOG_DEBUG_S << "Y: Feature at: " << lastFeatureLabelYPos << "+" << yOffset << "*" << yPosition;
+                feature->setY(lastFeatureLabelYPos + yOffset*yPosition++);
+
+                LOG_DEBUG_S << "Feature at: " << feature->x() << "/" << feature->y()
+                    << " lastFeatureYPos" << lastFeatureYPos;
+
+                lastFeatureYPos = feature->y() + feature->boundingRect().bottom();
+
+                LOG_DEBUG_S << "after feature at: " << feature->x() << "/" << feature->y()
+                    << " lastFeatureYPos" << lastFeatureYPos;
+                addToGroup(feature);
+            }
+
+        //    rect.setWidth(80);
+        //    rect.setHeight(20);
+
+            //LOG_DEBUG_S << "Rectangle: x/y " << rect.x() << "/" << rect.y() << " "
+            //    " width/height " << rect.width() << "/" << rect.height();
+        //    painter->drawRoundedRect(rect, 1, 1); //PORT_BORDER, PORT_BORDER);
+
+        }
+        addLabel = true;
     }
 
     //// Drawing of border: back to transparent background
