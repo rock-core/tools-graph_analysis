@@ -12,8 +12,18 @@ namespace algorithms {
  * MinCostFlow allows to use existing algorithms for min-cost flow optimization
  * to be performed on an existing graph
  *
- * The constructed graph should consist of edges of type: NWeightedEdge<uint32_t,3>
- * and supply/demand nodes: WeightedVertex (will use 'int' value though)
+ * The constructed graph should consist of edges of type: NWeightedEdge<int32_t,5>
+ * Indices correspond to EdgeIndex, i.e.
+ * 0 -> lower bound
+ * 1 -> upper bound
+ * 2 -> cost
+ * 3 -> result: flow
+ * and supply/demand nodes: WeightedVertex<int32_t> (will use 'int' value though)
+ * 0 -> supply/demand  (supply is a positive value, demand a negative one)
+ * 1 -> result: potential
+ *
+ * The min cost flow is solved using the graph specific solvers,
+ * e.g., default for the underlying lemon graph structure is the NetworkSimplex
  *
  */
 class MinCostFlow
