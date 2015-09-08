@@ -17,7 +17,7 @@ namespace lemon {
  * \class DirectedGraph
  * \brief Directed graph implementation based on lemon library
  */
-class DirectedGraph : public TypedGraph< ::lemon::ListDigraph >, graph_analysis::DirectedGraphInterface
+class DirectedGraph : public TypedGraph< ::lemon::ListDigraph >, public graph_analysis::DirectedGraphInterface
 {
 public:
     typedef boost::shared_ptr<DirectedGraph> Ptr;

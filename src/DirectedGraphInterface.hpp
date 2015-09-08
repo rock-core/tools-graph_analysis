@@ -9,6 +9,8 @@ namespace graph_analysis
 class DirectedGraphInterface
 {
 public:
+    typedef boost::shared_ptr<DirectedGraphInterface> Ptr;
+
     virtual ~DirectedGraphInterface() {}
 
     virtual EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const = 0;

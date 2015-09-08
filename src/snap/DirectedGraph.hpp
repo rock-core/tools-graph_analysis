@@ -42,7 +42,7 @@ typedef TNodeEdgeNet< Serializable<Vertex::Ptr>, Serializable<Edge::Ptr> > SnapD
  * \brief Directed graph implementation based on SNAP library
  * \see 
  */
-class DirectedGraph : public graph_analysis::TypedGraph<SnapDigraph>, graph_analysis::DirectedGraphInterface
+class DirectedGraph : public graph_analysis::TypedGraph<SnapDigraph>, public graph_analysis::DirectedGraphInterface
 {
 public:
     typedef boost::shared_ptr<DirectedGraph> Ptr;
