@@ -4,6 +4,8 @@ rock_library(graph_analysis
         algorithms/CorrelationClustering.cpp
         algorithms/FloydWarshall.cpp
         algorithms/MinCostFlow.cpp
+        algorithms/MultiCommodityMinCostFlow.cpp
+        algorithms/MultiCommodityEdge.cpp
         boost_graph/DirectedGraph.cpp
         Edge.cpp
         EdgeIterable.cpp
@@ -76,6 +78,9 @@ rock_library(graph_analysis
         algorithms/DistanceMatrix.hpp
         algorithms/FloydWarshall.hpp
         algorithms/MinCostFlow.hpp
+        algorithms/MultiCommodityMinCostFlow.hpp
+        algorithms/MultiCommodityEdge.hpp
+        algorithms/MultiCommodityVertex.hpp
         boost_graph/DirectedGraph.hpp
         DirectedGraphInterface.hpp
         Edge.hpp

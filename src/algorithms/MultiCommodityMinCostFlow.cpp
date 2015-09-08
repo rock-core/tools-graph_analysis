@@ -1,0 +1,253 @@
+#include "MultiCommodityMinCostFlow.hpp"
+#include "MultiCommodityEdge.hpp"
+#include "MultiCommodityVertex.hpp"
+#include <iterator>
+#include <graph_analysis/DirectedGraphInterface.hpp>
+#include <base/Logging.hpp>
+
+namespace graph_analysis {
+namespace algorithms {
+
+MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities)
+    : mCommodities(commodities)
+    , mpGraph(graph)
+    , mTotalNumberOfColumns(0)
+    , mTotalNumberOfRows(0)
+{
+    if(!graph)
+    {
+        throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow:"
+                " pointer to graph is null");
+    }
+
+    if(!boost::dynamic_pointer_cast<DirectedGraphInterface>(mpGraph))
+    {
+        throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow:"
+                " given graph is not directed (or cannot be casted to DirectedGraphInterface)");
+    }
+}
+
+int MultiCommodityMinCostFlow::run()
+{
+    DirectedGraphInterface::Ptr diGraph = boost::dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);
+
+    // foreach edge
+    //     consumed capacity per node <= upper bound
+    //     consumed capacity per node and commodity <= upper bound (of edge for this commodity)
+    //
+    //     cost per edge = sum "consumed capacity per commodity"*"cost per commodity"
+    //
+    // group vertices as (same location) and source,target,transshipment node
+    //    --- node: per supply/demand per commodity +,- or null + -> supply, -
+    //    -> demand, 0 transshipment
+    //
+    // foreach vertex
+    //     if transshipment node
+    //         overall (timewise) inflow = outflow, i.e. consumed capacity overall all incoming edges - consumed capacity over all outgoing edges = 0
+    //     flow
+
+    // # orderOfGraph rows to define balance constraints (from in/out flow on a vertex);
+    size_t orderOfGraph = mpGraph->order();
+    // # sizeOfGraph rows to define edge bound
+    size_t sizeOfGraph = mpGraph->size();
+
+    size_t numberOfIndices = (orderOfGraph+sizeOfGraph)*(sizeOfGraph*mCommodities);
+    // first index
+    int ia[1 + numberOfIndices];
+    int ja[1 + numberOfIndices];
+    double ar[1 + numberOfIndices];
+
+    LOG_DEBUG_S << "NumberOfIndices: " << numberOfIndices;
+
+    double commodityFlowResult[1+sizeOfGraph*mCommodities];
+
+    // define the integer program
+    mpProblem = glp_create_prob();
+    glp_set_prob_name(mpProblem, "multicommodity_min_cost_flow");
+
+    // Optimization direction: GLP_MIN
+    glp_set_obj_dir(mpProblem, GLP_MIN);
+
+    size_t col = 1;
+    size_t row = 1;
+
+    size_t index = 1;
+
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        // add 
+        // MaxEdgeCapacity >=  0*... + 1.0*currentEdgeComm0 + 1.0*currentEdgeComm1 ... + 0*edgeCom
+        MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
+        if(!edge)
+        {
+            throw std::runtime_error("graph_analysis::gui::MultiCommodityMinCostFlow: cannot cast edge to MultiCommodityEdge");
+        }
+
+        // Start column --> mColumnToEdge*numberOfCommodities + commodityOffset
+        // commodityOffset := 1 .. K
+        mColumnToEdge.push_back(edge);
+
+        // Bound on total capacity
+        glp_add_rows(mpProblem, 1);
+        std::stringstream rs;
+        rs << "y" << row;
+        glp_set_row_name(mpProblem, row, rs.str().c_str());
+        glp_set_row_bnds(mpProblem, row, GLP_DB, 0.0, edge->getCapacityUpperBound());
+
+        // Bounds on individual commodity capacities
+        for(size_t k = 0; k < mCommodities; ++k)
+        {
+            glp_add_cols(mpProblem, 1);
+            std::stringstream cs;
+            cs << "x" << col;
+            // for each edge create k columns, where k is the number of commodities 
+            glp_set_col_name(mpProblem, col, cs.str().c_str());
+            // set the bound for the column to 0 as lower and commodity capacity upper bound
+            glp_set_col_bnds(mpProblem, col, GLP_DB, 0.0, edge->getCommodityCapacityUpperBound(k));
+
+            LOG_DEBUG_S << "Adding column '" << cs.str() << "' for edge: '" << edge->toString() << "' and commodity '" << k  << "' -- lb: 0.0, ub: " << edge->getCommodityCapacityUpperBound(k);
+
+            // Set column to GLP_IV := integer variable (see documentationc chapter 2.10.1)
+            // (other types are GLP_CV := continuous or GLP_BV := binary variabe)
+            glp_set_col_kind(mpProblem, col, GLP_IV);
+
+            // Set the coefficient of the object function to commodity cost
+            glp_set_obj_coef(mpProblem, col, edge->getCommodityCost(k));
+
+            ia[index] = row;
+            ja[index] = col;
+            ar[index] = 1.0;
+
+            LOG_DEBUG_S << "Add" << std::endl
+                    << "ij["<< index << "] = " << row << std::endl
+                    << "ja["<< index << "] = " << col << std::endl
+                    << "ar["<< index << "] = 1.0";
+
+            ++index;
+            ++col;
+        }
+        ++row;
+    }
+    // no need for grouping even for time expanded networks, since the condition 
+    // still holds if the demand is not used, then we transport it locall on
+    // that edge -- allow to identify locally positioned items (at higher cost)
+    VertexIterator::Ptr vertexIt = mpGraph->getVertexIterator();
+    while(vertexIt->next())
+    {
+        MultiCommodityVertex::Ptr vertex = boost::dynamic_pointer_cast<MultiCommodityVertex>( vertexIt->current() );
+        if(!vertex)
+        {
+            throw std::runtime_error("graph_analysis::gui::MultiCommodityMinCostFlow: cannot cast vertex to MultiCommodityVertex");
+        }
+
+        for(size_t k = 0; k < mCommodities; ++k)
+        {
+            glp_add_rows(mpProblem, 1);
+            std::stringstream rs;
+            rs << "y" << row;
+            glp_set_row_name(mpProblem, row, rs.str().c_str());
+            // inflow + demand = 0
+            // supply - outflow = 0
+            // inflow + (demand + supply) - outflow = 0
+            // (demand + supply) = outflow - inflow
+            int32_t supply = vertex->getCommoditySupply(k);
+            glp_set_row_bnds(mpProblem, row, GLP_FX, supply, supply);
+
+            LOG_DEBUG_S << "Adding row '" << rs.str() << "' for vertex '" << mpGraph->getVertexId(vertex) << "' and commodity '" << k << "' with supply: " << supply;
+            ++row;
+        }
+
+        for(size_t k = 0; k < mCommodities; ++k)
+        {
+
+            EdgeIterator::Ptr inEdgeIt = diGraph->getInEdgeIterator(vertex);
+            while(inEdgeIt->next())
+            {
+                MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>(inEdgeIt->current());
+                uint32_t commodityCol = getColumnIndex(edge, k);
+
+                ia[index] = row - mCommodities + k;
+                ja[index] = commodityCol;
+                // inflow
+                ar[index] = -1.0;
+                LOG_DEBUG_S << "Add out edge: " << mpGraph->getEdgeId(edge) << std::endl
+                        << "ij["<< index << "] = " << row - mCommodities + k << std::endl
+                        << "ja["<< index << "] = " << commodityCol << std::endl
+                        << "ar["<< index << "] = -1.0";
+                ++index;
+            }
+
+            EdgeIterator::Ptr outEdgeIt = diGraph->getOutEdgeIterator(vertex);
+            while(outEdgeIt->next())
+            {
+                MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( outEdgeIt->current() );
+                uint32_t commodityCol = getColumnIndex(edge, k);
+
+                ia[index] = row - mCommodities + k;
+                ja[index] = commodityCol;
+                // outflow
+                ar[index] = 1.0;
+
+                LOG_DEBUG_S << "Add in edge: " << mpGraph->getEdgeId(edge) << std::endl
+                        << "ij["<< index << "] = " << row - mCommodities + k << std::endl
+                        << "ja["<< index << "] = " << commodityCol << std::endl
+                        << "ar["<< index << "] = 1.0";
+                ++index;
+            }
+        }
+    }
+    mTotalNumberOfColumns = col - 1;
+    mTotalNumberOfRows = row - 1;
+
+    LOG_DEBUG_S << "Index: " << index - 1;
+    glp_load_matrix(mpProblem, index - 1, ia, ja, ar);
+
+    glp_write_lp(mpProblem, NULL, "/tmp/test.cpx");
+
+
+    glp_iocp controlParameters;
+    glp_init_iocp(&controlParameters);
+    //int result = glp_intopt(mpProblem, &controlParameters);
+    int result = glp_simplex(mpProblem, NULL);
+    switch(result)
+    {
+        case 0:
+            LOG_INFO_S << "Solved problem sucessfully";
+            break;
+        case GLP_EBOUND:
+            LOG_WARN_S << "Unable to start the search, because some double-bounded variables have incrorrect bounds or some integer variables have non-integer (fractional) bounds.";
+            break;
+        case GLP_EROOT:
+            LOG_WARN_S << "Unable to start the search, because optimal basis for initial LP relaxation is not provided. (This error may appear only if the presolver is disabled";
+            break;
+        case GLP_ENOPFS:
+            LOG_WARN_S << "Unable to start the search, because LP relaxation of the MIP problem instance has no primal feasible solution. (This error may appear only if the presolver is enabled)";
+    }
+
+    double z = glp_get_obj_val(mpProblem);
+    LOG_WARN_S << "Result is z = " << z;
+
+    for(size_t i = 1; i <= mTotalNumberOfColumns; ++i)
+    {
+        double flow = glp_get_col_prim(mpProblem, i);
+        LOG_WARN_S << "    col #" << i << " = " << flow;
+    }
+
+    return result;
+}
+
+int MultiCommodityMinCostFlow::getColumnIndex(const Edge::Ptr& e, uint32_t commodity)
+{
+    std::vector<Edge::Ptr>::iterator cit = std::find(mColumnToEdge.begin(), mColumnToEdge.end(), e);
+    if(cit != mColumnToEdge.end())
+    {
+        int distance = std::distance(mColumnToEdge.begin(), cit)*mCommodities + commodity + 1;
+        LOG_DEBUG_S << "Column index '" << e->toString() << "' commodity: '" << commodity << "' is " << distance;
+        return distance; 
+    }
+    throw std::invalid_argument("graph_analysis::gui::MultiCommodityMinCostFlow::getColumnIndex: edge '" + e->toString() + "' is not associated with a column");
+}
+
+} // end namespace algorithms
+} // end namespace graph_analysis

@@ -10,4 +10,5 @@ rock_testsuite(test_graph suite.cpp
     algorithms/test_CorrelationClustering.cpp
     algorithms/test_FloydWarshall.cpp
     algorithms/test_MinCostFlow.cpp
+    algorithms/test_MultiCommodityMinCostFlow.cpp
     DEPS graph_analysis)
