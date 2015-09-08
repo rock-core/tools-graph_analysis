@@ -6,6 +6,7 @@ rock_library(graph_analysis
         algorithms/MinCostFlow.cpp
         algorithms/MultiCommodityMinCostFlow.cpp
         algorithms/MultiCommodityEdge.cpp
+        algorithms/GLPKSolver.cpp
         boost_graph/DirectedGraph.cpp
         Edge.cpp
         EdgeIterable.cpp
@@ -81,6 +82,7 @@ rock_library(graph_analysis
         algorithms/MultiCommodityMinCostFlow.hpp
         algorithms/MultiCommodityEdge.hpp
         algorithms/MultiCommodityVertex.hpp
+        algorithms/GLPKSolver.hpp
         boost_graph/DirectedGraph.hpp
         DirectedGraphInterface.hpp
         Edge.hpp

@@ -9,7 +9,8 @@ namespace graph_analysis {
 namespace algorithms {
 
 MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities)
-    : mCommodities(commodities)
+    : GLPKSolver("multicommodity_min_cost_flow")
+    , mCommodities(commodities)
     , mpGraph(graph)
     , mTotalNumberOfColumns(0)
     , mTotalNumberOfRows(0)
@@ -202,9 +203,6 @@ int MultiCommodityMinCostFlow::run()
 
     LOG_DEBUG_S << "Index: " << index - 1;
     glp_load_matrix(mpProblem, index - 1, ia, ja, ar);
-
-    glp_write_lp(mpProblem, NULL, "/tmp/test.cpx");
-
 
     glp_iocp controlParameters;
     glp_init_iocp(&controlParameters);

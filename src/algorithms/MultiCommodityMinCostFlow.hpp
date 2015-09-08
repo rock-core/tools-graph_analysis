@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_MIN_COST_FLOW_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_ GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_MIN_COST_FLOW_HPP
 
-#include <glpk.h>
 #include <graph_analysis/BaseGraph.hpp>
+#include <graph_analysis/algorithms/GLPKSolver.hpp>
 #include <graph_analysis/algorithms/MultiCommodityEdge.hpp>
 #include <graph_analysis/algorithms/MultiCommodityVertex.hpp>
 
@@ -106,7 +106,7 @@ namespace algorithms {
  *
  *
  */
-class MultiCommodityMinCostFlow
+class MultiCommodityMinCostFlow : public GLPKSolver
 {
 public:
     typedef MultiCommodityEdge edge_t;
@@ -119,10 +119,11 @@ public:
      */
     MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities);
 
+    virtual ~MultiCommodityMinCostFlow() {}
+
     int run();
 
 private:
-    glp_prob* mpProblem;
     uint32_t mCommodities;
     BaseGraph::Ptr mpGraph;
     std::vector<Edge::Ptr> mColumnToEdge;
