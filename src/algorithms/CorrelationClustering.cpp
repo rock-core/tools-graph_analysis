@@ -48,7 +48,7 @@ void CorrelationClustering::prepare()
 
         mColumnToEdge.push_back(edgePtr);
 
-        col++;
+        ++col;
     }
     mTotalNumberOfColumns = col - 1;
 
