@@ -189,12 +189,13 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_2)
 
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost =  minCostFlow.run();
+        uint32_t cost = minCostFlow.run();
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-2.");
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
 
+        minCostFlow.storeResult();
         EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
         while(edgeIt->next())
         {

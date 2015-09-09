@@ -76,11 +76,11 @@ namespace algorithms {
  *   - partitioning methods
  *     - using network simplex
  *     - bundle bases (spanning trees)
- * We use the same graph structure as for the MinCostFlow problem, 
+ * We use the same graph structure as for the MinCostFlow problem,
  * but use multiedges, which have to channel the flow according
  * to the type of commodity
  *
- * Edge: 
+ * Edge:
  *  - general capacity of commodity
  *  - capacity per commodity: upper / lower bound
  *  - cost per commodity
@@ -88,8 +88,8 @@ namespace algorithms {
  * Vertex:
  *  - balance constraint
  *
- *  Remarks: 
- *    - introduce a vertex per capacity demand, i.e. solve the 
+ *  Remarks:
+ *    - introduce a vertex per capacity demand, i.e. solve the
  *      min cost flow problem per capacity, adjust the lower/upper capacity bounds
  *
  *
@@ -104,6 +104,63 @@ namespace algorithms {
  *  - capacity per commodity upper bound
  *  - cost per commodity
  *
+ * Usage example:
+ * \verbatim
+
+        BaseGraph::Ptr graph = BaseGraph::getInstance();
+        uint32_t commodities = 3;
+        uint32_t edgeCapacityUpperBound = 60;
+
+        ...
+        MultiCommodityMinCostFlow::vertex_t::Ptr v0( new MultiCommodityMinCostFlow::vertex_t(commodities));
+        MultiCommodityMinCostFlow::vertex_t::Ptr v1( new MultiCommodityMinCostFlow::vertex_t(commodities));
+
+        for(size_t i = 0; i < commodities; ++i)
+        {
+            // Source node
+            v0->setCommoditySupply(i, 50);
+            // Target node
+            v1->setCommoditySupply(i, -50);
+        }
+        graph->addVertex(v0);
+        graph->addVertex(v1);
+
+        // Edges
+        MultiCommodityMinCostFlow::edge_t::Ptr e0(new MultiCommodityMinCostFlow::edge_t(commodities));
+        e0->setSourceVertex(v0);
+        e0->setTargetVertex(v1);
+        e0->setCapacityUpperBound(edgeCapacityUpperBound);
+        for(size_t i = 0; i < commodities; ++i)
+        {
+            e0->setCommodityCapacityUpperBound(i, 20);
+        }
+        graph->addEdge(e0);
+
+
+        MultiCommodityMinCostFlow minCostFlow(graph, commodities);
+        uint32_t cost = minCostFlow.run();
+
+        std::string file("/tmp/algorithm-multicommodity-mincostflow-2.");
+        minCostFlow.saveProblem(file + "problem");
+        minCostFlow.saveSolution(file + "solution");
+
+        minCostFlow.storeResult();
+        EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
+        while(edgeIt->next())
+        {
+            MultiCommodityMinCostFlow::edge_t::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityMinCostFlow::edge_t>( edgeIt->current() );
+            if(edge)
+            {
+                std::cout << "Flows on: " << edge->toString() << ": id " << graph->getEdgeId(edge) << std::endl;
+
+                for(size_t i = 0; i < commodities; ++i)
+                {
+                    std::cout << "    commodity #" << i << ": " << edge->getCommodityFlow(i) << std::endl;
+                }
+            }
+        }
+        std::cout << "Final objective value: " << minCostFlow.getObjectiveValue();
+ \endverbatim
  *
  */
 class MultiCommodityMinCostFlow : public GLPKSolver
@@ -121,7 +178,10 @@ public:
 
     virtual ~MultiCommodityMinCostFlow() {}
 
-    int run();
+    Status run();
+
+    // Store the result in the edges of the graph
+    void storeResult();
 
 private:
     uint32_t mCommodities;

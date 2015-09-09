@@ -29,7 +29,7 @@ MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph
     }
 }
 
-int MultiCommodityMinCostFlow::run()
+GLPKSolver::Status MultiCommodityMinCostFlow::run()
 {
     DirectedGraphInterface::Ptr diGraph = boost::dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);
 
@@ -205,40 +205,21 @@ int MultiCommodityMinCostFlow::run()
     LOG_DEBUG_S << "Index: " << index - 1;
     glp_load_matrix(mpProblem, index - 1, ia, ja, ar);
 
+    // SIMPLEX
     int result = glp_simplex(mpProblem, NULL);
-    switch(result)
-    {
-        case 0:
-            LOG_INFO_S << "Solved problem sucessfully";
-            break;
-        case GLP_EBOUND:
-            LOG_WARN_S << "Unable to start the search, because some double-bounded variables have incrorrect bounds or some integer variables have non-integer (fractional) bounds.";
-            break;
-        case GLP_EROOT:
-            LOG_WARN_S << "Unable to start the search, because optimal basis for initial LP relaxation is not provided. (This error may appear only if the presolver is disabled";
-            break;
-        case GLP_ENOPFS:
-            LOG_WARN_S << "Unable to start the search, because LP relaxation of the MIP problem instance has no primal feasible solution. (This error may appear only if the presolver is enabled)";
-    }
+    return translateSimplexReturnCode(result);
+}
 
-    double z = glp_get_obj_val(mpProblem);
-    LOG_WARN_S << "Result is z = " << z;
-
-    for(size_t i = 1; i <= mTotalNumberOfColumns; ++i)
-    {
-        double flow = glp_get_col_prim(mpProblem, i);
-        LOG_WARN_S << "    col #" << i << " = " << flow;
-    }
-
-
+void MultiCommodityMinCostFlow::storeResult()
+{
     // Write solution
-    edgeIt = mpGraph->getEdgeIterator();
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
         MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
         if(!edge)
         {
-            throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::run: "
+            throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::storeResult: "
                     "cannot cast edge to MultiCommodityEdge");
         }
 
@@ -250,8 +231,6 @@ int MultiCommodityMinCostFlow::run()
             edge->setCommodityFlow(k, ceil(flow) );
         }
     }
-
-    return result;
 }
 
 int MultiCommodityMinCostFlow::getColumnIndex(const Edge::Ptr& e, uint32_t commodity)

@@ -14,6 +14,8 @@ enum LPSolutionFormat { UNKNOWN_SOLUTION_FORMAT = 0 };
 class GLPKSolver
 {
 public:
+    enum Status { INVALID_PROBLEM_DEFINITION, NO_SOLUTION_FOUND, SOLUTION_FOUND };
+
     GLPKSolver(const std::string& problemName);
     virtual ~GLPKSolver();
 
@@ -25,8 +27,13 @@ public:
 
     double getObjectiveValue() const { return glp_get_obj_val(mpProblem); }
 
+    virtual Status run() { throw std::runtime_error("graph_analysis::algorithms::GLPKSolver::run not implemented"); }
+
 protected:
     glp_prob* mpProblem;
+
+    Status translateSimplexReturnCode(int code);
+    Status translateIntoptReturnCode(int code);
 };
 
 } // end namespace algorithms

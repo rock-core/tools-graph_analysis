@@ -1,4 +1,6 @@
 #include "GLPKSolver.hpp"
+#include <sstream>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace algorithms {
@@ -46,6 +48,91 @@ void GLPKSolver::saveSolution(const std::string& filename, LPSolutionFormat form
     if(result != 0)
     {
         throw std::runtime_error("GLPKSolver: " + getProblemName() + " failed to save solution to '" + filename + "'");
+    }
+}
+
+GLPKSolver::Status GLPKSolver::translateSimplexReturnCode(int code)
+{
+    switch(code)
+    {
+        case 0:
+            LOG_DEBUG_S << "The LP problem instance has been successfully solved. "
+                << "This does not necessarily mean that the solver has found an optimal solution."
+                << "It only means that the solution process was successful";
+            return SOLUTION_FOUND;
+        case GLP_EBADB:
+            LOG_WARN_S << "Unable to start the search, because the initial basis"
+                << " specified in the problem object is invalid - the number of basic (auxiliary and structural)"
+                << " variables is not the same as the number of rows in the problem object";
+            return INVALID_PROBLEM_DEFINITION;
+        case GLP_ESING:
+            LOG_WARN_S << "Unable to start the search, because the basis matrix corresponding"
+                << " to the initial basis is singular within the working precision";
+            return INVALID_PROBLEM_DEFINITION;
+        case GLP_ECOND:
+            LOG_WARN_S << "Unable to start the search, because the basis matrix corresponding to the "
+                << "initial basis is ill-conditioned, i.e. its condition number is too large";
+            return INVALID_PROBLEM_DEFINITION;
+        case GLP_EBOUND:
+            LOG_WARN_S << "Unable to start the search, because some double-bounded (auxiliary or "
+                << "structural) variables have incorrect bounds.";
+            return INVALID_PROBLEM_DEFINITION;
+        case GLP_EFAIL:
+            LOG_WARN_S << "The search was prematurely terminated due to the solver failure";
+            return NO_SOLUTION_FOUND;
+        case GLP_EOBJLL:
+            LOG_WARN_S << "The search was prematurely terminated, because the objective function being maximized "
+                << " has reached its lower limit and continues decreasing (the dual simplex only).";
+            return NO_SOLUTION_FOUND;
+        case GLP_EOBJUL:
+            LOG_WARN_S << "The search was prematurely terminated, because the objective function being minimized "
+                << " has reached its upper limit and continues increasing (the dual simplex only).";
+            return NO_SOLUTION_FOUND;
+        case GLP_EITLIM:
+            LOG_WARN_S << "The search was prematurely terminated, because the simplex iteration lmit has been exceeded";
+            return NO_SOLUTION_FOUND;
+        case GLP_ETMLIM:
+            LOG_WARN_S << "The search was prematurely terminated, because the time limit has been exceeded";
+            return NO_SOLUTION_FOUND;
+        case GLP_ENOPFS:
+            LOG_WARN_S << "The LP problem instance has no primal feasible solution (only if the LP presolver is used).";
+            return NO_SOLUTION_FOUND;
+        case GLP_ENODFS:
+            LOG_WARN_S << "The LP problem instance has no dual feasible solution (only if the LP presolve is used";
+            return NO_SOLUTION_FOUND;
+        default:
+        {
+            std::stringstream ss;
+            ss << code;
+            throw std::runtime_error("graph_analysis::algorithms::GLPKSolver::interpretSimplexReturnCode:"
+                    " unknown return code: " + ss.str());
+        }
+    }
+}
+
+GLPKSolver::Status GLPKSolver::translateIntoptReturnCode(int code)
+{
+    switch(code)
+    {
+        case 0:
+            LOG_INFO_S << "Solved problem sucessfully";
+            return SOLUTION_FOUND;
+        case GLP_EBOUND:
+            LOG_WARN_S << "Unable to start the search, because some double-bounded variables have incrorrect bounds or some integer variables have non-integer (fractional) bounds.";
+            return INVALID_PROBLEM_DEFINITION;
+        case GLP_EROOT:
+            LOG_WARN_S << "Unable to start the search, because optimal basis for initial LP relaxation is not provided. (This error may appear only if the presolver is disabled";
+            return INVALID_PROBLEM_DEFINITION;
+        case GLP_ENOPFS:
+            LOG_WARN_S << "Unable to start the search, because LP relaxation of the MIP problem instance has no primal feasible solution. (This error may appear only if the presolver is enabled)";
+            return INVALID_PROBLEM_DEFINITION;
+        default:
+        {
+            std::stringstream ss;
+            ss << code;
+            throw std::runtime_error("graph_analysis::algorithms::GLPKSolver::interpretSimplexReturnCode:"
+                    " unknown return code: " + ss.str());
+        }
     }
 }
 
