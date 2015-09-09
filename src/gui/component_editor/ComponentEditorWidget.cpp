@@ -916,10 +916,7 @@ void ComponentEditorWidget::updateLayout()
             mpGVGraph->addNode(vertex);
 
             LOG_DEBUG_S << "Adding vertex of type: " << vertex->getClassName();
-        } else {
-            LOG_DEBUG_S << "Not adding vertex of type: " << vertex->getClassName();
-
-        }
+        } 
     }
 
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();

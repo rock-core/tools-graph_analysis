@@ -147,17 +147,27 @@ void NodeItem::dropEvent(QGraphicsSceneDragDropEvent* event)
 const items::Feature* NodeItem::getPointedAtFeature() const
 {
     std::vector<items::Feature*>::const_iterator cit = mFeatures.begin();
+
+    std::vector<const items::Feature*> pointedAtFeatures;
+
     for(; cit != mFeatures.end(); ++cit)
     {
         const items::Feature* feature = *cit;
         if(feature->isUnderMouse())
         {
-            return feature;
+            pointedAtFeatures.push_back(feature);
         }
     }
-
-    // by default return current itemgroup parent
-    return NULL;
+    if(pointedAtFeatures.empty())
+    {
+        return NULL;
+    } else if(pointedAtFeatures.size() > 1)
+    {
+        LOG_WARN_S << "Mouse pointer over multiple features";
+        return pointedAtFeatures.at(0);
+    } else {
+        return pointedAtFeatures.at(0);
+    }
 }
 
 Vertex::Ptr NodeItem::getPointedAtVertex() const

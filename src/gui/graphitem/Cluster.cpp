@@ -61,20 +61,10 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     QFont mainLabelFont;
     mainLabelFont.setBold(true);
     mpLabel->setFont(mainLabelFont);
-
-    //QFont labelFont;
-    //labelFont.setItalic(true);
-//    labelFont.setUnderline(true);
-    setFlag(ItemIsMovable);
-
     mpBoard = new QGraphicsWidget(this);
     mpBoard->setAcceptHoverEvents(true);
 
-    QRectF rect = boundingRect();
-    mpBoard->resize(rect.width(), rect.height());
-
-
-//    QGraphicsItemGroup::setHandlesChildEvents(false);
+    setFlag(ItemIsMovable);
 }
 
 void Cluster::updateLabel()
@@ -86,8 +76,6 @@ void Cluster::updateLabel()
 QRectF Cluster::boundingRect() const
 {
     QRectF childrenRect = childrenBoundingRect();
-    LOG_INFO_S << "Rect: " << childrenRect.x() << "/" << childrenRect.y() 
-        << " w/h: " << childrenRect.width() << "/" << childrenRect.height();
     return childrenRect;
 }
 
@@ -100,51 +88,18 @@ QPainterPath Cluster::shape() const
 
 void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
 {
-  //QPainterPath OuterPath;
-  //OuterPath.setFillRule(Qt::WindingFill);
-  //OuterPath.addEllipse(QPointF(60, 60), 50, 50);
-  //OuterPath.addRect(60, 10, 50, 50);
-
-  //QPainterPath InnerPath;
-  //InnerPath.addEllipse(QPointF(60, 60), 20, 20);
-
-  //QPainterPath FillPath = OuterPath.subtracted(InnerPath);
-
-  //painter->setRenderHint(QPainter::Antialiasing);
-
-  //painter->fillPath(FillPath, Qt::blue);
-  //painter->strokePath(OuterPath.simplified(), QPen(Qt::black, 1));
-  //painter->strokePath(InnerPath, QPen(Qt::black, 3));
-
-    // Draws fully filled item
-    //painter->setPen(Qt::NoPen);
-    //painter->setBrush(mPen.brush());
-    //painter->drawEllipse(-7, -7, 20, 20);
-    //painter->setPen(QPen(Qt::black, 1));
-    //updateWidth(false); // in case the main label change triggered redrawing
-
-    QPainterPath outerPath = shape();
-    //outerPath.setFillRule(Qt::WindingFill);
-    //outerPath.addEllipse(QPointF(60, 60), 50, 50);
-    //outerPath.addRect(60, 10, 50, 50);
-
     painter->setRenderHint(QPainter::Antialiasing);
-    //painter->fillPath(outerPath, Qt::blue);
-    //painter->strokePath(outerPath.simplified(), QPen(Qt::black, 1));
     painter->drawRoundedRect(boundingRect(), 10,10);
-    //painter->strokePath(InnerPath, QPen(Qt::black, 3));
 
     qreal ptSize = mpLabel->font().pointSize();
-    LOG_DEBUG_S << "Font: pt size: " << ptSize;
-    qreal xOffset = 0;
-    qreal yOffset = ptSize * 1.5;
-    qreal currentX = 0;
-    qreal currentY = ptSize * 2.0;
-    int featureClassCount = 0;
-    qreal lastFeatureYPos = mpLabel->boundingRect().bottom();
-    qreal lastFeatureLabelYPos = 0;
+    qreal featureHSpace = 3.0;
+    qreal featureVSpace = 3.0;
     // Spaceing between feature label a previous
-    qreal featureLabelOffset = ptSize;
+    qreal featureLabelVSpace = ptSize*2;
+
+    QGraphicsTextItem* lastFeatureLabel = 0;
+    items::Feature* lastFeature = 0;
+    qreal closestItemYBottom = 0;
 
     bool addLabel = true;
     std::set<std::string> supportedTypes = VertexTypeManager::getInstance()->getSupportedTypes();
@@ -157,50 +112,34 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
         std::string supportedType = *cit;
         foreach(items::Feature* feature, mFeatures)
         {
-            if(feature->getGraphElement()->getClassName() == *cit)
+            if(feature->getGraphElement()->getClassName() == supportedType)
             {
                 if(addLabel)
                 {
                     addLabel = false;
+                    std::string labelTxt = supportedType;
+                    QGraphicsTextItem* label = getOrCreateLabel(labelTxt, this);
+                    if(lastFeature)
+                    {
+                        label->setY(lastFeature->y() + lastFeature->boundingRect().bottom() + featureLabelVSpace);
+                    } else {
+                        label->setY(featureLabelVSpace);
+                    }
 
-                    std::string labelTxt = supportedType + "s";
-                    QGraphicsTextItem* label = new QGraphicsTextItem(labelTxt.c_str(), this);
-                    label->setY(lastFeatureYPos + featureLabelOffset);
+                    lastFeatureLabel = label;
+                    closestItemYBottom = label->y() + label->boundingRect().bottom();
 
-                    QFont labelFont = mpLabel->font();
-                    labelFont.setItalic(true);
-                    label->setFont(labelFont);
-
-                    lastFeatureLabelYPos = label->y() + label->boundingRect().bottom();
-
-                    LOG_DEBUG_S << "Label at: " << label->x() << "/" << label->y()
-                        << " lastFeatureLabelYPos: " << lastFeatureLabelYPos;
-                    addToGroup(label);
+                    painter->drawLine(QPoint(label->x(), closestItemYBottom), 
+                            QPoint( label->x() + boundingRect().width(), closestItemYBottom));
                 }
 
-                LOG_DEBUG_S << "X: Feature at: " << currentX << "+" << xOffset << "*" << xPosition
-                    << " lastFeatureYPos" << lastFeatureYPos;
-                feature->setX(currentX + xOffset*xPosition);
-                LOG_DEBUG_S << "Y: Feature at: " << lastFeatureLabelYPos << "+" << yOffset << "*" << yPosition;
-                feature->setY(lastFeatureLabelYPos + yOffset*yPosition++);
+                feature->setX(lastFeatureLabel->x() + featureHSpace*xPosition);
+                feature->setY(closestItemYBottom + featureVSpace);
 
-                LOG_DEBUG_S << "Feature at: " << feature->x() << "/" << feature->y()
-                    << " lastFeatureYPos" << lastFeatureYPos;
-
-                lastFeatureYPos = feature->y() + feature->boundingRect().bottom();
-
-                LOG_DEBUG_S << "after feature at: " << feature->x() << "/" << feature->y()
-                    << " lastFeatureYPos" << lastFeatureYPos;
                 addToGroup(feature);
+                closestItemYBottom = feature->y() + feature->boundingRect().bottom();
+                lastFeature = feature;
             }
-
-        //    rect.setWidth(80);
-        //    rect.setHeight(20);
-
-            //LOG_DEBUG_S << "Rectangle: x/y " << rect.x() << "/" << rect.y() << " "
-            //    " width/height " << rect.width() << "/" << rect.height();
-        //    painter->drawRoundedRect(rect, 1, 1); //PORT_BORDER, PORT_BORDER);
-
         }
         addLabel = true;
     }
@@ -209,292 +148,9 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     painter->setPen(mPen);
     QRectF rect = boundingRect();
 
-    //// updating the size of the supporting board
-    mpBoard->resize(rect.width(), rect.height());
-    mpBoard->resize(100,100);
     this->update(rect);
     //// triggering edges to update
     this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-}
-
-
-//NodeItem::id_t Cluster::addFeature(Vertex::Ptr vertex)
-//{
-//    std::string feature_type = vertex->getClassName();
-//    if(!
-//        (
-//            graph_analysis::InputPortVertex::vertexType()   == feature_type
-//                ||
-//            graph_analysis::OutputPortVertex::vertexType()  == feature_type
-//                ||
-//            graph_analysis::PropertyVertex::vertexType()  == feature_type
-//                ||
-//            graph_analysis::OperationVertex::vertexType()  == feature_type
-//        )
-//    )
-//    {
-//        std::string error_msg = std::string("graph_analysis::gui::graphitem::Cluster::addFeature: provided feature vertex is not of a sub-type of PortVertex, but of inadmissible type '")
-//                                + feature_type + "'!";
-//        LOG_ERROR_S << error_msg;
-//        throw std::runtime_error(error_msg);
-//    }
-//    // creating and inserting graphical representation
-//    Feature *label = new Feature(vertex->getLabel(), this, mpGraphWidget, vertex);
-//
-//    LOG_DEBUG_S << "Add feature: " << vertex->toString();
-//    NodeItem::addToGroup(label);
-//
-//    label->setPos(mpLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mProps)) * ADJUST));
-//
-//    //mLabels[mID] = label;
-//    //// registering the supplied feature vertex too
-//    //mVertices[mID] = vertex;
-//    //qreal width = label->boundingRect().width();
-//    //// alligning the new feature with all the other features
-//    //if(/*bool isInputPort = */graph_analysis::InputPortVertex::vertexType() == feature_type)
-//    //{
-//    //    if(width > mMaxInputPortWidth)
-//    //    {
-//    //        mMaxInputPortWidth = width;
-//    //        updateWidth();
-//    //    }
-//    //    if(mInPorts + 1 < 0)
-//    //    {
-//    //        std::string error_msg("graph_analysis::gui::grapitem::Cluster::addFeature: input ports counter overflowed");
-//    //        LOG_ERROR_S << error_msg;
-//    //        throw std::runtime_error(error_msg);
-//    //    }
-//    //    label->setPos(mpLabel->pos() + QPointF(0., qreal(1 + (++mInPorts)) * ADJUST));
-//    //    if(mInPorts > mOutPorts)
-//    //    {
-//    //        pushDownNonPortFeatures(1 == mInPorts ? 3 : 1);
-//    //        mHeightAdjusted = false;
-//    //        updateHeight();
-//    //    }
-//    //}
-//    //else if(/*bool isOutputPort = */graph_analysis::OutputPortVertex::vertexType() == feature_type)
-//    //{
-//    //    if(width > mMaxOutputPortWidth)
-//    //    {
-//    //        mMaxOutputPortWidth = width;
-//    //        updateWidth();
-//    //    }
-//    //    if(mOutPorts + 1 < 0)
-//    //    {
-//    //        std::string error_msg("graph_analysis::gui::grapitem::Cluster::addFeature: output ports counter overflowed");
-//    //        LOG_ERROR_S << error_msg;
-//    //        throw std::runtime_error(error_msg);
-//    //    }
-//    //    label->setPos(mpLabel->pos() + QPointF(mMaxInputPortWidth + mSeparator, qreal(1 + (++mOutPorts)) * ADJUST));
-//    //    if(mOutPorts > mInPorts)
-//    //    {
-//    //        pushDownNonPortFeatures(1 == mOutPorts ? 3 : 1);
-//    //        mHeightAdjusted = false;
-//    //        updateHeight();
-//    //    }
-//    //}
-//    //else if(/*bool isProperty = */graph_analysis::PropertyVertex::vertexType() == feature_type)
-//    //{
-//    //    if(mProps + 1 < 0)
-//    //    {
-//    //        std::string error_msg("graph_analysis::gui::grapitem::Cluster::addFeature: properties counter overflowed");
-//    //        LOG_ERROR_S << error_msg;
-//    //        throw std::runtime_error(error_msg);
-//    //    }
-//    //    NodeItem::id_t maxports = max(mInPorts, mOutPorts);
-//    //    pushDownOperations(!mProps ? 3 : 1);
-//    //    label->setPos(mpLabel->pos() + QPointF(0., qreal(1 + (maxports ? 2 + maxports : 0) + (++mProps)) * ADJUST));
-//    //    mHeightAdjusted = false;
-//    //    updateHeight();
-//    //}
-//    //else // if(/*bool isOperation = */graph_analysis::OperationVertex::vertexType() == feature_type)
-//    //{
-//    //    if(mOps + 1 < 0)
-//    //    {
-//    //        std::string error_msg("graph_analysis::gui::grapitem::Cluster::addFeature: operations counter overflowed");
-//    //        LOG_ERROR_S << error_msg;
-//    //        throw std::runtime_error(error_msg);
-//    //    }
-//    //    NodeItem::id_t maxports = max(mInPorts, mOutPorts);
-//    //    label->setPos(mpLabel->pos() + QPointF(0., qreal(1 + (maxports ? 2 + maxports : 0) + (mProps ? 2 + mProps : 0) + (++mOps)) * ADJUST));
-//    //    mHeightAdjusted = false;
-//    //    updateHeight();
-//    //}
-//    //NodeItem::id_t featureID = mID;
-//    //// test if the IDs overflowed
-//    //if(++mID < 0)
-//    //{
-//    //    LOG_WARN_S << "graph_analysis::gui::grapitem::Cluster::addFeature: feature IDs counter overflowed";
-//    //    mID = 0; // implicitely assumes that (2^63 - 1) features' graphical representation to fit in the meantime inside the cluster node shall be enough
-//    //}
-//    return 0; //featureID; // returning the lastest feature ID
-//}
-
-//void Cluster::swapFeatures(NodeItem::id_t feature1, NodeItem::id_t feature2)
-//{
-//    dieOnFeature(feature1, "swapFeatures");
-//    dieOnFeature(feature2, "swapFeatures");
-//
-//    graph_analysis::Vertex::Ptr vertex1 = mVertices[feature1];
-//    graph_analysis::Vertex::Ptr vertex2 = mVertices[feature2];
-//    if(vertex1->getClassName() != vertex2->getClassName())
-//    {
-//        std::string error_msg = std::string("illegal swapping operation was requested in between features of different types '")
-//                                    + vertex1->getClassName() + "' and '" + vertex2->getClassName() + "'";
-//        LOG_WARN_S << "graph_analysis::gui:graphitem::Cluster::swapFeatures: " << error_msg;
-//        QMessageBox::critical(mpGraphWidget, QString("Swapping Failed"), QString((error_msg).c_str()));
-//        updateStatus("", 1); // clearing the Status Bar
-//        return;
-//    }
-//    Label *label1 = mLabels[feature1];
-//    Label *label2 = mLabels[feature2];
-//
-//    // swapping GUI labels
-//#ifdef LABEL_SWAPPING
-//    QPointF pos1 = label1->pos();
-//    QPointF pos2 = label2->pos();
-//    label1->setPos(pos2);
-//    label2->setPos(pos1);
-//    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-//#else
-//    QString str_swap = label1->toPlainText();
-//    label1->setPlainText(label2->toPlainText());
-//    label2->setPlainText(str_swap);
-//#endif
-//}
-
-//void Cluster::removeFeatures()
-//{
-//    foreach(Tuple tuple, mLabels)
-//    {
-//        Label *label = tuple.second;
-//        this->removeFromGroup(label);
-//        scene()->removeItem(label);
-//        if(label)
-//        {
-//            delete label;
-//        }
-//    }
-//    mLabels.clear();
-//    mVertices.clear();
-//    mInPorts = 0;
-//    mOutPorts = 0;
-//    mProps = 0;
-//    mOps = 0;
-//    mHeightAdjusted = false;
-//    mMaxInputPortWidth = 0.;
-//    mMaxOutputPortWidth = 0.;
-//    mpBoard->resize(mpLabel->boundingRect().size());
-//    update();
-//}
-
-//void Cluster::syncLabel(NodeItem::id_t featureID)
-//{
-//    if(PortVertex::INVALID_PORT_ID == featureID)
-//    {
-//        // syncs main node label
-//        std::string label = mpLabel->toPlainText().toStdString();
-//        if(mpVertex->getLabel() != label)
-//        {
-//            mpVertex->setLabel(label);
-//            updateWidth();
-//        }
-//        return;
-//    }
-//    dieOnFeature(featureID, "syncLabel");
-//    Label *label = mLabels[featureID];
-//    graph_analysis::Vertex::Ptr feature = mVertices[featureID];
-//    std::string tag = label->toPlainText().toStdString();
-//    if(feature->getLabel() != tag) // checking whether synchronization is required
-//    {
-//        feature->setLabel(tag);
-//        qreal width = label->boundingRect().width();
-//        std::string type = feature->getClassName();
-//        if(
-//            graph_analysis::InputPortVertex::vertexType() == type
-//        )
-//        {
-//            if(width > mMaxInputPortWidth)
-//            {
-//                mMaxInputPortWidth = width;
-//            }
-//            else // there is no way to know it wasn't max before - forcing recalculation of max width nevertheless
-//            {
-//                recomputeMaxInputPortWidth();
-//            }
-//        }
-//        else if(graph_analysis::OutputPortVertex::vertexType() == type)
-//        {
-//            if(width > mMaxOutputPortWidth)
-//            {
-//                mMaxOutputPortWidth = width;
-//            }
-//            else // there is no way to know it wasn't max before - forcing recalculation of max width nevertheless
-//            {
-//                recomputeMaxOutputPortWidth();
-//            }
-//        }
-//        updateWidth();
-//        update();
-//    }
-//}
-
-QRectF Cluster::featureBoundingRect(NodeItem::id_t featureId)
-{
-    items::Feature* feature = getFeature(featureId);
-    return featureBoundingRect(feature);
-}
-
-QRectF Cluster::featureBoundingRect(items::Feature* feature)
-{
-    QRectF result = boundingRect(); // full node bounding rect is used a source region to crop out from
-    graph_analysis::Vertex::Ptr featureVertex = feature->getVertex();
-
-    // boolean type witnesses
-    std::string type = featureVertex->getClassName();
-    bool isInputPort    =   graph_analysis::InputPortVertex::vertexType()   ==  type;
-    bool isOutputPort   =   graph_analysis::OutputPortVertex::vertexType()  ==  type;
-    bool isProperty     =   graph_analysis::PropertyVertex::vertexType()    ==  type;
-    bool isOperation    =   graph_analysis::OperationVertex::vertexType()   ==  type;
-
-    bool isPort = isInputPort || isOutputPort;
-    // conditionally shifting both horizontally and vertically the 2 defining corners of the result rectangle
-    if(isPort)
-    {
-//#ifndef LABEL_SWAPPING
-//        int offset = std::distance(mLabels.begin(), it);
-//        result.adjust(
-//                        isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
-//                        qreal(2 + offset) * ADJUST,
-//                        isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
-//                        qreal(3 + offset) * ADJUST - result.height()
-//                    ); // forward enumeration
-//#else
-        qreal offset = feature->pos().y() - feature->pos().y();
-        result.adjust(
-                        isInputPort ? 0. : mMaxInputPortWidth + mSeparator,
-                        offset,
-                        isInputPort ? - (mSeparator + mMaxOutputPortWidth) : 0.,
-                        offset + ADJUST - result.height()
-                    ); // forward enumeration
-//#endif
-    }
-    else
-    {
-        qreal offset = feature->pos().y() - mpLabel->pos().y();
-        result.adjust(
-                        0.,
-                        offset,
-                        feature->boundingRect().width() - result.width(),
-                        offset + ADJUST - result.height()
-                    ); // forward enumeration
-    }
-    return result;
-}
-
-QPolygonF Cluster::featureBoundingPolygon(NodeItem::id_t featureID)
-{
-    return QPolygonF(featureBoundingRect(featureID));
 }
 
 void Cluster::mousePressEvent(::QGraphicsSceneMouseEvent* event)
@@ -535,39 +191,23 @@ void Cluster::focusOutEvent(QFocusEvent* event)
     ::QGraphicsItemGroup::focusOutEvent(event);
 }
 
-void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+void Cluster::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 {
-    foreach(QGraphicsItem* child, childItems())
-    {
-        if(child->isUnderMouse())
-        {
-            LOG_DEBUG_S << "IS UNDER MOUSE";
-            items::Feature* feature;
-            if(feature = dynamic_cast<items::Feature*>(child))
-            {
-                LOG_DEBUG_S << "IS a FEATURE" << feature->getVertex()->toString();
-            }
-
-            if(dynamic_cast<VertexGetter*>(child))
-            {
-                LOG_DEBUG_S << "Is a vertex getter: " << child << "  name:";// << child->objectName();
-            }
-        }
-    }
-    
     Vertex::Ptr pointedAtVertex = mpVertex; 
-    //if(mpGraphWidget->getGraphWidgetManager()->getMode() == GraphWidgetManager::CONNECT_MODE)
-    //{
+    if(mpGraphWidget->getGraphWidgetManager()->getMode() == GraphWidgetManager::CONNECT_MODE)
+    {
         try {
             pointedAtVertex = getPointedAtVertex();
             LOG_WARN_S << "Got pointed at vertex: " << pointedAtVertex->toString();
         } catch(const std::runtime_error& e)
         { 
-            LOG_WARN_S << "Failed get get pointed at vertex: " << e.what();
+            LOG_WARN_S << "Failed to get pointed at vertex: " << e.what();
         }
-    //}
+    }
 
-    LOG_DEBUG_S << "Cluster hover enter event: " << mpVertex->toString();
+    LOG_DEBUG_S << "Setting focused element: " << pointedAtVertex->toString();
+    // This is required for Drag and Drop to work 
+    // implementation is in mpGraphWidget
     mpGraphWidget->setFocusedElement(pointedAtVertex);
 
     if(!mFocused)
@@ -575,6 +215,30 @@ void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
         mPen = QPen(Qt::green);
     }
     mSelected = true;
+
+    // In order to complete an open dragndrop job
+    // just after a drag and drop, we check were the hover mode is
+    if(mConnectionRequest.isOpen())
+    {
+        // Mark request directly as handled -- must be done before starting the
+        // edge dialog
+        mConnectionRequest.close();
+
+        Vertex::Ptr sourceVertex = mConnectionRequest.getFrom();
+        Vertex::Ptr targetVertex = pointedAtVertex;
+        if(sourceVertex && targetVertex)
+        {
+            LOG_INFO_S << "Creating edge from: " << sourceVertex->toString() << " to " << targetVertex->toString();
+            mpGraphWidget->addEdgeDialog(sourceVertex, targetVertex);
+            LOG_INFO_S << "Completed dialog";
+        } else {
+            throw std::runtime_error("graph_analysis::gui::Cluster::hoverMoveEvent could not complete connection -- failed to identify underlying vertices");
+        }
+    }
+}
+
+void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -591,52 +255,29 @@ void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 }
 
 void Cluster::dragEnterEvent(QDragEnterEvent* event)
-{
-    try {
-        Vertex::Ptr vertex = getPointedAtVertex();
-        event->acceptProposedAction();
-    } catch(const std::runtime_error& e)
-    {}
-}
+{}
 
 void Cluster::dropEvent(QGraphicsSceneDragDropEvent* event)
 {
+    LOG_INFO_S << "Drop event for feature of '" << mpVertex->toString() << "' ";
     const QMimeData* mimeData = event->mimeData();
-
-    try {
-        Vertex::Ptr vertex = getPointedAtVertex();
-        if(vertex)
-        {
-            LOG_INFO_S << "Droping into: " << vertex->toString();
-        }
-    } catch(const std::runtime_error& e)
+    if(mimeData && mimeData->hasText())
     {
-        LOG_INFO_S << "Failed to drop into current child";
+        LOG_INFO_S << "    drag from source graph element with id: " << mimeData->text().toStdString();
+        if(!mpGraphWidget)
+        {
+            std::string error_msg("graph_analysis::gui::graphitem::Feature::dropEvent: cannot deliver drag-n-drop since graph widget is not initialized");
+            throw std::runtime_error(error_msg);
+        } else {
+            // Identify the connection using the underlying vertices -- we assume
+            // only vertices are used for dragndrop for now
+            GraphElementId sourceId = boost::lexical_cast<GraphElementId>( mimeData->text().toStdString() );
+            // Create connection request -- which will be handled in
+            // hoverMoveEvent
+            mConnectionRequest = ConnectionRequest(mpGraphWidget->graph()->getVertex(sourceId));
+            event->acceptProposedAction();
+        }
     }
-
-    //LOG_INFO_S << "Drop event for feature of '" << mpGraphElement->toString() << "' ";
-    //if(mimeData && mimeData->hasText())
-    //{
-    //    LOG_INFO_S << "    drag from source graph element with id: " << mimeData->text().toStdString();
-    //    if(!mpGraphWidget)
-    //    {
-    //        std::string error_msg("graph_analysis::gui::graphitem::Feature::dropEvent: cannot deliver drag-n-drop since graph widget is not initialized");
-    //        throw std::runtime_error(error_msg);
-    //    } else {
-    //        // Identify the connection using the underlying vertices -- we assume
-    //        // only vertices are used for dragndrop for now
-    //        GraphElementId sourceId = boost::lexical_cast<GraphElementId>( mimeData->text().toStdString() );
-    //        Vertex::Ptr sourceVertex = mpGraphWidget->graph()->getVertex(sourceId);
-    //        Vertex::Ptr targetVertex = boost::dynamic_pointer_cast<Vertex>( mpGraphElement );
-    //        if(sourceVertex && targetVertex)
-    //        {  
-    //            event->acceptProposedAction();
-    //            mpGraphWidget->addEdgeDialog(sourceVertex, targetVertex);
-    //        } else {
-    //            throw std::runtime_error("graph_analysis::gui::items::Feature::dropEvent could not identify underlying vertices");
-    //        }
-    //    }
-    //}
 }
 
 //void Cluster::unselect()
@@ -653,6 +294,26 @@ void Cluster::dropEvent(QGraphicsSceneDragDropEvent* event)
 //{
 //    LOG_DEBUG_S << "Key RESOURCE: press";
 //}
+
+QGraphicsTextItem* Cluster::getOrCreateLabel(const std::string& label, QGraphicsItem* parent)
+{
+    std::map<std::string, QGraphicsTextItem*>::iterator it = mLabels.find(label);
+    if(it == mLabels.end())
+    {
+        LOG_WARN_S << "Creating label for: " << label;
+
+        QGraphicsTextItem* item = new QGraphicsTextItem(label.c_str(), parent);
+
+        QFont labelFont = mpLabel->font();
+        labelFont.setItalic(true);
+        item->setFont(labelFont);
+
+        mLabels[label] = item;
+        return item;
+    } else {
+        return it->second;
+    }
+}
 
 } // end namespace graphitem
 } // end namespace gui

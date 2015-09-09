@@ -111,8 +111,8 @@ rock_library(graph_analysis
         gui/WidgetManager.hpp
         gui/GraphWidgetManager.hpp
         gui/GraphWidget.hpp
-        gui/ComponentEditorWidget.hpp
-        gui/LayerViewWidget.hpp
+        gui/component_editor/ComponentEditorWidget.hpp
+        gui/layer_view/LayerViewWidget.hpp
         gui/FilterManager.hpp
         gui/FilterItem.hpp
         gui/ActionCommander.hpp

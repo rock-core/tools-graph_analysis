@@ -8,10 +8,36 @@
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/items/Label.hpp>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
 namespace graphitem {
+
+class ConnectionRequest
+{
+public:
+    ConnectionRequest()
+        : mpFrom()
+        , mOpen(false)
+    {}
+
+    ConnectionRequest(const Vertex::Ptr& fromVertex)
+        : mpFrom(fromVertex)
+        , mOpen(true)
+    {
+        LOG_DEBUG_S << "CREATE Connection request from: " << fromVertex->toString();
+    }
+
+    bool isOpen() const { return mOpen; }
+    void close() { LOG_DEBUG_S << "CLOSE REQUEST"; mOpen = false; }
+
+    Vertex::Ptr getFrom() const { return mpFrom; }
+
+private:
+    Vertex::Ptr mpFrom;
+    bool mOpen;
+};
 
 /**
  * \file Cluster.hpp
@@ -44,18 +70,8 @@ public:
     /// node cloning/spawning method used by the factory to produce new nodes
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { return new Cluster(graphWidget, vertex); }
 
-    /// syncs the updated text label of the feature label in the scene with the corresponding internal feature vertex label (both being indicated by the same provided feature ID)
-    //void syncLabel(NodeItem::id_t id);
-
     /// calls a qt routine for warning the scene of upcoming graphical changes; the method it internally calls is otherwise protected and inaccessible to unrelated classes
     inline void prepareChange() { prepareGeometryChange(); }
-    /// retrieves the bounding polygon around the area occupied by the feature node specified by the given ID in the scene
-    QPolygonF   featureBoundingPolygon (NodeItem::id_t id);
-    /// retrieves the bounding rectangular box around the area occupied by the feature node specified by the given ID in the scene (it does that using featureBoundingRect)
-    QRectF      featureBoundingRect    (NodeItem::id_t id);
-
-    
-    QRectF      featureBoundingRect    (items::Feature* feature);
 
     /// willingly gives up scene focus
     void releaseFocus();
@@ -90,6 +106,7 @@ protected:
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     /// qt hovering LEAVE callback
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
 
     virtual void dragEnterEvent(QDragEnterEvent* event);
     virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
@@ -117,6 +134,13 @@ private:
 
     /// current width of ports separator (displacement between the 2 types of ports)
     qreal mSeparator;
+
+    std::map<std::string, QGraphicsTextItem*> mLabels;
+
+    // Store an open drag drop connection event for later handling
+    ConnectionRequest mConnectionRequest;
+
+    QGraphicsTextItem* getOrCreateLabel(const std::string& label, QGraphicsItem* parent = 0);
 };
 
 } // end namespace graphitem

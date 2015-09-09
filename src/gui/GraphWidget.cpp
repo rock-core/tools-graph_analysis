@@ -260,7 +260,7 @@ void GraphWidget::updateLayoutView()
 
 void GraphWidget::refresh(bool all)
 {
-    LOG_DEBUG_S << "Refresh widget: " << getClassName().toStdString();
+    LOG_DEBUG_S << "Refresh widget: " << getClassName().toStdString() << " keep all data";
     reset(true /*keepData*/);
 
     update();
@@ -394,8 +394,7 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
     if(event->button() == Qt::LeftButton)
     {
         GraphElement::Ptr element = getFocusedElement();
-
-        if(!element )
+        if(!element)
         { 
             clearElementSelection(); 
             return;
@@ -523,6 +522,9 @@ void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVert
     updateStatus("Adding edge ...");
     QStringList typesList;
     dialogs::AddGraphElement graphElementDialog(typesList);// EdgeTypeManager::getInstance()->getSupportedTypes());
+
+    LOG_DEBUG_S << "Add edge dialog";
+
     graphElementDialog.exec();
     if(graphElementDialog.result() == QDialog::Accepted)
     {

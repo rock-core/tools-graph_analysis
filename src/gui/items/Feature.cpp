@@ -189,6 +189,8 @@ void Feature::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void Feature::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+    LOG_WARN_S << "FEATURE DROP";
+
     const QMimeData* mimeData = event->mimeData();
     LOG_INFO_S << "Drop event for feature of '" << mpGraphElement->toString() << "' ";
     if(mimeData && mimeData->hasText())
@@ -239,8 +241,14 @@ QVariant Feature::itemChange(QGraphicsItem::GraphicsItemChange change, const QVa
 
 void Feature::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-    QRectF rect = childrenBoundingRect();
-    painter->drawRoundedRect(rect, 1, 1); //PORT_BORDER, PORT_BORDER);
+    QRectF rect = boundingRect();
+
+    painter->setPen(Qt::blue);
+    //painter->setFont(QFont("Arial", 30));
+    //painter->drawText(boundingRect(), Qt::AlignCenter, "QT");
+    painter->drawRoundedRect(rect, 10, 10); //PORT_BORDER, PORT_BORDER);
+
+
     QGraphicsTextItem::paint(painter, option, widget);
 }
 
