@@ -5,6 +5,7 @@
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 SwapFeaturesDialog::SwapFeaturesDialog(NodeItem *nodeItem)
 : mpNodeItem(nodeItem)
@@ -94,5 +95,6 @@ void SwapFeaturesDialog::swapReject()
     mValid = false;
 }
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis

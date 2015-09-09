@@ -12,7 +12,10 @@ namespace gui {
     class GraphWidget;
     class ComponentEditorWidget;
     class LayerViewWidget;
+
+namespace dialogs {
     class PropertyDialog;
+}
 
 /**
  * \file WidgetManager.hpp
@@ -49,9 +52,9 @@ public:
     void setLayerViewWidget(LayerViewWidget *layerWidget);
 
     /// getter for the property dialog (a.k.a. command panel) dockable GUI component
-    PropertyDialog* getPropertyDialog(void);
+    dialogs::PropertyDialog* getPropertyDialog(void);
     /// setter for the property dialog (a.k.a. command panel) dockable GUI component
-    void setPropertyDialog(PropertyDialog *propertyDialog);
+    void setPropertyDialog(dialogs::PropertyDialog *propertyDialog);
 
     /// Set widget
     void setWidget(GraphWidget* widget);
@@ -68,7 +71,7 @@ private:
     /// stacked widget to toggle between the diagram editor and layers viewer (the actual central widget of the main window)
     QStackedWidget* mpStackedWidget;
     /// the property dialog (a.k.a. command panel) dockable GUI component
-    PropertyDialog *mpPropertyDialog;
+    dialogs::PropertyDialog *mpPropertyDialog;
 };
 
 

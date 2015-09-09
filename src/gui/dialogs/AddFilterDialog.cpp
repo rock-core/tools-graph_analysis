@@ -4,6 +4,7 @@
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 AddFilterDialog::AddFilterDialog()
 : mValid(false)
@@ -65,5 +66,6 @@ void AddFilterDialog::filterReject()
     mValid = false;
 }
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis

@@ -9,8 +9,8 @@
 #ifndef PROPERTYDIALOG_H
 #define PROPERTYDIALOG_H
 
-#include "CustomDialog.hpp"
-#include "FilterManager.hpp"
+#include <graph_analysis/gui/dialogs/CustomDialog.hpp>
+#include <graph_analysis/gui/FilterManager.hpp>
 
 #include <vector>
 #include <QLabel>
@@ -49,6 +49,7 @@
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 /**
  * \file PropertyDialog.hpp
@@ -240,6 +241,7 @@ private:
     int mHeight;
 };
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis
 

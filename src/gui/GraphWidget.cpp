@@ -1,13 +1,11 @@
 #include "GraphWidget.hpp"
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
-#include "AddGraphElement.hpp"
-#include "PropertyDialog.hpp"
 #include "NodeTypeManager.hpp"
 #include "EdgeTypeManager.hpp"
 #include "ActionCommander.hpp"
-#include "SwapFeaturesDialog.hpp"
-#include "RenameFeatureDialog.hpp"
+#include "dialogs/AddGraphElement.hpp"
+#include "dialogs/PropertyDialog.hpp"
 
 #include <set>
 #include <math.h>
@@ -41,6 +39,8 @@
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
+
 
 #include <exception>
 #include <boost/foreach.hpp>
@@ -497,7 +497,7 @@ void GraphWidget::addVertexDialog(QObject* object)
         supportedTypes << QString(cit->c_str());
     }
 
-    AddGraphElement graphElementDialog(supportedTypes, this);
+    dialogs::AddGraphElement graphElementDialog(supportedTypes, this);
     graphElementDialog.exec();
     if(graphElementDialog.result() == QDialog::Accepted)
     {
@@ -522,7 +522,7 @@ void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVert
 {
     updateStatus("Adding edge ...");
     QStringList typesList;
-    AddGraphElement graphElementDialog(typesList);// EdgeTypeManager::getInstance()->getSupportedTypes());
+    dialogs::AddGraphElement graphElementDialog(typesList);// EdgeTypeManager::getInstance()->getSupportedTypes());
     graphElementDialog.exec();
     if(graphElementDialog.result() == QDialog::Accepted)
     {

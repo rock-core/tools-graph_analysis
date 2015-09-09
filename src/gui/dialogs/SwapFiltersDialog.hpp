@@ -6,8 +6,10 @@
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef RENAMEFEATUREDIALOG_H
-#define RENAMEFEATUREDIALOG_H
+#ifndef SWAPFILTERSDIALOG_H
+#define SWAPFILTERSDIALOG_H
+
+#include <graph_analysis/gui/FilterManager.hpp>
 
 #include <set>
 #include <string>
@@ -21,71 +23,67 @@
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <graph_analysis/gui/NodeItem.hpp>
-#include <graph_analysis/VertexTypeManager.hpp>
 
 namespace graph_analysis {
 namespace gui {
-
-    class NodeItem;
+namespace dialogs {
 
 /**
- * \file RenameFeatureDialog.hpp
- * \class RenameFeatureDialog
- * \brief pop-up dialog manager for renaming a feature of a cluster node
- * \details runs a pop-up window to prompt the user for the new feature label
- *      as well as for the desired feature to be edited
+ * \file SwapFiltersDialog.hpp
+ * \class SwapFiltersDialog
+ * \brief pop-up dialog manager for swapping two custom regexp filters in the filters manager in the layers tab of the command panel
+ * \details runs a pop-up dialog for prompting the user for the 2 filters to be swapped
  */
-class RenameFeatureDialog : public QObject
+class SwapFiltersDialog : public QObject
 {
     Q_OBJECT
 public:
     /// constructor; stores the concerned cluster node reference
-    RenameFeatureDialog(NodeItem *nodeItem);
+    SwapFiltersDialog(const FilterManager::Filters& filters);
     /// destructor
-    ~RenameFeatureDialog(){}
+    ~SwapFiltersDialog(){}
     /// sets up the provided qt dialog instance
     void setupUi(QDialog *Dialog);
     /// sets up visible titles for the scene (e.g. buttons labels)
     void retranslateUi(QDialog *Dialog);
     /// getter method for boolean validation witness
     bool isValid() { return mValid; }
-    /// getter method for the new feature label dialog result
-    std::string getNewLabel() { return mNewLabel; }
-    /// getter method for the node type dialog result
-    std::string getFeatureID () { return mFeatureID;  }
+    /// getter method for the first feature ID dialog result
+    std::string getFilter1Index () { return mFilter1Index;  }
+    /// getter method for the second feature ID dialog result
+    std::string getFilter2Index () { return mFilter2Index;  }
 
 public slots:
     /// slot for listening for whenever the user presses "Ok" in the resulting pop-up dialog window
-    void renameAccept();
+    void swapAccept();
     /// slot for listening for whenever the user presses "Cancel" (or ESC/close window corner button) in the resulting pop-up dialog window
-    void renameReject();
+    void swapReject();
 
 private:
     /// main qt dialog instance to be used
     QDialog mDialog;
-    /// stores the new feature label user-interaction result
-    std::string mNewLabel;
-    /// stores the feature node ID user-interaction result
-    std::string mFeatureID;
+    /// stores the chosen first filter index as text user-interaction result
+    std::string mFilter1Index;
+    /// stores the chosen second filter index as text user-interaction result
+    std::string mFilter2Index;
 
-    /// concerned cluster node
-    NodeItem *mpNodeItem;
+    /// concerned container with filter items
+    FilterManager::Filters mFilters;
     /// boolean witness for validation; true whenever the user-interaction ends with the "Ok" button being pressed; false otherwise
     bool mValid;
     /// in-scene set of buttons for this pop-window ("Ok" and "Cancel")
     QDialogButtonBox *mpButtonBox;
-    /// in scene label displaying "New Label:"
-    QLabel *mpNewLabel;
-    /// in scene label displaying "Feature ID:"
-    QLabel *mpFeatureLabel;
-    /// GUI element where the user types the new desired feature label
-    QLineEdit *mpLineEdit;
-    /// GUI element from which the user selects the desired feature to be renamed
-    QComboBox *mpComboBox;
+    /// in scene label displaying "Filter Index:"
+    QLabel *mpFilter1Label;
+    /// in scene label displaying "Filter Index:"
+    QLabel *mpFilter2Label;
+    /// GUI element from which the user selects the first desired regexp filter for swapping
+    QComboBox *mpComboBox1;
+    /// GUI element from which the user selects the second desired regexp filter for swapping
+    QComboBox *mpComboBox2;
 };
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // RENAMEFEATUREDIALOG_H
+#endif // SWAPFILTERSDIALOG_H

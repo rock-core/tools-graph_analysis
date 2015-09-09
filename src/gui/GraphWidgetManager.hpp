@@ -1,8 +1,6 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPH_WIDGET_MANAGER_HPP
 #define GRAPH_ANALYSIS_GUI_GRAPH_WIDGET_MANAGER_HPP
 
-#include "PropertyDialog.hpp"
-
 #include <string>
 #include <sstream>
 #include <QObject>
@@ -17,6 +15,10 @@ namespace graph_analysis {
 namespace gui {
 
 class GraphWidget;
+
+namespace dialogs {
+    class PropertyDialog;
+}
 
 /**
  * \file GraphWidgetManager.hpp
@@ -147,7 +149,7 @@ private:
     /// status bar
     QStatusBar* mpStatus;
     /// the property dialog (a.k.a. command panel) dockable GUI component
-    PropertyDialog *mpPropertyDialog;
+    dialogs::PropertyDialog *mpPropertyDialog;
     /// the layouting engine to be used when initializing the graph widgets
     QString mLayout;
 

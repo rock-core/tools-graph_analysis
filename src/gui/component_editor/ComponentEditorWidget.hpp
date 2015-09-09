@@ -1,16 +1,15 @@
 #ifndef GRAPH_ANALYSIS_GUI_COMPONENTEDITORWIDGET_H
 #define GRAPH_ANALYSIS_GUI_COMPONENTEDITORWIDGET_H
 
-#include "NodeItem.hpp"
-#include "GraphWidget.hpp"
-
 #include <map>
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
-#include <graph_analysis/gui/LayerViewWidget.hpp>
+#include <graph_analysis/gui/NodeItem.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
+#include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -22,8 +21,6 @@ namespace gui {
 class NodeItem;
 class EdgeItem;
 class ActionCommander;
-class PropertyDialog;
-class LayerViewWidget;
 
 /**
  * \file ComponentEditorWidget.hpp

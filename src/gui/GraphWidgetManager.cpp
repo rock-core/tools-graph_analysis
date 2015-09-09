@@ -4,6 +4,7 @@
 #include "ActionCommander.hpp"
 
 #include <QTime>
+#include <QLabel>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -21,6 +22,7 @@
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
+#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
 
 namespace graph_analysis {
 namespace gui {

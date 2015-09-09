@@ -5,6 +5,7 @@
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 /**
  * \file CustomDialog.hpp
@@ -24,6 +25,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 };
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis
 

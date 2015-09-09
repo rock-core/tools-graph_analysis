@@ -1,8 +1,8 @@
-
 #include "WidgetManager.hpp"
 #include "GraphWidgetManager.hpp"
-#include "LayerViewWidget.hpp"
-#include "ComponentEditorWidget.hpp"
+#include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
+#include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
+#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
 
 #include <exception>
 #include <base/Logging.hpp>
@@ -97,7 +97,7 @@ void WidgetManager::setLayerViewWidget(LayerViewWidget *layerWidget)
     mpLayerViewWidget = layerWidget;
 }
 
-PropertyDialog* WidgetManager::getPropertyDialog(void)
+dialogs::PropertyDialog* WidgetManager::getPropertyDialog(void)
 {
     if(!mpPropertyDialog)
     {
@@ -107,7 +107,7 @@ PropertyDialog* WidgetManager::getPropertyDialog(void)
     }
     return mpPropertyDialog;
 }
-void WidgetManager::setPropertyDialog(PropertyDialog *propertyDialog)
+void WidgetManager::setPropertyDialog(dialogs::PropertyDialog *propertyDialog)
 {
     mpPropertyDialog = propertyDialog;
 }

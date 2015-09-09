@@ -17,10 +17,8 @@ rock_library(graph_analysis
         BaseGraph.cpp
         GraphElement.cpp
         GraphIO.cpp
-        gui/AddGraphElement.cpp
         gui/EdgeItem.cpp
         gui/EdgeTypeManager.cpp
-        gui/CustomDialog.cpp
         gui/graphitem/edges/Simple.cpp
         gui/graphitem/Cluster.cpp
         gui/graphitem/Simple.cpp
@@ -32,16 +30,18 @@ rock_library(graph_analysis
         gui/WidgetManager.cpp
         gui/GraphWidgetManager.cpp
         gui/GraphWidget.cpp
-        gui/ComponentEditorWidget.cpp
-        gui/LayerViewWidget.cpp
+        gui/component_editor/ComponentEditorWidget.cpp
+        gui/layer_view/LayerViewWidget.cpp
         gui/FilterManager.cpp
         gui/FilterItem.cpp
-        gui/AddFilterDialog.cpp
-        gui/SwapFiltersDialog.cpp
-        gui/SwapFeaturesDialog.cpp
-        gui/RenameFilterDialog.cpp
-        gui/RenameFeatureDialog.cpp
-        gui/PropertyDialog.cpp
+        gui/dialogs/AddGraphElement.cpp
+        gui/dialogs/AddFilterDialog.cpp
+        gui/dialogs/CustomDialog.cpp
+        gui/dialogs/SwapFiltersDialog.cpp
+        gui/dialogs/SwapFeaturesDialog.cpp
+        gui/dialogs/RenameFilterDialog.cpp
+        gui/dialogs/RenameFeatureDialog.cpp
+        gui/dialogs/PropertyDialog.cpp
         gui/ActionCommander.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
@@ -115,17 +115,17 @@ rock_library(graph_analysis
         gui/LayerViewWidget.hpp
         gui/FilterManager.hpp
         gui/FilterItem.hpp
-        gui/AddGraphElement.hpp
         gui/ActionCommander.hpp
         gui/NodeItem.hpp
         gui/NodeTypeManager.hpp
-        gui/AddFilterDialog.hpp
-        gui/SwapFiltersDialog.hpp
-        gui/SwapFeaturesDialog.hpp
-        gui/RenameFilterDialog.hpp
-        gui/RenameFeatureDialog.hpp
-        gui/PropertyDialog.hpp
-        gui/CustomDialog.hpp
+        gui/dialogs/AddFilterDialog.hpp
+        gui/dialogs/AddGraphElement.hpp
+        gui/dialogs/SwapFiltersDialog.hpp
+        gui/dialogs/SwapFeaturesDialog.hpp
+        gui/dialogs/RenameFilterDialog.hpp
+        gui/dialogs/RenameFeatureDialog.hpp
+        gui/dialogs/PropertyDialog.hpp
+        gui/dialogs/CustomDialog.hpp
         gui/VertexGetter.hpp
         gui/EdgeGetter.hpp
         io/GexfWriter.hpp
@@ -171,26 +171,26 @@ rock_library(graph_analysis
     DEPS_PLAIN
         Boost_REGEX
     MOC
-        gui/ComponentEditorWidget.hpp
-        gui/LayerViewWidget.hpp
+        gui/component_editor/ComponentEditorWidget.hpp
+        gui/layer_view/LayerViewWidget.hpp
         gui/GraphWidgetManager.hpp
         gui/FilterManager.hpp
-        gui/AddFilterDialog.hpp
-        gui/PropertyDialog.hpp
-        gui/SwapFiltersDialog.hpp
-        gui/SwapFeaturesDialog.hpp
-        gui/RenameFilterDialog.hpp
-        gui/RenameFeatureDialog.hpp
-        gui/AddGraphElement.hpp
+        gui/dialogs/AddFilterDialog.hpp
+        gui/dialogs/PropertyDialog.hpp
+        gui/dialogs/SwapFiltersDialog.hpp
+        gui/dialogs/SwapFeaturesDialog.hpp
+        gui/dialogs/RenameFilterDialog.hpp
+        gui/dialogs/RenameFeatureDialog.hpp
+        gui/dialogs/AddGraphElement.hpp
     DEPS_PKGCONFIG QtGui
     UI
-        gui/graph_analysis_gui.ui
-        gui/add_filter_dialog_gui.ui
-        gui/property_dialog_gui.ui
-        gui/swap_filters_dialog_gui.ui
-        gui/swap_features_dialog_gui.ui
-        gui/rename_feature_dialog_gui.ui
-        gui/ui/add_graph_element.ui
+        gui/dialogs/graph_analysis_gui.ui
+        gui/dialogs/add_filter_dialog_gui.ui
+        gui/dialogs/property_dialog_gui.ui
+        gui/dialogs/swap_filters_dialog_gui.ui
+        gui/dialogs/swap_features_dialog_gui.ui
+        gui/dialogs/rename_feature_dialog_gui.ui
+        gui/dialogs/add_graph_element.ui
 )
 target_link_libraries(graph_analysis glpk cgraph)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

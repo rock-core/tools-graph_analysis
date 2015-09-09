@@ -1,15 +1,16 @@
 #include "ComponentEditorWidget.hpp"
-#include "EdgeItem.hpp"
-#include "NodeItem.hpp"
-#include "IconManager.hpp"
-#include "GraphWidgetManager.hpp"
-#include "WidgetManager.hpp"
-#include "NodeTypeManager.hpp"
-#include "EdgeTypeManager.hpp"
-#include "ActionCommander.hpp"
-#include "SwapFeaturesDialog.hpp"
-#include "RenameFeatureDialog.hpp"
-#include "AddGraphElement.hpp"
+#include <graph_analysis/gui/EdgeItem.hpp>
+#include <graph_analysis/gui/NodeItem.hpp>
+#include <graph_analysis/gui/IconManager.hpp>
+#include <graph_analysis/gui/GraphWidgetManager.hpp>
+#include <graph_analysis/gui/WidgetManager.hpp>
+#include <graph_analysis/gui/NodeTypeManager.hpp>
+#include <graph_analysis/gui/EdgeTypeManager.hpp>
+#include <graph_analysis/gui/ActionCommander.hpp>
+#include <graph_analysis/gui/dialogs/SwapFeaturesDialog.hpp>
+#include <graph_analysis/gui/dialogs/RenameFeatureDialog.hpp>
+#include <graph_analysis/gui/dialogs/AddGraphElement.hpp>
+#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
 
 #include <set>
 #include <math.h>
@@ -182,7 +183,7 @@ void ComponentEditorWidget::addFeatureDialog()
         supportedTypes << QString(cit->c_str());
     }
 
-    AddGraphElement graphElementDialog(supportedTypes, this);
+    dialogs::AddGraphElement graphElementDialog(supportedTypes, this);
     graphElementDialog.setWindowTitle("Add feature");
     graphElementDialog.exec();
     if(graphElementDialog.result() == QDialog::Accepted)
@@ -1092,7 +1093,7 @@ void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVe
         updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': this vertex did not have enough features!", GraphWidgetManager::TIMEOUT);
         return;
     }
-    SwapFeaturesDialog dialog(item);
+    dialogs::SwapFeaturesDialog dialog(item);
     if(dialog.isValid())
     {
         std::string strFeature1ID   = dialog.getFeature1ID();

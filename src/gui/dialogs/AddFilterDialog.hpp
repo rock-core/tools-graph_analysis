@@ -1,24 +1,21 @@
 /********************************************************************************
-** Form generated from reading UI file 'add_node_dialog_gui.ui'
+** Form generated from reading UI file 'add_filter_dialog_gui.ui'
 **
 ** Created by: Qt User Interface Compiler version 4.8.6
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef RENAMEFILTERDIALOG_H
-#define RENAMEFILTERDIALOG_H
+#ifndef ADDFILTERDIALOG_H
+#define ADDFILTERDIALOG_H
 
-#include "FilterManager.hpp"
-
-#include <set>
 #include <string>
 #include <QObject>
-#include <QtCore/QVariant>
 #include <QtGui/QAction>
+#include <QtCore/QVariant>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
-#include <QtGui/QComboBox>
+#include <QtGui/QCheckBox>
 #include <QtGui/QDialog>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QHeaderView>
@@ -27,63 +24,61 @@
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 /**
- * \file RenameFilterDialog.hpp
- * \class RenameFilterDialog
- * \brief pop-up dialog manager for renaming a regexp filter in the custom regexp filters manager
- * \details runs a pop-up window to prompt the user for the new regex
- *      as well as for the filter item to be edited
+ * \file AddFilterDialog.hpp
+ * \class AddFilterDialog
+ * \brief pop-up dialog manager for adding a custom regex filter to the filters manager
+ * \details runs a pop-up dialog for prompting the user for a filter regex text and for
+ *      whether the new filter should be checked on init or not
  */
-class RenameFilterDialog : public QObject
+class AddFilterDialog : public QObject
 {
     Q_OBJECT
 public:
-    /// constructor; stores the concerned cluster node reference
-    RenameFilterDialog(const FilterManager::Filters& filters);
+    /// empty constructor
+    AddFilterDialog();
     /// destructor
-    ~RenameFilterDialog(){}
+    ~AddFilterDialog(){}
     /// sets up the provided qt dialog instance
     void setupUi(QDialog *Dialog);
     /// sets up visible titles for the scene (e.g. buttons labels)
     void retranslateUi(QDialog *Dialog);
     /// getter method for boolean validation witness
     bool isValid() { return mValid; }
-    /// getter method for the new feature label dialog result
-    QString getNewRegexp() { return mNewRegexp; }
-    /// getter method for the node type dialog result
-    std::string getFilterIndex () { return mFilterIndex; }
+    /// getter method for the filter regexp dialog result
+    std::string getFilterRegexp() { return mFilterRegexp; }
+    /// getter method for the filter-enabling dialog result
+    bool isEnabled() { return mEnable; }
 
 public slots:
     /// slot for listening for whenever the user presses "Ok" in the resulting pop-up dialog window
-    void renameAccept();
+    void filterAccept();
     /// slot for listening for whenever the user presses "Cancel" (or ESC/close window corner button) in the resulting pop-up dialog window
-    void renameReject();
+    void filterReject();
 
 private:
     /// main qt dialog instance to be used
     QDialog mDialog;
-    /// stores the new filter regexp user-interaction result
-    QString mNewRegexp;
-    /// stores the filter item index user-interaction result
-    std::string mFilterIndex;
+    /// stores the filter regexp user-interaction result
+    std::string mFilterRegexp;
+    /// stores the filter-enabled user-interaction result
+    bool mEnable;
 
-    /// concerned container with filter items
-    FilterManager::Filters mFilters;
     /// boolean witness for validation; true whenever the user-interaction ends with the "Ok" button being pressed; false otherwise
     bool mValid;
     /// in-scene set of buttons for this pop-window ("Ok" and "Cancel")
     QDialogButtonBox *mpButtonBox;
-    /// in scene label displaying "New regexp:"
-    QLabel *mpNewRegexp;
-    /// in-scene label displaying "Filter:"
+    /// in scene label displaying "Filter regexp:"
     QLabel *mpFilterLabel;
-    /// GUI element where the user types the new desired feature label
+    /// GUI element where the user types the desired filter regexp
     QLineEdit *mpLineEdit;
-    /// GUI element from which the user selects the desired feature to be renamed
-    QComboBox *mpComboBox;
+    /// GUI element from which the user enables or disables the corresponding filter checkbox on init
+    QCheckBox *mpCheckBox;
 };
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // RENAMEFILTERDIALOG_H
+#endif // ADDFILTERDIALOG_H

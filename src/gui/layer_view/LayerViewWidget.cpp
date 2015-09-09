@@ -1,15 +1,4 @@
-#include "EdgeItem.hpp"
-#include "NodeItem.hpp"
-#include "FilterItem.hpp"
 #include "LayerViewWidget.hpp"
-#include "IconManager.hpp"
-#include "GraphWidgetManager.hpp"
-#include "WidgetManager.hpp"
-#include "FilterManager.hpp"
-#include "PropertyDialog.hpp"
-#include "NodeTypeManager.hpp"
-#include "EdgeTypeManager.hpp"
-#include "ActionCommander.hpp"
 
 #include <set>
 #include <math.h>
@@ -38,12 +27,14 @@
 #include <graph_analysis/PropertyVertex.hpp>
 #include <graph_analysis/OperationVertex.hpp>
 
-#include "layeritem/Resource.hpp"
-#include "layeritem/edges/Simple.hpp"
+#include <graph_analysis/gui/layeritem/Resource.hpp>
+#include <graph_analysis/gui/layeritem/edges/Simple.hpp>
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
+#include <graph_analysis/gui/NodeTypeManager.hpp>
+#include <graph_analysis/gui/EdgeTypeManager.hpp>
 
 #include <exception>
 #include <boost/foreach.hpp>

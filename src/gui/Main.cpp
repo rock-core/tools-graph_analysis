@@ -3,8 +3,8 @@
 #include <string>
 #include <sstream>
 #include <QApplication>
-#include <graph_analysis/gui/ComponentEditorWidget.hpp>
-#include <graph_analysis/gui/LayerViewWidget.hpp>
+#include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
+#include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
 
 // prints verbose help message regarding usage of 'cmd' to string stream 'ss'
 void help_setup(std::stringstream& ss, const std::string& cmd, graph_analysis::gui::GraphWidgetManager& graphManager)

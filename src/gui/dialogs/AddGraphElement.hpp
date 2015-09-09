@@ -10,6 +10,7 @@ namespace Ui
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 class AddGraphElement : public QDialog
 {
@@ -28,6 +29,7 @@ private:
     Ui::AddGraphElement* mUi;
 };
 
+} // end namespaec dialogs
 } // end namespace gui
 } // end graph_analysis
 #endif // GRAPH_ANALYSIS_GUI_ADD_GRAPH_ELEMENT_HPP

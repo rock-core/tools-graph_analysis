@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Omviz</class>
+ <class>graviz</class>
  <widget class="QMainWindow" name="Omviz">
   <property name="geometry">
    <rect>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Omviz -- Analyzing Multi-Robot Organizations</string>
+   <string>Graph Analysis -- Analyzing graphs</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">

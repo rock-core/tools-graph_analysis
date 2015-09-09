@@ -5,6 +5,7 @@
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 SwapFiltersDialog::SwapFiltersDialog(const FilterManager::Filters& filters)
 : mFilters(filters)
@@ -76,5 +77,6 @@ void SwapFiltersDialog::swapReject()
     mValid = false;
 }
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis

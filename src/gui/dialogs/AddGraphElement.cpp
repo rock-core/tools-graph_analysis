@@ -3,6 +3,7 @@
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 AddGraphElement::AddGraphElement(const QStringList& types, QWidget* parent)
     : QDialog(parent)
@@ -29,5 +30,6 @@ QString AddGraphElement::getType() const
 
 
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis

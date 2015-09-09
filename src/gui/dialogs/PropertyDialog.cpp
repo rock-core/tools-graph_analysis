@@ -1,15 +1,16 @@
-
-#include "ComponentEditorWidget.hpp"
-#include "LayerViewWidget.hpp"
-#include "IconManager.hpp"
-#include "GraphWidgetManager.hpp"
-#include "WidgetManager.hpp"
 #include "PropertyDialog.hpp"
+
+#include <graph_analysis/gui/IconManager.hpp>
+#include <graph_analysis/gui/GraphWidgetManager.hpp>
+#include <graph_analysis/gui/WidgetManager.hpp>
+#include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
+#include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
 
 #include <QScrollBar>
 
 namespace graph_analysis {
 namespace gui {
+namespace dialogs {
 
 PropertyDialog::PropertyDialog(bool dragDropIsChecked, bool vertexFocused, bool edgeFocused)
     : mVertexFocused(vertexFocused)
@@ -638,6 +639,7 @@ void PropertyDialog::retranslateUi(CustomDialog *Dialog)
     mpToggleClusterLayerButton->setText(QApplication::translate("Dialog", "Clusters Layer", 0, QApplication::UnicodeUTF8));
 } // retranslateUi
 
+} // end namespace dialogs
 } // end namespace gui
 } // end namespace graph_analysis
 

@@ -1,11 +1,11 @@
 
 #include "FilterManager.hpp"
-#include "IconManager.hpp"
-#include "WidgetManager.hpp"
-#include "ActionCommander.hpp"
-#include "AddFilterDialog.hpp"
-#include "SwapFiltersDialog.hpp"
-#include "RenameFilterDialog.hpp"
+#include <graph_analysis/gui/IconManager.hpp>
+#include <graph_analysis/gui/WidgetManager.hpp>
+#include <graph_analysis/gui/ActionCommander.hpp>
+#include <graph_analysis/gui/dialogs/AddFilterDialog.hpp>
+#include <graph_analysis/gui/dialogs/SwapFiltersDialog.hpp>
+#include <graph_analysis/gui/dialogs/RenameFilterDialog.hpp>
 
 #include <QRectF>
 #include <QMenu>
@@ -244,7 +244,7 @@ void FilterManager::removeFilter(FilterItem *item)
 
 void FilterManager::addFilter()
 {
-    AddFilterDialog addFilterDialog;
+    dialogs::AddFilterDialog addFilterDialog;
     if(addFilterDialog.isValid())
     {
         std::string regexp = addFilterDialog.getFilterRegexp();
@@ -263,7 +263,7 @@ void FilterManager::swapFilters()
     }
 
     // prompting the user for the fiters to swap
-    SwapFiltersDialog swapFiltersDialog(mFilters);
+    dialogs::SwapFiltersDialog swapFiltersDialog(mFilters);
     if(swapFiltersDialog.isValid())
     {
         std::string strFilter1Index = swapFiltersDialog.getFilter1Index();
@@ -344,7 +344,7 @@ void FilterManager::renameFilter()
     }
 
     // prompting the user for a filter to change and its new regex
-    RenameFilterDialog renameFilterDialog(mFilters);
+    dialogs::RenameFilterDialog renameFilterDialog(mFilters);
     if(renameFilterDialog.isValid())
     {
         QString newRegexp = renameFilterDialog.getNewRegexp();
