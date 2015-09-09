@@ -23,6 +23,8 @@ public:
 
     void saveSolution(const std::string& filename, LPSolutionFormat format = UNKNOWN_SOLUTION_FORMAT);
 
+    double getObjectiveValue() const { return glp_get_obj_val(mpProblem); }
+
 protected:
     glp_prob* mpProblem;
 };

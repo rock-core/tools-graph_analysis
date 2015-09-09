@@ -2,6 +2,7 @@
 #include "MultiCommodityEdge.hpp"
 #include "MultiCommodityVertex.hpp"
 #include <iterator>
+#include <math.h>
 #include <graph_analysis/DirectedGraphInterface.hpp>
 #include <base/Logging.hpp>
 
@@ -82,7 +83,7 @@ int MultiCommodityMinCostFlow::run()
         MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
         if(!edge)
         {
-            throw std::runtime_error("graph_analysis::gui::MultiCommodityMinCostFlow: cannot cast edge to MultiCommodityEdge");
+            throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::run cannot cast edge to MultiCommodityEdge");
         }
 
         // Start column --> mColumnToEdge*numberOfCommodities + commodityOffset
@@ -139,7 +140,7 @@ int MultiCommodityMinCostFlow::run()
         MultiCommodityVertex::Ptr vertex = boost::dynamic_pointer_cast<MultiCommodityVertex>( vertexIt->current() );
         if(!vertex)
         {
-            throw std::runtime_error("graph_analysis::gui::MultiCommodityMinCostFlow: cannot cast vertex to MultiCommodityVertex");
+            throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow: cannot cast vertex to MultiCommodityVertex");
         }
 
         for(size_t k = 0; k < mCommodities; ++k)
@@ -204,9 +205,6 @@ int MultiCommodityMinCostFlow::run()
     LOG_DEBUG_S << "Index: " << index - 1;
     glp_load_matrix(mpProblem, index - 1, ia, ja, ar);
 
-    glp_iocp controlParameters;
-    glp_init_iocp(&controlParameters);
-    //int result = glp_intopt(mpProblem, &controlParameters);
     int result = glp_simplex(mpProblem, NULL);
     switch(result)
     {
@@ -232,6 +230,27 @@ int MultiCommodityMinCostFlow::run()
         LOG_WARN_S << "    col #" << i << " = " << flow;
     }
 
+
+    // Write solution
+    edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
+        if(!edge)
+        {
+            throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::run: "
+                    "cannot cast edge to MultiCommodityEdge");
+        }
+
+        for(uint32_t k = 0; k < mCommodities; ++k)
+        {
+            uint32_t col = getColumnIndex(edge, k);
+            double flow = glp_get_col_prim(mpProblem, col);
+
+            edge->setCommodityFlow(k, ceil(flow) );
+        }
+    }
+
     return result;
 }
 
@@ -244,7 +263,7 @@ int MultiCommodityMinCostFlow::getColumnIndex(const Edge::Ptr& e, uint32_t commo
         LOG_DEBUG_S << "Column index '" << e->toString() << "' commodity: '" << commodity << "' is " << distance;
         return distance; 
     }
-    throw std::invalid_argument("graph_analysis::gui::MultiCommodityMinCostFlow::getColumnIndex: edge '" + e->toString() + "' is not associated with a column");
+    throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow::getColumnIndex: edge '" + e->toString() + "' is not associated with a column");
 }
 
 } // end namespace algorithms

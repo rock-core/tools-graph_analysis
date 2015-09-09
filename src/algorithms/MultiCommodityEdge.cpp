@@ -6,7 +6,8 @@ namespace algorithms {
 MultiCommodityEdge::MultiCommodityEdge(uint32_t commodities)
     : mCapacityUpperBound(0)
     , mCommodityCapacityUpperBound(commodities,0)
-    , mCommodityCost(commodities,2)
+    , mCommodityCost(commodities,1)
+    , mCommodityFlow(commodities,0)
 {}
 
 void MultiCommodityEdge::setCommodityCapacityUpperBound(uint32_t commodity, uint32_t capacity)

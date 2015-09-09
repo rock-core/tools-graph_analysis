@@ -20,13 +20,26 @@ public:
     void setCommodityCapacityUpperBound(uint32_t commodity, uint32_t capacity);
     uint32_t getCommodityCapacityUpperBound(uint32_t commodity) const { return mCommodityCapacityUpperBound.at(commodity); }
 
-    void setCommodityCost(uint32_t commodity, double cost);
+    void setCommodityCost(uint32_t commodity, double cost) { mCommodityCost.at(commodity) = cost; }
     double getCommodityCost(uint32_t commodity) { return mCommodityCost.at(commodity); }
+
+    /**
+     * Set the commodity flow (after a solution has been computed)
+     */
+    void setCommodityFlow(uint32_t commodity, uint32_t flow) { mCommodityFlow.at(commodity) = flow; }
+
+    /**
+     * Get the assigned commodity flow
+     */
+    uint32_t getCommodityFlow(uint32_t commodity) const { return mCommodityFlow.at(commodity); }
 
 private:
     uint32_t mCapacityUpperBound;
     std::vector<uint32_t> mCommodityCapacityUpperBound;
     std::vector<double> mCommodityCost;
+
+    // Result
+    std::vector<uint32_t> mCommodityFlow;
 };
 
 } // end namespace algorithms
