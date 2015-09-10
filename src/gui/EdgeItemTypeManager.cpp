@@ -1,4 +1,4 @@
-#include "EdgeTypeManager.hpp"
+#include "EdgeItemTypeManager.hpp"
 
 #include <QPainter>
 #include <QStyle>
@@ -12,7 +12,7 @@
 namespace graph_analysis {
 namespace gui {
 
-EdgeTypeManager::EdgeTypeManager()
+EdgeItemTypeManager::EdgeItemTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
         ("default", dynamic_cast<EdgeItem*>(new graphitem::edges::Simple()))
@@ -20,7 +20,7 @@ EdgeTypeManager::EdgeTypeManager()
     ;
 }
 
-EdgeTypeManager::~EdgeTypeManager()
+EdgeItemTypeManager::~EdgeItemTypeManager()
 {
     ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
     for(; it != mClassVisualizationMap.end(); ++it)
@@ -29,18 +29,18 @@ EdgeTypeManager::~EdgeTypeManager()
     }
 }
 
-void EdgeTypeManager::registerVisualization(const edge::Type& type, EdgeItem* graphicsItem)
+void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItem* graphicsItem)
 {
     try {
         graphicsItemByType(type);
-        throw std::runtime_error("graph_analysis::gui::EdgeTypeManager::registerVisualization: type '" + type + "' is already registered");
+        throw std::runtime_error("graph_analysis::gui::EdgeItemTypeManager::registerVisualization: type '" + type + "' is already registered");
     } catch(...)
     {
         mClassVisualizationMap[type] = graphicsItem;
     }
 }
 
-EdgeItem* EdgeTypeManager::graphicsItemByType(const edge::Type& type)
+EdgeItem* EdgeItemTypeManager::graphicsItemByType(const edge::Type& type)
 {
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
@@ -50,13 +50,13 @@ EdgeItem* EdgeTypeManager::graphicsItemByType(const edge::Type& type)
     return it->second;
 }
 
-EdgeItem* EdgeTypeManager::createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type)
+EdgeItem* EdgeItemTypeManager::createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type)
 {
     // conditionally returning a clone of the default when type is an empty string; using type in the types map otherwise
     return (type.empty() ? graphicsItemByType(edge->getClassName()) : graphicsItemByType(type))->createNewItem(graphWidget, sourceNode, targetNode, edge);
 }
 
-QStringList EdgeTypeManager::getSupportedTypes() const
+QStringList EdgeItemTypeManager::getSupportedTypes() const
 {
     QStringList supportedTypes;
     ClassVisualizationMap::const_iterator cit = mClassVisualizationMap.begin();

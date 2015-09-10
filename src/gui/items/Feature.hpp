@@ -11,7 +11,6 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/gui/VertexGetter.hpp>
 #include <graph_analysis/gui/EdgeGetter.hpp>
-#include <graph_analysis/PortVertex.hpp>
 #include <iostream>
 
 namespace graph_analysis {

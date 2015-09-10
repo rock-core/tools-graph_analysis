@@ -38,14 +38,6 @@ public:
     virtual void updateLayout();
     void itemMoved();
 
-    /// getter method for retrieving toggling witness of the entire features layer
-    bool getFeatureLayerToggle     () { return mFeatureLayerToggle;    }
-    /// getter method for retrieving toggling witness of the entire clusters layer
-    bool getClusterLayerToggle  () { return mClusterLayerToggle; }
-
-    /// method for deciding whether a vertex is currently being toggled out of the scene by layer discrimination
-    inline bool toggledOut(graph_analysis::Vertex::Ptr vertex);
-
 public slots:
     /// shuffles all the nodes in the layers graph view
     void shuffle();
@@ -55,11 +47,6 @@ public slots:
     void zoomOut();
     /// pulls-out the layers graph context menu on right-click
     void showContextMenu(const QPoint& pos);
-
-    /// setter method for updating the features layer toggle
-    void toggleFeatureLayer(bool toggle);
-    /// setter method for updating the clusters layer toggle
-    void toggleClusterLayer(bool toggle);
 
 protected:
 
@@ -90,12 +77,6 @@ protected:
     void scaleView(qreal scaleFactor);
 
     void resetLayoutingGraph();
-
-private:
-    /// features layer toggle: when true, feature nodes get displayed; false when they get hidden
-    bool mFeatureLayerToggle;
-    /// clusters layer toggle: when true, cluster nodes get displayed; false when they get hidden
-    bool mClusterLayerToggle;
 };
 
 } // end namespace gui

@@ -43,40 +43,23 @@ public:
     static QString getName() { return "graph_analysis::gui::ComponentEditor"; }
     virtual QString getClassName() const { return getName(); }
 
-    /**
-     * \brief introduces (creates + adds) a new vertex in the basegraph and enables it
-     * \param type requested type for the new vertex
-     * \param label requested label for the new vertex
-     * \return smart pointer to the newly created vertex instance
-     */
-    Vertex::Ptr createVertex(const std::string& type, const std::string& label = std::string());
-    /**
-     * \brief introduces (creates + adds) a new edge in the basegraph and enables it
-     * \param sourceNode requested source endpoint for the new edge
-     * \param targetNode requested target endpoint for the new edge
-     * \param label requested label for the new edge
-     * \return smart pointer to the newly created vertex instance
-     */
-    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
-    /**
-     * \brief creates a new vertex without enabling it
-     * \param type requested type for the new vertex
-     * \param label requested label for the new vertex
-     * \return smart pointer to the newly created vertex instance
-     */
-    Vertex::Ptr createStandaloneVertex(const std::string& type, const std::string& label = std::string());
-    /**
-     * \brief creates a new edge without enabling it
-     * \param sourceNode requested source endpoint for the new edge
-     * \param targetNode requested target endpoint for the new edge
-     * \param label requested label for the new edge
-     * \return smart pointer to the newly created vertex instance
-     */
-    Edge::Ptr createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
-    /// removes the given vertex from the base graph
-    void removeVertex(graph_analysis::Vertex::Ptr vertex);
-    /// removes the given edge from the base graph
-    void removeEdge(graph_analysis::Edge::Ptr edge);
+    void registerTypes();
+
+//    /**
+//     * \brief introduces (creates + adds) a new vertex in the basegraph and enables it
+//     * \param type requested type for the new vertex
+//     * \param label requested label for the new vertex
+//     * \return smart pointer to the newly created vertex instance
+//     */
+//    Vertex::Ptr createVertex(const std::string& type, const std::string& label = std::string());
+//    /**
+//     * \brief introduces (creates + adds) a new edge in the basegraph and enables it
+//     * \param sourceNode requested source endpoint for the new edge
+//     * \param targetNode requested target endpoint for the new edge
+//     * \param label requested label for the new edge
+//     * \return smart pointer to the newly created vertex instance
+//     */
+//    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
 
     /// enables the given vertex in the base graph
     void enableVertex (graph_analysis::Vertex::Ptr vertex);
@@ -90,49 +73,11 @@ public:
     /// respawns all graphical elements by the underlying base graph
     void itemMoved();
 
-    /// setter method - lets this graph widget know which vertex is currently focused on (i.e. was double clicked)
-    void setFocusedVertex(graph_analysis::Vertex::Ptr focusedVertex) { mpFocusedVertex = focusedVertex; }
-    /// getter method - retrieves the vertex this graph widget knows was last focused on (i.e. was double clicked)
-    graph_analysis::Vertex::Ptr getFocusedVertex() { return mpFocusedVertex; }
-
-    /// setter method - lets this graph widget know which edge is currently focused on (i.e. was double clicked)
-    void setFocusedEdge(graph_analysis::Edge::Ptr focusedEdge) { mpFocusedEdge = focusedEdge; }
-    /// getter method - retrieves the edge this graph widget knows was last focused on (i.e. was double clicked)
-    graph_analysis::Edge::Ptr getFocusedEdge() { return mpFocusedEdge; }
-
-    /// setter method - lets this graph widget know whether a vertex is focused on (i.e. was double clicked)
-    void setVertexFocused (bool focused);
-    /// getter method - tells whether this graph widget knows about a vertex still being focused on
-    bool getVertexFocused () { return mVertexFocused; }
-
-    /// setter method - lets this graph widget know whether an edge is focused on (i.e. was double clicked)
-    void setEdgeFocused (bool focused);
-    /// getter method - tells whether this graph widget knows about an edge still being focused on
-    bool getEdgeFocused () { return mEdgeFocused; }
-
-    /// forcefully focuses out of any node that might be currently focused on
-    void clearNodeFocus();
-    /// forcefully focuses out of any edge that might be currently focused on
-    void clearEdgeFocus();
     /// forcefully focuses out of any edge and/or node that might be currently focused on
     void clearFocus();
 
-    /// prompts the user for removing a feature vertex of the given cluster vertex
-    void removeFeature (graph_analysis::Vertex::Ptr concernedVertex);
-    /// prompts the user for removing all features vertex of the given cluster vertex
-    void removeFeatures(graph_analysis::Vertex::Ptr concernedVertex);
-    /// prompts the user for swapping two features of the given vertex
-    void swapFeatures(graph_analysis::Vertex::Ptr concernedVertex);
-    /// deletes the given cluster vertex
-    void clearVertex(graph_analysis::Vertex::Ptr concernedVertex);
-
-    /// deletes the given edge
-    void clearEdge(graph_analysis::Edge::Ptr concernedEdge);
     /// synchronizes out the given edge from mEdgeItemMap (i.e. deletes the edge)
     void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
-
-    /// getter method for retrieving the current mode; when true, drag-n-drop mode is active; when false, move-around mode is currently active
-    bool getDragDrop() { return mDragDrop; }
 
     virtual void updateLayout();
 
@@ -145,49 +90,10 @@ public slots:
     void zoomOut();
 
     void addFeatureDialog();
-    /// deletes the currently focused node (i.e. previously double clicked node)
-    void removeFocusedVertex();
-
-    /// prompts the user for renaming a feature of the currently focused node (i.e. previously double clicked node)
-    void renameFeatureFocused();
-    /// prompts the user for removing a feature of the currently focused node (i.e. previously double clicked node)
-    void removeFeatureFocused();
-    /// prompts the user for removing all features of the currently focused node (i.e. previously double clicked node)
-    void removeFeaturesFocused();
-    /// prompts the user for renaming a feature of the currently selected node (i.e. node being hovered over)
-    void renameFeatureSelected();
-    /// prompts the user for removing a feature of the currently selected node (i.e. node being hovered over)
-    void removeFeatureSelected();
-    /// prompts the user for removing all features of the currently selected node (i.e. node being hovered over)
-    void removeFeaturesSelected();
-
-    /// prompts the user for swapping two features of the currently focused node (i.e. previously double clicked node)
-    void swapFeaturesFocused();
-    /// prompts the user for swapping two features of the currently selected node (i.e. node being hovered over)
-    void swapFeaturesSelected();
-    void removeFocusedEdge();
-    /// deletes the currently selected edge (i.e. edge being hovered over)
-    void removeSelectedEdge();
 
     /// displays context menu (upon a right click in the scene)
     void showContextMenu(const QPoint& pos);
 
-    /// updates drag-n-drop witness value to 'dragDrop' and warns and adapts the other involved components
-    void setDragDrop(bool dragDrop);
-    /// updates drag-n-drop witness value to 'dragDrop'
-    void updateDragDrop(bool dragDrop);
-    /// updates move-around witness value to 'moveAround'
-    void updateMoveAround(bool moveAround);
-    /// toggles mDragDrop boolean witness
-    void toggleDragDrop() {}
-    /// synchronizes the drag-n-drop mode in graph editor with the state of the drag-n-drop witness in the property dialog/panel
-    void syncDragDrop();
-    /// sets drag-n-drop to true on all levels
-    void setDragDrop();
-    /// sets drag-n-drop to false on all levels
-    void unsetDragDrop();
-
-    void refresh(bool all = true) { GraphWidget::refresh(all); }
 protected:
     /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget; when status is false, this takes place quiently (no updates are made on the status bar)
     //void refreshLayerViewWidget(bool status = true);
@@ -214,31 +120,7 @@ protected:
     void scaleView(qreal scaleFactor);
 
 private:
-    /// introduces and displays a new edge with the given label
-    void spawnEdge(const std::string& label); // assumes the concerned edge-creation member fields are properly set already
-
-    /// currently focused vertex (i.e. has been double-clicked)
-    graph_analysis::Vertex::Ptr mpFocusedVertex;
-    /// drag-n-drop source cluster vertex
-    graph_analysis::Vertex::Ptr mpStartVertex;
-    /// drag-n-drop source feature vertex
-    graph_analysis::Vertex::Ptr mpStartFeature;
-    /// drag-n-drop target cluster vertex
-    graph_analysis::Vertex::Ptr mpEndVertex;
-    /// drag-n-drop target feature vertex
-    graph_analysis::Vertex::Ptr mpEndFeature;
-    /// currently focused edge (i.e. has been double-clicked)
-    graph_analysis::Edge::Ptr mpFocusedEdge;
-
-    /// boolean witness telling whether a vertex is being focused on
-    bool mVertexFocused;
-    /// boolean witness telling whether an edge is being focused on
-    bool mEdgeFocused;
-
-    NodeItem* mFocusedNodeItem;
-
-    /// boolean witness for the drag-n-drop mode: true when drag-n-drop is on; false otherwise (i.e. when move-around mode is on)
-    bool mDragDrop;
+    NodeItem* mpLastFocusedNodeItem;
 };
 
 } // end namespace gui

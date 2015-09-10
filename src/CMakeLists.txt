@@ -1,196 +1,199 @@
 find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
-        algorithms/CorrelationClustering.cpp
-        algorithms/FloydWarshall.cpp
-        algorithms/MinCostFlow.cpp
-        algorithms/MultiCommodityMinCostFlow.cpp
-        algorithms/MultiCommodityEdge.cpp
-        algorithms/GLPKSolver.cpp
-        boost_graph/DirectedGraph.cpp
+        BaseGraph.cpp
         Edge.cpp
         EdgeIterable.cpp
         EdgeIterator.cpp
+        EdgeTypeManager.cpp
         Filter.cpp
-        filters/EdgeContextFilter.cpp
-        filters/RegexFilters.cpp
-        BaseGraph.cpp
         GraphElement.cpp
         GraphIO.cpp
-        gui/EdgeItem.cpp
-        gui/EdgeTypeManager.cpp
-        gui/graphitem/edges/Simple.cpp
-        gui/graphitem/Cluster.cpp
-        gui/graphitem/Simple.cpp
-        gui/layeritem/edges/Simple.cpp
-        gui/layeritem/Resource.cpp
-        gui/items/Label.cpp
-        gui/items/Feature.cpp
-        gui/IconManager.cpp
-        gui/WidgetManager.cpp
-        gui/GraphWidgetManager.cpp
-        gui/GraphWidget.cpp
-        gui/component_editor/ComponentEditorWidget.cpp
-        gui/layer_view/LayerViewWidget.cpp
-        gui/FilterManager.cpp
-        gui/FilterItem.cpp
-        gui/dialogs/AddGraphElement.cpp
-        gui/dialogs/AddFilterDialog.cpp
-        gui/dialogs/CustomDialog.cpp
-        gui/dialogs/SwapFiltersDialog.cpp
-        gui/dialogs/SwapFeaturesDialog.cpp
-        gui/dialogs/RenameFilterDialog.cpp
-        gui/dialogs/RenameFeatureDialog.cpp
-        gui/dialogs/PropertyDialog.cpp
+        Percolation.cpp
+        SubGraph.cpp
+        Vertex.cpp
+        VertexIterable.cpp
+        VertexIterator.cpp
+        VertexTypeManager.cpp
+        algorithms/CorrelationClustering.cpp
+        algorithms/FloydWarshall.cpp
+        algorithms/GLPKSolver.cpp
+        algorithms/MinCostFlow.cpp
+        algorithms/MultiCommodityEdge.cpp
+        algorithms/MultiCommodityMinCostFlow.cpp
+        boost_graph/DirectedGraph.cpp
+        filters/EdgeContextFilter.cpp
+        filters/RegexFilters.cpp
         gui/ActionCommander.cpp
+        gui/EdgeItem.cpp
+        gui/EdgeItemTypeManager.cpp
+        gui/FilterItem.cpp
+        gui/FilterManager.cpp
+        gui/GraphWidget.cpp
+        gui/GraphWidgetManager.cpp
+        gui/IconManager.cpp
         gui/Main.cpp
         gui/NodeItem.cpp
-        gui/NodeTypeManager.cpp
-        io/GexfWriter.cpp
-        io/GexfReader.cpp
-        io/GraphvizWriter.cpp
-        io/YamlWriter.cpp
-        io/YamlReader.cpp
+        gui/NodeItemTypeManager.cpp
+        gui/WidgetManager.cpp
+        gui/component_editor/Cluster.cpp
+        gui/component_editor/ComponentEditorWidget.cpp
+        gui/component_editor/InputPort.cpp
+        gui/component_editor/Operation.cpp
+        gui/component_editor/OutputPort.cpp
+        gui/component_editor/Port.cpp
+        gui/component_editor/Property.cpp
+        gui/dialogs/AddFilterDialog.cpp
+        gui/dialogs/AddGraphElement.cpp
+        gui/dialogs/CustomDialog.cpp
+        gui/dialogs/PropertyDialog.cpp
+        gui/dialogs/RenameFeatureDialog.cpp
+        gui/dialogs/RenameFilterDialog.cpp
+        gui/dialogs/SwapFeaturesDialog.cpp
+        gui/dialogs/SwapFiltersDialog.cpp
+        gui/graphitem/Cluster.cpp
+        gui/graphitem/Simple.cpp
+        gui/graphitem/edges/Simple.cpp
+        gui/items/Feature.cpp
+        gui/items/Label.cpp
+        gui/layer_view/LayerViewWidget.cpp
+        gui/layeritem/Resource.cpp
+        gui/layeritem/edges/Simple.cpp
         io/GVGraph.cpp
+        io/GexfReader.cpp
+        io/GexfWriter.cpp
+        io/GraphvizWriter.cpp
+        io/YamlReader.cpp
+        io/YamlWriter.cpp
         lemon/DirectedGraph.cpp
         lemon/DirectedSubGraph.cpp
-        Percolation.cpp
         percolation/Event.cpp
         percolation/RandomNumberGenerator.cpp
         percolation/strategies/RandomDraw.cpp
         percolation/strategies/UniformRandomEdgeRemoval.cpp
         percolation/strategies/UniformRandomVertexRemoval.cpp
-        snap/DirectedSubGraph.cpp
         snap/DirectedGraph.cpp
-        SubGraph.cpp
-        Vertex.cpp
-        PortVertex.cpp
-        PropertyVertex.cpp
-        OperationVertex.cpp
-        InputPortVertex.cpp
-        OutputPortVertex.cpp
-        ClusterVertex.cpp
-        VertexIterable.cpp
-        VertexIterator.cpp
-        VertexTypeManager.cpp
+        snap/DirectedSubGraph.cpp
     HEADERS
         Algorithms.hpp
-        algorithms/CorrelationClustering.hpp
-        algorithms/DistanceMatrix.hpp
-        algorithms/FloydWarshall.hpp
-        algorithms/MinCostFlow.hpp
-        algorithms/MultiCommodityMinCostFlow.hpp
-        algorithms/MultiCommodityEdge.hpp
-        algorithms/MultiCommodityVertex.hpp
-        algorithms/GLPKSolver.hpp
-        boost_graph/DirectedGraph.hpp
+        BaseGraph.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
         EdgeIterable.hpp
         EdgeIterator.hpp
+        EdgeTypeManager.hpp
         Filter.hpp
-        filters/CommonFilters.hpp
-        filters/EdgeContextFilter.hpp
-        filters/RegexFilters.hpp
-        BaseGraph.hpp
         Graph.hpp
         GraphAnalysis.hpp
         GraphElement.hpp
         GraphIO.hpp
         GraphView.hpp
-        gui/EdgeItem.hpp
-        gui/EdgeTypeManager.hpp
-        gui/graphitem/edges/Simple.hpp
-        gui/graphitem/Cluster.hpp
-        gui/graphitem/Simple.hpp
-        gui/layeritem/edges/Simple.hpp
-        gui/layeritem/Resource.hpp
-        gui/items/Label.hpp
-        gui/items/Feature.hpp
-        gui/IconManager.hpp
-        gui/WidgetManager.hpp
-        gui/GraphWidgetManager.hpp
-        gui/GraphWidget.hpp
-        gui/component_editor/ComponentEditorWidget.hpp
-        gui/layer_view/LayerViewWidget.hpp
-        gui/FilterManager.hpp
-        gui/FilterItem.hpp
+        NWeightedEdge.hpp
+        Percolation.hpp
+        SubGraph.hpp
+        SubGraphImpl.hpp
+        TypedGraph.hpp
+        Vertex.hpp
+        VertexIterable.hpp
+        VertexIterator.hpp
+        VertexTypeManager.hpp
+        WeightedEdge.hpp
+        WeightedVertex.hpp
+        algorithms/CorrelationClustering.hpp
+        algorithms/DistanceMatrix.hpp
+        algorithms/FloydWarshall.hpp
+        algorithms/GLPKSolver.hpp
+        algorithms/MinCostFlow.hpp
+        algorithms/MultiCommodityEdge.hpp
+        algorithms/MultiCommodityMinCostFlow.hpp
+        algorithms/MultiCommodityVertex.hpp
+        boost_graph/DirectedGraph.hpp
+        filters/CommonFilters.hpp
+        filters/EdgeContextFilter.hpp
+        filters/RegexFilters.hpp
         gui/ActionCommander.hpp
+        gui/EdgeGetter.hpp
+        gui/EdgeItem.hpp
+        gui/EdgeItemTypeManager.hpp
+        gui/FilterItem.hpp
+        gui/FilterManager.hpp
+        gui/GraphWidget.hpp
+        gui/GraphWidgetManager.hpp
+        gui/IconManager.hpp
         gui/NodeItem.hpp
-        gui/NodeTypeManager.hpp
+        gui/NodeItemTypeManager.hpp
+        gui/VertexGetter.hpp
+        gui/WidgetManager.hpp
+        gui/component_editor/Cluster.hpp
+        gui/component_editor/ComponentEditorWidget.hpp
+        gui/component_editor/InputPort.hpp
+        gui/component_editor/Operation.hpp
+        gui/component_editor/OutputPort.hpp
+        gui/component_editor/Port.hpp
+        gui/component_editor/Property.hpp
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
-        gui/dialogs/SwapFiltersDialog.hpp
-        gui/dialogs/SwapFeaturesDialog.hpp
-        gui/dialogs/RenameFilterDialog.hpp
-        gui/dialogs/RenameFeatureDialog.hpp
-        gui/dialogs/PropertyDialog.hpp
         gui/dialogs/CustomDialog.hpp
-        gui/VertexGetter.hpp
-        gui/EdgeGetter.hpp
-        io/GexfWriter.hpp
-        io/GexfReader.hpp
-        io/GraphvizWriter.hpp
-        io/YamlWriter.hpp
-        io/YamlReader.hpp
+        gui/dialogs/PropertyDialog.hpp
+        gui/dialogs/RenameFeatureDialog.hpp
+        gui/dialogs/RenameFilterDialog.hpp
+        gui/dialogs/SwapFeaturesDialog.hpp
+        gui/dialogs/SwapFiltersDialog.hpp
+        gui/graphitem/Cluster.hpp
+        gui/graphitem/Simple.hpp
+        gui/graphitem/edges/Simple.hpp
+        gui/items/Feature.hpp
+        gui/items/Label.hpp
+        gui/layer_view/LayerViewWidget.hpp
+        gui/layeritem/Resource.hpp
+        gui/layeritem/edges/Simple.hpp
         io/GVGraph.hpp
+        io/GexfReader.hpp
+        io/GexfWriter.hpp
+        io/GraphvizWriter.hpp
+        io/YamlReader.hpp
+        io/YamlWriter.hpp
         lemon/ArcIterator.hpp
         lemon/DirectedGraph.hpp
         lemon/DirectedSubGraph.hpp
         lemon/Graph.hpp
         lemon/NodeIterator.hpp
-        Percolation.hpp
         percolation/Event.hpp
         percolation/RandomNumberGenerator.hpp
         percolation/strategies/RandomDraw.hpp
         percolation/strategies/UniformRandomEdgeRemoval.hpp
         percolation/strategies/UniformRandomVertexRemoval.hpp
-        snap/DirectedSubGraph.hpp
         snap/DirectedGraph.hpp
+        snap/DirectedSubGraph.hpp
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
-        SubGraph.hpp
-        SubGraphImpl.hpp
-        TypedGraph.hpp
-        Vertex.hpp
-        PortVertex.hpp
-        PropertyVertex.hpp
-        OperationVertex.hpp
-        InputPortVertex.hpp
-        OutputPortVertex.hpp
-        ClusterVertex.hpp
-        VertexIterable.hpp
-        VertexIterator.hpp
-        VertexTypeManager.hpp
-        WeightedEdge.hpp
-        NWeightedEdge.hpp
-        WeightedVertex.hpp
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric gsl libgvc utilmm
     DEPS_PLAIN
         Boost_REGEX
     MOC
-        gui/component_editor/ComponentEditorWidget.hpp
-        gui/layer_view/LayerViewWidget.hpp
-        gui/GraphWidgetManager.hpp
         gui/FilterManager.hpp
+        gui/GraphWidget.hpp
+        gui/GraphWidgetManager.hpp
+        gui/component_editor/ComponentEditorWidget.hpp
         gui/dialogs/AddFilterDialog.hpp
-        gui/dialogs/PropertyDialog.hpp
-        gui/dialogs/SwapFiltersDialog.hpp
-        gui/dialogs/SwapFeaturesDialog.hpp
-        gui/dialogs/RenameFilterDialog.hpp
-        gui/dialogs/RenameFeatureDialog.hpp
         gui/dialogs/AddGraphElement.hpp
+        gui/dialogs/PropertyDialog.hpp
+        gui/dialogs/RenameFeatureDialog.hpp
+        gui/dialogs/RenameFilterDialog.hpp
+        gui/dialogs/SwapFeaturesDialog.hpp
+        gui/dialogs/SwapFiltersDialog.hpp
+        gui/layer_view/LayerViewWidget.hpp
     DEPS_PKGCONFIG QtGui
     UI
-        gui/dialogs/graph_analysis_gui.ui
         gui/dialogs/add_filter_dialog_gui.ui
-        gui/dialogs/property_dialog_gui.ui
-        gui/dialogs/swap_filters_dialog_gui.ui
-        gui/dialogs/swap_features_dialog_gui.ui
-        gui/dialogs/rename_feature_dialog_gui.ui
         gui/dialogs/add_graph_element.ui
+        gui/dialogs/graph_analysis_gui.ui
+        gui/dialogs/property_dialog_gui.ui
+        gui/dialogs/rename_feature_dialog_gui.ui
+        gui/dialogs/swap_features_dialog_gui.ui
+        gui/dialogs/swap_filters_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk cgraph)
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

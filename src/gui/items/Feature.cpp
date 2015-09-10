@@ -98,77 +98,12 @@ void Feature::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 
 void Feature::keyPressEvent(::QKeyEvent* event)
 {
-    //LOG_DEBUG_S << "KEYPRESS LABEL";
-    //// skipping Key_Return (a.k.a. ENTER)
-    //// check for a keys combination
-    //Qt::KeyboardModifiers modifiers = event->modifiers();
-
-    //if(modifiers & Qt::ShiftModifier)
-    //{
-    //    switch(event->key())
-    //    {
-    //        case Qt::Key_Up:
-    //            ((NodeItem *)parentItem())->shiftFeatureUp(mPortID);
-    //        break;
-
-    //        case Qt::Key_Down:
-    //            ((NodeItem *)parentItem())->shiftFeatureDown(mPortID);
-    //        break;
-    //    }
-    //}
-    //switch(event->key())
-    //{
-    //    // one line only per label entry
-    //    case Qt::Key_Return:
-    //        return;
-    //    break;
-    //}
     QGraphicsTextItem::keyPressEvent(event);
 }
 
-//void Feature::mousePressEvent(::QGraphicsSceneMouseEvent *event)
-//{
-//    if(Qt::LeftButton == event->button())
-//    {
-//        mDragStartPosition = event->pos();
-//    }
-//}
-
 void Feature::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
 {
-//    if((event->buttons() & Qt::LeftButton) && PortVertex::INVALID_PORT_ID != mPortID)
-//    {
-//        // starting a mouse drag action if the mouse move is long enough
-//        if((event->pos() - mDragStartPosition).manhattanLength() < QApplication::startDragDistance())
-//        {
-//            // skipping if the mouse move is not yet long enough
-//            return;
-//        }
-//        if(!mpGraphWidget)
-//        {
-//            std::string error_msg = std::string("graph_analysis::gui::graphitem::Feature::mousePressEvent: cannot start drag-n-drop from port ")
-//                                            + toPlainText().toStdString()
-//                                            + " portID: " + boost::lexical_cast<std::string>(mPortID)
-//                                            + " of cluster: " + ((NodeItem *)parentItem())->getFeature()
-//                                            + ", despite all conditions being set -> mpGraphWidget has not been initialized";
-//            LOG_ERROR_S << error_msg;
-//            throw std::runtime_error(error_msg);
-//        }
-//        // sending the mouse drag event and meanwhile setting the starting node in the corresponding member field of the managing widget
-//        QDrag *drag = new QDrag(event->widget());
-//        QMimeData *mimeData = new QMimeData;
-//        mimeData->setText("edge");
-//        drag->setMimeData(mimeData);
-//
-//        // Drag and drop
-//        //mpGraphWidget->setStartVertex(((NodeItem *)parentItem())->getVertex(), mPortID);
-//
-//        drag->exec(Qt::CopyAction | Qt::MoveAction);
-//    }
-//    else
-//    {
-//        QGraphicsItem::mousePressEvent(event);
-//    }
+    QGraphicsTextItem::mouseMoveEvent(event);
 }
 
 void Feature::dragEnterEvent(QGraphicsSceneDragDropEvent *event)

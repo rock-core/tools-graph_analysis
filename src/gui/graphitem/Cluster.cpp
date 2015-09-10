@@ -1,12 +1,6 @@
 #include "Cluster.hpp"
 
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/PortVertex.hpp>
-#include <graph_analysis/InputPortVertex.hpp>
-#include <graph_analysis/OutputPortVertex.hpp>
-#include <graph_analysis/ClusterVertex.hpp>
-#include <graph_analysis/PropertyVertex.hpp>
-#include <graph_analysis/OperationVertex.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
 #include <cmath>
@@ -22,7 +16,6 @@
 #include <exception>
 #include <graph_analysis/gui/items/Label.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
-#include <graph_analysis/PortVertex.hpp>
 
 #include <QTableWidget>
 
@@ -53,8 +46,6 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mSelected(false)
     , mHeightAdjusted(false)
     , mSeparator(SEPARATOR)
-    , mMaxInputPortWidth(0.)
-    , mMaxOutputPortWidth(0.)
 {
     mpLabel = new Label(vertex->toString(), this);
 
@@ -176,7 +167,6 @@ void Cluster::releaseFocus()
     mPen = mSelected ? QPen(Qt::green) : mPenDefault;
     update();
     mFocused = false;
-    mpGraphWidget->clearFocus();
 }
 
 void Cluster::focusInEvent(QFocusEvent* event)
@@ -194,7 +184,9 @@ void Cluster::focusOutEvent(QFocusEvent* event)
 void Cluster::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 {
     Vertex::Ptr pointedAtVertex = mpVertex; 
-    if(mpGraphWidget->getGraphWidgetManager()->getMode() == GraphWidgetManager::CONNECT_MODE)
+    GraphWidgetManager::Mode mode = mpGraphWidget->getGraphWidgetManager()->getMode();
+    if(mode == GraphWidgetManager::CONNECT_MODE
+            || mode == GraphWidgetManager::EDIT_MODE)
     {
         try {
             pointedAtVertex = getPointedAtVertex();
@@ -250,7 +242,6 @@ void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
         mPen = mPenDefault;
     }
     mSelected = false;
-    mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

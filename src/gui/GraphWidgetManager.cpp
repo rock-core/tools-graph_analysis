@@ -297,30 +297,6 @@ void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd
     ss << std::endl;
 }
 
-
-void GraphWidgetManager::renameElementDialog(GraphElement::Ptr element)
-{
-    updateStatus("Renaming '" + element->toString() + "'");
-
-    bool ok;
-    QString label = QInputDialog::getText(currentGraphWidget(), tr("Change label"),
-                                         tr("New label:"), QLineEdit::Normal,
-                                         QString(element->getLabel().c_str()), &ok);
-    if (ok && !label.isEmpty())
-    {
-        std::string old_label = element->toString();
-        std::string new_label = label.toStdString();
-
-        currentGraphWidget()->renameElement(element, new_label);
-        updateStatus("Renamed from '" + old_label + "' to '" + new_label + "'", GraphWidgetManager::TIMEOUT);
-        refresh();
-    }
-    else
-    {
-        updateStatus(std::string("Failed to rename focused node: aborted by user!"), GraphWidgetManager::TIMEOUT);
-    }
-}
-
 void GraphWidgetManager::renameSelection()
 {
     std::vector<GraphElement::Ptr> elements = currentGraphWidget()->getElementSelection();
@@ -328,7 +304,7 @@ void GraphWidgetManager::renameSelection()
     for(; it != elements.end(); ++it)
     {
         GraphElement::Ptr element = *it;
-        renameElementDialog(element);
+        currentGraphWidget()->editElementDialog(element);
     }
 //    if(mpGraphWidgetManager->getVertexFocused())
 //    {
@@ -464,7 +440,7 @@ void GraphWidgetManager::resetGraph(bool keepData)
     {
         GraphWidget* graphWidget = *it;
         graphWidget->setGraph(mpGraph);
-        graphWidget->clear();
+        graphWidget->clearVisualization();
     }
 }
 

@@ -421,23 +421,6 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
 
         mpLayersFiltersLayout->addWidget(mpLayersLabel);
 
-
-        mpToggleClusterLayerButton = new QPushButton(mpHorizontalLayoutLayerViewWidget);
-        mpToggleClusterLayerButton->setObjectName(QString::fromUtf8("mpToggleClusterLayerButton"));
-        mpToggleClusterLayerButton->setCheckable(true);
-        mpToggleClusterLayerButton->setChecked(layerWidget->getClusterLayerToggle());
-        mpToggleClusterLayerButton->setToolTip(QString("toggles the visibility of the clusters layer"));
-
-        mpLayersFiltersLayout->addWidget(mpToggleClusterLayerButton);
-
-        mpToggleFeatureLayerButton = new QPushButton(mpHorizontalLayoutLayerViewWidget);
-        mpToggleFeatureLayerButton->setObjectName(QString::fromUtf8("mpToggleFeatureLayerButton"));
-        mpToggleFeatureLayerButton->setCheckable(true);
-        mpToggleFeatureLayerButton->setChecked(layerWidget->getFeatureLayerToggle());
-        mpToggleFeatureLayerButton->setToolTip(QString("toggles the visibility of the features layer"));
-
-        mpLayersFiltersLayout->addWidget(mpToggleFeatureLayerButton);
-
         // adding bottom padding
         verticalLayoutComponentsLayerLeftover = 3 * linePoints + 9 * buttonPoints; // this vertical layout lacks 3 * frames and 9 buttons (out of the maximum no. of each)
         if(commonExtraPadding > verticalLayoutComponentsLayerLeftover)

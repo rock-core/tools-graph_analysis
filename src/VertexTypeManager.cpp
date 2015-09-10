@@ -1,18 +1,7 @@
 #include "VertexTypeManager.hpp"
 
-#include <QPainter>
-#include <QStyle>
-#include <QStyleOption>
-
 #include <boost/assign/list_of.hpp>
 #include <base/Logging.hpp>
-
-#include <graph_analysis/PortVertex.hpp>
-#include <graph_analysis/InputPortVertex.hpp>
-#include <graph_analysis/OutputPortVertex.hpp>
-#include <graph_analysis/PropertyVertex.hpp>
-#include <graph_analysis/OperationVertex.hpp>
-#include <graph_analysis/ClusterVertex.hpp>
 
 namespace graph_analysis {
 
@@ -21,12 +10,6 @@ VertexTypeManager::VertexTypeManager()
     // registering known implemented class-types
     mTypeMap = boost::assign::map_list_of
         (std::string("default"),                         Vertex::Ptr (new Vertex()))
-        (graph_analysis::PortVertex::vertexType(),       Vertex::Ptr(new PortVertex()))
-        (graph_analysis::InputPortVertex::vertexType(),  Vertex::Ptr (new InputPortVertex()))
-        (graph_analysis::OutputPortVertex::vertexType(), Vertex::Ptr(new OutputPortVertex()))
-        (graph_analysis::ClusterVertex::vertexType(),    Vertex::Ptr(new ClusterVertex()))
-        (graph_analysis::PropertyVertex::vertexType(),   Vertex::Ptr(new PropertyVertex()))
-        (graph_analysis::OperationVertex::vertexType(),  Vertex::Ptr (new OperationVertex()))
         ;
 
     // initializing the list of default registered types (non-repeatingly, non-verbously)

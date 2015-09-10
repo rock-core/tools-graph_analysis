@@ -1,4 +1,4 @@
-#include "NodeTypeManager.hpp"
+#include "NodeItemTypeManager.hpp"
 
 #include <QPainter>
 #include <QStyle>
@@ -13,7 +13,7 @@
 namespace graph_analysis {
 namespace gui {
 
-NodeTypeManager::NodeTypeManager()
+NodeItemTypeManager::NodeItemTypeManager()
 {
     mClassVisualizationMap = boost::assign::map_list_of
         (node::Type("default"), dynamic_cast<NodeItem*>(new graphitem::Cluster()))
@@ -23,7 +23,7 @@ NodeTypeManager::NodeTypeManager()
     ;
 }
 
-NodeTypeManager::~NodeTypeManager()
+NodeItemTypeManager::~NodeItemTypeManager()
 {
     ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
     for(; it != mClassVisualizationMap.end(); ++it)
@@ -32,7 +32,7 @@ NodeTypeManager::~NodeTypeManager()
     }
 }
 
-void NodeTypeManager::registerVisualization(const node::Type& type, NodeItem* graphicsItem, bool throwOnAlreadyRegistered)
+void NodeItemTypeManager::registerVisualization(const node::Type& type, NodeItem* graphicsItem, bool throwOnAlreadyRegistered)
 {
     try {
         graphicsItemByType(type, true);
@@ -40,37 +40,37 @@ void NodeTypeManager::registerVisualization(const node::Type& type, NodeItem* gr
     {
         mClassVisualizationMap[type] = graphicsItem;
     }
-    LOG_WARN_S << "graph_analysis::gui::NodeTypeManager::registerVisualization: type '" + type + "' is already registered.";
+    LOG_WARN_S << "graph_analysis::gui::NodeItemTypeManager::registerVisualization: type '" + type + "' is already registered.";
     if(throwOnAlreadyRegistered)
     {
-        throw std::runtime_error("graph_analysis::gui::NodeTypeManager::registerVisualization: type '" + type + "' is already registered");
+        throw std::runtime_error("graph_analysis::gui::NodeItemTypeManager::registerVisualization: type '" + type + "' is already registered");
     }
 }
 
-NodeItem* NodeTypeManager::graphicsItemByType(const node::Type& type, bool throwOnDefault)
+NodeItem* NodeItemTypeManager::graphicsItemByType(const node::Type& type, bool throwOnDefault)
 {
     ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
-        LOG_DEBUG_S << "graph_analysis::gui::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
+        LOG_DEBUG_S << "graph_analysis::gui::NodeItemTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
         if(throwOnDefault)
         {
-            throw std::runtime_error("graph_analysis::gui::NodeTypeManager::graphicsItemByType: type '" + type + "' is not registered");
+            throw std::runtime_error("graph_analysis::gui::NodeItemTypeManager::graphicsItemByType: type '" + type + "' is not registered");
         }
         return mClassVisualizationMap["default"];
     }
 
-    LOG_DEBUG_S << "graph_analysis::gui::NodeTypeManager::graphicsItemByType: type '" + type + "' registered.";
+    LOG_DEBUG_S << "graph_analysis::gui::NodeItemTypeManager::graphicsItemByType: type '" + type + "' registered.";
     return it->second;
 }
 
-NodeItem* NodeTypeManager::createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex, const std::string& type)
+NodeItem* NodeItemTypeManager::createItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex, const std::string& type)
 {
     // conditionally returning a clone of the default when type is an empty string; using type in the types map otherwise
     return (type.empty() ? graphicsItemByType(vertex->getClassName()) : graphicsItemByType(type))->createNewItem(graphWidget, vertex);
 }
 
-QStringList NodeTypeManager::getSupportedTypes() const
+QStringList NodeItemTypeManager::getSupportedTypes() const
 {
     QStringList supportedTypes;
     ClassVisualizationMap::const_iterator cit = mClassVisualizationMap.begin();

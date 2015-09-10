@@ -9,13 +9,6 @@
 
 namespace graph_analysis {
 
-class Vertex;
-class BaseVertex;
-class PortVertex;
-class InputPortVertex;
-class OutputPortVertex;
-class ClusterVertex;
-
 namespace vertex {
     // datatype for vertex type specification
     typedef std::string Type;
@@ -48,9 +41,8 @@ public:
     /// destructor
     ~VertexTypeManager();
 
-    // Register visualization class
-    // takes ownership of graphicsItem
-    void registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered = false);
+    // Register vertex class
+    void registerType(const vertex::Type& type, Vertex::Ptr vertex, bool throwOnAlreadyRegistered = false);
     /**
      * \brief clones a new vertex of a specified type
      * \param type the requested vertex type
@@ -58,7 +50,11 @@ public:
      * \return smart pointer to the newly created vertex instance
      */
     Vertex::Ptr createVertex(const vertex::Type& type, const std::string& label = std::string());
-    /// lists the registered types
+
+    /**
+     * Lists the registered types
+     * \return list of registered types
+     */
     std::set<std::string> getSupportedTypes();
 };
 

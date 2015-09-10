@@ -1,5 +1,5 @@
-#ifndef GRAPH_ANALYSIS_EDGETYPEMANAGER_HPP
-#define GRAPH_ANALYSIS_EDGETYPEMANAGER_HPP
+#ifndef GRAPH_ANALYSIS_EDGE_ITEM_TYPE_MANAGER_HPP
+#define GRAPH_ANALYSIS_EDGE_ITEM_TYPE_MANAGER_HPP
 
 #include <map>
 #include <base/Singleton.hpp>
@@ -23,11 +23,11 @@ class EdgeItem;
 class GraphWidget;
 
 /**
- * \file EdgeTypeManager.hpp
- * \class EdgeTypeManager
+ * \file EdgeItemTypeManager.hpp
+ * \class EdgeItemTypeManager
  * \brief factory for EdgeItem-s: clones different types of EdgeItem instances (i.e. graphical edges)
  */
-class EdgeTypeManager : public base::Singleton<EdgeTypeManager>
+class EdgeItemTypeManager : public base::Singleton<EdgeItemTypeManager>
 {
 public:
     typedef std::map<edge::Type, EdgeItem*> ClassVisualizationMap;
@@ -40,9 +40,9 @@ private:
 
 public:
     /// constructor
-    EdgeTypeManager();
+    EdgeItemTypeManager();
     /// destructor
-    ~EdgeTypeManager();
+    ~EdgeItemTypeManager();
 
     // Register visualization class
     // takes ownership of graphicsItem
@@ -64,4 +64,4 @@ public:
 
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_EDGETYPEMANAGER_HPP
+#endif // GRAPH_ANALYSIS_EDGE_ITEM_TYPE_MANAGER_HPP

@@ -127,11 +127,6 @@ private:
     /// boolean flag: true when extra bottom padding has been already added (preventing the bottom most features from getting graphically represented outside of their node); false otherwise
     bool mHeightAdjusted;
 
-    /// current max width of input ports
-    qreal mMaxInputPortWidth;
-    /// current max width of output ports
-    qreal mMaxOutputPortWidth;
-
     /// current width of ports separator (displacement between the 2 types of ports)
     qreal mSeparator;
 

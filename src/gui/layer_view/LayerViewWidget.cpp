@@ -1,9 +1,11 @@
 #include "LayerViewWidget.hpp"
 
+#include <exception>
 #include <set>
 #include <math.h>
 #include <string>
 #include <sstream>
+
 #include <QDir>
 #include <QTime>
 #include <QMenu>
@@ -14,31 +16,22 @@
 #include <QApplication>
 #include <QInputDialog>
 #include <QSignalMapper>
+
+#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
+#include <base/Time.hpp>
 #include <base/Logging.hpp>
 
-
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/PortVertex.hpp>
-#include <graph_analysis/InputPortVertex.hpp>
-#include <graph_analysis/OutputPortVertex.hpp>
-#include <graph_analysis/ClusterVertex.hpp>
-#include <graph_analysis/PropertyVertex.hpp>
-#include <graph_analysis/OperationVertex.hpp>
-
-#include <graph_analysis/gui/layeritem/Resource.hpp>
-#include <graph_analysis/gui/layeritem/edges/Simple.hpp>
-#include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/filters/RegexFilters.hpp>
-#include <graph_analysis/gui/NodeTypeManager.hpp>
-#include <graph_analysis/gui/EdgeTypeManager.hpp>
 
-#include <exception>
-#include <boost/foreach.hpp>
-#include <base/Time.hpp>
+#include <graph_analysis/gui/layeritem/Resource.hpp>
+#include <graph_analysis/gui/layeritem/edges/Simple.hpp>
+#include <graph_analysis/gui/NodeItemTypeManager.hpp>
+#include <graph_analysis/gui/EdgeItemTypeManager.hpp>
+
 
 using namespace graph_analysis;
 
@@ -47,8 +40,6 @@ namespace gui {
 
 LayerViewWidget::LayerViewWidget(QWidget *parent)
     : GraphWidget(getName(), parent)
-    , mFeatureLayerToggle(true)
-    , mClusterLayerToggle(true)
 {
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
@@ -136,7 +127,7 @@ void LayerViewWidget::updateLayout()
         Vertex::Ptr vertex = nodeIt->current();
 
         // Registering new node items
-        NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex, layeritem::Resource::sType);
+        NodeItem* nodeItem = NodeItemTypeManager::getInstance()->createItem(this, vertex, layeritem::Resource::sType);
         mNodeItemMap[vertex] = nodeItem;
         scene()->addItem(nodeItem);
 
@@ -160,7 +151,7 @@ void LayerViewWidget::updateLayout()
             continue;
         }
 
-        EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
+        EdgeItem* edgeItem = EdgeItemTypeManager::getInstance()->createItem(this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
         mEdgeItemMap[edge] = edgeItem;
 
         scene()->addItem(edgeItem);
@@ -568,39 +559,6 @@ void LayerViewWidget::zoomIn()
 void LayerViewWidget::zoomOut()
 {
     scaleView(1 / qreal(1.13));
-}
-
-void LayerViewWidget::toggleFeatureLayer(bool toggle)
-{
-    updateStatus(std::string("toggling the features layer to ") + (toggle ? "true" : "false" ) + "...");
-    mFeatureLayerToggle = toggle;
-    refresh(false);
-    updateStatus(std::string("Toggled the features layer to ") + (toggle ? "true" : "false" ) + "!", GraphWidgetManager::TIMEOUT);
-}
-
-void LayerViewWidget::toggleClusterLayer(bool toggle)
-{
-    updateStatus(std::string("toggling the clusters layer to ") + (toggle ? "true" : "false" ) + "...");
-    mClusterLayerToggle = toggle;
-    refresh(false);
-    updateStatus(std::string("Toggled the clusters layer to ") + (toggle ? "true" : "false" ) + "!", GraphWidgetManager::TIMEOUT);
-}
-
-inline bool LayerViewWidget::toggledOut(graph_analysis::Vertex::Ptr vertex)
-{
-    bool result =   (!mFeatureLayerToggle && graph_analysis::PortVertex::vertexType() == vertex->getClassName())
-                        ||
-                    (!mFeatureLayerToggle && graph_analysis::InputPortVertex::vertexType() == vertex->getClassName())
-                        ||
-                    (!mFeatureLayerToggle && graph_analysis::OutputPortVertex::vertexType() == vertex->getClassName())
-                        ||
-                    (!mFeatureLayerToggle && graph_analysis::PropertyVertex::vertexType() == vertex->getClassName())
-                        ||
-                    (!mFeatureLayerToggle && graph_analysis::OperationVertex::vertexType() == vertex->getClassName())
-                        ||
-                    (!mClusterLayerToggle && graph_analysis::ClusterVertex::vertexType() == vertex->getClassName())
-                ;
-    return result;
 }
 
 void LayerViewWidget::resetLayoutingGraph()

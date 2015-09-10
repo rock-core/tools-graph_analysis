@@ -1,5 +1,5 @@
-#ifndef GRAPH_ANALYSIS_GUI_NODETYPEMANAGER_HPP
-#define GRAPH_ANALYSIS_GUI_NODETYPEMANAGER_HPP
+#ifndef GRAPH_ANALYSIS_GUI_NODE_ITEM_TYPE_MANAGER_HPP
+#define GRAPH_ANALYSIS_GUI_NODE_ITEM_TYPE_MANAGER_HPP
 
 #include <map>
 #include <base/Singleton.hpp>
@@ -21,11 +21,11 @@ class NodeItem;
 class GraphWidget;
 
 /**
- * \file NodeTypeManager.hpp
- * \class NodeTypeManager
+ * \file NodeItemTypeManager.hpp
+ * \class NodeItemTypeManager
  * \brief factory for NodeItem-s: clones different types of NodeItem instances (i.e. graphical nodes)
  */
-class NodeTypeManager : public base::Singleton<NodeTypeManager>
+class NodeItemTypeManager : public base::Singleton<NodeItemTypeManager>
 {
 public:
     typedef std::map<node::Type, NodeItem*> ClassVisualizationMap;
@@ -38,9 +38,9 @@ private:
 
 public:
     /// constructor
-    NodeTypeManager();
+    NodeItemTypeManager();
     /// destructor
-    ~NodeTypeManager();
+    ~NodeItemTypeManager();
 
     // Register visualization class
     // takes ownership of graphicsItem
@@ -64,4 +64,4 @@ public:
 
 } // end namespace gui
 } // end namespace graph_analysis
-#endif // GRAPH_ANALYSIS_GUI_NODETYPEMANAGER_HPP
+#endif // GRAPH_ANALYSIS_GUI_NODE_ITEM_TYPE_MANAGER_HPP

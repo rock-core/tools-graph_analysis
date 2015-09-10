@@ -1,25 +1,15 @@
 #include "ComponentEditorWidget.hpp"
-#include <graph_analysis/gui/EdgeItem.hpp>
-#include <graph_analysis/gui/NodeItem.hpp>
-#include <graph_analysis/gui/IconManager.hpp>
-#include <graph_analysis/gui/GraphWidgetManager.hpp>
-#include <graph_analysis/gui/WidgetManager.hpp>
-#include <graph_analysis/gui/NodeTypeManager.hpp>
-#include <graph_analysis/gui/EdgeTypeManager.hpp>
-#include <graph_analysis/gui/ActionCommander.hpp>
-#include <graph_analysis/gui/dialogs/SwapFeaturesDialog.hpp>
-#include <graph_analysis/gui/dialogs/RenameFeatureDialog.hpp>
-#include <graph_analysis/gui/dialogs/AddGraphElement.hpp>
-#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
-
 #include <set>
 #include <math.h>
 #include <sstream>
+#include <exception>
+#include <boost/foreach.hpp>
+#include <boost/regex.hpp>
+
 #include <QDir>
 #include <QTime>
 #include <QMenu>
 #include <QLabel>
-#include <sstream>
 #include <QAction>
 #include <QKeyEvent>
 #include <QFileDialog>
@@ -27,27 +17,40 @@
 #include <QApplication>
 #include <QInputDialog>
 #include <QSignalMapper>
-#include <boost/regex.hpp>
+
+#include <base/Time.hpp>
 #include <base/Logging.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/PortVertex.hpp>
-#include <graph_analysis/InputPortVertex.hpp>
-#include <graph_analysis/OutputPortVertex.hpp>
-#include <graph_analysis/ClusterVertex.hpp>
-#include <graph_analysis/PropertyVertex.hpp>
-#include <graph_analysis/OperationVertex.hpp>
-
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/filters/EdgeContextFilter.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
+#include <graph_analysis/EdgeTypeManager.hpp>
+
+#include <graph_analysis/gui/EdgeItem.hpp>
+#include <graph_analysis/gui/NodeItem.hpp>
+#include <graph_analysis/gui/IconManager.hpp>
+#include <graph_analysis/gui/GraphWidgetManager.hpp>
+#include <graph_analysis/gui/WidgetManager.hpp>
+#include <graph_analysis/gui/NodeItemTypeManager.hpp>
+#include <graph_analysis/gui/EdgeItemTypeManager.hpp>
+#include <graph_analysis/gui/ActionCommander.hpp>
+#include <graph_analysis/gui/dialogs/SwapFeaturesDialog.hpp>
+#include <graph_analysis/gui/dialogs/RenameFeatureDialog.hpp>
+#include <graph_analysis/gui/dialogs/AddGraphElement.hpp>
+#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
+#include <graph_analysis/gui/component_editor/Port.hpp>
+#include <graph_analysis/gui/component_editor/InputPort.hpp>
+#include <graph_analysis/gui/component_editor/OutputPort.hpp>
+#include <graph_analysis/gui/component_editor/Cluster.hpp>
+#include <graph_analysis/gui/component_editor/Property.hpp>
+#include <graph_analysis/gui/component_editor/Operation.hpp>
+#include <graph_analysis/gui/component_editor/PortConnection.hpp>
+
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
-
-#include <exception>
-#include <boost/foreach.hpp>
-#include <base/Time.hpp>
 
 // comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
 #define CLEAR_BY_BACKGROUND
@@ -59,11 +62,10 @@ namespace gui {
 
 ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
     : LayerViewWidget(parent)
-    , mVertexFocused(false)
-    , mEdgeFocused(false)
-    , mDragDrop(false)
-    , mFocusedNodeItem(0)
+    , mpLastFocusedNodeItem(0)
 {
+    registerTypes();
+
     // Add seed for force layout
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     mScaleFactor *= 1.69;
@@ -93,85 +95,68 @@ ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
 ComponentEditorWidget::~ComponentEditorWidget()
 {}
 
+void ComponentEditorWidget::registerTypes()
+{
+    {
+        VertexTypeManager* manager = VertexTypeManager::getInstance();
+        manager->registerType(Port::vertexType(), Vertex::Ptr(new Port()));
+        manager->registerType(InputPort::vertexType(),  Vertex::Ptr (new InputPort()));
+        manager->registerType(OutputPort::vertexType(), Vertex::Ptr(new OutputPort()));
+        manager->registerType(Cluster::vertexType(),    Vertex::Ptr(new Cluster()));
+        manager->registerType(Property::vertexType(),   Vertex::Ptr(new Property()));
+        manager->registerType(Operation::vertexType(),  Vertex::Ptr (new Operation()));
+    }
+
+    {
+        EdgeTypeManager* manager = EdgeTypeManager::getInstance();
+        manager->registerType(PortConnection::edgeType(), Edge::Ptr(new PortConnection()));
+    }
+}
+
 void ComponentEditorWidget::showContextMenu(const QPoint& pos)
 {
-    mFocusedNodeItem = getFocusedNodeItem();
+    QPoint position = mapTo(this, pos);
+
+    mpLastFocusedNodeItem = getFocusedNodeItem();
 
     ActionCommander comm(this);
-    QPoint position = mapTo(this, pos);
-    QMenu contextMenu(tr("Context menu"), this);
+    QMenu contextMenu(tr("Context menu"));
 
-    //QAction *actionChangeEdgeLabel = comm.addAction("Rename Edge", SLOT(changeSelectedEdgeLabel()), *(IconManager::getInstance()->getIcon("label")));
-    //QAction *actionRemoveEdge  = comm.addAction("Remove Edge", SLOT(removeSelectedEdge()), *(IconManager::getInstance()->getIcon("remove")));
-    //QAction *actionChangeLabel = comm.addAction("Rename Node", SLOT(changeSelectedVertexLabel()), *(IconManager::getInstance()->getIcon("label")));
-    //QAction *actionAddNode = comm.addAction("Add Node", SLOT(GraphWidget::addVertexDialog()), *(IconManager::getInstance()->getIcon("addNode")));
-    QAction *actionRemoveNode  = comm.addAction("Remove Node", SLOT(removeFocusedVertex()), *(IconManager::getInstance()->getIcon("remove")));
+    QAction *actionAddNode = comm.addAction("Add Node", SLOT(addVertexDialog()), *(IconManager::getInstance()->getIcon("addNode")));
+    QAction *actionEdit = comm.addAction("Edit", SLOT(editElementDialog()), *(IconManager::getInstance()->getIcon("edit_mode_white")));
+    QAction *actionRemoveElement  = comm.addAction("Remove", SLOT(removeElementDialog()), *(IconManager::getInstance()->getIcon("remove")));
     QAction *actionAddFeature     = comm.addAction("Add Feature", SLOT(addFeatureDialog()), *(IconManager::getInstance()->getIcon("addFeature")));
-    //QAction *actionSwapFeatures   = comm.addAction("Swap Features", SLOT(swapFeaturesSelected()), *(IconManager::getInstance()->getIcon("swap")));
-    //QAction *actionRenameFeature  = comm.addAction("Rename a Feature", SLOT(renameFeatureSelected()), *(IconManager::getInstance()->getIcon("featureLabel")));
-    //QAction *actionRemoveFeature  = comm.addAction("Remove a Feature", SLOT(removeFeatureSelected()), *(IconManager::getInstance()->getIcon("remove")));
-    //QAction *actionRemoveFeatures = comm.addAction("Remove Features", SLOT(removeFeaturesSelected()), *(IconManager::getInstance()->getIcon("removeAll")));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle")));
     //QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import")));
     //QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
-    //QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
     QAction *actionLayout = comm.addAction("Layout", SLOT(selectLayoutDialog()), *(IconManager::getInstance()->getIcon("layout")));
-    //QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphWidgetManager());
+    QAction *actionClear  = comm.addAction("Clear", SLOT(clearDialog()), *(IconManager::getInstance()->getIcon("reset")));
 
-    //// (conditionally) adding the actions to the context menu
-    //if(mEdgeSelected)
-    //{
-    //    contextMenu.addAction(actionChangeEdgeLabel);
-    //    contextMenu.addAction(actionRemoveEdge);
-    //}
-    //if(mVertexSelected)
-    //{
-    //    if(mEdgeSelected)
-    //    {
-    //        contextMenu.addSeparator();
-    //    }
-    //    contextMenu.addAction(actionChangeLabel);
-    //contextMenu.addAction(actionAddNode);
-    contextMenu.addAction(actionRemoveNode);
-    contextMenu.addAction(actionAddFeature);
+    contextMenu.addAction(actionAddNode);
+    if(getGraphWidgetManager()->getMode() == GraphWidgetManager::EDIT_MODE)
+    {
+        contextMenu.addAction(actionAddFeature);
+        contextMenu.addAction(actionRemoveElement);
+        contextMenu.addAction(actionEdit);
+        contextMenu.addAction(actionClear);
+        contextMenu.addSeparator();
+    }
 
-    //    contextMenu.addAction(actionSwapFeatures);
-    //    contextMenu.addAction(actionRenameFeature);
-    //    contextMenu.addAction(actionRemoveFeature);
-    //    contextMenu.addAction(actionRemoveFeatures);
-    //}
-    //if(mVertexSelected || mEdgeSelected)
-    //{
-    //    contextMenu.addSeparator();
-    //}
-    //contextMenu.addSeparator();
-    //contextMenu.addAction(actionImport);
-    //contextMenu.addAction(actionExport);
-    //contextMenu.addSeparator();
     contextMenu.addAction(actionRefresh);
-    contextMenu.addAction(actionShuffle);
-    //if(!mpGraph->empty())
-    //{
-    //    contextMenu.addAction(actionReset);
-    //}
     contextMenu.addAction(actionLayout);
-    //contextMenu.addSeparator();
+    contextMenu.addAction(actionShuffle);
+    contextMenu.addSeparator();
 
-    //if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-    //{
-    //    contextMenu.addSeparator();
-    //    contextMenu.addAction(actionReloadPropertyDialog);
-    //}
     contextMenu.exec(mapToGlobal(pos));
 }
 
 void ComponentEditorWidget::addFeatureDialog()
 {
-    if(!mFocusedNodeItem)
+    if(!mpLastFocusedNodeItem)
     {
         LOG_WARN_S << "No current node to add feature on";
-        updateStatus("No current node to add feature on", GraphWidgetManager::TIMEOUT);
+        updateStatus("No current node to add feature on");
         return;
     }
 
@@ -193,231 +178,14 @@ void ComponentEditorWidget::addFeatureDialog()
         Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(graphElementDialog.getType().toStdString(),
                 graphElementDialog.getLabel().toStdString());
 
-        Edge::Ptr edge(new Edge(mFocusedNodeItem->getVertex(), vertex));
+        Edge::Ptr edge(new Edge(mpLastFocusedNodeItem->getVertex(), vertex));
         graph()->addEdge(edge);
         updateStatus("Added feature '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'", GraphWidgetManager::TIMEOUT);
         refresh();
     } else {
-        updateStatus("Adding feature aborted by user", GraphWidgetManager::TIMEOUT);
+        updateStatus("Adding feature aborted by user");
     }
 }
-
-void ComponentEditorWidget::renameFeatureFocused()
-{
-    LOG_WARN_S << "Rename feature focused";
-    //renameFeature(mpFocusedVertex);
-}
-
-void ComponentEditorWidget::renameFeatureSelected()
-{
-    LOG_WARN_S << "Rename feature selected";
-    //renameFeature( getSelectedGra);
-}
-
-//void ComponentEditorWidget::renameFeature(graph_analysis::Vertex::Ptr concernedVertex)
-//{
-//    updateStatus(std::string("renaming a feature in vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
-//    NodeItem *item = mNodeItemMap[concernedVertex];
-//    if(!item)
-//    {
-//        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::renameFeature: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
-//        LOG_ERROR_S << error_msg;
-//        throw std::runtime_error(error_msg);
-//    }
-//    int featureCount = item->getFeatureCount();
-//    if(!featureCount)
-//    {
-//        QMessageBox::critical(this, tr("Cannot Rename a Feature"), tr("The selected vertex had no features!"));
-//        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", GraphWidgetManager::TIMEOUT);
-//        return;
-//    }
-//    RenameFeatureDialog dialog(item);
-//    if(dialog.isValid())
-//    {
-//        std::string newLabel    = dialog.getNewLabel();
-//        std::string strFeatureID   = dialog.getFeatureID();
-//        int featureID;
-//        std::stringstream ss(strFeatureID);
-//        ss >> featureID;
-//        // having identified the feature to be renamed, ordering its re-labeling
-//        item->setFeatureLabel(featureID, newLabel);
-//        // does not forget to refresh the parallel read-only view of this base graph mpGraph (the one in the layers graph widget)
-//        updateStatus(std::string("Renamed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "' to '" + newLabel + "'!", GraphWidgetManager::TIMEOUT);
-//    }
-//    else
-//    {
-//        updateStatus(std::string("Failed to rename a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", GraphWidgetManager::TIMEOUT);
-//    }
-//}
-
-void ComponentEditorWidget::removeFeatureFocused()
-{
-    LOG_WARN_S << "REMOVE FEATURE FOCUSED";
-    //removeFeature(mpFocusedVertex);
-}
-
-void ComponentEditorWidget::removeFeatureSelected()
-{
-    LOG_WARN_S << "REMOVE FEATURE SELECTED";
-    //removeFeature(mpSelectedVertex);
-}
-
-void ComponentEditorWidget::removeFeature(graph_analysis::Vertex::Ptr concernedVertex)
-{
-//    updateStatus(std::string("removing a feature from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
-    NodeItem *item = mNodeItemMap[concernedVertex];
-    if(!item)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::removeFeature: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
-        LOG_ERROR_S << error_msg;
-        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": " + error_msg + "!", GraphWidgetManager::TIMEOUT);
-        throw std::runtime_error(error_msg);
-    }
-    int featureCount = item->getFeatureCount();
-    if(!featureCount)
-    {
-        QMessageBox::critical(this, tr("Cannot Remove a Feature"), tr("The selected vertex had no features!"));
-        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": there are no features!", GraphWidgetManager::TIMEOUT);
-        return;
-    }
-
-//    bool ok;
-//    QStringList features_options;
-//    foreach(NodeItem::VTuple tuple, item->getVertices())
-//    {
-//        graph_analysis::Vertex::Ptr vertex = tuple.second;
-//        std::string option = boost::lexical_cast<std::string>(tuple.first) + ": " + vertex->getLabel();
-//        features_options << tr(option.c_str());
-//    }
-//    QString strFeatureID = QInputDialog::getItem(this, tr("Remove a Feature"),
-//                                         tr("Feature ID:"), features_options,
-//                                         0, false, &ok);
-//    if (ok && !strFeatureID.isEmpty())
-//    {
-//        std::stringstream ss(strFeatureID.toStdString());
-//        int featureID;
-//        ss >> featureID;
-//        // remove conceptual edges
-//        EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(item->getFeature(featureID));
-//        while(edgeIt->next())
-//        {
-//            Edge::Ptr edge = edgeIt->current();
-//            mpGraph->removeEdge(edge);
-//        }
-//        // remove physical edges and their graphics
-//        graph_analysis::Vertex::Ptr cluster = item->getVertex();
-//        edgeIt = mpLayoutingGraph->getEdgeIterator(cluster);
-//        while(edgeIt->next())
-//        {
-//            Edge::Ptr edge = edgeIt->current();
-//            if(mEdgeItemMap.count(edge))
-//            {
-//                EdgeItem *edgeItem = mEdgeItemMap[edge];
-//                if  (
-//                        edgeItem
-//                            &&
-//                        (
-//                            (item == edgeItem->sourceNodeItem() && featureID == edgeItem->getSourcePortID()) ||
-//                            (item == edgeItem->targetNodeItem() && featureID == edgeItem->getTargetPortID())
-//                        )
-//                    )
-//                    {
-//                        mpLayoutingGraph->removeEdge(edge);
-//                        syncEdgeItemMap(edge);
-//                        scene()->removeItem(edgeItem);
-//                    }
-//            }
-//        }
-//        // remove feature graphics
-//        item->removeFeature(featureID);
-//        updateStatus(std::string("Removed the feature of local ID '" + boost::lexical_cast<std::string>(featureID) + "' of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'!", GraphWidgetManager::TIMEOUT);
-//    }
-//    else
-//    {
-//        updateStatus(std::string("Failed to remove a feature of vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + ": aborted by user!", GraphWidgetManager::TIMEOUT);
-//    }
-}
-
-Edge::Ptr ComponentEditorWidget::createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
-{
-    Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
-    // registering new edge
-    mpGraph->addEdge(edge);
-    enableEdge(edge);
-    return edge;
-}
-
-Vertex::Ptr ComponentEditorWidget::createVertex(const std::string& type, const std::string& label)
-{
-    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
-    std::set<std::string>::iterator type_it = types.find(type);
-    if(types.end() == type_it)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::createVertex: Given Vertex Type '") + type + "' is not registered!";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
-    // registering new vertex
-    mpGraph->addVertex(vertex);
-    enableVertex(vertex);
-    return vertex;
-}
-
-Edge::Ptr ComponentEditorWidget::createStandaloneEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label)
-{
-    Edge::Ptr edge(new Edge(sourceNode, targetNode, label));
-    return edge; // without registration!
-}
-
-Vertex::Ptr ComponentEditorWidget::createStandaloneVertex(const std::string& type, const std::string& label)
-{
-    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
-    std::set<std::string>::iterator type_it = types.find(type);
-    if(types.end() == type_it)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::createVertex: Given Vertex Type '") + type + "' is not registered!";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
-    return vertex; // without registration!
-}
-
-void ComponentEditorWidget::removeFocusedEdge()
-{
-    LOG_WARN_S << "REMOVE FOCUSED EDGE";
-    clearEdge(mpFocusedEdge);
-    clearEdgeFocus();
-}
-
-void ComponentEditorWidget::removeSelectedEdge()
-{
-    LOG_WARN_S << "REMOVE EDGE";
-    //clearEdge(mpSelectedEdge);
-}
-
-void ComponentEditorWidget::clearEdge(graph_analysis::Edge::Ptr concernedEdge)
-{
-    updateStatus("Removed edge '");
-}
-
-void ComponentEditorWidget::removeFocusedVertex()
-{
-    mFocusedNodeItem->removeFeatures();
-    graph()->removeVertex( mFocusedNodeItem->getVertex() );
-    refresh();
-}
-
-void ComponentEditorWidget::clearVertex(graph_analysis::Vertex::Ptr concernedVertex)
-{
-    updateStatus("Removed node '");
-}
-
-void ComponentEditorWidget::spawnEdge(const std::string& label) // assumes the concerned edge-creation member fields are properly set already
-{
-}
-
 
 void ComponentEditorWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
@@ -439,16 +207,6 @@ void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
 {
     mpSubGraph->disable(edge);
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
-void ComponentEditorWidget::removeVertex(Vertex::Ptr vertex)
-{
-    mpGraph->removeVertex(vertex);
-}
-
-void ComponentEditorWidget::removeEdge(Edge::Ptr edge)
-{
-    mpGraph->removeEdge(edge);
 }
 
 void ComponentEditorWidget::mouseDoubleClickEvent(QMouseEvent* event)
@@ -485,55 +243,6 @@ void ComponentEditorWidget::mouseReleaseEvent(QMouseEvent *event)
         QGraphicsView::mouseReleaseEvent(event);
     }
 }
-
-void ComponentEditorWidget::updateMoveAround(bool moveAround)
-{
-    WidgetManager::getInstance()->getPropertyDialog()->uncheckDragDrop(moveAround);
-    setDragDrop(!moveAround);
-}
-
-void ComponentEditorWidget::updateDragDrop(bool dragDrop)
-{
-    WidgetManager::getInstance()->getPropertyDialog()->uncheckMoveAround(dragDrop);
-    setDragDrop(dragDrop);
-}
-
-void ComponentEditorWidget::setDragDrop(bool dragDrop)
-{
-    updateStatus(std::string("toggling drag-n-drop mode to ") + (dragDrop ? "true" : "false") + "...");
-    mDragDrop = dragDrop;
-    NodeItemMap::iterator it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != it; ++it)
-    {
-        NodeItem *current = it->second;
-        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
-        {
-            current->setHandlesChildEvents(!mDragDrop);
-            current->setFlag(QGraphicsItem::ItemIsMovable, !mDragDrop);
-        }
-    }
-    updateStatus(std::string("Toggled drag-n-drop mode to ") + (dragDrop ? "true" : "false") + "...", GraphWidgetManager::TIMEOUT);
-}
-
-void ComponentEditorWidget::syncDragDrop()
-{
-    NodeItemMap::iterator it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != it; ++it)
-    {
-        NodeItem *current = it->second;
-        if(graph_analysis::ClusterVertex::vertexType() == current->getVertex()->getClassName())
-        {
-            current->setHandlesChildEvents(!mDragDrop);
-            current->setFlag(QGraphicsItem::ItemIsMovable, !mDragDrop);
-        }
-    }
-}
-
-void ComponentEditorWidget::setDragDrop()
-{}
-
-void ComponentEditorWidget::unsetDragDrop()
-{}
 
 void ComponentEditorWidget::itemMoved()
 {
@@ -748,12 +457,12 @@ void ComponentEditorWidget::scaleView(qreal scaleFactor)
     }
     scale(scaleFactor, scaleFactor);
     std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
+    updateStatus(status_msg);
 }
 
 void ComponentEditorWidget::shuffle()
 {
-    updateStatus("Shuffelling all nodes ...");
+    updateStatus("Shuffeling all nodes ...");
     foreach (QGraphicsItem *item, scene()->items())
     {
         if (qgraphicsitem_cast<NodeItem* >(item))
@@ -761,7 +470,7 @@ void ComponentEditorWidget::shuffle()
             item->setPos(-150 * mScaleFactor + mScaleFactor * (qrand() % 300), -150 * mScaleFactor + mScaleFactor * (qrand() % 300));
         }
     }
-    updateStatus("Done shuffelling all nodes", GraphWidgetManager::TIMEOUT);
+    updateStatus("Done shuffeling all nodes");
 }
 
 void ComponentEditorWidget::zoomIn()
@@ -772,111 +481,6 @@ void ComponentEditorWidget::zoomIn()
 void ComponentEditorWidget::zoomOut()
 {
     scaleView(1 / qreal(1.13));
-}
-
-void ComponentEditorWidget::setVertexFocused(bool focused)
-{
-    mVertexFocused = focused;
-    WidgetManager::getInstance()->getPropertyDialog()->setVertexFocused(focused);
-}
-
-void ComponentEditorWidget::setEdgeFocused(bool focused)
-{
-    mEdgeFocused = focused;
-    WidgetManager::getInstance()->getPropertyDialog()->setEdgeFocused(focused);
-}
-
-void ComponentEditorWidget::clearNodeFocus()
-{
-    if(mVertexFocused)
-    {
-        NodeItem *item = mNodeItemMap[mpFocusedVertex];
-        item->releaseFocus();
-        updateStatus(std::string("Cleared node focus off node '") + mpFocusedVertex->toString() + "'!", GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void ComponentEditorWidget::clearEdgeFocus()
-{
-    if(mEdgeFocused)
-    {
-        EdgeItem *item = mEdgeItemMap[mpFocusedEdge];
-        item->releaseFocus();
-        updateStatus(std::string("Cleared edge focus off edge '") + mpFocusedEdge->toString() + "'!", GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void ComponentEditorWidget::clearFocus()
-{
-    clearNodeFocus();
-    clearEdgeFocus();
-    if(mVertexFocused && mpFocusedEdge)
-    {
-        updateStatus(std::string("Cleared focuses: ")
-                        + "off node '" + mpFocusedVertex->toString()
-                        + "' and off edge '" + mpFocusedEdge->toString() + "'!"
-                        , GraphWidgetManager::TIMEOUT
-                    );
-    }
-}
-
-
-void ComponentEditorWidget::removeFeaturesFocused()
-{
-    LOG_WARN_S << "Remove features focused";
-    //removeFeatures(mpFocusedVertex);
-}
-
-void ComponentEditorWidget::removeFeaturesSelected()
-{
-    LOG_WARN_S << "Remove features selected";
-    //removeFeatures(mpSelectedVertex);
-}
-
-void ComponentEditorWidget::removeFeatures(graph_analysis::Vertex::Ptr concernedVertex)
-{
-    updateStatus(std::string("Removing all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "'...");
-    NodeItem *item = mNodeItemMap[concernedVertex];
-    // error checking on features removal
-    if(!item)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::removeFeatures: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
-        LOG_ERROR_S << error_msg;
-        updateStatus(std::string("Failed to remove all features from vertex '") + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': " + error_msg + "!", GraphWidgetManager::TIMEOUT);
-        throw std::runtime_error(error_msg);
-    }
-
-    int nfeatures = item->getFeatureCount();
-    if(!nfeatures)
-    {
-        QMessageBox::critical(this, tr("No features to remove"), "The cluster is already empty!");
-        updateStatus("Failed to remove all features from vertex '" + concernedVertex->toString() + "' of type '" + concernedVertex->getClassName() + "': there are no features", GraphWidgetManager::TIMEOUT);
-        return;
-    } else
-    {
-        // prompting the user for all features deletion
-        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm complete features-removal"), tr((QString("All features in node '") + QString(concernedVertex->getLabel().c_str()) + QString("' will be deleted! Are you sure you want to continue?")).toAscii()), QMessageBox::Yes | QMessageBox::No);
-
-        graph_analysis::Vertex::Ptr cluster = item->getVertex();
-        EdgeIterator::Ptr edgeIt;
-
-        if(button == QMessageBox::Yes)
-        {
-            item->removeFeatures();
-            //// remove physical edges that are connected with this feature
-            //foreach(items::Feature* feature, item->getFeatures())
-            //{
-            //    edgeIt = mpGraph->getEdgeIterator(feature->getVertex());
-            //    while(edgeIt->next())
-            //    {
-            //        Edge::Ptr edge = edgeIt->current();
-            //        mpGraph->removeEdge(edge);
-            //    }
-            //}
-
-            refresh();
-        }
-    }
 }
 
 void ComponentEditorWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
@@ -907,10 +511,10 @@ void ComponentEditorWidget::updateLayout()
             continue;
         }
 
-        if(graph_analysis::ClusterVertex::vertexType() == vertex->getClassName())
+        if(Cluster::vertexType() == vertex->getClassName())
         {
             // Registering new Cluster node items only
-            NodeItem* nodeItem = NodeTypeManager::getInstance()->createItem(this, vertex);
+            NodeItem* nodeItem = NodeItemTypeManager::getInstance()->createItem(this, vertex);
             mNodeItemMap[vertex] = nodeItem;
             scene()->addItem(nodeItem);
             mpLayoutingGraph->addVertex(vertex);
@@ -925,61 +529,23 @@ void ComponentEditorWidget::updateLayout()
     {
         Edge::Ptr edge = edgeIt->current();
 
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(edge))
-        {
-            LOG_DEBUG_S << "Filtered out an edge of filtering value: " << mpSubGraph->enabled(edge);
-            continue;
-        }
-
-        if(mEdgeItemMap.count(edge))
-        {
-            continue;
-        }
-
         Vertex::Ptr source = edge->getSourceVertex();
         Vertex::Ptr target = edge->getTargetVertex();
 
         std::string sourceClassName = source->getClassName();
         std::string targetClassName = target->getClassName();
 
-        if(graph_analysis::OutputPortVertex::vertexType() == sourceClassName && graph_analysis::InputPortVertex::vertexType() == targetClassName)
+        if(OutputPort::vertexType() == sourceClassName 
+                && InputPort::vertexType() == targetClassName)
         {
             // physical edge - processing deflected until after all features will have been registered
             continue;
-        }
-//        else if (   // disabled Port vertices (only specialized InputPorts/OutputPortsVertex allowed
-//                    (graph_analysis::PortVertex::vertexType() == sourceClassName && graph_analysis::ClusterVertex::vertexType() == targetClassName)
-//                )
-//        {
-//            // semantical edge: links a cluster vertex to one of its features
-//            std::string warn_msg = std::string("graph_analysis::ComponentEditorWidget::updateLayout: found reversed edge from source feature vertex '") +
-//                                        source->toString() + "' of type '" + sourceClassName + "' to target Cluster vertex '" +
-//                                        target->toString() + "' of type '" + targetClassName + "'!";
-//            LOG_WARN_S << warn_msg; // warn. due to cluster being set as target of the semantically valid edge
-//            NodeItem* targetNodeItem = mNodeItemMap[ target ];
-//            if(!targetNodeItem)
-//            {
-//                continue;
-//            }
-//            mFeatureMap[source] = targetNodeItem;
-//            mFeatureIDMap[source] = targetNodeItem->addFeature(source);
-//        }
-        else if (
-                    (
-                        graph_analysis::ClusterVertex::vertexType() == sourceClassName
-                            &&
-                        (
-                            graph_analysis::InputPortVertex::vertexType() == targetClassName
-                                ||
-                            graph_analysis::OutputPortVertex::vertexType() == targetClassName
-                                ||
-                            graph_analysis::PropertyVertex::vertexType() == targetClassName
-                                ||
-                            graph_analysis::OperationVertex::vertexType() == targetClassName
-                        )
-                    )
-                )
+        } else if (Cluster::vertexType() == sourceClassName
+                        && ( InputPort::vertexType() == targetClassName
+                                || OutputPort::vertexType() == targetClassName
+                                || Property::vertexType() == targetClassName
+                                || Operation::vertexType() == targetClassName
+                           ))
         {
             // semantical edge: links a cluster vertex to one of its features
             NodeItem* sourceNodeItem = mNodeItemMap[ source ];
@@ -987,146 +553,29 @@ void ComponentEditorWidget::updateLayout()
             {
                 continue;
             }
-            mFeatureMap[target] = sourceNodeItem;
 
             items::Feature* feature = new items::Feature(target, this);
-            mFeatureIDMap[target] = sourceNodeItem->addFeature(feature);
-        }
-        else
+            sourceNodeItem->addFeature(feature);
+        } else
         {
             //// invalid edge
-            //std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::updateLayout: found invalid edge from source vertex '") +
-            //                            source->toString() + "' of type '" + sourceClassName + "' to target vertex '" +
-            //                            target->toString() + "' of type '" + targetClassName + "'!";
-            //LOG_ERROR_S << error_msg;
-            //throw std::runtime_error(error_msg);
+            std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::updateLayout: found invalid edge from source vertex '") +
+                                        source->toString() + "' of type '" + sourceClassName + "' to target vertex '" +
+                                        target->toString() + "' of type '" + targetClassName + "'!";
+            throw std::runtime_error(error_msg);
         }
     }
 
-//    // re-iterating the edges for rendering the physical ones
-//    edgeIt = mpGraph->getEdgeIterator();
-//    while(edgeIt->next())
-//    {
-//        Edge::Ptr edge = edgeIt->current();
-//
-//        // Check on active filter
-//        if(mFiltered && !mpSubGraph->enabled(edge))
-//        {
-//            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out edge: " << edge->toString();
-//            continue;
-//        }
-//
-//        if(mEdgeItemMap.count(edge))
-//        {
-//            continue;
-//        }
-//
-//        Vertex::Ptr source = edge->getSourceVertex();
-//        Vertex::Ptr target = edge->getTargetVertex();
-//
-//        if(graph_analysis::OutputPortVertex::vertexType() == source->getClassName() && graph_analysis::InputPortVertex::vertexType() == target->getClassName())
-//        {
-//            NodeItem* sourceNodeItem = mFeatureMap[ source ];
-//            NodeItem* targetNodeItem = mFeatureMap[ target ];
-//            // physical edge - processing was deflected until now - i.e. after all features will have been registered
-//            Edge::Ptr default_edge(new Edge(sourceNodeItem->getVertex(), targetNodeItem->getVertex(), edge->getLabel()));
-//            mpLayoutingGraph->addEdge(default_edge);
-//
-//            //EdgeItem* edgeItem = EdgeTypeManager::getInstance()->createItem(this, sourceNodeItem, mFeatureIDMap[source], targetNodeItem, mFeatureIDMap[target], default_edge);
-//            //scene()->addItem(edgeItem);
-//            //mEdgeItemMap[default_edge] = edgeItem;
-//            //mpGVGraph->addEdge(default_edge);
-//            //mEdgeMap[default_edge] = edge;
-//        }
-//    }
-
-    // computing max node height and width for informing GraphViz of max dimensions w.r.t. immediately subsequent layouting
-    NodeItemMap::iterator node_it = mNodeItemMap.begin();
-    for(; mNodeItemMap.end() != node_it; ++node_it)
+    // re-iterating the edges for rendering the physical ones
+    edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
     {
-        QRectF nodeBoundingRect = node_it->second->boundingRect();
-        qreal height = nodeBoundingRect.height();
-        qreal width  = nodeBoundingRect.width();
-        if(mMaxNodeHeight < height)
+        Edge::Ptr edge = edgeIt->current();
+        PortConnection::Ptr connection = boost::dynamic_pointer_cast<PortConnection>(edge);
+        if(connection)
         {
-            height = mMaxNodeHeight;
+            mpLayoutingGraph->addEdge(connection);
         }
-        if(mMaxNodeWidth < width)
-        {
-            mMaxNodeWidth = width;
-        }
-    }
-
-    // the mode is synchronized with the current state in the other layers (i.e. the mode that was active right before graphical graph reloading)
-    //syncDragDrop();
-
-}
-
-void ComponentEditorWidget::swapFeaturesFocused()
-{
-    LOG_WARN_S << "Swap features focused";
-    //swapFeatures(mpFocusedVertex);
-}
-
-void ComponentEditorWidget::swapFeaturesSelected()
-{
-    LOG_WARN_S << "Swap features selected";
-    //swapFeatures(mpSelectedVertex);
-}
-
-void ComponentEditorWidget::swapFeatures(graph_analysis::Vertex::Ptr concernedVertex)
-{
-    updateStatus("swapping features within node '" + concernedVertex->toString() + "' ...");
-    NodeItem *item = mNodeItemMap[concernedVertex];
-    if(!item)
-    {
-        std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::swapFeatures: provided vertex '") + concernedVertex->getLabel() + "' is not registered with the GUI";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    int featureCount = item->getFeatureCount();
-    if(featureCount < 2)
-    {
-        QMessageBox::critical(this, tr("Cannot Swap Features"), tr("The selected vertex did not have enough features!"));
-        updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': this vertex did not have enough features!", GraphWidgetManager::TIMEOUT);
-        return;
-    }
-    dialogs::SwapFeaturesDialog dialog(item);
-    if(dialog.isValid())
-    {
-        std::string strFeature1ID   = dialog.getFeature1ID();
-        std::string strFeature2ID   = dialog.getFeature2ID();
-        int feature1ID;
-        std::stringstream ss1(strFeature1ID);
-        ss1 >> feature1ID;
-        int feature2ID;
-        std::stringstream ss2(strFeature2ID);
-        ss2 >> feature2ID;
-        if(feature1ID - feature2ID)
-        {
-            try
-            {
-                item->swapFeatures(feature1ID, feature2ID);
-            }
-            catch(std::runtime_error e)
-            {
-                LOG_ERROR_S << "graph_analysis::gui::ComponentEditorWidget::swapFeatures: swapping operation failed: " << e.what();
-                QMessageBox::critical(this, tr("Swapping Failed"), QString(e.what()));
-                updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': " + std::string(e.what()) + "!", GraphWidgetManager::TIMEOUT);
-            }
-        }
-        else
-        {
-            QMessageBox::information(this, tr("Swapped Features In-place"), tr("identical features were selected!"));
-        }
-        updateStatus("Swapped features of IDs " + boost::lexical_cast<std::string>(feature1ID) + " and "
-                        + boost::lexical_cast<std::string>(feature2ID) + " within node '" + concernedVertex->toString()
-                        , GraphWidgetManager::TIMEOUT
-                    );
-    }
-    else
-    {
-        updateStatus("Failed to swap features within node '" + concernedVertex->toString() + "': aborted by user!", GraphWidgetManager::TIMEOUT);
     }
 }
 

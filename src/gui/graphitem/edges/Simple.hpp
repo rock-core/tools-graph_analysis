@@ -1,7 +1,6 @@
 #ifndef GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_EDGES_SIMPLE_HPP
 #define GRAPH_ANALYSIS_GRAPHWIDGET_GRAPHITEM_EDGES_SIMPLE_HPP
 
-#include <graph_analysis/PortVertex.hpp>
 #include <graph_analysis/gui/EdgeItem.hpp>
 #include <QPainterPath>
 #include <QColor>
@@ -70,7 +69,7 @@ protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
 
     /// establishes where the edge line segment shall end at one of the extremities (computes intersection with the rectangular boundary of one of the endpoints)
-    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID = PortVertex::INVALID_PORT_ID);
+    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID = -1);// PortVertex::INVALID_PORT_ID);
 
     // virtual methods
     virtual EdgeItem* createNewItem(GraphWidget* graphWidget,

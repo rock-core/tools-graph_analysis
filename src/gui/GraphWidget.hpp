@@ -12,6 +12,8 @@
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 
+#include <base/Logging.hpp>
+
 namespace graph_analysis {
 namespace io {
     class GVGraph;
@@ -42,9 +44,12 @@ namespace gui {
  */
 class GraphWidget : public QGraphicsView
 {
+    Q_OBJECT
+
     friend class GraphWidgetManager;
 
 public:
+
     typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap; // meant to map default edges to their correspondent initial edges in the base graph
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap; // maps conceptual edges to the graphical edges in the scene
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap; // maps conceptual cluster vertices to graphical nodes in the scene
@@ -86,19 +91,9 @@ public:
     virtual void reset(bool keepData = false);
 
     /**
-     * Clear the graph widget and scene
-     */
-    virtual void clear();
-
-    /**
      * Reset the layouting graph, i.e, deletes and reinstanciates it
      */
     virtual void resetLayoutingGraph();
-
-    /**
-     * Prompt user before clearing the graph
-     */
-    void clearWithDialog();
 
     /**
      * Update the current view / filtered subgraph
@@ -125,16 +120,21 @@ public:
 
 
     // SELECT/ DESELECT
-    void setFocusedElement(graph_analysis::GraphElement::Ptr element) { mpFocusedElement = element; }
+    void setFocusedElement(const GraphElement::Ptr& element) { LOG_WARN_S << "Setting focused element to: " << element->toString(); mpFocusedElement = element; assert(mpFocusedElement); }
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
     void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
-    bool isFocused(GraphElement::Ptr element) const { return mpFocusedElement == element; }
+    bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }
 
     NodeItem* getFocusedNodeItem();
 
-    void selectElement(graph_analysis::GraphElement::Ptr element);
-    void unselectElement(graph_analysis::GraphElement::Ptr element);
+    void selectElement(const GraphElement::Ptr& element);
+    void unselectElement(const GraphElement::Ptr& element);
     void clearElementSelection() { mElementSelection.clear(); }
+
+    /**
+     * Clear visualization and scene not(!) the underlying graph
+     */
+    virtual void clearVisualization();
 
     bool isInElementSelection(graph_analysis::GraphElement::Ptr element) { return std::find(mElementSelection.begin(), mElementSelection.end(), element) != mElementSelection.end(); }
     std::vector<graph_analysis::GraphElement::Ptr> getElementSelection() const { return mElementSelection; }
@@ -142,6 +142,10 @@ public:
     // EDIT
     virtual Vertex::Ptr addVertex(const std::string& type, const std::string& label, QPoint* position = 0);
     virtual Edge::Ptr addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
+
+    virtual void removeElement(const GraphElement::Ptr& element);
+    void removeVertex(const Vertex::Ptr& vertex) { mpGraph->removeVertex(vertex); }
+    void removeEdge(const Edge::Ptr& edge) { mpGraph->removeEdge(edge); }
 
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
     virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
@@ -161,10 +165,21 @@ public slots:
     virtual void shuffle() { throw std::runtime_error("graph_analysis::gui::GraphWidget::shuffle is not reimplemented"); }
     virtual void refresh(bool all = true);
 
+    void clearDialog();
+
+
+
     virtual void addVertexDialog(QObject* object = 0);
     void addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
-    void selectLayoutDialog();
 
+    /**
+     * Default implementation triggers a renaming of the element
+     * \param element Element to edit, if NULL used the currently focused element
+     */
+    virtual void editElementDialog(const GraphElement::Ptr& element = GraphElement::Ptr());
+    virtual void removeElementDialog(const GraphElement::Ptr& element = GraphElement::Ptr());
+
+    void selectLayoutDialog();
 protected:
     QString mWidgetName;
 
@@ -187,17 +202,10 @@ protected:
     /// boolean witness of filtering: true when filtering has already been set/initialized; false otherwise
     bool mFiltered;
 
-    // Mapping with data model
-    // Allow mapping of semantically feature vertices to their (cluster) nodes in the scene
-    FeatureMap mFeatureMap;
-    // stores features IDs given their source vertices
-    FeatureIDMap mFeatureIDMap;
     // Allow mapping from graph vertices to nodes in the scene
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
     EdgeItemMap mEdgeItemMap;
-    // Allow mapping from default graph edges (edges not part of the model but used to layou the GUI graph) to their main graph edges correspondents (mainly needed for labels updating)
-    EdgeMap mEdgeMap;
 
     int mTimerId;
     /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees

@@ -75,7 +75,6 @@ public slots:
 
     void removeSelection();
     void renameSelection();
-    void renameElementDialog(GraphElement::Ptr element);
 
     void addFeature();
     void swapFeatures();

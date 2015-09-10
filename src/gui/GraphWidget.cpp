@@ -1,30 +1,16 @@
 #include "GraphWidget.hpp"
-#include "EdgeItem.hpp"
-#include "NodeItem.hpp"
-#include "NodeTypeManager.hpp"
-#include "EdgeTypeManager.hpp"
-#include "ActionCommander.hpp"
-#include "dialogs/AddGraphElement.hpp"
-#include "dialogs/PropertyDialog.hpp"
 
 #include <set>
 #include <math.h>
 #include <sstream>
-#include <QDir>
-#include <QTime>
-#include <QMenu>
-#include <sstream>
-#include <QMenuBar>
-#include <QAction>
-#include <QKeyEvent>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QApplication>
-#include <QInputDialog>
-#include <QSignalMapper>
+#include <vector>
+#include <exception>
+#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
-#include <base/Logging.hpp>
 #include <boost/lexical_cast.hpp>
+
+#include <base/Logging.hpp>
+#include <base/Time.hpp>
 
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
@@ -40,11 +26,28 @@
 #include <graph_analysis/gui/WidgetManager.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
+#include <graph_analysis/EdgeTypeManager.hpp>
 
+#include <QDir>
+#include <QTime>
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
+#include <QKeyEvent>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QApplication>
+#include <QInputDialog>
+#include <QSignalMapper>
 
-#include <exception>
-#include <boost/foreach.hpp>
-#include <base/Time.hpp>
+#include "EdgeItem.hpp"
+#include "NodeItem.hpp"
+#include "NodeItemTypeManager.hpp"
+#include "EdgeItemTypeManager.hpp"
+#include "ActionCommander.hpp"
+#include "dialogs/AddGraphElement.hpp"
+#include "dialogs/PropertyDialog.hpp"
+
 #define DEFAULT_SCALING_FACTOR 2.269
 
 using namespace graph_analysis;
@@ -127,7 +130,7 @@ void GraphWidget::setGraphLayout(const QString& layoutName)
     refresh();
 }
 
-void GraphWidget::clear()
+void GraphWidget::clearVisualization()
 {
     // TO-DO: add filtering clearing?
     if(mpGVGraph)
@@ -138,9 +141,6 @@ void GraphWidget::clear()
 
     mNodeItemMap.clear();
     mEdgeItemMap.clear();
-    mFeatureIDMap.clear();
-    mFeatureMap.clear();
-    mEdgeMap.clear();
     scene()->clear();
 }
 
@@ -149,7 +149,7 @@ void GraphWidget::reset(bool keepData)
     getGraphWidgetManager()->resetGraph(keepData);
 }
 
-void GraphWidget::clearWithDialog()
+void GraphWidget::clearDialog()
 {
     updateStatus(std::string("Clear the graph ..."));
     if(mpGraph->empty())
@@ -163,7 +163,7 @@ void GraphWidget::clearWithDialog()
         switch(button)
         {
             case QMessageBox::Yes:
-                reset();
+                reset(false);
                 updateStatus("Done clearing the graph", GraphWidgetManager::TIMEOUT);
             break;
 
@@ -361,7 +361,7 @@ GraphWidgetManager* GraphWidget::getGraphWidgetManager() const
     return mpGraphWidgetManager;
 }
 
-void GraphWidget::selectElement(graph_analysis::GraphElement::Ptr element)
+void GraphWidget::selectElement(const graph_analysis::GraphElement::Ptr& element)
 {
     std::vector<GraphElement::Ptr>::const_iterator cit = std::find(mElementSelection.begin(),
             mElementSelection.end(), element);
@@ -375,7 +375,7 @@ void GraphWidget::selectElement(graph_analysis::GraphElement::Ptr element)
     }
 }
 
-void GraphWidget::unselectElement(graph_analysis::GraphElement::Ptr element)
+void GraphWidget::unselectElement(const graph_analysis::GraphElement::Ptr& element)
 {
     std::vector<GraphElement::Ptr>::iterator it = std::find(mElementSelection.begin(),
             mElementSelection.end(), element);
@@ -439,35 +439,35 @@ void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& la
 {
     element->setLabel(label);
 
-    Vertex::Ptr vertex;
-    Edge::Ptr edge;
+    //Vertex::Ptr vertex;
+    //Edge::Ptr edge;
 
-    if(vertex = boost::dynamic_pointer_cast<Vertex>(element))
-    {
-        NodeItem* nodeItem = mNodeItemMap[vertex];
-        if(!nodeItem)
-        {
-            std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
-            LOG_ERROR_S << error_msg;
-            throw std::runtime_error(error_msg);
-        }
-        nodeItem->setLabel(label);
-    } else if(edge = boost::dynamic_pointer_cast<Edge>(element))
-    {
-        EdgeItem* edgeItem = mEdgeItemMap[edge];
-        if(!edgeItem)
-        {
-            std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided edge '") + edge->getLabel() + "' is not registered with the GUI";
-            LOG_ERROR_S << error_msg;
-            throw std::runtime_error(error_msg);
-        }
+    //if(vertex = boost::dynamic_pointer_cast<Vertex>(element))
+    //{
+    //    //NodeItem* nodeItem = mNodeItemMap[vertex];
+    //    //if(!nodeItem)
+    //    //{
+    //    //    std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
+    //    //    LOG_ERROR_S << error_msg;
+    //    //    throw std::runtime_error(error_msg);
+    //    //}
+    //    nodeItem->setLabel(label);
+    //} else if(edge = boost::dynamic_pointer_cast<Edge>(element))
+    //{
+    //    EdgeItem* edgeItem = mEdgeItemMap[edge];
+    //    if(!edgeItem)
+    //    {
+    //        std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided edge '") + edge->getLabel() + "' is not registered with the GUI";
+    //        LOG_ERROR_S << error_msg;
+    //        throw std::runtime_error(error_msg);
+    //    }
 
-        edgeItem->setLabel(label);
+    //    edgeItem->setLabel(label);
 
-        //graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edgeItem->getLabel();
-        //edgeLabel->setPlainText(QString(label.c_str()));
-        //edge->adjustLabel();
-    }
+    //    //graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edgeItem->getLabel();
+    //    //edgeLabel->setPlainText(QString(label.c_str()));
+    //    //edge->adjustLabel();
+    //}
 }
 
 // EDIT
@@ -511,7 +511,7 @@ void GraphWidget::addVertexDialog(QObject* object)
 
 Edge::Ptr GraphWidget::addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex)
 {
-    //Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(type, label, sourceVertex, targetVertex);
+    //Edge::Ptr edge = EdgeItemTypeManager::getInstance()->createEdge(type, label, sourceVertex, targetVertex);
     Edge::Ptr edge(new Edge(sourceVertex, targetVertex, label));
     mpGraph->addEdge(edge);
     return edge;
@@ -520,8 +520,15 @@ Edge::Ptr GraphWidget::addEdge(const std::string& type, const std::string& label
 void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex)
 {
     updateStatus("Adding edge ...");
+    std::set<std::string> types = EdgeTypeManager::getInstance()->getSupportedTypes();
+    std::set<std::string>::const_iterator cit = types.begin();
     QStringList typesList;
-    dialogs::AddGraphElement graphElementDialog(typesList);// EdgeTypeManager::getInstance()->getSupportedTypes());
+    for(; cit != types.end(); ++cit)
+    {
+        typesList << cit->c_str();
+    }
+
+    dialogs::AddGraphElement graphElementDialog(typesList);
 
     LOG_DEBUG_S << "Add edge dialog";
 
@@ -571,6 +578,86 @@ void GraphWidget::selectLayoutDialog()
         updateStatus("Changing graph layout aborted by user");
     }
 }
+
+void GraphWidget::editElementDialog(const GraphElement::Ptr& element)
+{
+    GraphElement::Ptr elementToEdit;
+    if(element)
+    {
+        elementToEdit = element;
+    } else if( !(elementToEdit = getFocusedElement()) )
+    {
+        updateStatus("Editing failed -- cannot identify element which shall be edited");
+        return;
+    }
+
+    updateStatus("Editing '" + elementToEdit->toString() + "'");
+    bool ok;
+    QString label = QInputDialog::getText(this, tr(std::string("Change label of '" + elementToEdit->toString() + "'").c_str()),
+                                         tr("New label:"), QLineEdit::Normal,
+                                         QString(elementToEdit->getLabel().c_str()), &ok);
+    if (ok && !label.isEmpty())
+    {
+        std::string old_label = elementToEdit->toString();
+        std::string new_label = label.toStdString();
+
+        renameElement(elementToEdit, new_label);
+        updateStatus("Changed from '" + old_label + "' to '" + new_label + "'");
+        refresh();
+    } else
+    {
+        updateStatus("Editing aborted by user");
+    }
+}
+
+void GraphWidget::removeElement(const GraphElement::Ptr& element)
+{
+    if(element)
+    {
+        Vertex::Ptr vertex = boost::dynamic_pointer_cast<Vertex>(element);
+        if(vertex)
+        {
+            removeVertex(vertex);
+            return;
+        }
+        Edge::Ptr edge = boost::dynamic_pointer_cast<Edge>(element);
+        if(edge)
+        {
+            removeEdge(edge);
+            return;
+        }
+    }
+}
+
+void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
+{
+    GraphElement::Ptr elementToRemove;
+    if(element)
+    {
+        elementToRemove = element;
+    } else if( !(elementToRemove = getFocusedElement()) )
+    {
+        updateStatus("Removal failed -- cannot identify element which shall be edited");
+        return;
+    }
+
+    updateStatus("Removing '" + elementToRemove->toString() + "'");
+    bool ok;
+    QMessageBox msgBox;
+    msgBox.setText(tr(std::string("Remove '" + elementToRemove->toString() + "'?").c_str()) );
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    if(QMessageBox::Ok == msgBox.exec()) 
+    {
+        LOG_DEBUG_S << " REMOVE ACCEPTED";
+        removeElement(elementToRemove);
+        refresh();
+    } else
+    {
+        updateStatus("Removal aborted by user");
+    }
+
+}
+
 
 } // end namespace gui
 } // end namespace graph_analysis

@@ -106,7 +106,8 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
 QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID)
 {
     // retrieves the entire node bounding box when the ID fed is not a valid port ID; retrieves only the respective port bounding box otherwise
-    QPolygonF polygon = (PortVertex::INVALID_PORT_ID == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
+    //QPolygonF polygon = (PortVertex::INVALID_PORT_ID == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
+    QPolygonF polygon = (-1 == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
 
     // QVector<QPointF>::iterator cit = polygon.begin();
     //qDebug("Polygon");
