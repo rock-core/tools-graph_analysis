@@ -420,25 +420,7 @@ void GraphWidgetManager::shuffle()
 void GraphWidgetManager::selectLayout()
 {
     GraphWidget* widget = currentGraphWidget();
-
-    updateStatus(std::string("Selecting graph layout..."));
-
-    bool ok;
-
-    QString desiredLayout = QInputDialog::getItem(widget, tr("Select Layout"),
-                                         tr("select a layout:"), widget->getSupportedLayouts(),
-                                         0, false, &ok);
-    if (ok && !desiredLayout.isEmpty())
-    {
-        widget->refresh(true /*keep all data*/);
-        widget->setGraphLayout(desiredLayout);
-
-        updateStatus("Changed graph layout to '" + desiredLayout.toStdString() + "'", GraphWidgetManager::TIMEOUT);
-    }
-    else
-    {
-        updateStatus("Changing graph layout aborted by user", GraphWidgetManager::TIMEOUT);
-    }
+    widget->selectLayoutDialog();
 }
 
 void GraphWidgetManager::reloadPropertyDialogMainWindow()

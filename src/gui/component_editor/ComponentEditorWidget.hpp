@@ -145,6 +145,8 @@ public slots:
     void zoomOut();
 
     void addFeatureDialog();
+    /// deletes the currently focused node (i.e. previously double clicked node)
+    void removeFocusedVertex();
 
     /// prompts the user for renaming a feature of the currently focused node (i.e. previously double clicked node)
     void renameFeatureFocused();
@@ -158,8 +160,6 @@ public slots:
     void removeFeatureSelected();
     /// prompts the user for removing all features of the currently selected node (i.e. node being hovered over)
     void removeFeaturesSelected();
-    /// deletes the currently focused node (i.e. previously double clicked node)
-    void removeFocusedVertex();
 
     /// prompts the user for swapping two features of the currently focused node (i.e. previously double clicked node)
     void swapFeaturesFocused();
@@ -186,6 +186,8 @@ public slots:
     void setDragDrop();
     /// sets drag-n-drop to false on all levels
     void unsetDragDrop();
+
+    void refresh(bool all = true) { GraphWidget::refresh(all); }
 protected:
     /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget; when status is false, this takes place quiently (no updates are made on the status bar)
     //void refreshLayerViewWidget(bool status = true);

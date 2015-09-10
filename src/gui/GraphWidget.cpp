@@ -552,10 +552,25 @@ NodeItem* GraphWidget::getFocusedNodeItem()
     return NULL;
 }
 
-NodeItem* mFocusedNodeItem;
+void GraphWidget::selectLayoutDialog()
+{
+    updateStatus(std::string("Selecting graph layout..."));
 
+    bool ok;
+    QString desiredLayout = QInputDialog::getItem(this, tr("Select Layout"),
+                                         tr("select a layout:"), getSupportedLayouts(),
+                                         0, false, &ok);
+    if (ok && !desiredLayout.isEmpty())
+    {
+        refresh(true /*keep all data*/);
+        setGraphLayout(desiredLayout);
 
-
+        updateStatus("Changed graph layout to '" + desiredLayout.toStdString() + "'");
+    } else
+    {
+        updateStatus("Changing graph layout aborted by user");
+    }
+}
 
 } // end namespace gui
 } // end namespace graph_analysis

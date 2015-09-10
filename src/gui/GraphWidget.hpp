@@ -141,9 +141,7 @@ public:
 
     // EDIT
     virtual Vertex::Ptr addVertex(const std::string& type, const std::string& label, QPoint* position = 0);
-    void addVertexDialog(QObject* object = 0);
     virtual Edge::Ptr addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
-    void addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
 
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
     virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
@@ -152,14 +150,20 @@ public:
     /// \param time Number of milliseconds the message will be held on screen
     virtual void updateStatus(const std::string& msg, int timeInMS = 10) const;
 
-    virtual void shuffle() { throw std::runtime_error("graph_analysis::gui::GraphWidget::shuffle is not reimplemented"); }
-
     virtual void setGraphLayout(const QString& layoutName);
-    virtual void refresh(bool all = true);
+
     virtual void modeChanged(GraphWidgetManager::Mode mode) {}
 
     virtual QStringList getSupportedLayouts() const;
     void renameElement(GraphElement::Ptr element, const std::string& label);
+
+public slots:
+    virtual void shuffle() { throw std::runtime_error("graph_analysis::gui::GraphWidget::shuffle is not reimplemented"); }
+    virtual void refresh(bool all = true);
+
+    virtual void addVertexDialog(QObject* object = 0);
+    void addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
+    void selectLayoutDialog();
 
 protected:
     QString mWidgetName;
