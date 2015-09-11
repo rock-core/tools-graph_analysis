@@ -4,6 +4,7 @@
 #include <libgexf/edgeiter.h>
 #include <libgexf/filereader.h>
 #include <graph_analysis/VertexTypeManager.hpp>
+#include <graph_analysis/EdgeTypeManager.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -41,10 +42,12 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
     while(edge_it->hasNext())
     {
         libgexf::t_id current = edge_it->next();
+        std::string edgeClass = data.getEdgeAttribute(current, classAttr);
         std::string edgeLabel = data.getEdgeAttribute(current, labelAttr);
         Vertex::Ptr sourceVertex = vertexMap[edge_it->currentSource()]; // NOTE: assumes the .gexf(.xml) file is valid
         Vertex::Ptr targetVertex = vertexMap[edge_it->currentTarget()]; // NOTE: assumes the .gexf(.xml) file is valid
-        graph->addEdge(Edge::Ptr(new Edge(sourceVertex, targetVertex, edgeLabel)));
+        Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel);
+        graph->addEdge(edge);
     }
 }
 

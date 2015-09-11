@@ -55,7 +55,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
 
         digraph.addEdge(edgeId, srcNode, targetNode);
         data.setEdgeLabel(edgeId, edge->toString() );
-        data.setEdgeValue(edgeId, classAttr, edge->toString());
+        data.setEdgeValue(edgeId, classAttr, edge->getClassName());
         data.setEdgeValue(edgeId, labelAttr, edge->getLabel());
     }
 

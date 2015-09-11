@@ -23,6 +23,7 @@
 #include <graph_analysis/io/GraphvizWriter.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
+#include <graph_analysis/gui/dialogs/ExportFile.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -38,28 +39,12 @@ GraphWidgetManager::GraphWidgetManager()
 {
     resetGraph(false);
 
-    // setting up the Reader and WriterMaps
-    io::YamlWriter *yamlWriter = new io::YamlWriter();
-    mWriterMap["yaml"]  = yamlWriter;
-    mWriterMap["yml"]   = yamlWriter;
-    io::YamlReader *yamlReader = new io::YamlReader();
-    mReaderMap["yaml"]  = yamlReader;
-    mReaderMap["yml"]   = yamlReader;
-    io::GexfWriter *gexfWriter = new io::GexfWriter();
-    mWriterMap["gexf"]  = gexfWriter;
-    mWriterMap["xml"]   = gexfWriter;
-    io::GexfReader *gexfReader = new io::GexfReader();
-    mReaderMap["gexf"]  = gexfReader;
-    mReaderMap["xml"]   = gexfReader;
-    io::GraphvizWriter *gvWriter = new io::GraphvizWriter();
-    mWriterMap["dot"]  = gvWriter;
-
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     WidgetManager *widgetManager = WidgetManager::getInstance();
     widgetManager->setGraphWidgetManager(this);
     widgetManager->setMainWindow(mpMainWindow);
     mpMainWindow->setMinimumSize(850, 400);
-    mpTabWidget->setCurrentIndex(0); 
+    mpTabWidget->setCurrentIndex(0);
     mpMainWindow->setCentralWidget(mpTabWidget);
 
     // Handle tab changes
@@ -140,7 +125,7 @@ GraphWidgetManager::GraphWidgetManager()
     //viewMenu->addAction(actionReset);
     viewMenu->addAction(actionSelectLayout);
     viewMenu->addSeparator();
-    
+
     // loading different actions in different menus
     //viewMenu->addAction(actionReloadPropertyDialog);
 
@@ -173,21 +158,7 @@ GraphWidgetManager::GraphWidgetManager()
 }
 
 GraphWidgetManager::~GraphWidgetManager()
-{
-    WriterMap::iterator it_writer = mWriterMap.begin();
-    for(; mWriterMap.end() != it_writer; ++it_writer)
-    {
-        delete it_writer->second;
-        it_writer->second = NULL;
-    }
-
-    ReaderMap::iterator it_reader = mReaderMap.begin();
-    for(; mReaderMap.end() != it_reader; ++it_reader)
-    {
-       delete it_reader->second;
-       it_reader->second = NULL;
-    }
-}
+{}
 
 void GraphWidgetManager::reloadPropertyDialog(void)
 {
@@ -448,138 +419,120 @@ void GraphWidgetManager::importGraph()
 {
     updateStatus("importing graph...");
     QString selectedFilter;
-    QString filename =  QFileDialog::getOpenFileName(currentGraphWidget(), tr("Choose input file"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml)"), &selectedFilter);
+    // Constructing the writer suffix filter
+    io::GraphIO::SuffixMap suffixMap = io::GraphIO::getSuffixMap();
+    io::GraphIO::ReaderMap readerMap = io::GraphIO::getReaderMap();
+    io::GraphIO::ReaderMap::const_iterator rit = readerMap.begin();
+
+    std::stringstream ss;
+    for(;;)
+    {
+        ss << representation::TypeTxt[ rit->first ] << " (";
+        io::GraphIO::SuffixMap::const_iterator sit = suffixMap.begin();
+        for(; sit != suffixMap.end(); ++sit)
+        {
+            if(sit->second == rit->first)
+            {
+                ss << "*." << sit->first << " ";
+            }
+        }
+        ss << ")";
+
+        ++rit;
+        if(rit != readerMap.end())
+        {
+            ss << ";;";
+        } else {
+            break;
+        }
+    }
+    // End constructing the writer suffix filter
+
+    QString filename =  QFileDialog::getOpenFileName(currentGraphWidget(), tr("Choose input file"), QDir::currentPath(), tr(ss.str().c_str()), &selectedFilter);
 
     if (!filename.isEmpty())
     {
-        fromFile(filename, selectedFilter.startsWith("GEXF"));
+        fromFile(filename.toStdString());
         refresh();
-    }
-    else
+    } else
     {
-        updateStatus("Failed to import graph: aborted by user - an empty input filename was provided", GraphWidgetManager::TIMEOUT);
+        updateStatus("Failed to import graph: aborted by user - an empty input filename was provided");
     }
 }
 
 void GraphWidgetManager::exportGraph()
 {
-    updateStatus("exporting graph...");
+    updateStatus("Exporting graph...");
+    if(mpGraph->empty())
+    {
+        QMessageBox::critical(currentGraphWidget(), tr("Graph Export Failed"), "Graph is empty");
+        return;
+    }
+
     QString selectedFilter;
-    QString label =  QFileDialog::getSaveFileName(currentGraphWidget(), tr("Choose Export File"), QDir::currentPath(), tr("GEXF (*.gexf *.xml);;YAML/YML (*.yaml *.yml);;DOT (*.dot)"), &selectedFilter);
 
-    if (!label.isEmpty())
+    // Constructing the writer suffix filter
+    io::GraphIO::SuffixMap suffixMap = io::GraphIO::getSuffixMap();
+    io::GraphIO::WriterMap writerMap = io::GraphIO::getWriterMap();
+    io::GraphIO::WriterMap::const_iterator wit = writerMap.begin();
+
+    std::stringstream ss;
+    for(;;)
     {
-        // removing trailing whitespaces in the filename
-        label = label.trimmed();
-        if(label.contains('.'))
+        ss << representation::TypeTxt[ wit->first ] << " (";
+        io::GraphIO::SuffixMap::const_iterator sit = suffixMap.begin();
+        for(; sit != suffixMap.end(); ++sit)
         {
-            if(label.endsWith(QString(".gexf")) || label.endsWith(QString(".xml")))
+            if(sit->second == wit->first)
             {
-                toXmlFile(label.toStdString());
-            }
-            else if(label.endsWith(QString(".yml")) || label.endsWith(QString(".yaml")))
-            {
-                toYmlFile(label.toStdString());
-            }
-            else if(label.endsWith(QString(".dot")))
-            {
-                toDotFile(label.toStdString());
-            }
-            else
-            {
-                QMessageBox::critical(currentGraphWidget(), tr("Graph Export Failed"), "Unsupported file format for file '" + label + "'");
-                updateStatus("Failed to export graph: to output file '" + label + "': unsupported file format", GraphWidgetManager::TIMEOUT);
-                return;
+                ss << "*." << sit->first << " ";
             }
         }
-        else
+        ss << ")";
+
+        ++wit;
+        if(wit != writerMap.end())
         {
-            if(selectedFilter.startsWith("GEXF"))
-            {
-                toXmlFile(label.toStdString() + ".gexf");
-            }
-            else if(selectedFilter.startsWith("YAML"))
-            {
-                toYmlFile(label.toStdString() + ".yml");
-            }
-            else
-            {
-                toDotFile(label.toStdString() + ".dot");
-            }
+            ss << ";;";
+        } else {
+            break;
         }
-        updateStatus("Exported graph to output file '" + label.toStdString() + "'", GraphWidgetManager::TIMEOUT);
     }
-    else
+    // End constructing the writer suffix filter
+
+    dialogs::ExportFile dialog(ss.str().c_str());
+    if( dialog.exec() == QFileDialog::Accepted)
     {
-        updateStatus("Failed to export graph: aborted by user - an empty output filename was provided", GraphWidgetManager::TIMEOUT);
+        try {
+            io::GraphIO::write(dialog.getFilename().toStdString(), mpGraph, dialog.getTypeName());
+            updateStatus("Exported graph to output file '" + dialog.getFilename().toStdString() + "'");
+        } catch(const std::exception& e)
+        {
+            std::string msg = "Export of graph to '" + dialog.getFilename().toStdString() + "' failed " + e.what();
+            QMessageBox::critical(currentGraphWidget(), tr("Graph Export Failed"), msg.c_str());
+            return;
+        }
+    } else
+    {
+        updateStatus("Exporting graph aborted by user");
     }
 }
 
-void GraphWidgetManager::toYmlFile(const std::string& filename)
-{
-    try
-    {
-        mWriterMap["yaml"]->write(filename, mpGraph);
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidgetManager::toYmlFile: export failed: " << e.what();
-        QMessageBox::critical(currentGraphWidget(), tr("Graph export Failed"), e.what());
-        updateStatus("Yaml Graph export failed: " + std::string(e.what()), GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void GraphWidgetManager::toDotFile(const std::string& filename)
-{
-    try
-    {
-        mWriterMap["dot"]->write(filename, mpGraph);
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidgetManager::toDotFile: export via graphviz failed: " << e.what();
-        QMessageBox::critical(currentGraphWidget(), tr("Graph Export via GraphViz Failed"), e.what());
-        updateStatus("Dot Graph export failed: " + std::string(e.what()), GraphWidgetManager::TIMEOUT);
-    }
-}
-
-void GraphWidgetManager::gvRender(const std::string& filename)
-{
-    currentGraphWidget()->gvRender(filename);
-}
-
-void GraphWidgetManager::toXmlFile(const std::string& filename)
-{
-    try
-    {
-        mWriterMap["gexf"]->write(filename, mpGraph);
-    }
-    catch(const std::runtime_error& e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidgetManager::toXmlFile: export to .gexf failed: " << e.what();
-        QMessageBox::critical(currentGraphWidget(), tr("Graph Export to .gexf Failed"), e.what());
-        updateStatus("Gexf Graph export failed: " + std::string(e.what()), GraphWidgetManager::TIMEOUT);
-    }
-}
-
-int GraphWidgetManager::fromFile(const std::string& filename, const std::string& format)
+void GraphWidgetManager::fromFile(const std::string& filename)
 {
     graph_analysis::BaseGraph::Ptr graph = BaseGraph::getInstance();
-    try
+
+    try {
+        io::GraphIO::read(filename, graph);
+    } catch(const std::exception& e)
     {
-        mReaderMap[format]->read(filename, graph);
-    }
-    catch(const std::runtime_error& e)
-    {
-        LOG_WARN_S << "graph_analysis::gui::GraphWidgetManager::fromFile: graph import failed: " << e.what();
-        QMessageBox::critical(currentGraphWidget(), tr("Graph Import Failed"), e.what());
-        updateStatus("Graph import failed: " + std::string(e.what()), GraphWidgetManager::TIMEOUT);
-        return 1;
+        std::string msg = "Failed to import '" + filename + "': " + e.what();
+        QMessageBox::critical(currentGraphWidget(), tr("Graph Import Failed"), msg.c_str());
+        return;
     }
 
     mpGraph = graph;
     notifyAll();
-    return 0;
 }
 
 void GraphWidgetManager::notifyModeChange(Mode mode)
@@ -600,49 +553,6 @@ void GraphWidgetManager::notifyAll()
         GraphWidget* graphWidget = *it;
         graphWidget->setGraphLayout(mLayout);
         graphWidget->refresh(false);
-    }
-}
-
-void GraphWidgetManager::fromFile(const QString& file, bool prefers_gexf, bool status)
-{
-    int return_code;
-    // removing trailing whitespaces in the filename
-    QString filename(file.trimmed());
-    if(filename.contains('.'))
-    {
-        if(filename.endsWith(QString(".gexf")) || filename.endsWith(QString(".xml")))
-        {
-            return_code = fromFile(filename.toStdString(), "gexf");
-        }
-        else if(filename.endsWith(QString(".yml")) || filename.endsWith(QString(".yaml")))
-        {
-            return_code = fromFile(filename.toStdString(), "yml");
-        }
-        else
-        {
-            QMessageBox::critical(currentGraphWidget(), tr("Graph Import Failed"), "Unsupported file format for file '" + filename + "'");
-            updateStatus("Failed to import graph from file '" + filename.toStdString() + "': unsupported file format", GraphWidgetManager::TIMEOUT);
-            return;
-        }
-    }
-    else
-    {
-        if(prefers_gexf)
-        {
-            return_code = fromFile(filename.toStdString() + ".gexf", "gexf");
-        }
-        else
-        {
-            return_code = fromFile(filename.toStdString() + ".yml", "yml");
-        }
-    }
-
-    if(!return_code)
-    {
-        if(status)
-        {
-            updateStatus("Imported graph from file '" + filename.toStdString() + "'", GraphWidgetManager::TIMEOUT);
-        }
     }
 }
 

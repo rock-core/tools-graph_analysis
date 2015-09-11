@@ -107,37 +107,11 @@ protected:
     void notifyModeChange(Mode mode);
     void notifyAll();
 
-    typedef std::map <std::string, io::Writer*> WriterMap; // maps specific keywords to graph exporters
-    typedef std::map <std::string, io::Reader*> ReaderMap; // maps specific keywords to graph importers
-
-    /// io components
-    /// export
-    WriterMap mWriterMap;
-    /// import
-    ReaderMap mReaderMap;
-
-    /// renders the base graph to custom yml format file 'filename'
-    void toYmlFile(const std::string& filename);
-    /// renders the base graph to DOT file 'filename' via mpGVGraph directly
-    void gvRender (const std::string& filename);
-    /// renders the base graph to DOT file 'filename' via the dot exporter (graph writer)
-    void toDotFile(const std::string& filename);
-    /// renders the base graph to gexf format file 'filename'
-    void toXmlFile(const std::string& filename);
     /**
      * \brief loads base graph from file 'filename' (either from custom yml format, or gexf standard format)
      * \param filename the input file to parse the graph from
-     * \param format the string key to use for reader look-up in the readers map
-     * \return error code: 0 when successful; non-zero if anything went wrong
      */
-    int fromFile(const std::string& filename, const std::string& format);
-    /**
-     * \brief loads base graph from file 'filename' - tries the 2 available formats: the custom yml and the standard gexf
-     * \param file the source filename to parse from
-     * \param prefers_gexf boolean flag telling whether to prefer gexf over custom yml in case the filename has no extension
-     * \param status boolean flag telling whether to update the status bar
-     */
-    void fromFile(const QString& file, bool prefers_gexf = true, bool status = true);
+    void fromFile(const std::string& filename);
 
 
 private:
