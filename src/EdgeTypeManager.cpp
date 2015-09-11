@@ -63,6 +63,15 @@ Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const std::string&
     return clonedEdge;
 }
 
+Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const Vertex::Ptr& source, const Vertex::Ptr& target, const std::string& label)
+{
+    Edge::Ptr clonedEdge = edgeByType(type)->clone();
+    clonedEdge->setLabel(label);
+    clonedEdge->setSourceVertex(source);
+    clonedEdge->setTargetVertex(target);
+    return clonedEdge;
+}
+
 std::set<std::string> EdgeTypeManager::getSupportedTypes()
 {
     return mRegisteredTypes;

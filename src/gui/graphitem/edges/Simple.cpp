@@ -9,12 +9,10 @@ namespace gui {
 namespace graphitem {
 namespace edges {
 
-Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem::id_t sourceNodePortID, NodeItem* targetNode, NodeItem::id_t targetNodePortID, graph_analysis::Edge::Ptr edge)
-    : EdgeItem(graphWidget, sourceNode, targetNode, edge)
+Simple::Simple(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsItem* target, graph_analysis::Edge::Ptr edge)
+    : EdgeItem(graphWidget, source, target, edge)
     , mpLabel(new items::EdgeLabel(edge->toString(), this)) // the use of edge->toString() is a feature; not a bug!
     , mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
-    , mSourceNodePortID(sourceNodePortID)
-    , mTargetNodePortID(targetNodePortID)
     , mFocused(false)
     , mSelected(false)
 {
@@ -29,7 +27,7 @@ void Simple::setLabel(const std::string& label)
 
 void Simple::adjust()
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
     {
         // skipping when one of the endpoints is invalid
         return;
@@ -37,15 +35,16 @@ void Simple::adjust()
 
     prepareGeometryChange();
 
+
     // Compute center of port nodes
-    mSourcePoint = mpSourceNodeItem->mapToScene(mpSourceNodeItem->featureBoundingRect(mSourceNodePortID).center());
-    mTargetPoint = mpTargetNodeItem->mapToScene(mpTargetNodeItem->featureBoundingRect(mTargetNodePortID).center());
+    mSourcePoint = mpSourceItem->scenePos();
+    mTargetPoint = mpTargetItem->scenePos();
 
     // initial complete line
     QLineF line(mSourcePoint, mTargetPoint);
     // adjusting endpoints of the line above
-    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line, mSourceNodePortID);
-    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line, mTargetNodePortID);
+    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceItem, line);
+    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetItem, line);
 
     mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
     adjustLabel();
@@ -58,7 +57,7 @@ void Simple::adjustLabel()
 
 QRectF Simple::boundingRect() const
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
         return QRectF();
 
     qreal penWidth = 1;
@@ -72,13 +71,13 @@ QRectF Simple::boundingRect() const
 
 void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, QWidget*)
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
     {
         return;
     }
 
     // Make sure no edge is drawn when endpoint items collide
-    if( mpSourceNodeItem->collidesWithItem(mpTargetNodeItem) )
+    if( mpSourceItem->collidesWithItem(mpTargetItem) )
     {
         return;
     }
@@ -103,20 +102,9 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     painter->drawPolygon(QPolygonF() << mLine.p2() << destArrowP1 << destArrowP2);
 }
 
-QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID)
+QPointF Simple::getIntersectionPoint(QGraphicsItem* item, const QLineF& line)
 {
-    // retrieves the entire node bounding box when the ID fed is not a valid port ID; retrieves only the respective port bounding box otherwise
-    //QPolygonF polygon = (PortVertex::INVALID_PORT_ID == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
-    QPolygonF polygon = (-1 == portID) ? item->boundingRect() : item->featureBoundingPolygon(portID);
-
-    // QVector<QPointF>::iterator cit = polygon.begin();
-    //qDebug("Polygon");
-    //for(;cit < polygon.end(); ++cit)
-    //{
-    //    QPointF inScene = mpTargetNodeItem->mapToScene(*cit);
-    //    qDebug("local coord: %.3f/%.3f", (cit)->x(), (cit)->y());
-    //    qDebug("scene coord: %.3f/%.3f", inScene.x(), inScene.y());
-    //}
+    QPolygonF polygon = item->boundingRect();
 
     // Intersection with target
     QPointF p1 = item->mapToScene(polygon.first());

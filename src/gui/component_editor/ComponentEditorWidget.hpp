@@ -119,8 +119,11 @@ protected:
     /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);
 
+    items::Feature* getFeature(const GraphElement::Ptr& element);
 private:
     NodeItem* mpLastFocusedNodeItem;
+    // Allow to map a graph element to its feature object (if it is a feature)
+    std::map<GraphElement::Ptr, items::Feature*> mFeatureMap;
 };
 
 } // end namespace gui

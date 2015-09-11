@@ -9,8 +9,8 @@ namespace gui {
 namespace layeritem {
 namespace edges {
 
-Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
-    : EdgeItem(graphWidget, sourceNode, targetNode, edge)
+Simple::Simple(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsItem* target, graph_analysis::Edge::Ptr edge)
+    : EdgeItem(graphWidget, source, target, edge)
     , mpLabel(new items::EdgeLabel(edge->toString(), this))
     , mPenDefault(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin))
     , mPen(mPenDefault) // QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
@@ -20,7 +20,7 @@ Simple::Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetN
 
 void Simple::adjust()
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
     {
         // skipping when one of the endpoints is invalid
         return;
@@ -29,14 +29,14 @@ void Simple::adjust()
     prepareGeometryChange();
 
     // Compute center of nodes
-    mTargetPoint = mpTargetNodeItem->getCenterPosition();
-    mSourcePoint = mpSourceNodeItem->getCenterPosition();
+    mTargetPoint = mpTargetItem->mapToScene(mpTargetItem->boundingRect().center());
+    mSourcePoint = mpSourceItem->mapToScene(mpTargetItem->boundingRect().center());
 
     // initial complete line
     QLineF line(mSourcePoint, mTargetPoint);
     // adjusting endpoints of the line above
-    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceNodeItem, line);
-    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetNodeItem, line);
+    QPointF intersectionPointWithSource = getIntersectionPoint(mpSourceItem, line);
+    QPointF intersectionPointWithTarget = getIntersectionPoint(mpTargetItem, line);
 
     mLine = QLineF(intersectionPointWithSource, intersectionPointWithTarget);
     adjustLabel();
@@ -50,7 +50,7 @@ void Simple::adjustLabel()
 
 QRectF Simple::boundingRect() const
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
         return QRectF();
 
     qreal penWidth = 1;
@@ -64,13 +64,13 @@ QRectF Simple::boundingRect() const
 
 void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, QWidget*)
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
     {
         return;
     }
 
     // Make sure no edge is drawn when endpoint items collide
-    if( mpSourceNodeItem->collidesWithItem(mpTargetNodeItem) )
+    if( mpSourceItem->collidesWithItem(mpTargetItem) )
     {
         return;
     }
@@ -95,7 +95,7 @@ void Simple::paint(QPainter *painter, const QStyleOptionGraphicsItem* options, Q
     painter->drawPolygon(QPolygonF() << mLine.p2() << destArrowP1 << destArrowP2);
 }
 
-QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
+QPointF Simple::getIntersectionPoint(QGraphicsItem* item, const QLineF& line)
 {
     QPolygonF polygon = item->boundingRect();
 
@@ -103,7 +103,7 @@ QPointF Simple::getIntersectionPoint(NodeItem* item, const QLineF& line)
     //LOG_DEBUG_S << "Polygon";
     //for(;cit < polygon.end(); ++cit)
     //{
-    //    QPointF inScene = mpTargetNodeItem->mapToScene(*cit);
+    //    QPointF inScene = mpTargetItem->mapToScene(*cit);
     //    LOG_DEBUG_S << "local coord: " << (cit)->x() << " / " << (cit)->y();
     //    LOG_DEBUG_S << "scene coord: " << inScene.x() << " / " << inScene.y();
     //}

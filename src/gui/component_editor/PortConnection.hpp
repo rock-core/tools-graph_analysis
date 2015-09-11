@@ -24,6 +24,12 @@ public:
     virtual std::string getClassName() const { return edgeType(); }
 
     static std::string edgeType() { return "PortConnection"; }
+
+protected:
+    /**
+     * Create a copy of this vertex
+     */
+    virtual PortConnection* getClone() const { return new PortConnection(*this); }
 };
 
 } // end namespace gui

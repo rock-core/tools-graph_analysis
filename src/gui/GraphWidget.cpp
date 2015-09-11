@@ -511,8 +511,7 @@ void GraphWidget::addVertexDialog(QObject* object)
 
 Edge::Ptr GraphWidget::addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex)
 {
-    //Edge::Ptr edge = EdgeItemTypeManager::getInstance()->createEdge(type, label, sourceVertex, targetVertex);
-    Edge::Ptr edge(new Edge(sourceVertex, targetVertex, label));
+    Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(type, sourceVertex, targetVertex, label);
     mpGraph->addEdge(edge);
     return edge;
 }

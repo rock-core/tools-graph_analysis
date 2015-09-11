@@ -120,7 +120,7 @@ public:
 
 
     // SELECT/ DESELECT
-    void setFocusedElement(const GraphElement::Ptr& element) { LOG_WARN_S << "Setting focused element to: " << element->toString(); mpFocusedElement = element; assert(mpFocusedElement); }
+    void setFocusedElement(const GraphElement::Ptr& element) { mpFocusedElement = element; }
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
     void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
     bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }

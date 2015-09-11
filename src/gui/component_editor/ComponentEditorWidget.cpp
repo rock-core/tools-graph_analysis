@@ -179,6 +179,7 @@ void ComponentEditorWidget::addFeatureDialog()
                 graphElementDialog.getLabel().toStdString());
 
         Edge::Ptr edge(new Edge(mpLastFocusedNodeItem->getVertex(), vertex));
+        edge->setLabel("hasFeature");
         graph()->addEdge(edge);
         updateStatus("Added feature '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'", GraphWidgetManager::TIMEOUT);
         refresh();
@@ -494,6 +495,8 @@ void ComponentEditorWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedE
 
 void ComponentEditorWidget::updateLayout()
 {
+    mFeatureMap.clear();
+
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -556,13 +559,15 @@ void ComponentEditorWidget::updateLayout()
 
             items::Feature* feature = new items::Feature(target, this);
             sourceNodeItem->addFeature(feature);
+            mFeatureMap[target] = feature;
         } else
         {
             //// invalid edge
             std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::updateLayout: found invalid edge from source vertex '") +
                                         source->toString() + "' of type '" + sourceClassName + "' to target vertex '" +
                                         target->toString() + "' of type '" + targetClassName + "'!";
-            throw std::runtime_error(error_msg);
+            LOG_WARN_S << error_msg;
+        //    throw std::runtime_error(error_msg);
         }
     }
 
@@ -574,9 +579,33 @@ void ComponentEditorWidget::updateLayout()
         PortConnection::Ptr connection = boost::dynamic_pointer_cast<PortConnection>(edge);
         if(connection)
         {
+            LOG_DEBUG_S << "Visualizing port connection";
+            items::Feature* sourceFeature = getFeature(edge->getSourceVertex());
+            items::Feature* targetFeature = getFeature(edge->getTargetVertex());
+
+            if(!sourceFeature || !targetFeature)
+            {
+                LOG_WARN_S << "Failed to identify target or source feature from given vertices";
+            }
+
+            EdgeItem* edgeItem = EdgeItemTypeManager::getInstance()->createItem(this, sourceFeature, targetFeature, edge, "default");
+            mEdgeItemMap[edge] = edgeItem;
+            scene()->addItem(edgeItem);
+
             mpLayoutingGraph->addEdge(connection);
         }
     }
+}
+
+items::Feature* ComponentEditorWidget::getFeature(const GraphElement::Ptr& element)
+{
+    std::map<GraphElement::Ptr, items::Feature*>::iterator it = mFeatureMap.find(element);
+    if(it != mFeatureMap.end())
+    {
+        return it->second;
+    }
+
+    return NULL;
 }
 
 } // end namespace gui

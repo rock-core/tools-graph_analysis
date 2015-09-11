@@ -30,7 +30,7 @@ private:
      * \param targetNodePortID target ID
      * \param edge internal conceptual edge
      */
-    Simple(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem::id_t sourceNodePortID, NodeItem* targetNode, NodeItem::id_t targetNodePortID, graph_analysis::Edge::Ptr edge);
+    Simple(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsItem* target, graph_analysis::Edge::Ptr edge);
 public:
     /// empty constructor
     Simple() {}
@@ -40,17 +40,12 @@ public:
     virtual graph_analysis::gui::items::EdgeLabel* getLabel() { return mpLabel; }
     /// destructor
     virtual ~Simple() {}
-    /// getter method for source ID
-    NodeItem::id_t getSourcePortID() { return mSourceNodePortID; }
-    /// getter method for target ID
-    NodeItem::id_t getTargetPortID() { return mTargetNodePortID; }
-    /// adjusts edge segment length and starting and ending points
-    virtual void adjust();
-
     /// willingly gives up scene focus
     void releaseFocus();
     /// adjusts graphical text label position
     void adjustLabel();
+    /// adjusts edge segment length and starting and ending points
+    virtual void adjust();
 
 protected:
     /// claims the scene focus (i.e. when double-clicked; turns red)
@@ -69,23 +64,14 @@ protected:
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
 
     /// establishes where the edge line segment shall end at one of the extremities (computes intersection with the rectangular boundary of one of the endpoints)
-    QPointF getIntersectionPoint(NodeItem* item, const QLineF& line, NodeItem::id_t portID = -1);// PortVertex::INVALID_PORT_ID);
+    QPointF getIntersectionPoint(QGraphicsItem* item, const QLineF& line);
 
     // virtual methods
     virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
-            NodeItem* sourceNode,
-            NodeItem* targetNode,
+            QGraphicsItem* source,
+            QGraphicsItem* target,
             graph_analysis::Edge::Ptr edge) const
-    { throw std::runtime_error("graph_analysis::gui::EdgeItem::createNewItem (@4 args) is not reimplemented"); }
-
-    /// edge cloning/spawning method used by the factory to produce new edges
-    virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
-            NodeItem* sourceNode,
-            NodeItem::id_t sourceNodePortID,
-            NodeItem* targetNode,
-            NodeItem::id_t targetNodePortID,
-            graph_analysis::Edge::Ptr edge) const
-    { return new Simple(graphWidget, sourceNode, sourceNodePortID, targetNode, targetNodePortID, edge); }
+    { return new Simple(graphWidget, source, target, edge); }
 
     /// the graphical text label
     graph_analysis::gui::items::EdgeLabel* mpLabel;
@@ -97,10 +83,6 @@ protected:
     QPolygonF mArrowHead;
     /// edge graphical line segment
     QLineF mLine;
-    /// source ID
-    NodeItem::id_t mSourceNodePortID;
-    /// target ID
-    NodeItem::id_t mTargetNodePortID;
     /// boolean flag: true when current edge is being the focused edge of the scene (has been double clicked); false otherwise
     bool mFocused;
     /// boolean flag: true when current edge is being the seleted edge of the scene (is being hovered on); false otherwise

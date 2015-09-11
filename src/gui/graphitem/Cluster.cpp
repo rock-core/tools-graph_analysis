@@ -132,6 +132,7 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
                 lastFeature = feature;
             }
         }
+
         addLabel = true;
     }
 
@@ -139,9 +140,15 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     painter->setPen(mPen);
     QRectF rect = boundingRect();
 
-    this->update(rect);
+    update(rect);
+
+    itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
     //// triggering edges to update
-    this->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    foreach(items::Feature* feature, mFeatures)
+    {
+        //// triggering edges to update
+        feature->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+    }
 }
 
 void Cluster::mousePressEvent(::QGraphicsSceneMouseEvent* event)

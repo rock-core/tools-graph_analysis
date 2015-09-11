@@ -57,7 +57,7 @@ public:
      * \param type optional type parameter
      * \return smart pointer to the newly created graphical edge instance
      */
-    EdgeItem* createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());
+    EdgeItem* createItem(GraphWidget* graphWidget, QGraphicsItem* sourceNode, QGraphicsItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());
 
     QStringList getSupportedTypes() const;
 };

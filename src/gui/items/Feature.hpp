@@ -64,6 +64,9 @@ public:
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
+    /// qt item changed callback
+    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
+
 protected:
     /// qt hovering ENTER callback
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
@@ -84,8 +87,7 @@ protected:
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
     /// qt dropping callback
     void dropEvent(QGraphicsSceneDragDropEvent *event);
-    /// qt item changed callback
-    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
+
 };
 
 } // end namespace items

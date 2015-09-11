@@ -62,13 +62,13 @@ void NodeItem::calculateForces()
     {
         EdgeItem* edge = it->second;
         QPointF vec;
-        if (edge->sourceNodeItem() == this)
+        if (edge->sourceItem() == this)
         {
-            vec = mapToItem(edge->targetNodeItem(), 0, 0);
+            vec = mapToItem(edge->targetItem(), 0, 0);
         }
         else
         {
-            vec = mapToItem(edge->sourceNodeItem(), 0, 0);
+            vec = mapToItem(edge->sourceItem(), 0, 0);
         }
         xvel -= vec.x() / weight;
         yvel -= vec.y() / weight;

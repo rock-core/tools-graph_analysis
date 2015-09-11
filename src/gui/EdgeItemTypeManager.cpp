@@ -50,10 +50,15 @@ EdgeItem* EdgeItemTypeManager::graphicsItemByType(const edge::Type& type)
     return it->second;
 }
 
-EdgeItem* EdgeItemTypeManager::createItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type)
+EdgeItem* EdgeItemTypeManager::createItem(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsItem* target, graph_analysis::Edge::Ptr edge, const std::string& type)
 {
     // conditionally returning a clone of the default when type is an empty string; using type in the types map otherwise
-    return (type.empty() ? graphicsItemByType(edge->getClassName()) : graphicsItemByType(type))->createNewItem(graphWidget, sourceNode, targetNode, edge);
+    std::string edgeType = type;
+    if(type.empty())
+    {
+        edgeType = edge->getClassName();
+    }
+    return graphicsItemByType(edgeType)->createNewItem(graphWidget, source, target, edge);
 }
 
 QStringList EdgeItemTypeManager::getSupportedTypes() const

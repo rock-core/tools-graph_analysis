@@ -52,7 +52,9 @@ public:
      * \param label the requested edge label
      * \return smart pointer to the newly created edge instance
      */
-    Edge::Ptr createEdge(const edge::Type& type, const std::string& label = std::string());
+    Edge::Ptr createEdge(const edge::Type& type, const std::string& label = "");
+
+    Edge::Ptr createEdge(const edge::Type& type, const Vertex::Ptr& source, const Vertex::Ptr& target, const std::string& label = "");
     /// lists the registered types
     std::set<std::string> getSupportedTypes();
 };

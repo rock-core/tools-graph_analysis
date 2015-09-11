@@ -8,36 +8,36 @@
 namespace graph_analysis {
 namespace gui {
 
-EdgeItem::EdgeItem(GraphWidget* graphWidget, NodeItem* sourceNode, NodeItem* targetNode, graph_analysis::Edge::Ptr edge)
+EdgeItem::EdgeItem(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsItem* target, graph_analysis::Edge::Ptr edge)
     : mpGraphWidget(graphWidget)
-    , mpSourceNodeItem(sourceNode)
-    , mpTargetNodeItem(targetNode)
+    , mpSourceItem(source)
+    , mpTargetItem(target)
     , mpEdge(edge)
     , mArrowSize(10)
 {
+    if(!edge)
+    {
+        throw std::invalid_argument("graph_analysis::gui::EdgeItem: construction failed -- underlying edge is NULL");
+    }
+    if(!source)
+    {
+        throw std::invalid_argument("graph_analysis::gui::EdgeItem: construction failed for '" + edge->toString() + "' -- source graphics item is NULL");
+    } else if(!target) {
+        throw std::invalid_argument("graph_analysis::gui::EdgeItem: construction failed for '" + edge->toString() + "' -- target graphics item is NULL");
+    }
     setAcceptedMouseButtons(0);
     adjust();
 }
 
-NodeItem* EdgeItem::sourceNodeItem() const
-{
-    return mpSourceNodeItem;
-}
-
-NodeItem* EdgeItem::targetNodeItem() const
-{
-    return mpTargetNodeItem;
-}
-
 void EdgeItem::adjust()
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
     {
         // skipping when one of the endpoints is invalid
         return;
     }
 
-    QLineF line(mapFromItem(mpSourceNodeItem, 0, 0), mapFromItem(mpTargetNodeItem, 0, 0));
+    QLineF line(mapFromItem(mpSourceItem, 0, 0), mapFromItem(mpTargetItem, 0, 0));
     qreal length = line.length();
 
     prepareGeometryChange();
@@ -54,7 +54,7 @@ void EdgeItem::adjust()
 
 QRectF EdgeItem::boundingRect() const
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    if (!mpSourceItem || !mpTargetItem)
         return QRectF();
 
     qreal penWidth = 1;
@@ -68,8 +68,12 @@ QRectF EdgeItem::boundingRect() const
 
 void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    if (!mpSourceNodeItem || !mpTargetNodeItem)
+    LOG_DEBUG_S << "PAINTING EDGE ITEM";
+    if (!mpSourceItem || !mpTargetItem)
+    {
+        LOG_DEBUG_S << "PAINTING EDGE ITEM: no source or target item";
         return;
+    }
 
     QLineF line(mSourcePoint, mTargetPoint);
     if (qFuzzyCompare(line.length(), qreal(0.)))
