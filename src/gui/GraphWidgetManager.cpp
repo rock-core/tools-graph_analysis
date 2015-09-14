@@ -85,6 +85,7 @@ GraphWidgetManager::GraphWidgetManager()
     actionConnectMode->setCheckable(true);
     QAction *actionMoveMode = comm.addAction("Move", SLOT(setMoveMode()), *(IconManager::getInstance()->getIcon("move_mode_white")));
     actionMoveMode->setCheckable(true);
+    actionMoveMode->setChecked(true);
 
     actionModeGroup->addAction(actionEditMode);
     actionModeGroup->addAction(actionConnectMode);
@@ -537,7 +538,7 @@ void GraphWidgetManager::fromFile(const std::string& filename)
 
 void GraphWidgetManager::notifyModeChange(Mode mode)
 {
-    std::vector<GraphWidget*>::iterator it = mGraphWidgets.end();
+    std::vector<GraphWidget*>::iterator it = mGraphWidgets.begin();
     for(; it != mGraphWidgets.end(); ++it)
     {
         GraphWidget* graphWidget = *it;

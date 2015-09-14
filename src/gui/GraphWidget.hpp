@@ -156,7 +156,8 @@ public:
 
     virtual void setGraphLayout(const QString& layoutName);
 
-    virtual void modeChanged(GraphWidgetManager::Mode mode) {}
+    virtual void modeChanged(GraphWidgetManager::Mode mode);
+    GraphWidgetManager::Mode getMode() const { return mMode; }
 
     virtual QStringList getSupportedLayouts() const;
     void renameElement(GraphElement::Ptr element, const std::string& label);
@@ -166,8 +167,6 @@ public slots:
     virtual void refresh(bool all = true);
 
     void clearDialog();
-
-
 
     virtual void addVertexDialog(QObject* object = 0);
     void addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
@@ -223,6 +222,7 @@ protected:
     std::vector<graph_analysis::GraphElement::Ptr> mElementSelection;
 
     GraphWidgetManager* mpGraphWidgetManager;
+    GraphWidgetManager::Mode mMode;
 
     void gvRender(const std::string& filename);
 
@@ -230,6 +230,8 @@ protected:
 
     virtual void mousePressEvent(QMouseEvent*);
     virtual void mouseReleaseEvent(QMouseEvent*);
+
+    void setFlagOnAllItems(QGraphicsItem::GraphicsItemFlag flag, bool value = true);
 };
 
 } // end namespace gui

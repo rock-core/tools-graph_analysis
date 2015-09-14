@@ -71,6 +71,7 @@ GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
     , mpEdgeFilter(new filters::EdgeContextFilter())
     , mpGraphWidgetManager(0)
+    , mMode(GraphWidgetManager::MOVE_MODE)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
@@ -264,6 +265,9 @@ void GraphWidget::refresh(bool all)
     reset(true /*keepData*/);
 
     update();
+
+    // Making sure mode applies to all elements
+    modeChanged(mMode);
 }
 
 QStringList GraphWidget::getSupportedLayouts() const
@@ -411,7 +415,7 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
                 unselectElement(element);
             }
 
-            if(getGraphWidgetManager()->getMode() == GraphWidgetManager::CONNECT_MODE)
+            if(getMode() == GraphWidgetManager::CONNECT_MODE)
             {
                 QDrag* drag = new QDrag(this);
                 QMimeData* mimeData = new QMimeData;
@@ -688,7 +692,51 @@ void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
     {
         updateStatus("Removal aborted by user");
     }
+}
 
+void GraphWidget::modeChanged(GraphWidgetManager::Mode mode)
+{
+    switch(mode)
+    {
+        case GraphWidgetManager::CONNECT_MODE:
+            LOG_DEBUG_S << "Mode changed to connect mode";
+            setFlagOnAllItems(QGraphicsItem::ItemIsMovable, false);
+            break;
+        case GraphWidgetManager::EDIT_MODE:
+            LOG_DEBUG_S << "Mode changed to edit mode";
+            setFlagOnAllItems(QGraphicsItem::ItemIsMovable, false);
+            break;
+        case GraphWidgetManager::MOVE_MODE:
+            LOG_DEBUG_S << "Mode changed to move mode";
+            setFlagOnAllItems(QGraphicsItem::ItemIsMovable, true);
+            break;
+        default:
+            throw std::invalid_argument("graph_analysis::gui::GraphWidget: "
+                    "changed into unknown mode");
+    }
+
+    mMode = mode;
+}
+
+void GraphWidget::setFlagOnAllItems(QGraphicsItem::GraphicsItemFlag flag, bool value)
+{
+    {
+        NodeItemMap::iterator it = mNodeItemMap.begin();
+        for(; it != mNodeItemMap.end(); ++it)
+        {
+            NodeItem* nodeItem = it->second;
+            nodeItem->setFlag(flag, value);
+        }
+    }
+
+    {
+        EdgeItemMap::iterator it = mEdgeItemMap.begin();
+        for(; it != mEdgeItemMap.end(); ++it)
+        {
+            EdgeItem* edgeItem = it->second;
+            edgeItem->setFlag(flag, value);
+        }
+    }
 }
 
 
