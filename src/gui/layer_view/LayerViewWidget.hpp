@@ -59,10 +59,6 @@ protected:
     /// enables the provided edge (its corresponding edge scene-item gets filtered out at re-rendering)
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    /// qt mouse press callback
-    void mousePressEvent(QMouseEvent *event);
-    /// qt mouse release callback
-    void mouseReleaseEvent(QMouseEvent *event);
     /// qt keys press callback
     void keyPressEvent(QKeyEvent *event);
     /// qt timer callback

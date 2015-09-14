@@ -327,30 +327,6 @@ void LayerViewWidget::updateLayout()
 //    //}
 }
 
-void LayerViewWidget::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::MidButton)
-    {
-        //Use ScrollHand Drag Mode to enable Panning
-        setDragMode(ScrollHandDrag);
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mousePressEvent(&fake);
-    }
-    else QGraphicsView::mousePressEvent(event);
-}
-
-void LayerViewWidget::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::MidButton)
-    {
-        //Use ScrollHand Drag Mode to end Panning
-        setDragMode(NoDrag);
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mouseReleaseEvent(&fake);
-    }
-    else QGraphicsView::mouseReleaseEvent(event);
-}
-
 void LayerViewWidget::itemMoved()
 {
     if (!mTimerId)

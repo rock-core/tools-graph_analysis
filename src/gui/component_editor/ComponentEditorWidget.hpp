@@ -100,11 +100,6 @@ protected:
     /// updates the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget
     //void updateLayerViewWidget();
 
-    /// qt mouse press callback
-    void mousePressEvent(QMouseEvent* event);
-    /// qt mouse release callback
-    void mouseReleaseEvent(QMouseEvent* event);
-    /// qt mouse double click callback
     void mouseDoubleClickEvent(QMouseEvent* event);
     /// qt keys press callback
     void keyPressEvent(QKeyEvent *event);

@@ -397,42 +397,59 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
         if(!element)
         { 
             clearElementSelection(); 
-            return;
+        } else {
+            // Allow to use SHIFT to create selection group
+            if(event->modifiers() != Qt::ShiftModifier)
+            {
+                clearElementSelection();
+            }
+
+            try {
+                selectElement(element);
+            } catch(const std::runtime_error& e)
+            {
+                unselectElement(element);
+            }
+
+            if(getGraphWidgetManager()->getMode() == GraphWidgetManager::CONNECT_MODE)
+            {
+                QDrag* drag = new QDrag(this);
+                QMimeData* mimeData = new QMimeData;
+
+                // Setting the id of the graph element as mime data
+                std::stringstream ss;
+                ss << element->getId(mpGraph->getId());
+                mimeData->setText(ss.str().c_str());
+                drag->setMimeData(mimeData);
+
+                drag->exec(Qt::CopyAction); // | Qt::MoveAction);
+            }
         }
 
-        // Allow to use SHIFT to create selection group
-        if(event->modifiers() != Qt::ShiftModifier)
-        {
-            clearElementSelection();
-        }
-
-        try {
-            selectElement(element);
-        } catch(const std::runtime_error& e)
-        {
-            unselectElement(element);
-        }
-
-        if(getGraphWidgetManager()->getMode() == GraphWidgetManager::CONNECT_MODE)
-        {
-            QDrag* drag = new QDrag(this);
-            QMimeData* mimeData = new QMimeData;
-
-            // Setting the id of the graph element as mime data
-            std::stringstream ss;
-            ss << element->getId(mpGraph->getId());
-            mimeData->setText(ss.str().c_str());
-            drag->setMimeData(mimeData);
-
-            drag->exec(Qt::CopyAction); // | Qt::MoveAction);
-        }
+        QGraphicsView::mousePressEvent(event);
+    } else if(event->button() == Qt::MidButton)
+    {
+        //Use ScrollHand Drag Mode to enable Panning
+        setDragMode(ScrollHandDrag);
+        // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
+        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
+        QGraphicsView::mousePressEvent(&fake);
+    } else {
+        QGraphicsView::mousePressEvent(event);
     }
-
-
 }
 
-void GraphWidget::mouseReleaseEvent(QMouseEvent*)
+void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+    if(event->button() == Qt::MidButton)
+    {
+        //Use ScrollHand Drag Mode to end Panning
+        setDragMode(NoDrag);
+        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
+        QGraphicsView::mouseReleaseEvent(&fake);
+    }
+
+    QGraphicsView::mouseReleaseEvent(event);
 }
 
 void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& label)
@@ -647,7 +664,6 @@ void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     if(QMessageBox::Ok == msgBox.exec()) 
     {
-        LOG_DEBUG_S << " REMOVE ACCEPTED";
         removeElement(elementToRemove);
         refresh();
     } else

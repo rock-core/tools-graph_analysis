@@ -215,36 +215,6 @@ void ComponentEditorWidget::mouseDoubleClickEvent(QMouseEvent* event)
     QGraphicsView::mouseDoubleClickEvent(event);
 }
 
-void ComponentEditorWidget::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::MidButton)
-    {
-        // Use ScrollHand Drag Mode to enable Panning
-        setDragMode(ScrollHandDrag);
-        // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        GraphWidget::mousePressEvent(&fake); // initiates scroll-button panning
-    } else {
-        GraphWidget::mousePressEvent(event);
-    }
-}
-
-void ComponentEditorWidget::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::MidButton)
-    {
-        // Use ScrollHand Drag Mode to desable Panning
-        setDragMode(NoDrag);
-        // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mouseReleaseEvent(&fake); // terminates scroll-button panning
-    }
-    else
-    {
-        QGraphicsView::mouseReleaseEvent(event);
-    }
-}
-
 void ComponentEditorWidget::itemMoved()
 {
     if (!mTimerId)
@@ -573,6 +543,7 @@ void ComponentEditorWidget::updateLayout()
 
     // re-iterating the edges for rendering the physical ones
     edgeIt = mpGraph->getEdgeIterator();
+    std::vector<Edge::Ptr> markedForRemoval;
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();
@@ -580,21 +551,41 @@ void ComponentEditorWidget::updateLayout()
         if(connection)
         {
             LOG_DEBUG_S << "Visualizing port connection";
-            items::Feature* sourceFeature = getFeature(edge->getSourceVertex());
-            items::Feature* targetFeature = getFeature(edge->getTargetVertex());
+            Vertex::Ptr source = edge->getSourceVertex();
+            Vertex::Ptr target = edge->getTargetVertex();
+            if(!source || !target)
+            {
+                LOG_INFO_S << "Failed to identify target or source feature from given vertices. "
+                    << " Marking edge for removal";
+                markedForRemoval.push_back(edge);
+                continue;
+            }
+
+            items::Feature* sourceFeature = getFeature(source);
+            items::Feature* targetFeature = getFeature(target);
 
             if(!sourceFeature || !targetFeature)
             {
-                LOG_WARN_S << "Failed to identify target or source feature from given vertices";
+                LOG_INFO_S << "Failed to identify target or source feature from given vertices. "
+                    << " Marking edge for removal";
+                markedForRemoval.push_back(edge);
+                continue;
+            } else {
+                EdgeItem* edgeItem = EdgeItemTypeManager::getInstance()->createItem(this, sourceFeature, targetFeature, edge, "default");
+                mEdgeItemMap[edge] = edgeItem;
+                scene()->addItem(edgeItem);
+
+                mpLayoutingGraph->addEdge(connection);
             }
-
-            EdgeItem* edgeItem = EdgeItemTypeManager::getInstance()->createItem(this, sourceFeature, targetFeature, edge, "default");
-            mEdgeItemMap[edge] = edgeItem;
-            scene()->addItem(edgeItem);
-
-            mpLayoutingGraph->addEdge(connection);
         }
     }
+
+    // Cleanup invalid edges if needed
+    while(!markedForRemoval.empty())
+    {
+        mpGraph->removeEdge(markedForRemoval.at(0));
+    }
+
 }
 
 items::Feature* ComponentEditorWidget::getFeature(const GraphElement::Ptr& element)
