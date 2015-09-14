@@ -155,7 +155,7 @@ void GraphWidget::clearDialog()
     if(mpGraph->empty())
     {
         QMessageBox::information(this, tr("Nothing to clear"), "The graph is empty");
-        updateStatus("Done clearing the graph", GraphWidgetManager::TIMEOUT);
+        updateStatus("Done clearing the graph");
     }
     else
     {
@@ -164,11 +164,11 @@ void GraphWidget::clearDialog()
         {
             case QMessageBox::Yes:
                 reset(false);
-                updateStatus("Done clearing the graph", GraphWidgetManager::TIMEOUT);
+                updateStatus("Done clearing the graph");
             break;
 
             default:
-                updateStatus("Clearing the graph aborted by user", GraphWidgetManager::TIMEOUT);
+                updateStatus("Clearing the graph aborted by user");
             break;
         }
     }
@@ -206,7 +206,7 @@ void GraphWidget::updateFilterView()
 
 void GraphWidget::updateLayoutView()
 {
-    resetLayoutingGraph(); 
+    resetLayoutingGraph();
 
     // implemented by GraphWidgets
     // needs to populate the layouting graph as needed
@@ -290,7 +290,7 @@ void GraphWidget::gvRender(const std::string& filename)
     {
         LOG_ERROR_S << "graph_analysis::gui::GraphWidgetManager::toDotFile: export via graphviz failed: " << e.what();
         QMessageBox::critical(this, tr("Graph export via GraphViz failed"), e.what());
-        updateStatus("Dot Graph export failed: " + std::string(e.what()), GraphWidgetManager::TIMEOUT);
+        updateStatus("Dot Graph export failed: " + std::string(e.what()));
     }
 }
 
@@ -329,7 +329,7 @@ void GraphWidget::keyPressEvent(QKeyEvent* event)
             break;
 
             case Qt::Key_O:
-            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  
+            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)
                 getGraphWidgetManager()->importGraph();
                 break;
             case Qt::Key_L:
@@ -395,8 +395,8 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
     {
         GraphElement::Ptr element = getFocusedElement();
         if(!element)
-        { 
-            clearElementSelection(); 
+        {
+            clearElementSelection();
         } else {
             // Allow to use SHIFT to create selection group
             if(event->modifiers() != Qt::ShiftModifier)
@@ -555,7 +555,7 @@ void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVert
         updateStatus("Added edge '" + edge->toString() + "' of type '" + edge->getClassName() + "'",
                 GraphWidgetManager::TIMEOUT);
         refresh();
-    } else 
+    } else
     {
         updateStatus("Adding edge aborted by user", GraphWidgetManager::TIMEOUT);
     }
@@ -680,7 +680,7 @@ void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
     QMessageBox msgBox;
     msgBox.setText(tr(std::string("Remove '" + elementToRemove->toString() + "'?").c_str()) );
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    if(QMessageBox::Ok == msgBox.exec()) 
+    if(QMessageBox::Ok == msgBox.exec())
     {
         removeElement(elementToRemove);
         refresh();
