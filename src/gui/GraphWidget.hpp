@@ -144,8 +144,8 @@ public:
     virtual Edge::Ptr addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
 
     virtual void removeElement(const GraphElement::Ptr& element);
-    void removeVertex(const Vertex::Ptr& vertex) { mpGraph->removeVertex(vertex); }
-    void removeEdge(const Edge::Ptr& edge) { mpGraph->removeEdge(edge); }
+    void removeVertex(const Vertex::Ptr& vertex);
+    void removeEdge(const Edge::Ptr& edge);
 
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
     virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
@@ -230,7 +230,6 @@ protected:
 
     virtual void mousePressEvent(QMouseEvent*);
     virtual void mouseReleaseEvent(QMouseEvent*);
-
 };
 
 } // end namespace gui

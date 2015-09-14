@@ -644,6 +644,24 @@ void GraphWidget::removeElement(const GraphElement::Ptr& element)
         }
     }
 }
+void GraphWidget::removeVertex(const Vertex::Ptr& vertex)
+{
+    // Check if vertex relates to a registered node item
+    NodeItemMap::iterator it = mNodeItemMap.find(vertex);
+    if(it == mNodeItemMap.end())
+    {
+        // not a node item (but a feature) -- so safe to remove edge
+    } else {
+        NodeItem* nodeItem = it->second;
+        nodeItem->removeFeatures();
+    }
+    mpGraph->removeVertex(vertex);
+}
+
+void GraphWidget::removeEdge(const Edge::Ptr& edge)
+{
+    mpGraph->removeEdge(edge);
+}
 
 void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
 {
