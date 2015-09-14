@@ -90,8 +90,6 @@ public:
     /// virtual methods
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::gui::NodeItem::createNewItem is not reimplemented"); }
 
-    virtual QPolygonF featureBoundingPolygon   (id_t)  { throw std::runtime_error("graph_analysis::gui::NodeItem::featureBoundingPolygon is not reimplemented");    }
-    virtual QRectF    featureBoundingRect      (id_t)  { throw std::runtime_error("graph_analysis::gui::NodeItem::featureBoundingRect is not reimplemented");       }
     virtual void setFeatureLabel(id_t, const std::string&) { throw std::runtime_error("graph_analysis::gui::NodeItem::setFeatureLabel is not reimplemented"); }
     virtual void unselect() { throw std::runtime_error("graph_analysis::gui::NodeItem::unselect is not reimplemented"); }
 
@@ -104,13 +102,8 @@ public:
     virtual void removeFeatures();
     virtual items::Feature* getFeature(id_t) const;
 
-    virtual void syncLabel(id_t)             { throw std::runtime_error("graph_analysis::gui::NodeItem::syncLabel is not reimplemented");    }
-    virtual void shiftFeatureUp(id_t)           { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftFeatureUp is not reimplemented");  }
-    virtual void shiftFeatureDown(id_t)         { throw std::runtime_error("graph_analysis::gui::NodeItem::shiftFeatureDown is not reimplemented");}
     virtual void prepareChange()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::prepareChange is not reimplemented");}
     virtual void releaseFocus ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::releaseFocus is not reimplemented"); }
-    virtual void updateWidth(bool active = true)                        { throw std::runtime_error("graph_analysis::gui::NodeItem::updateWidth  is not reimplemented"); }
-    virtual void updateHeight()                       { throw std::runtime_error("graph_analysis::gui::NodeItem::updateHeight is not reimplemented"); }
     virtual void swapFeatures(id_t, id_t)          { throw std::runtime_error("graph_analysis::gui::NodeItem::swapFeatures is not reimplemented");    }
 
     virtual Labels      getLabels()     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabels is not reimplemented");   }
@@ -122,10 +115,20 @@ protected:
 
     virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 
-    /** Check if item or any subitem is underMouse
-     * \return (sub)item that is under the mouse
+    /** Check if any feature of this item is under mouse pointer
+     * When pointer is over multiple feature, it returns the first available.
+     * To avoid this undesired behaviour make sure boundingRect of items do not
+     * overlap
+     * \return feature that is under the mouse
      */
     const items::Feature* getPointedAtFeature() const;
+
+    /**
+     * Since each feature is associated with a vertex it return the
+     * corresponding vertex
+     * \see getPointedAtFeature
+     * \return underlying vertex pointed at
+     */
     Vertex::Ptr getPointedAtVertex() const;
 
     /// underlying graph vertex
