@@ -694,7 +694,6 @@ void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
     }
 
     updateStatus("Removing '" + elementToRemove->toString() + "'");
-    bool ok;
     QMessageBox msgBox;
     msgBox.setText(tr(std::string("Remove '" + elementToRemove->toString() + "'?").c_str()) );
     msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);

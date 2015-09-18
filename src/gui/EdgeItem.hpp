@@ -67,13 +67,6 @@ public:
     virtual void adjustLabel()    { throw std::runtime_error("graph_analysis::gui::EdgeItem::adjustLabel is not reimplemented"); }
 
 protected:
-    /// retrieves the bounding rectangular box around the area occupied by the node in the scene
-    virtual QRectF boundingRect() const;
-    /// qt node painting method - here the node components get placed in the scene
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
-    /// retrieves the path of the bounding rectangular box around the area occupied by the node in the scene
-    virtual QPainterPath shape() const;
-
     /// parent and managing graph widget
     GraphWidget* mpGraphWidget;
     /// source edge-endpoint
@@ -92,6 +85,16 @@ protected:
     qreal mArrowSize;
     /// qt painter path
     QPainterPath mPainterPath;
+
+    /// retrieves the bounding rectangular box around the area occupied by the node in the scene
+    virtual QRectF boundingRect() const;
+    /// qt node painting method - here the node components get placed in the scene
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
+    /// retrieves the path of the bounding rectangular box around the area occupied by the node in the scene
+    virtual QPainterPath shape() const;
+
+    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+
 };
 
 } // end namespace gui

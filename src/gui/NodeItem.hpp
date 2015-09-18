@@ -34,7 +34,7 @@ class QGraphicsSceneMouseEvent;
 class NodeItem : public QGraphicsItemGroup, public VertexGetter
 {
 public:
-    typedef long long id_t; // counter datatype for attributing ID-s to features in the case of implementing cluster node items
+    typedef size_t id_t; // counter datatype for attributing ID-s to features in the case of implementing cluster node items
     typedef std::map<id_t, items::Label*> Labels; // map of features labels in a cluster node
     typedef std::map<id_t, items::Feature*> Features; // map of features 
     typedef std::pair<id_t, items::Label*> Tuple; // item of a map of features labels in a cluster node
@@ -110,6 +110,16 @@ public:
     virtual Vertices    getVertices()   { throw std::runtime_error("graph_analysis::gui::NodeItem::getVertices is not reimplemented"); }
 
 protected:
+    /// underlying graph vertex
+    graph_analysis::Vertex::Ptr mpVertex;
+
+    /// Associated features
+    std::vector<items::Feature*> mFeatures;
+
+    /// target position (updated by the force field algorithm)
+    QPointF mNewPos;
+    /// parent managing graph widget
+    GraphWidget* mpGraphWidget;
     /// qt item change callback
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
@@ -132,16 +142,6 @@ protected:
     Vertex::Ptr getPointedAtVertex() const;
 
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
-    /// underlying graph vertex
-    graph_analysis::Vertex::Ptr mpVertex;
-
-    /// Associated features
-    std::vector<items::Feature*> mFeatures;
-
-    /// target position (updated by the force field algorithm)
-    QPointF mNewPos;
-    /// parent managing graph widget
-    GraphWidget* mpGraphWidget;
 };
 
 } // end namespace gui

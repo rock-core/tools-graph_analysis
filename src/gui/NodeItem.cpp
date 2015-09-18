@@ -193,7 +193,7 @@ NodeItem::id_t NodeItem::addFeature(items::Feature* feature)
     }
 }
 
-void NodeItem::removeFeature(id_t pos)
+void NodeItem::removeFeature(NodeItem::id_t pos)
 {
     if(mFeatures.size() > pos)
     {
