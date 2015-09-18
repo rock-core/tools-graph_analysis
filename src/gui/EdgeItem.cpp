@@ -4,6 +4,7 @@
 #include <math.h>
 #include <QPainter>
 #include <base/Logging.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -106,6 +107,12 @@ QPainterPath EdgeItem::shape() const
 {
     return mPainterPath;
     return ::QGraphicsItem::shape();
+}
+
+void EdgeItem::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+{
+    // Set the current edge as focused element
+    mpGraphWidget->setFocusedElement(mpEdge);
 }
 
 } // end namespace gui

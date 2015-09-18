@@ -131,6 +131,7 @@ protected:
      */
     Vertex::Ptr getPointedAtVertex() const;
 
+    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
     /// underlying graph vertex
     graph_analysis::Vertex::Ptr mpVertex;
 

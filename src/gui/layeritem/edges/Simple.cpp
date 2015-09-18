@@ -135,16 +135,12 @@ QPointF Simple::getIntersectionPoint(QGraphicsItem* item, const QLineF& line)
 void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    LOG_DEBUG_S << "Hover ENTER event for " << mpEdge->toString();
-    mpGraphWidget->setFocusedElement(mpEdge);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
 void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     mPen = mPenDefault;
-    LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
-    mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

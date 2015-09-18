@@ -138,7 +138,6 @@ void Simple::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
     }
     mSelected = true;
     LOG_DEBUG_S << "Hover ENTER event for " << mpEdge->toString();
-    mpGraphWidget->setFocusedElement(mpEdge);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -150,17 +149,14 @@ void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     }
     mSelected = false;
     LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
-    mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
 void Simple::grabFocus()
 {
-    mpGraphWidget->clearFocus();
     mPen = QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     update();
     mFocused = true;
-    mpGraphWidget->setFocusedElement(mpEdge);
 }
 
 void Simple::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
@@ -174,7 +170,6 @@ void Simple::releaseFocus()
     mPen = mSelected ? QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin) : mPenDefault;
     update();
     mFocused = false;
-    mpGraphWidget->clearFocus();
 }
 
 } // end namespace edges

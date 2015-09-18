@@ -219,5 +219,11 @@ items::Feature* NodeItem::getFeature(NodeItem::id_t pos) const
     return mFeatures.at(pos);
 }
 
+void NodeItem::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+{
+    // Set the underlaying vertex as focused element
+    mpGraphWidget->setFocusedElement(mpVertex);
+}
+
 } // end namespace gui
 } // end namespace graph_analysis

@@ -120,12 +120,13 @@ public:
 
 
     // SELECT/ DESELECT
-    void setFocusedElement(const GraphElement::Ptr& element) { mpFocusedElement = element; }
+    void setFocusedElement(const GraphElement::Ptr& element) { LOG_WARN_S << "SET FOCUS ON: " << element->toString(); mpFocusedElement = element; }
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
     void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
     bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }
 
     NodeItem* getFocusedNodeItem();
+    EdgeItem* getFocusedEdgeItem();
 
     void selectElement(const GraphElement::Ptr& element);
     void unselectElement(const GraphElement::Ptr& element);

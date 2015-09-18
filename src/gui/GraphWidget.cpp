@@ -579,6 +579,20 @@ NodeItem* GraphWidget::getFocusedNodeItem()
     return NULL;
 }
 
+EdgeItem* GraphWidget::getFocusedEdgeItem()
+{
+    EdgeItemMap::iterator cit = mEdgeItemMap.begin();
+    for(; cit != mEdgeItemMap.end(); ++cit)
+    {
+        EdgeItem* edgeItem = cit->second;
+        if(edgeItem->isUnderMouse())
+        {
+            return edgeItem;
+        }
+    }
+    return NULL;
+}
+
 void GraphWidget::selectLayoutDialog()
 {
     updateStatus(std::string("Selecting graph layout..."));
@@ -675,7 +689,7 @@ void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
         elementToRemove = element;
     } else if( !(elementToRemove = getFocusedElement()) )
     {
-        updateStatus("Removal failed -- cannot identify element which shall be edited");
+        updateStatus("Removal failed -- cannot identify element which shall be removed");
         return;
     }
 

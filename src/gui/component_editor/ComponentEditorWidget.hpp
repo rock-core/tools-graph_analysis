@@ -73,9 +73,6 @@ public:
     /// respawns all graphical elements by the underlying base graph
     void itemMoved();
 
-    /// forcefully focuses out of any edge and/or node that might be currently focused on
-    void clearFocus();
-
     /// synchronizes out the given edge from mEdgeItemMap (i.e. deletes the edge)
     void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
 
