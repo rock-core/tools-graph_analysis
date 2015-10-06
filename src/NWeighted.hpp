@@ -21,6 +21,7 @@ class NWeighted : public GraphElementType
 {
 public:
     typedef boost::shared_ptr< NWeighted > Ptr;
+    typedef T value_t;
 
     /**
      * Default constructor for NWeighted to support single weight initialization
