@@ -16,6 +16,11 @@ namespace vertex {
 
 /**
  * \brief Factory for Vertex subclasses
+ * \details VertexTypeManager allows to register vertex classes by type 
+ * - which is a given string. When loading a serialized graph via GraphIO::read
+ * the VertexTypeManager allows to instanciate vertices corresponding to the
+ * given class type -- which has to match the type string.
+ * Instanciation is done via cloning the corresponding vertex instance.
  */
 class VertexTypeManager : public base::Singleton<VertexTypeManager>
 {

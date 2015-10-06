@@ -18,6 +18,11 @@ namespace edge {
 
 /**
  * \brief Factory for Edge subclasses
+ * \details EdgeTypeManager allows to register edge classes by type 
+ * - which is a given string. When loading a serialized graph via GraphIO::read
+ * the EdgeTypeManager allows to instanciate edges corresponding to the
+ * given class type -- which has to match the type string.
+ * Instanciation is done via cloning the corresponding edge instance.
  */
 class EdgeTypeManager : public base::Singleton<EdgeTypeManager>
 {
