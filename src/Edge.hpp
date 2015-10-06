@@ -70,16 +70,6 @@ public:
      */
     static bool areMeeting(Edge::Ptr e0, Edge::Ptr e1);
 
-    /**
-     * Set edge label
-     */
-    void setLabel(const std::string& label) { mLabel = label; }
-
-    /**
-     * Get label
-     */
-    std::string getLabel() const { return mLabel; }
-
 protected:
     /**
      * Get instance of an edge

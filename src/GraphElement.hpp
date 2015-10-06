@@ -31,12 +31,12 @@ public:
     /**
      * Set a label
      */
-    void setLabel(const std::string& label) { mLabel = label; }
+    virtual void setLabel(const std::string& label) { mLabel = label; }
 
     /**
      * Get label
      */
-    const std::string& getLabel() const { return mLabel; }
+    virtual const std::string& getLabel() const { return mLabel; }
 
     // Get class name
     // \return class name
