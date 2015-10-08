@@ -556,7 +556,7 @@ void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVert
     if(graphElementDialog.result() == QDialog::Accepted)
     {
         Edge::Ptr edge = addEdge(graphElementDialog.getType().toStdString(), graphElementDialog.getLabel().toStdString(), sourceVertex, targetVertex);
-        updateStatus("Added edge '" + edge->toString() + "' of type '" + edge->getClassName() + "'",
+        updateStatus("Added edge '" + edge->toString() + "' of type '" + edge->getClassName() + "' with label: " + graphElementDialog.getLabel().toStdString(),
                 GraphWidgetManager::TIMEOUT);
         refresh();
     } else
