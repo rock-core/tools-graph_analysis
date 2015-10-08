@@ -9,7 +9,6 @@
 #include <graph_analysis/DirectedGraphInterface.hpp>
 #include <graph_analysis/lemon/DirectedSubGraph.hpp>
 
-
 namespace graph_analysis {
 namespace lemon {
 
@@ -17,7 +16,7 @@ namespace lemon {
  * \class DirectedGraph
  * \brief Directed graph implementation based on lemon library
  */
-class DirectedGraph : public TypedGraph< ::lemon::ListDigraph >, public graph_analysis::DirectedGraphInterface
+class DirectedGraph : public TypedGraph< ::lemon::ListDigraph, graph_analysis::DirectedGraphInterface >
 {
 public:
     typedef boost::shared_ptr<DirectedGraph> Ptr;

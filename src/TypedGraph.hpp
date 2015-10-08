@@ -5,12 +5,12 @@
 
 namespace graph_analysis {
 
-template<typename T>
-class TypedGraph : public BaseGraph
+template<typename T, typename G = BaseGraph>
+class TypedGraph : public G
 {
 public:
-    TypedGraph(ImplementationType type)
-        : BaseGraph(type)
+    TypedGraph(BaseGraph::ImplementationType type)
+        : G(type)
     {}
 
     virtual ~TypedGraph() {};

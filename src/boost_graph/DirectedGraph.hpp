@@ -36,7 +36,7 @@ typedef std::pair<EdgeIterator, EdgeIterator> EdgeRange;
 typedef boost::graph_traits<AdjacencyGraph>::adjacency_iterator AdjacencyIterator;
 typedef std::pair<AdjacencyIterator, AdjacencyIterator> AdjacencyRange;
 
-class DirectedGraph : public TypedGraph< AdjacencyGraph >
+class DirectedGraph : public TypedGraph< AdjacencyGraph, graph_analysis::DirectedGraphInterface>
 {
     friend class OutArcIterator<DirectedGraph>;
     friend class InArcIterator<DirectedGraph>;
@@ -99,8 +99,8 @@ public:
      */
     EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
 
-    //graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex);
-    //graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex);
+    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
+    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
 
     /**
      * Identifies the connected components

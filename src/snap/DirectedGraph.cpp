@@ -5,7 +5,7 @@ namespace graph_analysis {
 namespace snap {
 
 DirectedGraph::DirectedGraph()
-    : TypedGraph<SnapDigraph>(BaseGraph::SNAP_DIRECTED_GRAPH)
+    : TypedGraph<SnapDigraph, DirectedGraphInterface>(BaseGraph::SNAP_DIRECTED_GRAPH)
 {
 }
 

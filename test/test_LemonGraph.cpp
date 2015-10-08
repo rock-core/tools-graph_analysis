@@ -19,6 +19,7 @@ BOOST_AUTO_TEST_CASE(layouting)
 {
 //    BOOST_REQUIRE_MESSAGE(true, "Now Testing layouting issues with Lemon Graphs: " << "started");
     std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
+    BOOST_REQUIRE_MESSAGE(false, "ACTUALLY THIS TEST CASE IS BROKEN -- FIX THE TEST");
     BOOST_REQUIRE_MESSAGE(types.end() != types.find("cluster"), "lemon_graph Testing | layouting: testing type 'cluster' is registered");
 
     graph_analysis::BaseGraph::Ptr mpLayoutingGraph = BaseGraph::Ptr( new gl::DirectedGraph() );
