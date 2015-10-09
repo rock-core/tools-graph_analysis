@@ -62,19 +62,19 @@ public:
      * \brief Add a vertex
      * \return the created vertex
      */
-    virtual GraphElementId addVertex(Vertex::Ptr vertex);
+    virtual GraphElementId addVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Add an edge
      * \return the created edge
      */
-    GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
+    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
 
     /**
      * Translate between wrapper and native formats
      */
-    graph_t::Node getNode(Vertex::Ptr vertex) const;
-    graph_t::Arc getArc(Edge::Ptr edge) const;
+    graph_t::Node getNode(const Vertex::Ptr& vertex) const;
+    graph_t::Arc getArc(const Edge::Ptr& edge) const;
 
     Vertex::Ptr getVertex(graph_t::Node node) const;
     Edge::Ptr getEdge(graph_t::Arc arc) const;
@@ -86,7 +86,7 @@ public:
      * \brief Get the source vertex for this edge
      * \return Pointer to the vertex data
      */
-    Vertex::Ptr getSourceVertex(Edge::Ptr e) const;
+    Vertex::Ptr getSourceVertex(const Edge::Ptr& e) const;
 
     /**
      * \brief Get the target vertex for this edge
@@ -94,8 +94,8 @@ public:
      */
     Vertex::Ptr getTargetVertex(const Edge::Ptr& e) const;
 
-    void removeVertex(Vertex::Ptr vertex);
-    void removeEdge(Edge::Ptr edge);
+    void removeVertex(const Vertex::Ptr& vertex);
+    void removeEdge(const Edge::Ptr& edge);
 
     DirectedGraph(const DirectedGraph& other);
 
@@ -117,10 +117,10 @@ public:
      */
     EdgeIterator::Ptr getEdgeIterator() const;
 
-    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
+    EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const;
 
-    EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const;
-    EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const;
+    EdgeIterator::Ptr getOutEdgeIterator(const Vertex::Ptr& vertex) const;
+    EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const;
 
     /**
      * Identifies the connected components
@@ -136,7 +136,7 @@ protected:
      * Get the subgraph -- by default all vertices and edges of the
      * base graph are available (enabled)
      */
-    SubGraph::Ptr createSubGraph(BaseGraph::Ptr graph) const;
+    SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& graph) const;
 };
 
 } // end namespace lemon

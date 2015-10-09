@@ -23,7 +23,7 @@ DirectedGraph::DirectedGraph(const DirectedGraph& other)
 DirectedGraph::~DirectedGraph()
 {}
 
-GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
+GraphElementId DirectedGraph::addVertex(const Vertex::Ptr& vertex)
 {
     BaseGraph::addVertex(vertex);
 
@@ -35,7 +35,7 @@ GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
     return nodeId;
 }
 
-GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
+GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
     graph_t::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
     graph_t::Node targetNode = mGraph.nodeFromId( targetVertexId );
@@ -48,12 +48,12 @@ GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sou
     return arcId;
 }
 
-DirectedGraph::graph_t::Node DirectedGraph::getNode(Vertex::Ptr vertex) const
+DirectedGraph::graph_t::Node DirectedGraph::getNode(const Vertex::Ptr& vertex) const
 {
     return mGraph.nodeFromId(vertex->getId(this->getId()));
 }
 
-DirectedGraph::graph_t::Arc DirectedGraph::getArc(Edge::Ptr edge) const
+DirectedGraph::graph_t::Arc DirectedGraph::getArc(const Edge::Ptr& edge) const
 {
     return mGraph.arcFromId(edge->getId(this->getId()));
 }
@@ -78,7 +78,7 @@ Edge::Ptr DirectedGraph::getEdge(GraphElementId id) const
     return mEdgeMap[ mGraph.arcFromId(id) ];
 }
 
-Vertex::Ptr DirectedGraph::getSourceVertex(Edge::Ptr e) const
+Vertex::Ptr DirectedGraph::getSourceVertex(const Edge::Ptr& e) const
 {
     GraphElementId edgeId = getEdgeId(e);
     return mVertexMap[ mGraph.source( mGraph.arcFromId(edgeId)) ];
@@ -90,7 +90,7 @@ Vertex::Ptr DirectedGraph::getTargetVertex(const Edge::Ptr& e) const
     return mVertexMap[ mGraph.target( mGraph.arcFromId(edgeId)) ];
 }
 
-void DirectedGraph::removeVertex(Vertex::Ptr vertex)
+void DirectedGraph::removeVertex(const Vertex::Ptr& vertex)
 {
     int nodeId = getVertexId( vertex );
 
@@ -100,7 +100,7 @@ void DirectedGraph::removeVertex(Vertex::Ptr vertex)
     mGraph.erase(node);
 }
 
-void DirectedGraph::removeEdge(Edge::Ptr edge)
+void DirectedGraph::removeEdge(const Edge::Ptr& edge)
 {
     int edgeId = getEdgeId(edge);
 
@@ -189,19 +189,19 @@ EdgeIterator::Ptr DirectedGraph::getEdgeIterator() const
     return EdgeIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex) const
+EdgeIterator::Ptr DirectedGraph::getEdgeIterator(const Vertex::Ptr& vertex) const
 {
     InOutArcIterator<DirectedGraph>* it = new InOutArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex) const
+EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(const Vertex::Ptr& vertex) const
 {
     OutArcIterator<DirectedGraph>* it = new OutArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
 }
 
-EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex) const
+EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex::Ptr& vertex) const
 {
     InArcIterator<DirectedGraph>* it = new InArcIterator<DirectedGraph>(*this, vertex);
     return EdgeIterator::Ptr(it);
@@ -268,9 +268,9 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& b
     return subgraph;
 }
 
-SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph) const
+SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
-    DirectedGraph::Ptr directedGraph = boost::dynamic_pointer_cast<DirectedGraph>(baseGraph);
+    const DirectedGraph::Ptr& directedGraph = boost::dynamic_pointer_cast<DirectedGraph>(baseGraph);
     if(!directedGraph)
     {
         throw std::invalid_argument("graph_analysis::lemon::DirectedGraph::createSubGraph: base graph could not be cast to DirectedGraph");

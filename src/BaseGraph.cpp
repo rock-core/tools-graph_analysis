@@ -84,12 +84,12 @@ BaseGraph::Ptr BaseGraph::clone() const
     return g_clone;
 }
 
-SubGraph::Ptr BaseGraph::getSubGraph(Ptr graph)
+SubGraph::Ptr BaseGraph::getSubGraph(const Ptr& graph)
 {
     return graph->createSubGraph(graph);
 }
 
-GraphElementId BaseGraph::addVertex(Vertex::Ptr vertex)
+GraphElementId BaseGraph::addVertex(const Vertex::Ptr& vertex)
 {
     if(vertex->associated(getId()) )
     {
@@ -99,7 +99,7 @@ GraphElementId BaseGraph::addVertex(Vertex::Ptr vertex)
     return 0;
 }
 
-void BaseGraph::removeVertex(Vertex::Ptr vertex)
+void BaseGraph::removeVertex(const Vertex::Ptr& vertex)
 {
     if(!vertex->associated(getId()) )
     {
@@ -108,7 +108,7 @@ void BaseGraph::removeVertex(Vertex::Ptr vertex)
     vertex->disassociate(getId());
 }
 
-GraphElementId BaseGraph::addEdge(Edge::Ptr edge)
+GraphElementId BaseGraph::addEdge(const Edge::Ptr& edge)
 {
     if(edge->associated(getId()) )
     {
@@ -146,7 +146,7 @@ GraphElementId BaseGraph::addEdge(Edge::Ptr edge)
     }
 }
 
-void BaseGraph::removeEdge(Edge::Ptr edge)
+void BaseGraph::removeEdge(const Edge::Ptr& edge)
 {
     if(!edge->associated(getId()) )
     {
@@ -155,7 +155,7 @@ void BaseGraph::removeEdge(Edge::Ptr edge)
     edge->disassociate(getId());
 }
 
-std::vector<Edge::Ptr> BaseGraph::getEdges(Vertex::Ptr source, Vertex::Ptr target) const
+std::vector<Edge::Ptr> BaseGraph::getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
 {
     std::vector<Edge::Ptr> edges;
     EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
@@ -194,7 +194,7 @@ std::vector<Edge::Ptr> BaseGraph::getAllEdges() const
     return edges;
 }
 
-bool BaseGraph::contains(Edge::Ptr edge) const
+bool BaseGraph::contains(const Edge::Ptr& edge) const
 {
     try {
         getEdgeId(edge);
@@ -205,7 +205,7 @@ bool BaseGraph::contains(Edge::Ptr edge) const
     }
 }
 
-bool BaseGraph::contains(Vertex::Ptr vertex) const
+bool BaseGraph::contains(const Vertex::Ptr& vertex) const
 {
     try {
         getVertexId(vertex);
@@ -219,7 +219,7 @@ bool BaseGraph::contains(Vertex::Ptr vertex) const
 /**
  * Apply filters to base graph
  */
-SubGraph::Ptr BaseGraph::applyFilters(BaseGraph::Ptr graph, Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
+SubGraph::Ptr BaseGraph::applyFilters(const BaseGraph::Ptr& graph, const Filter<Vertex::Ptr>::Ptr& vertexFilter, const Filter<Edge::Ptr>::Ptr& edgeFilter)
 {
     LOG_DEBUG_S << "Applying filters";
     SubGraph::Ptr subGraph = BaseGraph::getSubGraph(graph);

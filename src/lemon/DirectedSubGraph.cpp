@@ -4,7 +4,7 @@
 namespace graph_analysis {
 namespace lemon {
 
-DirectedSubGraph::DirectedSubGraph(DirectedGraph::Ptr graph)
+DirectedSubGraph::DirectedSubGraph(const DirectedGraph::Ptr& graph)
     : SubGraphImpl(graph, new vertex_filter_t(graph->raw()), new edge_filter_t(graph->raw()))
     , mpDirectedGraph(graph)
 {

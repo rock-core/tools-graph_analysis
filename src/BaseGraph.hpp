@@ -72,7 +72,7 @@ public:
      * an implementation of BaseGraph::createSubGraph
      * \see createSubGraph
      */
-    static SubGraph::Ptr getSubGraph(Ptr graph);
+    static SubGraph::Ptr getSubGraph(const Ptr& graph);
 
     /**
      * Get the implementation type of this graph object
@@ -103,13 +103,13 @@ public:
      * \returns GraphElementId which identifies the vertex in this(!) graph
      * instance
      */
-    virtual GraphElementId addVertex(Vertex::Ptr vertex);
+    virtual GraphElementId addVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Get the vertex id for this graph
      * \throw std::runtime_error if the vertex is not part of this graph
      */
-    GraphElementId getVertexId(Vertex::Ptr vertex) const { return boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
+    GraphElementId getVertexId(const Vertex::Ptr& vertex) const { return boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
 
     /**
      * \brief Get the vertex by id
@@ -122,38 +122,38 @@ public:
      * In order to reimplement, call the base function first
      * BaseGraph::addVertex(v)
      */
-    virtual void removeVertex(Vertex::Ptr vertex);
+    virtual void removeVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Add an edge
      * Cannot be reimplemented directly, but see addEdge(Edge::Ptr, GraphElementId, GraphElementId)
      */
-    GraphElementId addEdge(Edge::Ptr edge);
+    GraphElementId addEdge(const Edge::Ptr& edge);
 
     /**
      * Remove an edge and disassociate from this graph
      * In order to reimplement, call the base function first
      * BaseGraph::addVertex(v)
      */
-    virtual void removeEdge(Edge::Ptr edge);
+    virtual void removeEdge(const Edge::Ptr& edge);
 
     /**
      * Test if graph contains this edge
      * \return true if graph contains edge, false otherwise
      */
-    bool contains(Edge::Ptr edge) const;
+    bool contains(const Edge::Ptr& edge) const;
 
     /**
      * Test if graph contains this vertex
      * \return true if graph contains vertex, false otherwise
      */
-    bool contains(Vertex::Ptr vertex) const;
+    bool contains(const Vertex::Ptr& vertex) const;
 
     /**
      * \brief Get the edge id for this graph
      * \throw std::runtime_error if the edge is not part of this graph
      */
-    GraphElementId getEdgeId(Edge::Ptr edge) const { return boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
+    GraphElementId getEdgeId(const Edge::Ptr& edge) const { return boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
 
     /**
      * \brief Get the edge by id
@@ -165,7 +165,7 @@ public:
      * \brief Get edge by given vertices
      * \return List of edges that start a source and end at target
      */
-    virtual std::vector<Edge::Ptr> getEdges(Vertex::Ptr source, Vertex::Ptr target) const;
+    virtual std::vector<Edge::Ptr> getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const;
 
     /**
      * \brief Get edges by given vertices and return only edges of a given type
@@ -174,7 +174,7 @@ public:
      * If boost::dynamic_pointer_cast returns null pointer, object is not added
      */
     template<typename T>
-    std::vector< boost::shared_ptr<T> > getEdges(Vertex::Ptr source, Vertex::Ptr target) const
+    std::vector< boost::shared_ptr<T> > getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
     {
         std::vector< boost::shared_ptr<T> > edges;
         EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
@@ -226,13 +226,13 @@ public:
      * Get iterator over all edges (in/out) from the given vertex
      * \return EdgeIterator over all edges of this vertex
      */
-    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const { throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
+    virtual EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const { throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
 
     /**
      * Apply filters to base graph
      * \return subgraph with filters applied
      */
-    static SubGraph::Ptr applyFilters(Ptr graph, Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
+    static SubGraph::Ptr applyFilters(const Ptr& graph, const Filter<Vertex::Ptr>::Ptr& vertexFilter, const Filter<Edge::Ptr>::Ptr& edgeFilter);
 
     /**
      * Clear the graph from all nodes and edges
@@ -257,13 +257,13 @@ protected:
      * graph representation
      * \return Element id of this edge within this graph
      */
-    virtual GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) { throw std::runtime_error("BaseGraph::addEdgeInternal: not implemented"); }
+    virtual GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) { throw std::runtime_error("BaseGraph::addEdgeInternal: not implemented"); }
 
     /**
      * Create subgraph of the given baseGraph
      * \param baseGraph BaseGraph that this subgraph is related to
      */
-    virtual SubGraph::Ptr createSubGraph(Ptr baseGraph) const { throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
+    virtual SubGraph::Ptr createSubGraph(const Ptr& baseGraph) const { throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
 
 private:
     GraphId mId;

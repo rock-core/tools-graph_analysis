@@ -23,7 +23,7 @@ class DirectedSubGraph : public SubGraphImpl< SubGraphLemon, ::lemon::ListDigrap
 {
     boost::shared_ptr<DirectedGraph> mpDirectedGraph;
 public:
-    DirectedSubGraph(boost::shared_ptr<DirectedGraph> graph);
+    DirectedSubGraph(const boost::shared_ptr<DirectedGraph>& graph);
 
     void enable(Vertex::Ptr vertex);
     void disable(Vertex::Ptr vertex);

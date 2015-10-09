@@ -21,8 +21,8 @@ public:
 
     virtual ~DirectedGraphInterface() {}
 
-    virtual EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const = 0;
-    virtual EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const = 0;
+    virtual EdgeIterator::Ptr getOutEdgeIterator(const Vertex::Ptr& vertex) const = 0;
+    virtual EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const = 0;
 };
 
 } // end graph_analysis

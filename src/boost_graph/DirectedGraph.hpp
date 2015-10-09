@@ -54,13 +54,13 @@ public:
      * \brief Add a vertex
      * \return the created vertex
      */
-    virtual GraphElementId addVertex(Vertex::Ptr vertex);
+    virtual GraphElementId addVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Add an edge
      * \return the created edge
      */
-    GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
+    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
 
     Vertex::Ptr getVertex(GraphElementId id) const;
     Edge::Ptr getEdge(GraphElementId id) const;
@@ -69,16 +69,16 @@ public:
      * Map wrapper type to internal vertex descriptor
      * \return vertex descriptor
      */
-    VertexDescriptor getVertexDescriptor(Vertex::Ptr vertex) const;
+    VertexDescriptor getVertexDescriptor(const Vertex::Ptr& vertex) const;
 
     /**
      * Map wrapper type to internal edge descriptor
      * \return edge descriptor
      */
-    EdgeDescriptor getEdgeDescriptor(Edge::Ptr edge) const;
+    EdgeDescriptor getEdgeDescriptor(const Edge::Ptr& edge) const;
 
-    void removeVertex(Vertex::Ptr vertex);
-    void removeEdge(Edge::Ptr edge);
+    void removeVertex(const Vertex::Ptr& vertex);
+    void removeEdge(const Edge::Ptr& edge);
 
     DirectedGraph(const DirectedGraph& other);
 
@@ -97,10 +97,10 @@ public:
     /**
      * Get EdgeIterator
      */
-    EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
+    EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const;
 
-    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
-    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
+    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(const Vertex::Ptr& vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
+    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
 
     /**
      * Identifies the connected components
@@ -111,7 +111,7 @@ public:
      * Get the subgraph -- by default all vertices and edges of the
      * base graph are available (enabled)
      */
-    SubGraph::Ptr createSubGraph(BaseGraph::Ptr baseGraph) const;
+    SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& baseGraph) const;
 
 protected:
     // Property maps to store data associated with vertices and edges

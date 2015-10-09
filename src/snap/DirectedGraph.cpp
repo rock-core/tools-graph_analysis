@@ -30,7 +30,7 @@ BaseGraph::Ptr DirectedGraph::newInstance() const
     return BaseGraph::Ptr(new DirectedGraph());
 }
 
-GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
+GraphElementId DirectedGraph::addVertex(const Vertex::Ptr& vertex)
 {
     BaseGraph::addVertex(vertex);
 
@@ -41,7 +41,7 @@ GraphElementId DirectedGraph::addVertex(Vertex::Ptr vertex)
     return nodeId;
 }
 
-void DirectedGraph::removeVertex(Vertex::Ptr vertex)
+void DirectedGraph::removeVertex(const Vertex::Ptr& vertex)
 {
     int nodeId = getVertexId( vertex );
     BaseGraph::removeVertex(vertex);
@@ -49,7 +49,7 @@ void DirectedGraph::removeVertex(Vertex::Ptr vertex)
     mGraph.DelNode(nodeId);
 }
 
-void DirectedGraph::removeEdge(Edge::Ptr edge)
+void DirectedGraph::removeEdge(const Edge::Ptr& edge)
 {
     int edgeId = getEdgeId( edge );
     BaseGraph::removeEdge(edge);
@@ -61,7 +61,7 @@ void DirectedGraph::removeEdge(Edge::Ptr edge)
  * \brief Add an edge
  * \return an edge id
  */
-GraphElementId DirectedGraph::addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
+GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
     TInt edgeId = mGraph.AddEdge(sourceVertexId,targetVertexId);
     edge->associate(getId(), edgeId);
@@ -81,13 +81,13 @@ Edge::Ptr DirectedGraph::getEdge(GraphElementId id) const
     return mGraph.GetEDat(id).value;
 }
 
-Vertex::Ptr DirectedGraph::getSourceVertex(Edge::Ptr e) const
+Vertex::Ptr DirectedGraph::getSourceVertex(const Edge::Ptr& e) const
 {
     TInt nodeId = mGraph.GetEI( getEdgeId(e) ).GetSrcNId();
     return getVertex(nodeId);
 }
 
-Vertex::Ptr DirectedGraph::getTargetVertex(Edge::Ptr e) const
+Vertex::Ptr DirectedGraph::getTargetVertex(const Edge::Ptr& e) const
 {
     TInt nodeId = mGraph.GetEI( getEdgeId(e) ).GetDstNId();
     return getVertex(nodeId);
@@ -111,25 +111,25 @@ graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator() const
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator(Vertex::Ptr vertex) const
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getEdgeIterator(const Vertex::Ptr& vertex) const
 {
     InOutEdgeIterator<DirectedGraph>* it = new InOutEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(Vertex::Ptr vertex) const
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(const Vertex::Ptr& vertex) const
 {
     OutEdgeIterator<DirectedGraph>* it = new OutEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(Vertex::Ptr vertex) const
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex::Ptr& vertex) const
 {
     InEdgeIterator<DirectedGraph>* it = new InEdgeIterator<DirectedGraph>(*this, vertex);
     return graph_analysis::EdgeIterator::Ptr(it);
 }
 
-SubGraph::Ptr DirectedGraph::createSubGraph(BaseGraph::Ptr baseGraph) const
+SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
     // Enable all nodes and edges
     BaseGraph::Ptr graphCopy = baseGraph->copy();

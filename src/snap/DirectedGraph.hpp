@@ -72,23 +72,23 @@ public:
      * \brief Add a vertex
      * \return the created vertex
      */
-    GraphElementId addVertex(Vertex::Ptr vertex);
+    GraphElementId addVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Remove vertex
      */
-    void removeVertex(Vertex::Ptr vertex);
+    void removeVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Remove edge
      */
-    void removeEdge(Edge::Ptr edge);
+    void removeEdge(const Edge::Ptr& edge);
 
     /**
      * \brief Add an edge
      * \return an edge interator
      */
-    GraphElementId addEdgeInternal(Edge::Ptr edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
+    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
 
     Vertex::Ptr getVertex(GraphElementId id) const;
     Edge::Ptr getEdge(GraphElementId id) const;
@@ -97,13 +97,13 @@ public:
      * \brief Get the source vertex for this edge
      * \return Pointer to the vertex data
      */
-    Vertex::Ptr getSourceVertex(Edge::Ptr e) const;
+    Vertex::Ptr getSourceVertex(const Edge::Ptr& e) const;
 
     /**
      * \brief Get the target vertex for this edge
      * \return Pointer to the vertex data
      */
-    Vertex::Ptr getTargetVertex(Edge::Ptr e) const;
+    Vertex::Ptr getTargetVertex(const Edge::Ptr& e) const;
 
     /**
      * Get the vertex iterator for this implementation
@@ -115,13 +115,13 @@ public:
      */
     graph_analysis::EdgeIterator::Ptr getEdgeIterator() const;
 
-    graph_analysis::EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
+    graph_analysis::EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const;
 
-    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const;
+    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(const Vertex::Ptr& vertex) const;
 
-    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const;
+    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const;
 
-    SubGraph::Ptr createSubGraph(BaseGraph::Ptr baseGraph) const;
+    SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& baseGraph) const;
 };
 
 } // end namespace snap
