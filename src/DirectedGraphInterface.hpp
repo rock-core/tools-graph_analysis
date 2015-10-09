@@ -23,6 +23,10 @@ public:
 
     virtual EdgeIterator::Ptr getOutEdgeIterator(Vertex::Ptr vertex) const = 0;
     virtual EdgeIterator::Ptr getInEdgeIterator(Vertex::Ptr vertex) const = 0;
+
+    SpecializedIterator<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr> inEdges(Vertex::Ptr vertex) const;
+    SpecializedIterator<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr> outEdges(Vertex::Ptr vertex) const;
+
 };
 
 } // end graph_analysis

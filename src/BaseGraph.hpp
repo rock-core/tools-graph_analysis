@@ -8,6 +8,7 @@
 #include <graph_analysis/Filter.hpp>
 #include <graph_analysis/SubGraph.hpp>
 #include <graph_analysis/Algorithms.hpp>
+#include <graph_analysis/BaseIterator.hpp>
 
 /**
  * The main namespace of this library
@@ -23,6 +24,7 @@ namespace graph_analysis
  */
 class BaseGraph : public VertexIterable, public EdgeIterable, public Algorithms
 {
+
 public:
     enum ImplementationType { BOOST_DIRECTED_GRAPH, LEMON_DIRECTED_GRAPH, SNAP_DIRECTED_GRAPH, IMPLEMENTATION_TYPE_END };
     static std::map<ImplementationType, std::string> ImplementationTypeTxt;
@@ -201,12 +203,14 @@ public:
      * \return the vertex iterator
      */
     virtual VertexIterator::Ptr getVertexIterator() const { throw std::runtime_error("graph_analysis::BaseGraph::getVertexIterator has not been implemented"); }
+    virtual BaseIterator<VertexIterator::Ptr,BaseGraph, Vertex::Ptr> vertices() { return BaseIterator<VertexIterator::Ptr,BaseGraph, Vertex::Ptr>(this,&BaseGraph::getVertexIterator); }
 
     /**
      * Get iterator over all edges in this graph
      * \return the edge iterator
      */
     virtual EdgeIterator::Ptr getEdgeIterator() const { throw std::runtime_error("graph_analysis::BaseGraph::getEdgeIterator has not been implemented"); }
+    virtual BaseIterator<EdgeIterator::Ptr,BaseGraph, Edge::Ptr> edges() { return BaseIterator<EdgeIterator::Ptr,BaseGraph, Edge::Ptr>(this,&BaseGraph::getEdgeIterator); }
 
     /**
      * Retrieve all vertices
