@@ -5,12 +5,12 @@
 using namespace graph_analysis;
 
 
-SpecializedIterator<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr> DirectedGraphInterface::inEdges(Vertex::Ptr vertex) const
+SpecializedIterable<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr> DirectedGraphInterface::inEdges(Vertex::Ptr vertex) const
 {
-    return SpecializedIterator<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr>(this, vertex, &DirectedGraphInterface::getInEdgeIterator);
+    return SpecializedIterable<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr>(this, vertex, &DirectedGraphInterface::getInEdgeIterator);
 }
 
-SpecializedIterator<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr> DirectedGraphInterface::outEdges(Vertex::Ptr vertex) const
+SpecializedIterable<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr> DirectedGraphInterface::outEdges(Vertex::Ptr vertex) const
 {
-    return SpecializedIterator<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr>(this, vertex, &DirectedGraphInterface::getOutEdgeIterator);
+    return SpecializedIterable<EdgeIterator::Ptr,DirectedGraphInterface, Edge::Ptr,Vertex::Ptr>(this, vertex, &DirectedGraphInterface::getOutEdgeIterator);
 }

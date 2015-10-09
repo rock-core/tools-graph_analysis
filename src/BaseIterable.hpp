@@ -10,7 +10,7 @@ namespace graph_analysis
  * \tparam E The type the iterator normally returns like graph_analysis::Vertex::Ptr
  */
 template <class T, class G, class E>
-class BaseIterator
+class BaseIterable
 {
    protected:
     typedef T (G::*FuncPtr)() const;
@@ -22,19 +22,23 @@ class BaseIterator
      * the function pointer _func is a pointer to the function of G which
      * construct the graph_library pointer of type T
      */
-    BaseIterator(G *graph, FuncPtr _func) : graph(graph), func(_func)
+    BaseIterable(G *graph, FuncPtr _func)
+        : graph(graph)
+        , func(_func)
     {
     }
 
     /*
      * Helper class which provides the actual stl-like pointer.
-     * It normally only get's constructed by the BaseIterator class
+     * It normally only get's constructed by the BaseIterable class
      * and should not be used from somewhere else
      */
     class Iterator
     {
        public:
-        Iterator(BaseIterator *parent, T _obj) : parent(parent), obj(_obj)
+        Iterator(BaseIterable *parent, T _obj)
+            : parent(parent)
+            , obj(_obj)
         {
             if (obj.get() && !obj->current()) {
                 obj.reset();
@@ -81,7 +85,7 @@ class BaseIterator
         }
 
        private:
-        BaseIterator *parent;
+        BaseIterable *parent;
         T obj;
     };
 
@@ -114,28 +118,32 @@ class BaseIterator
     FuncPtr func;
 };
 
-/* This class is child of BaseIterator, it is intended to use in case the construction
+/* This class is child of BaseIterable, it is intended to use in case the construction
  * of a iterator depends on a other object. This can be the case if a iterator for a child-graph or a directed
  * graph needs to be constructed. The addition Type D points to the needed object type.
  */
 template <class T, class G, class E, class D>
-class SpecializedIterator : public BaseIterator<T, SpecializedIterator<T, G, E, D>, E>
+class SpecializedIterable : public BaseIterable<T, SpecializedIterable<T, G, E, D>, E>
 {
    public:
     typedef T (G::*FuncPtr)(D) const;
 
     /*
-     * In difference to the BaseIterator class this function needs a pointer to the parent class G, (same as previously) and
+     * In difference to the BaseIterable class this function needs a pointer to the parent class G, (same as previously) and
      * a Object of type D, which is the needed object to construct a Iterator of this object.
      * The FuncPtr _f2 is the needed function which accepts a D as parameter and constructs a Iterator of type T
-     * The parent of BaseIterator does not point to G, instead to this SpecializedIterator<T, G, E, D>
+     * The parent of BaseIterable does not point to G, instead to this SpecializedIterable<T, G, E, D>
      */
-    SpecializedIterator(const G *_parent2, D _d, FuncPtr _f2) : BaseIterator<T, SpecializedIterator<T, G, E, D>, E>(this, &SpecializedIterator<T, G, E, D>::get), parent2(_parent2), d(_d), f2(_f2)
+    SpecializedIterable(const G *_parent2, D _d, FuncPtr _f2)
+        : BaseIterable<T, SpecializedIterable<T, G, E, D>, E>(this, &SpecializedIterable<T, G, E, D>::get)
+        , f2(_f2)
+        , parent2(_parent2)
+        , d(_d)
     {
     }
 
     /*
-     * Helper function which gets used by BaseIterator to construct a new Iterator object.
+     * Helper function which gets used by BaseIterable to construct a new Iterator object.
      * to do so it uses the object D d object, to call the function f2 from G parent2
      */
     T get() const
