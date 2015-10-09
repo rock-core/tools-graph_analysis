@@ -138,21 +138,25 @@ int main(int argc, char** argv)
         }
         graphMark.stopIterateEdges = base::Time::now();
 
-        std::cout << "    -- iterating Stl nodes" << std::endl;
+        std::cout << "    -- iterate (stl) nodes" << std::endl;
         graphMark.startStlIterateNodes = base::Time::now();
-        for( auto it : graph->vertices() )
+
+        typedef BaseIterable<VertexIterator::Ptr, BaseGraph, Vertex::Ptr> IterableVertices;
+        IterableVertices::Iterator vit = graph->vertices().begin();
+        for(; vit != graph->vertices().end(); ++vit)
         {
-            auto v = it;
-            (void)v;
+            Vertex::Ptr vertex = *vit;
         }
         graphMark.stopStlIterateNodes = base::Time::now();
 
-        std::cout << "    -- iterate Stl edges" << std::endl;
+        std::cout << "    -- iterate (stl) edges" << std::endl;
         graphMark.startStlIterateEdges = base::Time::now();
-        for( auto it : graph->edges() )
+
+        typedef BaseIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr> IterableEdges;
+        IterableEdges::Iterator eit = graph->edges().begin();
+        for(; eit != graph->edges().end(); ++eit)
         {
-            auto v = it;
-            (void)v;
+            Edge::Ptr edge = *eit;
         }
         graphMark.stopStlIterateEdges = base::Time::now();
 
