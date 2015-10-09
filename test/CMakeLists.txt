@@ -7,6 +7,7 @@ rock_testsuite(test_graph suite.cpp
     test_GraphIO.cpp
     test_GVGraph.cpp
     test_LemonGraph.cpp
+    test_Iterators.cpp
     algorithms/test_CorrelationClustering.cpp
     algorithms/test_FloydWarshall.cpp
     algorithms/test_MinCostFlow.cpp

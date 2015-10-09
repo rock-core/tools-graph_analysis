@@ -32,11 +32,20 @@ struct Benchmark
     base::Time startIterateEdges;
     base::Time stopIterateEdges;
 
+    base::Time startStlIterateNodes;
+    base::Time stopStlIterateNodes;
+
+    base::Time startStlIterateEdges;
+    base::Time stopStlIterateEdges;
+
+
     double costAddNodes() const { return (stopAddNodes - startAddNodes).toSeconds() / numberOfNodes; }
     double costGetNodes() const { return (stopGetNodes - startGetNodes).toSeconds() / numberOfNodes; }
     double costAddEdges() const { return (stopAddEdges - startAddEdges).toSeconds() / numberOfEdges; }
     double costIterateNodes() const { return (stopIterateNodes - startIterateNodes).toSeconds() / numberOfNodes; }
     double costIterateEdges() const { return (stopIterateEdges - startIterateEdges).toSeconds() / numberOfEdges; }
+    double costIterateStlEdges() const { return (stopStlIterateEdges - startStlIterateEdges).toSeconds() / numberOfEdges; }
+    double costIterateStlNodes() const { return (stopStlIterateNodes - startStlIterateNodes).toSeconds() / numberOfNodes; }
 
     void printReport() const
     {
@@ -48,6 +57,8 @@ struct Benchmark
         std::cout << "    add     (p edge): " << costAddEdges() << " s" << std::endl;
         std::cout << "    iterate (p node): " << costIterateNodes() << " s" << std::endl;
         std::cout << "    iterate (p edge): " << costIterateEdges() << " s" << std::endl;
+        std::cout << "stl iterate (p node): " << costIterateStlNodes() << " s" << std::endl;
+        std::cout << "stl iterate (p edge): " << costIterateStlEdges() << " s" << std::endl;
 
     }
 };
@@ -127,6 +138,24 @@ int main(int argc, char** argv)
         }
         graphMark.stopIterateEdges = base::Time::now();
 
+        std::cout << "    -- iterating Stl nodes" << std::endl;
+        graphMark.startStlIterateNodes = base::Time::now();
+        for( auto it : graph->vertices() )
+        {
+            auto v = it;
+            (void)v;
+        }
+        graphMark.stopStlIterateNodes = base::Time::now();
+
+        std::cout << "    -- iterate Stl edges" << std::endl;
+        graphMark.startStlIterateEdges = base::Time::now();
+        for( auto it : graph->edges() )
+        {
+            auto v = it;
+            (void)v;
+        }
+        graphMark.stopStlIterateEdges = base::Time::now();
+
         benchmarks.push_back(graphMark);
     }
 
@@ -183,6 +212,8 @@ int main(int argc, char** argv)
             Edge::Ptr edge = edgeMap[a];
         }
         lemonRawMark.stopIterateEdges = base::Time::now();
+
+
     }
     benchmarks.push_back(lemonRawMark);
 
