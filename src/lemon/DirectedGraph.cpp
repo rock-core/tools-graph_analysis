@@ -218,7 +218,9 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& b
     int componentCount = ::lemon::connectedComponents(undirected, nodeMap);
     // Add a single vertex per identified component
     // activate that node in the subgraph
-    Vertex::Ptr components[componentCount];
+
+    std::vector<Vertex::Ptr> components;
+    components.resize(componentCount);
     for(int i = 0; i < componentCount; ++i)
     {
         Vertex::Ptr vertex = boost::make_shared<Vertex>();
