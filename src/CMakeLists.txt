@@ -79,7 +79,7 @@ rock_library(graph_analysis
     HEADERS
         Algorithms.hpp
         BaseGraph.hpp
-        BaseIterator.hpp
+        BaseIterable.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
         EdgeIterable.hpp
