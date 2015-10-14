@@ -45,7 +45,11 @@ public:
 
 protected:
     /**
-     * Create a copy of this vertex
+     * Create a copy of this vertex using a explicit clone of 
+     * the subclass of Vertex
+     \verbatim
+     return new MyVertex(*this);
+     \endverbatim
      */
     virtual Vertex* getClone() const { return new Vertex(*this); }
 
