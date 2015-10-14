@@ -15,6 +15,18 @@ void MultiCommodityEdge::setCommodityCapacityUpperBound(uint32_t commodity, uint
     mCommodityCapacityUpperBound.at(commodity) = capacity;
 }
 
+std::string MultiCommodityEdge::toString() const
+{
+    std::stringstream ss;
+    ss << getClassName() << ": UB:" << mCapacityUpperBound << std::endl;
+    for(size_t i = 0; i < numberOfCommodities(); ++i)
+    {
+       ss << " #" << i << ": cost: " << mCommodityCost[i] << ", ub: " << mCommodityCapacityUpperBound[i]
+           << ", flow: " << mCommodityFlow[i];
+    }
+    return ss.str();
+}
+
 
 } // end namespace algorithms
 } // end namespace graph_analysis

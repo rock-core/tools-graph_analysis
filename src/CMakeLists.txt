@@ -22,6 +22,7 @@ rock_library(graph_analysis
         algorithms/MinCostFlow.cpp
         algorithms/MultiCommodityEdge.cpp
         algorithms/MultiCommodityMinCostFlow.cpp
+        algorithms/MultiCommodityVertex.cpp
         boost_graph/DirectedGraph.cpp
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp

@@ -14,6 +14,10 @@ public:
     MultiCommodityEdge(uint32_t commodities);
     virtual ~MultiCommodityEdge() {}
 
+    virtual std::string getClassName() const { return "MultiCommodityEdge"; }
+
+    virtual std::string toString() const;
+
     void setCapacityUpperBound(uint32_t capacity) { mCapacityUpperBound = capacity; }
     uint32_t getCapacityUpperBound() const { return mCapacityUpperBound; }
 
@@ -33,6 +37,8 @@ public:
      */
     uint32_t getCommodityFlow(uint32_t commodity) const { return mCommodityFlow.at(commodity); }
 
+    size_t numberOfCommodities() const { return mCommodityFlow.size(); }
+
 private:
     uint32_t mCapacityUpperBound;
     std::vector<uint32_t> mCommodityCapacityUpperBound;
@@ -40,6 +46,8 @@ private:
 
     // Result
     std::vector<uint32_t> mCommodityFlow;
+
+    virtual Edge* getClone() const  { return new MultiCommodityEdge(*this); }
 };
 
 } // end namespace algorithms
