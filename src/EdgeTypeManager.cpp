@@ -27,12 +27,14 @@ void EdgeTypeManager::registerType(const edge::Type& type, Edge::Ptr edge, bool 
 {
     try {
         edgeByType(type, true);
+        LOG_INFO_S << "EdgeType '" + type + "' is already registered.";
     } catch(...)
     {
+        LOG_INFO_S << "EdgeType '" + type + "' is newly registered.";
         mTypeMap[type] = edge;
         mRegisteredTypes.insert(type);
+        return;
     }
-    LOG_WARN_S << "graph_analysis::EdgeTypeManager::registerType: type '" + type + "' is already registered.";
     if(throwOnAlreadyRegistered)
     {
         throw std::runtime_error("graph_analysis::EdgeTypeManager::registerType: type '" + type + "' is already registered");
@@ -44,15 +46,16 @@ Edge::Ptr EdgeTypeManager::edgeByType(const edge::Type& type, bool throwOnDefaul
     TypeMap::iterator it = mTypeMap.find(type);
     if(it == mTypeMap.end())
     {
-        LOG_DEBUG_S << "graph_analysis::EdgeTypeManager::edgeByType: type '" + type + "' is not registered. Using default type 'default'.";
+        LOG_DEBUG_S << "EdgeType '" + type + "' is not registered.";
         if(throwOnDefault)
         {
             throw std::runtime_error("graph_analysis::EdgeTypeManager::edgeByType: type '" + type + "' is not registered");
         }
+        LOG_DEBUG_S << "Using default EdgeType 'default'.";
         return mTypeMap["default"];
     }
 
-    LOG_DEBUG_S << "graph_analysis::EdgeTypeManager::edgeByType: type '" + type + "' registered.";
+    LOG_DEBUG_S << "EdgeType '" + type + "' found";
     return it->second;
 }
 

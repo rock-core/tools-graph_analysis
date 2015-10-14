@@ -33,7 +33,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         libgexf::t_id current = node_it->next();
         std::string nodeClass = data.getNodeAttribute(current, classAttr);
         std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
-        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeClass, nodeLabel); // (new Vertex(nodeLabel));
+        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeClass, nodeLabel);
         graph->addVertex(vertex);
         vertexMap[current] = vertex;
     }

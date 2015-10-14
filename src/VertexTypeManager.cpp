@@ -28,12 +28,14 @@ void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node,
 {
     try {
         vertexByType(type, true);
+        LOG_INFO_S << "VertexType '" + type + "' is already registered.";
     } catch(...)
     {
+        LOG_INFO_S << "VertexType '" + type + "' is newly registered";
         mTypeMap[type] = node;
         mRegisteredTypes.insert(type);
+        return;
     }
-    LOG_WARN_S << "graph_analysis::VertexTypeManager::registerType: type '" + type + "' is already registered.";
     if(throwOnAlreadyRegistered)
     {
         throw std::runtime_error("graph_analysis::VertexTypeManager::registerType: type '" + type + "' is already registered");
@@ -45,15 +47,16 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
     TypeMap::iterator it = mTypeMap.find(type);
     if(it == mTypeMap.end())
     {
-        LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered. Using default type 'default'.";
+        LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered.";
         if(throwOnDefault)
         {
             throw std::runtime_error("graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered");
         }
+        LOG_DEBUG_S << "Using default VertexType 'default'.";
         return mTypeMap["default"];
     }
 
-    LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' registered.";
+    LOG_DEBUG_S << "VertexType '" + type + "' found.";
     return it->second;
 }
 
