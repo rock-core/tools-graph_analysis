@@ -88,6 +88,9 @@
  }
 
  \endverbatim
+ *
+ * \section Graph I/O
+ * \see Detailed description of graph_analysis::io::GraphIO
  */
 
 /**
