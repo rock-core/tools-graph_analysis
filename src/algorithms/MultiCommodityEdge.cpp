@@ -22,7 +22,7 @@ std::string MultiCommodityEdge::toString() const
     for(size_t i = 0; i < numberOfCommodities(); ++i)
     {
        ss << " #" << i << ": cost: " << mCommodityCost[i] << ", ub: " << mCommodityCapacityUpperBound[i]
-           << ", flow: " << mCommodityFlow[i];
+           << ", flow: " << mCommodityFlow[i] << std::endl;
     }
     return ss.str();
 }
