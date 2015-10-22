@@ -113,10 +113,10 @@ public:
  *
  * TODO: improve registration using singleton like initialization
  *
- \beginverbatim
+ \verbatim
  try {
      VertexTypeManager* vertexTypeManager = VertexTypeManager::getInstance();
-     vertexTypeManager->registerType("MyVertex", Vertex::Ptr(new MyVertex(), true);
+     vertexTypeManager->registerType("MyVertex", Vertex::Ptr(new MyVertex()), true);
 
      EdgeTypeManager* edgeTypeManager = EdgeTypeManager::getInstance();
      edgeTypeManager->registerType("MyEdge", Edge::Ptr(new MyEdge()), true);
