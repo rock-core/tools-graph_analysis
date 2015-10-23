@@ -38,9 +38,13 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
 
         VertexTypeManager *vManager = VertexTypeManager::getInstance();
         std::list<std::string> members = vManager->getMembers(vertex->getClassName());
+
+        uint32_t memberCount = 0;
         for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
         {
-            std::string attributeData = data.getNodeAttribute(current, *members_it);
+            std::stringstream attrId;
+            attrId << vertex->getClassName() << "-" << memberCount++;
+            std::string attributeData = data.getNodeAttribute(current, attrId.str());
             (vertex.get()->*vManager->getMemberCallbacks(vertex->getClassName(),*members_it).deserializeFunction)(attributeData);
         }
 
