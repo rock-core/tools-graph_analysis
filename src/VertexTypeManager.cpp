@@ -81,7 +81,7 @@ std::set<std::string> VertexTypeManager::getSupportedTypes()
     return mRegisteredTypes;
 }
 
-void VertexTypeManager::registerAttribute(const std::string &typeName, const std::string &attributeName, serializeFunc_t sF, deserializeFunc_t dsF, printFunc_t pF)
+void VertexTypeManager::registerAttribute(const std::string &typeName, const std::string &attributeName, serialize_func_t sF, deserialize_func_t dsF, print_func_t pF)
 {
     if(mRegisteredCallbacks.find(typeName) == mRegisteredCallbacks.end())
     {

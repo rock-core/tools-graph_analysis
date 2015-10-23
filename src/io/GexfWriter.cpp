@@ -62,7 +62,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
         {
             VertexTypeManager::MemberCallbacks mc = vManager->getMemberCallbacks(vertex->getClassName(),*members_it);
-            data.setNodeValue(nodeIdString, *members_it, (vertex.get()->*mc.serializeFunc)());
+            data.setNodeValue(nodeIdString, attrId.str(), (vertex.get()->*mc.serializeFunction)());
         }
         data.setNodeValue(nodeIdString, labelAttr, vertex->getLabel());
     }

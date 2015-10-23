@@ -463,7 +463,7 @@ std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
     for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
     {
         VertexTypeManager::MemberCallbacks mc = vManager->getMemberCallbacks(vertex->getClassName(),*members_it);
-        ss << std::endl << *members_it << (vertex.get()->*mc.printFunc)();
+        ss << std::endl << *members_it << (vertex.get()->*mc.printFunction)();
     }
     return ss.str();
 }

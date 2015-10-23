@@ -26,13 +26,17 @@ namespace vertex {
 class VertexTypeManager : public base::Singleton<VertexTypeManager>
 {
 public:
-    typedef std::string (graph_analysis::Vertex::*serializeFunc_t)();
-    typedef std::string (graph_analysis::Vertex::*printFunc_t)();
-    typedef void (graph_analysis::Vertex::*deserializeFunc_t)(std::string);
-    struct MemberCallbacks{
-        serializeFunc_t serializeFunc;
-        deserializeFunc_t deserializeFunc;
-        printFunc_t printFunc;
+    typedef std::string (graph_analysis::Vertex::*serialize_func_t)();
+    typedef std::string (graph_analysis::Vertex::*print_func_t)();
+    typedef void (graph_analysis::Vertex::*deserialize_func_t)(const std::string&);
+
+    /// MemberCallbacks -- currently only io-related callbacks
+    struct MemberCallbacks
+    {
+        serialize_func_t serializeFunction;
+        deserialize_func_t deserializeFunction;
+
+        print_func_t printFunction;
     };
 
     typedef std::map<vertex::Type, Vertex::Ptr> TypeMap;
@@ -73,7 +77,7 @@ public:
      *  \param dF DeSerialization function
      *  \param pF PrintFunction
      */
-    void registerAttribute(const std::string &typeName, const std::string &attributeName, serializeFunc_t sF, deserializeFunc_t dsF, printFunc_t pF);
+    void registerAttribute(const std::string &typeName, const std::string &attributeName, serialize_func_t sF, deserialize_func_t dsF, print_func_t pF);
 
     /**
      *  \brief returns all registeres member for the given vertex

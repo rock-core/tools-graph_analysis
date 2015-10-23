@@ -16,31 +16,27 @@ BOOST_AUTO_TEST_SUITE(graph_io)
  * and renders it to file of hardwired name "testgraph->dot"
  * (manual dot rendering of the output .dot file and checking it is assumed)
  */
-
-class DerivedVertex : public graph_analysis::Vertex{
-    public:
-    DerivedVertex(std::string name):
-        graph_analysis::Vertex(name)
-        {
-        }
-
-    std::string aMember;
-
-    std::string serialize(){
-        return aMember;
+class DerivedVertex : public graph_analysis::Vertex
+{
+public:
+    DerivedVertex(std::string name)
+        : graph_analysis::Vertex(name)
+    {
     }
 
-    void deserialize(std::string s){
-        aMember = s;
-    }
+    std::string serializeMember0() { return mMember0; }
+    std::string serializeMember1() { return mMember1; }
 
-    virtual std::string getClassName() const{
-        return "DerivedVertex";
-    }
+    void deserializeMember0(const std::string& s) { mMember0= s; }
+    void deserializeMember1(const std::string& s) { mMember1 = s; }
 
-    virtual graph_analysis::Vertex* getClone() const{
-        return new DerivedVertex("CLONE");
-    }
+    virtual std::string getClassName() const{ return "DerivedVertex"; }
+
+    std::string mMember0;
+    std::string mMember1;
+protected:
+    virtual graph_analysis::Vertex* getClone() const { return new DerivedVertex("CLONE"); }
+
 };
 
 BOOST_AUTO_TEST_CASE(dot)
@@ -172,15 +168,25 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
 
     vManager->registerType(empty);
-    vManager->registerAttribute(empty->getClassName(), "some_member",(VertexTypeManager::serializeFunc_t)&DerivedVertex::serialize,(VertexTypeManager::deserializeFunc_t)&DerivedVertex::deserialize,(VertexTypeManager::printFunc_t)&DerivedVertex::serialize);
+    vManager->registerAttribute(empty->getClassName(), "m0",
+            (VertexTypeManager::serialize_func_t)&DerivedVertex::serializeMember0,
+            (VertexTypeManager::deserialize_func_t)&DerivedVertex::deserializeMember0,
+            (VertexTypeManager::print_func_t)&DerivedVertex::serializeMember0);
+
+    vManager->registerAttribute(empty->getClassName(), "m1",
+            (VertexTypeManager::serialize_func_t)&DerivedVertex::serializeMember1,
+            (VertexTypeManager::deserialize_func_t)&DerivedVertex::deserializeMember1,
+            (VertexTypeManager::print_func_t)&DerivedVertex::serializeMember1);
 
     Vertex::Ptr v0( new DerivedVertex("v1"));
     Vertex::Ptr v1( new DerivedVertex("v2"));
     DerivedVertex *orginalSource = dynamic_cast<DerivedVertex*>(v0.get());
     DerivedVertex *orginalTarget= dynamic_cast<DerivedVertex*>(v1.get());
 
-    orginalSource->aMember="this is member of v1 the source";
-    orginalTarget->aMember="this is member of v2 the target";
+    orginalSource->mMember0="v1-m0";
+    orginalTarget->mMember0="v2-m0";
+    orginalSource->mMember1="v1-m1";
+    orginalTarget->mMember1="v2-m1";
 
     graph->addVertex(v0);
     graph->addVertex(v1);
@@ -199,7 +205,7 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     BaseGraph::Ptr read_graph = BaseGraph::getInstance(BaseGraph::LEMON_DIRECTED_GRAPH);
     io::GraphIO::read(filename, read_graph, representation::GEXF);
 
-    BOOST_REQUIRE_MESSAGE(read_graph->size() == 1, "Readed Graph has wrong size ");
+    BOOST_REQUIRE_MESSAGE(read_graph->size() == 1, "Read graph has wrong size ");
 
 
     EdgeIterator::Ptr edgeIt = read_graph->getEdgeIterator();
@@ -215,11 +221,13 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
         DerivedVertex *importedTarget= dynamic_cast<DerivedVertex*>(edge0->getTargetVertex().get());
 
 
-        BOOST_REQUIRE_MESSAGE(importedSource, "Imported type of source is incorrec" );
-        BOOST_REQUIRE_MESSAGE(importedTarget, "Imported type of target is incorrec" );
+        BOOST_REQUIRE_MESSAGE(importedSource, "Imported type of source is incorrect" );
+        BOOST_REQUIRE_MESSAGE(importedTarget, "Imported type of target is incorrect" );
 
-        BOOST_REQUIRE_MESSAGE( importedSource->aMember == orginalSource->aMember, "Member was imported wrongly" );
-        BOOST_REQUIRE_MESSAGE( importedTarget->aMember == orginalTarget->aMember, "Member was imported wrongly" );
+        BOOST_REQUIRE_MESSAGE( importedSource->mMember0 == orginalSource->mMember0, "Member0 was imported wrongly" );
+        BOOST_REQUIRE_MESSAGE( importedSource->mMember1 == orginalSource->mMember1, "Member1 was imported wrongly" );
+        BOOST_REQUIRE_MESSAGE( importedTarget->mMember0 == orginalTarget->mMember0, "Member0 was imported wrongly" );
+        BOOST_REQUIRE_MESSAGE( importedTarget->mMember1 == orginalTarget->mMember1, "Member1 was imported wrongly" );
 
     }
     BOOST_REQUIRE_MESSAGE( count == 1, "Iterator in graph failed");

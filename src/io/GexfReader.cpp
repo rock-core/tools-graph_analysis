@@ -41,7 +41,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
         {
             std::string attributeData = data.getNodeAttribute(current, *members_it);
-            (vertex.get()->*vManager->getMemberCallbacks(vertex->getClassName(),*members_it).deserializeFunc)(attributeData);
+            (vertex.get()->*vManager->getMemberCallbacks(vertex->getClassName(),*members_it).deserializeFunction)(attributeData);
         }
 
         vertexMap[current] = vertex;
