@@ -26,6 +26,9 @@ VertexTypeManager::~VertexTypeManager()
 
 void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered)
 {
+    if(node->getClassName() != type){
+        throw std::runtime_error("Cannot register vertex of type " + type + " it seems the getClassName() funtion of this class is implemented wrong it returned " + node->getClassName());
+    }
     try {
         vertexByType(type, true);
         LOG_INFO_S << "VertexType '" + type + "' is already registered.";
@@ -63,7 +66,12 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
 
 Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std::string& label)
 {
-    Vertex::Ptr clonedVertex = vertexByType(type)->clone();
+    Vertex::Ptr v = vertexByType(type);
+    Vertex::Ptr clonedVertex = v->clone();
+    if(v->getClassName() != clonedVertex->getClassName()){
+        throw std::runtime_error("Cannot create cloned vertex of type " + v->getClassName() + " it seems the 'virtual Vertex* getClone() const' funtion of this class is implemented wrong");
+    }
+
     clonedVertex->setLabel(label);
     return clonedVertex;
 }
