@@ -34,6 +34,7 @@ void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node,
         LOG_INFO_S << "VertexType '" + type + "' is newly registered";
         mTypeMap[type] = node;
         mRegisteredTypes.insert(type);
+        mRegisteredCallbacks[type];
         return;
     }
     if(throwOnAlreadyRegistered)
@@ -113,6 +114,7 @@ VertexTypeManager::MemberCallbacks VertexTypeManager::getMemberCallbacks(const s
 
 void VertexTypeManager::registerType(Vertex::Ptr vertex, bool throwOnAlreadyRegistered)
 {
+    //Create a empty structure for this type to make sure getMembers raise if a unregistered vertex type is queried
     registerType(vertex->getClassName(), vertex, throwOnAlreadyRegistered);
 }
 
