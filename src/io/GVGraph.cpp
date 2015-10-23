@@ -4,6 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <base/Logging.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -456,6 +457,14 @@ std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
 {
     std::stringstream ss;
     ss << vertex->toString() << " (id:" << mpBaseGraph->getVertexId(vertex) << ")";
+    VertexTypeManager *vManager = VertexTypeManager::getInstance();
+
+    std::list<std::string> members = vManager->getMembers(vertex->getClassName());
+    for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+    {
+        VertexTypeManager::MemberCallbacks mc = vManager->getMemberCallbacks(vertex->getClassName(),*members_it);
+        ss << std::endl << *members_it << (vertex.get()->*mc.printFunc)();
+    }
     return ss.str();
 }
 

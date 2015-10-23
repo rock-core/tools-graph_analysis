@@ -1,11 +1,12 @@
 #include "GexfWriter.hpp"
-
 #include <stdlib.h>
 #include <libgexf/gexf.h>
 #include <libgexf/filewriter.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/xpressive/xpressive.hpp>
 #include <base/Logging.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
+#include <graph_analysis/EdgeTypeManager.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -31,6 +32,22 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     data.addNodeAttributeColumn(labelAttr, "label", "STRING");
     data.addEdgeAttributeColumn(labelAttr, "label", "STRING");
 
+    VertexTypeManager *vManager = VertexTypeManager::getInstance();
+    std::set<std::string> types = vManager->getSupportedTypes();
+    for(std::set<std::string>::iterator type_it = types.begin(); type_it != types.end(); type_it++)
+    {
+        std::list<std::string> members = vManager->getMembers(*type_it);
+        for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); members_it++){
+            data.addNodeAttributeColumn(*type_it, *members_it, "STRING");
+        }
+    }
+
+            /*
+    std::string nodeClass = data.getNodeAttribute(current, classAttr);
+    std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
+    Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeClass, nodeLabel);
+    */
+
     // loading the nodes and their attributes to the gexf components
     VertexIterator::Ptr vit = graph->getVertexIterator();
     while(vit->next())
@@ -41,6 +58,12 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
 
         data.setNodeLabel(nodeIdString, vertex->toString() );
         data.setNodeValue(nodeIdString, classAttr, vertex->getClassName());
+        std::list<std::string> members = vManager->getMembers(vertex->getClassName());
+        for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+        {
+            VertexTypeManager::MemberCallbacks mc = vManager->getMemberCallbacks(vertex->getClassName(),*members_it);
+            data.setNodeValue(nodeIdString, *members_it, (vertex.get()->*mc.serializeFunc)());
+        }
         data.setNodeValue(nodeIdString, labelAttr, vertex->getLabel());
     }
 

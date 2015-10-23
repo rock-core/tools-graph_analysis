@@ -3,6 +3,7 @@
 
 #include <map>
 #include <set>
+#include <list>
 #include <string>
 #include <base/Singleton.hpp>
 #include <graph_analysis/Vertex.hpp>
@@ -16,7 +17,7 @@ namespace vertex {
 
 /**
  * \brief Factory for Vertex subclasses
- * \details VertexTypeManager allows to register vertex classes by type 
+ * \details VertexTypeManager allows to register vertex classes by type
  * - which is a given string. When loading a serialized graph via GraphIO::read
  * the VertexTypeManager allows to instanciate vertices corresponding to the
  * given class type -- which has to match the type string.
@@ -25,13 +26,25 @@ namespace vertex {
 class VertexTypeManager : public base::Singleton<VertexTypeManager>
 {
 public:
+    typedef std::string (graph_analysis::Vertex::*serializeFunc_t)();
+    typedef std::string (graph_analysis::Vertex::*printFunc_t)();
+    typedef void (graph_analysis::Vertex::*deserializeFunc_t)(std::string);
+    struct MemberCallbacks{
+        serializeFunc_t serializeFunc;
+        deserializeFunc_t deserializeFunc;
+        printFunc_t printFunc;
+    };
+
     typedef std::map<vertex::Type, Vertex::Ptr> TypeMap;
 
 private:
+
     /// registration map - stores the registered types, mapping them to the example vertex instances (i.e. from which new ones to be forked on request)
     TypeMap mTypeMap;
     /// registration list - maintains a complete list of all registered types
     std::set<std::string> mRegisteredTypes;
+
+    std::map<std::string, std::map<std::string, MemberCallbacks> > mRegisteredCallbacks;
     /**
      * \brief internal method for type identification
      * \param type requested vertex type
@@ -47,7 +60,35 @@ public:
     ~VertexTypeManager();
 
     // Register vertex class
+    void registerType(Vertex::Ptr vertex, bool throwOnAlreadyRegistered = false);
+
+    // Register vertex class
     void registerType(const vertex::Type& type, Vertex::Ptr vertex, bool throwOnAlreadyRegistered = false);
+
+    /**
+     *  \brief register a new attribute for serialization and deserialization
+     *  \param typeName the class Name (normally equals Vertex::getClassName()
+     *  \param attributeName arbitrary unique name for the attribute that should added
+     *  \param sF Serialization function
+     *  \param dF DeSerialization function
+     *  \param pF PrintFunction
+     */
+    void registerAttribute(const std::string &typeName, const std::string &attributeName, serializeFunc_t sF, deserializeFunc_t dsF, printFunc_t pF);
+
+    /**
+     *  \brief returns all registeres member for the given vertex
+     *  \param typeName the class Name (normally equals Vertex::getClassName()
+     *  \return a list of members that are registered
+     */
+    std::list<std::string> getMembers(const std::string &typeName);
+
+    /**
+     *  \param typeName the class Name (normally equals Vertex::getClassName()
+     *  \param attributeName arbitrary unique name for the attribute that should added
+     *  \return the struct with all callback function
+     */
+    MemberCallbacks getMemberCallbacks(const std::string &typeName, const std::string &attributeName);
+
     /**
      * \brief clones a new vertex of a specified type
      * \param type the requested vertex type

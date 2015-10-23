@@ -35,6 +35,15 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
         Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeClass, nodeLabel);
         graph->addVertex(vertex);
+
+        VertexTypeManager *vManager = VertexTypeManager::getInstance();
+        std::list<std::string> members = vManager->getMembers(vertex->getClassName());
+        for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+        {
+            std::string attributeData = data.getNodeAttribute(current, *members_it);
+            (vertex.get()->*vManager->getMemberCallbacks(vertex->getClassName(),*members_it).deserializeFunc)(attributeData);
+        }
+
         vertexMap[current] = vertex;
     }
     // storing the edges and their properties
