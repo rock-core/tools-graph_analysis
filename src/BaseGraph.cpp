@@ -255,7 +255,7 @@ void BaseGraph::clear()
     }
 }
 
-bool BaseGraph::empty()
+bool BaseGraph::empty() const
 {
     VertexIterator::Ptr vertexIt = getVertexIterator();
     return !vertexIt->next();
