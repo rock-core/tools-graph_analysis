@@ -67,6 +67,12 @@ std::map<representation::Suffix, representation::Type> GraphIO::msSuffixes = boo
 
 void GraphIO::write(const std::string& filename, const BaseGraph& graph, representation::Type format)
 {
+    if(graph.empty())
+    {
+        throw std::invalid_argument("graph_analysis::GraphIO::write: "
+                " trying to write empty graph to '" + filename + "'");
+    }
+
     if(format == representation::UNKNOWN)
     {
         format = getTypeFromFilename(filename);
@@ -96,6 +102,12 @@ void GraphIO::write(const std::string& filename, const BaseGraph& graph, represe
 
 void GraphIO::write(const std::string& filename, const BaseGraph::Ptr& graph, representation::Type format)
 {
+    if(!graph)
+    {
+        std::invalid_argument("graph_analysis::GraphIO::write: "
+                " null pointer given as graph to write to '" + filename + "'");
+    }
+
     write(filename, *graph.get(), format);
 }
 
