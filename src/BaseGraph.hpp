@@ -111,13 +111,13 @@ public:
      * \brief Get the vertex id for this graph
      * \throw std::runtime_error if the vertex is not part of this graph
      */
-    GraphElementId getVertexId(const Vertex::Ptr& vertex) const { return boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
+    GraphElementId getVertexId(const Vertex::Ptr& vertex) const { (void) vertex; return boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
 
     /**
      * \brief Get the vertex by id
      * \return vertex
      */
-    virtual Vertex::Ptr getVertex(GraphElementId id) const { throw std::runtime_error("graph_analysis::BaseGraph::getVertex has not been implemented"); }
+    virtual Vertex::Ptr getVertex(GraphElementId id) const { (void) id; throw std::runtime_error("graph_analysis::BaseGraph::getVertex has not been implemented"); }
 
     /**
      * \brief Remove vertex
@@ -155,13 +155,13 @@ public:
      * \brief Get the edge id for this graph
      * \throw std::runtime_error if the edge is not part of this graph
      */
-    GraphElementId getEdgeId(const Edge::Ptr& edge) const { return boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
+    GraphElementId getEdgeId(const Edge::Ptr& edge) const { (void) edge; return boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
 
     /**
      * \brief Get the edge by id
      * \return Edge with given id
      */
-    virtual Edge::Ptr getEdge(GraphElementId id) const { throw std::runtime_error("BaseGraph::getEdge: not implemented"); }
+    virtual Edge::Ptr getEdge(GraphElementId id) const { (void) id; throw std::runtime_error("BaseGraph::getEdge: not implemented"); }
 
     /**
      * \brief Get edge by given vertices
@@ -230,7 +230,7 @@ public:
      * Get iterator over all edges (in/out) from the given vertex
      * \return EdgeIterator over all edges of this vertex
      */
-    virtual EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const { throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
+    virtual EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const { (void) vertex; throw std::runtime_error("BaseGraph::getEdgeIterator: not implemented"); }
 
     /**
      * Apply filters to base graph
@@ -261,13 +261,13 @@ protected:
      * graph representation
      * \return Element id of this edge within this graph
      */
-    virtual GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) { throw std::runtime_error("BaseGraph::addEdgeInternal: not implemented"); }
+    virtual GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) { (void) edge; (void) sourceVertexId; (void) edgeVertexId; throw std::runtime_error("BaseGraph::addEdgeInternal: not implemented"); }
 
     /**
      * Create subgraph of the given baseGraph
      * \param baseGraph BaseGraph that this subgraph is related to
      */
-    virtual SubGraph::Ptr createSubGraph(const Ptr& baseGraph) const { throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
+    virtual SubGraph::Ptr createSubGraph(const Ptr& baseGraph) const { (void) baseGraph; throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
 
 private:
     GraphId mId;

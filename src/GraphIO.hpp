@@ -45,7 +45,7 @@ public:
      * Subclasses have to implement this function in order to provide
      * writing capability
      */
-    virtual void write(const std::string& filename, const BaseGraph::Ptr& graph) const { throw std::runtime_error("Writer: writer not implemented"); }
+    virtual void write(const std::string& filename, const BaseGraph::Ptr& graph) const { (void)filename; (void)graph; throw std::runtime_error("Writer: writer not implemented"); }
 };
 
 /**
@@ -62,7 +62,7 @@ public:
 
     void read(const std::string& filename, BaseGraph& graph);
 
-    virtual void read(const std::string& filename, BaseGraph::Ptr graph) { throw std::runtime_error("Reader: reader not implemented"); }
+    virtual void read(const std::string& filename, BaseGraph::Ptr graph) { (void) filename; (void) graph; throw std::runtime_error("Reader: reader not implemented"); }
 };
 
 /**

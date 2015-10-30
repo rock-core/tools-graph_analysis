@@ -180,7 +180,7 @@ public:
      * \param o Filter object, i.e. target object to apply the filter on
      * \return True, if the main filter matches the target/filter object, false otherwise
      */
-    virtual bool apply(FilterObject o) const { return false; }
+    virtual bool apply(FilterObject o) const { (void)o; return false; }
 
     /**
      * Return Null Filter

@@ -13,7 +13,7 @@ class Algorithms
 public:
     virtual ~Algorithms() {}
 
-    virtual boost::shared_ptr<SubGraph> identifyConnectedComponents(const boost::shared_ptr<BaseGraph>& baseGraph) const { throw std::runtime_error("graph_analysis::Algorithms::identifyConnectedComponents has not been implemented"); }
+    virtual boost::shared_ptr<SubGraph> identifyConnectedComponents(const boost::shared_ptr<BaseGraph>& baseGraph) const { (void) baseGraph; throw std::runtime_error("graph_analysis::Algorithms::identifyConnectedComponents has not been implemented"); }
 };
 
 } // end namespace graph_analysis
