@@ -62,6 +62,8 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel);
         graph->addEdge(edge);
     }
+
+    delete reader;
 }
 
 } // end namespace io
