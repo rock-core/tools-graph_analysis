@@ -171,6 +171,31 @@ std::vector<Edge::Ptr> BaseGraph::getEdges(const Vertex::Ptr& source, const Vert
     return edges;
 }
 
+size_t BaseGraph::removeEdges(const Vertex::Ptr& a, const Vertex::Ptr& b)
+{
+    size_t numberOfEdges = 0;
+
+    std::vector<Edge::Ptr> edgesAB = getEdges(a, b);
+    std::vector<Edge::Ptr> edgesBA = getEdges(b, a);
+
+    {
+        std::vector<Edge::Ptr>::const_iterator cit = edgesAB.begin();
+        for(; cit != edgesAB.end(); ++cit)
+        {
+            removeEdge(*cit);
+            ++numberOfEdges;
+        }
+    }
+    {
+        std::vector<Edge::Ptr>::const_iterator cit = edgesBA.begin();
+        for(; cit != edgesBA.end(); ++cit)
+        {
+            removeEdge(*cit);
+            ++numberOfEdges;
+        }
+    }
+    return numberOfEdges;
+}
 
 std::vector<Vertex::Ptr> BaseGraph::getAllVertices() const
 {

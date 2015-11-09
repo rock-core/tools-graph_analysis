@@ -140,6 +140,12 @@ public:
     virtual void removeEdge(const Edge::Ptr& edge);
 
     /**
+     * Remove edges which link two vertices
+     * \return number of removed edges
+     */
+    virtual size_t removeEdges(const Vertex::Ptr& a, const Vertex::Ptr& b);
+
+    /**
      * Test if graph contains this edge
      * \return true if graph contains edge, false otherwise
      */
