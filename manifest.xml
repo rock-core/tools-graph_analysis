@@ -19,4 +19,5 @@
   <depend package="gsl" />
   <depend package="qt4" />
   <depend package="libxml2-utils" optional="1"/>
+  <tags>needs_opt</tags>
 </package>
