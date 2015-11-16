@@ -209,7 +209,7 @@ EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex::Ptr& vertex) co
 
 SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const
 {
-    graph_analysis::lemon::DirectedGraph::Ptr graph = boost::dynamic_pointer_cast<graph_analysis::lemon::DirectedGraph>(baseGraph->copy());
+    graph_analysis::lemon::DirectedGraph::Ptr graph = dynamic_pointer_cast<graph_analysis::lemon::DirectedGraph>(baseGraph->copy());
     SubGraph::Ptr subgraph = createSubGraph(graph);
 
     ::lemon::Undirector<const DirectedGraph::graph_t> undirected(graph->raw());
@@ -223,7 +223,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& b
     components.resize(componentCount);
     for(int i = 0; i < componentCount; ++i)
     {
-        Vertex::Ptr vertex = boost::make_shared<Vertex>();
+        Vertex::Ptr vertex = make_shared<Vertex>();
         components[i] = vertex;
 
         // Activate this node in the subgraph
@@ -260,7 +260,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& b
             subgraph->disable(sourceVertex);
 
             // Add an edge to relate vertices to their components
-            Edge::Ptr edge = boost::make_shared<Edge>(sourceVertex, targetVertex);
+            Edge::Ptr edge = make_shared<Edge>(sourceVertex, targetVertex);
             graph->addEdge(edge);
         }
     } else {
@@ -272,7 +272,7 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& b
 
 SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
-    const DirectedGraph::Ptr& directedGraph = boost::dynamic_pointer_cast<DirectedGraph>(baseGraph);
+    const DirectedGraph::Ptr& directedGraph = dynamic_pointer_cast<DirectedGraph>(baseGraph);
     if(!directedGraph)
     {
         throw std::invalid_argument("graph_analysis::lemon::DirectedGraph::createSubGraph: base graph could not be cast to DirectedGraph");
@@ -289,12 +289,12 @@ SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) con
 
 BaseGraph::Ptr DirectedGraph::copy() const
 {
-    return boost::shared_ptr<BaseGraph>(new DirectedGraph(*this));
+    return shared_ptr<BaseGraph>(new DirectedGraph(*this));
 }
 
 BaseGraph::Ptr DirectedGraph::newInstance() const
 {
-    return boost::shared_ptr<BaseGraph>(new DirectedGraph());
+    return shared_ptr<BaseGraph>(new DirectedGraph());
 }
 
 } // end namespace lemon

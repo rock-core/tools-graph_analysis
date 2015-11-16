@@ -133,7 +133,7 @@ SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) con
 {
     // Enable all nodes and edges
     BaseGraph::Ptr graphCopy = baseGraph->copy();
-    DirectedGraph::Ptr subGraph = boost::dynamic_pointer_cast<DirectedGraph>(graphCopy);
+    DirectedGraph::Ptr subGraph = dynamic_pointer_cast<DirectedGraph>(graphCopy);
     return SubGraph::Ptr(new DirectedSubGraph(baseGraph, subGraph));
 }
 

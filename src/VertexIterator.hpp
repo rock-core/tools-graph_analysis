@@ -1,8 +1,9 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_ITERATOR_HPP
 #define GRAPH_ANALYSIS_VERTEX_ITERATOR_HPP
 
-#include <boost/function.hpp>
 #include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/SharedPtr.hpp>
+
 
 namespace graph_analysis {
 
@@ -17,8 +18,8 @@ class VertexIterator
     friend class SubGraph;
 
 public:
-    typedef boost::shared_ptr<VertexIterator> Ptr;
-    typedef boost::function1<bool, Vertex::Ptr> SkipFunction;
+    typedef shared_ptr<VertexIterator> Ptr;
+    typedef function1<bool, Vertex::Ptr> SkipFunction;
 
     virtual ~VertexIterator() {}
 

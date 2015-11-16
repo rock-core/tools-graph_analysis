@@ -15,7 +15,7 @@ template<typename T, size_t Dim = 2>
 class NWeightedVertex : public NWeighted<T,Dim,Vertex>
 {
 public:
-    typedef boost::shared_ptr< NWeightedVertex > Ptr;
+    typedef shared_ptr< NWeightedVertex > Ptr;
 
     NWeightedVertex(const T& weight)
         : NWeighted<T,Dim,Vertex>(weight)

@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_HPP
 
-#include <boost/shared_ptr.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 
 namespace graph_analysis {
 
@@ -13,7 +13,7 @@ class Algorithms
 public:
     virtual ~Algorithms() {}
 
-    virtual boost::shared_ptr<SubGraph> identifyConnectedComponents(const boost::shared_ptr<BaseGraph>& baseGraph) const { (void) baseGraph; throw std::runtime_error("graph_analysis::Algorithms::identifyConnectedComponents has not been implemented"); }
+    virtual shared_ptr<SubGraph> identifyConnectedComponents(const shared_ptr<BaseGraph>& baseGraph) const { (void) baseGraph; throw std::runtime_error("graph_analysis::Algorithms::identifyConnectedComponents has not been implemented"); }
 };
 
 } // end namespace graph_analysis

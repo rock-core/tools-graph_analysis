@@ -19,7 +19,7 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
 {
     if(edgeFilter)
     {
-        filters::EdgeContextFilter::Ptr contextFilter = boost::dynamic_pointer_cast<filters::EdgeContextFilter>(edgeFilter);
+        filters::EdgeContextFilter::Ptr contextFilter = dynamic_pointer_cast<filters::EdgeContextFilter>(edgeFilter);
 
         EdgeIterator::Ptr edgeIterator = getBaseGraph()->getEdgeIterator();
 
@@ -123,7 +123,7 @@ VertexIterator::Ptr SubGraph::getVertexIterator() const
     VertexIterator::Ptr vertexIt = getBaseGraph()->getVertexIterator();
     // Need to explicitely cast skip function to disambiguate (
     // disable(Vertex::Ptr) vs. disable(Edge::Ptr)
-    VertexIterator::SkipFunction skipFunction( boost::bind(static_cast<bool (SubGraph::*)(Vertex::Ptr) const>(&SubGraph::disabled), this,_1) );
+    VertexIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(Vertex::Ptr) const>(&SubGraph::disabled), this,_1) );
     vertexIt->setSkipFunction(skipFunction);
     return vertexIt;
 }
@@ -134,7 +134,7 @@ EdgeIterator::Ptr SubGraph::getEdgeIterator() const
     EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator();
     // Need to explicitely cast skip function to disambiguate (
     // disable(Vertex::Ptr) vs. disable(Edge::Ptr)
-    EdgeIterator::SkipFunction skipFunction( boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
+    EdgeIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
     edgeIt->setSkipFunction(skipFunction);
     return edgeIt;
 }
@@ -147,7 +147,7 @@ EdgeIterator::Ptr SubGraph::getEdgeIterator(Vertex::Ptr vertex) const
     }
 
     EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator(vertex);
-    EdgeIterator::SkipFunction skipFunction( boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
+    EdgeIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
     edgeIt->setSkipFunction(skipFunction);
     return edgeIt;
 }

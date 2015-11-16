@@ -1,4 +1,5 @@
 #include "FloydWarshall.hpp"
+#include <limits>
 
 namespace graph_analysis {
 namespace algorithms {

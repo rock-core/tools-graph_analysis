@@ -27,7 +27,7 @@ Feature::Feature(GraphElement::Ptr element, GraphWidget *graphWidget)
 
 Edge::Ptr Feature::getEdge() const
 {
-    Edge::Ptr edge = boost::dynamic_pointer_cast<Edge>(mpGraphElement);
+    Edge::Ptr edge = dynamic_pointer_cast<Edge>(mpGraphElement);
     if(!edge)
     {
         throw std::runtime_error("graph_analysis::gui::items::Feature::getEdge: feature is no associated with an edge");
@@ -37,7 +37,7 @@ Edge::Ptr Feature::getEdge() const
 
 Vertex::Ptr Feature::getVertex() const
 {
-    Vertex::Ptr vertex = boost::dynamic_pointer_cast<Vertex>(mpGraphElement);
+    Vertex::Ptr vertex = dynamic_pointer_cast<Vertex>(mpGraphElement);
     if(!vertex)
     {
         throw std::runtime_error("graph_analysis::gui::items::Feature::getVertex: feature is no associated with an vertex");
@@ -140,7 +140,7 @@ void Feature::dropEvent(QGraphicsSceneDragDropEvent *event)
             // only vertices are used for dragndrop for now
             GraphElementId sourceId = boost::lexical_cast<GraphElementId>( mimeData->text().toStdString() );
             Vertex::Ptr sourceVertex = mpGraphWidget->graph()->getVertex(sourceId);
-            Vertex::Ptr targetVertex = boost::dynamic_pointer_cast<Vertex>( mpGraphElement );
+            Vertex::Ptr targetVertex = dynamic_pointer_cast<Vertex>( mpGraphElement );
             if(sourceVertex && targetVertex)
             {  
                 event->acceptProposedAction();

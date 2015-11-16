@@ -7,16 +7,7 @@ namespace graph_analysis {
 EdgeTypeManager::EdgeTypeManager()
 {
     // registering known implemented class-types
-    mTypeMap = boost::assign::map_list_of
-        (std::string("default"),                         Edge::Ptr (new Edge()))
-        ;
-
-    // initializing the list of default registered types (non-repeatingly, non-verbously)
-    TypeMap::iterator it = mTypeMap.begin();
-    for(; mTypeMap.end() != it; ++it)
-    {
-        mRegisteredTypes.insert(it->first);
-    }
+    registerType("default", Edge::Ptr (new Edge()));
 }
 
 EdgeTypeManager::~EdgeTypeManager()

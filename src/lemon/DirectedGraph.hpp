@@ -19,7 +19,7 @@ namespace lemon {
 class DirectedGraph : public TypedGraph< ::lemon::ListDigraph, graph_analysis::DirectedGraphInterface >
 {
 public:
-    typedef boost::shared_ptr<DirectedGraph> Ptr;
+    typedef shared_ptr<DirectedGraph> Ptr;
 
     /**
      * \brief Default constructor of the graph

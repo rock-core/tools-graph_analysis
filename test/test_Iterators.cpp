@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(stl_like)
             }
             BOOST_REQUIRE_MESSAGE(cnt == 3, "The Graph should have 3 vertices but it has not");
 
-            graph_analysis::DirectedGraphInterface::Ptr directedGraph = boost::dynamic_pointer_cast<graph_analysis::DirectedGraphInterface>(graph);
+            graph_analysis::DirectedGraphInterface::Ptr directedGraph = dynamic_pointer_cast<graph_analysis::DirectedGraphInterface>(graph);
             if(directedGraph)
             {
                 try{

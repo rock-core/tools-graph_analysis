@@ -8,7 +8,7 @@ using namespace graph_analysis::algorithms;
 
 double getWeight(Edge::Ptr edge)
 {
-    WeightedEdge::Ptr weightedEdge = boost::dynamic_pointer_cast<WeightedEdge>(edge);
+    WeightedEdge::Ptr weightedEdge = dynamic_pointer_cast<WeightedEdge>(edge);
     return weightedEdge->getWeight();
 }
 

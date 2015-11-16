@@ -10,7 +10,7 @@ namespace graph_analysis
 class DirectedGraphInterface : public BaseGraph
 {
 public:
-    typedef boost::shared_ptr<DirectedGraphInterface> Ptr;
+    typedef shared_ptr<DirectedGraphInterface> Ptr;
 
     /**
      * Default constructor

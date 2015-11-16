@@ -9,7 +9,7 @@ namespace algorithms {
 class MultiCommodityEdge : public Edge
 {
 public:
-    typedef boost::shared_ptr<MultiCommodityEdge> Ptr;
+    typedef shared_ptr<MultiCommodityEdge> Ptr;
 
     MultiCommodityEdge(uint32_t commodities);
     virtual ~MultiCommodityEdge() {}

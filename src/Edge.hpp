@@ -1,6 +1,7 @@
 #ifndef GRAPH_ANALYSIS_EDGE_HPP
 #define GRAPH_ANALYSIS_EDGE_HPP
 
+#include <string>
 #include <iostream>
 #include <graph_analysis/Vertex.hpp>
 
@@ -14,7 +15,7 @@ namespace graph_analysis {
 class Edge : public GraphElement
 {
 public:
-    typedef boost::shared_ptr< Edge > Ptr;
+    typedef shared_ptr< Edge > Ptr;
 
     Edge(const std::string& label = std::string());
 

@@ -148,7 +148,7 @@ namespace algorithms {
         EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
         while(edgeIt->next())
         {
-            MultiCommodityMinCostFlow::edge_t::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityMinCostFlow::edge_t>( edgeIt->current() );
+            MultiCommodityMinCostFlow::edge_t::Ptr edge = dynamic_pointer_cast<MultiCommodityMinCostFlow::edge_t>( edgeIt->current() );
             if(edge)
             {
                 std::cout << "Flows on: " << edge->toString() << ": id " << graph->getEdgeId(edge) << std::endl;

@@ -45,7 +45,7 @@ typedef TNodeEdgeNet< Serializable<Vertex::Ptr>, Serializable<Edge::Ptr> > SnapD
 class DirectedGraph : public graph_analysis::TypedGraph<SnapDigraph, DirectedGraphInterface>
 {
 public:
-    typedef boost::shared_ptr<DirectedGraph> Ptr;
+    typedef shared_ptr<DirectedGraph> Ptr;
 
     //typedef std::map<TInt, Edge::Ptr> EdgeMap;
     //typedef std::map<TInt, Vertex::Ptr> VertexMap;

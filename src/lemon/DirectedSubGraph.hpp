@@ -21,9 +21,9 @@ typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap
  */
 class DirectedSubGraph : public SubGraphImpl< SubGraphLemon, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
 {
-    boost::shared_ptr<DirectedGraph> mpDirectedGraph;
+    shared_ptr<DirectedGraph> mpDirectedGraph;
 public:
-    DirectedSubGraph(const boost::shared_ptr<DirectedGraph>& graph);
+    DirectedSubGraph(const shared_ptr<DirectedGraph>& graph);
 
     void enable(Vertex::Ptr vertex);
     void disable(Vertex::Ptr vertex);

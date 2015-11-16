@@ -95,6 +95,7 @@ rock_library(graph_analysis
         NWeighted.hpp
         NWeightedEdge.hpp
         Percolation.hpp
+        SharedPtr.hpp
         SubGraph.hpp
         SubGraphImpl.hpp
         TypedGraph.hpp
@@ -211,15 +212,15 @@ else()
 endif()
 set_target_properties(graph_analysis PROPERTIES LINK_FLAGS ${graph_analysis-linker_flags})
 
-rock_executable(graph_analysis-bm Benchmark.cpp
-    DEPS graph_analysis
-    DEPS_PLAIN rt
-    NOINSTALL)
-
-rock_executable(graph_analysis-gui gui/Main.cpp
-    DEPS graph_analysis
-    )
-
-rock_executable(graph_analysis-reader utils/GraphReaderMain.cpp
-    DEPS graph_analysis
-    )
+#rock_executable(graph_analysis-bm Benchmark.cpp
+#    DEPS graph_analysis
+#    DEPS_PLAIN rt
+#    NOINSTALL)
+#
+#rock_executable(graph_analysis-gui gui/Main.cpp
+#    DEPS graph_analysis
+#    )
+#
+#rock_executable(graph_analysis-reader utils/GraphReaderMain.cpp
+#    DEPS graph_analysis
+#    )

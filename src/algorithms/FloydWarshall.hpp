@@ -1,15 +1,16 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_FLOYD_WARHSHALL_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_FLOYD_WARHSHALL_HPP
 
-#include <boost/function.hpp>
 #include <graph_analysis/Edge.hpp>
 #include <graph_analysis/BaseGraph.hpp>
 #include <graph_analysis/algorithms/DistanceMatrix.hpp>
+#include <graph_analysis/SharedPtr.hpp>
+
 
 namespace graph_analysis {
 namespace algorithms {
 
-typedef boost::function1<double, Edge::Ptr> EdgeWeightFunction;
+typedef function1<double, Edge::Ptr> EdgeWeightFunction;
 
 /**
  * \brief Implements Floyd-Warshall algorithm

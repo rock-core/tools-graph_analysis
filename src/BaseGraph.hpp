@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_BASE_GRAPH_HPP
 
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 #include <graph_analysis/EdgeIterator.hpp>
 #include <graph_analysis/VertexIterator.hpp>
 #include <graph_analysis/Filter.hpp>
@@ -29,7 +29,7 @@ public:
     enum ImplementationType { BOOST_DIRECTED_GRAPH, LEMON_DIRECTED_GRAPH, SNAP_DIRECTED_GRAPH, IMPLEMENTATION_TYPE_END };
     static std::map<ImplementationType, std::string> ImplementationTypeTxt;
 
-    typedef boost::shared_ptr<BaseGraph> Ptr;
+    typedef shared_ptr<BaseGraph> Ptr;
 
     /**
      * Default constructor for a graph
@@ -111,7 +111,7 @@ public:
      * \brief Get the vertex id for this graph
      * \throw std::runtime_error if the vertex is not part of this graph
      */
-    GraphElementId getVertexId(const Vertex::Ptr& vertex) const { (void) vertex; return boost::dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
+    GraphElementId getVertexId(const Vertex::Ptr& vertex) const { (void) vertex; return dynamic_pointer_cast<GraphElement>(vertex)->getId( getId() ); }
 
     /**
      * \brief Get the vertex by id
@@ -155,7 +155,7 @@ public:
      * \brief Get the edge id for this graph
      * \throw std::runtime_error if the edge is not part of this graph
      */
-    GraphElementId getEdgeId(const Edge::Ptr& edge) const { (void) edge; return boost::dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
+    GraphElementId getEdgeId(const Edge::Ptr& edge) const { (void) edge; return dynamic_pointer_cast<GraphElement>(edge)->getId( getId() ); }
 
     /**
      * \brief Get the edge by id
@@ -173,16 +173,16 @@ public:
      * \brief Get edges by given vertices and return only edges of a given type
      * that end at target
      * Type should be a subclass of Edge!!
-     * If boost::dynamic_pointer_cast returns null pointer, object is not added
+     * If dynamic_pointer_cast returns null pointer, object is not added
      */
     template<typename T>
-    std::vector< boost::shared_ptr<T> > getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
+    std::vector< shared_ptr<T> > getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
     {
-        std::vector< boost::shared_ptr<T> > edges;
+        std::vector< shared_ptr<T> > edges;
         EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
         while(edgeIt->next())
         {
-            boost::shared_ptr<T> edge = boost::dynamic_pointer_cast<T>( edgeIt->current() );
+            shared_ptr<T> edge = dynamic_pointer_cast<T>( edgeIt->current() );
             if(edge && edge->getTargetVertex() == target)
             {
                 edges.push_back(edge);

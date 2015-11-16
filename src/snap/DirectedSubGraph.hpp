@@ -12,10 +12,10 @@ namespace snap {
 
 class DirectedSubGraph : public SubGraph
 {
-    boost::shared_ptr<BaseGraph> mDirectedGraph;
+    shared_ptr<BaseGraph> mDirectedGraph;
 
 public:
-    DirectedSubGraph(boost::shared_ptr<BaseGraph> graph, boost::shared_ptr<BaseGraph> subGraph);
+    DirectedSubGraph(shared_ptr<BaseGraph> graph, shared_ptr<BaseGraph> subGraph);
 
     void enable(Vertex::Ptr vertex);
     void disable(Vertex::Ptr vertex);

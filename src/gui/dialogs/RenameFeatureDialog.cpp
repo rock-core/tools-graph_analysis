@@ -7,6 +7,7 @@ namespace graph_analysis {
 namespace gui {
 namespace dialogs {
 
+
 RenameFeatureDialog::RenameFeatureDialog(NodeItem *nodeItem)
 : mpNodeItem(nodeItem)
 , mValid(false)
@@ -38,7 +39,7 @@ void RenameFeatureDialog::setupUi(QDialog *Dialog)
     // fetching all features in the concerned cluster node
     foreach(NodeItem::VTuple tuple, mpNodeItem->getVertices())
     {
-        std::string item = boost::lexical_cast<std::string>(tuple.first) + ": " + tuple.second->getLabel();
+        std::string item = ::boost::lexical_cast<std::string>(tuple.first) + ": " + tuple.second->getLabel();
         mpComboBox->addItem(QString(item.c_str()));
     }
     mpComboBox->setObjectName(QString::fromUtf8("mpComboBox"));

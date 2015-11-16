@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_EDGE_ITERATOR_HPP
 #define GRAPH_ANALYSIS_EDGE_ITERATOR_HPP
 
-#include <boost/function.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 #include <graph_analysis/Edge.hpp>
 
 namespace graph_analysis {
@@ -17,8 +17,8 @@ class EdgeIterator
     friend class SubGraph;
 
 public:
-    typedef boost::shared_ptr<EdgeIterator> Ptr;
-    typedef boost::function1<bool, Edge::Ptr> SkipFunction;
+    typedef shared_ptr<EdgeIterator> Ptr;
+    typedef function1<bool, Edge::Ptr> SkipFunction;
 
     virtual ~EdgeIterator() {}
 

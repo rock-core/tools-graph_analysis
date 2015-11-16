@@ -36,14 +36,14 @@ public:
      * Classes that inherit from TypedSubGraph need to explictly call
      * setSubgraph to link to the underlying SubGraph implementation
      */
-    SubGraphImpl(boost::shared_ptr<BaseGraph> graph, VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
+    SubGraphImpl(shared_ptr<BaseGraph> graph, VertexFilter* vertexFilter, EdgeFilter* edgeFilter)
         : SubGraph(graph)
     {
-        mpVertexFilter = boost::shared_ptr<VertexFilter>(vertexFilter);
-        mpEdgeFilter = boost::shared_ptr<EdgeFilter>(edgeFilter);
+        mpVertexFilter = shared_ptr<VertexFilter>(vertexFilter);
+        mpEdgeFilter = shared_ptr<EdgeFilter>(edgeFilter);
     }
 
-    SubGraphImpl(boost::shared_ptr<BaseGraph> graph)
+    SubGraphImpl(shared_ptr<BaseGraph> graph)
         : SubGraph(graph)
     {}
 
@@ -94,13 +94,13 @@ protected:
     void setSubgraph(graph_t* subgraph)
     {
         assert(subgraph);
-        mpSubgraph = boost::shared_ptr<graph_t>(subgraph);
+        mpSubgraph = shared_ptr<graph_t>(subgraph);
     }
 
-    boost::shared_ptr<VertexFilter> mpVertexFilter;
-    boost::shared_ptr<EdgeFilter> mpEdgeFilter;
+    shared_ptr<VertexFilter> mpVertexFilter;
+    shared_ptr<EdgeFilter> mpEdgeFilter;
 
-    boost::shared_ptr<graph_t> mpSubgraph;
+    shared_ptr<graph_t> mpSubgraph;
 };
 
 } // end namespace graph_analysis

@@ -5,6 +5,7 @@
 #include <math.h>
 #include <graph_analysis/DirectedGraphInterface.hpp>
 #include <base/Logging.hpp>
+#include <algorithm>
 
 namespace graph_analysis {
 namespace algorithms {
@@ -22,7 +23,7 @@ MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph
                 " pointer to graph is null");
     }
 
-    if(!boost::dynamic_pointer_cast<DirectedGraphInterface>(mpGraph))
+    if(!dynamic_pointer_cast<DirectedGraphInterface>(mpGraph))
     {
         throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow:"
                 " given graph is not directed (or cannot be casted to DirectedGraphInterface)");
@@ -31,7 +32,7 @@ MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph
 
 GLPKSolver::Status MultiCommodityMinCostFlow::run()
 {
-    DirectedGraphInterface::Ptr diGraph = boost::dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);
+    DirectedGraphInterface::Ptr diGraph = dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);
 
     // foreach edge
     //     consumed capacity per node <= upper bound
@@ -80,7 +81,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
     {
         // add 
         // MaxEdgeCapacity >=  0*... + 1.0*currentEdgeComm0 + 1.0*currentEdgeComm1 ... + 0*edgeCom
-        MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
+        MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
         if(!edge)
         {
             throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::run cannot cast edge to MultiCommodityEdge");
@@ -137,7 +138,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
     VertexIterator::Ptr vertexIt = mpGraph->getVertexIterator();
     while(vertexIt->next())
     {
-        MultiCommodityVertex::Ptr vertex = boost::dynamic_pointer_cast<MultiCommodityVertex>( vertexIt->current() );
+        MultiCommodityVertex::Ptr vertex = dynamic_pointer_cast<MultiCommodityVertex>( vertexIt->current() );
         if(!vertex)
         {
             throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow: cannot cast vertex to MultiCommodityVertex");
@@ -166,7 +167,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
             EdgeIterator::Ptr inEdgeIt = diGraph->getInEdgeIterator(vertex);
             while(inEdgeIt->next())
             {
-                MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>(inEdgeIt->current());
+                MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>(inEdgeIt->current());
                 uint32_t commodityCol = getColumnIndex(edge, k);
 
                 ia[index] = row - mCommodities + k;
@@ -183,7 +184,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
             EdgeIterator::Ptr outEdgeIt = diGraph->getOutEdgeIterator(vertex);
             while(outEdgeIt->next())
             {
-                MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( outEdgeIt->current() );
+                MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>( outEdgeIt->current() );
                 uint32_t commodityCol = getColumnIndex(edge, k);
 
                 ia[index] = row - mCommodities + k;
@@ -216,7 +217,7 @@ void MultiCommodityMinCostFlow::storeResult()
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
-        MultiCommodityEdge::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
+        MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
         if(!edge)
         {
             throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::storeResult: "

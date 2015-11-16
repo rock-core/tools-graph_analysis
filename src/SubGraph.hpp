@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_SUB_GRAPH_HPP
 #define GRAPH_ANALYSIS_SUB_GRAPH_HPP
 
-#include <boost/shared_ptr.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 #include <graph_analysis/VertexIterable.hpp>
 #include <graph_analysis/EdgeIterable.hpp>
 #include <graph_analysis/Filter.hpp>
@@ -12,14 +12,14 @@ class BaseGraph;
 
 class SubGraph : public VertexIterable, public EdgeIterable
 {
-    boost::shared_ptr<BaseGraph> mpBaseGraph;
+    shared_ptr<BaseGraph> mpBaseGraph;
 
 public:
-    SubGraph(boost::shared_ptr<BaseGraph> graph);
+    SubGraph(shared_ptr<BaseGraph> graph);
 
     virtual ~SubGraph() {}
 
-    typedef boost::shared_ptr<SubGraph> Ptr;
+    typedef shared_ptr<SubGraph> Ptr;
 
     /**
      * Enable the given vertex
@@ -102,7 +102,7 @@ public:
      * Convert the subgraph into a base graph by copying only the enabled nodes
      * and edges
      */
-    virtual boost::shared_ptr<BaseGraph> toBaseGraph();
+    virtual shared_ptr<BaseGraph> toBaseGraph();
 
     /**
      * Get the iterator over all vertices in this subgraph
@@ -122,7 +122,7 @@ public:
      */
     virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
 
-    boost::shared_ptr<BaseGraph> getBaseGraph() const;
+    shared_ptr<BaseGraph> getBaseGraph() const;
 };
 
 } // end namespace graph_analysis

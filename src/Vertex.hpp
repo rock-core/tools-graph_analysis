@@ -15,7 +15,7 @@ namespace graph_analysis
 class Vertex : public GraphElement
 {
 public:
-    typedef boost::shared_ptr< Vertex > Ptr;
+    typedef shared_ptr< Vertex > Ptr;
 
     virtual ~Vertex() {}
 

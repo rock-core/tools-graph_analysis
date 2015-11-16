@@ -10,7 +10,7 @@ namespace algorithms {
 class MultiCommodityVertex : public Vertex
 {
 public:
-    typedef boost::shared_ptr<MultiCommodityVertex> Ptr;
+    typedef shared_ptr<MultiCommodityVertex> Ptr;
 
     MultiCommodityVertex(uint32_t commodities)
         : mCommoditySupply(commodities,0)

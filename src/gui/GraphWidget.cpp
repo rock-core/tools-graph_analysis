@@ -463,7 +463,7 @@ void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& la
     //Vertex::Ptr vertex;
     //Edge::Ptr edge;
 
-    //if(vertex = boost::dynamic_pointer_cast<Vertex>(element))
+    //if(vertex = dynamic_pointer_cast<Vertex>(element))
     //{
     //    //NodeItem* nodeItem = mNodeItemMap[vertex];
     //    //if(!nodeItem)
@@ -473,7 +473,7 @@ void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& la
     //    //    throw std::runtime_error(error_msg);
     //    //}
     //    nodeItem->setLabel(label);
-    //} else if(edge = boost::dynamic_pointer_cast<Edge>(element))
+    //} else if(edge = dynamic_pointer_cast<Edge>(element))
     //{
     //    EdgeItem* edgeItem = mEdgeItemMap[edge];
     //    if(!edgeItem)
@@ -648,13 +648,13 @@ void GraphWidget::removeElement(const GraphElement::Ptr& element)
 {
     if(element)
     {
-        Vertex::Ptr vertex = boost::dynamic_pointer_cast<Vertex>(element);
+        Vertex::Ptr vertex = dynamic_pointer_cast<Vertex>(element);
         if(vertex)
         {
             removeVertex(vertex);
             return;
         }
-        Edge::Ptr edge = boost::dynamic_pointer_cast<Edge>(element);
+        Edge::Ptr edge = dynamic_pointer_cast<Edge>(element);
         if(edge)
         {
             removeEdge(edge);

@@ -547,7 +547,7 @@ void ComponentEditorWidget::updateLayout()
     while(edgeIt->next())
     {
         Edge::Ptr edge = edgeIt->current();
-        PortConnection::Ptr connection = boost::dynamic_pointer_cast<PortConnection>(edge);
+        PortConnection::Ptr connection = dynamic_pointer_cast<PortConnection>(edge);
         if(connection)
         {
             LOG_DEBUG_S << "Visualizing port connection";

@@ -73,8 +73,8 @@ int main(int argc, char** argv)
         printf("usage: %s [-h|--help] <number-of-nodes> <number-of-edges>\n", argv[0]);
         exit(0);
     }
-    nodeMax = boost::lexical_cast<int>(argv[1]);
-    edgeMax = boost::lexical_cast<int>(argv[2]);
+    nodeMax = ::boost::lexical_cast<int>(argv[1]);
+    edgeMax = ::boost::lexical_cast<int>(argv[2]);
 
     std::vector<Benchmark> benchmarks;
 
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         graphMark.startAddNodes = base::Time::now();
         for(int i = 0; i < nodeMax; ++i)
         {
-            Vertex::Ptr v = boost::make_shared<Vertex>();
+            Vertex::Ptr v = make_shared<Vertex>();
             graph->addVertex( v );
         }
         graphMark.stopAddNodes = base::Time::now();
@@ -120,9 +120,9 @@ int main(int argc, char** argv)
         graphMark.startAddEdges = base::Time::now();
         for(int i = 0; i < edgeMax; ++i)
         {
-            Vertex::Ptr v0 = boost::make_shared<Vertex>();
-            Vertex::Ptr v1 = boost::make_shared<Vertex>();
-            Edge::Ptr e0 = boost::make_shared<Edge>();
+            Vertex::Ptr v0 = make_shared<Vertex>();
+            Vertex::Ptr v1 = make_shared<Vertex>();
+            Edge::Ptr e0 = make_shared<Edge>();
             e0->setSourceVertex(v0);
             e0->setTargetVertex(v1);
             graph->addEdge(e0);
@@ -205,7 +205,7 @@ int main(int argc, char** argv)
             ::lemon::ListDigraph::Node sourceNode = rawGraph.addNode();
             ::lemon::ListDigraph::Node targetNode = rawGraph.addNode();
             ::lemon::ListDigraph::Arc arc = rawGraph.addArc(sourceNode,targetNode);
-            edgeMap[arc] = boost::make_shared<Edge>();
+            edgeMap[arc] = make_shared<Edge>();
         }
         lemonRawMark.stopAddEdges = base::Time::now();
 
@@ -262,12 +262,12 @@ int main(int argc, char** argv)
         {
             using namespace graph_analysis;
 
-            Vertex::Ptr v0 = boost::make_shared<Vertex>();
-            Vertex::Ptr v1 = boost::make_shared<Vertex>();
+            Vertex::Ptr v0 = make_shared<Vertex>();
+            Vertex::Ptr v1 = make_shared<Vertex>();
             snap::Serializable<Vertex::Ptr> s0(v0);
             snap::Serializable<Vertex::Ptr> s1(v1);
 
-            Edge::Ptr e0 = boost::make_shared<Edge>();
+            Edge::Ptr e0 = make_shared<Edge>();
             snap::Serializable<Edge::Ptr> se0(e0);
             int sourceNode = rawGraph.AddNode(nodeId++,s0);
             int targetNode = rawGraph.AddNode(nodeId++,s1);
