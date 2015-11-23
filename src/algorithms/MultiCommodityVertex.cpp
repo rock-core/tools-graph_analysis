@@ -6,17 +6,32 @@ namespace algorithms {
 std::string MultiCommodityVertex::toString() const
 {
     std::stringstream ss;
-    ss << getClassName() << " supply/demand: [";
-    std::vector<int32_t>::const_iterator cit = mCommoditySupply.begin();
-    for(; cit != mCommoditySupply.end();)
     {
-        ss << *cit;
-        if(++cit != mCommoditySupply.end())
+        ss << getClassName() << " supply/demand: [";
+        std::vector<int32_t>::const_iterator cit = mCommoditySupply.begin();
+        for(; cit != mCommoditySupply.end();)
         {
-            ss << ",";
+            ss << *cit;
+            if(++cit != mCommoditySupply.end())
+            {
+                ss << ",";
+            }
         }
+        ss << "]" << std::endl;
     }
-    ss << "]";
+    {
+        ss << "         min-trans-flow: [";
+        std::vector<uint32_t>::const_iterator cit = mCommodityMinTransFlow.begin();
+        for(; cit != mCommodityMinTransFlow.end();)
+        {
+            ss << *cit;
+            if(++cit != mCommodityMinTransFlow.end())
+            {
+                ss << ",";
+            }
+        }
+        ss << "]";
+    }
     return ss.str();
 }
 

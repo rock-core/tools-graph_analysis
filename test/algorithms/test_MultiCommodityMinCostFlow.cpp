@@ -1,6 +1,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <graph_analysis/algorithms/MultiCommodityMinCostFlow.hpp>
+#include <graph_analysis/GraphIO.hpp>
 
 using namespace graph_analysis::algorithms;
 using namespace graph_analysis;
@@ -61,6 +62,9 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
         std::string file("/tmp/algorithm-multicommodity-mincostflow-0.");
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
+
+        minCostFlow.storeResult();
+        io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_0.dot", graph);
     }
 }
 
@@ -111,9 +115,11 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_1)
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
         uint32_t cost =  minCostFlow.run();
 
-        std::string file("/tmp/algorithm-multicommodity-mincostflow-1.");
+        std::string file("/tmp/graph_analysis-test-algorithms-multicommodity-mincostflow-1.");
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
+        minCostFlow.storeResult();
+        io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_1.dot", graph);
     }
 }
 
@@ -196,6 +202,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_2)
         minCostFlow.saveSolution(file + "solution");
 
         minCostFlow.storeResult();
+        io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_3.dot", graph);
         EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
         while(edgeIt->next())
         {

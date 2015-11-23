@@ -5,6 +5,7 @@
 #include <graph_analysis/algorithms/GLPKSolver.hpp>
 #include <graph_analysis/algorithms/MultiCommodityEdge.hpp>
 #include <graph_analysis/algorithms/MultiCommodityVertex.hpp>
+#include <graph_analysis/algorithms/ConstraintViolation.hpp>
 
 namespace graph_analysis {
 namespace algorithms {
@@ -183,6 +184,8 @@ public:
     // Store the result in the edges of the graph
     void storeResult();
 
+    // Validate the result and return the number of violated inflow constraints
+    std::vector<ConstraintViolation> validateInflow() const;
 private:
     uint32_t mCommodities;
     BaseGraph::Ptr mpGraph;

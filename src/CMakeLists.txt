@@ -16,6 +16,7 @@ rock_library(graph_analysis
         VertexIterable.cpp
         VertexIterator.cpp
         VertexTypeManager.cpp
+        algorithms/ConstraintViolation.cpp
         algorithms/CorrelationClustering.cpp
         algorithms/FloydWarshall.cpp
         algorithms/GLPKSolver.cpp
@@ -104,6 +105,7 @@ rock_library(graph_analysis
         VertexTypeManager.hpp
         WeightedEdge.hpp
         WeightedVertex.hpp
+        algorithms/ConstraintViolation.hpp
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
         algorithms/FloydWarshall.hpp
