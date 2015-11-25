@@ -1,10 +1,10 @@
 #include "ConstraintViolation.hpp"
-#include <boost/assign/list_of.hpp>
+#include <graph_analysis/MapInitializer.hpp>
 
 namespace graph_analysis {
 namespace algorithms {
 
-std::map<ConstraintViolation::Type, std::string> ConstraintViolation::TypeTxt = boost::assign::map_list_of
+std::map<ConstraintViolation::Type, std::string> ConstraintViolation::TypeTxt = InitMap<ConstraintViolation::Type, std::string>
     (MinFlow, "MinFlow")
     (TransFlow, "TransFlow");
 

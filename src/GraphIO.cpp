@@ -1,7 +1,7 @@
 #include "GraphIO.hpp"
 #include <sstream>
 #include <boost/regex.hpp>
-#include <boost/assign/list_of.hpp>
+#include <graph_analysis/MapInitializer.hpp>
 
 #include "io/GexfWriter.hpp"
 #include "io/GexfReader.hpp"
@@ -14,7 +14,7 @@
 namespace graph_analysis {
 namespace representation {
 
-std::map<Type, std::string> TypeTxt = boost::assign::map_list_of
+std::map<Type, std::string> TypeTxt = InitMap<Type, std::string>
     (UNKNOWN, "UNKNOWN")
     (GEXF, "GEXF")
     (LEMON, "LEMON")
@@ -44,18 +44,18 @@ void Reader::read(const std::string& filename, BaseGraph& graph)
 }
 
 
-GraphIO::WriterMap GraphIO::msWriters = boost::assign::map_list_of
+GraphIO::WriterMap GraphIO::msWriters = InitMap<representation::Type, Writer::Ptr>
     (representation::GEXF, Writer::Ptr( new GexfWriter()))
     (representation::GRAPHVIZ, Writer::Ptr( new GraphvizWriter()))
     (representation::YAML, Writer::Ptr(new YamlWriter()))
     ;
 
-GraphIO::ReaderMap GraphIO::msReaders = boost::assign::map_list_of
+GraphIO::ReaderMap GraphIO::msReaders = InitMap<representation::Type, Reader::Ptr>
     (representation::GEXF, Reader::Ptr( new GexfReader()))
     (representation::YAML, Reader::Ptr( new YamlReader()))
     ;
 
-std::map<representation::Suffix, representation::Type> GraphIO::msSuffixes = boost::assign::map_list_of
+std::map<representation::Suffix, representation::Type> GraphIO::msSuffixes = InitMap<representation::Suffix, representation::Type>
     ("yaml", representation::YAML)
     ("yml", representation::YAML)
     ("gexf", representation::GEXF)

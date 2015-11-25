@@ -1,16 +1,16 @@
 #include "BaseGraph.hpp"
 #include <sstream>
-#include <boost/assign.hpp>
 #include <base/Logging.hpp>
 #include <graph_analysis/boost_graph/DirectedGraph.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/snap/DirectedGraph.hpp>
+#include <graph_analysis/MapInitializer.hpp>
 
 namespace graph_analysis {
 
 GraphId BaseGraph::msId = 0;
 
-std::map<BaseGraph::ImplementationType, std::string> BaseGraph::ImplementationTypeTxt = boost::assign::map_list_of
+std::map<BaseGraph::ImplementationType, std::string> BaseGraph::ImplementationTypeTxt = InitMap<BaseGraph::ImplementationType, std::string>
     (BOOST_DIRECTED_GRAPH, "boost_graph::DirectedGraph")
     (LEMON_DIRECTED_GRAPH, "lemon::DirectedGraph")
     (SNAP_DIRECTED_GRAPH, "snap::DirectedGraph")
