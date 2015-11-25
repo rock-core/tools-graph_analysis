@@ -164,5 +164,48 @@ SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) con
     throw std::runtime_error("graph_analysis::boost_graph::DirectedGraph::createSubGraph not implemented");
 }
 
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(const Vertex::Ptr& vertex) const
+{
+    OutArcIterator<DirectedGraph>* it = new OutArcIterator<DirectedGraph>(*this, vertex);
+    return EdgeIterator::Ptr(it);
+}
+
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex::Ptr& vertex) const
+{
+    InArcIterator<DirectedGraph>* it = new InArcIterator<DirectedGraph>(*this, vertex);
+    return EdgeIterator::Ptr(it);
+}
+
+std::vector<Edge::Ptr> DirectedGraph::getInEdges(VertexDescriptor source, VertexDescriptor target) const
+{
+    std::vector< shared_ptr<Edge> > edges;
+
+    typedef typename boost::graph_traits< DirectedGraph::graph_t >::in_edge_iterator BoostEdgeIterator;
+    BoostEdgeIterator ei, edgeEnd;
+
+    for(boost::tie(ei, edgeEnd) = boost::in_edges(target, raw());
+            ei != edgeEnd; ++ei)
+    {
+        VertexDescriptor sourceVertexDescriptor = boost::source(*ei, raw());
+        if(sourceVertexDescriptor == source)
+        {
+            edges.push_back(raw()[*ei]);
+        }
+    }
+    return edges;
+}
+
+std::vector<Edge::Ptr> DirectedGraph::getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
+{
+    VertexDescriptor sourceVertexDescriptor = getVertexDescriptor(source);
+    VertexDescriptor targetVertexDescriptor = getVertexDescriptor(target);
+
+    std::vector<graph_analysis::Edge::Ptr> fromT = getInEdges(sourceVertexDescriptor, targetVertexDescriptor);
+    std::vector<graph_analysis::Edge::Ptr> toS = getInEdges(targetVertexDescriptor, sourceVertexDescriptor);
+
+    fromT.insert(fromT.end(), toS.begin(), toS.end());
+    return fromT;
+}
+
 } // end namespace boost_graph
 } // endn namespace graph_analysis

@@ -9,6 +9,7 @@
 #include <graph_analysis/boost_graph/ArcIterator.hpp>
 
 #include <map>
+#include <vector>
 
 namespace graph_analysis {
 /// no using boost namespace here to avoid collisions
@@ -23,20 +24,20 @@ typedef boost::listS VRep;
 typedef boost::listS ERep;
 typedef boost::property< boost::vertex_index_t, std::size_t, Vertex::Ptr> VProp;
 typedef boost::property< boost::edge_index_t, std::size_t, Edge::Ptr> EProp;
-typedef boost::adjacency_list<VRep, ERep, GType, VProp, EProp> AdjacencyGraph;
+typedef boost::adjacency_list<VRep, ERep, GType, VProp, EProp> BidirectionalGraph;
 
-typedef boost::graph_traits<AdjacencyGraph>::vertex_descriptor VertexDescriptor;
-typedef boost::graph_traits<AdjacencyGraph>::vertex_iterator VertexIteratorImpl;
+typedef boost::graph_traits<BidirectionalGraph>::vertex_descriptor VertexDescriptor;
+typedef boost::graph_traits<BidirectionalGraph>::vertex_iterator VertexIteratorImpl;
 typedef std::pair<VertexIterator, VertexIterator> VertexRange;
 
-typedef boost::graph_traits<AdjacencyGraph>::edge_descriptor EdgeDescriptor;
-typedef boost::graph_traits<AdjacencyGraph>::edge_iterator EdgeIteratorImpl;
+typedef boost::graph_traits<BidirectionalGraph>::edge_descriptor EdgeDescriptor;
+typedef boost::graph_traits<BidirectionalGraph>::edge_iterator EdgeIteratorImpl;
 typedef std::pair<EdgeIterator, EdgeIterator> EdgeRange;
 
-typedef boost::graph_traits<AdjacencyGraph>::adjacency_iterator AdjacencyIterator;
+typedef boost::graph_traits<BidirectionalGraph>::adjacency_iterator AdjacencyIterator;
 typedef std::pair<AdjacencyIterator, AdjacencyIterator> AdjacencyRange;
 
-class DirectedGraph : public TypedGraph< AdjacencyGraph, graph_analysis::DirectedGraphInterface>
+class DirectedGraph : public TypedGraph< BidirectionalGraph, graph_analysis::DirectedGraphInterface>
 {
     friend class OutArcIterator<DirectedGraph>;
     friend class InArcIterator<DirectedGraph>;
@@ -96,11 +97,15 @@ public:
 
     /**
      * Get EdgeIterator
+     * \return Get Edge Iterator
      */
     EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const;
 
-    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(const Vertex::Ptr& vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
-    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const { throw std::runtime_error("graph_analysis::boost_graph::getOutEdgeIterator not implemented"); }
+    /**
+     * Get iterator of outgoing edges
+     */
+    graph_analysis::EdgeIterator::Ptr getOutEdgeIterator(const Vertex::Ptr& vertex) const;
+    graph_analysis::EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const;
 
     /**
      * Identifies the connected components
@@ -112,6 +117,15 @@ public:
      * base graph are available (enabled)
      */
     SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& baseGraph) const;
+
+    /**
+     * Get edges between two given vertices
+     * \return List of edges from source to target
+     * vertex
+     */
+    std::vector<Edge::Ptr> getInEdges(VertexDescriptor source, VertexDescriptor target) const;
+
+    std::vector<Edge::Ptr> getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const;
 
 protected:
     // Property maps to store data associated with vertices and edges
