@@ -265,45 +265,6 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
                 ++row;
             }
         }
-
-        for(size_t k = 0; k < mCommodities; ++k)
-        {
-
-            EdgeIterator::Ptr inEdgeIt = diGraph->getInEdgeIterator(vertex);
-            while(inEdgeIt->next())
-            {
-                MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>(inEdgeIt->current());
-                uint32_t commodityCol = getColumnIndex(edge, k);
-
-                ia[index] = row - mCommodities + k;
-                ja[index] = commodityCol;
-                // inflow (thus multiply by -1.0)
-                ar[index] = -1.0;
-                LOG_DEBUG_S << "Add out edge: " << mpGraph->getEdgeId(edge) << std::endl
-                        << "ij["<< index << "] = " << row - mCommodities + k << std::endl
-                        << "ja["<< index << "] = " << commodityCol << std::endl
-                        << "ar["<< index << "] = -1.0";
-                ++index;
-            }
-
-            EdgeIterator::Ptr outEdgeIt = diGraph->getOutEdgeIterator(vertex);
-            while(outEdgeIt->next())
-            {
-                MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>( outEdgeIt->current() );
-                uint32_t commodityCol = getColumnIndex(edge, k);
-
-                ia[index] = row - mCommodities + k;
-                ja[index] = commodityCol;
-                // outflow (thus multiply by 1.0)
-                ar[index] = 1.0;
-
-                LOG_DEBUG_S << "Add in edge: " << mpGraph->getEdgeId(edge) << std::endl
-                        << "ij["<< index << "] = " << row - mCommodities + k << std::endl
-                        << "ja["<< index << "] = " << commodityCol << std::endl
-                        << "ar["<< index << "] = 1.0";
-                ++index;
-            }
-        }
     }
     mTotalNumberOfColumns = col - 1;
     mTotalNumberOfRows = row - 1;
