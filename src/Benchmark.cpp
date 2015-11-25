@@ -10,6 +10,7 @@ struct Benchmark
 {
     Benchmark(const std::string& _label)
         : label(_label)
+        , getEdgesInSeconds(0.0)
     {}
 
     std::string label;
@@ -38,6 +39,7 @@ struct Benchmark
     base::Time startStlIterateEdges;
     base::Time stopStlIterateEdges;
 
+    double getEdgesInSeconds;
 
     double costAddNodes() const { return (stopAddNodes - startAddNodes).toSeconds() / numberOfNodes; }
     double costGetNodes() const { return (stopGetNodes - startGetNodes).toSeconds() / numberOfNodes; }
@@ -46,19 +48,21 @@ struct Benchmark
     double costIterateEdges() const { return (stopIterateEdges - startIterateEdges).toSeconds() / numberOfEdges; }
     double costIterateStlEdges() const { return (stopStlIterateEdges - startStlIterateEdges).toSeconds() / numberOfEdges; }
     double costIterateStlNodes() const { return (stopStlIterateNodes - startStlIterateNodes).toSeconds() / numberOfNodes; }
+    double costGetEdges() const { return getEdgesInSeconds; }
 
     void printReport() const
     {
         std::cout << "Benchmark: " << label << std::endl;
-        std::cout << "    number of nodes:  " << numberOfNodes << std::endl;
-        std::cout << "    number of edges:  " << numberOfEdges << std::endl;
-        std::cout << "    add     (p node): " << costAddNodes() << " s" << std::endl;
-        std::cout << "    get     (p node): " << costGetNodes() << " s" << std::endl;
-        std::cout << "    add     (p edge): " << costAddEdges() << " s" << std::endl;
-        std::cout << "    iterate (p node): " << costIterateNodes() << " s" << std::endl;
-        std::cout << "    iterate (p edge): " << costIterateEdges() << " s" << std::endl;
-        std::cout << "stl iterate (p node): " << costIterateStlNodes() << " s" << std::endl;
-        std::cout << "stl iterate (p edge): " << costIterateStlEdges() << " s" << std::endl;
+        std::cout << "    number of nodes:    " << numberOfNodes << std::endl;
+        std::cout << "    number of edges:    " << numberOfEdges << std::endl;
+        std::cout << "    add     (p node):   " << costAddNodes() << " s" << std::endl;
+        std::cout << "    get     (p node):   " << costGetNodes() << " s" << std::endl;
+        std::cout << "    add     (p edge):   " << costAddEdges() << " s" << std::endl;
+        std::cout << "    iterate (p node):   " << costIterateNodes() << " s" << std::endl;
+        std::cout << "    iterate (p edge):   " << costIterateEdges() << " s" << std::endl;
+        std::cout << "stl iterate (p node):   " << costIterateStlNodes() << " s" << std::endl;
+        std::cout << "stl iterate (p edge):   " << costIterateStlEdges() << " s" << std::endl;
+        std::cout << "    get edges (p node): " << costGetEdges() << " s" << std::endl;
 
     }
 };
@@ -159,6 +163,24 @@ int main(int argc, char** argv)
             Edge::Ptr edge = *eit;
         }
         graphMark.stopStlIterateEdges = base::Time::now();
+
+        std::cout << "    -- get edges" << std::endl;
+        graphMark.getEdgesInSeconds = 0;
+        int numberOfCalls = 0;
+        VertexIterator::Ptr vertex0It = graph->getVertexIterator();
+        while(vertex0It->next())
+        {
+            VertexIterator::Ptr vertex1It = graph->getVertexIterator();
+            while(vertex1It->next())
+            {
+                base::Time startGetEdges = base::Time::now();
+                std::vector<Edge::Ptr> edges = graph->getEdges(vertex0It->current(), vertex1It->current());
+                base::Time endGetEdges = base::Time::now();
+                graphMark.getEdgesInSeconds += (endGetEdges - startGetEdges).toSeconds();
+                ++numberOfCalls;
+            }
+        }
+        graphMark.getEdgesInSeconds /= (1.0*numberOfCalls);
 
         benchmarks.push_back(graphMark);
     }
