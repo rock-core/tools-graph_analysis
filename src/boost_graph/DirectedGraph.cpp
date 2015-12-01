@@ -72,7 +72,7 @@ Vertex::Ptr DirectedGraph::getVertex(GraphElementId id) const
 VertexDescriptor DirectedGraph::getVertexDescriptor(const Vertex::Ptr& vertex) const
 {
     GraphElementId id = getVertexId(vertex);
-    std::map<GraphElementId, VertexDescriptor>::const_iterator cit = mVertexMap.find(id);
+    VertexMap::const_iterator cit = mVertexMap.find(id);
     if(cit != mVertexMap.end())
     {
         return cit->second;
@@ -83,7 +83,7 @@ VertexDescriptor DirectedGraph::getVertexDescriptor(const Vertex::Ptr& vertex) c
 EdgeDescriptor DirectedGraph::getEdgeDescriptor(const Edge::Ptr& edge) const
 {
     GraphElementId id = getEdgeId(edge);
-    std::map<GraphElementId, EdgeDescriptor>::const_iterator cit = mEdgeMap.find(id);
+    EdgeMap::const_iterator cit = mEdgeMap.find(id);
     if(cit != mEdgeMap.end())
     {
         return cit->second;
@@ -176,7 +176,7 @@ graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex:
     return EdgeIterator::Ptr(it);
 }
 
-std::vector<Edge::Ptr> DirectedGraph::getInEdges(VertexDescriptor source, VertexDescriptor target) const
+std::vector<Edge::Ptr> DirectedGraph::getEdges(VertexDescriptor source, VertexDescriptor target) const
 {
     std::vector< shared_ptr<Edge> > edges;
 
@@ -200,11 +200,7 @@ std::vector<Edge::Ptr> DirectedGraph::getEdges(const Vertex::Ptr& source, const 
     VertexDescriptor sourceVertexDescriptor = getVertexDescriptor(source);
     VertexDescriptor targetVertexDescriptor = getVertexDescriptor(target);
 
-    std::vector<graph_analysis::Edge::Ptr> fromT = getInEdges(sourceVertexDescriptor, targetVertexDescriptor);
-    std::vector<graph_analysis::Edge::Ptr> toS = getInEdges(targetVertexDescriptor, sourceVertexDescriptor);
-
-    fromT.insert(fromT.end(), toS.begin(), toS.end());
-    return fromT;
+    return getEdges(sourceVertexDescriptor, targetVertexDescriptor);
 }
 
 } // end namespace boost_graph

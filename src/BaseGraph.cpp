@@ -158,16 +158,30 @@ void BaseGraph::removeEdge(const Edge::Ptr& edge)
 std::vector<Edge::Ptr> BaseGraph::getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
 {
     std::vector<Edge::Ptr> edges;
-    EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
-    while(edgeIt->next())
+    EdgeIterator::Ptr edgeIt;
+    const DirectedGraphInterface* diGraph = dynamic_cast<const DirectedGraphInterface*>(this);
+    if(diGraph)
     {
-        Edge::Ptr edge = edgeIt->current();
-        if(edge->getTargetVertex() == target)
+        edgeIt = diGraph->getInEdgeIterator(target);
+        while(edgeIt->next())
         {
-            edges.push_back(edge);
+            Edge::Ptr edge = edgeIt->current();
+            if(edge->getSourceVertex() == source)
+            {
+                edges.push_back(edge);
+            }
+        }
+    } else {
+        edgeIt = getEdgeIterator(target);
+        while(edgeIt->next())
+        {
+            Edge::Ptr edge = edgeIt->current();
+            if(edge->getSourceVertex() == source || edge->getTargetVertex() == source)
+            {
+                edges.push_back(edge);
+            }
         }
     }
-
     return edges;
 }
 

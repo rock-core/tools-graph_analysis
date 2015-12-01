@@ -171,7 +171,8 @@ public:
 
     /**
      * \brief Get edge by given vertices
-     * \return List of edges that start at source and end at target
+     * \return List of edges that start at source and end at target for directed
+     * graphs -- for undirected, return all edges
      */
     virtual std::vector<Edge::Ptr> getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const;
 

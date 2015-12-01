@@ -123,7 +123,7 @@ public:
      * \return List of edges from source to target
      * vertex
      */
-    std::vector<Edge::Ptr> getInEdges(VertexDescriptor source, VertexDescriptor target) const;
+    std::vector<Edge::Ptr> getEdges(VertexDescriptor source, VertexDescriptor target) const;
 
     std::vector<Edge::Ptr> getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const;
 
