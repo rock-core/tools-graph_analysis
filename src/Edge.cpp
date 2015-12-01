@@ -6,7 +6,7 @@ Edge::Edge(const std::string& label)
     : GraphElement(label)
 {}
 
-Edge::Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label)
+Edge::Edge(const Vertex::Ptr& source, const Vertex::Ptr& target, const std::string& label)
     : GraphElement(label)
     , mSourceVertex(source)
     , mTargetVertex(target)
@@ -31,7 +31,7 @@ std::string Edge::toString() const
     return ss.str();
 }
 
-std::vector<Vertex::Ptr> Edge::getInvolvedVertices(Edge::Ptr e0, Edge::Ptr e1)
+std::vector<Vertex::Ptr> Edge::getInvolvedVertices(const Edge::Ptr& e0, const Edge::Ptr& e1)
 {
     std::vector<Vertex::Ptr> vertices;
     Vertex::Ptr e0_source = e0->getSourceVertex();
@@ -56,7 +56,7 @@ std::vector<Vertex::Ptr> Edge::getInvolvedVertices(Edge::Ptr e0, Edge::Ptr e1)
     return vertices;
 }
 
-bool Edge::areMeeting(Edge::Ptr e0, Edge::Ptr e1)
+bool Edge::areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1)
 {
     return getInvolvedVertices(e0, e1).size() < 4;
 }

@@ -19,7 +19,7 @@ public:
 
     Edge(const std::string& label = std::string());
 
-    Edge(Vertex::Ptr source, Vertex::Ptr target, const std::string& label = std::string());
+    Edge(const Vertex::Ptr& source, const Vertex::Ptr& target, const std::string& label = std::string());
 
     virtual ~Edge() {}
 
@@ -52,24 +52,24 @@ public:
     /**
      * Set the source vertex
      */
-    void setSourceVertex(Vertex::Ptr source) { mSourceVertex = source; }
+    void setSourceVertex(const Vertex::Ptr& source) { mSourceVertex = source; }
 
     /**
      * Set the target vertex
      */
-    void setTargetVertex(Vertex::Ptr target) { mTargetVertex = target; }
+    void setTargetVertex(const Vertex::Ptr& target) { mTargetVertex = target; }
 
     /**
      * Get all involved vertices for two edges
      * \return all distinct vertices of two edges
      */
-    static std::vector<Vertex::Ptr> getInvolvedVertices(Edge::Ptr e0, Edge::Ptr e1);
+    static std::vector<Vertex::Ptr> getInvolvedVertices(const Edge::Ptr& e0, const Edge::Ptr& e1);
 
     /**
      * Check if two edges meet at a vertex
      * \return true if edges meet at least one vertex
      */
-    static bool areMeeting(Edge::Ptr e0, Edge::Ptr e1);
+    static bool areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1);
 
 protected:
     /**
