@@ -5,7 +5,7 @@ find_package(Rock)
 # Required for graphviz
 add_definitions(-DHAVE_STRING_H)
 rock_activate_cxx11()
-rock_init(graph_analysis 0.1)
+rock_init(graph_analysis 0.2)
 rock_standard_layout()
 
 install(DIRECTORY resources/icons
