@@ -159,6 +159,7 @@ rock_library(graph_analysis
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
+        io/GraphvizStyle.hpp
         io/GraphvizWriter.hpp
         io/YamlReader.hpp
         io/YamlWriter.hpp

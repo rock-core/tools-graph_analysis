@@ -122,6 +122,36 @@ void GVGraph::setEdgeAttribute(const std::string& name, const std::string& value
 }
 
 GraphElementId GVGraph::addNode(graph_analysis::Vertex::Ptr vertex)
+bool GVGraph::setAttribute(const graph_analysis::Vertex::Ptr& vertex, const std::string& name, const std::string& value)
+{
+    std::map<GraphElementId, Agnode_t*>::const_iterator cit;
+    cit = mNodes.find(mpBaseGraph->getVertexId(vertex));
+    if(cit == mNodes.end())
+    {
+        throw std::invalid_argument("graph_analysis::io::GVGraph::setNodeAttribute: vertex '" + vertex->toString() + "' is not part of the graphviz graph");
+    }
+
+    Agnode_t* gvNode = cit->second;
+    return agsafeset(gvNode, const_cast<char *>(name.c_str()),
+                     const_cast<char *>(value.c_str()),
+                     const_cast<char *>(value.c_str()));
+}
+
+bool GVGraph::setAttribute(const graph_analysis::Edge::Ptr& edge, const std::string& name, const std::string& value)
+{
+    std::map<GraphElementId, Agedge_t*>::const_iterator cit;
+    cit = mEdges.find(mpBaseGraph->getEdgeId(edge));
+    if(cit == mEdges.end())
+    {
+        throw std::invalid_argument("graph_analysis::io::GVGraph::setEdgeAttribute: edge '" + edge->toString() + "' is not part of the graphviz graph");
+    }
+
+    Agedge_t* gvEdge = cit->second;
+    return agsafeset(gvEdge, const_cast<char *>(name.c_str()),
+                     const_cast<char *>(value.c_str()),
+                     const_cast<char *>(value.c_str()));
+}
+
 {
     GraphElementId id;
     try {

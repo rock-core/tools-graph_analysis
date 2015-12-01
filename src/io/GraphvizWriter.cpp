@@ -1,11 +1,13 @@
-#include "GraphvizWriter.hpp"
 #include <base/Logging.hpp>
+#include "GraphvizWriter.hpp"
 #include "GVGraph.hpp"
 
 namespace graph_analysis {
 namespace io {
 
-GraphvizWriter::GraphvizWriter(const std::string& layout) : mLayout(layout)
+GraphvizWriter::GraphvizWriter(const std::string& layout)
+    : mLayout(layout)
+    , mpStyle()
 {}
 
 GraphvizWriter::~GraphvizWriter()
@@ -27,6 +29,10 @@ void GraphvizWriter::write(const std::string& filename, const BaseGraph::Ptr& gr
     {
         Vertex::Ptr vertex = nodeIt->current();
         gvGraph.addNode(vertex);
+        if(mpStyle)
+        {
+            mpStyle->apply(vertex, &gvGraph, graph);
+        }
     }
 
     // populating it with the edges
@@ -35,6 +41,10 @@ void GraphvizWriter::write(const std::string& filename, const BaseGraph::Ptr& gr
     {
         Edge::Ptr edge = edgeIt->current();
         gvGraph.addEdge(edge);
+        if(mpStyle)
+        {
+            mpStyle->apply(edge, &gvGraph, graph);
+        }
     }
     // layouting and rendering
     LOG_INFO("GraphvizWriter: Applying default layout such that GVGraph context is not empty");

@@ -6,7 +6,28 @@
 #include <graph_analysis/WeightedEdge.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
+#include <graph_analysis/io/GVGraph.hpp>
+
 using namespace graph_analysis;
+
+class SimpleStyle : public io::GraphvizStyle
+{
+public:
+    void apply(const Edge::Ptr& edge, io::GVGraph* gvGraph, const BaseGraph::Ptr& graph) const
+    {
+        gvGraph->setAttribute(edge, "color", "red");
+        gvGraph->setAttribute(edge, "weight", "10");
+        gvGraph->setAttribute(edge, "arrowsize", "2");
+        gvGraph->setAttribute(edge, "penwidth", "3");
+    }
+
+    void apply(const Vertex::Ptr& vertex, io::GVGraph* gvGraph, const BaseGraph::Ptr& graph) const
+    {
+        gvGraph->setAttribute(vertex, "color", "blue");
+        gvGraph->setAttribute(vertex, "shape", "diamond");
+        gvGraph->setAttribute(vertex, "penwidth", "3");
+    }
+};
 
 BOOST_AUTO_TEST_SUITE(graph_io)
 /*
@@ -21,8 +42,7 @@ class DerivedVertex : public graph_analysis::Vertex
 public:
     DerivedVertex(std::string name)
         : graph_analysis::Vertex(name)
-    {
-    }
+    {}
 
     std::string serializeMember0() { return mMember0; }
     std::string serializeMember1() { return mMember1; }
@@ -233,5 +253,27 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     BOOST_REQUIRE_MESSAGE( count == 1, "Iterator in graph failed");
 }
 
+BOOST_AUTO_TEST_CASE(graphviz_css)
+{
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+
+    Vertex::Ptr v0(new Vertex("v0"));
+    Vertex::Ptr v1(new Vertex("v1"));
+    Vertex::Ptr v2(new Vertex("v2"));
+
+    Edge::Ptr e0(new Edge(v0,v1,"e0"));
+    Edge::Ptr e1(new Edge(v1,v2,"e1"));
+    Edge::Ptr e2(new Edge(v2,v0,"e2"));
+
+    graph->addEdge(e0);
+    graph->addEdge(e1);
+    graph->addEdge(e2);
+
+    io::GraphvizWriter gvWriter;
+    io::GraphvizStyle::Ptr style(new SimpleStyle());
+    gvWriter.setStyle(style);
+
+    gvWriter.write("/tmp/graph_analysis-test-graph_io-graphviz_css-simple.dot", graph);
+}
 
 BOOST_AUTO_TEST_SUITE_END()

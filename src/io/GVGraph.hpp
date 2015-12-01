@@ -163,6 +163,15 @@ public:
      */
     void setEdgeAttribute(const std::string& name, const std::string& value);
 
+    /**
+     * Set the attribute for a vertex
+     */
+    bool setAttribute(const graph_analysis::Vertex::Ptr& vertex, const std::string& name, const std::string& value);
+    /**
+     * Set the attribute for an edge
+     */
+    bool setAttribute(const graph_analysis::Edge::Ptr& edge, const std::string& name, const std::string& value);
+
     /// Add and remove nodes
     GraphElementId addNode(graph_analysis::Vertex::Ptr vertex);
     void addNodes(const std::vector<Vertex::Ptr>& names);

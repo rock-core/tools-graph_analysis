@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_IO_GRAPHVIZWRITER_HPP
 
 #include <graph_analysis/GraphIO.hpp>
+#include <graph_analysis/io/GraphvizStyle.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -19,11 +20,18 @@ class GraphvizWriter : public Writer
 {
     /// layouting engine to re-arrange the graph through GraphViz rendering
     std::string mLayout;
+    GraphvizStyle::Ptr mpStyle;
+
 public:
     /// constructor
     GraphvizWriter(const std::string& layout = "dot");
     /// destructor
     ~GraphvizWriter();
+
+    /**
+     * Allow to set a style sheet
+     */
+    void setStyle(const GraphvizStyle::Ptr& style) { mpStyle = style; }
 
     /**
      * \brief outputs the given graph to the given file
