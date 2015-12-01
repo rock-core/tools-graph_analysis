@@ -17,6 +17,12 @@ typedef function1<double, Edge::Ptr> EdgeWeightFunction;
 
 struct Ball
 {
+    Ball()
+        : graph()
+        , radius(0.0)
+        , volume(0.0)
+    {}
+
     BaseGraph::Ptr graph;
     double radius;
     double volume;

@@ -246,7 +246,7 @@ GraphElementId GVGraph::addEdge(const Edge::Ptr& edge)
         bool create = true;
         Agedge_t* gvEdge = _agedge(mpGVGraph, mNodes[sourceId], mNodes[targetId], getUniqueName(edge), create);
         // This works after property has been made known via setEdgeAttribute
-        agset(gvEdge, "label", const_cast<char*>(getUniqueName(edge).c_str()));
+        agset(gvEdge, const_cast<char*>("label"), const_cast<char*>(getUniqueName(edge).c_str()));
 
         GraphElementId id;
 

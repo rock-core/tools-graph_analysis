@@ -17,10 +17,6 @@ int main(int argc, char** argv)
     }
 
     BaseGraph::Ptr graph = BaseGraph::getInstance();
-
-    VertexTypeManager* manager = VertexTypeManager::getInstance();
-    //manager->registerType("myvertextype", MyVertex::Ptr());
-
     io::GraphIO::read(filename, graph);
 
     VertexIterator::Ptr vertexIt = graph->getVertexIterator();

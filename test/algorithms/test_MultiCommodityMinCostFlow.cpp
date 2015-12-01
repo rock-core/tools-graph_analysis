@@ -58,6 +58,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
         uint32_t cost =  minCostFlow.run();
+        BOOST_TEST_MESSAGE("Cost are: " << cost);
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-0.");
         minCostFlow.saveProblem(file + "problem");
@@ -114,6 +115,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_1)
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
         uint32_t cost =  minCostFlow.run();
+        BOOST_TEST_MESSAGE("Cost are: " << cost);
 
         std::string file("/tmp/graph_analysis-test-algorithms-multicommodity-mincostflow-1.");
         minCostFlow.saveProblem(file + "problem");
@@ -196,6 +198,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_2)
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
         uint32_t cost = minCostFlow.run();
+        BOOST_TEST_MESSAGE("Cost are: " << cost);
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-2.");
         minCostFlow.saveProblem(file + "problem");
