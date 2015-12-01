@@ -8,6 +8,11 @@ namespace io {
 
 class GVGraph;
 
+/**
+ * \class GraphvizStyle
+ * \brief A styling interface class for the GraphvizWriter
+ * \see GraphvizWriter for further usage
+ */
 class GraphvizStyle
 {
 public:
