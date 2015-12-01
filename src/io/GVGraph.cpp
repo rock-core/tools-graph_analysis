@@ -121,7 +121,6 @@ void GVGraph::setEdgeAttribute(const std::string& name, const std::string& value
     agattr(mpGVGraph, AGEDGE, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
 }
 
-GraphElementId GVGraph::addNode(graph_analysis::Vertex::Ptr vertex)
 bool GVGraph::setAttribute(const graph_analysis::Vertex::Ptr& vertex, const std::string& name, const std::string& value)
 {
     std::map<GraphElementId, Agnode_t*>::const_iterator cit;
@@ -152,6 +151,7 @@ bool GVGraph::setAttribute(const graph_analysis::Edge::Ptr& edge, const std::str
                      const_cast<char *>(value.c_str()));
 }
 
+GraphElementId GVGraph::addNode(const graph_analysis::Vertex::Ptr& vertex)
 {
     GraphElementId id;
     try {
@@ -186,7 +186,7 @@ void GVGraph::addNodes(const std::vector<Vertex::Ptr>& vertices)
     }
 }
 
-void GVGraph::removeNode(Vertex::Ptr vertex)
+void GVGraph::removeNode(const Vertex::Ptr& vertex)
 {
     GraphElementId id = mpBaseGraph->getVertexId(vertex);
     return removeNode(id);
@@ -236,7 +236,7 @@ void GVGraph::setRootNode(Vertex::Ptr vertex)
     }
 }
 
-GraphElementId GVGraph::addEdge(Edge::Ptr edge)
+GraphElementId GVGraph::addEdge(const Edge::Ptr& edge)
 {
     GraphElementId sourceId = mpBaseGraph->getVertexId(edge->getSourceVertex());
     GraphElementId targetId = mpBaseGraph->getVertexId(edge->getTargetVertex());
@@ -263,7 +263,7 @@ GraphElementId GVGraph::addEdge(Edge::Ptr edge)
     throw std::runtime_error("graph_analysis::io::GVGraph::addEdge: failed to add edge, nodes or targets missing");
 }
 
-void GVGraph::removeEdge(Edge::Ptr edge)
+void GVGraph::removeEdge(const Edge::Ptr& edge)
 {
     GraphElementId id = mpBaseGraph->getEdgeId(edge);
     return removeEdge(id);
