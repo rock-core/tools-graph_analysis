@@ -486,7 +486,7 @@ GraphElementId GVGraph::getId(Agedge_t* edge) const
 std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
 {
     std::stringstream ss;
-    ss << vertex->toString() << " (id:" << mpBaseGraph->getVertexId(vertex) << ")";
+    ss << vertex->toString() << " (v:" << mpBaseGraph->getVertexId(vertex) << ")";
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
 
     std::list<std::string> members = vManager->getMembers(vertex->getClassName());
@@ -504,7 +504,7 @@ std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
 std::string GVGraph::getUniqueName(Edge::Ptr edge) const
 {
     std::stringstream ss;
-    ss << edge->toString() << " (id:" << mpBaseGraph->getEdgeId(edge) << ")";
+    ss << edge->toString() << " (e:" << mpBaseGraph->getEdgeId(edge) << ")";
     return ss.str();
 }
 
