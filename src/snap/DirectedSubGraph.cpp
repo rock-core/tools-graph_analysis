@@ -12,7 +12,7 @@ DirectedSubGraph::DirectedSubGraph(const BaseGraph::Ptr& graph)
 {
 }
 
-void DirectedSubGraph::enable(Vertex::Ptr vertex)
+void DirectedSubGraph::enable(const Vertex::Ptr& vertex)
 {
     if(getBaseGraph()->contains(vertex))
     {
@@ -23,7 +23,7 @@ void DirectedSubGraph::enable(Vertex::Ptr vertex)
 
 }
 
-void DirectedSubGraph::disable(Vertex::Ptr vertex)
+void DirectedSubGraph::disable(const Vertex::Ptr& vertex)
 {
     try {
         mDirectedGraph->removeVertex(vertex);
@@ -31,7 +31,7 @@ void DirectedSubGraph::disable(Vertex::Ptr vertex)
     {}
 }
 
-void DirectedSubGraph::enable(Edge::Ptr edge)
+void DirectedSubGraph::enable(const Edge::Ptr& edge)
 {
     if(getBaseGraph()->contains(edge))
     {
@@ -42,7 +42,7 @@ void DirectedSubGraph::enable(Edge::Ptr edge)
 
 }
 
-void DirectedSubGraph::disable(Edge::Ptr edge)
+void DirectedSubGraph::disable(const Edge::Ptr& edge)
 {
     try {
         mDirectedGraph->removeEdge(edge);
@@ -50,12 +50,12 @@ void DirectedSubGraph::disable(Edge::Ptr edge)
     {}
 }
 
-bool DirectedSubGraph::enabled(Vertex::Ptr vertex) const
+bool DirectedSubGraph::enabled(const Vertex::Ptr& vertex) const
 {
     return mDirectedGraph->contains(vertex);
 }
 
-bool DirectedSubGraph::enabled(Edge::Ptr edge) const
+bool DirectedSubGraph::enabled(const Edge::Ptr& edge) const
 {
     return mDirectedGraph->contains(edge);
 }

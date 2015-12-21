@@ -2,7 +2,7 @@
 
 namespace graph_analysis {
 
-bool VertexIterator::skip(Vertex::Ptr vertex) const
+bool VertexIterator::skip(const Vertex::Ptr& vertex) const
 {
     if(mSkipFunction)
     {

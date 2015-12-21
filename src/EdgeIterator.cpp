@@ -2,7 +2,7 @@
 
 namespace graph_analysis {
 
-bool EdgeIterator::skip(Edge::Ptr edge) const
+bool EdgeIterator::skip(const Edge::Ptr& edge) const
 {
     if(mSkipFunction)
     {

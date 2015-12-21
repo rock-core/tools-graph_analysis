@@ -18,7 +18,7 @@ class EdgeIterator
 
 public:
     typedef shared_ptr<EdgeIterator> Ptr;
-    typedef function1<bool, Edge::Ptr> SkipFunction;
+    typedef function1<bool, const Edge::Ptr&> SkipFunction;
 
     virtual ~EdgeIterator() {}
 
@@ -32,20 +32,20 @@ public:
     /**
      * Retrieve the current edge this iterator is pointing to
      */
-    Edge::Ptr current() { return mEdge; }
+    const Edge::Ptr& current() { return mEdge; }
 
 protected:
     /**
      * \brief Check if edge should be skipped
      * \return True if edge should be skipped, false otherwise
      */
-    bool skip(Edge::Ptr edge) const;
+    bool skip(const Edge::Ptr& edge) const;
 
     /**
      * \brief Set next edge
      * Should be applied by class implementing next()
      */
-    void setNext(Edge::Ptr edge) { mEdge = edge; }
+    void setNext(const Edge::Ptr& edge) { mEdge = edge; }
 
     /**
      * Allows to add a skip function -- e.g. for the SubGraph which

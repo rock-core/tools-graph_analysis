@@ -19,7 +19,7 @@ class VertexIterator
 
 public:
     typedef shared_ptr<VertexIterator> Ptr;
-    typedef function1<bool, Vertex::Ptr> SkipFunction;
+    typedef function1<bool, const Vertex::Ptr&> SkipFunction;
 
     virtual ~VertexIterator() {}
 
@@ -33,20 +33,20 @@ public:
     /**
      * Retrieve the current vertex this iterator is pointing to
      */
-    Vertex::Ptr current() { return mVertex; }
+    const Vertex::Ptr& current() { return mVertex; }
 
 protected:
     /**
      * Check if vertex should be skipped
      * \return True if vertex should be skipped, false otherwise
      */
-    bool skip(Vertex::Ptr vertex) const;
+    bool skip(const Vertex::Ptr& vertex) const;
 
     /**
      * \brief Set next vertex
      * Should be applied by class implementing next()
      */
-    void setNext(Vertex::Ptr vertex) { mVertex = vertex; }
+    void setNext(const Vertex::Ptr& vertex) { mVertex = vertex; }
 
     /**
      * Allows to set a skip function

@@ -12,10 +12,11 @@ class BaseGraph;
 
 class SubGraph : public VertexIterable, public EdgeIterable
 {
+    /// Ptr which refers to the original (super) graph
     shared_ptr<BaseGraph> mpBaseGraph;
 
 public:
-    SubGraph(shared_ptr<BaseGraph> graph);
+    SubGraph(const shared_ptr<BaseGraph>& graph);
 
     virtual ~SubGraph() {}
 
@@ -26,52 +27,52 @@ public:
      * \param vertex Vertex that is part of the underlying main graph and should
      * also be part of the subgraph
      */
-    virtual void enable(Vertex::Ptr vertex) { (void)vertex; throw std::runtime_error("graph_analysis::SubGraph::enable(Vertex::Ptr) not implemented"); }
+    virtual void enable(const Vertex::Ptr& vertex) { (void)vertex; throw std::runtime_error("graph_analysis::SubGraph::enable(Vertex::Ptr) not implemented"); }
 
     /**
      * Disable the given vertex
      * \param vertex Vertex that is part of the underlying main graph and should
      * not(!) be part of the subgraph
      */
-    virtual void disable(Vertex::Ptr vertex) { (void)vertex; throw std::runtime_error("graph_analysis::SubGraph::disable(Vertex::Ptr) not implemented"); }
+    virtual void disable(const Vertex::Ptr& vertex) { (void)vertex; throw std::runtime_error("graph_analysis::SubGraph::disable(Vertex::Ptr) not implemented"); }
 
     /**
      * Enable the given edge
      * \param edge Edge that is part of the underlying main graph and should
      * be part of the subgraph
      */
-    virtual void enable(Edge::Ptr edge) { (void)edge; throw std::runtime_error("graph_analysis::SubGraph::enable(Edge::Ptr) not implemented"); }
+    virtual void enable(const Edge::Ptr& edge) { (void)edge; throw std::runtime_error("graph_analysis::SubGraph::enable(Edge::Ptr) not implemented"); }
 
     /**
      * Disable the given edge
      * \param edge Edge that is part of the underlying main graph and should
      * not be part of the subgraph
      */
-    virtual void disable(Edge::Ptr edge) { (void)edge; throw std::runtime_error("graph_analysis::SubGraph::disable(Edge::Ptr) not implemented"); }
+    virtual void disable(const Edge::Ptr& edge) { (void)edge; throw std::runtime_error("graph_analysis::SubGraph::disable(Edge::Ptr) not implemented"); }
 
     /**
      * Test if a vertex is enabled
      * \return True if vertex is enabled, false otherwise
      */
-    virtual bool enabled(Vertex::Ptr vertex) const { (void) vertex; throw std::runtime_error("graph_analysis::SubGraph::enabled(Vertex::Ptr) not implemented"); }
+    virtual bool enabled(const Vertex::Ptr& vertex) const { (void) vertex; throw std::runtime_error("graph_analysis::SubGraph::enabled(Vertex::Ptr) not implemented"); }
 
     /**
      * Test if an edge is enabled
      * \return True if edge is enabled, false otherwise
      */
-    virtual bool enabled(Edge::Ptr edge) const { (void) edge; throw std::runtime_error("graph_analysis::SubGraph::enabled(Edge::Ptr) not implemented"); }
+    virtual bool enabled(const Edge::Ptr& edge) const { (void) edge; throw std::runtime_error("graph_analysis::SubGraph::enabled(Edge::Ptr) not implemented"); }
 
     /**
      * Test if a vertex is disabled
      * \return True if vertex is disable, false otherwise
      */
-    bool disabled(Vertex::Ptr vertex) const { return !enabled(vertex); }
+    bool disabled(const Vertex::Ptr& vertex) const { return !enabled(vertex); }
 
     /**
      * Test if an edge is disabled
      * \return True if edge is disabled, false otherwise
      */
-    bool disabled(Edge::Ptr edge) const { return !enabled(edge); }
+    bool disabled(const Edge::Ptr& edge) const { return !enabled(edge); }
 
     /**
      * Enable all vertices
@@ -96,13 +97,13 @@ public:
     /**
      * Apply filters to this subgraph
      */
-    void applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter);
+    void applyFilters(const Filter<Vertex::Ptr>::Ptr& vertexFilter, const Filter<Edge::Ptr>::Ptr& edgeFilter);
 
     /**
      * Convert the subgraph into a base graph by copying only the enabled nodes
      * and edges
      */
-    virtual shared_ptr<BaseGraph> toBaseGraph();
+    virtual shared_ptr<BaseGraph> toBaseGraph() const;
 
     /**
      * Get the iterator over all vertices in this subgraph
@@ -120,8 +121,11 @@ public:
      * Get iterator over all edges that are starting a vertex
      * \return the edge iterator
      */
-    virtual EdgeIterator::Ptr getEdgeIterator(Vertex::Ptr vertex) const;
+    virtual EdgeIterator::Ptr getEdgeIterator(const Vertex::Ptr& vertex) const;
 
+    /**
+     * Get the underlying base graph
+     */
     shared_ptr<BaseGraph> getBaseGraph() const;
 };
 

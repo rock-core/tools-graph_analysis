@@ -7,7 +7,7 @@
 
 namespace graph_analysis {
 
-SubGraph::SubGraph(BaseGraph::Ptr baseGraph)
+SubGraph::SubGraph(const BaseGraph::Ptr& baseGraph)
     : mpBaseGraph(baseGraph)
 {}
 
@@ -15,7 +15,7 @@ SubGraph::SubGraph(BaseGraph::Ptr baseGraph)
  * Apply filters to this subgraph, pass filters::Filter<Vertex::Ptr>::Null() or
  * filters::Filter<Edge::Ptr>::Null() to skip filter for vertices or nodes
  */
-void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::Ptr>::Ptr edgeFilter)
+void SubGraph::applyFilters(const Filter<Vertex::Ptr>::Ptr& vertexFilter, const Filter<Edge::Ptr>::Ptr& edgeFilter)
 {
     if(edgeFilter)
     {
@@ -62,7 +62,7 @@ void SubGraph::applyFilters(Filter<Vertex::Ptr>::Ptr vertexFilter, Filter<Edge::
     }
 }
 
-BaseGraph::Ptr SubGraph::toBaseGraph()
+BaseGraph::Ptr SubGraph::toBaseGraph() const
 {
     BaseGraph::Ptr graph = mpBaseGraph->newInstance();
 
@@ -123,7 +123,7 @@ VertexIterator::Ptr SubGraph::getVertexIterator() const
     VertexIterator::Ptr vertexIt = getBaseGraph()->getVertexIterator();
     // Need to explicitely cast skip function to disambiguate (
     // disable(Vertex::Ptr) vs. disable(Edge::Ptr)
-    VertexIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(Vertex::Ptr) const>(&SubGraph::disabled), this,_1) );
+    VertexIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(const Vertex::Ptr&) const>(&SubGraph::disabled), this,_1) );
     vertexIt->setSkipFunction(skipFunction);
     return vertexIt;
 }
@@ -134,12 +134,12 @@ EdgeIterator::Ptr SubGraph::getEdgeIterator() const
     EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator();
     // Need to explicitely cast skip function to disambiguate (
     // disable(Vertex::Ptr) vs. disable(Edge::Ptr)
-    EdgeIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
+    EdgeIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(const Edge::Ptr&) const>(&SubGraph::disabled), this,_1) );
     edgeIt->setSkipFunction(skipFunction);
     return edgeIt;
 }
 
-EdgeIterator::Ptr SubGraph::getEdgeIterator(Vertex::Ptr vertex) const
+EdgeIterator::Ptr SubGraph::getEdgeIterator(const Vertex::Ptr& vertex) const
 {
     if(disabled(vertex))
     {
@@ -147,7 +147,7 @@ EdgeIterator::Ptr SubGraph::getEdgeIterator(Vertex::Ptr vertex) const
     }
 
     EdgeIterator::Ptr edgeIt = getBaseGraph()->getEdgeIterator(vertex);
-    EdgeIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(Edge::Ptr) const>(&SubGraph::disabled), this,_1) );
+    EdgeIterator::SkipFunction skipFunction( ::boost::bind(static_cast<bool (SubGraph::*)(const Edge::Ptr&) const>(&SubGraph::disabled), this,_1) );
     edgeIt->setSkipFunction(skipFunction);
     return edgeIt;
 }

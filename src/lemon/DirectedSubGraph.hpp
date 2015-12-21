@@ -25,14 +25,14 @@ class DirectedSubGraph : public SubGraphImpl< SubGraphLemon, ::lemon::ListDigrap
 public:
     DirectedSubGraph(const shared_ptr<DirectedGraph>& graph);
 
-    void enable(Vertex::Ptr vertex);
-    void disable(Vertex::Ptr vertex);
+    void enable(const Vertex::Ptr& vertex);
+    void disable(const Vertex::Ptr& vertex);
 
-    void enable(Edge::Ptr edge);
-    void disable(Edge::Ptr edge);
+    void enable(const Edge::Ptr& edge);
+    void disable(const Edge::Ptr& edge);
 
-    bool enabled(Vertex::Ptr vertex) const;
-    bool enabled(Edge::Ptr vertex) const;
+    bool enabled(const Vertex::Ptr& vertex) const;
+    bool enabled(const Edge::Ptr& vertex) const;
 };
 
 } // end namespace lemon

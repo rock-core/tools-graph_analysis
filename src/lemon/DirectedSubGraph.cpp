@@ -13,7 +13,7 @@ DirectedSubGraph::DirectedSubGraph(const DirectedGraph::Ptr& graph)
     setSubgraph( new graph_t(mpDirectedGraph->raw(), getVertexFilter(), getEdgeFilter()) );
 }
 
-void DirectedSubGraph::enable(Vertex::Ptr vertex)
+void DirectedSubGraph::enable(const Vertex::Ptr& vertex)
 {
     GraphElementId graphElementId = vertex->getId( mpDirectedGraph->getId() );
     ::lemon::ListDigraph::Node n = mpDirectedGraph->raw().nodeFromId( graphElementId );
@@ -21,7 +21,7 @@ void DirectedSubGraph::enable(Vertex::Ptr vertex)
     raw().enable(n);
 }
 
-void DirectedSubGraph::disable(Vertex::Ptr vertex)
+void DirectedSubGraph::disable(const Vertex::Ptr& vertex)
 {
     GraphElementId graphElementId = vertex->getId( mpDirectedGraph->getId() );
     ::lemon::ListDigraph::Node node = mpDirectedGraph->raw().nodeFromId( graphElementId );
@@ -35,7 +35,7 @@ void DirectedSubGraph::disable(Vertex::Ptr vertex)
     }
 }
 
-void DirectedSubGraph::enable(Edge::Ptr edge)
+void DirectedSubGraph::enable(const Edge::Ptr& edge)
 {
     GraphElementId graphElementId = edge->getId( mpDirectedGraph->getId() );
     ::lemon::ListDigraph::Arc arc = mpDirectedGraph->raw().arcFromId( graphElementId );
@@ -43,7 +43,7 @@ void DirectedSubGraph::enable(Edge::Ptr edge)
     raw().enable(arc);
 }
 
-void DirectedSubGraph::disable(Edge::Ptr edge)
+void DirectedSubGraph::disable(const Edge::Ptr& edge)
 {
     GraphElementId graphElementId = edge->getId( mpDirectedGraph->getId() );
     ::lemon::ListDigraph::Arc arc = mpDirectedGraph->raw().arcFromId( graphElementId );
@@ -51,7 +51,7 @@ void DirectedSubGraph::disable(Edge::Ptr edge)
     raw().disable(arc);
 }
 
-bool DirectedSubGraph::enabled(Vertex::Ptr vertex) const
+bool DirectedSubGraph::enabled(const Vertex::Ptr& vertex) const
 {
     GraphElementId graphElementId = vertex->getId( mpDirectedGraph->getId() );
     ::lemon::ListDigraph::Node n = mpDirectedGraph->raw().nodeFromId( graphElementId );
@@ -59,7 +59,7 @@ bool DirectedSubGraph::enabled(Vertex::Ptr vertex) const
     return status;
 }
 
-bool DirectedSubGraph::enabled(Edge::Ptr edge) const
+bool DirectedSubGraph::enabled(const Edge::Ptr& edge) const
 {
     GraphElementId graphElementId = edge->getId( mpDirectedGraph->getId() );
     ::lemon::ListDigraph::Arc arc = mpDirectedGraph->raw().arcFromId( graphElementId );
