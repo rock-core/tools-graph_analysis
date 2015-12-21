@@ -16,9 +16,10 @@ std::map<BaseGraph::ImplementationType, std::string> BaseGraph::ImplementationTy
     (SNAP_DIRECTED_GRAPH, "snap::DirectedGraph")
     ;
 
-BaseGraph::BaseGraph(ImplementationType type)
+BaseGraph::BaseGraph(ImplementationType type, bool directed)
     : mId(msId++)
     , mImplementationType(type)
+    , mDirected(directed)
 {}
 
 
@@ -159,10 +160,9 @@ std::vector<Edge::Ptr> BaseGraph::getEdges(const Vertex::Ptr& source, const Vert
 {
     std::vector<Edge::Ptr> edges;
     EdgeIterator::Ptr edgeIt;
-    const DirectedGraphInterface* diGraph = dynamic_cast<const DirectedGraphInterface*>(this);
-    if(diGraph)
+    if(isDirected())
     {
-        edgeIt = diGraph->getInEdgeIterator(target);
+        edgeIt = getInEdgeIterator(target);
         while(edgeIt->next())
         {
             Edge::Ptr edge = edgeIt->current();
@@ -298,6 +298,16 @@ bool BaseGraph::empty() const
 {
     VertexIterator::Ptr vertexIt = getVertexIterator();
     return !vertexIt->next();
+}
+
+SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr> BaseGraph::inEdges(const Vertex::Ptr& vertex) const
+{
+    return SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr>(this, vertex, &BaseGraph::getInEdgeIterator);
+}
+
+SpecializedIterable<EdgeIterator::Ptr,BaseGraph, Edge::Ptr,Vertex::Ptr> BaseGraph::outEdges(const Vertex::Ptr& vertex) const
+{
+    return SpecializedIterable<EdgeIterator::Ptr,BaseGraph, Edge::Ptr,Vertex::Ptr>(this, vertex, &BaseGraph::getOutEdgeIterator);
 }
 
 }

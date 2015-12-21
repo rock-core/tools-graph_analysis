@@ -5,7 +5,7 @@ namespace graph_analysis {
 namespace snap {
 
 DirectedGraph::DirectedGraph()
-    : TypedGraph<SnapDigraph, DirectedGraphInterface>(BaseGraph::SNAP_DIRECTED_GRAPH)
+    : TypedGraph<SnapDigraph, BaseGraph>(BaseGraph::SNAP_DIRECTED_GRAPH, true)
 {
 }
 
@@ -132,9 +132,7 @@ graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex:
 SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
     // Enable all nodes and edges
-    BaseGraph::Ptr graphCopy = baseGraph->copy();
-    DirectedGraph::Ptr subGraph = dynamic_pointer_cast<DirectedGraph>(graphCopy);
-    return SubGraph::Ptr(new DirectedSubGraph(baseGraph, subGraph));
+    return SubGraph::Ptr(new DirectedSubGraph(baseGraph));
 }
 
 } // end namespace snap

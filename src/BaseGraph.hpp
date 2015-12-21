@@ -32,11 +32,6 @@ public:
     typedef shared_ptr<BaseGraph> Ptr;
 
     /**
-     * Default constructor for a graph
-     */
-    BaseGraph(ImplementationType type);
-
-    /**
      * \brief Default deconstructor
      */
     virtual ~BaseGraph() {}
@@ -262,7 +257,38 @@ public:
      */
     size_t order() const { return getAllVertices().size(); }
 
+    /**
+     * Get out edge iterator
+     * If the graph is undirected will return the same iterator as getEdgeIterator
+     */
+    virtual EdgeIterator::Ptr getOutEdgeIterator(const Vertex::Ptr& vertex) const { return getEdgeIterator(vertex); }
+
+    /**
+     * Get in edge iterator
+     * If the graph is undirected will return the same iterator as getEdgeIterator
+     */
+    virtual EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const { return getEdgeIterator(vertex); }
+
+    SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr> inEdges(const Vertex::Ptr& vertex) const;
+    SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr> outEdges(const Vertex::Ptr& vertex) const;
+
+    /**
+     * Test if graph is undirected
+     */
+    bool isUndirected() const { return !isDirected(); }
+
+    /**
+     * Test if graph is directed
+     */
+    bool isDirected() const { return mDirected; }
+
 protected:
+
+    /**
+     * Default constructor for a graph
+     */
+    BaseGraph(ImplementationType type, bool directed);
+
     /**
      * Add an edge using source and target vertex on the internal
      * graph representation
@@ -277,9 +303,14 @@ protected:
     virtual SubGraph::Ptr createSubGraph(const Ptr& baseGraph) const { (void) baseGraph; throw std::runtime_error("BaseGraph::createSubGraph: not implemented"); }
 
 private:
+    /// Id of the graph
     GraphId mId;
+    /// General id counter to assign unique graph ids
     static GraphId msId;
     ImplementationType mImplementationType;
+
+    // Graph attribute
+    bool mDirected;
 };
 
 } // end namespace graph_analysis

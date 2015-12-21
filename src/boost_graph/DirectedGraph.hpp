@@ -3,7 +3,7 @@
 
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/SubGraphImpl.hpp>
-#include <graph_analysis/DirectedGraphInterface.hpp>
+#include <graph_analysis/BaseGraph.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <base/Logging.hpp>
 #include <graph_analysis/boost_graph/ArcIterator.hpp>
@@ -37,7 +37,7 @@ typedef std::pair<EdgeIterator, EdgeIterator> EdgeRange;
 typedef boost::graph_traits<BidirectionalGraph>::adjacency_iterator AdjacencyIterator;
 typedef std::pair<AdjacencyIterator, AdjacencyIterator> AdjacencyRange;
 
-class DirectedGraph : public TypedGraph< BidirectionalGraph, graph_analysis::DirectedGraphInterface>
+class DirectedGraph : public TypedGraph< BidirectionalGraph, graph_analysis::BaseGraph>
 {
     friend class OutArcIterator<DirectedGraph>;
     friend class InArcIterator<DirectedGraph>;

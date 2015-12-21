@@ -6,9 +6,9 @@
 namespace graph_analysis {
 namespace snap {
 
-DirectedSubGraph::DirectedSubGraph(BaseGraph::Ptr graph, BaseGraph::Ptr subgraph)
+DirectedSubGraph::DirectedSubGraph(const BaseGraph::Ptr& graph)
     : SubGraph(graph)
-    , mDirectedGraph(subgraph)
+    , mDirectedGraph(graph->copy())
 {
 }
 

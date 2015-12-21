@@ -2,7 +2,6 @@ find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
         BaseGraph.cpp
-        DirectedGraphInterface.cpp
         Edge.cpp
         EdgeIterable.cpp
         EdgeIterator.cpp

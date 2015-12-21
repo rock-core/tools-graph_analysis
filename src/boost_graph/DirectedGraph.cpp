@@ -22,12 +22,12 @@ BaseGraph::Ptr DirectedGraph::newInstance() const
 }
 
 DirectedGraph::DirectedGraph()
-    : TypedGraph(BOOST_DIRECTED_GRAPH)
+    : TypedGraph(BOOST_DIRECTED_GRAPH, true)
 {
 }
 
 DirectedGraph::DirectedGraph(const DirectedGraph& other)
-    : TypedGraph(BOOST_DIRECTED_GRAPH)
+    : TypedGraph(BOOST_DIRECTED_GRAPH, true)
 {
     *this = other;
 }

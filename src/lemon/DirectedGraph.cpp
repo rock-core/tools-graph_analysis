@@ -7,13 +7,13 @@ namespace graph_analysis {
 namespace lemon {
 
 DirectedGraph::DirectedGraph()
-    : TypedGraph(LEMON_DIRECTED_GRAPH)
+    : TypedGraph(LEMON_DIRECTED_GRAPH, true)
     , mEdgeMap(raw())
     , mVertexMap(raw())
 {}
 
 DirectedGraph::DirectedGraph(const DirectedGraph& other)
-    : TypedGraph(LEMON_DIRECTED_GRAPH)
+    : TypedGraph(LEMON_DIRECTED_GRAPH, true)
     , mEdgeMap(raw())
     , mVertexMap(raw())
 {
