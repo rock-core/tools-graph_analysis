@@ -8,8 +8,8 @@
 namespace graph_analysis {
 namespace boost_graph {
 
-GraphElementId DirectedGraph::msNewVertexId = 0;
-GraphElementId DirectedGraph::msNewEdgeId = 0;
+std::map<GraphId, GraphElementId> DirectedGraph::msNewVertexId;
+std::map<GraphId, GraphElementId> DirectedGraph::msNewEdgeId;
 
 BaseGraph::Ptr DirectedGraph::copy() const
 {
@@ -44,7 +44,7 @@ GraphElementId DirectedGraph::addVertex(const Vertex::Ptr& vertex)
     VertexDescriptor vertexDescriptor = boost::add_vertex(mGraph);
     mGraph[vertexDescriptor] = vertex;
 
-    GraphElementId newVertexId = msNewVertexId++;
+    GraphElementId newVertexId = msNewVertexId[getId()]++;
     // Set the internal index property (This probably shouldn't be done.)
     //::boost::put( boost::vertex_index_t(), mGraph, vertexDescriptor, newVertexId); 
 
@@ -95,7 +95,7 @@ EdgeDescriptor DirectedGraph::getEdgeDescriptor(const Edge::Ptr& edge) const
 
 GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
-    GraphElementId newEdgeId = msNewEdgeId++;
+    GraphElementId newEdgeId = msNewEdgeId[getId()]++;
     std::pair<EdgeDescriptor, bool> result = boost::add_edge(mVertexMap[sourceVertexId], mVertexMap[targetVertexId], mGraph);
     EdgeDescriptor edgeDescriptor = result.first;
     mGraph[edgeDescriptor] = edge;

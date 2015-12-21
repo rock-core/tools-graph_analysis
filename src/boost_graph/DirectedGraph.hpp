@@ -131,8 +131,8 @@ protected:
     // Property maps to store data associated with vertices and edges
     EdgeMap mEdgeMap;
     VertexMap mVertexMap;
-    static GraphElementId msNewVertexId;
-    static GraphElementId msNewEdgeId;
+    static std::map<GraphId, GraphElementId> msNewVertexId;
+    static std::map<GraphId, GraphElementId> msNewEdgeId;
 };
 
 } // end namespace boost_graph
