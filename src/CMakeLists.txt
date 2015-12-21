@@ -17,12 +17,14 @@ rock_library(graph_analysis
         VertexTypeManager.cpp
         algorithms/ConstraintViolation.cpp
         algorithms/CorrelationClustering.cpp
+        algorithms/DFS.cpp
         algorithms/FloydWarshall.cpp
         algorithms/GLPKSolver.cpp
         algorithms/MinCostFlow.cpp
         algorithms/MultiCommodityEdge.cpp
         algorithms/MultiCommodityMinCostFlow.cpp
         algorithms/MultiCommodityVertex.cpp
+        algorithms/Visitor.cpp
         boost_graph/DirectedGraph.cpp
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
@@ -108,12 +110,15 @@ rock_library(graph_analysis
         algorithms/ConstraintViolation.hpp
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
+        algorithms/DFS.hpp
+        algorithms/DFSVisitor.hpp
         algorithms/FloydWarshall.hpp
         algorithms/GLPKSolver.hpp
         algorithms/MinCostFlow.hpp
         algorithms/MultiCommodityEdge.hpp
         algorithms/MultiCommodityMinCostFlow.hpp
         algorithms/MultiCommodityVertex.hpp
+        algorithms/Visitor.hpp
         boost_graph/DirectedGraph.hpp
         filters/CommonFilters.hpp
         filters/EdgeContextFilter.hpp
