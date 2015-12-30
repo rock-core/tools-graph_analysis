@@ -28,21 +28,21 @@ public:
     Status getStatus(const Edge::Ptr& edge) const;
 
 
-    virtual void initializeVertex(Vertex::Ptr& vertex) const { GA_ALGO_NI("initializeVertex") }
-    virtual void startVertex(Vertex::Ptr& vertex) const { GA_ALGO_NI("startVertex") }
-    virtual void discoverVertex(Vertex::Ptr& vertex) const { GA_ALGO_NI("discoverVertex") }
-    virtual void finishVertex(Vertex::Ptr& vertex) const { GA_ALGO_NI("finishVertex - la") }
-    virtual void leafVertex(Vertex::Ptr& vertex) const { GA_ALGO_NI("leafVertex") }
+    virtual void initializeVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("initializeVertex") }
+    virtual void startVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("startVertex") }
+    virtual void discoverVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("discoverVertex") }
+    virtual void finishVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("finishVertex - la") }
+    virtual void leafVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("leafVertex") }
 
-    virtual void examineEdge(Edge::Ptr& edge) const { GA_ALGO_NI("examineEdge") }
-    virtual void treeEdge(Edge::Ptr& edge) const { GA_ALGO_NI("treeEdge") }
-    virtual void cycleEdge(Edge::Ptr& edge) const { GA_ALGO_NI("cycleEdge") }
-    virtual void forwardOrCrossEdge(Edge::Ptr& edge) const { GA_ALGO_NI("forwardOrCrossEdge") }
-    virtual void backEdge(Edge::Ptr& edge) const { GA_ALGO_NI("backEdge") }
-    virtual void edgeRelaxed(Edge::Ptr& edge) const { GA_ALGO_NI("edgeRelaxed") }
-    virtual void edgeNotRelaxed(Edge::Ptr& edge) const { GA_ALGO_NI("edgeNotRelaxed") }
-    virtual void edgeMinimized(Edge::Ptr& edge) const { GA_ALGO_NI("edgeMinimized") }
-    virtual void edgeNotMinimized(Edge::Ptr& edge) const { GA_ALGO_NI("edgeNotMinimized") }
+    virtual void examineEdge(Edge::Ptr& edge) { GA_ALGO_NI("examineEdge") }
+    virtual void treeEdge(Edge::Ptr& edge) { GA_ALGO_NI("treeEdge") }
+    virtual void cycleEdge(Edge::Ptr& edge) { GA_ALGO_NI("cycleEdge") }
+    virtual void forwardOrCrossEdge(Edge::Ptr& edge) { GA_ALGO_NI("forwardOrCrossEdge") }
+    virtual void backEdge(Edge::Ptr& edge) { GA_ALGO_NI("backEdge") }
+    virtual void edgeRelaxed(Edge::Ptr& edge) { GA_ALGO_NI("edgeRelaxed") }
+    virtual void edgeNotRelaxed(Edge::Ptr& edge) { GA_ALGO_NI("edgeNotRelaxed") }
+    virtual void edgeMinimized(Edge::Ptr& edge) { GA_ALGO_NI("edgeMinimized") }
+    virtual void edgeNotMinimized(Edge::Ptr& edge) { GA_ALGO_NI("edgeNotMinimized") }
 
 
 private:

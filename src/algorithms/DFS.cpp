@@ -3,7 +3,7 @@
 namespace graph_analysis {
 namespace algorithms {
 
-DFS::DFS(BaseGraph::Ptr& graph, const DFSVisitor::Ptr& visitor, Skipper skipper)
+DFS::DFS(const BaseGraph::Ptr& graph, const DFSVisitor::Ptr& visitor, Skipper skipper)
     : mpGraph(graph)
     , mpVisitor(visitor)
     , mSkipper(skipper)

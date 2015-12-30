@@ -13,7 +13,7 @@ typedef function1<bool,Edge::Ptr> Skipper;
 class DFS
 {
 public:
-    DFS(BaseGraph::Ptr& graph, const DFSVisitor::Ptr& visitor, Skipper skipper = Skipper());
+    DFS(const BaseGraph::Ptr& graph, const DFSVisitor::Ptr& visitor, Skipper skipper = Skipper());
 
     void run(const Vertex::Ptr& startVertex = Vertex::Ptr());
 
