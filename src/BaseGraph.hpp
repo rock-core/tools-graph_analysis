@@ -58,6 +58,11 @@ public:
     BaseGraph::Ptr clone() const;
 
     /**
+     * Copy the vertices but clone the edges of the graph
+     */
+    BaseGraph::Ptr cloneEdges() const;
+
+    /**
      * Allow to create an instance of the same type of graph
      */
     virtual BaseGraph::Ptr newInstance() const { throw std::runtime_error("BaseGraph::newInstance: not implemented"); }

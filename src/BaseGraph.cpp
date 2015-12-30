@@ -85,6 +85,29 @@ BaseGraph::Ptr BaseGraph::clone() const
     return g_clone;
 }
 
+BaseGraph::Ptr BaseGraph::cloneEdges() const
+{
+    std::map<Vertex::Ptr, Vertex::Ptr> current2Clone;
+
+    BaseGraph::Ptr g_clone = this->newInstance();
+    VertexIterator::Ptr vertexIterator = getVertexIterator();
+    while(vertexIterator->next())
+    {
+        Vertex::Ptr v = vertexIterator->current();
+        g_clone->addVertex(v);
+    }
+
+    EdgeIterator::Ptr edgeIterator = getEdgeIterator();
+    while(edgeIterator->next())
+    {
+        Edge::Ptr e = edgeIterator->current();
+        Edge::Ptr e_clone = e->clone();
+        g_clone->addEdge(e_clone);
+    }
+
+    return g_clone;
+}
+
 SubGraph::Ptr BaseGraph::getSubGraph(const Ptr& graph)
 {
     return graph->createSubGraph(graph);
