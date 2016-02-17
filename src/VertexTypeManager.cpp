@@ -7,17 +7,7 @@ namespace graph_analysis {
 
 VertexTypeManager::VertexTypeManager()
 {
-    // registering known implemented class-types
-    mTypeMap = boost::assign::map_list_of
-        (std::string("default"),                         Vertex::Ptr (new Vertex()))
-        ;
-
-    // initializing the list of default registered types (non-repeatingly, non-verbously)
-    TypeMap::iterator it = mTypeMap.begin();
-    for(; mTypeMap.end() != it; ++it)
-    {
-        mRegisteredTypes.insert(it->first);
-    }
+    registerType(Vertex::Ptr(new Vertex()));
 }
 
 VertexTypeManager::~VertexTypeManager()
@@ -26,6 +16,8 @@ VertexTypeManager::~VertexTypeManager()
 
 void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered)
 {
+    assert(node.get());
+
     if(node->getClassName() != type){
         throw std::runtime_error("Cannot register vertex of type " + type + " it seems the getClassName() funtion of this class is implemented wrong it returned " + node->getClassName());
     }
@@ -56,8 +48,8 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
         {
             throw std::runtime_error("graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered");
         }
-        LOG_DEBUG_S << "Using default VertexType 'default'.";
-        return mTypeMap["default"];
+        LOG_DEBUG_S << "Using default VertexType " << graph_analysis::Vertex::vertexType() << ".";
+        return mTypeMap[graph_analysis::Vertex::vertexType()];
     }
 
     LOG_DEBUG_S << "VertexType '" + type + "' found.";
@@ -67,6 +59,9 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
 Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std::string& label)
 {
     Vertex::Ptr v = vertexByType(type);
+    if(!v){
+        throw std::invalid_argument("Cannot get node for type: " + type + " and label " + label);
+    }
     Vertex::Ptr clonedVertex = v->clone();
     if(v->getClassName() != clonedVertex->getClassName()){
         throw std::runtime_error("Cannot create cloned vertex of type " + v->getClassName() + " it seems the 'virtual Vertex* getClone() const' funtion of this class is implemented wrong");

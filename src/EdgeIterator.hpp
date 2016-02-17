@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_EDGE_ITERATOR_HPP
 #define GRAPH_ANALYSIS_EDGE_ITERATOR_HPP
 
-#include <boost/function.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 #include <graph_analysis/Edge.hpp>
 
 namespace graph_analysis {
@@ -17,8 +17,8 @@ class EdgeIterator
     friend class SubGraph;
 
 public:
-    typedef boost::shared_ptr<EdgeIterator> Ptr;
-    typedef boost::function1<bool, Edge::Ptr> SkipFunction;
+    typedef shared_ptr<EdgeIterator> Ptr;
+    typedef function1<bool, const Edge::Ptr&> SkipFunction;
 
     virtual ~EdgeIterator() {}
 
@@ -32,20 +32,20 @@ public:
     /**
      * Retrieve the current edge this iterator is pointing to
      */
-    Edge::Ptr current() { return mEdge; }
+    const Edge::Ptr& current() { return mEdge; }
 
 protected:
     /**
      * \brief Check if edge should be skipped
      * \return True if edge should be skipped, false otherwise
      */
-    bool skip(Edge::Ptr edge) const;
+    bool skip(const Edge::Ptr& edge) const;
 
     /**
      * \brief Set next edge
      * Should be applied by class implementing next()
      */
-    void setNext(Edge::Ptr edge) { mEdge = edge; }
+    void setNext(const Edge::Ptr& edge) { mEdge = edge; }
 
     /**
      * Allows to add a skip function -- e.g. for the SubGraph which

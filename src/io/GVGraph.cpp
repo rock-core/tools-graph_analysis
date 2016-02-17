@@ -121,7 +121,37 @@ void GVGraph::setEdgeAttribute(const std::string& name, const std::string& value
     agattr(mpGVGraph, AGEDGE, const_cast<char*>(name.c_str()), const_cast<char*>(value.c_str()));
 }
 
-GraphElementId GVGraph::addNode(graph_analysis::Vertex::Ptr vertex)
+bool GVGraph::setAttribute(const graph_analysis::Vertex::Ptr& vertex, const std::string& name, const std::string& value)
+{
+    std::map<GraphElementId, Agnode_t*>::const_iterator cit;
+    cit = mNodes.find(mpBaseGraph->getVertexId(vertex));
+    if(cit == mNodes.end())
+    {
+        throw std::invalid_argument("graph_analysis::io::GVGraph::setNodeAttribute: vertex '" + vertex->toString() + "' is not part of the graphviz graph");
+    }
+
+    Agnode_t* gvNode = cit->second;
+    return agsafeset(gvNode, const_cast<char *>(name.c_str()),
+                     const_cast<char *>(value.c_str()),
+                     const_cast<char *>(value.c_str()));
+}
+
+bool GVGraph::setAttribute(const graph_analysis::Edge::Ptr& edge, const std::string& name, const std::string& value)
+{
+    std::map<GraphElementId, Agedge_t*>::const_iterator cit;
+    cit = mEdges.find(mpBaseGraph->getEdgeId(edge));
+    if(cit == mEdges.end())
+    {
+        throw std::invalid_argument("graph_analysis::io::GVGraph::setEdgeAttribute: edge '" + edge->toString() + "' is not part of the graphviz graph");
+    }
+
+    Agedge_t* gvEdge = cit->second;
+    return agsafeset(gvEdge, const_cast<char *>(name.c_str()),
+                     const_cast<char *>(value.c_str()),
+                     const_cast<char *>(value.c_str()));
+}
+
+GraphElementId GVGraph::addNode(const graph_analysis::Vertex::Ptr& vertex)
 {
     GraphElementId id;
     try {
@@ -156,7 +186,7 @@ void GVGraph::addNodes(const std::vector<Vertex::Ptr>& vertices)
     }
 }
 
-void GVGraph::removeNode(Vertex::Ptr vertex)
+void GVGraph::removeNode(const Vertex::Ptr& vertex)
 {
     GraphElementId id = mpBaseGraph->getVertexId(vertex);
     return removeNode(id);
@@ -206,7 +236,7 @@ void GVGraph::setRootNode(Vertex::Ptr vertex)
     }
 }
 
-GraphElementId GVGraph::addEdge(Edge::Ptr edge)
+GraphElementId GVGraph::addEdge(const Edge::Ptr& edge)
 {
     GraphElementId sourceId = mpBaseGraph->getVertexId(edge->getSourceVertex());
     GraphElementId targetId = mpBaseGraph->getVertexId(edge->getTargetVertex());
@@ -216,7 +246,7 @@ GraphElementId GVGraph::addEdge(Edge::Ptr edge)
         bool create = true;
         Agedge_t* gvEdge = _agedge(mpGVGraph, mNodes[sourceId], mNodes[targetId], getUniqueName(edge), create);
         // This works after property has been made known via setEdgeAttribute
-        agset(gvEdge, "label", const_cast<char*>(getUniqueName(edge).c_str()));
+        agset(gvEdge, const_cast<char*>("label"), const_cast<char*>(getUniqueName(edge).c_str()));
 
         GraphElementId id;
 
@@ -233,7 +263,7 @@ GraphElementId GVGraph::addEdge(Edge::Ptr edge)
     throw std::runtime_error("graph_analysis::io::GVGraph::addEdge: failed to add edge, nodes or targets missing");
 }
 
-void GVGraph::removeEdge(Edge::Ptr edge)
+void GVGraph::removeEdge(const Edge::Ptr& edge)
 {
     GraphElementId id = mpBaseGraph->getEdgeId(edge);
     return removeEdge(id);
@@ -456,7 +486,7 @@ GraphElementId GVGraph::getId(Agedge_t* edge) const
 std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
 {
     std::stringstream ss;
-    ss << vertex->toString() << " (id:" << mpBaseGraph->getVertexId(vertex) << ")";
+    ss << vertex->toString() << " (v:" << mpBaseGraph->getVertexId(vertex) << ")";
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
 
     std::list<std::string> members = vManager->getMembers(vertex->getClassName());
@@ -474,7 +504,7 @@ std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
 std::string GVGraph::getUniqueName(Edge::Ptr edge) const
 {
     std::stringstream ss;
-    ss << edge->toString() << " (id:" << mpBaseGraph->getEdgeId(edge) << ")";
+    ss << edge->toString() << " (e:" << mpBaseGraph->getEdgeId(edge) << ")";
     return ss.str();
 }
 

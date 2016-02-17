@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_PERCOLATION_STRATEGY_HPP
 #define GRAPH_ANALYSIS_PERCOLATION_STRATEGY_HPP
 
-#include <boost/shared_ptr.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 #include <graph_analysis/SubGraph.hpp>
 #include <graph_analysis/percolation/Event.hpp>
 
@@ -11,7 +11,7 @@ namespace percolation {
 class Strategy
 {
 public:
-    typedef boost::shared_ptr<Strategy> Ptr;
+    typedef shared_ptr<Strategy> Ptr;
 
     virtual ~Strategy() {}
 

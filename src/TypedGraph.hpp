@@ -9,8 +9,8 @@ template<typename T, typename G = BaseGraph>
 class TypedGraph : public G
 {
 public:
-    TypedGraph(BaseGraph::ImplementationType type)
-        : G(type)
+    TypedGraph(BaseGraph::ImplementationType type, bool directed = true)
+        : G(type, directed)
     {}
 
     virtual ~TypedGraph() {};

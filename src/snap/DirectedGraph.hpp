@@ -4,8 +4,6 @@
 #include <map>
 #include <graph_analysis/VertexIterator.hpp>
 #include <graph_analysis/EdgeIterator.hpp>
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/DirectedGraphInterface.hpp>
 #include <graph_analysis/TypedGraph.hpp>
 #include <graph_analysis/snap/DirectedSubGraph.hpp>
 
@@ -42,10 +40,10 @@ typedef TNodeEdgeNet< Serializable<Vertex::Ptr>, Serializable<Edge::Ptr> > SnapD
  * \brief Directed graph implementation based on SNAP library
  * \see 
  */
-class DirectedGraph : public graph_analysis::TypedGraph<SnapDigraph, DirectedGraphInterface>
+class DirectedGraph : public graph_analysis::TypedGraph<SnapDigraph, BaseGraph>
 {
 public:
-    typedef boost::shared_ptr<DirectedGraph> Ptr;
+    typedef shared_ptr<DirectedGraph> Ptr;
 
     //typedef std::map<TInt, Edge::Ptr> EdgeMap;
     //typedef std::map<TInt, Vertex::Ptr> VertexMap;

@@ -16,6 +16,7 @@ namespace vertex {
 } // end namespace vertex
 
 /**
+ * \class VertexTypeManager
  * \brief Factory for Vertex subclasses
  * \details VertexTypeManager allows to register vertex classes by type
  * - which is a given string. When loading a serialized graph via GraphIO::read

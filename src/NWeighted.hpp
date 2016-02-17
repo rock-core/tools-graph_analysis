@@ -4,7 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 
 namespace graph_analysis {
 
@@ -20,7 +20,7 @@ template<typename T, size_t Dim, typename GraphElementType>
 class NWeighted : public GraphElementType
 {
 public:
-    typedef boost::shared_ptr< NWeighted > Ptr;
+    typedef shared_ptr< NWeighted > Ptr;
     typedef T value_t;
 
     /**

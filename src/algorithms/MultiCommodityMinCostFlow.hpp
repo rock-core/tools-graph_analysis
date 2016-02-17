@@ -5,6 +5,7 @@
 #include <graph_analysis/algorithms/GLPKSolver.hpp>
 #include <graph_analysis/algorithms/MultiCommodityEdge.hpp>
 #include <graph_analysis/algorithms/MultiCommodityVertex.hpp>
+#include <graph_analysis/algorithms/ConstraintViolation.hpp>
 
 namespace graph_analysis {
 namespace algorithms {
@@ -148,7 +149,7 @@ namespace algorithms {
         EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
         while(edgeIt->next())
         {
-            MultiCommodityMinCostFlow::edge_t::Ptr edge = boost::dynamic_pointer_cast<MultiCommodityMinCostFlow::edge_t>( edgeIt->current() );
+            MultiCommodityMinCostFlow::edge_t::Ptr edge = dynamic_pointer_cast<MultiCommodityMinCostFlow::edge_t>( edgeIt->current() );
             if(edge)
             {
                 std::cout << "Flows on: " << edge->toString() << ": id " << graph->getEdgeId(edge) << std::endl;
@@ -183,6 +184,8 @@ public:
     // Store the result in the edges of the graph
     void storeResult();
 
+    // Validate the result and return the number of violated inflow constraints
+    std::vector<ConstraintViolation> validateInflow() const;
 private:
     uint32_t mCommodities;
     BaseGraph::Ptr mpGraph;

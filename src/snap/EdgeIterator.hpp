@@ -84,7 +84,7 @@ public:
     {
         while( mCurrentIndex != mNodeIt.GetInDeg())
         {
-            typename T::graph_t::TEdgeI edgeIt = mGraph.raw().GetEI(mNodeIt.GetId(), mNodeIt.GetInNId(mCurrentIndex));
+            typename T::graph_t::TEdgeI edgeIt = mGraph.raw().GetEI(mNodeIt.GetInNId(mCurrentIndex), mNodeIt.GetId());
             Edge::Ptr edge = mGraph.getEdge(edgeIt.GetId());
             ++mCurrentIndex;
             if(skip(edge))

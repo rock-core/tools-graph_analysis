@@ -4,8 +4,9 @@
 #include <map>
 #include <vector>
 #include <stdexcept>
-#include <boost/shared_ptr.hpp>
 #include <graph_analysis/Edge.hpp>
+#include <assert.h>
+#include <graph_analysis/SharedPtr.hpp>
 
 namespace graph_analysis {
 namespace filters {
@@ -31,7 +32,7 @@ class Filter
 {
 public:
     typedef Filter<FilterObject> FilterType;
-    typedef boost::shared_ptr<FilterType> Ptr;
+    typedef shared_ptr<FilterType> Ptr;
 
     typedef std::vector< FilterType::Ptr > FilterList;
 

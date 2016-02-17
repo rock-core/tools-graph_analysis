@@ -13,7 +13,7 @@ bool EdgeContextFilter::matchesTarget(graph_analysis::Edge::Ptr e) const
     typename FilterList::const_iterator cit = mFilters.begin();
     for(; cit != mFilters.end(); ++cit)
     {
-        Ptr edgeFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(*cit);
+        Ptr edgeFilter = dynamic_pointer_cast<EdgeContextFilter>(*cit);
         if(edgeFilter && edgeFilter->matchesTarget(e) )
         {
             return true;
@@ -32,7 +32,7 @@ bool EdgeContextFilter::matchesSource(graph_analysis::Edge::Ptr e) const
     typename FilterList::const_iterator cit = mFilters.begin();
     for(; cit != mFilters.end(); ++cit)
     {
-        Ptr edgeFilter = boost::dynamic_pointer_cast<EdgeContextFilter>(*cit);
+        Ptr edgeFilter = dynamic_pointer_cast<EdgeContextFilter>(*cit);
         if(edgeFilter && edgeFilter->matchesSource(e) )
         {
             return true;

@@ -30,7 +30,7 @@ const std::string LABEL("1");
 class Writer
 {
 public:
-    typedef boost::shared_ptr<Writer> Ptr;
+    typedef shared_ptr<Writer> Ptr;
 
     virtual ~Writer() {}
 
@@ -56,7 +56,7 @@ public:
 class Reader
 {
 public:
-    typedef boost::shared_ptr<Reader> Ptr;
+    typedef shared_ptr<Reader> Ptr;
 
     virtual ~Reader() {}
 

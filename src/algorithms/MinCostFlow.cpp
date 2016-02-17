@@ -25,7 +25,7 @@ uint32_t MinCostFlow::run()
             //graph_analysis::lemon::algorithms::MinCostFlow(mpGraph, type);
 
             graph_analysis::lemon::DirectedGraph::Ptr diGraph =
-                boost::dynamic_pointer_cast<graph_analysis::lemon::DirectedGraph>(mpGraph);
+                dynamic_pointer_cast<graph_analysis::lemon::DirectedGraph>(mpGraph);
             assert(diGraph);
 
             typedef graph_analysis::lemon::DirectedGraph::graph_t::ArcMap<value_and_cost_t> ArcMap;
@@ -38,7 +38,7 @@ uint32_t MinCostFlow::run()
             EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
             while(edgeIt->next())
             {
-                edge_t::Ptr edge = boost::dynamic_pointer_cast< edge_t >(edgeIt->current());
+                edge_t::Ptr edge = dynamic_pointer_cast< edge_t >(edgeIt->current());
                 assert(edge);
 
                 lowerMap[diGraph->getArc(edge)] = edge->getWeight(LOWER_BOUND);
@@ -51,7 +51,7 @@ uint32_t MinCostFlow::run()
             VertexIterator::Ptr vertexIt = mpGraph->getVertexIterator();
             while(vertexIt->next())
             {
-                vertex_t::Ptr vertex = boost::dynamic_pointer_cast< vertex_t >(vertexIt->current());
+                vertex_t::Ptr vertex = dynamic_pointer_cast< vertex_t >(vertexIt->current());
                 assert(vertex);
                 supplyMap[diGraph->getNode(vertex)] = (supply_t) vertex->getWeight(SUPPLY_DEMAND);
             }
@@ -76,7 +76,7 @@ uint32_t MinCostFlow::run()
                     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
                     while(edgeIt->next())
                     {
-                        edge_t::Ptr edge = boost::dynamic_pointer_cast< edge_t >(edgeIt->current());
+                        edge_t::Ptr edge = dynamic_pointer_cast< edge_t >(edgeIt->current());
                         assert(edge);
 
                         edge->setWeight( simplex.flow( diGraph->getArc(edge)), RESULT_FLOW );
@@ -85,7 +85,7 @@ uint32_t MinCostFlow::run()
                     VertexIterator::Ptr vertexIt = mpGraph->getVertexIterator();
                     while(vertexIt->next())
                     {
-                        vertex_t::Ptr vertex = boost::dynamic_pointer_cast< vertex_t >(vertexIt->current());
+                        vertex_t::Ptr vertex = dynamic_pointer_cast< vertex_t >(vertexIt->current());
                         assert(vertex);
                         vertex->setWeight( simplex.potential( diGraph->getNode(vertex) ), RESULT_POTENTIAL);
                     }

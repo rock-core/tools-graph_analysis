@@ -15,12 +15,8 @@ namespace gui {
 
 NodeItemTypeManager::NodeItemTypeManager()
 {
-    mClassVisualizationMap = boost::assign::map_list_of
-        (node::Type("default"), dynamic_cast<NodeItem*>(new graphitem::Cluster()))
-        (layeritem::Resource::sType, dynamic_cast<NodeItem*>(new layeritem::Resource())) // layering graphical node instance
-        // Change behaviour and appearance of edge if needed
-        // (graph_analysis::Vertex::vertexType(), dynamic_cast<NodeItem*>(new graphitem::Simple()))
-    ;
+    registerVisualization("default", dynamic_cast<NodeItem*>(new graphitem::Cluster()));
+    registerVisualization(layeritem::Resource::sType, dynamic_cast<NodeItem*>(new layeritem::Resource())); // layering graphical node instance
 }
 
 NodeItemTypeManager::~NodeItemTypeManager()

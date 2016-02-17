@@ -2,20 +2,27 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_CORRELATION_CLUSTERING_HPP
 
 #include <map>
-#include <boost/function.hpp>
 #include <glpk.h>
 #include <numeric/Combinatorics.hpp>
 #include <base/Logging.hpp>
 #include <graph_analysis/EdgeIterator.hpp>
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/SharedPtr.hpp>
+
 
 namespace graph_analysis {
 namespace algorithms {
 
-typedef boost::function1<double, Edge::Ptr> EdgeWeightFunction;
+typedef function1<double, Edge::Ptr> EdgeWeightFunction;
 
 struct Ball
 {
+    Ball()
+        : graph()
+        , radius(0.0)
+        , volume(0.0)
+    {}
+
     BaseGraph::Ptr graph;
     double radius;
     double volume;

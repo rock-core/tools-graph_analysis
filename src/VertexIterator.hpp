@@ -1,8 +1,9 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_ITERATOR_HPP
 #define GRAPH_ANALYSIS_VERTEX_ITERATOR_HPP
 
-#include <boost/function.hpp>
 #include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/SharedPtr.hpp>
+
 
 namespace graph_analysis {
 
@@ -17,8 +18,8 @@ class VertexIterator
     friend class SubGraph;
 
 public:
-    typedef boost::shared_ptr<VertexIterator> Ptr;
-    typedef boost::function1<bool, Vertex::Ptr> SkipFunction;
+    typedef shared_ptr<VertexIterator> Ptr;
+    typedef function1<bool, const Vertex::Ptr&> SkipFunction;
 
     virtual ~VertexIterator() {}
 
@@ -32,20 +33,20 @@ public:
     /**
      * Retrieve the current vertex this iterator is pointing to
      */
-    Vertex::Ptr current() { return mVertex; }
+    const Vertex::Ptr& current() { return mVertex; }
 
 protected:
     /**
      * Check if vertex should be skipped
      * \return True if vertex should be skipped, false otherwise
      */
-    bool skip(Vertex::Ptr vertex) const;
+    bool skip(const Vertex::Ptr& vertex) const;
 
     /**
      * \brief Set next vertex
      * Should be applied by class implementing next()
      */
-    void setNext(Vertex::Ptr vertex) { mVertex = vertex; }
+    void setNext(const Vertex::Ptr& vertex) { mVertex = vertex; }
 
     /**
      * Allows to set a skip function

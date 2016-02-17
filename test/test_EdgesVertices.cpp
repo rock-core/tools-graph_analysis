@@ -24,8 +24,8 @@ BOOST_AUTO_TEST_CASE(clone)
     Edge::Ptr edge0(new WeightedEdge(weight));
     Edge::Ptr edge0_clone = edge0->clone();
 
-    WeightedEdge::Ptr w0 = boost::dynamic_pointer_cast<WeightedEdge>(edge0);
-    WeightedEdge::Ptr w1 = boost::dynamic_pointer_cast<WeightedEdge>(edge0_clone);
+    WeightedEdge::Ptr w0 = dynamic_pointer_cast<WeightedEdge>(edge0);
+    WeightedEdge::Ptr w1 = dynamic_pointer_cast<WeightedEdge>(edge0_clone);
 
     BOOST_REQUIRE_MESSAGE(w0->getWeight() == w1->getWeight(), "Edge and clone have same weights after cloning");
     w1->setWeight(weight + 1.0);
@@ -51,8 +51,8 @@ BOOST_AUTO_TEST_CASE(nweighted_edge)
     Edge::Ptr edge0(new NWeightedEdge<double>(weights) );
     Edge::Ptr edge0_clone = edge0->clone();
 
-    NWeightedEdge<double>::Ptr w0 = boost::dynamic_pointer_cast<NWeightedEdge<double> >(edge0);
-    NWeightedEdge<double>::Ptr w1 = boost::dynamic_pointer_cast<NWeightedEdge<double> >(edge0_clone);
+    NWeightedEdge<double>::Ptr w0 = dynamic_pointer_cast<NWeightedEdge<double> >(edge0);
+    NWeightedEdge<double>::Ptr w1 = dynamic_pointer_cast<NWeightedEdge<double> >(edge0_clone);
 
     BOOST_REQUIRE_MESSAGE(w0->getWeights() == w1->getWeights(), "Edge and clone have same weights after cloning");
 

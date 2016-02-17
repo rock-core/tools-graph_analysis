@@ -2,7 +2,6 @@ find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
         BaseGraph.cpp
-        DirectedGraphInterface.cpp
         Edge.cpp
         EdgeIterable.cpp
         EdgeIterator.cpp
@@ -16,13 +15,16 @@ rock_library(graph_analysis
         VertexIterable.cpp
         VertexIterator.cpp
         VertexTypeManager.cpp
+        algorithms/ConstraintViolation.cpp
         algorithms/CorrelationClustering.cpp
+        algorithms/DFS.cpp
         algorithms/FloydWarshall.cpp
         algorithms/GLPKSolver.cpp
         algorithms/MinCostFlow.cpp
         algorithms/MultiCommodityEdge.cpp
         algorithms/MultiCommodityMinCostFlow.cpp
         algorithms/MultiCommodityVertex.cpp
+        algorithms/Visitor.cpp
         boost_graph/DirectedGraph.cpp
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
@@ -95,6 +97,7 @@ rock_library(graph_analysis
         NWeighted.hpp
         NWeightedEdge.hpp
         Percolation.hpp
+        SharedPtr.hpp
         SubGraph.hpp
         SubGraphImpl.hpp
         TypedGraph.hpp
@@ -104,14 +107,18 @@ rock_library(graph_analysis
         VertexTypeManager.hpp
         WeightedEdge.hpp
         WeightedVertex.hpp
+        algorithms/ConstraintViolation.hpp
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
+        algorithms/DFS.hpp
+        algorithms/DFSVisitor.hpp
         algorithms/FloydWarshall.hpp
         algorithms/GLPKSolver.hpp
         algorithms/MinCostFlow.hpp
         algorithms/MultiCommodityEdge.hpp
         algorithms/MultiCommodityMinCostFlow.hpp
         algorithms/MultiCommodityVertex.hpp
+        algorithms/Visitor.hpp
         boost_graph/DirectedGraph.hpp
         filters/CommonFilters.hpp
         filters/EdgeContextFilter.hpp
@@ -156,6 +163,7 @@ rock_library(graph_analysis
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
+        io/GraphvizStyle.hpp
         io/GraphvizWriter.hpp
         io/YamlReader.hpp
         io/YamlWriter.hpp

@@ -5,7 +5,7 @@
 #include <map>
 #include <stdint.h>
 #include <stdexcept>
-#include <boost/shared_ptr.hpp>
+#include <graph_analysis/SharedPtr.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -26,7 +26,7 @@ public:
 
     virtual ~GraphElement() {};
 
-    typedef boost::shared_ptr< GraphElement > Ptr;
+    typedef shared_ptr< GraphElement > Ptr;
 
     /**
      * Set a label

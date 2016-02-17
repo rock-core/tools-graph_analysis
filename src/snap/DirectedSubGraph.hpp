@@ -10,21 +10,26 @@ class BaseGraph;
 
 namespace snap {
 
+/**
+ * Since SNAP does not natively provide a subgraph implementation
+ * we have to maintain the subgraph explicitely
+ */
 class DirectedSubGraph : public SubGraph
 {
-    boost::shared_ptr<BaseGraph> mDirectedGraph;
+    /// Maintain the subgraph structure in here
+    shared_ptr<BaseGraph> mDirectedGraph;
 
 public:
-    DirectedSubGraph(boost::shared_ptr<BaseGraph> graph, boost::shared_ptr<BaseGraph> subGraph);
+    DirectedSubGraph(const shared_ptr<BaseGraph>& graph);
 
-    void enable(Vertex::Ptr vertex);
-    void disable(Vertex::Ptr vertex);
+    void enable(const Vertex::Ptr& vertex);
+    void disable(const Vertex::Ptr& vertex);
 
-    void enable(Edge::Ptr edge);
-    void disable(Edge::Ptr edge);
+    void enable(const Edge::Ptr& edge);
+    void disable(const Edge::Ptr& edge);
 
-    bool enabled(Vertex::Ptr vertex) const;
-    bool enabled(Edge::Ptr edge) const;
+    bool enabled(const Vertex::Ptr& vertex) const;
+    bool enabled(const Edge::Ptr& edge) const;
 };
 
 } // end namespace snap

@@ -249,4 +249,45 @@ BOOST_AUTO_TEST_CASE(subgraph)
         }
     }
 }
+
+BOOST_AUTO_TEST_CASE(get_edges)
+{
+    for(int i = BaseGraph::BOOST_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)
+    {
+        BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
+        BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
+
+        Vertex::Ptr v0( new Vertex());
+        v0->setLabel("v0");
+        Vertex::Ptr v1( new Vertex());
+        v1->setLabel("v1");
+
+        Edge::Ptr e0(new Edge());
+        e0->setLabel("v0->v1");
+        e0->setSourceVertex(v0);
+        e0->setTargetVertex(v1);
+
+        Edge::Ptr e1(new Edge());
+        e1->setLabel("v1->v0");
+        e1->setSourceVertex(v1);
+        e1->setTargetVertex(v0);
+
+        graph->addEdge(e0);
+        graph->addEdge(e1);
+
+
+        {
+            std::vector<Edge::Ptr> edges = graph->getEdges(v0,v1);
+            BOOST_REQUIRE_MESSAGE(edges.size() == 1, "Get edges expected to return 1 edge, was " << edges.size() << 
+                    " for " << graph->getImplementationTypeName());
+        }
+        {
+            std::vector<Edge::Ptr> edges = graph->getEdges(v1,v0);
+            BOOST_REQUIRE_MESSAGE(edges.size() == 1, "Get edges expected to return 1 edge for reverse direction, was " << edges.size() << 
+                    " for " << graph->getImplementationTypeName());
+        }
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

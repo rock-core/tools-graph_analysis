@@ -8,8 +8,8 @@
 namespace graph_analysis {
 namespace boost_graph {
 
-GraphElementId DirectedGraph::msNewVertexId = 0;
-GraphElementId DirectedGraph::msNewEdgeId = 0;
+std::map<GraphId, GraphElementId> DirectedGraph::msNewVertexId;
+std::map<GraphId, GraphElementId> DirectedGraph::msNewEdgeId;
 
 BaseGraph::Ptr DirectedGraph::copy() const
 {
@@ -22,12 +22,12 @@ BaseGraph::Ptr DirectedGraph::newInstance() const
 }
 
 DirectedGraph::DirectedGraph()
-    : TypedGraph(BOOST_DIRECTED_GRAPH)
+    : TypedGraph(BOOST_DIRECTED_GRAPH, true)
 {
 }
 
 DirectedGraph::DirectedGraph(const DirectedGraph& other)
-    : TypedGraph(BOOST_DIRECTED_GRAPH)
+    : TypedGraph(BOOST_DIRECTED_GRAPH, true)
 {
     *this = other;
 }
@@ -44,7 +44,7 @@ GraphElementId DirectedGraph::addVertex(const Vertex::Ptr& vertex)
     VertexDescriptor vertexDescriptor = boost::add_vertex(mGraph);
     mGraph[vertexDescriptor] = vertex;
 
-    GraphElementId newVertexId = msNewVertexId++;
+    GraphElementId newVertexId = msNewVertexId[getId()]++;
     // Set the internal index property (This probably shouldn't be done.)
     //::boost::put( boost::vertex_index_t(), mGraph, vertexDescriptor, newVertexId); 
 
@@ -72,7 +72,7 @@ Vertex::Ptr DirectedGraph::getVertex(GraphElementId id) const
 VertexDescriptor DirectedGraph::getVertexDescriptor(const Vertex::Ptr& vertex) const
 {
     GraphElementId id = getVertexId(vertex);
-    std::map<GraphElementId, VertexDescriptor>::const_iterator cit = mVertexMap.find(id);
+    VertexMap::const_iterator cit = mVertexMap.find(id);
     if(cit != mVertexMap.end())
     {
         return cit->second;
@@ -83,7 +83,7 @@ VertexDescriptor DirectedGraph::getVertexDescriptor(const Vertex::Ptr& vertex) c
 EdgeDescriptor DirectedGraph::getEdgeDescriptor(const Edge::Ptr& edge) const
 {
     GraphElementId id = getEdgeId(edge);
-    std::map<GraphElementId, EdgeDescriptor>::const_iterator cit = mEdgeMap.find(id);
+    EdgeMap::const_iterator cit = mEdgeMap.find(id);
     if(cit != mEdgeMap.end())
     {
         return cit->second;
@@ -95,7 +95,7 @@ EdgeDescriptor DirectedGraph::getEdgeDescriptor(const Edge::Ptr& edge) const
 
 GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
-    GraphElementId newEdgeId = msNewEdgeId++;
+    GraphElementId newEdgeId = msNewEdgeId[getId()]++;
     std::pair<EdgeDescriptor, bool> result = boost::add_edge(mVertexMap[sourceVertexId], mVertexMap[targetVertexId], mGraph);
     EdgeDescriptor edgeDescriptor = result.first;
     mGraph[edgeDescriptor] = edge;
@@ -162,6 +162,45 @@ EdgeIterator::Ptr DirectedGraph::getEdgeIterator(const Vertex::Ptr& vertex) cons
 SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
     throw std::runtime_error("graph_analysis::boost_graph::DirectedGraph::createSubGraph not implemented");
+}
+
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(const Vertex::Ptr& vertex) const
+{
+    OutArcIterator<DirectedGraph>* it = new OutArcIterator<DirectedGraph>(*this, vertex);
+    return EdgeIterator::Ptr(it);
+}
+
+graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex::Ptr& vertex) const
+{
+    InArcIterator<DirectedGraph>* it = new InArcIterator<DirectedGraph>(*this, vertex);
+    return EdgeIterator::Ptr(it);
+}
+
+std::vector<Edge::Ptr> DirectedGraph::getEdges(VertexDescriptor source, VertexDescriptor target) const
+{
+    std::vector< shared_ptr<Edge> > edges;
+
+    typedef typename boost::graph_traits< DirectedGraph::graph_t >::in_edge_iterator BoostEdgeIterator;
+    BoostEdgeIterator ei, edgeEnd;
+
+    for(boost::tie(ei, edgeEnd) = boost::in_edges(target, raw());
+            ei != edgeEnd; ++ei)
+    {
+        VertexDescriptor sourceVertexDescriptor = boost::source(*ei, raw());
+        if(sourceVertexDescriptor == source)
+        {
+            edges.push_back(raw()[*ei]);
+        }
+    }
+    return edges;
+}
+
+std::vector<Edge::Ptr> DirectedGraph::getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
+{
+    VertexDescriptor sourceVertexDescriptor = getVertexDescriptor(source);
+    VertexDescriptor targetVertexDescriptor = getVertexDescriptor(target);
+
+    return getEdges(sourceVertexDescriptor, targetVertexDescriptor);
 }
 
 } // end namespace boost_graph

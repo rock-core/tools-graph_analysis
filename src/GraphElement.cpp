@@ -28,7 +28,7 @@ GraphElementId GraphElement::getId(GraphId graphId) const
     }
 
     std::stringstream ss;
-    ss << "GraphElement: this graph element is not part of the given graph (id:" << graphId << ")";
+    ss << "GraphElement: this graph element '" << toString() << "' is not part of the given graph (id:" << graphId << ")";
     throw std::runtime_error(ss.str());
 }
 

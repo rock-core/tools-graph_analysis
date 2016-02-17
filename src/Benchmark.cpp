@@ -10,6 +10,7 @@ struct Benchmark
 {
     Benchmark(const std::string& _label)
         : label(_label)
+        , getEdgesInSeconds(0.0)
     {}
 
     std::string label;
@@ -38,6 +39,7 @@ struct Benchmark
     base::Time startStlIterateEdges;
     base::Time stopStlIterateEdges;
 
+    double getEdgesInSeconds;
 
     double costAddNodes() const { return (stopAddNodes - startAddNodes).toSeconds() / numberOfNodes; }
     double costGetNodes() const { return (stopGetNodes - startGetNodes).toSeconds() / numberOfNodes; }
@@ -46,19 +48,21 @@ struct Benchmark
     double costIterateEdges() const { return (stopIterateEdges - startIterateEdges).toSeconds() / numberOfEdges; }
     double costIterateStlEdges() const { return (stopStlIterateEdges - startStlIterateEdges).toSeconds() / numberOfEdges; }
     double costIterateStlNodes() const { return (stopStlIterateNodes - startStlIterateNodes).toSeconds() / numberOfNodes; }
+    double costGetEdges() const { return getEdgesInSeconds; }
 
     void printReport() const
     {
         std::cout << "Benchmark: " << label << std::endl;
-        std::cout << "    number of nodes:  " << numberOfNodes << std::endl;
-        std::cout << "    number of edges:  " << numberOfEdges << std::endl;
-        std::cout << "    add     (p node): " << costAddNodes() << " s" << std::endl;
-        std::cout << "    get     (p node): " << costGetNodes() << " s" << std::endl;
-        std::cout << "    add     (p edge): " << costAddEdges() << " s" << std::endl;
-        std::cout << "    iterate (p node): " << costIterateNodes() << " s" << std::endl;
-        std::cout << "    iterate (p edge): " << costIterateEdges() << " s" << std::endl;
-        std::cout << "stl iterate (p node): " << costIterateStlNodes() << " s" << std::endl;
-        std::cout << "stl iterate (p edge): " << costIterateStlEdges() << " s" << std::endl;
+        std::cout << "    number of nodes:    " << numberOfNodes << std::endl;
+        std::cout << "    number of edges:    " << numberOfEdges << std::endl;
+        std::cout << "    add     (p node):   " << costAddNodes() << " s" << std::endl;
+        std::cout << "    get     (p node):   " << costGetNodes() << " s" << std::endl;
+        std::cout << "    add     (p edge):   " << costAddEdges() << " s" << std::endl;
+        std::cout << "    iterate (p node):   " << costIterateNodes() << " s" << std::endl;
+        std::cout << "    iterate (p edge):   " << costIterateEdges() << " s" << std::endl;
+        std::cout << "stl iterate (p node):   " << costIterateStlNodes() << " s" << std::endl;
+        std::cout << "stl iterate (p edge):   " << costIterateStlEdges() << " s" << std::endl;
+        std::cout << "    get edges (p node): " << costGetEdges() << " s" << std::endl;
 
     }
 };
@@ -73,8 +77,8 @@ int main(int argc, char** argv)
         printf("usage: %s [-h|--help] <number-of-nodes> <number-of-edges>\n", argv[0]);
         exit(0);
     }
-    nodeMax = boost::lexical_cast<int>(argv[1]);
-    edgeMax = boost::lexical_cast<int>(argv[2]);
+    nodeMax = ::boost::lexical_cast<int>(argv[1]);
+    edgeMax = ::boost::lexical_cast<int>(argv[2]);
 
     std::vector<Benchmark> benchmarks;
 
@@ -92,7 +96,7 @@ int main(int argc, char** argv)
         graphMark.startAddNodes = base::Time::now();
         for(int i = 0; i < nodeMax; ++i)
         {
-            Vertex::Ptr v = boost::make_shared<Vertex>();
+            Vertex::Ptr v = make_shared<Vertex>();
             graph->addVertex( v );
         }
         graphMark.stopAddNodes = base::Time::now();
@@ -120,9 +124,9 @@ int main(int argc, char** argv)
         graphMark.startAddEdges = base::Time::now();
         for(int i = 0; i < edgeMax; ++i)
         {
-            Vertex::Ptr v0 = boost::make_shared<Vertex>();
-            Vertex::Ptr v1 = boost::make_shared<Vertex>();
-            Edge::Ptr e0 = boost::make_shared<Edge>();
+            Vertex::Ptr v0 = make_shared<Vertex>();
+            Vertex::Ptr v1 = make_shared<Vertex>();
+            Edge::Ptr e0 = make_shared<Edge>();
             e0->setSourceVertex(v0);
             e0->setTargetVertex(v1);
             graph->addEdge(e0);
@@ -159,6 +163,24 @@ int main(int argc, char** argv)
             Edge::Ptr edge = *eit;
         }
         graphMark.stopStlIterateEdges = base::Time::now();
+
+        std::cout << "    -- get edges" << std::endl;
+        graphMark.getEdgesInSeconds = 0;
+        int numberOfCalls = 0;
+        VertexIterator::Ptr vertex0It = graph->getVertexIterator();
+        while(vertex0It->next())
+        {
+            VertexIterator::Ptr vertex1It = graph->getVertexIterator();
+            while(vertex1It->next())
+            {
+                base::Time startGetEdges = base::Time::now();
+                std::vector<Edge::Ptr> edges = graph->getEdges(vertex0It->current(), vertex1It->current());
+                base::Time endGetEdges = base::Time::now();
+                graphMark.getEdgesInSeconds += (endGetEdges - startGetEdges).toSeconds();
+                ++numberOfCalls;
+            }
+        }
+        graphMark.getEdgesInSeconds /= (1.0*numberOfCalls);
 
         benchmarks.push_back(graphMark);
     }
@@ -205,7 +227,7 @@ int main(int argc, char** argv)
             ::lemon::ListDigraph::Node sourceNode = rawGraph.addNode();
             ::lemon::ListDigraph::Node targetNode = rawGraph.addNode();
             ::lemon::ListDigraph::Arc arc = rawGraph.addArc(sourceNode,targetNode);
-            edgeMap[arc] = boost::make_shared<Edge>();
+            edgeMap[arc] = make_shared<Edge>();
         }
         lemonRawMark.stopAddEdges = base::Time::now();
 
@@ -262,12 +284,12 @@ int main(int argc, char** argv)
         {
             using namespace graph_analysis;
 
-            Vertex::Ptr v0 = boost::make_shared<Vertex>();
-            Vertex::Ptr v1 = boost::make_shared<Vertex>();
+            Vertex::Ptr v0 = make_shared<Vertex>();
+            Vertex::Ptr v1 = make_shared<Vertex>();
             snap::Serializable<Vertex::Ptr> s0(v0);
             snap::Serializable<Vertex::Ptr> s1(v1);
 
-            Edge::Ptr e0 = boost::make_shared<Edge>();
+            Edge::Ptr e0 = make_shared<Edge>();
             snap::Serializable<Edge::Ptr> se0(e0);
             int sourceNode = rawGraph.AddNode(nodeId++,s0);
             int targetNode = rawGraph.AddNode(nodeId++,s1);

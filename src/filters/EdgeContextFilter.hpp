@@ -12,7 +12,7 @@ namespace filters {
 class EdgeContextFilter : public Filter<graph_analysis::Edge::Ptr>
 {
 public:
-    typedef boost::shared_ptr<EdgeContextFilter> Ptr;
+    typedef shared_ptr<EdgeContextFilter> Ptr;
 
     /**
      * \brief Get Name of the filter

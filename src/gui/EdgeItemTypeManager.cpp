@@ -14,10 +14,9 @@ namespace gui {
 
 EdgeItemTypeManager::EdgeItemTypeManager()
 {
-    mClassVisualizationMap = boost::assign::map_list_of
-        ("default", dynamic_cast<EdgeItem*>(new graphitem::edges::Simple()))
-        (LAYER_EDGE_TYPE, dynamic_cast<EdgeItem*>(new layeritem::edges::Simple())) // layering graphical edge instance
-    ;
+    registerVisualization("default",dynamic_cast<EdgeItem*>(new graphitem::edges::Simple()));
+    registerVisualization(LAYER_EDGE_TYPE,dynamic_cast<EdgeItem*>(new layeritem::edges::Simple()));
+
 }
 
 EdgeItemTypeManager::~EdgeItemTypeManager()

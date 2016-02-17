@@ -15,7 +15,7 @@ template<typename T, size_t Dim = 2>
 class NWeightedEdge : public NWeighted<T,Dim,Edge>
 {
 public:
-    typedef boost::shared_ptr< NWeightedEdge > Ptr;
+    typedef shared_ptr< NWeightedEdge > Ptr;
 
     NWeightedEdge(const T& weight)
         : NWeighted<T,Dim,Edge>(weight)

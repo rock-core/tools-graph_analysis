@@ -12,7 +12,7 @@ BOOST_AUTO_TEST_SUITE(algorithms_correlation_clustering)
 
 double getWeight(Edge::Ptr edge)
 {
-    WeightedEdge::Ptr weightedEdge = boost::dynamic_pointer_cast<WeightedEdge>(edge);
+    WeightedEdge::Ptr weightedEdge = dynamic_pointer_cast<WeightedEdge>(edge);
     return weightedEdge->getWeight();
 }
 

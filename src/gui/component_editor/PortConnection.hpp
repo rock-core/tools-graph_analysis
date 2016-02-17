@@ -11,7 +11,7 @@ namespace gui {
 class PortConnection : public Edge
 {
 public:
-    typedef boost::shared_ptr<PortConnection> Ptr;
+    typedef shared_ptr<PortConnection> Ptr;
 
     PortConnection(const OutputPort::Ptr& output, const InputPort::Ptr& input, const std::string& label)
         : Edge(output, input, label)

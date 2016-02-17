@@ -1,17 +1,18 @@
 #include "DirectedSubGraph.hpp"
-#include <boost/shared_ptr.hpp>
 #include <graph_analysis/BaseGraph.hpp>
+
+#include <graph_analysis/SharedPtr.hpp>
 
 namespace graph_analysis {
 namespace snap {
 
-DirectedSubGraph::DirectedSubGraph(BaseGraph::Ptr graph, BaseGraph::Ptr subgraph)
+DirectedSubGraph::DirectedSubGraph(const BaseGraph::Ptr& graph)
     : SubGraph(graph)
-    , mDirectedGraph(subgraph)
+    , mDirectedGraph(graph->copy())
 {
 }
 
-void DirectedSubGraph::enable(Vertex::Ptr vertex)
+void DirectedSubGraph::enable(const Vertex::Ptr& vertex)
 {
     if(getBaseGraph()->contains(vertex))
     {
@@ -22,7 +23,7 @@ void DirectedSubGraph::enable(Vertex::Ptr vertex)
 
 }
 
-void DirectedSubGraph::disable(Vertex::Ptr vertex)
+void DirectedSubGraph::disable(const Vertex::Ptr& vertex)
 {
     try {
         mDirectedGraph->removeVertex(vertex);
@@ -30,7 +31,7 @@ void DirectedSubGraph::disable(Vertex::Ptr vertex)
     {}
 }
 
-void DirectedSubGraph::enable(Edge::Ptr edge)
+void DirectedSubGraph::enable(const Edge::Ptr& edge)
 {
     if(getBaseGraph()->contains(edge))
     {
@@ -41,7 +42,7 @@ void DirectedSubGraph::enable(Edge::Ptr edge)
 
 }
 
-void DirectedSubGraph::disable(Edge::Ptr edge)
+void DirectedSubGraph::disable(const Edge::Ptr& edge)
 {
     try {
         mDirectedGraph->removeEdge(edge);
@@ -49,12 +50,12 @@ void DirectedSubGraph::disable(Edge::Ptr edge)
     {}
 }
 
-bool DirectedSubGraph::enabled(Vertex::Ptr vertex) const
+bool DirectedSubGraph::enabled(const Vertex::Ptr& vertex) const
 {
     return mDirectedGraph->contains(vertex);
 }
 
-bool DirectedSubGraph::enabled(Edge::Ptr edge) const
+bool DirectedSubGraph::enabled(const Edge::Ptr& edge) const
 {
     return mDirectedGraph->contains(edge);
 }

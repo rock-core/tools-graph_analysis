@@ -1,24 +1,25 @@
 #include "BaseGraph.hpp"
 #include <sstream>
-#include <boost/assign.hpp>
 #include <base/Logging.hpp>
 #include <graph_analysis/boost_graph/DirectedGraph.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/snap/DirectedGraph.hpp>
+#include <graph_analysis/MapInitializer.hpp>
 
 namespace graph_analysis {
 
 GraphId BaseGraph::msId = 0;
 
-std::map<BaseGraph::ImplementationType, std::string> BaseGraph::ImplementationTypeTxt = boost::assign::map_list_of
+std::map<BaseGraph::ImplementationType, std::string> BaseGraph::ImplementationTypeTxt = InitMap<BaseGraph::ImplementationType, std::string>
     (BOOST_DIRECTED_GRAPH, "boost_graph::DirectedGraph")
     (LEMON_DIRECTED_GRAPH, "lemon::DirectedGraph")
     (SNAP_DIRECTED_GRAPH, "snap::DirectedGraph")
     ;
 
-BaseGraph::BaseGraph(ImplementationType type)
+BaseGraph::BaseGraph(ImplementationType type, bool directed)
     : mId(msId++)
     , mImplementationType(type)
+    , mDirected(directed)
 {}
 
 
@@ -78,6 +79,29 @@ BaseGraph::Ptr BaseGraph::clone() const
         } else {
             throw std::runtime_error("graph_analysis::BaseGraph::clone: could not find mapped target vertex -- internal error");
         }
+        g_clone->addEdge(e_clone);
+    }
+
+    return g_clone;
+}
+
+BaseGraph::Ptr BaseGraph::cloneEdges() const
+{
+    std::map<Vertex::Ptr, Vertex::Ptr> current2Clone;
+
+    BaseGraph::Ptr g_clone = this->newInstance();
+    VertexIterator::Ptr vertexIterator = getVertexIterator();
+    while(vertexIterator->next())
+    {
+        Vertex::Ptr v = vertexIterator->current();
+        g_clone->addVertex(v);
+    }
+
+    EdgeIterator::Ptr edgeIterator = getEdgeIterator();
+    while(edgeIterator->next())
+    {
+        Edge::Ptr e = edgeIterator->current();
+        Edge::Ptr e_clone = e->clone();
         g_clone->addEdge(e_clone);
     }
 
@@ -158,19 +182,57 @@ void BaseGraph::removeEdge(const Edge::Ptr& edge)
 std::vector<Edge::Ptr> BaseGraph::getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
 {
     std::vector<Edge::Ptr> edges;
-    EdgeIterator::Ptr edgeIt = getEdgeIterator(source);
-    while(edgeIt->next())
+    EdgeIterator::Ptr edgeIt;
+    if(isDirected())
     {
-        Edge::Ptr edge = edgeIt->current();
-        if(edge->getTargetVertex() == target)
+        edgeIt = getInEdgeIterator(target);
+        while(edgeIt->next())
         {
-            edges.push_back(edge);
+            Edge::Ptr edge = edgeIt->current();
+            if(edge->getSourceVertex() == source)
+            {
+                edges.push_back(edge);
+            }
+        }
+    } else {
+        edgeIt = getEdgeIterator(target);
+        while(edgeIt->next())
+        {
+            Edge::Ptr edge = edgeIt->current();
+            if(edge->getSourceVertex() == source || edge->getTargetVertex() == source)
+            {
+                edges.push_back(edge);
+            }
         }
     }
-
     return edges;
 }
 
+size_t BaseGraph::removeEdges(const Vertex::Ptr& a, const Vertex::Ptr& b)
+{
+    size_t numberOfEdges = 0;
+
+    std::vector<Edge::Ptr> edgesAB = getEdges(a, b);
+    std::vector<Edge::Ptr> edgesBA = getEdges(b, a);
+
+    {
+        std::vector<Edge::Ptr>::const_iterator cit = edgesAB.begin();
+        for(; cit != edgesAB.end(); ++cit)
+        {
+            removeEdge(*cit);
+            ++numberOfEdges;
+        }
+    }
+    {
+        std::vector<Edge::Ptr>::const_iterator cit = edgesBA.begin();
+        for(; cit != edgesBA.end(); ++cit)
+        {
+            removeEdge(*cit);
+            ++numberOfEdges;
+        }
+    }
+    return numberOfEdges;
+}
 
 std::vector<Vertex::Ptr> BaseGraph::getAllVertices() const
 {
@@ -259,6 +321,16 @@ bool BaseGraph::empty() const
 {
     VertexIterator::Ptr vertexIt = getVertexIterator();
     return !vertexIt->next();
+}
+
+SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr> BaseGraph::inEdges(const Vertex::Ptr& vertex) const
+{
+    return SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr>(this, vertex, &BaseGraph::getInEdgeIterator);
+}
+
+SpecializedIterable<EdgeIterator::Ptr,BaseGraph, Edge::Ptr,Vertex::Ptr> BaseGraph::outEdges(const Vertex::Ptr& vertex) const
+{
+    return SpecializedIterable<EdgeIterator::Ptr,BaseGraph, Edge::Ptr,Vertex::Ptr>(this, vertex, &BaseGraph::getOutEdgeIterator);
 }
 
 }
