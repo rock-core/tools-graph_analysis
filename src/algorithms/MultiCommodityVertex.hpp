@@ -14,7 +14,7 @@ public:
 
     MultiCommodityVertex(uint32_t commodities)
         : mCommoditySupply(commodities,0)
-        , mCommodityMinTransFlow(commodities, 0)
+        , mMinCommodityFlow(commodities, 0)
     {}
 
     virtual ~MultiCommodityVertex() {}
@@ -26,18 +26,18 @@ public:
     /**
      * Request a trans-flow through this vertex for a given commodity
      */
-    void setCommodityMinTransFlow(uint32_t commodity, uint32_t flow) { mCommodityMinTransFlow.at(commodity) = flow; }
+    void setMinCommodityTransFlow(uint32_t commodity, uint32_t flow) { mMinCommodityFlow.at(commodity) = flow; }
     /**
      * Retrieve the set trans-flow through this vertex for a given commodity
      */
-    uint32_t getCommodityMinTransFlow(uint32_t commodity) const { return mCommodityMinTransFlow.at(commodity); }
+    uint32_t getMinCommodityTransFlow(uint32_t commodity) const { return mMinCommodityFlow.at(commodity); }
 
     virtual std::string getClassName() const { return "MultiCommodityVertex"; }
     virtual std::string toString() const;
 
 private:
     std::vector<int32_t> mCommoditySupply;
-    std::vector<uint32_t> mCommodityMinTransFlow;
+    std::vector<uint32_t> mMinCommodityFlow;
 };
 
 } // end namespace algorithms
