@@ -16,6 +16,7 @@ rock_library(graph_analysis
         VertexIterable.cpp
         VertexIterator.cpp
         VertexTypeManager.cpp
+        algorithms/BFS.cpp
         algorithms/ConstraintViolation.cpp
         algorithms/CorrelationClustering.cpp
         algorithms/DFS.cpp
@@ -108,6 +109,8 @@ rock_library(graph_analysis
         VertexTypeManager.hpp
         WeightedEdge.hpp
         WeightedVertex.hpp
+        algorithms/BFS.hpp
+        algorithms/BFSVisitor.hpp
         algorithms/ConstraintViolation.hpp
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
