@@ -335,8 +335,6 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
         for(uint32_t k = 0; k < mCommodities; ++k)
         {
             int32_t supply = vertex->getCommoditySupply(k);
-            uint32_t minTransflow = vertex->getCommodityMinTransFlow(k);
-
             if(supply < 0) // edge demand
             {
                  int32_t delta = supply + inFlow[k];
@@ -346,6 +344,7 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
                  }
             }
 
+            uint32_t minTransflow = vertex->getCommodityMinTransFlow(k);
             if(minTransflow == 0)
             {
                 continue;
