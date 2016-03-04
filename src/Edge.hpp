@@ -39,6 +39,12 @@ public:
     virtual std::string toString() const;
 
     /**
+     * Convert element to string
+     * \return string representation of edge
+     */
+    virtual std::string toString(uint32_t indent) const;
+
+    /**
      * Get the source vertex
      */
     Vertex::Ptr getSourceVertex() const { return mSourceVertex; }

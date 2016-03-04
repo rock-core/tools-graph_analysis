@@ -16,13 +16,19 @@ Vertex::Ptr Vertex::clone() const
 
 std::string Vertex::toString() const
 {
+    return toString(0);
+}
+
+std::string Vertex::toString(uint32_t indent) const
+{
+    std::string hspace(indent,' ');
     if(!mLabel.empty())
     {
-        return mLabel;
+        return hspace + mLabel;
     }
     else
     {
-        return getClassName();
+        return hspace + getClassName();
     }
 }
 

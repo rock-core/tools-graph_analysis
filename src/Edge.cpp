@@ -27,8 +27,14 @@ std::string Edge::getClassName() const
 
 std::string Edge::toString() const
 {
+    return toString(0);
+}
+
+std::string Edge::toString(uint32_t indent) const
+{
+    std::string hspace(indent,' ');
     std::stringstream ss;
-    ss << (getLabel().empty() ? getClassName() : getLabel());
+    ss << hspace << (getLabel().empty() ? getClassName() : getLabel());
     return ss.str();
 }
 

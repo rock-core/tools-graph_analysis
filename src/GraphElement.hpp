@@ -40,9 +40,15 @@ public:
     virtual std::string getClassName() const { return "graph_analysis::GraphElement"; }
 
     /**
-     * Convert element to String
+     * Convert element to string and adding and indentation (in spaces) to the
+     * string
      */
-    virtual std::string toString() const { return getClassName(); }
+    virtual std::string toString(uint32_t indent) const { return std::string(indent,' ') + getClassName(); }
+
+    /**
+     * Convert element to string
+     */
+    virtual std::string toString() const { return toString(0); }
 
     /**
      * Test whether this element has been associated with

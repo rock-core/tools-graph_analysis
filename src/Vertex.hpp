@@ -41,6 +41,11 @@ public:
      */
     virtual std::string toString() const;
 
+    /**
+     * Convert element to string and apply a given indentation (in number of
+     * spaces)
+     */
+    virtual std::string toString(uint32_t indentation) const;
 
 protected:
     /**
