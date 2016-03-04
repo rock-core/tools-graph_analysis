@@ -2,6 +2,7 @@ find_package(Boost REQUIRED regex)
 rock_library(graph_analysis
     SOURCES
         BaseGraph.cpp
+        BipartiteGraph.cpp
         Edge.cpp
         EdgeIterable.cpp
         EdgeIterator.cpp
@@ -83,6 +84,7 @@ rock_library(graph_analysis
         Algorithms.hpp
         BaseGraph.hpp
         BaseIterable.hpp
+        BipartiteGraph.hpp
         DirectedGraphInterface.hpp
         Edge.hpp
         EdgeIterable.hpp

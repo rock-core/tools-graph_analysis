@@ -2,6 +2,7 @@
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/snap/Graph.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
+#include <graph_analysis/BipartiteGraph.hpp>
 
 #include <graph_analysis/GraphIO.hpp>
 
@@ -265,5 +266,46 @@ BOOST_AUTO_TEST_CASE(get_edges)
     }
 }
 
+BOOST_AUTO_TEST_CASE(bipartite_graph)
+{
+    BipartiteGraph bipartiteGraph;
+    std::vector<Vertex::Ptr> reds;
+    std::vector<Vertex::Ptr> blues;
+
+    for(int i = 0; i < 100; ++i)
+    {
+        std::stringstream ss;
+        ss << i;
+        Vertex::Ptr blue( new Vertex(ss.str()));
+        Vertex::Ptr red( new Vertex(ss.str()));
+
+        blues.push_back(blue);
+        reds.push_back(red);
+
+        bipartiteGraph.linkVertices(red, blue);
+    }
+
+    for(int i = 0; i < 100; ++i)
+    {
+
+        BOOST_REQUIRE_MESSAGE(bipartiteGraph.getRedSubGraph()->enabled(reds[i]), "Red vertex is enabled in red subgraph");
+        BOOST_REQUIRE_MESSAGE(bipartiteGraph.getBlueSubGraph()->enabled(blues[i]), "Red vertex is enabled in blue subgraph");
+
+        BOOST_REQUIRE_MESSAGE(!bipartiteGraph.getRedSubGraph()->enabled(blues[i]), "Red vertex is disabled in red subgraph");
+        BOOST_REQUIRE_MESSAGE(!bipartiteGraph.getBlueSubGraph()->enabled(reds[i]), "Red vertex is disabled in blue subgraph");
+
+        std::vector<Vertex::Ptr> red = bipartiteGraph.getPartners(blues[i]);
+        BOOST_REQUIRE(red.size() == 1);
+        BOOST_REQUIRE(red[0] == reds[i]);
+
+        std::vector<Vertex::Ptr> blue = bipartiteGraph.getPartners(reds[i]);
+        BOOST_REQUIRE(blue.size() == 1);
+        BOOST_REQUIRE(blue[0] == blues[i]);
+
+        BOOST_REQUIRE(reds[i]  == bipartiteGraph.getUniquePartner(blues[i]));
+        BOOST_REQUIRE(blues[i] == bipartiteGraph.getUniquePartner(reds[i]));
+    }
+
+}
 
 BOOST_AUTO_TEST_SUITE_END()
