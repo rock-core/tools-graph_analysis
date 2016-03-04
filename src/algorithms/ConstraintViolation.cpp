@@ -18,8 +18,9 @@ ConstraintViolation::ConstraintViolation(const MultiCommodityVertex::Ptr& v, uin
 std::string ConstraintViolation::toString() const
 {
     std::stringstream ss;
-    ss << "ConstraintViolation: " << mpVertex->toString() << " commodity: " << mCommodity
-        << ", delta: " << mDelta << ", type: " << (int) mType;
+    ss << "ConstraintViolation of " << TypeTxt[mType] << ":";
+    ss << mpVertex->toString() << " commodity: " << mCommodity;
+    ss << ", delta: " << mDelta;
     return ss.str();
 }
 
