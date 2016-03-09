@@ -180,7 +180,7 @@ std::vector<Edge::Ptr> DirectedGraph::getEdges(VertexDescriptor source, VertexDe
 {
     std::vector< shared_ptr<Edge> > edges;
 
-    typedef typename boost::graph_traits< DirectedGraph::graph_t >::in_edge_iterator BoostEdgeIterator;
+    typedef boost::graph_traits< DirectedGraph::graph_t >::in_edge_iterator BoostEdgeIterator;
     BoostEdgeIterator ei, edgeEnd;
 
     for(boost::tie(ei, edgeEnd) = boost::in_edges(target, raw());

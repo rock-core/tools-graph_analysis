@@ -6,8 +6,8 @@
 namespace graph_analysis
 {
 
-typedef typename Filter<Vertex::Ptr>::Ptr VertexFilterType;
-typedef typename Filter<Edge::Ptr>::Ptr EdgeFilterType;
+typedef Filter<Vertex::Ptr>::Ptr VertexFilterType;
+typedef Filter<Edge::Ptr>::Ptr EdgeFilterType;
 
 class GraphView
 {

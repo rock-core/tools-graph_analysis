@@ -21,7 +21,7 @@ GraphElement::GraphElement(const std::string& label)
  */
 GraphElementId GraphElement::getId(GraphId graphId) const
 {
-    typename GraphElementMap::const_iterator cit = mGraphElementMap.find(graphId);
+    GraphElementMap::const_iterator cit = mGraphElementMap.find(graphId);
     if( cit != mGraphElementMap.end())
     {
         return cit->second;
@@ -35,7 +35,7 @@ GraphElementId GraphElement::getId(GraphId graphId) const
 GraphIdList GraphElement::getGraphAssociations() const
 {
     GraphIdList graphList;
-    typename GraphElementMap::const_iterator cit = mGraphElementMap.begin();
+    GraphElementMap::const_iterator cit = mGraphElementMap.begin();
     for(; cit != mGraphElementMap.end(); ++cit)
     {
         graphList.push_back(cit->first);
