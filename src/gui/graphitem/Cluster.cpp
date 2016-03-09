@@ -237,7 +237,7 @@ void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
-void Cluster::dragEnterEvent(QDragEnterEvent* event)
+void Cluster::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
 {}
 
 void Cluster::dropEvent(QGraphicsSceneDragDropEvent* event)

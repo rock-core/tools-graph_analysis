@@ -108,7 +108,7 @@ protected:
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
 
-    virtual void dragEnterEvent(QDragEnterEvent* event);
+    virtual void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 private:
     /// background child widget
