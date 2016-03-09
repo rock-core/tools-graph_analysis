@@ -12,9 +12,8 @@ namespace graph_analysis {
 namespace gui {
 namespace items {
 
-Label::Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget)
+Label::Label(const std::string& label, QGraphicsItem* item)
     : QGraphicsTextItem( QString(label.c_str()), item)
-    , mpGraphWidget(graphWidget)
 {
     setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
     setTextInteractionFlags(Qt::NoTextInteraction);

@@ -68,8 +68,6 @@ private:
     ComponentEditorWidget *mpComponentEditorWidget;
     /// the layers viewer widget GUI component
     LayerViewWidget *mpLayerViewWidget;
-    /// stacked widget to toggle between the diagram editor and layers viewer (the actual central widget of the main window)
-    QStackedWidget* mpStackedWidget;
     /// the property dialog (a.k.a. command panel) dockable GUI component
     dialogs::PropertyDialog *mpPropertyDialog;
 };

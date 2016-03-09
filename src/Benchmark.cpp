@@ -295,6 +295,9 @@ int main(int argc, char** argv)
             int targetNode = rawGraph.AddNode(nodeId++,s1);
 
             int edge = rawGraph.AddEdge(sourceNode, targetNode, i, se0);
+            // prevent compiler optimization to remove the previous operation
+            // because the result is unused.
+            edge++;
         }
         snapRawMark.stopAddEdges = base::Time::now();
 

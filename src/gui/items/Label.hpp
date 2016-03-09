@@ -28,10 +28,6 @@ namespace items {
 class Label : public QGraphicsTextItem
 {
 private:
-    // managing graph widget
-    GraphWidget *mpGraphWidget;
-    // associated portID; negative if it pertains to a cluster node; positive if it is the label of a port vertex
-    int mPortID;
     // internal for deciding whether the mouse move event path is long enough to initiate a drag move
     QPointF mDragStartPosition;
 public:
@@ -41,7 +37,7 @@ public:
      * \param item parent NodeItem implementing instance
      * \param graphWidget managing widget
      */
-    Label(const std::string& label, QGraphicsItem* item, GraphWidget *graphWidget = 0);
+    Label(const std::string& label, QGraphicsItem* item);
     /**
      * \brief toggles direct editing options of the displayed text
      * \param on boolean flag - true when the editing mode is to be turned on; false otherwise

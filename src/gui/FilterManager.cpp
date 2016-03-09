@@ -223,7 +223,6 @@ void FilterManager::removeFilter(FilterItem *item)
     delete item;
     mFilters.erase(mFilters.begin() + index);
     QCheckBox *checkBoxToErase = mCheckBoxes[index];
-    bool dirty = checkBoxToErase->isChecked();
     mCheckBoxIndexMap.erase(checkBoxToErase); // NOTE: expensive operation - internally copies all following filters to lower indices
     delete checkBoxToErase;
     mCheckBoxes.erase(mCheckBoxes.begin() + index); // NOTE: expensive operation - internally copies all following filters to lower indices

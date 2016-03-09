@@ -15,7 +15,6 @@ WidgetManager::WidgetManager()
     , mpMainWindow(NULL)
     , mpComponentEditorWidget(NULL)
     , mpLayerViewWidget(NULL)
-    , mpStackedWidget(NULL)
     , mpPropertyDialog(NULL)
 {
 }
