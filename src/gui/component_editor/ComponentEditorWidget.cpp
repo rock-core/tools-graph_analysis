@@ -156,16 +156,25 @@ void ComponentEditorWidget::addFeatureDialog()
     dialogs::AddGraphElement graphElementDialog(supportedTypes, this);
     graphElementDialog.setWindowTitle("Add feature");
     graphElementDialog.exec();
-    if(graphElementDialog.result() == QDialog::Accepted)
-    {
 
-        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(graphElementDialog.getType().toStdString(),
-                graphElementDialog.getLabel().toStdString());
-
-        Edge::Ptr edge(new Edge(mpLastFocusedNodeItem->getVertex(), vertex));
-        edge->setLabel("hasFeature");
-        graph()->addEdge(edge);
-        updateStatus("Added feature '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'", GraphWidgetManager::TIMEOUT);
+    if (graphElementDialog.result() == QDialog::Accepted) {
+        // at first create the new vertex requested by the user
+        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(
+            graphElementDialog.getType().toStdString(),
+            graphElementDialog.getLabel().toStdString());
+        graph()->addVertex(vertex);
+        // then add the new vertex as feature to the referenced vertex iff it is
+        // not a cluster
+        if (graphElementDialog.getType() != "graph_analysis::Cluster") {
+            graph()->addEdge(EdgeTypeManager::getInstance()->createEdge(
+                graphElementDialog.getLabel().toStdString(),
+                mpLastFocusedNodeItem->getVertex(), vertex, "hasFeature"));
+        }
+        // and tell the user what happend
+        updateStatus("Added feature '" + vertex->toString() + "' of type '" +
+                         vertex->getClassName() + "'",
+                     GraphWidgetManager::TIMEOUT);
+        // redrawing nicely of course
         refresh();
     } else {
         updateStatus("Adding feature aborted by user");
