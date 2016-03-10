@@ -16,7 +16,7 @@ AddGraphElement::AddGraphElement(const QStringList& types, QWidget* parent)
 }
 
 AddGraphElement::~AddGraphElement()
-{}
+{ delete mUi; }
 
 QString AddGraphElement::getLabel() const
 {

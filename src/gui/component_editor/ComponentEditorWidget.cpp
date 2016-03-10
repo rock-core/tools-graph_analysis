@@ -92,8 +92,7 @@ ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
             this, SLOT(showContextMenu(const QPoint &)));
 }
 
-ComponentEditorWidget::~ComponentEditorWidget()
-{}
+ComponentEditorWidget::~ComponentEditorWidget() { delete scene(); }
 
 void ComponentEditorWidget::registerTypes()
 {
