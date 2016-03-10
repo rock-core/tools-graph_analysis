@@ -442,7 +442,7 @@ void CorrelationClustering::round()
 CorrelationClustering::CorrelationClustering(BaseGraph::Ptr graph, EdgeWeightFunction weightfunction)
     : mpGraph(graph)
     , mEdgeWeightFunction(weightfunction)
-    , mpProblem(0)
+    , mpProblem(NULL)
 {
     Ball ball;
     ball.graph = mpGraph;

@@ -17,7 +17,7 @@ class AddGraphElement : public QDialog
     Q_OBJECT
 
 public:
-    AddGraphElement(const QStringList& types, QWidget* parent = 0);
+    AddGraphElement(const QStringList& types, QWidget* parent = NULL);
     ~AddGraphElement();
 
     QString getLabel() const;

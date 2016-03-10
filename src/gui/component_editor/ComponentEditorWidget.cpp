@@ -62,7 +62,7 @@ namespace gui {
 
 ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
     : LayerViewWidget(parent)
-    , mpLastFocusedNodeItem(0)
+    , mpLastFocusedNodeItem(NULL)
 {
     registerTypes();
 

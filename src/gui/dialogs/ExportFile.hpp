@@ -13,7 +13,7 @@ class ExportFile : public QFileDialog
     Q_OBJECT
 
 public:
-    ExportFile(const QString& filter, QWidget* parent = 0);
+    ExportFile(const QString& filter, QWidget* parent = NULL);
     virtual ~ExportFile() {}
 
     representation::Type getTypeName() const;

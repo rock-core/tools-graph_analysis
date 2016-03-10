@@ -58,7 +58,7 @@ namespace gui {
 GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
     : QGraphicsView(parent)
     , mWidgetName(widgetName)
-    , mpGVGraph(0)
+    , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mFiltered(false)
@@ -68,7 +68,7 @@ GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
     //, mpVertexFilter(new filters::PermitAll< graph_analysis::Vertex::Ptr>( ))
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpGraphWidgetManager(0)
+    , mpGraphWidgetManager(NULL)
     , mMode(GraphWidgetManager::MOVE_MODE)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
@@ -77,7 +77,7 @@ GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
 
 GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     : QGraphicsView(parent)
-    , mpGVGraph(0)
+    , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mFiltered(false)
@@ -86,7 +86,7 @@ GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
     , mLayout("dot")
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpGraphWidgetManager(0)
+    , mpGraphWidgetManager(NULL)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);

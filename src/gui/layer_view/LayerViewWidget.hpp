@@ -24,7 +24,7 @@ public:
      * \brief constructor
      * \param graph underlying base graph
      */
-    LayerViewWidget(QWidget *parent = 0);
+    LayerViewWidget(QWidget *parent = NULL);
     /// destructor
     virtual ~LayerViewWidget();
 

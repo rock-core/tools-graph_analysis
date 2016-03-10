@@ -36,7 +36,7 @@ public:
      * \brief constructor
      * \param parent qt parent widget
      */
-    ComponentEditorWidget(QWidget *parent = 0);
+    ComponentEditorWidget(QWidget *parent = NULL);
     /// destructor
     virtual ~ComponentEditorWidget();
 

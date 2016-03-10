@@ -34,7 +34,7 @@ public:
      * \param checkBoxGrid widget to host the check-boxes at this widget's disposal
      * \param parent optional qt parent widget to assume ownership over this widget
      */
-    FilterManager(QWidget *checkBoxGrid, QWidget *parent = 0);
+    FilterManager(QWidget *checkBoxGrid, QWidget *parent = NULL);
     /// destructor
     ~FilterManager();
 

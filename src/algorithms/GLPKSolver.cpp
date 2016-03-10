@@ -6,7 +6,7 @@ namespace graph_analysis {
 namespace algorithms {
 
 GLPKSolver::GLPKSolver(const std::string& problemName)
-    : mpProblem(0)
+    : mpProblem(NULL)
 {
     // define the integer program
     mpProblem = glp_create_prob();
