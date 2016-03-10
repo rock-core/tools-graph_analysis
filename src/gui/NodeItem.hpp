@@ -70,13 +70,6 @@ public:
      */
     virtual bool advance();
 
-    /**
-     * Get the center position of this node item
-     * The default implementation uses the boundingRect() and pos() to compute this information
-     * \return center position of this node item in the scene
-     */
-    virtual QPointF getCenterPosition() const;
-
     /// fancy toString method: prepends the pointer address to the underlying vertex toString()
     std::string getId() const;
 

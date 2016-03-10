@@ -116,16 +116,6 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
     return QGraphicsItem::itemChange(change, value);
 }
 
-QPointF NodeItem::getCenterPosition() const
-{
-    QRectF rect = boundingRect();
-    QPointF position = pos();
-
-    qreal width = rect.width()/2.0;
-    qreal height = rect.height()/2.0;
-    return QPointF( position.x() + width, position.y() + height);
-}
-
 std::string NodeItem::getId() const
 {
     char buffer[512];
