@@ -119,7 +119,8 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
 std::string NodeItem::getId() const
 {
     char buffer[512];
-    snprintf(buffer,512, "%p-%s",this, mpVertex->toString().c_str());
+    snprintf(buffer, sizeof(buffer), "%p-%s", (void *)this,
+             mpVertex->toString().c_str());
     return std::string(buffer);
 }
 
