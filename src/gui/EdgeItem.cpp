@@ -26,7 +26,7 @@ EdgeItem::EdgeItem(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsIte
     } else if(!target) {
         throw std::invalid_argument("graph_analysis::gui::EdgeItem: construction failed for '" + edge->toString() + "' -- target graphics item is NULL");
     }
-    setAcceptedMouseButtons(0);
+    setAcceptedMouseButtons(Qt::NoButton);
     adjust();
 }
 
