@@ -70,6 +70,7 @@ rock_library(graph_analysis
         io/GexfReader.cpp
         io/GexfWriter.cpp
         io/GraphvizWriter.cpp
+        io/OrogenModelReader.cpp
         io/YamlReader.cpp
         io/YamlWriter.cpp
         lemon/DirectedGraph.cpp
@@ -167,6 +168,7 @@ rock_library(graph_analysis
         io/GexfWriter.hpp
         io/GraphvizStyle.hpp
         io/GraphvizWriter.hpp
+        io/OrogenModelReader.hpp
         io/YamlReader.hpp
         io/YamlWriter.hpp
         lemon/ArcIterator.hpp
