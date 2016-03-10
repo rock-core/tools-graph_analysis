@@ -239,10 +239,11 @@ void FilterManager::removeFilter(FilterItem *item)
 
 void FilterManager::addFilter()
 {
-    dialogs::AddFilterDialog addFilterDialog;
-    if(addFilterDialog.isValid())
+    dialogs::AddFilter addFilterDialog;
+    addFilterDialog.exec();
+    if(addFilterDialog.result() == QDialog::Accepted)
     {
-        std::string regexp = addFilterDialog.getFilterRegexp();
+        std::string regexp = addFilterDialog.getFilterRegexp().toStdString();
         bool enable = addFilterDialog.isEnabled();
         addFilter(regexp, enable);
     }
