@@ -40,7 +40,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         std::list<std::string> members = vManager->getMembers(vertex->getClassName());
 
         uint32_t memberCount = 0;
-        for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+        for(std::list<std::string>::const_iterator members_it = members.begin(); members_it != members.end(); ++members_it)
         {
             std::stringstream attrId;
             attrId << vertex->getClassName() << "-" << memberCount++;
