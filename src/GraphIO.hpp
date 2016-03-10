@@ -18,7 +18,7 @@ extern std::map<Type, std::string> TypeTxt;
 
 namespace io {
 
-/// GEXF reader/writer common convetions
+/// GEXF reader/writer common conventions
 const std::string CLASS("0");
 const std::string LABEL("1");
 

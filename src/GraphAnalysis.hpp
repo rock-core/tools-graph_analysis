@@ -20,7 +20,7 @@
  *    - autotools based build
  *  - lemon: http://lemon.cs.elte.hu/trac/lemon
  *    - cmake based build
- *    - support of parallel arces in digraphs, see also: http://lemon.cs.elte.hu/pub/tutorial/a00011.html#sec_digraphs
+ *    - support of parallel arcs in digraphs, see also: http://lemon.cs.elte.hu/pub/tutorial/a00011.html#sec_digraphs
  *
  * After short evaluation lemon has been selected as first choice, since it seems to provide a good combination of a properly implemented build,
  * usability, functionality and performance compared to other libraries.
@@ -30,10 +30,10 @@
  *  - http://stackoverflow.com/questions/3010805/scalable-parallel-large-graph-analysis-library
  *
  * \section Motivation
- * A number of different graph libraries does exist - as listed above - though they cannot always compared in a one to one fashion.
+ * A number of different graph libraries does exist - as listed above - though they cannot always be compared in a one to one fashion.
  * This library tries to provide access to (at first one) and possibly further graph libraries to give access
  * to a larger set of functionality.
- * In the course of developement we might see that including additional libraries leads to an overcomplicated
+ * In the course of development we might see that including additional libraries leads to an overcomplicated
  * wrapping infrastructure.
  * The goal however it to maintain a consistent and capable high-level interface abstraction in order to allow graph modeling and analysis.
 *
@@ -95,7 +95,7 @@
 
 /**
  * \namespace graph_analysis
- * \brief Main namespace of the graph analyis library
+ * \brief Main namespace of the graph analysis library
  *
  * \namespace algorithms
  * \brief Algorithms implementations that rely on the (wrapper) interface of this library
