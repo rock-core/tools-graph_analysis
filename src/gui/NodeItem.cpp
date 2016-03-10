@@ -16,7 +16,6 @@ namespace gui {
 
 NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     : QGraphicsItemGroup()
-    , VertexGetter()
     , mpVertex(vertex)
     , mpGraphWidget(graphWidget)
 {

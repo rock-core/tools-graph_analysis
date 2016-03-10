@@ -156,4 +156,4 @@ class SpecializedIterable : public BaseIterable<T, SpecializedIterable<T, G, E, 
     const G *parent2;
     D d;
 };
-};
+}

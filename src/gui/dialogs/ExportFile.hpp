@@ -10,7 +10,7 @@ namespace dialogs {
 
 class ExportFile : public QFileDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     ExportFile(const QString& filter, QWidget* parent = 0);

@@ -19,19 +19,6 @@
 
 #include <QTableWidget>
 
-/// inline maximum test
-#define max(X, Y) (X > Y ? X : Y)
-/// single feature height constant
-#define ADJUST 23.69
-/// error tolerance constant for in-scene positions equality check
-#define EPSILON 0.001
-/// guaranteed minimum spacing between input and output ports constant
-#define SEPARATOR 69.
-/// bounding rectangular rounding port graphics constant
-#define PORT_BORDER 8.
-/// bounding rectangular rounding node graphics constant
-#define NODE_BORDER 12.
-
 using namespace graph_analysis::gui::items;
 
 namespace graph_analysis {
@@ -44,8 +31,6 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     , mPenDefault(Qt::blue)
     , mFocused(false)
     , mSelected(false)
-    , mHeightAdjusted(false)
-    , mSeparator(SEPARATOR)
 {
     mpLabel = new Label(vertex->toString(), this);
 

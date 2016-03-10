@@ -6,7 +6,7 @@
 namespace Ui
 {
     class AddGraphElement;
-};
+}
 
 namespace graph_analysis {
 namespace gui {
@@ -14,7 +14,7 @@ namespace dialogs {
 
 class AddGraphElement : public QDialog
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     AddGraphElement(const QStringList& types, QWidget* parent = 0);
@@ -25,7 +25,6 @@ public:
 
 
 private:
-    QString mType;
     Ui::AddGraphElement* mUi;
 };
 
