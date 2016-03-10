@@ -28,15 +28,16 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
     VertexMap vertexMap;
     // storing the nodes and their properties
     libgexf::NodeIter* node_it = gexf_graph.getNodes();
+    // having this pointer might come handy...
+    VertexTypeManager *vManager = VertexTypeManager::getInstance();
     while(node_it->hasNext())
     {
         libgexf::t_id current = node_it->next();
         std::string nodeClass = data.getNodeAttribute(current, classAttr);
         std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
-        Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(nodeClass, nodeLabel);
+        Vertex::Ptr vertex = vManager->createVertex(nodeClass, nodeLabel);
         graph->addVertex(vertex);
 
-        VertexTypeManager *vManager = VertexTypeManager::getInstance();
         std::list<std::string> members = vManager->getMembers(vertex->getClassName());
 
         uint32_t memberCount = 0;
@@ -52,6 +53,8 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
     }
     // storing the edges and their properties
     libgexf::EdgeIter* edge_it = gexf_graph.getEdges();
+    // having this pointer might come handy...
+    EdgeTypeManager *eManager = EdgeTypeManager::getInstance();
     while(edge_it->hasNext())
     {
         libgexf::t_id current = edge_it->next();
@@ -59,7 +62,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         std::string edgeLabel = data.getEdgeAttribute(current, labelAttr);
         Vertex::Ptr sourceVertex = vertexMap[edge_it->currentSource()]; // NOTE: assumes the .gexf(.xml) file is valid
         Vertex::Ptr targetVertex = vertexMap[edge_it->currentTarget()]; // NOTE: assumes the .gexf(.xml) file is valid
-        Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel);
+        Edge::Ptr edge = eManager->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel);
         graph->addEdge(edge);
     }
 
