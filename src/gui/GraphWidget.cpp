@@ -221,7 +221,7 @@ void GraphWidget::updateLayoutView()
         mpGVGraph->applyLayout(mLayout.toStdString());
         base::Time delay = base::Time::now() - start;
         QApplication::restoreOverrideCursor();
-        LOG_INFO_S << "GV layouted the graph after " << delay.toSeconds();
+        LOG_INFO_S << "GV layouted the graph after " << delay.toMilliseconds() << "ms";
         {
             using namespace graph_analysis::io;
             std::vector<GVNode> nodes = mpGVGraph->nodes();
