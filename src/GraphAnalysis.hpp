@@ -91,6 +91,19 @@
  *
  * \section Graph I/O
  * \see Detailed description of graph_analysis::io::GraphIO
+ *
+ * \section Debugging
+ *
+ * This project uses the <a href="http://rock-robotics.org/stable/api/base/types/classbase_1_1logging_1_1Logger.html">logging</a> facilities of the rock-frameworks <a href="https://github.com/rock-core/base-types">base types</a> package.
+ *
+ * Enabling and configuring the output can be done by setting the appropriate environment variables in the shell where any part of this library is executed, e.g.:
+ *
+  \code{.sh}
+  export BASE_LOG_LEVEL="INFO"
+  export BASE_LOG_COLOR="1"
+  export BASE_LOG_FORMAT="MULTILINE"
+  \endcode
+ *
  */
 
 /**
