@@ -281,61 +281,75 @@ void GraphWidget::gvRender(const std::string& filename)
     }
 }
 
-void GraphWidget::keyPressEvent(QKeyEvent* event)
+void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    // check for a keys combination
-    Qt::KeyboardModifiers modifiers = event->modifiers();
+    // some error checking
     if(!mpGraphWidgetManager)
     {
-        throw std::runtime_error("graph_analysis::gui::GraphWidget::keyPressEvent: GraphWidgetManager is not set for this widget");
+        throw std::runtime_error("graph_analysis::gui::GraphWidget::"
+                                 "keyPressEvent: GraphWidgetManager is not set "
+                                 "for this widget");
     }
 
-    if(modifiers & Qt::ControlModifier) // key combinations while holding 'CTRL' pressed
+    // check some key combinations which will be accepting while holding the
+    // 'ctrl' key:
+    if(event->modifiers() & Qt::ControlModifier)
     {
         switch(event->key())
         {
-            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
-            case Qt::Key_W:
-                exit(0);
-            break;
+        case Qt::Key_Q:
+        case Qt::Key_W:
+        {
+            // CTRL+Q and CTRL+W terminate the application
+            QApplication::quit();
+            // well... return? hrhr...
+            return;
+        }
 
-            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
-                getGraphWidgetManager()->resetGraph();
-            break;
+        case Qt::Key_R:
+        {
+            // CTRL+R deletes the graph (it first prompts again the user)
+            getGraphWidgetManager()->resetGraph();
+            return;
+        }
 
-            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
-            case Qt::Key_S:
-                getGraphWidgetManager()->exportGraph();
-            break;
+        case Qt::Key_E:
+        case Qt::Key_S: {
+            // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
+            getGraphWidgetManager()->exportGraph();
+            return;
+        }
 
-            case Qt::Key_A: // CTRL+A prompts the user to add a node
-//                if(!mDragDrop)
-//                {
-//                    addNodeAdhoc();
-//                }
-            break;
+        case Qt::Key_O:
+        case Qt::Key_I:
+        {
+            // CTRL+O (open) or CTRL+I (input graph)
+            getGraphWidgetManager()->importGraph();
+            return;
+        }
+        case Qt::Key_L:
+        {
+            // CTRL+L (layout graph) opens a graph from file
+            getGraphWidgetManager()->selectLayout();
+            return;
+        }
 
-            case Qt::Key_O:
-            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)
-                getGraphWidgetManager()->importGraph();
-                break;
-            case Qt::Key_L:
-                // CTRL+L (layout graph) opens a graph from file
-                getGraphWidgetManager()->selectLayout();
-                break;
-
-            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
-                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-                {
-                    WidgetManager::getInstance()->getGraphWidgetManager()->reloadPropertyDialog();
-                }
-            break;
-            case Qt::Key_CapsLock: // CTRL+CapsLock or CTRL+D toggles the active mode (drag-n-drop mode v. move-around mode)
-            case Qt::Key_D:
-                //mDragDrop ? unsetDragDrop() : setDragDrop();
-            break;
+        case Qt::Key_P:
+        {
+            // CTRL+P reloads the property dialog (if it is currently not
+            // running)
+            if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
+            {
+                WidgetManager::getInstance()
+                    ->getGraphWidgetManager()
+                    ->reloadPropertyDialog();
+                return;
+            }
+        }
         }
     }
+    // if we did not act, we shall call the handler of the base-class to
+    // propagate the event.
     QGraphicsView::keyPressEvent(event);
 }
 

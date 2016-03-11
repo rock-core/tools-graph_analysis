@@ -93,8 +93,6 @@ public slots:
 
 protected:
 
-    /// qt keys press callback
-    void keyPressEvent(QKeyEvent *event);
     /// qt timer callback
     void timerEvent(QTimerEvent *event);
     /// qt mouse wheel spin callback
