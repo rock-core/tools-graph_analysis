@@ -36,11 +36,13 @@ private:
     /// internal method to query the instance map
     NodeItem* graphicsItemByType(const node::Type& type, bool throwOnDefault = false);
 
-public:
+protected:
     /// constructor
     NodeItemTypeManager();
     /// destructor
     ~NodeItemTypeManager();
+    friend class base::Singleton<NodeItemTypeManager>;
+public:
 
     // Register visualization class
     // takes ownership of graphicsItem
