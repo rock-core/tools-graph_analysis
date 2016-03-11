@@ -65,7 +65,6 @@ protected:
     void timerEvent(QTimerEvent *event);
     /// qt mouse wheel spin callback
     void wheelEvent(QWheelEvent *event);
-    void drawBackground(QPainter *painter, const QRectF& rect);
 
     /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);
