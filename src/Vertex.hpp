@@ -1,7 +1,6 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_HPP
 #define GRAPH_ANALYSIS_VERTEX_HPP
 
-#include <iostream>
 #include <graph_analysis/GraphElement.hpp>
 
 namespace graph_analysis

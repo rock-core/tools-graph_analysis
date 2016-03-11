@@ -1,11 +1,7 @@
 #include "EdgeItemTypeManager.hpp"
 
-#include <QPainter>
-#include <QStyle>
-#include <QStyleOption>
+#include <QGraphicsItem>
 
-#include <boost/assign/list_of.hpp>
-#include <base/Logging.hpp>
 #include "graphitem/edges/Simple.hpp"
 #include "layeritem/edges/Simple.hpp"
 

@@ -1,9 +1,8 @@
 #ifndef GRAPH_ANALYSIS_EDGE_HPP
 #define GRAPH_ANALYSIS_EDGE_HPP
 
-#include <string>
-#include <iostream>
 #include <graph_analysis/Vertex.hpp>
+#include <string>
 
 namespace graph_analysis {
 

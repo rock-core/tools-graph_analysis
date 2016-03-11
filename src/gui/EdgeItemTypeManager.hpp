@@ -1,15 +1,12 @@
 #ifndef GRAPH_ANALYSIS_EDGE_ITEM_TYPE_MANAGER_HPP
 #define GRAPH_ANALYSIS_EDGE_ITEM_TYPE_MANAGER_HPP
 
-#include <map>
 #include <base/Singleton.hpp>
 #include <graph_analysis/Edge.hpp>
+#include <QStringList>
+#include <map>
 
-#include <QPainter>
-#include <QPainterPath>
-#include <QGraphicsItem>
-#include <QGraphicsView>
-
+class QGraphicsItem;
 
 namespace graph_analysis {
 namespace gui {

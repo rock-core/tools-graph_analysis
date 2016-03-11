@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_GUI_ICON_MANAGER_HPP
 #define GRAPH_ANALYSIS_GUI_ICON_MANAGER_HPP
 
-#include <map>
-#include <QIcon>
-#include <string>
 #include <base/Singleton.hpp>
+#include <QIcon>
+#include <map>
+#include <string>
 
 namespace graph_analysis {
 namespace gui {

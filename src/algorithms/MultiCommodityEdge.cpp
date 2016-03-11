@@ -1,4 +1,5 @@
 #include "MultiCommodityEdge.hpp"
+#include <sstream>
 
 namespace graph_analysis {
 namespace algorithms {

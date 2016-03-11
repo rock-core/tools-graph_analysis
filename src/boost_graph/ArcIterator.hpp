@@ -3,6 +3,7 @@
 
 #include <graph_analysis/EdgeIterator.hpp>
 #include <graph_analysis/Vertex.hpp>
+#include <boost/graph/adjacency_list.hpp>
 
 namespace graph_analysis {
 namespace boost_graph {

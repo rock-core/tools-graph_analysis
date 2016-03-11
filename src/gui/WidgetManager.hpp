@@ -1,9 +1,8 @@
 #ifndef GRAPH_ANALYSIS_GUI_WIDGET_MANAGER_HPP
 #define GRAPH_ANALYSIS_GUI_WIDGET_MANAGER_HPP
 
-#include <QMainWindow>
-#include <QStackedWidget>
 #include <base/Singleton.hpp>
+#include <QMainWindow>
 
 namespace graph_analysis {
 namespace gui {

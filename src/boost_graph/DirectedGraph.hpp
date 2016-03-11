@@ -4,12 +4,13 @@
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/SubGraphImpl.hpp>
 #include <graph_analysis/BaseGraph.hpp>
+#include <graph_analysis/boost_graph/ArcIterator.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <base/Logging.hpp>
-#include <graph_analysis/boost_graph/ArcIterator.hpp>
 
 #include <map>
 #include <vector>
+#include <iostream>
 
 namespace graph_analysis {
 /// no using boost namespace here to avoid collisions
