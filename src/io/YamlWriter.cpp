@@ -21,13 +21,13 @@ void YamlWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     }
     const char *fname = file.c_str();
     std::ofstream fout(fname);
-    if(!fout.is_open() || fout.fail())
+    if(!fout.good())
     {
-        std::string error_msg = std::string("graph_analysis::io::YamlWriter: failed to open output file ") + filename + " for graph export";
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
+        LOG_ERROR_S << "failed to open output file '" << filename
+                    << "' for graph export";
+        return;
     }
-    LOG_INFO("graph_analysis::io::YamlWriter: rendering graph to file \"%s\" ", fname);
+    LOG_INFO_S << "rendering graph to file '" << fname << "'";
     // no file header
     VertexIterator::Ptr nodeIt = graph->getVertexIterator();
     fout << "nodes:\n";

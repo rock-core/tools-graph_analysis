@@ -9,14 +9,14 @@ void YamlReader::read(const std::string& filename, BaseGraph::Ptr graph)
 {
     const char *fname = filename.c_str();
     std::ifstream fin(fname);
-    if(!fin.is_open() || fin.fail() || fin.eof())
+    if(!fin.good())
     {
         // error checking
-        std::string error_msg = std::string("failed to open input file ") + filename + " for graph import - no such file";
-        LOG_WARN_S << "graph_analysis::io::YamlReader: " << error_msg;
-        throw std::runtime_error(error_msg);
+        LOG_ERROR_S << "failed to open input file '" << filename
+                    << "' for graph import - no such file";
+        return;
     }
-    LOG_INFO("graph_analysis::io::YamlWriter: importing graph from file \"%s\" ", fname);
+    LOG_INFO_S << "importing graph from file '" << fname << "'";
 
     graph->clear();
     VertexMap vMap;
