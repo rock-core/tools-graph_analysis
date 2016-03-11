@@ -136,7 +136,6 @@ GraphWidgetManager::GraphWidgetManager()
     bar->addMenu(viewMenu);
 
     mpMainWindow->setWindowTitle(QObject::tr("Graph Analysis"));
-    mpStatus->addWidget(new QLabel("Ready"));
 
     // setting up graph regex filtering
     filters::VertexRegexFilter sourceNodeFilter(".*");
@@ -156,6 +155,7 @@ GraphWidgetManager::GraphWidgetManager()
     }
 
     mpMainWindow->show();
+    updateStatus("Ready");
 }
 
 GraphWidgetManager::~GraphWidgetManager()
