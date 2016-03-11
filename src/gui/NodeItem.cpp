@@ -55,7 +55,7 @@ void NodeItem::calculateForces()
         }
     }
     // Now subtract all forces pulling items together
-    GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
+    GraphWidget::EdgeItemMap::const_iterator it = mpGraphWidget->edgeItemMap().begin();
     double weight = (mpGraphWidget->edgeItemMap().size() + 1) * 10;
     for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
     {
@@ -98,7 +98,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
     {
         case ItemPositionHasChanged:
         {
-            GraphWidget::EdgeItemMap::iterator it = mpGraphWidget->edgeItemMap().begin();
+            GraphWidget::EdgeItemMap::const_iterator it = mpGraphWidget->edgeItemMap().begin();
             for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
             {
                 EdgeItem* edge = it->second;

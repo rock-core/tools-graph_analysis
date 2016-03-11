@@ -280,7 +280,7 @@ void Cluster::dropEvent(QGraphicsSceneDragDropEvent* event)
 
 QGraphicsTextItem* Cluster::getOrCreateLabel(const std::string& label, QGraphicsItem* parent)
 {
-    std::map<std::string, QGraphicsTextItem*>::iterator it = mLabels.find(label);
+    std::map<std::string, QGraphicsTextItem*>::const_iterator it = mLabels.find(label);
     if(it == mLabels.end())
     {
         LOG_WARN_S << "Creating label for: " << label;

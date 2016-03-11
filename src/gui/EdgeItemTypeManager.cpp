@@ -41,7 +41,7 @@ void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItem
 
 EdgeItem* EdgeItemTypeManager::graphicsItemByType(const edge::Type& type)
 {
-    ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
+    ClassVisualizationMap::const_iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
         return mClassVisualizationMap["default"];

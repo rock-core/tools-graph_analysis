@@ -589,7 +589,7 @@ void ComponentEditorWidget::updateLayout()
 
 items::Feature* ComponentEditorWidget::getFeature(const GraphElement::Ptr& element)
 {
-    std::map<GraphElement::Ptr, items::Feature*>::iterator it = mFeatureMap.find(element);
+    std::map<GraphElement::Ptr, items::Feature*>::const_iterator it = mFeatureMap.find(element);
     if(it != mFeatureMap.end())
     {
         return it->second;

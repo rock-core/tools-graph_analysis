@@ -377,8 +377,9 @@ void GraphWidget::selectElement(const graph_analysis::GraphElement::Ptr& element
 
 void GraphWidget::unselectElement(const graph_analysis::GraphElement::Ptr& element)
 {
-    std::vector<GraphElement::Ptr>::iterator it = std::find(mElementSelection.begin(),
-            mElementSelection.end(), element);
+    // no const interator, will be used to erease later
+    std::vector<GraphElement::Ptr>::iterator it =
+        std::find(mElementSelection.begin(), mElementSelection.end(), element);
 
     if(it == mElementSelection.end())
     {
@@ -561,9 +562,9 @@ void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVert
     }
 }
 
-NodeItem* GraphWidget::getFocusedNodeItem()
+NodeItem* GraphWidget::getFocusedNodeItem() const
 {
-    NodeItemMap::iterator cit = mNodeItemMap.begin();
+    NodeItemMap::const_iterator cit = mNodeItemMap.begin();
     for(; cit != mNodeItemMap.end(); ++cit)
     {
         NodeItem* nodeItem = cit->second;
@@ -575,9 +576,9 @@ NodeItem* GraphWidget::getFocusedNodeItem()
     return NULL;
 }
 
-EdgeItem* GraphWidget::getFocusedEdgeItem()
+EdgeItem* GraphWidget::getFocusedEdgeItem() const
 {
-    EdgeItemMap::iterator cit = mEdgeItemMap.begin();
+    EdgeItemMap::const_iterator cit = mEdgeItemMap.begin();
     for(; cit != mEdgeItemMap.end(); ++cit)
     {
         EdgeItem* edgeItem = cit->second;
@@ -661,7 +662,7 @@ void GraphWidget::removeElement(const GraphElement::Ptr& element)
 void GraphWidget::removeVertex(const Vertex::Ptr& vertex)
 {
     // Check if vertex relates to a registered node item
-    NodeItemMap::iterator it = mNodeItemMap.find(vertex);
+    NodeItemMap::const_iterator it = mNodeItemMap.find(vertex);
     if(it == mNodeItemMap.end())
     {
         // not a node item (but a feature) -- so safe to remove edge

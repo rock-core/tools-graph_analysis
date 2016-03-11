@@ -45,7 +45,7 @@ void NodeItemTypeManager::registerVisualization(const node::Type& type, NodeItem
 
 NodeItem* NodeItemTypeManager::graphicsItemByType(const node::Type& type, bool throwOnDefault)
 {
-    ClassVisualizationMap::iterator it = mClassVisualizationMap.find(type);
+    ClassVisualizationMap::const_iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
         LOG_DEBUG_S << "graph_analysis::gui::NodeItemTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";

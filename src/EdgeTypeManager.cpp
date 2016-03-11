@@ -34,7 +34,7 @@ void EdgeTypeManager::registerType(const edge::Type& type, Edge::Ptr edge, bool 
 
 Edge::Ptr EdgeTypeManager::edgeByType(const edge::Type& type, bool throwOnDefault)
 {
-    TypeMap::iterator it = mTypeMap.find(type);
+    TypeMap::const_iterator it = mTypeMap.find(type);
     if(it == mTypeMap.end())
     {
         LOG_DEBUG_S << "EdgeType '" + type + "' is not registered.";

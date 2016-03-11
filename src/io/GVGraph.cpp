@@ -206,7 +206,7 @@ void GVGraph::removeNode(GraphElementId id)
             edges.push_back(id);
         }
 
-        std::vector<GraphElementId>::iterator eit = edges.begin();
+        std::vector<GraphElementId>::const_iterator eit = edges.begin();
         for(; eit != edges.end(); ++eit)
         {
             GraphElementId id = *eit;
@@ -490,7 +490,7 @@ std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
 
     std::list<std::string> members = vManager->getMembers(vertex->getClassName());
-    for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+    for(std::list<std::string>::const_iterator members_it = members.begin(); members_it != members.end(); ++members_it)
     {
         VertexTypeManager::MemberCallbacks mc = vManager->getMemberCallbacks(vertex->getClassName(),*members_it);
         if(mc.printFunction)

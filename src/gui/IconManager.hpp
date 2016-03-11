@@ -27,7 +27,7 @@ public:
     ~IconManager();
 
     /// getter method - retrieves a qt icon registered at the given keyword in the icons map
-    QIcon* getIcon(const std::string& key);
+    const QIcon* getIcon(const std::string& key);
 
     static std::string getIconRootPath();
 

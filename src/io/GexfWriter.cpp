@@ -34,11 +34,11 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
 
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
     std::set<std::string> types = vManager->getSupportedTypes();
-    for(std::set<std::string>::iterator type_it = types.begin(); type_it != types.end(); type_it++)
+    for(std::set<std::string>::const_iterator type_it = types.begin(); type_it != types.end(); type_it++)
     {
         uint32_t memberCount = 0;
         std::list<std::string> members = vManager->getMembers(*type_it);
-        for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); members_it++)
+        for(std::list<std::string>::const_iterator members_it = members.begin(); members_it != members.end(); members_it++)
         {
             std::stringstream attrId;
             attrId << *type_it << "-" << memberCount++;
@@ -59,7 +59,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         data.setNodeValue(nodeIdString, classAttr, vertex->getClassName());
         std::list<std::string> members = vManager->getMembers(vertex->getClassName());
         uint32_t memberCount = 0;
-        for(std::list<std::string>::iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+        for(std::list<std::string>::const_iterator members_it = members.begin(); members_it != members.end(); ++members_it)
         {
             std::stringstream attrId;
             attrId << vertex->getClassName() << "-" << memberCount++;

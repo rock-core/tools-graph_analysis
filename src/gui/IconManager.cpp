@@ -105,9 +105,9 @@ IconManager::~IconManager()
 {
 }
 
-QIcon* IconManager::getIcon(const std::string& key)
+const QIcon* IconManager::getIcon(const std::string& key)
 {
-    IconMap::iterator it = mIconMap.find(key);
+    IconMap::const_iterator it = mIconMap.find(key);
     if(it == mIconMap.end())
     {
         throw std::invalid_argument("graph_analysis::gui::IconManager: Could not find a icon named for '" + key + "'");

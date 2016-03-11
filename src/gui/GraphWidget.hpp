@@ -125,8 +125,8 @@ public:
     void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
     bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }
 
-    NodeItem* getFocusedNodeItem();
-    EdgeItem* getFocusedEdgeItem();
+    NodeItem* getFocusedNodeItem() const;
+    EdgeItem* getFocusedEdgeItem() const;
 
     void selectElement(const GraphElement::Ptr& element);
     void unselectElement(const GraphElement::Ptr& element);

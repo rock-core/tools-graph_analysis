@@ -146,7 +146,7 @@ GraphWidgetManager::GraphWidgetManager()
     std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
     edgeFilters.push_back(filter);
 
-    std::vector<GraphWidget*>::iterator it = mGraphWidgets.begin();
+    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.begin();
     for(; it != mGraphWidgets.end(); ++it)
     {
         GraphWidget* graphWidget = *it;
@@ -272,7 +272,7 @@ void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd
 void GraphWidgetManager::renameSelection()
 {
     std::vector<GraphElement::Ptr> elements = currentGraphWidget()->getElementSelection();
-    std::vector<GraphElement::Ptr>::iterator it = elements.begin();
+    std::vector<GraphElement::Ptr>::const_iterator it = elements.begin();
     for(; it != elements.end(); ++it)
     {
         GraphElement::Ptr element = *it;
@@ -407,7 +407,7 @@ void GraphWidgetManager::resetGraph(bool keepData)
         mpGraph = BaseGraph::getInstance();
     }
 
-    std::vector<GraphWidget*>::iterator it = mGraphWidgets.begin();
+    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.begin();
     for(; it != mGraphWidgets.end(); ++it)
     {
         GraphWidget* graphWidget = *it;
@@ -538,7 +538,7 @@ void GraphWidgetManager::fromFile(const std::string& filename)
 
 void GraphWidgetManager::notifyModeChange(Mode mode)
 {
-    std::vector<GraphWidget*>::iterator it = mGraphWidgets.begin();
+    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.begin();
     for(; it != mGraphWidgets.end(); ++it)
     {
         GraphWidget* graphWidget = *it;
@@ -548,7 +548,7 @@ void GraphWidgetManager::notifyModeChange(Mode mode)
 
 void GraphWidgetManager::notifyAll()
 {
-    std::vector<GraphWidget*>::iterator it = mGraphWidgets.end();
+    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.end();
     for(; it != mGraphWidgets.end(); ++it)
     {
         GraphWidget* graphWidget = *it;

@@ -40,7 +40,7 @@ void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node,
 
 Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throwOnDefault)
 {
-    TypeMap::iterator it = mTypeMap.find(type);
+    TypeMap::const_iterator it = mTypeMap.find(type);
     if(it == mTypeMap.end())
     {
         LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered.";
@@ -95,7 +95,7 @@ std::list<std::string> VertexTypeManager::getMembers(const std::string &typeName
         return res;
     }
 
-    for(std::map<std::string, MemberCallbacks>::iterator it = mRegisteredCallbacks[typeName].begin(); it != mRegisteredCallbacks[typeName].end(); ++it)
+    for(std::map<std::string, MemberCallbacks>::const_iterator it = mRegisteredCallbacks[typeName].begin(); it != mRegisteredCallbacks[typeName].end(); ++it)
     {
         res.push_back(it->first);
     }
