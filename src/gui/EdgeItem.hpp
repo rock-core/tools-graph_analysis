@@ -51,8 +51,6 @@ public:
     int type() const { return Type; }
     /// getter method to retrieve  the internal conceptual edge
     graph_analysis::Edge::Ptr getEdge() { return mpEdge; }
-    // setter method to update the mPainterPath member field
-    void setPainterPath(QPainterPath painterPath) { mPainterPath = painterPath; }
 
     // virtual methods
     virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
@@ -83,15 +81,12 @@ protected:
     QPointF mTargetPoint;
     /// arrow tip size
     qreal mArrowSize;
-    /// qt painter path
-    QPainterPath mPainterPath;
 
     /// retrieves the bounding rectangular box around the area occupied by the node in the scene
     virtual QRectF boundingRect() const;
     /// qt node painting method - here the node components get placed in the scene
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
     /// retrieves the path of the bounding rectangular box around the area occupied by the node in the scene
-    virtual QPainterPath shape() const;
 
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
 
