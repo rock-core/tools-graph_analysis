@@ -207,11 +207,6 @@ void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void ComponentEditorWidget::mouseDoubleClickEvent(QMouseEvent* event)
-{
-    QGraphicsView::mouseDoubleClickEvent(event);
-}
-
 void ComponentEditorWidget::itemMoved()
 {
     if (!mTimerId)
