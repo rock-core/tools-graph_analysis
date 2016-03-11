@@ -101,10 +101,6 @@ IconManager::IconManager()
     loadIcon(mIconMap["properties_white"], pathToIcons + "properties_white.png");
 }
 
-IconManager::~IconManager()
-{
-}
-
 const QIcon* IconManager::getIcon(const std::string& key)
 {
     IconMap::const_iterator it = mIconMap.find(key);

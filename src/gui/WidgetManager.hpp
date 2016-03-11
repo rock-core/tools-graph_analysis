@@ -28,8 +28,6 @@ class WidgetManager : public base::Singleton<WidgetManager>
 public:
     /// constructor
     WidgetManager();
-    /// destructor
-    ~WidgetManager();
 
     /// getter for the graph GUI manager
     GraphWidgetManager* getGraphWidgetManager(void);

@@ -42,10 +42,6 @@ FilterManager::FilterManager(QWidget *checkBoxGrid, QWidget *parent)
             this, SLOT(showContextMenu(const QPoint &)));
 }
 
-FilterManager::~FilterManager()
-{
-}
-
 void FilterManager::showContextMenu(const QPoint& pos)
 {
     ActionCommander comm(this);

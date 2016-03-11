@@ -35,8 +35,6 @@ public:
      * \param parent optional qt parent widget to assume ownership over this widget
      */
     FilterManager(QWidget *checkBoxGrid, QWidget *parent = NULL);
-    /// destructor
-    ~FilterManager();
 
     /// getter method for the boolean item-selection witness; returns true when a filter item is being hover-over; false otherwise
     bool getItemSelected(void) { return mItemSelected; }

@@ -23,8 +23,6 @@ public:
 
     /// constructor
     IconManager();
-    /// destructor
-    ~IconManager();
 
     /// getter method - retrieves a qt icon registered at the given keyword in the icons map
     const QIcon* getIcon(const std::string& key);

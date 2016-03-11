@@ -45,8 +45,6 @@ private:
 public:
     /// constructor
     EdgeTypeManager();
-    /// destructor
-    ~EdgeTypeManager();
 
     // Register visualization class
     // takes ownership of graphicsItem
