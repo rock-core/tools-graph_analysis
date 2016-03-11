@@ -27,12 +27,12 @@ int main(int argc, char **argv)
             std::stringstream help_message;
             help_setup(help_message, std::string(argv[0]), graphManager);
             std::cout << help_message.rdbuf();
-            return 0;
+            exit(EXIT_FAILURE);
         }
         else
         {
             std::cout << "usage: " << argv[0] << " [--help]\n";
-            return 0;
+            exit(EXIT_FAILURE);
         }
     }
 

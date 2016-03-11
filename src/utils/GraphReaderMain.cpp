@@ -11,7 +11,7 @@ int main(int argc, char** argv)
     if(argc < 2)
     {
         std::cout << "usage: " << argv[0] << " <filename>" << std::endl;
-        exit(0);
+        exit(EXIT_FAILURE);
     } else {
         filename = std::string(argv[1]);
     }
@@ -27,5 +27,5 @@ int main(int argc, char** argv)
             ", class: " << vertex->getClassName() << std::endl;
     }
 
-    return 0;
+    exit(EXIT_SUCCESS);
 }

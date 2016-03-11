@@ -1,5 +1,6 @@
 #include "CustomDialog.hpp"
 
+#include <QApplication>
 #include <QKeyEvent>
 
 namespace graph_analysis {
@@ -21,7 +22,7 @@ void CustomDialog::keyPressEvent(QKeyEvent *event)
         switch(event->key())
         {
             case Qt::Key_Q:
-                exit(0);
+                QApplication::quit();
             break;
 
             case Qt::Key_W:
