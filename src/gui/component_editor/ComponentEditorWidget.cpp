@@ -373,12 +373,10 @@ void ComponentEditorWidget::timerEvent(QTimerEvent *event)
     }
 }
 
-#ifndef QT_NO_WHEELEVENT
 void ComponentEditorWidget::wheelEvent(QWheelEvent *event)
 {
     scaleView(pow((double)2, - event->delta() / 240.0));
 }
-#endif
 
 void ComponentEditorWidget::drawBackground(QPainter *painter, const QRectF& rect)
 {

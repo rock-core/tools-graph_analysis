@@ -63,10 +63,8 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     /// qt timer callback
     void timerEvent(QTimerEvent *event);
-#ifndef QT_NO_WHEELEVENT
     /// qt mouse wheel spin callback
     void wheelEvent(QWheelEvent *event);
-#endif
     void drawBackground(QPainter *painter, const QRectF& rect);
 
     /// scales scene (zooms into or out of the scene)
