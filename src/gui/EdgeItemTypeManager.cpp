@@ -19,6 +19,7 @@ void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItem
 {
     try {
         graphicsItemByType(type);
+        // wtf? just throw?
         throw std::runtime_error("graph_analysis::gui::EdgeItemTypeManager::registerVisualization: type '" + type + "' is already registered");
     } catch(...)
     {
