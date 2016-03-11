@@ -239,19 +239,6 @@ void GraphWidget::updateLayoutView()
                 nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
             }
         }
-
-        // Edge routing not yet available
-        // {
-        //     using namespace graph_analysis::io;
-        //     std::vector<GVEdge> edges = mpGVGraph->edges();
-        //     std::vector<GVEdge>::const_iterator cit = edges.begin();
-        //     for(; cit != edges.end(); ++cit)
-        //     {
-        //         GVEdge gvEdge = *cit;
-        //         EdgeItem* edgeItem = mEdgeItemMap[ gvEdge.getEdge() ];
-        //         edgeItem->setPainterPath( gvEdge.path );
-        //     }
-        // }
     }
 }
 
@@ -456,36 +443,6 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
 void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& label)
 {
     element->setLabel(label);
-
-    //Vertex::Ptr vertex;
-    //Edge::Ptr edge;
-
-    //if(vertex = dynamic_pointer_cast<Vertex>(element))
-    //{
-    //    //NodeItem* nodeItem = mNodeItemMap[vertex];
-    //    //if(!nodeItem)
-    //    //{
-    //    //    std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
-    //    //    LOG_ERROR_S << error_msg;
-    //    //    throw std::runtime_error(error_msg);
-    //    //}
-    //    nodeItem->setLabel(label);
-    //} else if(edge = dynamic_pointer_cast<Edge>(element))
-    //{
-    //    EdgeItem* edgeItem = mEdgeItemMap[edge];
-    //    if(!edgeItem)
-    //    {
-    //        std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided edge '") + edge->getLabel() + "' is not registered with the GUI";
-    //        LOG_ERROR_S << error_msg;
-    //        throw std::runtime_error(error_msg);
-    //    }
-
-    //    edgeItem->setLabel(label);
-
-    //    //graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edgeItem->getLabel();
-    //    //edgeLabel->setPlainText(QString(label.c_str()));
-    //    //edge->adjustLabel();
-    //}
 }
 
 // EDIT

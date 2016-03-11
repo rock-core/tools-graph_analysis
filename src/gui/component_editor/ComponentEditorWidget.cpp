@@ -52,9 +52,6 @@
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 
-// comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
-#define CLEAR_BY_BACKGROUND
-
 using namespace graph_analysis;
 
 namespace graph_analysis {

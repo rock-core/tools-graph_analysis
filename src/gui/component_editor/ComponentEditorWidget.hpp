@@ -92,10 +92,6 @@ public slots:
     void showContextMenu(const QPoint& pos);
 
 protected:
-    /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget; when status is false, this takes place quiently (no updates are made on the status bar)
-    //void refreshLayerViewWidget(bool status = true);
-    /// updates the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget
-    //void updateLayerViewWidget();
 
     /// qt keys press callback
     void keyPressEvent(QKeyEvent *event);
