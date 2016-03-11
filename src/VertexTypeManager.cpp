@@ -43,7 +43,7 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
     TypeMap::const_iterator it = mTypeMap.find(type);
     if(it == mTypeMap.end())
     {
-        LOG_DEBUG_S << "graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered.";
+        LOG_DEBUG_S << "type '" + type + "' is not registered.";
         if(throwOnDefault)
         {
             throw std::runtime_error("graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered");

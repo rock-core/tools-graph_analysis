@@ -474,7 +474,7 @@ void ComponentEditorWidget::updateLayout()
         // Check on active filter
         if(mFiltered && !mpSubGraph->enabled(vertex))
         {
-            LOG_DEBUG_S << "graph_analysis::gui::ComponentEditorWidget: Filtered out vertex: " << vertex->toString();
+            LOG_DEBUG_S << "Filtered out vertex: " << vertex->toString();
             continue;
         }
 
@@ -532,11 +532,12 @@ void ComponentEditorWidget::updateLayout()
         } else
         {
             //// invalid edge
-            std::string error_msg = std::string("graph_analysis::ComponentEditorWidget::updateLayout: found invalid edge from source vertex '") +
-                                        source->toString() + "' of type '" + sourceClassName + "' to target vertex '" +
-                                        target->toString() + "' of type '" + targetClassName + "'!";
+            std::string error_msg =
+                std::string("found invalid edge from source vertex '") +
+                source->toString() + "' of type '" + sourceClassName +
+                "' to target vertex '" + target->toString() + "' of type '" +
+                targetClassName + "'!";
             LOG_WARN_S << error_msg;
-        //    throw std::runtime_error(error_msg);
         }
     }
 
@@ -554,8 +555,8 @@ void ComponentEditorWidget::updateLayout()
             Vertex::Ptr target = edge->getTargetVertex();
             if(!source || !target)
             {
-                LOG_INFO_S << "Failed to identify target or source feature from given vertices. "
-                    << " Marking edge for removal";
+                LOG_INFO_S << "Failed to identify target or source feature "
+                              "from given vertices. Marking edge for removal";
                 markedForRemoval.push_back(edge);
                 continue;
             }
@@ -565,8 +566,8 @@ void ComponentEditorWidget::updateLayout()
 
             if(!sourceFeature || !targetFeature)
             {
-                LOG_INFO_S << "Failed to identify target or source feature from given vertices. "
-                    << " Marking edge for removal";
+                LOG_INFO_S << "Failed to identify target or source feature "
+                              "from given vertices. Marking edge for removal";
                 markedForRemoval.push_back(edge);
                 continue;
             } else {

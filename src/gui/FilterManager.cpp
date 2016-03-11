@@ -195,7 +195,7 @@ void FilterManager::renameFilter(FilterItem *item, QString regexp)
 {
     if(!item)
     {
-        LOG_ERROR_S << "graph_analysis::gui::FilterManager::renameFilter: cannot rename regexp filter - an invalid (null) filter pointer was provided";
+        LOG_ERROR_S << "cannot rename regexp filter - an invalid (null) filter pointer was provided";
         QMessageBox::critical(this, tr("Cannot Rename Regexp Filter"), tr("An invalid (null) filter pointer was provided!"));
         return;
     }
@@ -214,7 +214,7 @@ void FilterManager::removeFilter(FilterItem *item)
 {
     if(!item)
     {
-        LOG_ERROR_S << "graph_analysis::gui::FilterManager::removeFilter: cannot remove regexp filter - an invalid (null) filter pointer was provided";
+        LOG_ERROR_S << "cannot remove regexp filter - an invalid (null) filter pointer was provided";
         QMessageBox::critical(this, tr("Cannot Remove Regexp Filter"), tr("An invalid (null) filter pointer was provided!"));
         return;
     }
@@ -256,7 +256,7 @@ void FilterManager::swapFilters()
 {
     if(2 > mFilters.size())
     {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::swapFilters: cannot swap regexp filters - there have to be at least two filters";
+        LOG_WARN_S << "cannot swap regexp filters - there have to be at least two filters";
         QMessageBox::critical(this, tr("Cannot Swap Filters"), tr("There are no two custom regexp filters!"));
         return;
     }
@@ -287,7 +287,7 @@ void FilterManager::removeFilters()
 {
     if(!mFilters.size())
     {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::removeFilters: cannot remove regexp filters - there are no filters to remove";
+        LOG_WARN_S << "cannot remove regexp filters - there are no filters to remove";
         QMessageBox::critical(this, tr("Cannot Remove Regexp Filters"), tr("The custom regexp filters manager holds no filter whatsoever!"));
         return;
     }
@@ -337,7 +337,7 @@ void FilterManager::renameFilter()
 {
     if(!mFilters.size())
     {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::renameFilter: cannot rename a regexp filter - there are no filters";
+        LOG_WARN_S << "cannot rename a regexp filter - there are no filters";
         QMessageBox::critical(this, tr("Cannot Rename a Filter"), tr("There are no custom regexp filters!"));
         return;
     }
@@ -349,7 +349,7 @@ void FilterManager::renameFilter()
         QString newRegexp = renameFilterDialog.getNewRegexp();
         if(newRegexp.isEmpty())
         {
-            LOG_WARN_S << "graph_analysis::gui::FilterManager::renameFilter: cannot rename a regexp filter - the provided new regexp is an empty string!";
+            LOG_WARN_S << "cannot rename a regexp filter - the provided new regexp is an empty string!";
             QMessageBox::critical(this, tr("Cannot Rename the Filter"), tr("The provided new regexp is an empty string!"));
             return;
         }
@@ -365,7 +365,7 @@ void FilterManager::removeFilter()
 {
     if(!mFilters.size())
     {
-        LOG_WARN_S << "graph_analysis::gui::FilterManager::removeFilter: cannot remove a regexp filter - there are no filters";
+        LOG_WARN_S << "cannot remove a regexp filter - there are no filters";
         QMessageBox::critical(this, tr("Cannot Remove a Filter"), tr("There are no custom regexp filters!"));
         return;
     }
@@ -401,7 +401,7 @@ void FilterManager::renameSelectedFilter()
     {
         if(label.isEmpty())
         {
-            LOG_WARN_S << "graph_analysis::gui::FilterManager::renameSelectedFilter: cannot rename a regexp filter - the provided new regexp is an empty string!";
+            LOG_WARN_S << "cannot rename a regexp filter - the provided new regexp is an empty string!";
             QMessageBox::critical(this, tr("Cannot Rename the Filter"), tr("The provided new regexp is an empty string!"));
             return;
         }

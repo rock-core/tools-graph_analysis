@@ -36,7 +36,7 @@ void NodeItemTypeManager::registerVisualization(const node::Type& type, NodeItem
     {
         mClassVisualizationMap[type] = graphicsItem;
     }
-    LOG_WARN_S << "graph_analysis::gui::NodeItemTypeManager::registerVisualization: type '" + type + "' is already registered.";
+    LOG_WARN_S << "type '" + type + "' is already registered.";
     if(throwOnAlreadyRegistered)
     {
         throw std::runtime_error("graph_analysis::gui::NodeItemTypeManager::registerVisualization: type '" + type + "' is already registered");
@@ -48,7 +48,7 @@ NodeItem* NodeItemTypeManager::graphicsItemByType(const node::Type& type, bool t
     ClassVisualizationMap::const_iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
     {
-        LOG_DEBUG_S << "graph_analysis::gui::NodeItemTypeManager::graphicsItemByType: type '" + type + "' is not registered. Using default.";
+        LOG_DEBUG_S << "type '" + type + "' is not registered. Using default.";
         if(throwOnDefault)
         {
             throw std::runtime_error("graph_analysis::gui::NodeItemTypeManager::graphicsItemByType: type '" + type + "' is not registered");
@@ -56,7 +56,7 @@ NodeItem* NodeItemTypeManager::graphicsItemByType(const node::Type& type, bool t
         return mClassVisualizationMap["default"];
     }
 
-    LOG_DEBUG_S << "graph_analysis::gui::NodeItemTypeManager::graphicsItemByType: type '" + type + "' registered.";
+    LOG_DEBUG_S << "type '" + type + "' registered.";
     return it->second;
 }
 
