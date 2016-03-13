@@ -10,6 +10,27 @@ namespace algorithms {
 
 typedef function1<bool,Edge::Ptr> Skipper;
 
+/**
+ *
+ * \verbatim
+ class PathConstructor : public graph_analysis::algorithm::DFSVisitor
+ {
+    bool invalidTransition(graph_analysis::Edge::Ptr& edge) { // check if it a valid transition and return true or false ... }
+    void discoverVertex(graph_analysis::Vertex::Ptr& vertex) { // collect vertices ... }
+ };
+
+ BaseGraph::Ptr graph = BaseGraph::getInstance();
+ ...
+ graph->addVertex(rootVertex);
+ ...
+
+ PathConstructor::Ptr pathConstructor(new PathConstructor());
+ boost::function1<bool, graph_analysis::Edge::Ptr> skipper = boost::bind(&PathConstructor::invalidTransition, pathConstructor,_1);
+ DFS dfs(graph, pathConstructor, skipper);
+ dfs.run(rootVertex);
+
+ \endverbatim
+ */
 class DFS
 {
 public:
