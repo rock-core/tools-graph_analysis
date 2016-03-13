@@ -26,6 +26,29 @@ extern std::map<std::string, Type> TxtType;
  *
  * This filter class allows bagging of multiple individual filters into a single
  * filter object
+ *
+ *\verbatim
+class SpecialVertexFilter : public Filter< Vertex::Ptr >
+{
+public:
+    virtual std::string getName() const { return "SpecialVertexFilter"; }
+    virtual bool apply(Vertex::Ptr element) const
+    {
+        return element->getClassName() == "SpecialVertex";
+    }
+};
+
+ BaseGraph::Ptr graph = BaseGraph::getInstance();
+ ...
+ SubGraph::Ptr subGraph = BaseGraph::getSubGraph(graph);
+ Filter< Vertex::Ptr >::Ptr vertexFilter(new SpecialVertexFilter());
+ Filter< Edge::Ptr >::Ptr edgeFilter(new filters::PermitAll< Edge::Ptr >());
+ subGraph->applyFilters(vertexFilter, edgeFilter);
+
+ // Convert to base graph when you want to use the graph with any of the
+ // available algorithms
+ BaseGraph::ptr filteredGraph = subGraph->toBaseGraph();
+ \endverbatim
  */
 template<typename FilterObject>
 class Filter
