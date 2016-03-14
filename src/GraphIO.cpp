@@ -21,11 +21,16 @@ std::map<Type, std::string> TypeTxt = InitMap<Type, std::string>
     (GRAPHVIZ, "GRAPHVIZ")
     (YAML, "YAML")
     ;
+// TODO3: "typemanager"
+// -kanten checken: is ein drag-drop event, der false zurückgeben kann
+// -position sollte einfach anzupassen sein
+// -importer/exporter muss properties wie "config file" für eine kompoenente zusätzlich laden
 
 } // end namespace representation
 
 namespace io {
 
+// this is producing a memory leak?
 struct null_deleter
 {
         void operator()(void const *) const {}

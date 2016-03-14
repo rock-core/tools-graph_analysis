@@ -8,6 +8,7 @@
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/items/Label.hpp>
+// remove this include when "ConnectionRequest" is gone
 #include <base/Logging.hpp>
 
 namespace graph_analysis {

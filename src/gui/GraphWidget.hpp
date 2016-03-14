@@ -37,6 +37,14 @@ namespace gui {
  * \brief graph view widget interface
  * \details polymorphics base for the different kinds of graph widgets
  *      that make use of different kinds of node and edge items implementations
+ *
+ * The GraphWidget is meant to provide the base-class for several possible
+ * graphical representations of an underlying graph_analysis::BaseGraph datastructure.
+ * as the visual representation, it can map between entities of
+ * graph_analysis::GraphElement and QGraphicsItem
+ *
+ * ??? the base-graph is adopted via a FilterManager to the actual graph to be displayed.
+ *
  */
 class GraphWidget : public QGraphicsView
 {

@@ -59,6 +59,7 @@ public:
     enum { Type = UserType + 1 };
     int type() const { return Type; }
 
+
     /// actuator method the same force field (automatic re-arranging) algorithm
     void advance(int phase) { if(phase == 2) advance(); }
 

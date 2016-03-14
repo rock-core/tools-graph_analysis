@@ -100,7 +100,7 @@ void ComponentEditorWidget::registerTypes()
 void ComponentEditorWidget::showContextMenu(const QPoint& pos)
 {
     // Cache focused node item -- since when the context
-    // menu is started the NodeItem will loose the focuse
+    // menu is started the NodeItem will loose the focus
     mpLastFocusedNodeItem = getFocusedNodeItem();
 
     ActionCommander comm(this);

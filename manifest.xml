@@ -18,6 +18,7 @@
   <depend package="glpk" />
   <depend package="gsl" />
   <depend package="qt4" />
+  <depend package="yaml-cpp" />
   <depend package="libxml2-utils" optional="1"/>
   <tags>needs_opt</tags>
 </package>

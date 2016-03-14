@@ -367,6 +367,8 @@ void GraphWidgetManager::resetGraph(bool keepData)
 {
     if(!keepData)
     {
+        // overwrite the existing shared to pointer to the BaseGraph with a
+        // new, empty, instance.
         mpGraph = BaseGraph::getInstance();
     }
 
