@@ -28,7 +28,7 @@ class ActionCommander;
  * \brief component editor graph widget implementation
  * \details maintains and displays a diagram with clusternodes, their features and the links (edges) between their ports
  */
-class ComponentEditorWidget : public LayerViewWidget
+class ComponentEditorWidget : public GraphWidget
 {
     Q_OBJECT
 public:

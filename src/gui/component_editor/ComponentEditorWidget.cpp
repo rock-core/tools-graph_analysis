@@ -58,7 +58,7 @@ namespace graph_analysis {
 namespace gui {
 
 ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
-    : LayerViewWidget(parent)
+    : GraphWidget(parent)
     , mpLastFocusedNodeItem(NULL)
 {
     registerTypes();
