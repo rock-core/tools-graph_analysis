@@ -70,9 +70,6 @@ public:
     /// disables the given edge in the base graph
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    /// synchronizes out the given edge from mEdgeItemMap (i.e. deletes the edge)
-    void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
-
     virtual void updateLayout();
 
 public slots:

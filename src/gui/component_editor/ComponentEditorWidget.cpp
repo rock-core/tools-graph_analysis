@@ -244,15 +244,6 @@ void ComponentEditorWidget::zoomOut()
     scaleView(1 / qreal(1.13));
 }
 
-void ComponentEditorWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
-{
-    EdgeItemMap::iterator it = mEdgeItemMap.find(concernedEdge);
-    if(mEdgeItemMap.end() != it)
-    {
-        mEdgeItemMap.erase(it);
-    }
-}
-
 void ComponentEditorWidget::updateLayout()
 {
     mFeatureMap.clear();

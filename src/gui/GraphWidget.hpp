@@ -145,8 +145,6 @@ public:
     void removeVertex(const Vertex::Ptr& vertex);
     void removeEdge(const Edge::Ptr& edge);
 
-    virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
-
     /// \param msg Message in the statusbar
     /// \param time Number of milliseconds the message will be held on screen
     virtual void updateStatus(const std::string& msg, int timeInMS = 10) const;
