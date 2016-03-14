@@ -41,9 +41,6 @@ namespace gui {
 LayerViewWidget::LayerViewWidget(QWidget *parent)
     : GraphWidget(getName(), parent)
 {
-    // Add seed for force layout
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(scene);

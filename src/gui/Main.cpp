@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <QApplication>
+#include <QTime>
 #include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
 #include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
 
@@ -16,6 +17,10 @@ int main(int argc, char **argv)
 {
     // setting up qt application
     QApplication app(argc, argv);
+
+    // provide seed for force-based layouting in the LayerViewWidget and
+    // ComponentEditorWidget
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
     using namespace graph_analysis::gui;
     GraphWidgetManager graphManager;

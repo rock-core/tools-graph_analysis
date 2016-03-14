@@ -39,7 +39,6 @@ GraphWidgetManager::GraphWidgetManager()
 {
     resetGraph(false);
 
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     WidgetManager *widgetManager = WidgetManager::getInstance();
     widgetManager->setGraphWidgetManager(this);
     widgetManager->setMainWindow(mpMainWindow);
