@@ -91,7 +91,7 @@ protected:
 
     /// qt hovering LEAVE callback
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
 
     virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 private:

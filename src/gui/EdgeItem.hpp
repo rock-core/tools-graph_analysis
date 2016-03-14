@@ -88,7 +88,8 @@ protected:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
     /// retrieves the path of the bounding rectangular box around the area occupied by the node in the scene
 
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 
 };
 

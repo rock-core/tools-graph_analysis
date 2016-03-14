@@ -135,7 +135,8 @@ protected:
      */
     Vertex::Ptr getPointedAtVertex() const;
 
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 };
 
 } // end namespace gui

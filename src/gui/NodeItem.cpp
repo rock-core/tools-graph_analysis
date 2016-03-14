@@ -208,10 +208,15 @@ items::Feature* NodeItem::getFeature(NodeItem::id_t pos) const
     return mFeatures.at(pos);
 }
 
-void NodeItem::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+void NodeItem::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     // Set the underlaying vertex as focused element
     mpGraphWidget->setFocusedElement(mpVertex);
+}
+
+void NodeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+{
+    mpGraphWidget->clearFocus();
 }
 
 } // end namespace gui

@@ -103,10 +103,16 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
 }
 
-void EdgeItem::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+void EdgeItem::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     // Set the current edge as focused element
     mpGraphWidget->setFocusedElement(mpEdge);
+}
+
+void EdgeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+{
+    // Set the current edge as focused element
+    mpGraphWidget->clearFocus();
 }
 
 } // end namespace gui
