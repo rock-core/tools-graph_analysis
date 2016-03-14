@@ -66,7 +66,7 @@ GraphWidget::GraphWidget(QWidget *parent)
     //, mpVertexFilter(new filters::PermitAll< graph_analysis::Vertex::Ptr>( ))
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpGraphWidgetManager(NULL)
+    , mpGraphWidgetManager(WidgetManager::getInstance()->getGraphWidgetManager())
     , mMode(GraphWidgetManager::MOVE_MODE)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
