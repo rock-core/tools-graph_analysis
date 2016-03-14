@@ -45,8 +45,6 @@ public:
      */
     Feature(GraphElement::Ptr element, GraphWidget *graphWidget);
 
-    //QRectF boundingRect() const { QRectF rectf(0,0,10,10); return rectf; }
-
     /**
      * \brief toggles direct editing options of the displayed text
      * \param on boolean flag - true when the editing mode is to be turned on; false otherwise
@@ -68,19 +66,9 @@ public:
     QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
 
 protected:
-    /// qt hovering ENTER callback
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
-    /// qt hovering LEAVE callback
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 
     /// qt mouse double-click callback
     void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
-    /// qt key pressing callback
-    void keyPressEvent(::QKeyEvent* event);
-    /// qt mouse move callback
-    void mouseMoveEvent(::QGraphicsSceneMouseEvent *event);
-//    /// qt mouse press callback
-//    void mousePressEvent(::QGraphicsSceneMouseEvent *event);
     /// qt mouse drag start callback
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     /// qt mouse drag move callback
