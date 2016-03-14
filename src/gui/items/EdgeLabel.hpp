@@ -98,7 +98,8 @@ protected:
     {
         if(change == QGraphicsItem::ItemSelectedChange)
         {
-             qDebug("itemChange '%s', selected=%s", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str());
+            LOG_DEBUG_S << "itemChange ' " << this->toPlainText().toStdString()
+                        << "', selected: '" << value.toString().toStdString() << "'";
         }
         if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
         {
