@@ -159,7 +159,10 @@ GraphWidgetManager::GraphWidgetManager()
 }
 
 GraphWidgetManager::~GraphWidgetManager()
-{}
+{
+    delete mpTabWidget;
+    delete mpMainWindow;
+}
 
 void GraphWidgetManager::reloadPropertyDialog(void)
 {
