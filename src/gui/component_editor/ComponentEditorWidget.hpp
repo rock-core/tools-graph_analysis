@@ -70,9 +70,6 @@ public:
     /// disables the given edge in the base graph
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    /// respawns all graphical elements by the underlying base graph
-    void itemMoved();
-
     /// synchronizes out the given edge from mEdgeItemMap (i.e. deletes the edge)
     void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
 
@@ -93,8 +90,6 @@ public slots:
 
 protected:
 
-    /// qt timer callback
-    void timerEvent(QTimerEvent *event);
     /// qt mouse wheel spin callback
     void wheelEvent(QWheelEvent *event);
 

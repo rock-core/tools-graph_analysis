@@ -149,7 +149,6 @@ public:
     void removeEdge(const Edge::Ptr& edge);
 
     virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
-    virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
 
     /// \param msg Message in the statusbar
     /// \param time Number of milliseconds the message will be held on screen
@@ -207,7 +206,6 @@ protected:
     // Allow mapping from graph edges to edges in the scene
     EdgeItemMap mEdgeItemMap;
 
-    int mTimerId;
     /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees
     double mScaleFactor;
 

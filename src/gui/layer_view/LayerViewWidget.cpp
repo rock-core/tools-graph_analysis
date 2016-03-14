@@ -159,49 +159,6 @@ void LayerViewWidget::updateLayout()
 
 }
 
-void LayerViewWidget::itemMoved()
-{
-    if (!mTimerId)
-    {
-        mTimerId = startTimer(1000 / 25);
-    }
-}
-
-void LayerViewWidget::timerEvent(QTimerEvent *event)
-{
-    Q_UNUSED(event);
-
-    if(mLayout.toLower() == "force")
-    {
-        QList<NodeItem* > nodes;
-        foreach (QGraphicsItem *item, scene()->items())
-        {
-            if (NodeItem* node = qgraphicsitem_cast<NodeItem* >(item))
-            {
-                nodes << node;
-            }
-        }
-
-        foreach (NodeItem* node, nodes)
-        {
-            node->calculateForces();
-        }
-
-        bool itemsMoved = false;
-        foreach (NodeItem* node, nodes)
-        {
-            if (node->advance())
-                itemsMoved = true;
-        }
-
-        if (!itemsMoved)
-        {
-            killTimer(mTimerId);
-            mTimerId = 0;
-        }
-    }
-}
-
 void LayerViewWidget::wheelEvent(QWheelEvent *event)
 {
     scaleView(pow((double)2, - event->delta() / 240.0));

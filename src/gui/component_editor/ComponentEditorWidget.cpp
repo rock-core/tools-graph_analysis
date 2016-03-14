@@ -204,49 +204,6 @@ void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void ComponentEditorWidget::itemMoved()
-{
-    if (!mTimerId)
-    {
-        mTimerId = startTimer(1000 / 25);
-    }
-}
-
-void ComponentEditorWidget::timerEvent(QTimerEvent *event)
-{
-    Q_UNUSED(event);
-
-    if(mLayout.toLower() == "force")
-    {
-        QList<NodeItem* > nodes;
-        foreach (QGraphicsItem *item, scene()->items())
-        {
-            if (NodeItem* node = qgraphicsitem_cast<NodeItem* >(item))
-            {
-                nodes << node;
-            }
-        }
-
-        foreach (NodeItem* node, nodes)
-        {
-            node->calculateForces();
-        }
-
-        bool itemsMoved = false;
-        foreach (NodeItem* node, nodes)
-        {
-            if (node->advance())
-                itemsMoved = true;
-        }
-
-        if (!itemsMoved)
-        {
-            killTimer(mTimerId);
-            mTimerId = 0;
-        }
-    }
-}
-
 void ComponentEditorWidget::wheelEvent(QWheelEvent *event)
 {
     scaleView(pow((double)2, - event->delta() / 240.0));
