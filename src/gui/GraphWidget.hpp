@@ -56,15 +56,12 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> FeatureMap; // maps conceptual feature vertices to their graphical node in the scene
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::id_t> FeatureIDMap; // maps conceptual feature vertices to their feature ID
 
-    /// empty constructor
-    GraphWidget(QWidget *parent = NULL);
-
     /**
      * \brief constructor
      * \param mainWindow main qt application window
      * \param parent qt parent widget
      */
-    GraphWidget(QMainWindow *mainWindow, QWidget *parent = NULL);
+    GraphWidget(QWidget *parent = NULL);
 
     /// destructor
     virtual ~GraphWidget();

@@ -73,22 +73,6 @@ GraphWidget::GraphWidget(QWidget *parent)
     mGraphView.setEdgeFilter(mpEdgeFilter);
 }
 
-GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
-    : QGraphicsView(parent)
-    , mpGVGraph(NULL)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
-    , mFiltered(false)
-    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-    , mLayout("dot")
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpGraphWidgetManager(NULL)
-{
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
-}
-
 GraphWidget::~GraphWidget()
 {
 }
