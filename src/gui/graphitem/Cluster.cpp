@@ -136,41 +136,11 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     }
 }
 
-void Cluster::mousePressEvent(::QGraphicsSceneMouseEvent* event)
-{
-    LOG_DEBUG_S << "Mouse RESOURCE: press";
-    QGraphicsItem::mousePressEvent(event);
-}
-
-void Cluster::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
-{
-    LOG_DEBUG_S << "Mouse RESOURCE: release";
-    QGraphicsItem::mouseReleaseEvent(event);
-}
-
-void Cluster::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
-{
-    //mFocused ? releaseFocus() : grabFocus();
-    QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
 void Cluster::releaseFocus()
 {
     mPen = mSelected ? QPen(Qt::green) : mPenDefault;
     update();
     mFocused = false;
-}
-
-void Cluster::focusInEvent(QFocusEvent* event)
-{
-    LOG_DEBUG_S << "Focus-In event for %s" << mpVertex->toString();
-    ::QGraphicsItemGroup::focusInEvent(event);
-}
-
-void Cluster::focusOutEvent(QFocusEvent* event)
-{
-    LOG_DEBUG_S << "Focus-Out event for %s" << mpVertex->toString();
-    ::QGraphicsItemGroup::focusOutEvent(event);
 }
 
 void Cluster::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
@@ -221,11 +191,6 @@ void Cluster::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
     }
 }
 
-void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
-{
-    QGraphicsItem::hoverEnterEvent(event);
-}
-
 void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     LOG_DEBUG_S << "Cluster hover leave event : " << mpVertex->toString();
@@ -236,9 +201,6 @@ void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     mSelected = false;
     QGraphicsItem::hoverLeaveEvent(event);
 }
-
-void Cluster::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
-{}
 
 void Cluster::dropEvent(QGraphicsSceneDragDropEvent* event)
 {

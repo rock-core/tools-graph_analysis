@@ -66,32 +66,6 @@ public:
     }
 
 protected:
-    /// qt mouse double-click callback
-    void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
-    {
-    //    if(textInteractionFlags() == Qt::TextEditorInteraction)
-    //    {
-    //        QGraphicsTextItem::mousePressEvent(event);
-    //        return;
-    //    }
-
-    //    setTextInteraction(true);
-    //    QGraphicsTextItem::mouseDoubleClickEvent(event);
-    }
-
-    /// qt keys press callback
-    void keyPressEvent(::QKeyEvent* event)
-    {
-        qDebug("KEYPRESS LABLE");
-        QGraphicsTextItem::keyPressEvent(event);
-    }
-
-    /// qt focus LEAVE callback
-    void focusOutEvent(QFocusEvent* event)
-    {
-        qDebug("Lost focus");
-        ::QGraphicsTextItem::focusOutEvent(event);
-    }
 
     /// qt item change callback
     QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)

@@ -84,31 +84,15 @@ public:
     /// recomputes node's height; makes the node vertically shrink or expand
     void updateHeight(void) {}
 
-    /// getter method: retrieves the grahical (feature) labels map
-    //Labels      getLabels()     { return mLabels;   }
-
     /// updates the temporary text currently being displayed on the Status Bar in the main viewWidget
     void updateStatus(const std::string& message = std::string(), int timeout = 0);
 
 protected:
-    /// qt mouse double-click callback
-    void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
-    /// qt mouse press callback
-    void mousePressEvent(::QGraphicsSceneMouseEvent* event);
-    /// qt mouse release callback
-    void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
-    /// qt focus ENTER callback
-    void focusInEvent(QFocusEvent* event);
-    /// qt focus LEAVE callback
-    void focusOutEvent(QFocusEvent* event);
 
-    /// qt hovering ENTER callback
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     /// qt hovering LEAVE callback
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
 
-    virtual void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 private:
     /// background child widget
