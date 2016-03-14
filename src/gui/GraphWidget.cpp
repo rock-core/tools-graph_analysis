@@ -55,9 +55,8 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
+GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mWidgetName(widgetName)
     , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)

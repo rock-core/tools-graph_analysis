@@ -39,7 +39,7 @@ namespace graph_analysis {
 namespace gui {
 
 LayerViewWidget::LayerViewWidget(QWidget *parent)
-    : GraphWidget(getName(), parent)
+    : GraphWidget(parent)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);

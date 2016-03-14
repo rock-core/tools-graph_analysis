@@ -57,7 +57,7 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::id_t> FeatureIDMap; // maps conceptual feature vertices to their feature ID
 
     /// empty constructor
-    GraphWidget(const QString& widgetName, QWidget *parent = NULL);
+    GraphWidget(QWidget *parent = NULL);
 
     /**
      * \brief constructor
@@ -180,7 +180,6 @@ public slots:
 
     void selectLayoutDialog();
 protected:
-    QString mWidgetName;
 
     /// conceptual underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
