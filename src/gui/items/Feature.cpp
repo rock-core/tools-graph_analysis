@@ -154,18 +154,6 @@ void Feature::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 QVariant Feature::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
 {
-    //if(change == QGraphicsItem::ItemSelectedChange)
-    //{
-//  //      qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
-    //    if(value.toBool())
-    //    {
-    //        ((NodeItem *)parentItem())->prepareChange();
-    //    }
-    //    else
-    //    {
-    //        ((NodeItem *)parentItem())->syncFeature(mPortID);
-    //    }
-    //}
     if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
     {
         // item received SelectedChange event AND is in editor mode AND is about to be deselected:

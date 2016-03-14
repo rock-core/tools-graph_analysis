@@ -263,21 +263,6 @@ void Cluster::dropEvent(QGraphicsSceneDragDropEvent* event)
     }
 }
 
-//void Cluster::unselect()
-//{
-//    hoverLeaveEvent(new QGraphicsSceneHoverEvent());
-//}
-
-//void Cluster::updateStatus(const std::string& message, int timeout)
-//{
-//    mpGraphWidget->updateStatus(message, timeout);
-//}
-
-//void Cluster::keyPressEvent(QKeyEvent* event)
-//{
-//    LOG_DEBUG_S << "Key RESOURCE: press";
-//}
-
 QGraphicsTextItem* Cluster::getOrCreateLabel(const std::string& label, QGraphicsItem* parent)
 {
     std::map<std::string, QGraphicsTextItem*>::const_iterator it = mLabels.find(label);

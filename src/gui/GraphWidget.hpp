@@ -46,8 +46,6 @@ class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
 
-    friend class GraphWidgetManager;
-
 public:
 
     typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap; // meant to map default edges to their correspondent initial edges in the base graph
