@@ -32,7 +32,7 @@ const int GraphWidgetManager::TIMEOUT = 6900; // miliseconds
 
 GraphWidgetManager::GraphWidgetManager()
     : mpMainWindow(new QMainWindow())
-    , mpTabWidget(new QTabWidget())
+    , mpTabWidget(new QTabWidget(mpMainWindow))
     , mpStatus(mpMainWindow->statusBar())
     , mLayout("dot") // other possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
     , mMode(MOVE_MODE)
