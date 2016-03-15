@@ -21,10 +21,6 @@ namespace graphitem {
 Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex, this)
     , mpLabel(new Label(vertex->toString(), this))
-    , mPen(Qt::blue)
-    , mPenDefault(Qt::blue)
-    , mFocused(false)
-    , mSelected(false)
 {
     QFont mainLabelFont;
     mainLabelFont.setBold(true);
@@ -80,7 +76,7 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     for(; cit != supportedTypes.end(); ++cit)
     {
         int xPosition = 0;
-        int yPosition = 0;
+        /* int yPosition = 0; */
 
         std::string supportedType = *cit;
         foreach(items::Feature* feature, mFeatures)
@@ -121,7 +117,7 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     }
 
     // Drawing of border: back to transparent background
-    painter->setPen(mPen);
+    painter->setPen(Qt::blue);
     QRectF rect = boundingRect();
 
     update(rect);
@@ -143,11 +139,6 @@ void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     LOG_DEBUG_S << "Cluster hover leave event : " << mpVertex->toString();
-    if(!mFocused)
-    {
-        mPen = mPenDefault;
-    }
-    mSelected = false;
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

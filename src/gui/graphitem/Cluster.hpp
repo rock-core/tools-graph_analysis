@@ -85,15 +85,6 @@ private:
     /// main node text label
     items::Label *mpLabel;
 
-    /// qt drawing pen
-    QPen mPen;
-    /// default qt drawing pen
-    QPen mPenDefault;
-    /// boolean flag: true when current node is being the focused node of the scene (has been double clicked); false otherwise
-    bool mFocused;
-    /// boolean flag: true when current node is being the seleted node of the scene (is being hovered on); false otherwise
-    bool mSelected;
-
     std::map<std::string, QGraphicsTextItem*> mLabels;
 
     // Store an open drag drop connection event for later handling
