@@ -20,20 +20,22 @@ namespace graphitem {
 
 Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex)
+    , mpLabel(new Label(vertex->toString(), this))
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
     , mFocused(false)
     , mSelected(false)
 {
-    mpLabel = new Label(vertex->toString(), this);
-
     QFont mainLabelFont;
     mainLabelFont.setBold(true);
     mpLabel->setFont(mainLabelFont);
-    mpBoard = new QGraphicsWidget(this);
-    mpBoard->setAcceptHoverEvents(true);
 
     setFlag(ItemIsMovable);
+}
+
+Cluster::~Cluster()
+{
+    delete mpLabel;
 }
 
 void Cluster::updateLabel()

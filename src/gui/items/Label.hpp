@@ -22,8 +22,8 @@ namespace items {
 /**
  * \file Label.hpp
  * \class Label
- * \brief graphical node text label and port text label implementation
- * \details specific to the diagram editor widget: editable text representation (disregards the ENTER key)
+ * \brief graphical node text label and Cluster label implementation
+ * \details specific to the diagram editor widget: editable text representation
  */
 class Label : public QGraphicsTextItem
 {

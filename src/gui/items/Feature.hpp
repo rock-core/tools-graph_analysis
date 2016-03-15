@@ -32,7 +32,7 @@ namespace items {
  * Node (Cluster?), like "Operation" and "InputPort".
  *
  */
-class Feature : public QGraphicsTextItem, VertexGetter
+class Feature : public QGraphicsTextItem
 {
 private:
     // managing graph widget

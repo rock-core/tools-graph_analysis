@@ -13,7 +13,6 @@ namespace items {
 
 Feature::Feature(GraphElement::Ptr element, GraphWidget *graphWidget)
     : QGraphicsTextItem(element->getLabel().c_str())
-    , VertexGetter()
     , mpGraphWidget(graphWidget)
     , mpGraphElement(element)
 {

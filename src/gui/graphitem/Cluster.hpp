@@ -55,7 +55,7 @@ public:
     /// empty constructor
     Cluster() {}
     /// destructor
-    virtual ~Cluster() {};
+    virtual ~Cluster();
 
     ///syncs the graphical text label from the internal mpVertex label
     void updateLabel();
@@ -76,13 +76,11 @@ public:
 protected:
 
     /// qt hovering LEAVE callback
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    void dropEvent(QGraphicsSceneDragDropEvent* event);
 
-    virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 private:
-    /// background child widget
-    QGraphicsWidget *mpBoard;
     /// main node text label
     items::Label *mpLabel;
 

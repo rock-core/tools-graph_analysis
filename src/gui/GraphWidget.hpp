@@ -203,10 +203,10 @@ protected:
 
     void gvRender(const std::string& filename);
 
-    virtual void keyPressEvent(QKeyEvent *);
+    void keyPressEvent(QKeyEvent *);
 
-    virtual void mousePressEvent(QMouseEvent*);
-    virtual void mouseReleaseEvent(QMouseEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
 
     // iterate over all QGraphicItems of scene with type "...::NodeItemType". sets
     // or clears the flag.
