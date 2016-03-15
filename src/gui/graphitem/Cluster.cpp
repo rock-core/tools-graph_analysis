@@ -3,21 +3,14 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
-#include <cmath>
-#include <QFont>
-#include <QStyle>
 #include <QPainter>
-#include <QMessageBox>
-#include <QStyleOption>
 #include <QGraphicsSceneDragDropEvent>
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <base/Logging.hpp>
-#include <exception>
 #include <graph_analysis/gui/items/Label.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 
-#include <QTableWidget>
 
 using namespace graph_analysis::gui::items;
 
