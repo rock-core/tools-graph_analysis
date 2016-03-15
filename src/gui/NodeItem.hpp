@@ -48,8 +48,10 @@ protected:
      * \brief constructor
      * \param graphWidget the parent and managing graph widget
      * \param vertex the internal conceptual vertex
+     * \param parent the parent
      */
-    NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
+    NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex,
+             QGraphicsItem *parent);
 
 public:
     /// empty constructor

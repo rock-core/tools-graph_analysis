@@ -15,7 +15,7 @@ namespace layeritem {
 const std::string Resource::sType("LayerNode");
 
 Resource::Resource(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : NodeItem(graphWidget, vertex)
+    : NodeItem(graphWidget, vertex, this)
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
 {

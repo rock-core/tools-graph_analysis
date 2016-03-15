@@ -19,7 +19,7 @@ namespace gui {
 namespace graphitem {
 
 Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : NodeItem(graphWidget, vertex)
+    : NodeItem(graphWidget, vertex, this)
     , mpLabel(new Label(vertex->toString(), this))
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
