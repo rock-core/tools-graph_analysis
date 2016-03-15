@@ -91,9 +91,6 @@ public slots:
     /// reloads the property dialog/panel if it is not running any more
     void reloadPropertyDialogMainWindow();
 
-    void removeSelection();
-    void renameSelection();
-
     void addFeature();
     void swapFeatures();
     void addVertex();

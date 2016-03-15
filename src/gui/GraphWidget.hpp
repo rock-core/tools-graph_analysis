@@ -121,17 +121,10 @@ public:
     NodeItem* getFocusedNodeItem() const;
     EdgeItem* getFocusedEdgeItem() const;
 
-    void selectElement(const GraphElement::Ptr& element);
-    void unselectElement(const GraphElement::Ptr& element);
-    void clearElementSelection() { mElementSelection.clear(); }
-
     /**
      * Clear visualization and scene not(!) the underlying graph
      */
     virtual void clearVisualization();
-
-    bool isInElementSelection(graph_analysis::GraphElement::Ptr element) { return std::find(mElementSelection.begin(), mElementSelection.end(), element) != mElementSelection.end(); }
-    std::vector<graph_analysis::GraphElement::Ptr> getElementSelection() const { return mElementSelection; }
 
     // EDIT
     virtual Vertex::Ptr addVertex(const std::string& type, const std::string& label, QPoint* position = 0);
@@ -204,7 +197,6 @@ protected:
     QString mLayout;
 
     graph_analysis::GraphElement::Ptr mpFocusedElement;
-    std::vector<graph_analysis::GraphElement::Ptr> mElementSelection;
 
     GraphWidgetManager* mpGraphWidgetManager;
     GraphWidgetManager::Mode mMode;

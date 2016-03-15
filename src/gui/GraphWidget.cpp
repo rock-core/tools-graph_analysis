@@ -330,39 +330,10 @@ GraphWidgetManager* GraphWidget::getGraphWidgetManager() const
     return mpGraphWidgetManager;
 }
 
-void GraphWidget::selectElement(const graph_analysis::GraphElement::Ptr& element)
-{
-    std::vector<GraphElement::Ptr>::const_iterator cit = std::find(mElementSelection.begin(),
-            mElementSelection.end(), element);
 
-    if(cit == mElementSelection.end())
-    {
-        LOG_DEBUG_S << "Select element: '" << element->toString();
-        mElementSelection.push_back(element);
-    } else {
-        throw std::invalid_argument("graph_analysis::gui::GraphWidget::selectElement: '" + element->toString() + "' already in selection");
-    }
-}
-
-void GraphWidget::unselectElement(const graph_analysis::GraphElement::Ptr& element)
-{
-    // no const interator, will be used to erease later
-    std::vector<GraphElement::Ptr>::iterator it =
-        std::find(mElementSelection.begin(), mElementSelection.end(), element);
-
-    if(it == mElementSelection.end())
-    {
-        throw std::invalid_argument("graph_analysis::gui::GraphWidget::unselectElement: '" + element->toString() + "' not in selection");
-    } else {
-        LOG_DEBUG_S << "Unselect element: '" << element->toString();
-        mElementSelection.erase(it);
-    }
-}
 
 void GraphWidget::mousePressEvent(QMouseEvent* event)
 {
-
-
     // enable panning by pressing+dragging the left mouse button if there is
     // _no_ item under the cursor right now.
     if ((event->button() == Qt::LeftButton) && (!itemAt(event->pos()))) {
@@ -371,31 +342,7 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
         return;
     }
 
-    if(event->button() == Qt::LeftButton)
-    {
-        GraphElement::Ptr element = getFocusedElement();
-        if(!element)
-        {
-            clearElementSelection();
-        } else {
-            // Allow to use SHIFT to create selection group
-            if(event->modifiers() != Qt::ShiftModifier)
-            {
-                clearElementSelection();
-            }
-
-            try {
-                selectElement(element);
-            } catch(const std::runtime_error& e)
-            {
-                unselectElement(element);
-            }
-        }
-
-        QGraphicsView::mousePressEvent(event);
-    } else {
-        QGraphicsView::mousePressEvent(event);
-    }
+    QGraphicsView::mousePressEvent(event);
 }
 
 void GraphWidget::mouseReleaseEvent(QMouseEvent* event)

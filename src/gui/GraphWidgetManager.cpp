@@ -90,15 +90,11 @@ GraphWidgetManager::GraphWidgetManager()
     modesMenu->addAction(actionMoveMode);
 
     QAction *actionAddNode = comm.addAction("Add vertex", SLOT(addVertex()), *(IconManager::getInstance()->getIcon("addNode_white")));
-    QAction *actionRenameSelection = comm.addAction("Rename selection", SLOT(renameSelection()), *(IconManager::getInstance()->getIcon("label_white")));
-    QAction *actionRemoveSelection  = comm.addAction("Remove selection", SLOT(removeSelection()), *(IconManager::getInstance()->getIcon("remove_white")));
     QAction *actionAddFeature     = comm.addAction("Add feature", SLOT(addFeature()), *(IconManager::getInstance()->getIcon("addFeature_white")));
     QAction *actionSwapFeatures   = comm.addAction("Swap features", SLOT(swapFeatures()), *(IconManager::getInstance()->getIcon("swap_white")));
 
     editMenu->addAction(actionAddNode);
     editMenu->addSeparator();
-    editMenu->addAction(actionRenameSelection);
-    editMenu->addAction(actionRemoveSelection);
     editMenu->addAction(actionAddFeature);
     editMenu->addAction(actionSwapFeatures);
 
@@ -243,37 +239,6 @@ void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd
     ss << std::endl;
 }
 
-void GraphWidgetManager::renameSelection()
-{
-    std::vector<GraphElement::Ptr> elements = currentGraphWidget()->getElementSelection();
-    std::vector<GraphElement::Ptr>::const_iterator it = elements.begin();
-    for(; it != elements.end(); ++it)
-    {
-        GraphElement::Ptr element = *it;
-        currentGraphWidget()->editElementDialog(element);
-    }
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->changeFocusedVertexLabel();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Rename Focused Node"), tr("Cannot Rename Focused Node: no node is focused on!"));
-//    }
-}
-
-void GraphWidgetManager::removeSelection()
-{
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->removeFocusedVertex();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Remove Focused Node"), tr("Cannot Remove Focused Node: no node is focused on!"));
-//    }
-}
-
 void GraphWidgetManager::addFeature()
 {
 //    if(mpGraphWidgetManager->getVertexFocused())
@@ -297,30 +262,6 @@ void GraphWidgetManager::swapFeatures()
 //        QMessageBox::information(mpStackedWidget, tr("Cannot Swap Features of the Focused Node"), tr("Cannot Swap Features of the Focused Node: no node is focused on!"));
 //    }
 }
-
-//void GraphWidgetManager::renameSelection()
-//{
-////    if(mpGraphWidgetManager->getVertexFocused())
-////    {
-////        mpGraphWidgetManager->renameFeatureFocused();
-////    }
-////    else
-////    {
-////        QMessageBox::information(mpStackedWidget, tr("Cannot Rename a Feature of the Focused Node"), tr("Cannot Rename a Feature of the Focused Node: no node is focused on!"));
-////    }
-//}
-//
-//void GraphWidgetManager::removeSelection()
-//{
-////    if(mpGraphWidgetManager->getVertexFocused())
-////    {
-////        mpGraphWidgetManager->removeFeaturesFocused();
-////    }
-////    else
-////    {
-////        QMessageBox::information(mpStackedWidget, tr("Cannot Remove the Features of the Focused Node"), tr("Cannot Remove the Features of the Focused Node: no node is focused on!"));
-////    }
-//}
 
 void GraphWidgetManager::addVertex()
 {
