@@ -361,6 +361,15 @@ void GraphWidget::unselectElement(const graph_analysis::GraphElement::Ptr& eleme
 
 void GraphWidget::mousePressEvent(QMouseEvent* event)
 {
+
+    // enable panning by pressing+dragging the left mouse button if there is
+    // _no_ item under the cursor right now.
+    if ((event->button() == Qt::LeftButton) && (!itemAt(event->pos()))) {
+        setDragMode(ScrollHandDrag);
+        QGraphicsView::mousePressEvent(event);
+        return;
+    }
+
     if(event->button() == Qt::LeftButton)
     {
         GraphElement::Ptr element = getFocusedElement();
@@ -397,13 +406,6 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
         }
 
         QGraphicsView::mousePressEvent(event);
-    } else if(event->button() == Qt::MidButton)
-    {
-        //Use ScrollHand Drag Mode to enable Panning
-        setDragMode(ScrollHandDrag);
-        // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mousePressEvent(&fake);
     } else {
         QGraphicsView::mousePressEvent(event);
     }
@@ -411,12 +413,9 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
 
 void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    if(event->button() == Qt::MidButton)
-    {
-        //Use ScrollHand Drag Mode to end Panning
+    // always try to reset drag mode, just to be sure
+    if (dragMode() != QGraphicsView::NoDrag) {
         setDragMode(NoDrag);
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mouseReleaseEvent(&fake);
     }
 
     QGraphicsView::mouseReleaseEvent(event);
