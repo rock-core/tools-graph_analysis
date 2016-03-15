@@ -161,15 +161,7 @@ void Simple::grabFocus()
 
 void Simple::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-    mFocused ? releaseFocus() : grabFocus();
     QGraphicsItem::mouseDoubleClickEvent(event);
-}
-
-void Simple::releaseFocus()
-{
-    mPen = mSelected ? QPen(Qt::green, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin) : mPenDefault;
-    update();
-    mFocused = false;
 }
 
 } // end namespace edges

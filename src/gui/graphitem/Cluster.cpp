@@ -136,13 +136,6 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     }
 }
 
-void Cluster::releaseFocus()
-{
-    mPen = mSelected ? QPen(Qt::green) : mPenDefault;
-    update();
-    mFocused = false;
-}
-
 void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     mpGraphWidget->setFocusedElement(mpVertex);

@@ -40,8 +40,6 @@ public:
     virtual graph_analysis::gui::items::EdgeLabel* getLabel() { return mpLabel; }
     /// destructor
     virtual ~Simple() {}
-    /// willingly gives up scene focus
-    void releaseFocus();
     /// adjusts graphical text label position
     void adjustLabel();
     /// adjusts edge segment length and starting and ending points

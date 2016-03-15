@@ -61,7 +61,6 @@ public:
 
     virtual void setLabel(const std::string&)  { throw std::runtime_error("graph_analysis::gui::EdgeItem::setLabel is not reimplemented");  }
     virtual graph_analysis::gui::items::EdgeLabel* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
-    virtual void releaseFocus()   { throw std::runtime_error("graph_analysis::gui::EdgeItem::releaseFocus is not reimplemented");}
     virtual void adjustLabel()    { throw std::runtime_error("graph_analysis::gui::EdgeItem::adjustLabel is not reimplemented"); }
 
 protected:

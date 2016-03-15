@@ -73,8 +73,6 @@ public:
     /// calls a qt routine for warning the scene of upcoming graphical changes; the method it internally calls is otherwise protected and inaccessible to unrelated classes
     inline void prepareChange() { prepareGeometryChange(); }
 
-    /// willingly gives up scene focus
-    void releaseFocus();
     /**
      * \brief updates node width related essential internal variables
      * \param active boolean flag for updating GUI too; when set changes also affect the node graphical representation (i.e. the node horizontally shrinks or expands in the scene)
