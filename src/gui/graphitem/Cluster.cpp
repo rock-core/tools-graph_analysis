@@ -68,12 +68,15 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     qreal featureLabelVSpace = ptSize*2;
 
     QGraphicsTextItem* lastFeatureLabel = 0;
-    items::Feature* lastFeature = 0;
+    items::Feature* previousFeature = 0;
     qreal closestItemYBottom = 0;
 
-    bool addLabel = true;
+    // this decides wether the "topic" label of a cluster is added just before
+    // a new section of features is begun
+    bool addFeatureLabel = true;
     std::set<std::string> supportedTypes = VertexTypeManager::getInstance()->getSupportedTypes();
     std::set<std::string>::const_iterator cit = supportedTypes.begin();
+    // iterating over all possible types of "features":
     for(; cit != supportedTypes.end(); ++cit)
     {
         int xPosition = 0;
@@ -84,19 +87,20 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
         {
             if(feature->getGraphElement()->getClassName() == supportedType)
             {
-                if(addLabel)
+                if(addFeatureLabel)
                 {
-                    addLabel = false;
-                    std::string labelTxt = supportedType;
-                    QGraphicsTextItem* label = getOrCreateLabel(labelTxt, this);
-                    if(lastFeature)
+                    addFeatureLabel = false;
+                    QGraphicsTextItem* label = getOrCreateLabel(supportedType, this);
+                    if(previousFeature)
                     {
-                        label->setY(lastFeature->y() + lastFeature->boundingRect().bottom() + featureLabelVSpace);
+                        label->setY(previousFeature->y() + previousFeature->boundingRect().bottom() + featureLabelVSpace);
                     } else {
                         label->setY(featureLabelVSpace);
                     }
 
+                    // we'll need to remember which "feature" top-label was the last
                     lastFeatureLabel = label;
+                    // and where the lower position in Y was for this last label
                     closestItemYBottom = label->y() + label->boundingRect().bottom();
 
                     painter->drawLine(QPoint(label->x(), closestItemYBottom), 
@@ -106,16 +110,17 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
                 feature->setX(lastFeatureLabel->x() + featureHSpace*xPosition);
                 feature->setY(closestItemYBottom + featureVSpace);
 
+                // this should take care of parent-child relationschips
                 addToGroup(feature);
                 closestItemYBottom = feature->y() + feature->boundingRect().bottom();
-                lastFeature = feature;
+                previousFeature = feature;
             }
         }
 
-        addLabel = true;
+        addFeatureLabel = true;
     }
 
-    //// Drawing of border: back to transparent background
+    // Drawing of border: back to transparent background
     painter->setPen(mPen);
     QRectF rect = boundingRect();
 
