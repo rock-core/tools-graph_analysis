@@ -72,19 +72,19 @@ void Resource::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 }
 
 
-void Resource::mousePressEvent(::QGraphicsSceneMouseEvent* event)
+void Resource::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
     QGraphicsItem::mousePressEvent(event);
 }
 
-void Resource::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
+void Resource::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void Resource::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
+void Resource::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
     QGraphicsItem::mouseDoubleClickEvent(event);
 }

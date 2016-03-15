@@ -102,14 +102,14 @@ void FilterItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option
 //    painter->drawEllipse(-10, -10, 20, 20);
 }
 
-void FilterItem::mousePressEvent(::QGraphicsSceneMouseEvent* event)
+void FilterItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: press";
     setZValue(0.);
     QGraphicsItem::mousePressEvent(event);
 }
 
-void FilterItem::mouseMoveEvent(::QGraphicsSceneMouseEvent* event)
+void FilterItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse move";
     // testing for new index displacement on neighbouring filters (i.e. deciding whether lower or uppper closest item shall be displaced)
@@ -128,7 +128,7 @@ void FilterItem::mouseMoveEvent(::QGraphicsSceneMouseEvent* event)
     QGraphicsItem::mouseMoveEvent(event);
 }
 
-void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
+void FilterItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     LOG_DEBUG_S << "Mouse RESOURCE: release";
     setZValue(-1);
@@ -136,7 +136,7 @@ void FilterItem::mouseReleaseEvent(::QGraphicsSceneMouseEvent* event)
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
-void FilterItem::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
+void FilterItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
     // shifting to direct text-editor mode on the graphical regexp text
     mLabel->setTextInteraction(true, true);

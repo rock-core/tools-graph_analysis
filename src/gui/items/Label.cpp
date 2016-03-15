@@ -47,7 +47,7 @@ void Label::setTextInteraction(bool on, bool selectAll)
     }
 }
 
-void Label::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
+void Label::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
     if(textInteractionFlags() == Qt::TextEditorInteraction)
     {

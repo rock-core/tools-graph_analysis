@@ -46,7 +46,7 @@ public:
     void setTextInteraction(bool on, bool selectAll = false);
 protected:
     /// qt mouse double-click callback
-    void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
     /// qt item changed callback
     QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
 };

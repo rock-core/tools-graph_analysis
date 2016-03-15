@@ -159,7 +159,7 @@ void Simple::grabFocus()
     mFocused = true;
 }
 
-void Simple::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
+void Simple::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
     mFocused ? releaseFocus() : grabFocus();
     QGraphicsItem::mouseDoubleClickEvent(event);

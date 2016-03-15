@@ -61,7 +61,7 @@ protected:
     /// qt hovering LEAVE callback
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     /// qt mouse double click callback (toggles the scene focusing on this item)
-    void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 
     /// establishes where the edge line segment shall end at one of the extremities (computes intersection with the rectangular boundary of one of the endpoints)
     QPointF getIntersectionPoint(QGraphicsItem* item, const QLineF& line);

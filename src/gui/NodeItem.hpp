@@ -13,6 +13,8 @@
 
 #define LABEL_SWAPPING
 
+class QGraphicsSceneMouseEvent;
+
 namespace graph_analysis {
 namespace gui {
 
@@ -23,7 +25,6 @@ namespace items {
 
 class EdgeItem;
 class GraphWidget;
-class QGraphicsSceneMouseEvent;
 
 /**
  * \file NodeItem.hpp

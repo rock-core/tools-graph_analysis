@@ -72,13 +72,13 @@ public:
 
 protected:
     /// qt mouse double-click callback
-    void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
     /// qt mouse move callback
-    void mouseMoveEvent(::QGraphicsSceneMouseEvent* event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
     /// qt mouse press callback
-    void mousePressEvent(::QGraphicsSceneMouseEvent* event);
+    void mousePressEvent(QGraphicsSceneMouseEvent* event);
     /// qt mouse release callback
-    void mouseReleaseEvent(::QGraphicsSceneMouseEvent* event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
     /// qt hovering ENTER callback
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
