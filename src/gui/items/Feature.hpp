@@ -26,7 +26,11 @@ namespace items {
  * \class Feature
  * \brief A feature can be added to a node item, however it directly maps to a
  * vertex in a graph
- * \details specific to the diagram editor widget: editable text representation (disregards the ENTER key)
+ * \details specific to the diagram editor widget: editable text representation
+ *
+ * the "Feature" is representing all things of the "hasFeature" relation in a
+ * Node (Cluster?), like "Operation" and "InputPort".
+ *
  */
 class Feature : public QGraphicsTextItem, VertexGetter
 {
@@ -67,8 +71,6 @@ public:
 
 protected:
 
-    /// qt mouse double-click callback
-    void mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event);
     /// qt mouse drag start callback
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     /// qt mouse drag move callback

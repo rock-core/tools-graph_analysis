@@ -69,18 +69,6 @@ void Feature::setTextInteraction(bool on, bool selectAll)
     }
 }
 
-void Feature::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
-{
-    if(textInteractionFlags() == Qt::TextEditorInteraction)
-    {
-        QGraphicsTextItem::mousePressEvent(event);
-        return;
-    }
-
-    setTextInteraction(true, true);
-    QGraphicsTextItem::mouseDoubleClickEvent(event);
-}
-
 void Feature::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 {
     if(event->mimeData()->hasFormat("text/plain"))
