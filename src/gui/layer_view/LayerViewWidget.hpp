@@ -41,12 +41,6 @@ public:
 public slots:
     /// shuffles all the nodes in the layers graph view
     void shuffle();
-    /// zooms-into the layers graph scene
-    void zoomIn();
-    /// zooms-out of the layers graph scene
-    void zoomOut();
-    /// pulls-out the layers graph context menu on right-click
-    void showContextMenu(const QPoint& pos);
 
 protected:
 
@@ -58,12 +52,6 @@ protected:
     void enableEdge(graph_analysis::Edge::Ptr edge);
     /// enables the provided edge (its corresponding edge scene-item gets filtered out at re-rendering)
     void disableEdge(graph_analysis::Edge::Ptr edge);
-
-    /// qt mouse wheel spin callback
-    void wheelEvent(QWheelEvent *event);
-
-    /// scales scene (zooms into or out of the scene)
-    void scaleView(qreal scaleFactor);
 
     void resetLayoutingGraph();
 };

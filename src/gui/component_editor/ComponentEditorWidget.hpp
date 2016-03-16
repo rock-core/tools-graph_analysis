@@ -75,10 +75,6 @@ public:
 public slots:
     /// shuffles all the nodes in the diagram graph editor
     void shuffle();
-    /// zooms-into the diagram editor graph scene
-    void zoomIn();
-    /// zooms-out of the diagram editor graph scene
-    void zoomOut();
 
     void addFeatureDialog();
 
@@ -86,12 +82,6 @@ public slots:
     void showContextMenu(const QPoint& pos);
 
 protected:
-
-    /// qt mouse wheel spin callback
-    void wheelEvent(QWheelEvent *event);
-
-    /// scales scene (zooms into or out of the scene)
-    void scaleView(qreal scaleFactor);
 
     items::Feature* getFeature(const GraphElement::Ptr& element);
 private:

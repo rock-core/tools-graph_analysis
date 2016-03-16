@@ -175,6 +175,11 @@ protected:
     // the QGraphicsScene to be used by this widget
     QGraphicsScene* mpScene;
 
+    /// qt mouse wheel spin callback
+    void wheelEvent(QWheelEvent *event);
+    /// scales scene (zooms into or out of the scene)
+    void scaleView(qreal scaleFactor);
+
     /// conceptual underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
 

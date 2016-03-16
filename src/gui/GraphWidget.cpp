@@ -82,6 +82,26 @@ GraphWidget::~GraphWidget()
     delete mpScene;
 }
 
+void GraphWidget::wheelEvent(QWheelEvent *event)
+{
+    scaleView(pow(2.0, -event->delta() / 240.0));
+}
+
+void GraphWidget::scaleView(qreal scaleFactor)
+{
+    qreal factor = transform()
+                       .scale(scaleFactor, scaleFactor)
+                       .mapRect(QRectF(0, 0, 1, 1))
+                       .width();
+    if(factor < 0.07 || factor > 100)
+    {
+        return;
+    }
+    scale(scaleFactor, scaleFactor);
+    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
+    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
+}
+
 void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
 {
     mpVertexFilter->clear();

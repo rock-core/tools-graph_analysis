@@ -44,7 +44,6 @@ LayerViewWidget::LayerViewWidget(QWidget *parent)
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("LayerViewWidget"));
 }
@@ -117,23 +116,6 @@ void LayerViewWidget::updateLayout()
 
 }
 
-void LayerViewWidget::wheelEvent(QWheelEvent *event)
-{
-    scaleView(pow((double)2, - event->delta() / 240.0));
-}
-
-void LayerViewWidget::scaleView(qreal scaleFactor)
-{
-    qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
-    {
-        return;
-    }
-    scale(scaleFactor, scaleFactor);
-    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
-}
-
 void LayerViewWidget::shuffle()
 {
     updateStatus("Shuffelling all the nodes in the layers graph view...");
@@ -145,15 +127,6 @@ void LayerViewWidget::shuffle()
     updateStatus("Shuffelled all nodes in the layers graph view", GraphWidgetManager::TIMEOUT);
 }
 
-void LayerViewWidget::zoomIn()
-{
-    scaleView(qreal(1.13));
-}
-
-void LayerViewWidget::zoomOut()
-{
-    scaleView(1 / qreal(1.13));
-}
 void LayerViewWidget::resetLayoutingGraph()
 {
     mMaxNodeHeight  = 0;

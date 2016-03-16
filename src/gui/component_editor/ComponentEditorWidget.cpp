@@ -71,7 +71,6 @@ ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("Component Editor"));
     // Setting up filtering
@@ -200,23 +199,6 @@ void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void ComponentEditorWidget::wheelEvent(QWheelEvent *event)
-{
-    scaleView(pow((double)2, - event->delta() / 240.0));
-}
-
-void ComponentEditorWidget::scaleView(qreal scaleFactor)
-{
-    qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
-    {
-        return;
-    }
-    scale(scaleFactor, scaleFactor);
-    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg);
-}
-
 void ComponentEditorWidget::shuffle()
 {
     updateStatus("Shuffeling all nodes ...");
@@ -228,16 +210,6 @@ void ComponentEditorWidget::shuffle()
         }
     }
     updateStatus("Done shuffeling all nodes");
-}
-
-void ComponentEditorWidget::zoomIn()
-{
-    scaleView(qreal(1.13));
-}
-
-void ComponentEditorWidget::zoomOut()
-{
-    scaleView(1 / qreal(1.13));
 }
 
 void ComponentEditorWidget::updateLayout()
