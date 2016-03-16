@@ -39,7 +39,6 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
 void Cluster::updateLabel()
 {
     mpLabel->setPlainText(mpVertex->getLabel().c_str());
-    updateWidth();
 }
 
 QRectF Cluster::boundingRect() const
