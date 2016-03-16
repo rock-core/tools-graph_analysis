@@ -17,7 +17,6 @@ namespace gui {
 NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex,
                    QGraphicsItem *parent)
     : QGraphicsItemGroup(parent), mpVertex(vertex), mpGraphWidget(graphWidget) {
-    setFlag(ItemIsMovable, false);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
