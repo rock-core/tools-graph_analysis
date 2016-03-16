@@ -44,15 +44,6 @@ public slots:
 
 protected:
 
-    /// enables the provided vertex (its corresponding node scene-item gets displayed at re-rendering)
-    void enableVertex(graph_analysis::Vertex::Ptr vertex);
-    /// disables the provided vertex (its corresponding node scene-item gets filtered out at re-rendering)
-    void disableVertex(graph_analysis::Vertex::Ptr vertex);
-    /// enables the provided edge (its corresponding edge scene-item gets displayed at re-rendering)
-    void enableEdge(graph_analysis::Edge::Ptr edge);
-    /// enables the provided edge (its corresponding edge scene-item gets filtered out at re-rendering)
-    void disableEdge(graph_analysis::Edge::Ptr edge);
-
     void resetLayoutingGraph();
 };
 

@@ -61,15 +61,6 @@ public:
 //     */
 //    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
 
-    /// enables the given vertex in the base graph
-    void enableVertex (graph_analysis::Vertex::Ptr vertex);
-    /// disables the given vertex in the base graph
-    void disableVertex(graph_analysis::Vertex::Ptr vertex);
-    /// enables the given edge in the base graph
-    void enableEdge (graph_analysis::Edge::Ptr edge);
-    /// disables the given edge in the base graph
-    void disableEdge(graph_analysis::Edge::Ptr edge);
-
     virtual void updateLayout();
 
 public slots:

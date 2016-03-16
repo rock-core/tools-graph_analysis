@@ -177,28 +177,6 @@ void ComponentEditorWidget::addFeatureDialog()
     }
 }
 
-void ComponentEditorWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->enable(vertex);
-    LOG_DEBUG_S << "Enabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void ComponentEditorWidget::enableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->enable(edge);
-    LOG_DEBUG_S << "Enabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
-void ComponentEditorWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->disable(vertex);
-    LOG_DEBUG_S << "Disabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->disable(edge);
-    LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
 void ComponentEditorWidget::shuffle()
 {
     updateStatus("Shuffeling all nodes ...");

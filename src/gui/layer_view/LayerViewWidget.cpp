@@ -51,28 +51,6 @@ LayerViewWidget::LayerViewWidget(QWidget *parent)
 LayerViewWidget::~LayerViewWidget()
 {}
 
-void LayerViewWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->enable(vertex);
-    LOG_DEBUG_S << "Enabled a vertex of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void LayerViewWidget::enableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->enable(edge);
-    LOG_DEBUG_S << "Enabled an edge of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
-void LayerViewWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->disable(vertex);
-    LOG_DEBUG_S << "Disabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void LayerViewWidget::disableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->disable(edge);
-    LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
 void LayerViewWidget::updateLayout()
 {
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
