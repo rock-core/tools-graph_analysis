@@ -3,6 +3,7 @@
 
 #include <QGraphicsTextItem>
 #include <QTextCursor>
+#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {

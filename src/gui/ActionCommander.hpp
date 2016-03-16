@@ -4,10 +4,6 @@
 #include <QIcon>
 #include <QAction>
 #include <QString>
-#include <QApplication>
-#include <QSignalMapper>
-#include <QGraphicsView>
-#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
