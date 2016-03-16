@@ -45,54 +45,16 @@ LayerViewWidget::LayerViewWidget(QWidget *parent)
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(scene);
 
-    setCacheMode(CacheBackground);
-    setContextMenuPolicy(Qt::CustomContextMenu);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
-    setWindowTitle(tr("Graphview"));
-    // Setting up filtering
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
-
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
-        this, SLOT(showContextMenu(const QPoint &)));
+    setWindowTitle(tr("LayerViewWidget"));
 }
 
 LayerViewWidget::~LayerViewWidget()
 {}
-
-void LayerViewWidget::showContextMenu(const QPoint& pos)
-{
-/*    ActionCommander comm(WidgetManager::getInstance()->getComponentEditorWidget());
-    QMenu contextMenu(tr("Context menu"), this);
-
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")), this);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle")), this);
-    QAction *actionImport  = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import")));
-    QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
-    QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
-    QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")), this);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphWidgetManager());
-
-    contextMenu.addAction(actionImport);
-    contextMenu.addAction(actionExport);
-    contextMenu.addSeparator();
-    contextMenu.addAction(actionRefresh);
-    contextMenu.addAction(actionShuffle);
-    contextMenu.addAction(actionReset);
-    contextMenu.addAction(actionLayout);
-    if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-    {
-        contextMenu.addSeparator();
-        contextMenu.addAction(actionReloadPropertyDialog);
-    }
-    contextMenu.exec(mapToGlobal(pos));
-    */
-}
 
 void LayerViewWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
 {
@@ -196,7 +158,6 @@ void LayerViewWidget::zoomOut()
 {
     scaleView(1 / qreal(1.13));
 }
-
 void LayerViewWidget::resetLayoutingGraph()
 {
     mMaxNodeHeight  = 0;
