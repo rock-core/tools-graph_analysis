@@ -54,7 +54,7 @@ public:
     /// getter method to retrieve  the internal conceptual edge
     graph_analysis::Edge::Ptr getEdge() { return mpEdge; }
 
-    // virtual methods
+    // virtual methods. FIXME: this should be static, really...
     virtual EdgeItem* createNewItem(GraphWidget* graphWidget,
             QGraphicsItem* source,
             QGraphicsItem* target,
