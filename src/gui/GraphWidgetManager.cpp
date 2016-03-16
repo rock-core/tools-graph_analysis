@@ -129,10 +129,9 @@ GraphWidgetManager::GraphWidgetManager()
     std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
     edgeFilters.push_back(filter);
 
-    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.begin();
-    for(; it != mGraphWidgets.end(); ++it)
+    for(int index = 0; index < mpTabWidget->count(); index++)
     {
-        GraphWidget* graphWidget = *it;
+        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
         graphWidget->setEdgeFilters(edgeFilters);
         graphWidget->setGraphLayout(mLayout);
     }
@@ -369,20 +368,9 @@ void GraphWidgetManager::reloadPropertyDialogMainWindow()
     }
 }
 
-int GraphWidgetManager::addGraphWidget(GraphWidget* graphWidget)
+void GraphWidgetManager::addGraphWidget(GraphWidget* graphWidget)
 {
-    if( mGraphWidgets.end() == std::find(mGraphWidgets.begin(), mGraphWidgets.end(), graphWidget))
-    {
-        graphWidget->setGraph(mpGraph);
-        graphWidget->setGraphWidgetManager(this);
-        mGraphWidgets.push_back(graphWidget);
-        WidgetManager *widgetManager = WidgetManager::getInstance();
-        mpTabWidget->addTab(dynamic_cast<QWidget*>(graphWidget)/*,QIcon*/, graphWidget->getClassName());
-        widgetManager->setWidget(graphWidget);
-        return mGraphWidgets.size() - 1;
-    } else {
-        throw std::runtime_error("graph_analysis::gui::GraphWidgetManager::addGraphWidget: cannot add widget since it has already been registered");
-    }
+    mpTabWidget->insertTab(mpTabWidget->count(), graphWidget, graphWidget->getClassName());
 }
 
 
@@ -393,10 +381,9 @@ void GraphWidgetManager::resetGraph(bool keepData)
         mpGraph = BaseGraph::getInstance();
     }
 
-    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.begin();
-    for(; it != mGraphWidgets.end(); ++it)
+    for(int index = 0; index < mpTabWidget->count(); index++)
     {
-        GraphWidget* graphWidget = *it;
+        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
         graphWidget->setGraph(mpGraph);
         graphWidget->clearVisualization();
     }
@@ -524,20 +511,18 @@ void GraphWidgetManager::fromFile(const std::string& filename)
 
 void GraphWidgetManager::notifyModeChange(Mode mode)
 {
-    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.begin();
-    for(; it != mGraphWidgets.end(); ++it)
+    for(int index = 0; index < mpTabWidget->count(); index++)
     {
-        GraphWidget* graphWidget = *it;
+        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
         graphWidget->modeChanged(mode);
     }
 }
 
 void GraphWidgetManager::notifyAll()
 {
-    std::vector<GraphWidget*>::const_iterator it = mGraphWidgets.end();
-    for(; it != mGraphWidgets.end(); ++it)
+    for(int index = 0; index < mpTabWidget->count(); index++)
     {
-        GraphWidget* graphWidget = *it;
+        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
         graphWidget->setGraphLayout(mLayout);
         graphWidget->refresh(false);
     }
@@ -545,12 +530,7 @@ void GraphWidgetManager::notifyAll()
 
 GraphWidget* GraphWidgetManager::currentGraphWidget()
 {
-    size_t currentIndex = mpTabWidget->currentIndex();
-    if(mGraphWidgets.size() > currentIndex)
-    {
-        return mGraphWidgets[currentIndex];
-    }
-    throw std::runtime_error("graph_analysis::gui::currentGraphWidget: index out of bounds -- no graph widget available for this operation");
+    return dynamic_cast<GraphWidget*>(mpTabWidget->currentWidget());
 }
 
 } // end namespace gui

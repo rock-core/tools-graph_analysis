@@ -17,12 +17,13 @@ namespace gui {
  */
 class IconManager : public base::Singleton<IconManager>
 {
+protected:
+    /// constructor
+    IconManager();
+    friend class base::Singleton<IconManager>;
 public:
     /// maps specific access keywords to loaded qt icons
     typedef std::map <std::string, QIcon> IconMap;
-
-    /// constructor
-    IconManager();
 
     /// getter method - retrieves a qt icon registered at the given keyword in the icons map
     const QIcon* getIcon(const std::string& key);

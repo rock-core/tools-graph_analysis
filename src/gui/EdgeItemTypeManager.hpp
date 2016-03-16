@@ -35,11 +35,11 @@ private:
     /// internal method to query the instance map
     EdgeItem* graphicsItemByType(const edge::Type& type);
 
-public:
+protected:
     /// constructor
     EdgeItemTypeManager();
-    /// destructor
-    ~EdgeItemTypeManager();
+    friend class base::Singleton<EdgeItemTypeManager>;
+public:
 
     // Register visualization class
     // takes ownership of graphicsItem

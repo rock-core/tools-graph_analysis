@@ -15,15 +15,6 @@ EdgeItemTypeManager::EdgeItemTypeManager()
 
 }
 
-EdgeItemTypeManager::~EdgeItemTypeManager()
-{
-    ClassVisualizationMap::iterator it = mClassVisualizationMap.begin();
-    for(; it != mClassVisualizationMap.end(); ++it)
-    {
-        delete it->second;
-    }
-}
-
 void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItem* graphicsItem)
 {
     try {

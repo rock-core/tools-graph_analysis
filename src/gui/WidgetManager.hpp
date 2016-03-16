@@ -24,9 +24,11 @@ namespace dialogs {
  */
 class WidgetManager : public base::Singleton<WidgetManager>
 {
-public:
+protected:
     /// constructor
     WidgetManager();
+    friend class base::Singleton<WidgetManager>;
+public:
 
     /// getter for the graph GUI manager
     GraphWidgetManager* getGraphWidgetManager(void);

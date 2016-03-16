@@ -222,7 +222,10 @@ protected:
     virtual void mousePressEvent(QMouseEvent*);
     virtual void mouseReleaseEvent(QMouseEvent*);
 
-    void setFlagOnAllItems(QGraphicsItem::GraphicsItemFlag flag, bool value = true);
+    // iterate over all QGraphicItems of scene with type "...::NodeItemType". sets
+    // or clears the flag.
+    void setFlagOnAllNodes(enum QGraphicsItem::GraphicsItemFlag flag,
+                           bool value = true);
 };
 
 } // end namespace gui

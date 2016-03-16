@@ -136,59 +136,9 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     }
 }
 
-void Cluster::releaseFocus()
+void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
-    mPen = mSelected ? QPen(Qt::green) : mPenDefault;
-    update();
-    mFocused = false;
-}
-
-void Cluster::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
-{
-    Vertex::Ptr pointedAtVertex = mpVertex; 
-    GraphWidgetManager::Mode mode = mpGraphWidget->getGraphWidgetManager()->getMode();
-    if(mode == GraphWidgetManager::CONNECT_MODE
-            || mode == GraphWidgetManager::EDIT_MODE)
-    {
-        try {
-            pointedAtVertex = getPointedAtVertex();
-            LOG_WARN_S << "Got pointed at vertex: " << pointedAtVertex->toString();
-        } catch(const std::runtime_error& e)
-        { 
-            LOG_WARN_S << "Failed to get pointed at vertex: " << e.what();
-        }
-    }
-
-    LOG_DEBUG_S << "Setting focused element: " << pointedAtVertex->toString();
-    // This is required for Drag and Drop to work 
-    // implementation is in mpGraphWidget
-    mpGraphWidget->setFocusedElement(pointedAtVertex);
-
-    if(!mFocused)
-    {
-        mPen = QPen(Qt::green);
-    }
-    mSelected = true;
-
-    // In order to complete an open dragndrop job
-    // just after a drag and drop, we check were the hover mode is
-    if(mConnectionRequest.isOpen())
-    {
-        // Mark request directly as handled -- must be done before starting the
-        // edge dialog
-        mConnectionRequest.close();
-
-        Vertex::Ptr sourceVertex = mConnectionRequest.getFrom();
-        Vertex::Ptr targetVertex = pointedAtVertex;
-        if(sourceVertex && targetVertex)
-        {
-            LOG_INFO_S << "Creating edge from: " << sourceVertex->toString() << " to " << targetVertex->toString();
-            mpGraphWidget->addEdgeDialog(sourceVertex, targetVertex);
-            LOG_INFO_S << "Completed dialog";
-        } else {
-            throw std::runtime_error("graph_analysis::gui::Cluster::hoverMoveEvent could not complete connection -- failed to identify underlying vertices");
-        }
-    }
+    mpGraphWidget->setFocusedElement(mpVertex);
 }
 
 void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)

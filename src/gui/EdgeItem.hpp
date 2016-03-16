@@ -61,7 +61,6 @@ public:
 
     virtual void setLabel(const std::string&)  { throw std::runtime_error("graph_analysis::gui::EdgeItem::setLabel is not reimplemented");  }
     virtual graph_analysis::gui::items::EdgeLabel* getLabel() {  throw std::runtime_error("graph_analysis::gui::EdgeItem: edge label is not implemented at this level"); }
-    virtual void releaseFocus()   { throw std::runtime_error("graph_analysis::gui::EdgeItem::releaseFocus is not reimplemented");}
     virtual void adjustLabel()    { throw std::runtime_error("graph_analysis::gui::EdgeItem::adjustLabel is not reimplemented"); }
 
 protected:
@@ -88,7 +87,8 @@ protected:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
     /// retrieves the path of the bounding rectangular box around the area occupied by the node in the scene
 
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 
 };
 

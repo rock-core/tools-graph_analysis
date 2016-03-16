@@ -662,15 +662,15 @@ void GraphWidget::modeChanged(GraphWidgetManager::Mode mode)
     {
         case GraphWidgetManager::CONNECT_MODE:
             LOG_DEBUG_S << "Mode changed to connect mode";
-            setFlagOnAllItems(QGraphicsItem::ItemIsMovable, false);
+            setFlagOnAllNodes(QGraphicsItem::ItemIsMovable, false);
             break;
         case GraphWidgetManager::EDIT_MODE:
             LOG_DEBUG_S << "Mode changed to edit mode";
-            setFlagOnAllItems(QGraphicsItem::ItemIsMovable, false);
+            setFlagOnAllNodes(QGraphicsItem::ItemIsMovable, false);
             break;
         case GraphWidgetManager::MOVE_MODE:
             LOG_DEBUG_S << "Mode changed to move mode";
-            setFlagOnAllItems(QGraphicsItem::ItemIsMovable, true);
+            setFlagOnAllNodes(QGraphicsItem::ItemIsMovable, true);
             break;
         default:
             throw std::invalid_argument("graph_analysis::gui::GraphWidget: "
@@ -680,27 +680,19 @@ void GraphWidget::modeChanged(GraphWidgetManager::Mode mode)
     mMode = mode;
 }
 
-void GraphWidget::setFlagOnAllItems(QGraphicsItem::GraphicsItemFlag flag, bool value)
+void GraphWidget::setFlagOnAllNodes(enum QGraphicsItem::GraphicsItemFlag flag,
+                                    bool value)
 {
+    QList<QGraphicsItem *> allItems = items();
+    QGraphicsItem *item;
+    foreach(item, allItems)
     {
-        NodeItemMap::iterator it = mNodeItemMap.begin();
-        for(; it != mNodeItemMap.end(); ++it)
+        if(item->type() == graph_analysis::gui::NodeItem::Type)
         {
-            NodeItem* nodeItem = it->second;
-            nodeItem->setFlag(flag, value);
-        }
-    }
-
-    {
-        EdgeItemMap::iterator it = mEdgeItemMap.begin();
-        for(; it != mEdgeItemMap.end(); ++it)
-        {
-            EdgeItem* edgeItem = it->second;
-            edgeItem->setFlag(flag, value);
+            item->setFlag(flag, value);
         }
     }
 }
-
 
 } // end namespace gui
 } // end namespace graph_analysis

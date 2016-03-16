@@ -97,7 +97,6 @@ public:
     virtual items::Feature* getFeature(id_t) const;
 
     virtual void prepareChange()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::prepareChange is not reimplemented");}
-    virtual void releaseFocus ()                        { throw std::runtime_error("graph_analysis::gui::NodeItem::releaseFocus is not reimplemented"); }
     virtual void swapFeatures(id_t, id_t)          { throw std::runtime_error("graph_analysis::gui::NodeItem::swapFeatures is not reimplemented");    }
 
     virtual Labels      getLabels()     { throw std::runtime_error("graph_analysis::gui::NodeItem::getLabels is not reimplemented");   }
@@ -135,7 +134,8 @@ protected:
      */
     Vertex::Ptr getPointedAtVertex() const;
 
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 };
 
 } // end namespace gui

@@ -58,9 +58,11 @@ private:
      */
     Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnDefault = false);
 
-public:
+protected:
     /// constructor
     VertexTypeManager();
+    friend class base::Singleton<VertexTypeManager>;
+public:
 
     // Register vertex class
     void registerType(Vertex::Ptr vertex, bool throwOnAlreadyRegistered = false);

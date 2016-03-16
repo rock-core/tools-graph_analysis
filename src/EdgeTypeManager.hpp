@@ -42,9 +42,11 @@ private:
      */
     Edge::Ptr edgeByType(const edge::Type& type, bool throwOnDefault = false);
 
-public:
+protected:
     /// constructor
     EdgeTypeManager();
+    friend class base::Singleton<EdgeTypeManager>;
+public:
 
     // Register visualization class
     // takes ownership of graphicsItem
