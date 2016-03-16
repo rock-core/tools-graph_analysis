@@ -48,6 +48,7 @@ QRectF Cluster::boundingRect() const
 void Cluster::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     LOG_INFO_S << "hER";
     QGraphicsItem::mousePressEvent(event);
+    myUpdate();
 }
 
 QPainterPath Cluster::shape() const
@@ -59,18 +60,19 @@ QPainterPath Cluster::shape() const
 
 void Cluster::myUpdate()
 {
-    std::set<std::string> supportedTypes =
-        VertexTypeManager::getInstance()->getSupportedTypes();
-    std::set<std::string>::const_iterator cit = supportedTypes.begin();
-    for(; cit != supportedTypes.end(); ++cit)
+    Vertex::Ptr underlyingVertex = getVertex();
+
+    EdgeIterator::Ptr edgeIt = mpGraphWidget->graph()->getOutEdgeIterator(underlyingVertex);
+    while(edgeIt->next())
     {
-        foreach(items::Feature *feature, mFeatures)
+        Edge::Ptr currentEdge = edgeIt->current();
+        if(currentEdge->getLabel() == "hasFeature")
         {
-            if(feature->getGraphElement()->getClassName() == *cit)
-            {
-                LOG_INFO_S << feature->getGraphElement()->getLabel();
-            }
+            LOG_INFO_S << currentEdge->getTargetVertex()->getClassName()
+                       << " with name "
+                       << currentEdge->getTargetVertex()->getLabel();
         }
+
     }
 }
 
