@@ -12,8 +12,6 @@
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 
-#include <base/Logging.hpp>
-
 namespace graph_analysis {
 namespace io {
     class GVGraph;
@@ -115,7 +113,7 @@ public:
 
 
     // SELECT/ DESELECT
-    void setFocusedElement(const GraphElement::Ptr& element) { LOG_WARN_S << "SET FOCUS ON: " << element->toString(); mpFocusedElement = element; }
+    void setFocusedElement(const GraphElement::Ptr& element);
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
     void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
     bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }
