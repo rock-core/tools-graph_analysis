@@ -1,47 +1,28 @@
 #include "GraphWidget.hpp"
 
-#include <set>
-#include <math.h>
 #include <sstream>
-#include <vector>
 #include <exception>
 #include <boost/foreach.hpp>
-#include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <base/Logging.hpp>
 #include <base/Time.hpp>
 
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/GraphIO.hpp>
-#include <graph_analysis/io/YamlWriter.hpp>
-#include <graph_analysis/io/GexfWriter.hpp>
-#include <graph_analysis/io/GexfReader.hpp>
-#include <graph_analysis/io/YamlReader.hpp>
-#include <graph_analysis/io/GraphvizWriter.hpp>
-#include <graph_analysis/gui/items/EdgeLabel.hpp>
-#include <graph_analysis/gui/WidgetManager.hpp>
-#include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
-#include <QDir>
-#include <QTime>
-#include <QMenu>
-#include <QMenuBar>
-#include <QAction>
-#include <QKeyEvent>
+#include <graph_analysis/gui/WidgetManager.hpp>
+
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QApplication>
 #include <QInputDialog>
-#include <QSignalMapper>
+#include <QApplication>
+#include <QKeyEvent>
 
 #include "EdgeItem.hpp"
 #include "NodeItem.hpp"
-#include "NodeItemTypeManager.hpp"
-#include "EdgeItemTypeManager.hpp"
-#include "ActionCommander.hpp"
+
 #include "dialogs/AddGraphElement.hpp"
 #include "dialogs/PropertyDialog.hpp"
 

@@ -1,11 +1,8 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
-#include <map>
-#include <QIcon>
-#include <QMainWindow>
 #include <QGraphicsView>
-#include <QStackedWidget>
+
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>

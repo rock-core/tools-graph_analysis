@@ -4,6 +4,7 @@
 #include <QIcon>
 #include <QAction>
 #include <QString>
+#include <QMenu>
 
 namespace graph_analysis {
 namespace gui {

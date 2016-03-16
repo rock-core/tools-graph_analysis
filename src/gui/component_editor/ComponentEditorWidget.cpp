@@ -1,22 +1,4 @@
 #include "ComponentEditorWidget.hpp"
-#include <set>
-#include <math.h>
-#include <sstream>
-#include <exception>
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-
-#include <QDir>
-#include <QTime>
-#include <QMenu>
-#include <QLabel>
-#include <QAction>
-#include <QKeyEvent>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QApplication>
-#include <QInputDialog>
-#include <QSignalMapper>
 
 #include <base/Time.hpp>
 #include <base/Logging.hpp>
@@ -49,6 +31,8 @@
 
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
+
+#include "../ActionCommander.hpp"
 
 using namespace graph_analysis;
 
