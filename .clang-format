@@ -37,11 +37,11 @@ PenaltyReturnTypeOnItsOwnLine: 60
 PointerAlignment: Right
 SpacesBeforeTrailingComments: 1
 Cpp11BracedListStyle: true
-Standard:        Cpp11
-IndentWidth:     2
+Standard:        C++03
+IndentWidth:     4
 TabWidth:        8
 UseTab:          Never
-BreakBeforeBraces: Attach
+BreakBeforeBraces: Allman
 SpacesInParentheses: false
 SpacesInAngles:  false
 SpaceInEmptyParentheses: false
@@ -51,7 +51,7 @@ SpaceBeforeAssignmentOperators: true
 ContinuationIndentWidth: 4
 CommentPragmas:  '^ IWYU pragma:'
 ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
-SpaceBeforeParens: ControlStatements
+SpaceBeforeParens: Never
 DisableFormat:   false
 ...
 
