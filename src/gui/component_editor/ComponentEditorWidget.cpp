@@ -65,10 +65,6 @@ ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
 
     mScaleFactor *= 1.69;
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    setScene(scene);
-
     setCacheMode(CacheBackground);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);

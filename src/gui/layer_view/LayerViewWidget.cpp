@@ -41,10 +41,6 @@ namespace gui {
 LayerViewWidget::LayerViewWidget(QWidget *parent)
     : GraphWidget(parent)
 {
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    setScene(scene);
-
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);

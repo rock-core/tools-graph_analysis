@@ -19,6 +19,7 @@ namespace gui {
 class LayerViewWidget : public GraphWidget
 {
     Q_OBJECT
+
 public:
     /**
      * \brief constructor

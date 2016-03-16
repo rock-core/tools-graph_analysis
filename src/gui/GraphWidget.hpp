@@ -172,6 +172,9 @@ public slots:
     void selectLayoutDialog();
 protected:
 
+    // the QGraphicsScene to be used by this widget
+    QGraphicsScene* mpScene;
+
     /// conceptual underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
 

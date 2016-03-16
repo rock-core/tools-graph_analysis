@@ -57,6 +57,7 @@ namespace gui {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
+    , mpScene(new QGraphicsScene(this))
     , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
@@ -69,12 +70,16 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGraphWidgetManager(WidgetManager::getInstance()->getGraphWidgetManager())
     , mMode(GraphWidgetManager::MOVE_MODE)
 {
+    mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    setScene(mpScene);
+
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
 }
 
 GraphWidget::~GraphWidget()
 {
+    delete mpScene;
 }
 
 void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
