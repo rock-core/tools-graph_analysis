@@ -12,6 +12,9 @@
 #include <graph_analysis/Edge.hpp>
 #include <iostream>
 
+// relative include path... bad...
+#include "../GraphicsItemTypes.hpp"
+
 namespace graph_analysis {
 namespace gui {
 
@@ -61,7 +64,7 @@ public:
     Edge::Ptr getEdge() const;
     Vertex::Ptr getVertex() const;
 
-    int type() const { return UserType + 10; }
+    int type() const { return FeatureItemType; }
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 

@@ -11,6 +11,8 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/Edge.hpp>
 
+#include "GraphicsItemTypes.hpp"
+
 #define LABEL_SWAPPING
 
 class QGraphicsSceneMouseEvent;
@@ -56,8 +58,7 @@ public:
     /// destructor
     virtual ~NodeItem() {};
 
-    enum { Type = UserType + 1 };
-    int type() const { return Type; }
+    int type() const { return NodeItemType; }
 
 
     /// actuator method the same force field (automatic re-arranging) algorithm

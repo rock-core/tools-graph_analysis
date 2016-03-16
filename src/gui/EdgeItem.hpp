@@ -7,6 +7,8 @@
 #include <math.h>
 #include <graph_analysis/Edge.hpp>
 
+#include "GraphicsItemTypes.hpp"
+
 namespace graph_analysis {
 namespace gui {
 
@@ -46,9 +48,9 @@ public:
     /// updates edge graphics: edge lenght and endpoints positioning
     virtual void adjust();
 
-    enum { Type = UserType + 2 };
     /// getter method to retrieve constant
-    int type() const { return Type; }
+    int type() const { return EdgeItemType; }
+
     /// getter method to retrieve  the internal conceptual edge
     graph_analysis::Edge::Ptr getEdge() { return mpEdge; }
 
