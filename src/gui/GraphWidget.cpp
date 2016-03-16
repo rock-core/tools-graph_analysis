@@ -362,6 +362,7 @@ void GraphWidget::unselectElement(const graph_analysis::GraphElement::Ptr& eleme
 void GraphWidget::mousePressEvent(QMouseEvent* event)
 {
 
+
     // enable panning by pressing+dragging the left mouse button if there is
     // _no_ item under the cursor right now.
     if ((event->button() == Qt::LeftButton) && (!itemAt(event->pos()))) {
@@ -388,20 +389,6 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
             } catch(const std::runtime_error& e)
             {
                 unselectElement(element);
-            }
-
-            if(getMode() == GraphWidgetManager::CONNECT_MODE)
-            {
-                QDrag* drag = new QDrag(this);
-                QMimeData* mimeData = new QMimeData;
-
-                // Setting the id of the graph element as mime data
-                std::stringstream ss;
-                ss << element->getId(mpGraph->getId());
-                mimeData->setText(ss.str().c_str());
-                drag->setMimeData(mimeData);
-
-                drag->exec(Qt::CopyAction); // | Qt::MoveAction);
             }
         }
 
