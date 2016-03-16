@@ -7,7 +7,6 @@
 #include <QGraphicsView>
 #include <QStackedWidget>
 #include <graph_analysis/Graph.hpp>
-#include <graph_analysis/Filter.hpp>
 #include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
@@ -89,22 +88,16 @@ public:
     virtual void resetLayoutingGraph();
 
     /**
-     * Update the current view / filtered subgraph
+     * Update the current view
      */
     virtual void update();
     virtual void updateView();
-    void updateFilterView();
     void updateLayoutView();
 
     /**
      * Trigger the layouting of the graph widget
      */
     virtual void updateLayout() { throw std::runtime_error("graph_analysis::gui::GraphWidget::updateLayout: not implemented"); }
-
-    /// setter method for updating the node filters
-    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
-    /// setter method for updating the edge filters
-    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
     /// setter method for updating the scaling factor
     void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
@@ -192,13 +185,6 @@ protected:
     /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
     qreal mMaxNodeWidth;
 
-    // Supports filtering functionality
-    GraphView mGraphView;
-    SubGraph::Ptr mpSubGraph;
-
-    /// boolean witness of filtering: true when filtering has already been set/initialized; false otherwise
-    bool mFiltered;
-
     // Allow mapping from graph vertices to nodes in the scene
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
@@ -209,11 +195,6 @@ protected:
 
     /// layouting engine to be used on the next layouting
     QString mLayout;
-
-    /// vertex filters
-    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
-    /// edge filters
-    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
 
     graph_analysis::GraphElement::Ptr mpFocusedElement;
     std::vector<graph_analysis::GraphElement::Ptr> mElementSelection;

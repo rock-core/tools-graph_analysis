@@ -23,9 +23,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
@@ -73,9 +71,6 @@ ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
     setTransformationAnchor(AnchorUnderMouse);
     setMinimumSize(400, 400);
     setWindowTitle(tr("Component Editor"));
-    // Setting up filtering
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -198,13 +193,6 @@ void ComponentEditorWidget::updateLayout()
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(vertex))
-        {
-            LOG_DEBUG_S << "Filtered out vertex: " << vertex->toString();
-            continue;
-        }
 
         if(mNodeItemMap.count(vertex))
         {

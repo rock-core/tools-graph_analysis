@@ -12,7 +12,6 @@
 #include <base/Logging.hpp>
 #include <base/Time.hpp>
 
-#include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/GraphIO.hpp>
 #include <graph_analysis/io/YamlWriter.hpp>
@@ -20,8 +19,6 @@
 #include <graph_analysis/io/GexfReader.hpp>
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
-#include <graph_analysis/filters/CommonFilters.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
@@ -61,20 +58,13 @@ GraphWidget::GraphWidget(QWidget *parent)
     , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
-    , mFiltered(false)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
-    //, mpVertexFilter(new filters::PermitAll< graph_analysis::Vertex::Ptr>( ))
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
-    , mpEdgeFilter(new filters::EdgeContextFilter())
     , mpGraphWidgetManager(WidgetManager::getInstance()->getGraphWidgetManager())
     , mMode(GraphWidgetManager::MOVE_MODE)
 {
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
-
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
 }
 
 GraphWidget::~GraphWidget()
@@ -102,26 +92,6 @@ void GraphWidget::scaleView(qreal scaleFactor)
     updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
 }
 
-void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
-{
-    mpVertexFilter->clear();
-    BOOST_FOREACH(Filter<Vertex::Ptr>::Ptr filter, filters)
-    {
-        mpVertexFilter->add(filter);
-    }
-    mGraphView.setVertexFilter(mpVertexFilter);
-}
-
-void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
-{
-    mpEdgeFilter->clear();
-    BOOST_FOREACH(Filter<Edge::Ptr>::Ptr filter, filters)
-    {
-        mpEdgeFilter->add(filter);
-    }
-    mGraphView.setEdgeFilter(mpEdgeFilter);
-}
-
 void GraphWidget::updateStatus(const std::string& message, int timeout) const
 {
     WidgetManager::getInstance()->getGraphWidgetManager()->updateStatus(QString(message.c_str()), timeout);
@@ -135,7 +105,6 @@ void GraphWidget::setGraphLayout(const QString& layoutName)
 
 void GraphWidget::clearVisualization()
 {
-    // TO-DO: add filtering clearing?
     if(mpGVGraph)
     {
         mpGVGraph->clearEdges();
@@ -197,14 +166,7 @@ void GraphWidget::update()
 
 void GraphWidget::updateView()
 {
-    updateFilterView();
     updateLayoutView();
-}
-
-void GraphWidget::updateFilterView()
-{
-    mpSubGraph = mGraphView.apply(mpGraph);
-    mFiltered = true;
 }
 
 void GraphWidget::updateLayoutView()

@@ -24,8 +24,6 @@
 #include <base/Logging.hpp>
 
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
-#include <graph_analysis/filters/RegexFilters.hpp>
 
 #include <graph_analysis/gui/layeritem/Resource.hpp>
 #include <graph_analysis/gui/layeritem/edges/Simple.hpp>
