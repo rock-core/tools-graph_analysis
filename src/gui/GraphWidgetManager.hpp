@@ -80,7 +80,7 @@ public slots:
     void swapFeatures();
     void addVertex();
 
-    int addGraphWidget(GraphWidget* graphWidget);
+    void addGraphWidget(GraphWidget* graphWidget);
 
     void resetGraph(bool keepData = false);
 
@@ -125,9 +125,6 @@ private:
     dialogs::PropertyDialog *mpPropertyDialog;
     /// the layouting engine to be used when initializing the graph widgets
     QString mLayout;
-
-    /// Widget that are associated with the main widget
-    std::vector<GraphWidget*> mGraphWidgets;
 
     GraphWidget* currentGraphWidget();
 
