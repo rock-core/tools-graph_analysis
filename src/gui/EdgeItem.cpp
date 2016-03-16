@@ -103,12 +103,6 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
 }
 
-QPainterPath EdgeItem::shape() const
-{
-    return mPainterPath;
-    return ::QGraphicsItem::shape();
-}
-
 void EdgeItem::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 {
     // Set the current edge as focused element

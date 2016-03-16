@@ -46,8 +46,6 @@ class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
 
-    friend class GraphWidgetManager;
-
 public:
 
     typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap; // meant to map default edges to their correspondent initial edges in the base graph
@@ -56,15 +54,12 @@ public:
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> FeatureMap; // maps conceptual feature vertices to their graphical node in the scene
     typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::id_t> FeatureIDMap; // maps conceptual feature vertices to their feature ID
 
-    /// empty constructor
-    GraphWidget(const QString& widgetName, QWidget *parent = NULL);
-
     /**
      * \brief constructor
      * \param mainWindow main qt application window
      * \param parent qt parent widget
      */
-    GraphWidget(QMainWindow *mainWindow, QWidget *parent = NULL);
+    GraphWidget(QWidget *parent = NULL);
 
     /// destructor
     virtual ~GraphWidget();
@@ -148,9 +143,6 @@ public:
     void removeVertex(const Vertex::Ptr& vertex);
     void removeEdge(const Edge::Ptr& edge);
 
-    virtual void syncEdgeItemMap    (graph_analysis::Edge::Ptr)    { throw std::runtime_error("graph_analysis::gui::GraphWidget::syncEdgeItemMap is not reimplemented");   }
-    virtual void itemMoved() { throw std::runtime_error("graph_analysis::gui::GraphWidget::itemMoved is not reimplemented"); }
-
     /// \param msg Message in the statusbar
     /// \param time Number of milliseconds the message will be held on screen
     virtual void updateStatus(const std::string& msg, int timeInMS = 10) const;
@@ -181,7 +173,6 @@ public slots:
 
     void selectLayoutDialog();
 protected:
-    QString mWidgetName;
 
     /// conceptual underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
@@ -207,7 +198,6 @@ protected:
     // Allow mapping from graph edges to edges in the scene
     EdgeItemMap mEdgeItemMap;
 
-    int mTimerId;
     /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees
     double mScaleFactor;
 
@@ -227,7 +217,7 @@ protected:
 
     void gvRender(const std::string& filename);
 
-    virtual void keyPressEvent(QKeyEvent*);
+    virtual void keyPressEvent(QKeyEvent *);
 
     virtual void mousePressEvent(QMouseEvent*);
     virtual void mouseReleaseEvent(QMouseEvent*);

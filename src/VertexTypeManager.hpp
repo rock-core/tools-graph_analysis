@@ -61,8 +61,6 @@ private:
 public:
     /// constructor
     VertexTypeManager();
-    /// destructor
-    ~VertexTypeManager();
 
     // Register vertex class
     void registerType(Vertex::Ptr vertex, bool throwOnAlreadyRegistered = false);

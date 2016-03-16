@@ -1,4 +1,5 @@
 #include "Edge.hpp"
+#include <sstream>
 
 namespace graph_analysis {
 

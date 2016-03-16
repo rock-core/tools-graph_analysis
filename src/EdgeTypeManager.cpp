@@ -10,10 +10,6 @@ EdgeTypeManager::EdgeTypeManager()
     registerType("default", Edge::Ptr (new Edge()));
 }
 
-EdgeTypeManager::~EdgeTypeManager()
-{
-}
-
 void EdgeTypeManager::registerType(const edge::Type& type, Edge::Ptr edge, bool throwOnAlreadyRegistered)
 {
     try {

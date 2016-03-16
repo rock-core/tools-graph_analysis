@@ -32,25 +32,21 @@ const int GraphWidgetManager::TIMEOUT = 6900; // miliseconds
 
 GraphWidgetManager::GraphWidgetManager()
     : mpMainWindow(new QMainWindow())
-    , mpTabWidget(new QTabWidget())
+    , mpTabWidget(new QTabWidget(mpMainWindow))
     , mpStatus(mpMainWindow->statusBar())
     , mLayout("dot") // other possible layouts: circo, dot, fdp, neato, osage, sfdp, twopi
     , mMode(MOVE_MODE)
 {
     resetGraph(false);
 
-    WidgetManager *widgetManager = WidgetManager::getInstance();
-    widgetManager->setGraphWidgetManager(this);
-    widgetManager->setMainWindow(mpMainWindow);
+    WidgetManager::getInstance()->setGraphWidgetManager(this);
+    WidgetManager::getInstance()->setMainWindow(mpMainWindow);
     mpMainWindow->setMinimumSize(850, 400);
     mpTabWidget->setCurrentIndex(0);
     mpMainWindow->setCentralWidget(mpTabWidget);
 
     // Handle tab changes
     connect(mpTabWidget, SIGNAL( currentChanged(int) ), SLOT( tabChanged(int)) );
-
-    //mpPropertyDialog = new PropertyDialog();
-    //widgetManager->setPropertyDialog(mpPropertyDialog);
 
     // setting up the Menus ToolBar
     ActionCommander comm(this);
@@ -102,10 +98,6 @@ GraphWidgetManager::GraphWidgetManager()
 
     editMenu->addAction(actionAddNode);
     editMenu->addSeparator();
-    //editMenu->addAction(actionDragDrop);
-    //editMenu->addAction(actionMoveAround);
-    //editMenu->addSeparator();
-    //
     editMenu->addAction(actionRenameSelection);
     editMenu->addAction(actionRemoveSelection);
     editMenu->addAction(actionAddFeature);
@@ -115,19 +107,11 @@ GraphWidgetManager::GraphWidgetManager()
     QMenu *viewMenu = new QMenu(QObject::tr("&View"));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh_white")));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle_white")));
-    //QAction *actionReloadPropertyDialog = comm.addAction("Reload Properties", SLOT(reloadPropertyDialogMainWindow()), *(IconManager::getInstance()->getIcon("reload_white")));
-
-//    QAction *actionReset  = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset_white")), mpGraphWidgetManager);
     QAction *actionSelectLayout = comm.addAction("Layout", SLOT(selectLayout()), *(IconManager::getInstance()->getIcon("layout_white")));
 
     viewMenu->addAction(actionRefresh);
     viewMenu->addAction(actionShuffle);
-    //viewMenu->addAction(actionReset);
     viewMenu->addAction(actionSelectLayout);
-    viewMenu->addSeparator();
-
-    // loading different actions in different menus
-    //viewMenu->addAction(actionReloadPropertyDialog);
 
     // loading menus in the bar
     bar->addMenu(fileMenu);

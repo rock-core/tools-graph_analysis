@@ -55,38 +55,19 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(const QString& widgetName, QWidget *parent)
+GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , mWidgetName(widgetName)
     , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
     , mFiltered(false)
-    , mTimerId(0)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
     //, mpVertexFilter(new filters::PermitAll< graph_analysis::Vertex::Ptr>( ))
     , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
     , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpGraphWidgetManager(NULL)
+    , mpGraphWidgetManager(WidgetManager::getInstance()->getGraphWidgetManager())
     , mMode(GraphWidgetManager::MOVE_MODE)
-{
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
-}
-
-GraphWidget::GraphWidget(QMainWindow *mainWindow, QWidget *parent)
-    : QGraphicsView(parent)
-    , mpGVGraph(NULL)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
-    , mFiltered(false)
-    , mTimerId(0)
-    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-    , mLayout("dot")
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>())
-    , mpEdgeFilter(new filters::EdgeContextFilter())
-    , mpGraphWidgetManager(NULL)
 {
     mGraphView.setVertexFilter(mpVertexFilter);
     mGraphView.setEdgeFilter(mpEdgeFilter);
@@ -239,19 +220,6 @@ void GraphWidget::updateLayoutView()
                 nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
             }
         }
-
-        // Edge routing not yet available
-        // {
-        //     using namespace graph_analysis::io;
-        //     std::vector<GVEdge> edges = mpGVGraph->edges();
-        //     std::vector<GVEdge>::const_iterator cit = edges.begin();
-        //     for(; cit != edges.end(); ++cit)
-        //     {
-        //         GVEdge gvEdge = *cit;
-        //         EdgeItem* edgeItem = mEdgeItemMap[ gvEdge.getEdge() ];
-        //         edgeItem->setPainterPath( gvEdge.path );
-        //     }
-        // }
     }
 }
 
@@ -294,61 +262,75 @@ void GraphWidget::gvRender(const std::string& filename)
     }
 }
 
-void GraphWidget::keyPressEvent(QKeyEvent* event)
+void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    // check for a keys combination
-    Qt::KeyboardModifiers modifiers = event->modifiers();
+    // some error checking
     if(!mpGraphWidgetManager)
     {
-        throw std::runtime_error("graph_analysis::gui::GraphWidget::keyPressEvent: GraphWidgetManager is not set for this widget");
+        throw std::runtime_error("graph_analysis::gui::GraphWidget::"
+                                 "keyPressEvent: GraphWidgetManager is not set "
+                                 "for this widget");
     }
 
-    if(modifiers & Qt::ControlModifier) // key combinations while holding 'CTRL' pressed
+    // check some key combinations which will be accepting while holding the
+    // 'ctrl' key:
+    if(event->modifiers() & Qt::ControlModifier)
     {
         switch(event->key())
         {
-            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
-            case Qt::Key_W:
-                exit(0);
-            break;
+        case Qt::Key_Q:
+        case Qt::Key_W:
+        {
+            // CTRL+Q and CTRL+W terminate the application
+            QApplication::quit();
+            // well... return? hrhr...
+            return;
+        }
 
-            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
-                getGraphWidgetManager()->resetGraph();
-            break;
+        case Qt::Key_R:
+        {
+            // CTRL+R deletes the graph (it first prompts again the user)
+            getGraphWidgetManager()->resetGraph();
+            return;
+        }
 
-            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
-            case Qt::Key_S:
-                getGraphWidgetManager()->exportGraph();
-            break;
+        case Qt::Key_E:
+        case Qt::Key_S: {
+            // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
+            getGraphWidgetManager()->exportGraph();
+            return;
+        }
 
-            case Qt::Key_A: // CTRL+A prompts the user to add a node
-//                if(!mDragDrop)
-//                {
-//                    addNodeAdhoc();
-//                }
-            break;
+        case Qt::Key_O:
+        case Qt::Key_I:
+        {
+            // CTRL+O (open) or CTRL+I (input graph)
+            getGraphWidgetManager()->importGraph();
+            return;
+        }
+        case Qt::Key_L:
+        {
+            // CTRL+L (layout graph) opens a graph from file
+            getGraphWidgetManager()->selectLayout();
+            return;
+        }
 
-            case Qt::Key_O:
-            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)
-                getGraphWidgetManager()->importGraph();
-                break;
-            case Qt::Key_L:
-                // CTRL+L (layout graph) opens a graph from file
-                getGraphWidgetManager()->selectLayout();
-                break;
-
-            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
-                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-                {
-                    WidgetManager::getInstance()->getGraphWidgetManager()->reloadPropertyDialog();
-                }
-            break;
-            case Qt::Key_CapsLock: // CTRL+CapsLock or CTRL+D toggles the active mode (drag-n-drop mode v. move-around mode)
-            case Qt::Key_D:
-                //mDragDrop ? unsetDragDrop() : setDragDrop();
-            break;
+        case Qt::Key_P:
+        {
+            // CTRL+P reloads the property dialog (if it is currently not
+            // running)
+            if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
+            {
+                WidgetManager::getInstance()
+                    ->getGraphWidgetManager()
+                    ->reloadPropertyDialog();
+                return;
+            }
+        }
         }
     }
+    // if we did not act, we shall call the handler of the base-class to
+    // propagate the event.
     QGraphicsView::keyPressEvent(event);
 }
 
@@ -456,36 +438,6 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
 void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& label)
 {
     element->setLabel(label);
-
-    //Vertex::Ptr vertex;
-    //Edge::Ptr edge;
-
-    //if(vertex = dynamic_pointer_cast<Vertex>(element))
-    //{
-    //    //NodeItem* nodeItem = mNodeItemMap[vertex];
-    //    //if(!nodeItem)
-    //    //{
-    //    //    std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided vertex '") + vertex->getLabel() + "' is not registered with the GUI";
-    //    //    LOG_ERROR_S << error_msg;
-    //    //    throw std::runtime_error(error_msg);
-    //    //}
-    //    nodeItem->setLabel(label);
-    //} else if(edge = dynamic_pointer_cast<Edge>(element))
-    //{
-    //    EdgeItem* edgeItem = mEdgeItemMap[edge];
-    //    if(!edgeItem)
-    //    {
-    //        std::string error_msg = std::string("graph_analysis::GraphWidget::renameElement: provided edge '") + edge->getLabel() + "' is not registered with the GUI";
-    //        LOG_ERROR_S << error_msg;
-    //        throw std::runtime_error(error_msg);
-    //    }
-
-    //    edgeItem->setLabel(label);
-
-    //    //graphitem::edges::EdgeLabel* edgeLabel = (graphitem::edges::EdgeLabel *) edgeItem->getLabel();
-    //    //edgeLabel->setPlainText(QString(label.c_str()));
-    //    //edge->adjustLabel();
-    //}
 }
 
 // EDIT

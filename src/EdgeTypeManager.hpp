@@ -1,11 +1,11 @@
 #ifndef GRAPH_ANALYSIS_EDGE_TYPE_MANAGER_HPP
 #define GRAPH_ANALYSIS_EDGE_TYPE_MANAGER_HPP
 
+#include <graph_analysis/Edge.hpp>
+#include <base/Singleton.hpp>
 #include <map>
 #include <set>
 #include <string>
-#include <base/Singleton.hpp>
-#include <graph_analysis/Edge.hpp>
 
 namespace graph_analysis {
 
@@ -45,8 +45,6 @@ private:
 public:
     /// constructor
     EdgeTypeManager();
-    /// destructor
-    ~EdgeTypeManager();
 
     // Register visualization class
     // takes ownership of graphicsItem

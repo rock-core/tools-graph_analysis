@@ -28,7 +28,7 @@ class ActionCommander;
  * \brief component editor graph widget implementation
  * \details maintains and displays a diagram with clusternodes, their features and the links (edges) between their ports
  */
-class ComponentEditorWidget : public LayerViewWidget
+class ComponentEditorWidget : public GraphWidget
 {
     Q_OBJECT
 public:
@@ -70,12 +70,6 @@ public:
     /// disables the given edge in the base graph
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    /// respawns all graphical elements by the underlying base graph
-    void itemMoved();
-
-    /// synchronizes out the given edge from mEdgeItemMap (i.e. deletes the edge)
-    void syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge);
-
     virtual void updateLayout();
 
 public slots:
@@ -92,19 +86,9 @@ public slots:
     void showContextMenu(const QPoint& pos);
 
 protected:
-    /// refreshes the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget; when status is false, this takes place quiently (no updates are made on the status bar)
-    //void refreshLayerViewWidget(bool status = true);
-    /// updates the (read-only) layers graph editor in the omologuous widget mpLayerViewWidget
-    //void updateLayerViewWidget();
 
-    void mouseDoubleClickEvent(QMouseEvent* event);
-    /// qt keys press callback
-    void keyPressEvent(QKeyEvent *event);
-    /// qt timer callback
-    void timerEvent(QTimerEvent *event);
     /// qt mouse wheel spin callback
     void wheelEvent(QWheelEvent *event);
-    void drawBackground(QPainter *painter, const QRectF& rect);
 
     /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);

@@ -10,10 +10,6 @@ VertexTypeManager::VertexTypeManager()
     registerType(Vertex::Ptr(new Vertex()));
 }
 
-VertexTypeManager::~VertexTypeManager()
-{
-}
-
 void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered)
 {
     assert(node.get());

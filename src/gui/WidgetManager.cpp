@@ -19,10 +19,6 @@ WidgetManager::WidgetManager()
 {
 }
 
-WidgetManager::~WidgetManager()
-{
-}
-
 void WidgetManager::setWidget(GraphWidget* widget)
 {
     if(dynamic_cast<ComponentEditorWidget*>(widget))

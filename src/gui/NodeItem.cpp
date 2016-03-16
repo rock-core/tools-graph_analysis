@@ -107,7 +107,6 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
                     edge->adjust();
                 }
             }
-            mpGraphWidget->itemMoved();
             break;
         }
         default:

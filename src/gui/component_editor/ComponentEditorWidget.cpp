@@ -52,16 +52,13 @@
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 
-// comment out to toggle-out focused node be re-doule-clicking it; leave untouched to be able to cancel node focusing by double-clicking the background
-#define CLEAR_BY_BACKGROUND
-
 using namespace graph_analysis;
 
 namespace graph_analysis {
 namespace gui {
 
 ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
-    : LayerViewWidget(parent)
+    : GraphWidget(parent)
     , mpLastFocusedNodeItem(NULL)
 {
     registerTypes();
@@ -207,211 +204,9 @@ void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
     LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
 }
 
-void ComponentEditorWidget::mouseDoubleClickEvent(QMouseEvent* event)
-{
-    QGraphicsView::mouseDoubleClickEvent(event);
-}
-
-void ComponentEditorWidget::itemMoved()
-{
-    if (!mTimerId)
-    {
-        mTimerId = startTimer(1000 / 25);
-    }
-}
-
-void ComponentEditorWidget::keyPressEvent(QKeyEvent *event)
-{
-//    // check for a keys combination
-//    Qt::KeyboardModifiers modifiers = event->modifiers();
-//
-//    if(modifiers & Qt::ControlModifier) // key combinations while holding 'CTRL' pressed
-//    {
-//        switch(event->key())
-//        {
-//            case Qt::Key_Q: // CTRL+Q and CTRL+W terminate the application
-//            case Qt::Key_W:
-//                exit(0);
-//            break;
-//
-//            case Qt::Key_Plus: // CTRL+ zooms in
-//                zoomIn();
-//            break;
-//
-//            case Qt::Key_Minus: // CTRL+- zooms out
-//                zoomOut();
-//            break;
-//
-//            case Qt::Key_R: // CTRL+R deletes the graph (it first prompts again the user)
-//                resetGraph();
-//            break;
-//
-//            case Qt::Key_E: // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
-//            case Qt::Key_S:
-//                exportGraph();
-//            break;
-//
-//            case Qt::Key_A: // CTRL+A prompts the user to add a node
-//                if(!mDragDrop)
-//                {
-//                    addNodeAdhoc();
-//                }
-//            break;
-//
-//            case Qt::Key_I: // CTRL+O (open) or CTRL+I (input graph)  or CTRL+L (load graph) opens a graph from file
-//            case Qt::Key_O:
-//            case Qt::Key_L:
-//                importGraph();
-//            break;
-//
-//            case Qt::Key_P: // CTRL+P reloads the property dialog (if it is currently not running)
-//                if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-//                {
-//                    WidgetManager::getInstance()->getGraphWidgetManager()->reloadPropertyDialog();
-//                }
-//            break;
-//
-//            case Qt::Key_Left: // CTRL+LeftArrow rotates the view counterclockwise
-//                if(!mDragDrop)
-//                {
-//                    rotate(qreal(-1.13));
-//                }
-//            break;
-//
-//            case Qt::Key_Right: // CTRL+RightArrow rotates the view clockwise
-//                if(!mDragDrop)
-//                {
-//                    rotate(qreal( 1.13));
-//                }
-//            break;
-//
-//            case Qt::Key_CapsLock: // CTRL+CapsLock or CTRL+D toggles the active mode (drag-n-drop mode v. move-around mode)
-//            case Qt::Key_D:
-//                mDragDrop ? unsetDragDrop() : setDragDrop();
-//            break;
-//        }
-//    }
-//    else if(!mDragDrop) // simple keys (move-around mode only!)
-//    {
-//        switch(event->key())
-//        {
-//        //case Qt::Key_Up:
-//        //    break;
-//        //case Qt::Key_Down:
-//        //    break;
-//        //case Qt::Key_Left:
-//        //    break;
-//        //case Qt::Key_Right:
-//        //    break;
-//        case Qt::Key_Plus: // '+' zooms-in
-//            zoomIn();
-//        break;
-//
-//        case Qt::Key_Minus: // '-' zooms-out
-//            zoomOut();
-//        break;
-//
-//        case Qt::Key_Space: // Space, newline and 'R'/'r' refresh the view
-//        case Qt::Key_Enter:
-//        case Qt::Key_R:
-//            refresh();
-//        break;
-//
-//        case Qt::Key_S: // 'S'/'s' shuffle the nodes
-//            shuffle();
-//        break;
-//
-//        case Qt::Key_L: // 'L'/'l' changes the layout
-//            changeLayout();
-//        break;
-//        }
-//    }
-//
-//    switch(event->key()) // simple keys (permanent)
-//    {
-//    case Qt::Key_Escape: // clears node and edge focus
-//        clearFocus();
-//    break;
-//    }
-
-    GraphWidget::keyPressEvent(event);
-
-}
-
-void ComponentEditorWidget::timerEvent(QTimerEvent *event)
-{
-    Q_UNUSED(event);
-
-    if(mLayout.toLower() == "force")
-    {
-        QList<NodeItem* > nodes;
-        foreach (QGraphicsItem *item, scene()->items())
-        {
-            if (NodeItem* node = qgraphicsitem_cast<NodeItem* >(item))
-            {
-                nodes << node;
-            }
-        }
-
-        foreach (NodeItem* node, nodes)
-        {
-            node->calculateForces();
-        }
-
-        bool itemsMoved = false;
-        foreach (NodeItem* node, nodes)
-        {
-            if (node->advance())
-                itemsMoved = true;
-        }
-
-        if (!itemsMoved)
-        {
-            killTimer(mTimerId);
-            mTimerId = 0;
-        }
-    }
-}
-
 void ComponentEditorWidget::wheelEvent(QWheelEvent *event)
 {
     scaleView(pow((double)2, - event->delta() / 240.0));
-}
-
-void ComponentEditorWidget::drawBackground(QPainter *painter, const QRectF& rect)
-{
-    Q_UNUSED(rect);
-    //// Shadow
-//    QRectF sceneRect = this->sceneRect();
-    //QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5, sceneRect.height());
-    //QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(), sceneRect.width(), 5);
-    //if (rightShadow.intersects(rect) || rightShadow.contains(rect))
-    //    painter->fillRect(rightShadow, Qt::darkGray);
-    //if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
-    //    painter->fillRect(bottomShadow, Qt::darkGray);
-
-    // Fill
-    //QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
-    //gradient.setColorAt(0, Qt::white);
-    //gradient.setColorAt(1, Qt::lightGray);
-    //painter->fillRect(rect.intersected(sceneRect), gradient);
-    //painter->setBrush(Qt::NoBrush);
-    //painter->drawRect(sceneRect);
-
-    //// Text
-    //QRectF textRect(sceneRect.left() + 4, sceneRect.top() + 4,
-    //                sceneRect.width() - 4, sceneRect.height() - 4);
-    //QString message(tr("Click and drag the nodes around, and zoom with the mouse "
-    //                   "wheel or the '+' and '-' keys"));
-
-    //QFont font = painter->font();
-    //font.setBold(true);
-    //font.setPointSize(14);
-    //painter->setFont(font);
-    //painter->setPen(Qt::lightGray);
-    //painter->drawText(textRect.translated(2, 2), message);
-    //painter->setPen(Qt::black);
-    //painter->drawText(textRect, message);
 }
 
 void ComponentEditorWidget::scaleView(qreal scaleFactor)
@@ -447,15 +242,6 @@ void ComponentEditorWidget::zoomIn()
 void ComponentEditorWidget::zoomOut()
 {
     scaleView(1 / qreal(1.13));
-}
-
-void ComponentEditorWidget::syncEdgeItemMap(graph_analysis::Edge::Ptr concernedEdge)
-{
-    EdgeItemMap::iterator it = mEdgeItemMap.find(concernedEdge);
-    if(mEdgeItemMap.end() != it)
-    {
-        mEdgeItemMap.erase(it);
-    }
 }
 
 void ComponentEditorWidget::updateLayout()

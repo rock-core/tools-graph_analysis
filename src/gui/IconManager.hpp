@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_GUI_ICON_MANAGER_HPP
 #define GRAPH_ANALYSIS_GUI_ICON_MANAGER_HPP
 
-#include <map>
-#include <QIcon>
-#include <string>
 #include <base/Singleton.hpp>
+#include <QIcon>
+#include <map>
+#include <string>
 
 namespace graph_analysis {
 namespace gui {
@@ -23,8 +23,6 @@ public:
 
     /// constructor
     IconManager();
-    /// destructor
-    ~IconManager();
 
     /// getter method - retrieves a qt icon registered at the given keyword in the icons map
     const QIcon* getIcon(const std::string& key);

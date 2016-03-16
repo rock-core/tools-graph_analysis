@@ -1,13 +1,10 @@
 #ifndef GRAPH_ANALYSIS_GRAPH_ELEMENT_HPP
 #define GRAPH_ANALYSIS_GRAPH_ELEMENT_HPP
 
+#include <graph_analysis/SharedPtr.hpp>
+#include <stdint.h>
 #include <vector>
 #include <map>
-#include <stdint.h>
-#include <stdexcept>
-#include <graph_analysis/SharedPtr.hpp>
-#include <iostream>
-#include <sstream>
 
 namespace graph_analysis {
 

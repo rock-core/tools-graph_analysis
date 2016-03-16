@@ -69,21 +69,6 @@ void Feature::setTextInteraction(bool on, bool selectAll)
     }
 }
 
-
-void Feature::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
-{
-    LOG_DEBUG_S << "Feature hover enter: " << mpGraphElement->toString();
-
-    //((QGraphicsItem*) parent())->hoverEnterEvent(event);
-}
-
-void Feature::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
-{
-    LOG_DEBUG_S << "Feature hover leave: " << mpGraphElement->toString();
-    //((QGraphicsItem*) parent())->hoverLeaveEvent(event);
-   // sendHoverEvent(QEvent::GraphicsSceneHoverLeave, parent, event);
-}
-
 void Feature::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 {
     if(textInteractionFlags() == Qt::TextEditorInteraction)
@@ -94,16 +79,6 @@ void Feature::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
 
     setTextInteraction(true, true);
     QGraphicsTextItem::mouseDoubleClickEvent(event);
-}
-
-void Feature::keyPressEvent(::QKeyEvent* event)
-{
-    QGraphicsTextItem::keyPressEvent(event);
-}
-
-void Feature::mouseMoveEvent(::QGraphicsSceneMouseEvent *event)
-{
-    QGraphicsTextItem::mouseMoveEvent(event);
 }
 
 void Feature::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
@@ -154,18 +129,6 @@ void Feature::dropEvent(QGraphicsSceneDragDropEvent *event)
 
 QVariant Feature::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
 {
-    //if(change == QGraphicsItem::ItemSelectedChange)
-    //{
-//  //      qDebug("itemChange '%s', selected=%s, portID = %d", this->toPlainText().toStdString().c_str(), value.toString().toStdString().c_str(), mPortID);
-    //    if(value.toBool())
-    //    {
-    //        ((NodeItem *)parentItem())->prepareChange();
-    //    }
-    //    else
-    //    {
-    //        ((NodeItem *)parentItem())->syncFeature(mPortID);
-    //    }
-    //}
     if(change == QGraphicsItem::ItemSelectedChange && textInteractionFlags() != Qt::NoTextInteraction && !value.toBool())
     {
         // item received SelectedChange event AND is in editor mode AND is about to be deselected:
@@ -179,10 +142,7 @@ void Feature::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     QRectF rect = boundingRect();
 
     painter->setPen(Qt::blue);
-    //painter->setFont(QFont("Arial", 30));
-    //painter->drawText(boundingRect(), Qt::AlignCenter, "QT");
-    painter->drawRoundedRect(rect, 10, 10); //PORT_BORDER, PORT_BORDER);
-
+    painter->drawRoundedRect(rect, 10, 10);
 
     QGraphicsTextItem::paint(painter, option, widget);
 }

@@ -36,7 +36,6 @@ public:
     /// respawns all graphical elements by the underlying base graph
     /// and trigger the layouting
     virtual void updateLayout();
-    void itemMoved();
 
 public slots:
     /// shuffles all the nodes in the layers graph view
@@ -59,13 +58,8 @@ protected:
     /// enables the provided edge (its corresponding edge scene-item gets filtered out at re-rendering)
     void disableEdge(graph_analysis::Edge::Ptr edge);
 
-    /// qt keys press callback
-    void keyPressEvent(QKeyEvent *event);
-    /// qt timer callback
-    void timerEvent(QTimerEvent *event);
     /// qt mouse wheel spin callback
     void wheelEvent(QWheelEvent *event);
-    void drawBackground(QPainter *painter, const QRectF& rect);
 
     /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);

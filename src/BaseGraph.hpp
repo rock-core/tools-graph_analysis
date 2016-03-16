@@ -1,7 +1,6 @@
 #ifndef GRAPH_ANALYSIS_BASE_GRAPH_HPP
 #define GRAPH_ANALYSIS_BASE_GRAPH_HPP
 
-#include <stdint.h>
 #include <graph_analysis/SharedPtr.hpp>
 #include <graph_analysis/EdgeIterator.hpp>
 #include <graph_analysis/VertexIterator.hpp>

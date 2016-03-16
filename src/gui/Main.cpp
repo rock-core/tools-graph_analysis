@@ -1,7 +1,7 @@
 #include "GraphWidgetManager.hpp"
 
 #include <string>
-#include <sstream>
+#include <iostream>
 #include <QApplication>
 #include <QTime>
 #include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
