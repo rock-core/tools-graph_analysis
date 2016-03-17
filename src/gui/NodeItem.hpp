@@ -33,6 +33,9 @@ class GraphWidget;
  * \class NodeItem
  * \brief graphical node representation interface
  * \details used as polymorphic base for several graphical node implementations
+ *
+ * this is used as the base-class for any "Vertex" in the basic "LayerView"
+ * widget as well as other more specilized widgets.
  */
 class NodeItem : public QGraphicsItemGroup
 {

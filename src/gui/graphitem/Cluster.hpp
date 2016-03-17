@@ -76,6 +76,10 @@ public:
 
 protected:
 
+    void myUpdate();
+
+    void mousePressEvent(QGraphicsSceneMouseEvent* event);
+
     /// qt hovering LEAVE callback
     void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event);

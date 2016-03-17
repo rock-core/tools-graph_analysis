@@ -251,7 +251,7 @@ void ComponentEditorWidget::updateLayout()
                 continue;
             }
 
-            items::Feature* feature = new items::Feature(target, this);
+            items::Feature* feature = new items::Feature(target, this, NULL);
             sourceNodeItem->addFeature(feature);
             mFeatureMap[target] = feature;
         } else

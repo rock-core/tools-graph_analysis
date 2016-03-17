@@ -46,8 +46,6 @@ public:
     virtual void adjust();
 
 protected:
-    /// claims the scene focus (i.e. when double-clicked; turns red)
-    void grabFocus();
     /// retrieves the bounding rectangular box around the area occupied by the node in the scene
     virtual QRectF boundingRect() const;
     /// retrieves the path of the bounding rectangular box around the area occupied by the node in the scene

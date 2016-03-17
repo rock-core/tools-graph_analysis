@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 find_package(Rock)
 # Required for graphviz
 add_definitions(-DHAVE_STRING_H)
+add_definitions(-Wall -g)
 #rock_activate_cxx11()
 rock_init(graph_analysis 0.2)
 rock_standard_layout()

@@ -11,7 +11,6 @@
 #include <graph_analysis/gui/items/Label.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 
-
 using namespace graph_analysis::gui::items;
 
 namespace graph_analysis {
@@ -25,7 +24,8 @@ Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     QFont mainLabelFont;
     mainLabelFont.setBold(true);
     mpLabel->setFont(mainLabelFont);
-
+    // hm, why does this have to be set here? isn't this controlled via the
+    // "EDIT", "MOVE" and "CONNECT" mode?
     setFlag(ItemIsMovable);
 }
 
@@ -45,11 +45,33 @@ QRectF Cluster::boundingRect() const
     return childrenRect;
 }
 
+void Cluster::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    LOG_INFO_S << "hER";
+    QGraphicsItem::mousePressEvent(event);
+}
+
 QPainterPath Cluster::shape() const
 {
     QPainterPath path;
     path.addRect(boundingRect());
     return path;
+}
+
+void Cluster::myUpdate()
+{
+    std::set<std::string> supportedTypes =
+        VertexTypeManager::getInstance()->getSupportedTypes();
+    std::set<std::string>::const_iterator cit = supportedTypes.begin();
+    for(; cit != supportedTypes.end(); ++cit)
+    {
+        foreach(items::Feature *feature, mFeatures)
+        {
+            if(feature->getGraphElement()->getClassName() == *cit)
+            {
+                LOG_INFO_S << feature->getGraphElement()->getLabel();
+            }
+        }
+    }
 }
 
 void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
@@ -115,25 +137,12 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
 
         addFeatureLabel = true;
     }
-
-    // Drawing of border: back to transparent background
-    painter->setPen(Qt::blue);
-    QRectF rect = boundingRect();
-
-    update(rect);
-
-    itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-    //// triggering edges to update
-    foreach(items::Feature* feature, mFeatures)
-    {
-        //// triggering edges to update
-        feature->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-    }
 }
 
 void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     mpGraphWidget->setFocusedElement(mpVertex);
+    QGraphicsItem::hoverEnterEvent(event);
 }
 
 void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
