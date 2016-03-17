@@ -93,7 +93,6 @@ rock_library(graph_analysis
         GraphAnalysis.hpp
         GraphElement.hpp
         GraphIO.hpp
-        GraphView.hpp
         NWeighted.hpp
         NWeightedEdge.hpp
         Percolation.hpp

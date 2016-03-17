@@ -4,7 +4,6 @@
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {

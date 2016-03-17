@@ -7,7 +7,6 @@
 #include <QGraphicsView>
 #include <QStackedWidget>
 #include <graph_analysis/Graph.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 

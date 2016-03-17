@@ -5,7 +5,6 @@
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>

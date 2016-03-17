@@ -3,7 +3,6 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
