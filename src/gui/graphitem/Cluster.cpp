@@ -73,6 +73,11 @@ void Cluster::myUpdate()
                        << currentEdge->getTargetVertex()->getLabel();
         }
 
+        // merke: "cluster" ist "task" != deployment
+        // deployment: beinhaltet viele cluster
+        // und: mapping von "deployment" auf "system"
+        // - kann man inseln haben, die gar nicht verbunden sind?
+
     }
 }
 
