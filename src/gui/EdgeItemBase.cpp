@@ -1,7 +1,10 @@
 #include "EdgeItemBase.hpp"
 
 #include <graph_analysis/gui/VertexItemBase.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
 #include <base/Logging.hpp>
+
+#include <cmath>
 
 #include <QDebug>
 
@@ -29,11 +32,6 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
     }
 }
 
-/* QRectF EdgeItemBase::boundingRect() const */
-/* { */
-/*     return QRectF(mSourcePoint, mTargetPoint); */
-/* } */
-
 void EdgeItemBase::adjust()
 {
     mSourcePoint =
@@ -57,20 +55,19 @@ void EdgeItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     QGraphicsItemGroup::hoverLeaveEvent(event);
 }
 
-QRectF EdgeItemBase::boundingRect() const
-{
-    return childrenBoundingRect();
-}
+QRectF EdgeItemBase::boundingRect() const { return childrenBoundingRect(); }
 
 // kiss:
 EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
                                graph_analysis::Edge::Ptr edge,
                                VertexItemBase *source, VertexItemBase *target,
                                QGraphicsItem *parent)
-    : EdgeItemBase(graphWidget, edge, source, target, parent)
+    : EdgeItemBase(graphWidget, edge, source, target, parent), mArrowSize(10)
 {
-    mLabel = new QGraphicsTextItem(QString(edge->getLabel().c_str()), this);
-    mLine = new QGraphicsLineItem(this);
+    mpLabel = new QGraphicsTextItem(QString(edge->getLabel().c_str()), this);
+    mpLine = new QGraphicsLineItem(this);
+    mpArrowHead = new QGraphicsPolygonItem(this);
+    mpArrowHead->setBrush(QBrush(Qt::black));
 
     setFlag(ItemIsMovable, false);
 
@@ -79,7 +76,9 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
 
 EdgeItemSimple::~EdgeItemSimple()
 {
-    delete mLabel;
+    delete mpLabel;
+    delete mpLine;
+    delete mpArrowHead;
 }
 
 QPointF EdgeItemSimple::getIntersectionPoint(QGraphicsItem *item) const
@@ -100,7 +99,7 @@ QPointF EdgeItemSimple::getIntersectionPoint(QGraphicsItem *item) const
         p2 = item->mapToScene(polygon.at(i));
         QLineF pLine(p1, p2);
         QLineF::IntersectType intersectType =
-            pLine.intersect(mLine->line(), &intersectionPoint);
+            pLine.intersect(mpLine->line(), &intersectionPoint);
 
         if(intersectType == QLineF::BoundedIntersection)
         {
@@ -120,31 +119,30 @@ void EdgeItemSimple::adjust()
 {
     EdgeItemBase::adjust();
 
-    mLine->setLine(QLineF(mSourcePoint, mTargetPoint));
+    mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
 
     mSourcePoint = getIntersectionPoint(mpSource);
     mTargetPoint = getIntersectionPoint(mpTarget);
 
-    mLine->setLine(QLineF(mSourcePoint, mTargetPoint));
-    mLabel->setPos(mLine->line().pointAt(0.5)-mLabel->boundingRect().center());
-}
+    mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
+    mpLabel->setPos(mpLine->line().pointAt(0.5) -
+                    mpLabel->boundingRect().center());
 
-void EdgeItemSimple::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
-{
     // draw the arrow!
-    double angle = std::acos(mLine.line().dx() / mLine.line().length());
-    if (mLine.line().dy() >= 0)
-        angle = 2*M_PI - angle;
+    double angle = std::acos(mpLine->line().dx() / mpLine->line().length());
+    if(mpLine->line().dy() >= 0)
+        angle = 2 * M_PI - angle;
 
-    QPointF targetIntersectionPoint = mLine.line().pointAt(1);
+    QPointF targetIntersectionPoint = mpLine->line().pointAt(1);
 
-    QPointF destArrowP1 = targetIntersectionPoint + QPointF(sin(angle - M_PI / 3) * mArrowSize,
-                                              cos(angle - M_PI / 3) * mArrowSize);
-    QPointF destArrowP2 = targetIntersectionPoint + QPointF(sin(angle - M_PI + M_PI / 3) * mArrowSize,
-                                              cos(angle - M_PI + M_PI / 3) * mArrowSize);
-
-    painter->setBrush(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter->drawPolygon(QPolygonF() << mLine.p2() << destArrowP1 << destArrowP2);
+    QPointF destArrowP1 =
+        targetIntersectionPoint + QPointF(sin(angle - M_PI / 3) * mArrowSize,
+                                          cos(angle - M_PI / 3) * mArrowSize);
+    QPointF destArrowP2 = targetIntersectionPoint +
+                          QPointF(sin(angle - M_PI + M_PI / 3) * mArrowSize,
+                                  cos(angle - M_PI + M_PI / 3) * mArrowSize);
+    mpArrowHead->setPolygon(QPolygonF() << mpLine->line().p2() << destArrowP1
+                                        << destArrowP2);
 }
 
 } // end namespace gui
