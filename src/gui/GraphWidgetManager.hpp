@@ -86,14 +86,8 @@ public slots:
     void refresh();
     /// triggers shuffle() in the currently displayed graph widget
     void shuffle();
-    /// triggers changeLayout() in the currently displayed graph widget
-    void selectLayout();
     /// reloads the property dialog/panel if it is not running any more
     void reloadPropertyDialogMainWindow();
-
-    void addFeature();
-    void swapFeatures();
-    void addVertex();
 
     void addGraphWidget(GraphWidget* graphWidget);
 
@@ -101,13 +95,6 @@ public slots:
 
     void importGraph();
     void exportGraph();
-
-    void setMoveMode() { setMode(MOVE_MODE); }
-    void setConnectMode() { setMode(CONNECT_MODE); }
-    void setEditMode() { setMode(EDIT_MODE); }
-
-    void setMode(Mode mode) { mMode = mode; notifyModeChange(mode); }
-    Mode getMode() const { return mMode; }
 
     /**
      * Handle tab changes

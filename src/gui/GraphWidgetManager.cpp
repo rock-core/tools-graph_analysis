@@ -71,42 +71,13 @@ GraphWidgetManager::GraphWidgetManager()
     // Edit Menu
     QMenu *editMenu = new QMenu(QObject::tr("&Edit"));
 
-    QMenu *modesMenu = editMenu->addMenu(QObject::tr("&Mode"));
-    QActionGroup *actionModeGroup = new QActionGroup(this);
-    QAction *actionEditMode = comm.addAction("Edit", SLOT(setEditMode()), *(IconManager::getInstance()->getIcon("edit_mode_white")));
-    actionEditMode->setCheckable(true);
-    QAction *actionConnectMode = comm.addAction("Connect", SLOT(setConnectMode()), *(IconManager::getInstance()->getIcon("connection_mode_white")));
-    actionConnectMode->setCheckable(true);
-    QAction *actionMoveMode = comm.addAction("Move", SLOT(setMoveMode()), *(IconManager::getInstance()->getIcon("move_mode_white")));
-    actionMoveMode->setCheckable(true);
-    actionMoveMode->setChecked(true);
-
-    actionModeGroup->addAction(actionEditMode);
-    actionModeGroup->addAction(actionConnectMode);
-    actionModeGroup->addAction(actionMoveMode);
-
-    modesMenu->addAction(actionEditMode);
-    modesMenu->addAction(actionConnectMode);
-    modesMenu->addAction(actionMoveMode);
-
-    QAction *actionAddNode = comm.addAction("Add vertex", SLOT(addVertex()), *(IconManager::getInstance()->getIcon("addNode_white")));
-    QAction *actionAddFeature     = comm.addAction("Add feature", SLOT(addFeature()), *(IconManager::getInstance()->getIcon("addFeature_white")));
-    QAction *actionSwapFeatures   = comm.addAction("Swap features", SLOT(swapFeatures()), *(IconManager::getInstance()->getIcon("swap_white")));
-
-    editMenu->addAction(actionAddNode);
-    editMenu->addSeparator();
-    editMenu->addAction(actionAddFeature);
-    editMenu->addAction(actionSwapFeatures);
-
     // View Menu
     QMenu *viewMenu = new QMenu(QObject::tr("&View"));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh_white")));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle_white")));
-    QAction *actionSelectLayout = comm.addAction("Layout", SLOT(selectLayout()), *(IconManager::getInstance()->getIcon("layout_white")));
 
     viewMenu->addAction(actionRefresh);
     viewMenu->addAction(actionShuffle);
-    viewMenu->addAction(actionSelectLayout);
 
     // loading menus in the bar
     bar->addMenu(fileMenu);
@@ -114,12 +85,6 @@ GraphWidgetManager::GraphWidgetManager()
     bar->addMenu(viewMenu);
 
     mpMainWindow->setWindowTitle(QObject::tr("Graph Analysis"));
-
-    for(int index = 0; index < mpTabWidget->count(); index++)
-    {
-        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
-        graphWidget->setGraphLayout(mLayout);
-    }
 
     mpMainWindow->show();
     updateStatus("Ready");
@@ -239,35 +204,6 @@ void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd
     ss << std::endl;
 }
 
-void GraphWidgetManager::addFeature()
-{
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->addFeatureFocused();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Add a Feature to the Focused Node"), tr("Cannot Add a Feature to the Focused Node: no node is focused on!"));
-//    }
-}
-
-void GraphWidgetManager::swapFeatures()
-{
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->swapFeaturesFocused();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Swap Features of the Focused Node"), tr("Cannot Swap Features of the Focused Node: no node is focused on!"));
-//    }
-}
-
-void GraphWidgetManager::addVertex()
-{
-    currentGraphWidget()->addVertexDialog();
-}
-
 void GraphWidgetManager::refresh()
 {
     LOG_DEBUG_S << "Refresh current widget: " << currentGraphWidget()->getClassName().toStdString();
@@ -278,12 +214,6 @@ void GraphWidgetManager::shuffle()
 {
     LOG_DEBUG_S << "Shuffle current widget: " << currentGraphWidget()->getClassName().toStdString();
     currentGraphWidget()->shuffle();
-}
-
-void GraphWidgetManager::selectLayout()
-{
-    GraphWidget* widget = currentGraphWidget();
-    widget->selectLayoutDialog();
 }
 
 void GraphWidgetManager::reloadPropertyDialogMainWindow()
@@ -441,21 +371,12 @@ void GraphWidgetManager::fromFile(const std::string& filename)
     notifyAll();
 }
 
-void GraphWidgetManager::notifyModeChange(Mode mode)
-{
-    for(int index = 0; index < mpTabWidget->count(); index++)
-    {
-        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
-        graphWidget->modeChanged(mode);
-    }
-}
-
 void GraphWidgetManager::notifyAll()
 {
     for(int index = 0; index < mpTabWidget->count(); index++)
     {
-        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
-        graphWidget->setGraphLayout(mLayout);
+        GraphWidget *graphWidget =
+            dynamic_cast<GraphWidget *>(mpTabWidget->widget(index));
         graphWidget->refresh(false);
     }
 }

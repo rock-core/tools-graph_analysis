@@ -40,16 +40,6 @@ public:
     /// setter for the main window of the qt application
     void setMainWindow(QMainWindow *mainWindow);
 
-    /// getter for the diagram editor widget GUI component
-    ComponentEditorWidget* getComponentEditorWidget(void);
-    /// setter for the diagram editor widget GUI component
-    void setComponentEditorWidget(ComponentEditorWidget *viewWidget);
-
-    /// getter for the layers viewer widget GUI component
-    LayerViewWidget* getLayerViewWidget(void);
-    /// setter for the layers viewer widget GUI component
-    void setLayerViewWidget(LayerViewWidget *layerWidget);
-
     /// getter for the property dialog (a.k.a. command panel) dockable GUI component
     dialogs::PropertyDialog* getPropertyDialog(void);
     /// setter for the property dialog (a.k.a. command panel) dockable GUI component
@@ -63,10 +53,6 @@ private:
     GraphWidgetManager *mpGraphWidgetManager;
     /// main window of the qt application
     QMainWindow *mpMainWindow;
-    /// the diagram editor widget GUI component
-    ComponentEditorWidget *mpComponentEditorWidget;
-    /// the layers viewer widget GUI component
-    LayerViewWidget *mpLayerViewWidget;
     /// the property dialog (a.k.a. command panel) dockable GUI component
     dialogs::PropertyDialog *mpPropertyDialog;
 };

@@ -45,15 +45,15 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
         {
             // FIXME: this is slightly inefficient... better would be to
             // "adjust()" only the edges connected to this Node
-            GraphWidget::EdgeItemMap::const_iterator it = mpGraphWidget->edgeItemMap().begin();
-            for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
-            {
-                EdgeItem* edge = it->second;
-                if(edge)
-                {
-                    edge->adjust();
-                }
-            }
+            /* GraphWidget::EdgeItemMap::const_iterator it = mpGraphWidget->edgeItemMap().begin(); */
+            /* for(; it != mpGraphWidget->edgeItemMap().end(); ++it) */
+            /* { */
+            /*     EdgeItem* edge = it->second; */
+            /*     if(edge) */
+            /*     { */
+            /*         edge->adjust(); */
+            /*     } */
+            /* } */
             break;
         }
         default:

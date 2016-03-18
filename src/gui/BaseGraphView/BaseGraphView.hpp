@@ -33,11 +33,6 @@ class BaseGraphView : public GraphWidget
 
     QString getClassName() const;
 
-    typedef std::map<graph_analysis::Edge::Ptr, EdgeItemBase*> MyEdgeItemMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, VertexItemBase*> MyVertexItemMap;
-    MyEdgeItemMap e_map;
-    MyVertexItemMap v_map;
-
     void adjustEdgesOf(VertexItemBase* vertex);
 
     /**

@@ -16,7 +16,6 @@ namespace gui {
 NodeItemTypeManager::NodeItemTypeManager()
 {
     registerVisualization("default", dynamic_cast<NodeItem*>(new graphitem::Cluster()));
-    registerVisualization(layeritem::Resource::sType, dynamic_cast<NodeItem*>(new layeritem::Resource())); // layering graphical node instance
 }
 
 NodeItemTypeManager::~NodeItemTypeManager()

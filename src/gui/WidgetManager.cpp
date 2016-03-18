@@ -1,7 +1,5 @@
 #include "WidgetManager.hpp"
 #include "GraphWidgetManager.hpp"
-#include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
-#include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
 #include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
 
 #include <exception>
@@ -13,23 +11,13 @@ namespace gui {
 WidgetManager::WidgetManager()
     : mpGraphWidgetManager(NULL)
     , mpMainWindow(NULL)
-    , mpComponentEditorWidget(NULL)
-    , mpLayerViewWidget(NULL)
     , mpPropertyDialog(NULL)
 {
 }
 
 void WidgetManager::setWidget(GraphWidget* widget)
 {
-    if(dynamic_cast<ComponentEditorWidget*>(widget))
-    {
-        setComponentEditorWidget(dynamic_cast<ComponentEditorWidget*>(widget));
-    } else if (dynamic_cast<LayerViewWidget*>(widget))
-    {
-        setLayerViewWidget(dynamic_cast<LayerViewWidget*>(widget));
-    } else {
-        throw std::invalid_argument("graph_analyis::gui::WidgetManager::setWidget: unsupported widget type");
-    }
+    throw std::invalid_argument("graph_analyis::gui::WidgetManager::setWidget: unsupported widget type");
 }
 
 GraphWidgetManager* WidgetManager::getGraphWidgetManager(void)
@@ -62,35 +50,6 @@ void WidgetManager::setMainWindow(QMainWindow *mainWindow)
     mpMainWindow = mainWindow;
 }
 
-ComponentEditorWidget* WidgetManager::getComponentEditorWidget(void)
-{
-    if(!mpComponentEditorWidget)
-    {
-        std::string error_msg("graph_analysis::gui::WidgetManager::getComponentEditorWidget: mpComponentEditorWidget has not been initialized!");
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    return mpComponentEditorWidget;
-}
-void WidgetManager::setComponentEditorWidget(ComponentEditorWidget *viewWidget)
-{
-    mpComponentEditorWidget = viewWidget;
-}
-
-LayerViewWidget* WidgetManager::getLayerViewWidget(void)
-{
-    if(!mpLayerViewWidget)
-    {
-        std::string error_msg("graph_analysis::gui::WidgetManager::getLayerViewWidget: mpLayerViewWidget has not been initialized!");
-        LOG_ERROR_S << error_msg;
-        throw std::runtime_error(error_msg);
-    }
-    return mpLayerViewWidget;
-}
-void WidgetManager::setLayerViewWidget(LayerViewWidget *layerWidget)
-{
-    mpLayerViewWidget = layerWidget;
-}
 
 dialogs::PropertyDialog* WidgetManager::getPropertyDialog(void)
 {

@@ -403,8 +403,8 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     mpVerticalLayoutComponentsLayer->setContentsMargins(0, PADDING, 0, PADDING);
 
     // the 2 handles are to be needed throughout the rest of this method
-    LayerViewWidget *layerWidget = WidgetManager::getInstance() -> getLayerViewWidget();
-    ComponentEditorWidget  * viewWidget = WidgetManager::getInstance() -> getComponentEditorWidget();
+    LayerViewWidget *layerWidget = NULL;
+    ComponentEditorWidget  * viewWidget = NULL;
 
     // right hand-side in the layers view tab; filtering specific commands
     int verticalLayoutComponentsLayerLeftover;

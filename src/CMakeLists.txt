@@ -44,13 +44,6 @@ rock_library(graph_analysis
         gui/NodeItem.cpp
         gui/NodeItemTypeManager.cpp
         gui/WidgetManager.cpp
-        gui/component_editor/Cluster.cpp
-        gui/component_editor/ComponentEditorWidget.cpp
-        gui/component_editor/InputPort.cpp
-        gui/component_editor/Operation.cpp
-        gui/component_editor/OutputPort.cpp
-        gui/component_editor/Port.cpp
-        gui/component_editor/Property.cpp
         gui/dialogs/AddFilterDialog.cpp
         gui/dialogs/AddGraphElement.cpp
         gui/dialogs/CustomDialog.cpp
@@ -65,9 +58,6 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.cpp
         gui/items/Feature.cpp
         gui/items/Label.cpp
-        gui/layer_view/LayerViewWidget.cpp
-        gui/layeritem/Resource.cpp
-        gui/layeritem/edges/Simple.cpp
         gui/BaseGraphView/BaseGraphView.cpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
         gui/ComponentGraphEditor/ComponentItem.cpp
@@ -147,13 +137,6 @@ rock_library(graph_analysis
         gui/NodeItem.hpp
         gui/NodeItemTypeManager.hpp
         gui/WidgetManager.hpp
-        gui/component_editor/Cluster.hpp
-        gui/component_editor/ComponentEditorWidget.hpp
-        gui/component_editor/InputPort.hpp
-        gui/component_editor/Operation.hpp
-        gui/component_editor/OutputPort.hpp
-        gui/component_editor/Port.hpp
-        gui/component_editor/Property.hpp
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
         gui/dialogs/CustomDialog.hpp
@@ -168,9 +151,6 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.hpp
         gui/items/Feature.hpp
         gui/items/Label.hpp
-        gui/layer_view/LayerViewWidget.hpp
-        gui/layeritem/Resource.hpp
-        gui/layeritem/edges/Simple.hpp
         gui/BaseGraphView/BaseGraphView.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.hpp
         gui/ComponentGraphEditor/ComponentItem.hpp
@@ -206,7 +186,6 @@ rock_library(graph_analysis
         gui/FilterManager.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
-        gui/component_editor/ComponentEditorWidget.hpp
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
         gui/dialogs/ExportFile.hpp
@@ -215,7 +194,6 @@ rock_library(graph_analysis
         gui/dialogs/RenameFilterDialog.hpp
         gui/dialogs/SwapFeaturesDialog.hpp
         gui/dialogs/SwapFiltersDialog.hpp
-        gui/layer_view/LayerViewWidget.hpp
         gui/BaseGraphView/BaseGraphView.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
     DEPS_PKGCONFIG QtGui
