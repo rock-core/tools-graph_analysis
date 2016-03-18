@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_GUI_BASEGRAPHVIEW_HPP
 #define GRAPH_ANALYSIS_GUI_BASEGRAPHVIEW_HPP
 
-#include <QGraphicsView>
-#include <graph_analysis/Graph.hpp>
-#include <graph_analysis/Filter.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
+
+#include <graph_analysis/gui/VertexItemBase.hpp>
+#include <graph_analysis/gui/EdgeItemBase.hpp>
 
 namespace graph_analysis
 {
@@ -29,20 +29,26 @@ class BaseGraphView : public GraphWidget
      * \param graph underlying base graph
      */
     BaseGraphView(QWidget *parent = NULL);
-    /// destructor
     virtual ~BaseGraphView();
 
     QString getClassName() const;
 
-    /// deletes all internal information; disregards keepData as the underlying
-    /// base graph is treated as read-only (except by its dedicated setter
-    /// method)
-    /// respawns all graphical elements by the underlying base graph
-    /// and trigger the layouting
+    typedef std::map<graph_analysis::Edge::Ptr, EdgeItemBase*> MyEdgeItemMap;
+    typedef std::map<graph_analysis::Vertex::Ptr, VertexItemBase*> MyVertexItemMap;
+    MyEdgeItemMap e_map;
+    MyVertexItemMap v_map;
+
+    void adjustEdgesOf(VertexItemBase* vertex);
+
+    /**
+     * deletes all internal information and rebuilds the visualization
+     * according to the current BaseGraph. Respawns all graphical elements by
+     * the underlying base graph and trigger the layouting
+     */
     virtual void updateLayout();
 
   public slots:
-    /// shuffles all the nodes in the layers graph view
+    /** shuffles all the nodes in the layers graph view */
     void shuffle();
 
   protected:

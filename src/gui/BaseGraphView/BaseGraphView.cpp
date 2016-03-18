@@ -30,6 +30,8 @@
 #include <graph_analysis/gui/NodeItemTypeManager.hpp>
 #include <graph_analysis/gui/EdgeItemTypeManager.hpp>
 
+#include <graph_analysis/gui/VertexItemBase.hpp>
+
 using namespace graph_analysis;
 
 namespace graph_analysis
@@ -59,12 +61,12 @@ void BaseGraphView::updateLayout()
     {
         Vertex::Ptr vertex = nodeIt->current();
 
-        // Registering new node items
-        NodeItem *nodeItem = NodeItemTypeManager::getInstance()->createItem(
-            this, vertex, layeritem::Resource::sType);
-        mNodeItemMap[vertex] = nodeItem;
-        scene()->addItem(nodeItem);
+        // creating new node items
+        VertexItemSimple* v = new VertexItemSimple(this, vertex, NULL) ;
+        scene()->addItem(v);
+        v_map[vertex] = v;
 
+        // this? dunno!
         mpLayoutingGraph->addVertex(vertex);
         mpGVGraph->addNode(vertex);
     }
@@ -74,25 +76,28 @@ void BaseGraphView::updateLayout()
     {
         Edge::Ptr edge = edgeIt->current();
 
-        Vertex::Ptr source = edge->getSourceVertex();
-        Vertex::Ptr target = edge->getTargetVertex();
+        VertexItemBase *sourceItem = v_map[edge->getSourceVertex()];
+        VertexItemBase *targetItem = v_map[edge->getTargetVertex()];
 
-        NodeItem *sourceNodeItem = mNodeItemMap[source];
-        NodeItem *targetNodeItem = mNodeItemMap[target];
+        // creating new edge items
+        EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;
+        scene()->addItem(e);
+        e_map[edge] = e;
 
-        if(!sourceNodeItem || !targetNodeItem)
-        {
-            continue;
-        }
-
-        EdgeItem *edgeItem = EdgeItemTypeManager::getInstance()->createItem(
-            this, sourceNodeItem, targetNodeItem, edge, LAYER_EDGE_TYPE);
-        mEdgeItemMap[edge] = edgeItem;
-
-        scene()->addItem(edgeItem);
+        scene()->addItem(e);
 
         mpLayoutingGraph->addEdge(edge);
         mpGVGraph->addEdge(edge);
+    }
+    shuffle();
+}
+
+void BaseGraphView::adjustEdgesOf(VertexItemBase *vertexItem) {
+
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(vertexItem->getVertex());
+    while(edgeIt->next())
+    {
+        e_map[edgeIt->current()]->adjust();
     }
 }
 
@@ -100,7 +105,7 @@ void BaseGraphView::shuffle()
 {
     foreach(QGraphicsItem *item, scene()->items())
     {
-        if(qgraphicsitem_cast<NodeItem *>(item))
+        if(dynamic_cast<VertexItemBase *>(item))
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }
     updateStatus(

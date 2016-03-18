@@ -7,6 +7,7 @@
 
 #include <base/Logging.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
+#include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -25,6 +26,11 @@ VertexItemBase::VertexItemBase(GraphWidget *graphWidget,
     setCacheMode(DeviceCoordinateCache);
 }
 
+QRectF VertexItemBase::boundingRect() const
+{
+    return childrenBoundingRect();
+}
+
 void VertexItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     // Set the underlaying vertex as focused element
@@ -36,6 +42,59 @@ void VertexItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     mpGraphWidget->clearFocus();
     QGraphicsItemGroup::hoverLeaveEvent(event);
+}
+
+QVariant VertexItemBase::itemChange(GraphicsItemChange change, const QVariant& value)
+{
+    switch (change)
+    {
+        case ItemPositionHasChanged:
+        {
+            //FIXME: proper API
+            dynamic_cast<BaseGraphView *>(mpGraphWidget)->adjustEdgesOf(this);
+            break;
+        }
+        default:
+            break;
+    };
+    return QGraphicsItem::itemChange(change, value);
+}
+
+
+
+
+// kiss:
+VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
+                                   graph_analysis::Vertex::Ptr vertex,
+                                   QGraphicsItem *parent)
+    : VertexItemBase(graphWidget, vertex, parent)
+{
+    mLabel = new QGraphicsTextItem(QString(vertex->getLabel().c_str()), this);
+    QFont font = mLabel->font();
+    font.setBold(true);
+    mLabel->setFont(font);
+
+    mClassName = new QGraphicsTextItem(
+        QString(vertex->GraphElement::getClassName().c_str()), this);
+    mClassName->setPos(mLabel->pos() +
+                       QPoint(0, mLabel->boundingRect().height()));
+    mClassName->setDefaultTextColor(Qt::gray);
+
+    setFlag(ItemIsMovable);
+}
+
+VertexItemSimple::~VertexItemSimple()
+{
+    delete mLabel;
+    delete mClassName;
+}
+
+void VertexItemSimple::paint(QPainter *painter,
+                             const QStyleOptionGraphicsItem *option, QWidget *)
+{
+    // drawing of border
+    painter->setPen(QPen(Qt::blue));
+    painter->drawRect(boundingRect());
 }
 
 } // end namespace gui

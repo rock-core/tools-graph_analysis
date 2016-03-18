@@ -11,6 +11,9 @@ enum GraphicsItemTypes {
     EdgeItemType,
     FeatureItemType,
     VertexItemBaseType,
+    VertexItemSimpleType,
+    EdgeItemBaseType,
+    EdgeItemSimpleType,
 };
 }
 }

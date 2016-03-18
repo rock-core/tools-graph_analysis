@@ -21,7 +21,7 @@ class GraphWidget;
  */
 class VertexItemBase : public QGraphicsItemGroup
 {
-  protected:
+  public:
     /**
      * \brief constructor
      * \param graphWidget the parent and managing graph widget
@@ -31,14 +31,12 @@ class VertexItemBase : public QGraphicsItemGroup
     VertexItemBase(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex,
                    QGraphicsItem *parent);
 
-  public:
-    /// empty constructor
-    VertexItemBase() {}
-
     /// destructor
     virtual ~VertexItemBase(){};
 
     virtual int type() const { return VertexItemBaseType; };
+
+    virtual QRectF boundingRect() const;
 
     /// getter method for retrieving the underlying conceptual graph vertex
     graph_analysis::Vertex::Ptr getVertex() const { return mpVertex; }
@@ -47,17 +45,37 @@ class VertexItemBase : public QGraphicsItemGroup
     /// getter method for retrieving the parent managing graph widget
     GraphWidget *getGraphWidget() const { return mpGraphWidget; }
 
+    QVariant itemChange(GraphicsItemChange change, const QVariant& value);
+
   protected:
     /// underlying graph vertex pointer
     graph_analysis::Vertex::Ptr mpVertex;
 
-    /// parent managing graph widget
+    /// parent managing graph widget. this should be reachable via "scene()"?
     GraphWidget *mpGraphWidget;
 
     // unsure...
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 
+};
+
+/* simplest possible implementation: just a box with two strings -- type and
+ * label */
+class VertexItemSimple : public VertexItemBase
+{
+  public:
+    VertexItemSimple(GraphWidget *graphWidget,
+                     graph_analysis::Vertex::Ptr vertex, QGraphicsItem *parent);
+    ~VertexItemSimple();
+    virtual int type() const { return VertexItemSimpleType; };
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *);
+
+  private:
+    QGraphicsTextItem *mLabel;
+    QGraphicsTextItem *mClassName;
 };
 
 } // end namespace gui
