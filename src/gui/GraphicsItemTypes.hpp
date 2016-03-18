@@ -15,6 +15,8 @@ enum GraphicsItemTypes {
     EdgeItemBaseType,
     EdgeItemSimpleType,
     ComponentItemType,
+    OutputPortItemType,
+    InputPortItemType,
 };
 }
 }

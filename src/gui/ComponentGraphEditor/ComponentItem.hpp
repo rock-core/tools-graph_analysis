@@ -21,7 +21,7 @@ class ComponentItem : public VertexItemBase
 {
   public:
     ComponentItem(GraphWidget *graphWidget,
-                     graph_analysis::Vertex::Ptr vertex, QGraphicsItem *parent);
+                  graph_analysis::Component::Ptr vertex, QGraphicsItem *parent);
     ~ComponentItem();
     virtual int type() const { return ComponentItemType; };
 

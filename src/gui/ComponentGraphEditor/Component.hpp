@@ -2,6 +2,10 @@
 #define GRAPH_ANALYSIS_COMPONENT_HPP
 
 #include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/Graph.hpp>
+
+#include <graph_analysis/gui/ComponentGraphEditor/OutputPort.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/InputPort.hpp>
 
 namespace graph_analysis
 {
@@ -15,6 +19,8 @@ namespace graph_analysis
 class Component : public Vertex
 {
   public:
+    typedef shared_ptr< Component > Ptr;
+
     Component(const std::string &label = "");
     /** Get class name
      * \return class name
@@ -22,6 +28,9 @@ class Component : public Vertex
     std::string getClassName() const    { return Component::vertexType(); }
 
     static std::string vertexType() { return "graph_analysis::Component"; }
+
+    std::vector<OutputPort::Ptr> getOutputPorts(const BaseGraph::Ptr &graph) const;
+    std::vector<InputPort::Ptr> getInputPorts(const BaseGraph::Ptr &graph) const;
 
   protected:
     /**

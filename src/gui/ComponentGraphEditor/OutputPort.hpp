@@ -4,7 +4,6 @@
 #include "Port.hpp"
 
 namespace graph_analysis {
-namespace gui {
 
 /**
  * \brief An OutputPort vertex inherited to allow storing data of output Port type
@@ -14,11 +13,12 @@ namespace gui {
 class OutputPort : public Port
 {
 public:
+    typedef shared_ptr< OutputPort > Ptr;
     OutputPort(const std::string& label = "");
     /** Get class name
      * \return class name
      */
-    virtual std::string getClassName() const { return "graph_analysis::OutputPort"; }
+    virtual std::string getClassName() const { return vertexType(); }
 
     /** Get class type
      * \return class type
@@ -33,6 +33,5 @@ protected:
 
 };
 
-} // end namespace gui
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_OUTPUTPORT_HPP

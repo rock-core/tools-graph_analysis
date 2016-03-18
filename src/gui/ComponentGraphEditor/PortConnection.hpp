@@ -6,7 +6,6 @@
 #include "OutputPort.hpp"
 
 namespace graph_analysis {
-namespace gui {
 
 class PortConnection : public Edge
 {
@@ -32,6 +31,5 @@ protected:
     virtual PortConnection* getClone() const { return new PortConnection(*this); }
 };
 
-} // end namespace gui
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_GUI_COMPONENT_EDITOR_PORT_CONNECTION_HPP

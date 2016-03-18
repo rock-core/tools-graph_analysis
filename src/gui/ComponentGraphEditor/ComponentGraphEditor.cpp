@@ -30,6 +30,7 @@
 
 #include <graph_analysis/gui/ComponentGraphEditor/ComponentItem.hpp>
 #include <graph_analysis/gui/ComponentGraphEditor/PortConnection.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/HasFeature.hpp>
 
 using namespace graph_analysis;
 
@@ -40,11 +41,14 @@ namespace gui
 
 ComponentGraphEditor::ComponentGraphEditor(QWidget *parent) : GraphWidget(parent)
 {
+
     VertexTypeManager* vertexManager = VertexTypeManager::getInstance();
     vertexManager->registerType(Component::vertexType(), Vertex::Ptr(new Component()));
     vertexManager->registerType(InputPort::vertexType(), Vertex::Ptr(new InputPort()));
     vertexManager->registerType(OutputPort::vertexType(), Vertex::Ptr(new OutputPort()));
+
     EdgeTypeManager* edgeManager = EdgeTypeManager::getInstance();
+    edgeManager->registerType(HasFeature::edgeType(), Edge::Ptr(new HasFeature()));
     edgeManager->registerType(PortConnection::edgeType(), Edge::Ptr(new PortConnection()));
 }
 
@@ -53,6 +57,19 @@ ComponentGraphEditor::~ComponentGraphEditor() {}
 QString ComponentGraphEditor::getClassName() const
 {
     return "graph_analysis::gui::ComponentGraphEditor";
+}
+
+void ComponentGraphEditor::shuffle()
+{
+    int diff = 600;
+    foreach(QGraphicsItem *item, scene()->items())
+    {
+        if(dynamic_cast<ComponentItem *>(item)) {
+            item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
+        }
+    }
+    updateStatus(
+        "Shuffelled all nodes representing a 'Vertex' of the ComponentGraphEditor");
 }
 
 void ComponentGraphEditor::updateLayout()

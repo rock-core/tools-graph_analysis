@@ -46,6 +46,9 @@ class ComponentGraphEditor : public GraphWidget
      * the underlying base graph and trigger the layouting
      */
     virtual void updateLayout();
+
+public slots:
+    virtual void shuffle();
 };
 
 } // end namespace gui

@@ -156,6 +156,7 @@ void GraphWidget::updateLayoutView()
     }
 }
 
+// remove this implemntation?
 void GraphWidget::shuffle()
 {
     int diff = 600;
@@ -166,7 +167,7 @@ void GraphWidget::shuffle()
         }
     }
     updateStatus(
-        "Shuffelled all nodes representing a 'Vertex' of the ComponentGraphEditor");
+        "Shuffelled all nodes representing a 'Vertex' of basic GraphWidget");
 }
 
 void GraphWidget::refresh(bool all)

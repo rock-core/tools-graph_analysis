@@ -5,7 +5,6 @@
 #include <graph_analysis/Vertex.hpp>
 
 namespace graph_analysis {
-namespace gui {
 
 /**
  * \brief A Port vertex inherited to allow storing data of Port type
@@ -15,14 +14,12 @@ namespace gui {
 class Port : public Vertex
 {
 public:
-    /// invalid port id constant
-    static const int INVALID_PORT_ID;
-
-    Port(const std::string& label = std::string());
+    typedef shared_ptr< Port > Ptr;
+    Port(const std::string& label = "");
     /** Get class name
      * \return class name
      */
-    virtual std::string getClassName() const { return "graph_analysis::Port"; }
+    virtual std::string getClassName() const { return vertexType(); }
 
     /** Get class type
      * \return class type
@@ -37,6 +34,5 @@ protected:
 
 };
 
-} // end namespace gui
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_PORT_HPP

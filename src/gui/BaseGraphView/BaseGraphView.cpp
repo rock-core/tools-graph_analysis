@@ -52,11 +52,13 @@ QString BaseGraphView::getClassName() const
 
 void BaseGraphView::updateLayout()
 {
-
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
+        if (!vertex.get()) {
+            LOG_ERROR_S << "hua";
+        }
 
         // creating new node items
         VertexItemSimple* v = new VertexItemSimple(this, vertex, NULL) ;

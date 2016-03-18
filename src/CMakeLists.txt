@@ -60,6 +60,8 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.cpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
         gui/ComponentGraphEditor/ComponentItem.cpp
+        gui/ComponentGraphEditor/OutputPortItem.cpp
+        gui/ComponentGraphEditor/InputPortItem.cpp
         gui/ComponentGraphEditor/Component.cpp
         gui/ComponentGraphEditor/Port.cpp
         gui/ComponentGraphEditor/InputPort.cpp
@@ -155,6 +157,8 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.hpp
         gui/ComponentGraphEditor/ComponentItem.hpp
+        gui/ComponentGraphEditor/OutputPortItem.hpp
+        gui/ComponentGraphEditor/InputPortItem.hpp
         gui/ComponentGraphEditor/Port.hpp
         gui/ComponentGraphEditor/InputPort.hpp
         gui/ComponentGraphEditor/OutputPort.hpp

@@ -37,11 +37,14 @@ void OrogenModelReader::read(const std::string &filename,
     graph->addVertex(comp);
 
     // now add the ports to the respective clusters via "hasFeature" label
-    Edge::Ptr edge1 = eManager->createEdge("graph_analysis::Edge", vertex1, vertex3, "hasFeature");
-    Edge::Ptr edge2 = eManager->createEdge("graph_analysis::Edge", vertex2, vertex5, "hasFeature");
-    Edge::Ptr edge3 = eManager->createEdge("graph_analysis::Edge", vertex2, vertex4, "hasFeature");
-    Edge::Ptr edge4 = eManager->createEdge("graph_analysis::PortConnection", vertex3, vertex4,
-                                           "some-connection");
+    Edge::Ptr edge1 = eManager->createEdge("graph_analysis::HasFeature",
+                                           vertex1, vertex3, "has");
+    Edge::Ptr edge2 = eManager->createEdge("graph_analysis::HasFeature",
+                                           vertex2, vertex5, "has");
+    Edge::Ptr edge3 = eManager->createEdge("graph_analysis::HasFeature",
+                                           vertex2, vertex4, "has");
+    Edge::Ptr edge4 = eManager->createEdge("graph_analysis::PortConnection",
+                                           vertex3, vertex4, "some-connection");
     graph->addEdge(edge1);
     graph->addEdge(edge2);
     graph->addEdge(edge3);
