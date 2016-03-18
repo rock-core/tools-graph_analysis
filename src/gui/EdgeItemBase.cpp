@@ -57,6 +57,14 @@ void EdgeItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 QRectF EdgeItemBase::boundingRect() const { return childrenBoundingRect(); }
 
+QPainterPath EdgeItemSimple::shape() const
+{
+    QPainterPath path;
+    path = mpLine->shape() + mpArrowHead->shape() + mpLabel->shape() +
+           mpClassName->shape();
+    return path;
+}
+
 // kiss:
 EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
                                graph_analysis::Edge::Ptr edge,
@@ -65,6 +73,8 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
     : EdgeItemBase(graphWidget, edge, source, target, parent), mArrowSize(10)
 {
     mpLabel = new QGraphicsTextItem(QString(edge->getLabel().c_str()), this);
+    mpClassName = new QGraphicsTextItem(QString(edge->getClassName().c_str()), this);
+    mpClassName->setDefaultTextColor(Qt::gray);
     mpLine = new QGraphicsLineItem(this);
     mpArrowHead = new QGraphicsPolygonItem(this);
     mpArrowHead->setBrush(QBrush(Qt::black));
@@ -77,6 +87,7 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
 EdgeItemSimple::~EdgeItemSimple()
 {
     delete mpLabel;
+    delete mpClassName;
     delete mpLine;
     delete mpArrowHead;
 }
@@ -127,6 +138,8 @@ void EdgeItemSimple::adjust()
     mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
     mpLabel->setPos(mpLine->line().pointAt(0.5) -
                     mpLabel->boundingRect().center());
+    mpClassName->setPos(mpLabel->pos() +
+                    QPointF(0, mpLabel->boundingRect().height()));
 
     // draw the arrow!
     double angle = std::acos(mpLine->line().dx() / mpLine->line().length());

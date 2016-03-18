@@ -69,24 +69,24 @@ VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
                                    QGraphicsItem *parent)
     : VertexItemBase(graphWidget, vertex, parent)
 {
-    mLabel = new QGraphicsTextItem(QString(vertex->getLabel().c_str()), this);
-    QFont font = mLabel->font();
+    mpLabel = new QGraphicsTextItem(QString(vertex->getLabel().c_str()), this);
+    QFont font = mpLabel->font();
     font.setBold(true);
-    mLabel->setFont(font);
+    mpLabel->setFont(font);
 
-    mClassName = new QGraphicsTextItem(
+    mpClassName = new QGraphicsTextItem(
         QString(vertex->GraphElement::getClassName().c_str()), this);
-    mClassName->setPos(mLabel->pos() +
-                       QPoint(0, mLabel->boundingRect().height()));
-    mClassName->setDefaultTextColor(Qt::gray);
+    mpClassName->setPos(mpLabel->pos() +
+                       QPoint(0, mpLabel->boundingRect().height()));
+    mpClassName->setDefaultTextColor(Qt::gray);
 
     setFlag(ItemIsMovable);
 }
 
 VertexItemSimple::~VertexItemSimple()
 {
-    delete mLabel;
-    delete mClassName;
+    delete mpLabel;
+    delete mpClassName;
 }
 
 void VertexItemSimple::paint(QPainter *painter,

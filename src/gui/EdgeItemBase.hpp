@@ -40,6 +40,8 @@ class EdgeItemBase : public QGraphicsItemGroup
 
     virtual void adjust();
 
+    virtual QRectF boundingRect() const;
+
     /// getter method for retrieving the underlying conceptual graph edge
     graph_analysis::Edge::Ptr getEdge() const { return mpEdge; }
     /// setter method for updating the underlying conceptual graph edge
@@ -77,11 +79,14 @@ class EdgeItemSimple : public EdgeItemBase
 
     void adjust();
 
+    virtual QPainterPath shape() const;
+
   private:
     QPointF getIntersectionPoint(QGraphicsItem *item) const;
 
     int mArrowSize;
     QGraphicsTextItem *mpLabel;
+    QGraphicsTextItem *mpClassName;
     QGraphicsLineItem *mpLine;
     QGraphicsPolygonItem *mpArrowHead;
 };

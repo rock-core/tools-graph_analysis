@@ -103,10 +103,11 @@ void BaseGraphView::adjustEdgesOf(VertexItemBase *vertexItem) {
 
 void BaseGraphView::shuffle()
 {
+    int diff = 600;
     foreach(QGraphicsItem *item, scene()->items())
     {
         if(dynamic_cast<VertexItemBase *>(item))
-            item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
+            item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
     }
     updateStatus(
         "Shuffelled all nodes representing a 'Vertex' of the BaseGraphView");

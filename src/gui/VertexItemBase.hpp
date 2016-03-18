@@ -74,8 +74,8 @@ class VertexItemSimple : public VertexItemBase
                QWidget *);
 
   private:
-    QGraphicsTextItem *mLabel;
-    QGraphicsTextItem *mClassName;
+    QGraphicsTextItem *mpLabel;
+    QGraphicsTextItem *mpClassName;
 };
 
 } // end namespace gui
