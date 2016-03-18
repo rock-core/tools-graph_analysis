@@ -123,7 +123,6 @@ rock_library(graph_analysis
         filters/EdgeContextFilter.hpp
         filters/RegexFilters.hpp
         gui/ActionCommander.hpp
-        gui/EdgeGetter.hpp
         gui/EdgeItem.hpp
         gui/EdgeItemTypeManager.hpp
         gui/FilterItem.hpp
@@ -133,7 +132,6 @@ rock_library(graph_analysis
         gui/IconManager.hpp
         gui/NodeItem.hpp
         gui/NodeItemTypeManager.hpp
-        gui/VertexGetter.hpp
         gui/WidgetManager.hpp
         gui/component_editor/Cluster.hpp
         gui/component_editor/ComponentEditorWidget.hpp

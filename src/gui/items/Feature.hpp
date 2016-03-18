@@ -9,8 +9,7 @@
 #include <QDrag>
 
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/gui/VertexGetter.hpp>
-#include <graph_analysis/gui/EdgeGetter.hpp>
+#include <graph_analysis/Edge.hpp>
 #include <iostream>
 
 namespace graph_analysis {

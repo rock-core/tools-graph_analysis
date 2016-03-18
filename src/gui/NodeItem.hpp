@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/gui/VertexGetter.hpp>
+#include <graph_analysis/Edge.hpp>
 
 #define LABEL_SWAPPING
 
