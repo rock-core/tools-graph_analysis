@@ -39,6 +39,7 @@ rock_library(graph_analysis
         gui/GraphWidgetManager.cpp
         gui/IconManager.cpp
         gui/Main.cpp
+        gui/VertexItemBase.cpp
         gui/NodeItem.cpp
         gui/NodeItemTypeManager.cpp
         gui/WidgetManager.cpp
@@ -137,6 +138,7 @@ rock_library(graph_analysis
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
         gui/IconManager.hpp
+        gui/VertexItemBase.hpp
         gui/NodeItem.hpp
         gui/NodeItemTypeManager.hpp
         gui/WidgetManager.hpp

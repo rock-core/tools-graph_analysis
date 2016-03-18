@@ -10,6 +10,7 @@ enum GraphicsItemTypes {
     NodeItemType = QGraphicsItemGroup::UserType + 1,
     EdgeItemType,
     FeatureItemType,
+    VertexItemBaseType,
 };
 }
 }
