@@ -48,7 +48,6 @@ rock_library(graph_analysis
         gui/dialogs/AddGraphElement.cpp
         gui/dialogs/CustomDialog.cpp
         gui/dialogs/ExportFile.cpp
-        gui/dialogs/PropertyDialog.cpp
         gui/dialogs/RenameFeatureDialog.cpp
         gui/dialogs/RenameFilterDialog.cpp
         gui/dialogs/SwapFeaturesDialog.cpp
@@ -62,6 +61,9 @@ rock_library(graph_analysis
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
         gui/ComponentGraphEditor/ComponentItem.cpp
         gui/ComponentGraphEditor/Component.cpp
+        gui/ComponentGraphEditor/Port.cpp
+        gui/ComponentGraphEditor/InputPort.cpp
+        gui/ComponentGraphEditor/OutputPort.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
@@ -141,7 +143,6 @@ rock_library(graph_analysis
         gui/dialogs/AddGraphElement.hpp
         gui/dialogs/CustomDialog.hpp
         gui/dialogs/ExportFile.hpp
-        gui/dialogs/PropertyDialog.hpp
         gui/dialogs/RenameFeatureDialog.hpp
         gui/dialogs/RenameFilterDialog.hpp
         gui/dialogs/SwapFeaturesDialog.hpp
@@ -154,7 +155,9 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.hpp
         gui/ComponentGraphEditor/ComponentItem.hpp
-        gui/ComponentGraphEditor/Component.hpp
+        gui/ComponentGraphEditor/Port.hpp
+        gui/ComponentGraphEditor/InputPort.hpp
+        gui/ComponentGraphEditor/OutputPort.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
@@ -189,7 +192,6 @@ rock_library(graph_analysis
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
         gui/dialogs/ExportFile.hpp
-        gui/dialogs/PropertyDialog.hpp
         gui/dialogs/RenameFeatureDialog.hpp
         gui/dialogs/RenameFilterDialog.hpp
         gui/dialogs/SwapFeaturesDialog.hpp

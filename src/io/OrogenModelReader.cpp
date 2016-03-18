@@ -33,8 +33,8 @@ void OrogenModelReader::read(const std::string &filename,
     graph->addVertex(vertex6);
 
     // but why?
-    //Component::Ptr comp = shared_ptr<Component>(new Component("testcomp"));
-    //graph->addVertex(comp);
+    Component::Ptr comp = Component::Ptr(new Component("testcomp"));
+    graph->addVertex(comp);
 
     // now add the ports to the respective clusters via "hasFeature" label
     Edge::Ptr edge1 = eManager->createEdge("graph_analysis::Edge", vertex1, vertex3, "hasFeature");

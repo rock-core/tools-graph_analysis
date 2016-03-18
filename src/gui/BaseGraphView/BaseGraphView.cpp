@@ -52,6 +52,7 @@ QString BaseGraphView::getClassName() const
 
 void BaseGraphView::updateLayout()
 {
+
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())
     {
@@ -80,8 +81,6 @@ void BaseGraphView::updateLayout()
         scene()->addItem(e);
         e_map[edge] = e;
 
-        scene()->addItem(e);
-
         mpLayoutingGraph->addEdge(edge);
         mpGVGraph->addEdge(edge);
     }
@@ -95,26 +94,6 @@ void BaseGraphView::adjustEdgesOf(VertexItemBase *vertexItem) {
     {
         e_map[edgeIt->current()]->adjust();
     }
-}
-
-void BaseGraphView::shuffle()
-{
-    int diff = 600;
-    foreach(QGraphicsItem *item, scene()->items())
-    {
-        if(dynamic_cast<VertexItemBase *>(item))
-            item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
-    }
-    updateStatus(
-        "Shuffelled all nodes representing a 'VertexItemBase' of the BaseGraphView");
-}
-
-void BaseGraphView::resetLayoutingGraph()
-{
-    mMaxNodeHeight = 0;
-    mMaxNodeWidth = 0;
-
-    GraphWidget::resetLayoutingGraph();
 }
 
 } // end namespace gui

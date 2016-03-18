@@ -42,6 +42,8 @@ ComponentGraphEditor::ComponentGraphEditor(QWidget *parent) : GraphWidget(parent
 {
     VertexTypeManager* vertexManager = VertexTypeManager::getInstance();
     vertexManager->registerType(Component::vertexType(), Vertex::Ptr(new Component()));
+    vertexManager->registerType(InputPort::vertexType(), Vertex::Ptr(new InputPort()));
+    vertexManager->registerType(OutputPort::vertexType(), Vertex::Ptr(new OutputPort()));
     EdgeTypeManager* edgeManager = EdgeTypeManager::getInstance();
     edgeManager->registerType(PortConnection::edgeType(), Edge::Ptr(new PortConnection()));
 }

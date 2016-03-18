@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_INPUTPORT_HPP
 #define GRAPH_ANALYSIS_INPUTPORT_HPP
 
-#include <graph_analysis/gui/component_editor/Port.hpp>
+#include "Port.hpp"
 
 namespace graph_analysis {
 namespace gui {

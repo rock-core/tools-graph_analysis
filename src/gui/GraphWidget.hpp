@@ -51,11 +51,11 @@ class GraphWidget : public QGraphicsView
 
 public:
 
-    typedef std::map<graph_analysis::Edge::Ptr, EdgeItemBase*> MyEdgeItemMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, VertexItemBase*> MyVertexItemMap;
+    typedef std::map<graph_analysis::Edge::Ptr, EdgeItemBase*> EdgeItemMap;
+    typedef std::map<graph_analysis::Vertex::Ptr, VertexItemBase*> VertexItemMap;
 
-    MyEdgeItemMap e_map;
-    MyVertexItemMap v_map;
+    EdgeItemMap e_map;
+    VertexItemMap v_map;
 
     /**
      * \brief constructor

@@ -16,10 +16,6 @@ namespace gui {
 
 class GraphWidget;
 
-namespace dialogs {
-    class PropertyDialog;
-}
-
 /**
  * \file GraphWidgetManager.hpp
  * \class GraphWidgetManager
@@ -76,8 +72,6 @@ public:
     }
 
 public slots:
-    /// re-loads the property dialog/panel in the scene
-    void reloadPropertyDialog();
     /**
      * @brief triggers a refresh() in the currently displayed graph widget
      *
@@ -86,8 +80,6 @@ public slots:
     void refresh();
     /// triggers shuffle() in the currently displayed graph widget
     void shuffle();
-    /// reloads the property dialog/panel if it is not running any more
-    void reloadPropertyDialogMainWindow();
 
     void addGraphWidget(GraphWidget* graphWidget);
 
@@ -127,8 +119,6 @@ private:
     QTabWidget* mpTabWidget;
     /// status bar
     QStatusBar* mpStatus;
-    /// the property dialog (a.k.a. command panel) dockable GUI component
-    dialogs::PropertyDialog *mpPropertyDialog;
     /// the layouting engine to be used when initializing the graph widgets
     QString mLayout;
 

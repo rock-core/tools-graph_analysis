@@ -3,8 +3,6 @@
 #include <graph_analysis/gui/IconManager.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
-#include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
-#include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
 
 #include <QScrollBar>
 

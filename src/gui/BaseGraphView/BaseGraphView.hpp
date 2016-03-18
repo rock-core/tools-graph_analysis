@@ -42,12 +42,6 @@ class BaseGraphView : public GraphWidget
      */
     virtual void updateLayout();
 
-  public slots:
-    /** shuffles all the nodes in the layers graph view */
-    void shuffle();
-
-  protected:
-    void resetLayoutingGraph();
 };
 
 } // end namespace gui

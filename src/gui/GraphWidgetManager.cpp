@@ -21,7 +21,6 @@
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
-#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
 #include <graph_analysis/gui/dialogs/ExportFile.hpp>
 
 namespace graph_analysis {
@@ -94,20 +93,6 @@ GraphWidgetManager::~GraphWidgetManager()
 {
     delete mpTabWidget;
     delete mpMainWindow;
-}
-
-void GraphWidgetManager::reloadPropertyDialog(void)
-{
-    updateStatus(std::string("reloading command panel..."));
-    if(mpPropertyDialog)
-    {
-        delete mpPropertyDialog;
-        mpPropertyDialog = NULL;
-    }
-    //mpPropertyDialog = new PropertyDialog(mpGraphWidgetManager->getDragDrop(), mpGraphWidgetManager->getVertexFocused(), mpGraphWidgetManager->getEdgeFocused());
-    //
-    WidgetManager::getInstance()->setPropertyDialog(mpPropertyDialog); // IMPORTANT!!! - now updating the corresponding field in the WidgetManager
-    updateStatus(std::string("Reloaded command panel!"), GraphWidgetManager::TIMEOUT);
 }
 
 void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd)
@@ -214,18 +199,6 @@ void GraphWidgetManager::shuffle()
 {
     LOG_DEBUG_S << "Shuffle current widget: " << currentGraphWidget()->getClassName().toStdString();
     currentGraphWidget()->shuffle();
-}
-
-void GraphWidgetManager::reloadPropertyDialogMainWindow()
-{
-    if(!mpPropertyDialog->isRunning())
-    {
-        reloadPropertyDialog();
-    }
-    else
-    {
-        QMessageBox::information(mpTabWidget, tr("Cannot Reload Property Dialog"), tr("Cannot Reload Property Dialog: the dialog is still active! It needs closing first."));
-    }
 }
 
 void GraphWidgetManager::addGraphWidget(GraphWidget* graphWidget)

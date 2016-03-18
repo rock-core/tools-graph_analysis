@@ -79,6 +79,10 @@ void GraphWidget::clearVisualization()
         mpGVGraph->clearNodes();
     }
 
+    // does this leak memory like a bucket?
+    e_map.clear();
+    v_map.clear();
+
     scene()->clear();
 }
 
