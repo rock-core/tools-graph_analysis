@@ -12,7 +12,6 @@
 #include <base/Logging.hpp>
 #include <base/Time.hpp>
 
-#include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/GraphIO.hpp>
 #include <graph_analysis/io/YamlWriter.hpp>
@@ -20,8 +19,6 @@
 #include <graph_analysis/io/GexfReader.hpp>
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
-#include <graph_analysis/filters/CommonFilters.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
@@ -57,44 +54,42 @@ namespace gui {
 
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
+    , mpScene(new QGraphicsScene(this))
     , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
-    , mFiltered(false)
     , mScaleFactor(DEFAULT_SCALING_FACTOR)
     , mLayout("dot")
-    //, mpVertexFilter(new filters::PermitAll< graph_analysis::Vertex::Ptr>( ))
-    , mpVertexFilter(new Filter< graph_analysis::Vertex::Ptr>( ))
-    , mpEdgeFilter(new filters::EdgeContextFilter())
     , mpGraphWidgetManager(WidgetManager::getInstance()->getGraphWidgetManager())
     , mMode(GraphWidgetManager::MOVE_MODE)
 {
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
+    mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    setScene(mpScene);
 }
 
 GraphWidget::~GraphWidget()
 {
+    delete mpScene;
 }
 
-void GraphWidget::setNodeFilters(std::vector< Filter<Vertex::Ptr>::Ptr > filters)
+void GraphWidget::wheelEvent(QWheelEvent *event)
 {
-    mpVertexFilter->clear();
-    BOOST_FOREACH(Filter<Vertex::Ptr>::Ptr filter, filters)
-    {
-        mpVertexFilter->add(filter);
-    }
-    mGraphView.setVertexFilter(mpVertexFilter);
+    scaleView(pow(2.0, -event->delta() / 240.0));
 }
 
-void GraphWidget::setEdgeFilters(std::vector< Filter<Edge::Ptr>::Ptr > filters)
+void GraphWidget::scaleView(qreal scaleFactor)
 {
-    mpEdgeFilter->clear();
-    BOOST_FOREACH(Filter<Edge::Ptr>::Ptr filter, filters)
+    qreal factor = transform()
+                       .scale(scaleFactor, scaleFactor)
+                       .mapRect(QRectF(0, 0, 1, 1))
+                       .width();
+    if(factor < 0.07 || factor > 100)
     {
-        mpEdgeFilter->add(filter);
+        return;
     }
-    mGraphView.setEdgeFilter(mpEdgeFilter);
+    scale(scaleFactor, scaleFactor);
+    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
+    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
 }
 
 void GraphWidget::updateStatus(const std::string& message, int timeout) const
@@ -110,7 +105,6 @@ void GraphWidget::setGraphLayout(const QString& layoutName)
 
 void GraphWidget::clearVisualization()
 {
-    // TO-DO: add filtering clearing?
     if(mpGVGraph)
     {
         mpGVGraph->clearEdges();
@@ -172,14 +166,7 @@ void GraphWidget::update()
 
 void GraphWidget::updateView()
 {
-    updateFilterView();
     updateLayoutView();
-}
-
-void GraphWidget::updateFilterView()
-{
-    mpSubGraph = mGraphView.apply(mpGraph);
-    mFiltered = true;
 }
 
 void GraphWidget::updateLayoutView()
@@ -679,6 +666,14 @@ void GraphWidget::modeChanged(GraphWidgetManager::Mode mode)
 
     mMode = mode;
 }
+
+void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
+{
+    updateStatus("Focus: '" + element->toString() + "'", 5000);
+    mpFocusedElement = element;
+}
+
+void GraphWidget::clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
 
 void GraphWidget::setFlagOnAllNodes(enum QGraphicsItem::GraphicsItemFlag flag,
                                     bool value)

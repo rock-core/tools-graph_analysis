@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/gui/VertexGetter.hpp>
+#include <graph_analysis/Edge.hpp>
 
 #define LABEL_SWAPPING
 
@@ -32,7 +32,7 @@ class GraphWidget;
  * \brief graphical node representation interface
  * \details used as polymorphic base for several graphical node implementations
  */
-class NodeItem : public QGraphicsItemGroup, public VertexGetter
+class NodeItem : public QGraphicsItemGroup
 {
 public:
     typedef size_t id_t; // counter datatype for attributing ID-s to features in the case of implementing cluster node items
@@ -58,9 +58,6 @@ public:
 
     enum { Type = UserType + 1 };
     int type() const { return Type; }
-
-    /// computes the force field values for each edge (w.r.t. the force field automatic re-arranging algorithm)
-    void calculateForces();
 
     /// actuator method the same force field (automatic re-arranging) algorithm
     void advance(int phase) { if(phase == 2) advance(); }

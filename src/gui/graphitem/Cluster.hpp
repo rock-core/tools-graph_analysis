@@ -55,7 +55,7 @@ public:
     /// empty constructor
     Cluster() {}
     /// destructor
-    virtual ~Cluster() {};
+    virtual ~Cluster();
 
     ///syncs the graphical text label from the internal mpVertex label
     void updateLabel();
@@ -73,28 +73,14 @@ public:
     /// calls a qt routine for warning the scene of upcoming graphical changes; the method it internally calls is otherwise protected and inaccessible to unrelated classes
     inline void prepareChange() { prepareGeometryChange(); }
 
-    /**
-     * \brief updates node width related essential internal variables
-     * \param active boolean flag for updating GUI too; when set changes also affect the node graphical representation (i.e. the node horizontally shrinks or expands in the scene)
-     */
-    void updateWidth (bool active = true) {}
-
-    /// recomputes node's height; makes the node vertically shrink or expand
-    void updateHeight(void) {}
-
-    /// updates the temporary text currently being displayed on the Status Bar in the main viewWidget
-    void updateStatus(const std::string& message = std::string(), int timeout = 0);
-
 protected:
 
     /// qt hovering LEAVE callback
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    void dropEvent(QGraphicsSceneDragDropEvent* event);
 
-    virtual void dropEvent(QGraphicsSceneDragDropEvent* event);
 private:
-    /// background child widget
-    QGraphicsWidget *mpBoard;
     /// main node text label
     items::Label *mpLabel;
 

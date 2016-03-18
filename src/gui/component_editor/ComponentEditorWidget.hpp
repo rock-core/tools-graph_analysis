@@ -5,8 +5,6 @@
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
-#include <graph_analysis/Filter.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
@@ -61,24 +59,11 @@ public:
 //     */
 //    Edge::Ptr createEdge(Vertex::Ptr sourceNode, Vertex::Ptr targetNode, const std::string& label = std::string());
 
-    /// enables the given vertex in the base graph
-    void enableVertex (graph_analysis::Vertex::Ptr vertex);
-    /// disables the given vertex in the base graph
-    void disableVertex(graph_analysis::Vertex::Ptr vertex);
-    /// enables the given edge in the base graph
-    void enableEdge (graph_analysis::Edge::Ptr edge);
-    /// disables the given edge in the base graph
-    void disableEdge(graph_analysis::Edge::Ptr edge);
-
     virtual void updateLayout();
 
 public slots:
     /// shuffles all the nodes in the diagram graph editor
     void shuffle();
-    /// zooms-into the diagram editor graph scene
-    void zoomIn();
-    /// zooms-out of the diagram editor graph scene
-    void zoomOut();
 
     void addFeatureDialog();
 
@@ -86,12 +71,6 @@ public slots:
     void showContextMenu(const QPoint& pos);
 
 protected:
-
-    /// qt mouse wheel spin callback
-    void wheelEvent(QWheelEvent *event);
-
-    /// scales scene (zooms into or out of the scene)
-    void scaleView(qreal scaleFactor);
 
     items::Feature* getFeature(const GraphElement::Ptr& element);
 private:

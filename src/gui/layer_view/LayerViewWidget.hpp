@@ -4,7 +4,6 @@
 #include <QGraphicsView>
 #include <graph_analysis/Graph.hpp>
 #include <graph_analysis/Filter.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {
@@ -19,6 +18,7 @@ namespace gui {
 class LayerViewWidget : public GraphWidget
 {
     Q_OBJECT
+
 public:
     /**
      * \brief constructor
@@ -40,29 +40,8 @@ public:
 public slots:
     /// shuffles all the nodes in the layers graph view
     void shuffle();
-    /// zooms-into the layers graph scene
-    void zoomIn();
-    /// zooms-out of the layers graph scene
-    void zoomOut();
-    /// pulls-out the layers graph context menu on right-click
-    void showContextMenu(const QPoint& pos);
 
 protected:
-
-    /// enables the provided vertex (its corresponding node scene-item gets displayed at re-rendering)
-    void enableVertex(graph_analysis::Vertex::Ptr vertex);
-    /// disables the provided vertex (its corresponding node scene-item gets filtered out at re-rendering)
-    void disableVertex(graph_analysis::Vertex::Ptr vertex);
-    /// enables the provided edge (its corresponding edge scene-item gets displayed at re-rendering)
-    void enableEdge(graph_analysis::Edge::Ptr edge);
-    /// enables the provided edge (its corresponding edge scene-item gets filtered out at re-rendering)
-    void disableEdge(graph_analysis::Edge::Ptr edge);
-
-    /// qt mouse wheel spin callback
-    void wheelEvent(QWheelEvent *event);
-
-    /// scales scene (zooms into or out of the scene)
-    void scaleView(qreal scaleFactor);
 
     void resetLayoutingGraph();
 };

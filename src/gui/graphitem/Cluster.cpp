@@ -3,21 +3,14 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
-#include <cmath>
-#include <QFont>
-#include <QStyle>
 #include <QPainter>
-#include <QMessageBox>
-#include <QStyleOption>
 #include <QGraphicsSceneDragDropEvent>
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
 #include <base/Logging.hpp>
-#include <exception>
 #include <graph_analysis/gui/items/Label.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 
-#include <QTableWidget>
 
 using namespace graph_analysis::gui::items;
 
@@ -27,26 +20,27 @@ namespace graphitem {
 
 Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
     : NodeItem(graphWidget, vertex)
+    , mpLabel(new Label(vertex->toString(), this))
     , mPen(Qt::blue)
     , mPenDefault(Qt::blue)
     , mFocused(false)
     , mSelected(false)
 {
-    mpLabel = new Label(vertex->toString(), this);
-
     QFont mainLabelFont;
     mainLabelFont.setBold(true);
     mpLabel->setFont(mainLabelFont);
-    mpBoard = new QGraphicsWidget(this);
-    mpBoard->setAcceptHoverEvents(true);
 
     setFlag(ItemIsMovable);
+}
+
+Cluster::~Cluster()
+{
+    delete mpLabel;
 }
 
 void Cluster::updateLabel()
 {
     mpLabel->setPlainText(mpVertex->getLabel().c_str());
-    updateWidth();
 }
 
 QRectF Cluster::boundingRect() const

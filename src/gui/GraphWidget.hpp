@@ -7,12 +7,8 @@
 #include <QGraphicsView>
 #include <QStackedWidget>
 #include <graph_analysis/Graph.hpp>
-#include <graph_analysis/Filter.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
-
-#include <base/Logging.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -91,22 +87,16 @@ public:
     virtual void resetLayoutingGraph();
 
     /**
-     * Update the current view / filtered subgraph
+     * Update the current view
      */
     virtual void update();
     virtual void updateView();
-    void updateFilterView();
     void updateLayoutView();
 
     /**
      * Trigger the layouting of the graph widget
      */
     virtual void updateLayout() { throw std::runtime_error("graph_analysis::gui::GraphWidget::updateLayout: not implemented"); }
-
-    /// setter method for updating the node filters
-    void setNodeFilters(std::vector< graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr > nodeFilters);
-    /// setter method for updating the edge filters
-    void setEdgeFilters(std::vector< graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr > edgeFilters);
 
     /// setter method for updating the scaling factor
     void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
@@ -115,9 +105,9 @@ public:
 
 
     // SELECT/ DESELECT
-    void setFocusedElement(const GraphElement::Ptr& element) { LOG_WARN_S << "SET FOCUS ON: " << element->toString(); mpFocusedElement = element; }
+    void setFocusedElement(const GraphElement::Ptr& element);
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
-    void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
+    void clearFocus();
     bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }
 
     NodeItem* getFocusedNodeItem() const;
@@ -174,6 +164,14 @@ public slots:
     void selectLayoutDialog();
 protected:
 
+    // the QGraphicsScene to be used by this widget
+    QGraphicsScene* mpScene;
+
+    /// qt mouse wheel spin callback
+    void wheelEvent(QWheelEvent *event);
+    /// scales scene (zooms into or out of the scene)
+    void scaleView(qreal scaleFactor);
+
     /// conceptual underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
 
@@ -186,13 +184,6 @@ protected:
     /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
     qreal mMaxNodeWidth;
 
-    // Supports filtering functionality
-    GraphView mGraphView;
-    SubGraph::Ptr mpSubGraph;
-
-    /// boolean witness of filtering: true when filtering has already been set/initialized; false otherwise
-    bool mFiltered;
-
     // Allow mapping from graph vertices to nodes in the scene
     NodeItemMap mNodeItemMap;
     // Allow mapping from graph edges to edges in the scene
@@ -204,11 +195,6 @@ protected:
     /// layouting engine to be used on the next layouting
     QString mLayout;
 
-    /// vertex filters
-    graph_analysis::Filter<graph_analysis::Vertex::Ptr>::Ptr mpVertexFilter;
-    /// edge filters
-    graph_analysis::Filter<graph_analysis::Edge::Ptr>::Ptr mpEdgeFilter;
-
     graph_analysis::GraphElement::Ptr mpFocusedElement;
     std::vector<graph_analysis::GraphElement::Ptr> mElementSelection;
 
@@ -217,10 +203,10 @@ protected:
 
     void gvRender(const std::string& filename);
 
-    virtual void keyPressEvent(QKeyEvent *);
+    void keyPressEvent(QKeyEvent *);
 
-    virtual void mousePressEvent(QMouseEvent*);
-    virtual void mouseReleaseEvent(QMouseEvent*);
+    void mousePressEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
 
     // iterate over all QGraphicItems of scene with type "...::NodeItemType". sets
     // or clears the flag.

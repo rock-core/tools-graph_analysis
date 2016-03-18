@@ -1,7 +1,6 @@
 #include <boost/test/unit_test.hpp>
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/snap/Graph.hpp>
-#include <graph_analysis/GraphView.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
 
 #include <graph_analysis/GraphIO.hpp>
@@ -191,29 +190,6 @@ BOOST_AUTO_TEST_CASE(subgraph)
             BOOST_REQUIRE_MESSAGE( edge0->toString() != "", "Edge: " << edge0->toString() );
         }
 
-        // Set graph view
-        {
-            BaseGraph::Ptr baseGraph = graph->copy();
-            graph_analysis::GraphView gv;
-            graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::PermitAll< Vertex::Ptr >() );
-            gv.setVertexFilter(filter);
-
-            graph_analysis::SubGraph::Ptr subGraph = gv.apply(baseGraph);
-            int subgraphCount = subGraph->getVertexCount();
-            int graphCount = baseGraph->getVertexCount();
-            BOOST_REQUIRE_MESSAGE( subgraphCount == graphCount, "Subgraph contains all nodes after applying PermitAll filter: '" << subgraphCount << "' vs. '" << graphCount << "'");
-        }
-
-        {
-            BaseGraph::Ptr baseGraph = graph->copy();
-            graph_analysis::GraphView gv;
-            graph_analysis::Filter< Vertex::Ptr >::Ptr filter(new graph_analysis::filters::DenyAll< Vertex::Ptr >() );
-            gv.setVertexFilter(filter);
-
-            graph_analysis::SubGraph::Ptr subGraph = gv.apply(baseGraph);
-            int subgraphCount = subGraph->getVertexCount();
-            BOOST_REQUIRE_MESSAGE( subgraphCount == 0, "Subgraph contains no nodes after applying DenyAll filter '" << subgraphCount << "' expected '0'" );
-        }
         {
             BaseGraph::Ptr baseGraph = graph->newInstance();
             baseGraph->addEdge(e0);

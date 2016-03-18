@@ -13,7 +13,6 @@ namespace items {
 
 Feature::Feature(GraphElement::Ptr element, GraphWidget *graphWidget)
     : QGraphicsTextItem(element->getLabel().c_str())
-    , VertexGetter()
     , mpGraphWidget(graphWidget)
     , mpGraphElement(element)
 {
@@ -67,18 +66,6 @@ void Feature::setTextInteraction(bool on, bool selectAll)
         this->setTextCursor(c);
         clearFocus();
     }
-}
-
-void Feature::mouseDoubleClickEvent(::QGraphicsSceneMouseEvent* event)
-{
-    if(textInteractionFlags() == Qt::TextEditorInteraction)
-    {
-        QGraphicsTextItem::mousePressEvent(event);
-        return;
-    }
-
-    setTextInteraction(true, true);
-    QGraphicsTextItem::mouseDoubleClickEvent(event);
 }
 
 void Feature::dragEnterEvent(QGraphicsSceneDragDropEvent *event)

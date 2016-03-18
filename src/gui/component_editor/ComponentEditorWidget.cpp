@@ -23,9 +23,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/Filter.hpp>
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
@@ -65,22 +63,14 @@ ComponentEditorWidget::ComponentEditorWidget(QWidget *parent)
 
     mScaleFactor *= 1.69;
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    setScene(scene);
-
     setCacheMode(CacheBackground);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
     setWindowTitle(tr("Component Editor"));
-    // Setting up filtering
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
 
     // setting up the context menu
     connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
@@ -182,45 +172,6 @@ void ComponentEditorWidget::addFeatureDialog()
     }
 }
 
-void ComponentEditorWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->enable(vertex);
-    LOG_DEBUG_S << "Enabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void ComponentEditorWidget::enableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->enable(edge);
-    LOG_DEBUG_S << "Enabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
-void ComponentEditorWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->disable(vertex);
-    LOG_DEBUG_S << "Disabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void ComponentEditorWidget::disableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->disable(edge);
-    LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
-void ComponentEditorWidget::wheelEvent(QWheelEvent *event)
-{
-    scaleView(pow((double)2, - event->delta() / 240.0));
-}
-
-void ComponentEditorWidget::scaleView(qreal scaleFactor)
-{
-    qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
-    {
-        return;
-    }
-    scale(scaleFactor, scaleFactor);
-    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg);
-}
-
 void ComponentEditorWidget::shuffle()
 {
     updateStatus("Shuffeling all nodes ...");
@@ -234,16 +185,6 @@ void ComponentEditorWidget::shuffle()
     updateStatus("Done shuffeling all nodes");
 }
 
-void ComponentEditorWidget::zoomIn()
-{
-    scaleView(qreal(1.13));
-}
-
-void ComponentEditorWidget::zoomOut()
-{
-    scaleView(1 / qreal(1.13));
-}
-
 void ComponentEditorWidget::updateLayout()
 {
     mFeatureMap.clear();
@@ -252,13 +193,6 @@ void ComponentEditorWidget::updateLayout()
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
-
-        // Check on active filter
-        if(mFiltered && !mpSubGraph->enabled(vertex))
-        {
-            LOG_DEBUG_S << "Filtered out vertex: " << vertex->toString();
-            continue;
-        }
 
         if(mNodeItemMap.count(vertex))
         {

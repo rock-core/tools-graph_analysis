@@ -24,8 +24,6 @@
 #include <base/Logging.hpp>
 
 #include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
-#include <graph_analysis/filters/RegexFilters.hpp>
 
 #include <graph_analysis/gui/layeritem/Resource.hpp>
 #include <graph_analysis/gui/layeritem/edges/Simple.hpp>
@@ -41,80 +39,15 @@ namespace gui {
 LayerViewWidget::LayerViewWidget(QWidget *parent)
     : GraphWidget(parent)
 {
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    setScene(scene);
-
-    setCacheMode(CacheBackground);
-    setContextMenuPolicy(Qt::CustomContextMenu);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
-    setWindowTitle(tr("Graphview"));
-    // Setting up filtering
-    mGraphView.setVertexFilter(mpVertexFilter);
-    mGraphView.setEdgeFilter(mpEdgeFilter);
-    // End of setting up filters
-
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint &)),
-        this, SLOT(showContextMenu(const QPoint &)));
+    setWindowTitle(tr("LayerViewWidget"));
 }
 
 LayerViewWidget::~LayerViewWidget()
 {}
-
-void LayerViewWidget::showContextMenu(const QPoint& pos)
-{
-/*    ActionCommander comm(WidgetManager::getInstance()->getComponentEditorWidget());
-    QMenu contextMenu(tr("Context menu"), this);
-
-    QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh")), this);
-    QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle")), this);
-    QAction *actionImport  = comm.addAction("Import", SLOT(importGraph()), *(IconManager::getInstance()->getIcon("import")));
-    QAction *actionExport  = comm.addAction("Export", SLOT(exportGraph()), *(IconManager::getInstance()->getIcon("export")));
-    QAction *actionReset   = comm.addAction("Reset", SLOT(resetGraph()), *(IconManager::getInstance()->getIcon("reset")));
-    QAction *actionLayout  = comm.addAction("Layout", SLOT(changeLayout()), *(IconManager::getInstance()->getIcon("layout")), this);
-    QAction *actionReloadPropertyDialog = comm.addAction("Reload Command Panel", SLOT(reloadPropertyDialog()), *(IconManager::getInstance()->getIcon("reload")), WidgetManager::getInstance()->getGraphWidgetManager());
-
-    contextMenu.addAction(actionImport);
-    contextMenu.addAction(actionExport);
-    contextMenu.addSeparator();
-    contextMenu.addAction(actionRefresh);
-    contextMenu.addAction(actionShuffle);
-    contextMenu.addAction(actionReset);
-    contextMenu.addAction(actionLayout);
-    if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-    {
-        contextMenu.addSeparator();
-        contextMenu.addAction(actionReloadPropertyDialog);
-    }
-    contextMenu.exec(mapToGlobal(pos));
-    */
-}
-
-void LayerViewWidget::enableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->enable(vertex);
-    LOG_DEBUG_S << "Enabled a vertex of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void LayerViewWidget::enableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->enable(edge);
-    LOG_DEBUG_S << "Enabled an edge of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
-
-void LayerViewWidget::disableVertex(graph_analysis::Vertex::Ptr vertex)
-{
-    mpSubGraph->disable(vertex);
-    LOG_DEBUG_S << "Disabled vertex '" << vertex->getLabel() << "' of ID: " << mpSubGraph->getBaseGraph()->getVertexId(vertex);
-}
-void LayerViewWidget::disableEdge(graph_analysis::Edge::Ptr edge)
-{
-    mpSubGraph->disable(edge);
-    LOG_DEBUG_S << "Disabled edge '" << edge->getLabel() << "' of ID:  " << mpSubGraph->getBaseGraph()->getEdgeId(edge);
-}
 
 void LayerViewWidget::updateLayout()
 {
@@ -159,23 +92,6 @@ void LayerViewWidget::updateLayout()
 
 }
 
-void LayerViewWidget::wheelEvent(QWheelEvent *event)
-{
-    scaleView(pow((double)2, - event->delta() / 240.0));
-}
-
-void LayerViewWidget::scaleView(qreal scaleFactor)
-{
-    qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
-    {
-        return;
-    }
-    scale(scaleFactor, scaleFactor);
-    std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
-}
-
 void LayerViewWidget::shuffle()
 {
     updateStatus("Shuffelling all the nodes in the layers graph view...");
@@ -185,16 +101,6 @@ void LayerViewWidget::shuffle()
             item->setPos(-150 + qrand() % 300, -150 + qrand() % 300);
     }
     updateStatus("Shuffelled all nodes in the layers graph view", GraphWidgetManager::TIMEOUT);
-}
-
-void LayerViewWidget::zoomIn()
-{
-    scaleView(qreal(1.13));
-}
-
-void LayerViewWidget::zoomOut()
-{
-    scaleView(1 / qreal(1.13));
 }
 
 void LayerViewWidget::resetLayoutingGraph()

@@ -14,7 +14,6 @@
 #include <QToolBar>
 #include <base/Logging.hpp>
 
-#include <graph_analysis/filters/RegexFilters.hpp>
 #include <graph_analysis/GraphIO.hpp>
 #include <graph_analysis/io/YamlWriter.hpp>
 #include <graph_analysis/io/GexfWriter.hpp>
@@ -120,19 +119,9 @@ GraphWidgetManager::GraphWidgetManager()
 
     mpMainWindow->setWindowTitle(QObject::tr("Graph Analysis"));
 
-    // setting up graph regex filtering
-    filters::VertexRegexFilter sourceNodeFilter(".*");
-    filters::VertexRegexFilter targetNodeFilter(".*");
-    filters::EdgeRegexFilter edgeFilter(".*");
-
-    filters::EdgeContextFilter::Ptr filter(new filters::CombinedEdgeRegexFilter(sourceNodeFilter, edgeFilter, targetNodeFilter));
-    std::vector< Filter< graph_analysis::Edge::Ptr >::Ptr > edgeFilters;
-    edgeFilters.push_back(filter);
-
     for(int index = 0; index < mpTabWidget->count(); index++)
     {
         GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
-        graphWidget->setEdgeFilters(edgeFilters);
         graphWidget->setGraphLayout(mLayout);
     }
 

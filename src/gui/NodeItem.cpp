@@ -27,61 +27,6 @@ NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
     setAcceptDrops(true);
 }
 
-void NodeItem::calculateForces()
-{
-    if (!scene() || scene()->mouseGrabberItem() == this)
-    {
-        mNewPos = pos();
-        return;
-    }
-    // Sum up all forces pushing this item away
-    qreal xvel = 0;
-    qreal yvel = 0;
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        NodeItem* node = qgraphicsitem_cast<NodeItem* >(item);
-        if (!node)
-        {
-            continue;
-        }
-        QPointF vec = mapToItem(node, 0, 0);
-        qreal dx = vec.x();
-        qreal dy = vec.y();
-        double l = 2.0 * (dx * dx + dy * dy);
-        if (l > 0)
-        {
-            xvel += (dx * 150.0) / l;
-            yvel += (dy * 150.0) / l;
-        }
-    }
-    // Now subtract all forces pulling items together
-    GraphWidget::EdgeItemMap::const_iterator it = mpGraphWidget->edgeItemMap().begin();
-    double weight = (mpGraphWidget->edgeItemMap().size() + 1) * 10;
-    for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
-    {
-        EdgeItem* edge = it->second;
-        QPointF vec;
-        if (edge->sourceItem() == this)
-        {
-            vec = mapToItem(edge->targetItem(), 0, 0);
-        }
-        else
-        {
-            vec = mapToItem(edge->sourceItem(), 0, 0);
-        }
-        xvel -= vec.x() / weight;
-        yvel -= vec.y() / weight;
-    }
-    if (qAbs(xvel) < 0.1 && qAbs(yvel) < 0.1)
-    {
-        xvel = yvel = 0;
-    }
-    QRectF sceneRect = scene()->sceneRect();
-    mNewPos = pos() + QPointF(xvel, yvel);
-    mNewPos.setX(qMin(qMax(mNewPos.x(), sceneRect.left() + 10), sceneRect.right() - 10));
-    mNewPos.setY(qMin(qMax(mNewPos.y(), sceneRect.top() + 10), sceneRect.bottom() - 10));
-}
-
 bool NodeItem::advance()
 {
     if (mNewPos != pos())
