@@ -669,9 +669,11 @@ void GraphWidget::modeChanged(GraphWidgetManager::Mode mode)
 
 void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
 {
-    LOG_WARN_S << "SET FOCUS ON: " << element->toString();
+    updateStatus("Focus: '" + element->toString() + "'", 5000);
     mpFocusedElement = element;
 }
+
+void GraphWidget::clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
 
 void GraphWidget::setFlagOnAllNodes(enum QGraphicsItem::GraphicsItemFlag flag,
                                     bool value)

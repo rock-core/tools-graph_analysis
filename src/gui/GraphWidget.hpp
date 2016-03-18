@@ -107,7 +107,7 @@ public:
     // SELECT/ DESELECT
     void setFocusedElement(const GraphElement::Ptr& element);
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
-    void clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
+    void clearFocus();
     bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }
 
     NodeItem* getFocusedNodeItem() const;
