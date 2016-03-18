@@ -6,6 +6,7 @@
 #include <QTime>
 #include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
 #include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
+#include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
 
 // prints verbose help message regarding usage of 'cmd' to string stream 'ss'
 void help_setup(std::stringstream& ss, const std::string& cmd, graph_analysis::gui::GraphWidgetManager& graphManager)
@@ -43,6 +44,7 @@ int main(int argc, char **argv)
 
     graphManager.addGraphWidget(new ComponentEditorWidget());
     graphManager.addGraphWidget(new LayerViewWidget());
+    graphManager.addGraphWidget(new BaseGraphView());
 
     int return_code = app.exec();
     return return_code;

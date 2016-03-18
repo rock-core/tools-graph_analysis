@@ -66,6 +66,7 @@ rock_library(graph_analysis
         gui/layer_view/LayerViewWidget.cpp
         gui/layeritem/Resource.cpp
         gui/layeritem/edges/Simple.cpp
+        gui/BaseGraphView/BaseGraphView.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
@@ -163,6 +164,7 @@ rock_library(graph_analysis
         gui/layer_view/LayerViewWidget.hpp
         gui/layeritem/Resource.hpp
         gui/layeritem/edges/Simple.hpp
+        gui/BaseGraphView/BaseGraphView.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
@@ -204,6 +206,7 @@ rock_library(graph_analysis
         gui/dialogs/SwapFeaturesDialog.hpp
         gui/dialogs/SwapFiltersDialog.hpp
         gui/layer_view/LayerViewWidget.hpp
+        gui/BaseGraphView/BaseGraphView.hpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/dialogs/add_filter_dialog_gui.ui
