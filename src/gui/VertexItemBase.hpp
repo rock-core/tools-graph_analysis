@@ -70,12 +70,10 @@ class VertexItemSimple : public VertexItemBase
     ~VertexItemSimple();
     virtual int type() const { return VertexItemSimpleType; };
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *);
-
   private:
     QGraphicsTextItem *mpLabel;
     QGraphicsTextItem *mpClassName;
+    QGraphicsRectItem *mpRect;
 };
 
 } // end namespace gui

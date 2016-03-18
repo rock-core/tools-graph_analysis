@@ -41,10 +41,6 @@ namespace gui
 
 BaseGraphView::BaseGraphView(QWidget *parent) : GraphWidget(parent)
 {
-    setViewportUpdateMode(BoundingRectViewportUpdate);
-    setRenderHint(QPainter::Antialiasing);
-    setTransformationAnchor(AnchorUnderMouse);
-    setWindowTitle(tr("BaseGraphView"));
 }
 
 BaseGraphView::~BaseGraphView() {}
@@ -110,7 +106,7 @@ void BaseGraphView::shuffle()
             item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
     }
     updateStatus(
-        "Shuffelled all nodes representing a 'Vertex' of the BaseGraphView");
+        "Shuffelled all nodes representing a 'VertexItemBase' of the BaseGraphView");
 }
 
 void BaseGraphView::resetLayoutingGraph()

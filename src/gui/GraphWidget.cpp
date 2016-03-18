@@ -14,6 +14,8 @@
 
 #include <graph_analysis/gui/WidgetManager.hpp>
 
+#include <graph_analysis/gui/VertexItemBase.hpp>
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -162,7 +164,8 @@ void GraphWidget::updateLayoutView()
     if(mLayout.toLower() != "force")
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
-        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
+        LOG_INFO_S << "GV started layouting the graph for '" << getClassName().toStdString()
+                   << "'. This can take a while ...";
         base::Time start = base::Time::now();
         mpGVGraph->setNodeAttribute("height", boost::lexical_cast<std::string>(mMaxNodeHeight));
         mpGVGraph->setNodeAttribute("width" , boost::lexical_cast<std::string>(mMaxNodeWidth ));
@@ -189,6 +192,19 @@ void GraphWidget::updateLayoutView()
             }
         }
     }
+}
+
+void GraphWidget::shuffle()
+{
+    int diff = 600;
+    foreach(QGraphicsItem *item, scene()->items())
+    {
+        if(dynamic_cast<VertexItemBase *>(item)) {
+            item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
+        }
+    }
+    updateStatus(
+        "Shuffelled all nodes representing a 'Vertex' of the ComponentGraphEditor");
 }
 
 void GraphWidget::refresh(bool all)
@@ -584,7 +600,9 @@ void GraphWidget::modeChanged(GraphWidgetManager::Mode mode)
 
 void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
 {
-    updateStatus("Focus: '" + element->toString() + "'", 5000);
+    updateStatus("GraphElement: '" + element->getClassName() + " " +
+                     element->getLabel() + "' (" + element->toString() + ")",
+                 2500);
     mpFocusedElement = element;
 }
 

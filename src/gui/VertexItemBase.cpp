@@ -44,24 +44,25 @@ void VertexItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItemGroup::hoverLeaveEvent(event);
 }
 
-QVariant VertexItemBase::itemChange(GraphicsItemChange change, const QVariant& value)
+QVariant VertexItemBase::itemChange(GraphicsItemChange change,
+                                    const QVariant &value)
 {
-    switch (change)
+    switch(change)
     {
-        case ItemPositionHasChanged:
+    case ItemPositionHasChanged:
+    {
+        // FIXME: proper API
+        if(BaseGraphView *view = dynamic_cast<BaseGraphView *>(mpGraphWidget))
         {
-            //FIXME: proper API
-            dynamic_cast<BaseGraphView *>(mpGraphWidget)->adjustEdgesOf(this);
-            break;
+            view->adjustEdgesOf(this);
         }
-        default:
-            break;
+        break;
+    }
+    default:
+        break;
     };
     return QGraphicsItem::itemChange(change, value);
 }
-
-
-
 
 // kiss:
 VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
@@ -75,26 +76,25 @@ VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
     mpLabel->setFont(font);
 
     mpClassName = new QGraphicsTextItem(
-        QString(vertex->GraphElement::getClassName().c_str()), this);
+        QString(vertex->getClassName().c_str()), this);
     mpClassName->setPos(mpLabel->pos() +
                        QPoint(0, mpLabel->boundingRect().height()));
     mpClassName->setDefaultTextColor(Qt::gray);
 
+    mpRect = new QGraphicsRectItem(this);
+    mpRect->setRect(childrenBoundingRect());
+    mpRect->setPen(QPen(Qt::blue));
+
     setFlag(ItemIsMovable);
 }
+
+
 
 VertexItemSimple::~VertexItemSimple()
 {
     delete mpLabel;
     delete mpClassName;
-}
-
-void VertexItemSimple::paint(QPainter *painter,
-                             const QStyleOptionGraphicsItem *option, QWidget *)
-{
-    // drawing of border
-    painter->setPen(QPen(Qt::blue));
-    painter->drawRect(boundingRect());
+    delete mpRect;
 }
 
 } // end namespace gui

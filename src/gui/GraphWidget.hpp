@@ -144,7 +144,7 @@ public:
     void renameElement(GraphElement::Ptr element, const std::string& label);
 
 public slots:
-    virtual void shuffle() { throw std::runtime_error("graph_analysis::gui::GraphWidget::shuffle is not reimplemented"); }
+    virtual void shuffle();
     virtual void refresh(bool all = true);
 
     void clearDialog();
