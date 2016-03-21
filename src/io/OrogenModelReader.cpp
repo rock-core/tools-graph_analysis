@@ -25,12 +25,14 @@ void OrogenModelReader::read(const std::string &filename,
     Vertex::Ptr vertex4 = vManager->createVertex("graph_analysis::OutputPort", "oPort");
     Vertex::Ptr vertex5 = vManager->createVertex("graph_analysis::OutputPort", "oPort2");
     Vertex::Ptr vertex6 = vManager->createVertex("graph_analysis::Component", "node3");
+    Vertex::Ptr vertex7 = vManager->createVertex("graph_analysis::OutputPort", "oPort2");
     graph->addVertex(vertex1);
     graph->addVertex(vertex2);
     graph->addVertex(vertex3);
     graph->addVertex(vertex4);
     graph->addVertex(vertex5);
     graph->addVertex(vertex6);
+    graph->addVertex(vertex7);
 
     // but why?
     Component::Ptr comp = Component::Ptr(new Component("testcomp"));
@@ -45,10 +47,14 @@ void OrogenModelReader::read(const std::string &filename,
                                            vertex2, vertex4, "has");
     Edge::Ptr edge4 = eManager->createEdge("graph_analysis::PortConnection",
                                            vertex3, vertex4, "some-connection");
+
+    Edge::Ptr edge5 = eManager->createEdge("graph_analysis::HasFeature",
+                                           vertex1, vertex7, "has");
     graph->addEdge(edge1);
     graph->addEdge(edge2);
     graph->addEdge(edge3);
     graph->addEdge(edge4);
+    graph->addEdge(edge5);
 }
 
 } // end namespace io
