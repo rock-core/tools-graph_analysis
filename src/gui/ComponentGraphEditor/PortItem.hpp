@@ -23,6 +23,12 @@ class PortItem : public VertexItemBase
     PortItem(GraphWidget *graphWidget, graph_analysis::Port::Ptr vertex,
              QGraphicsItem *parent);
     virtual ~PortItem();
+
+    virtual void updateStrings() = 0;
+
+  protected:
+    QGraphicsTextItem *mpLabel;
+    QGraphicsRectItem *mpRect;
 };
 
 } // end namespace gui

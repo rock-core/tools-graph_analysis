@@ -4,13 +4,10 @@
 #include <QGraphicsItemGroup>
 
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
-#include <graph_analysis/gui/ComponentGraphEditor/PortItem.hpp>
 
 #include <graph_analysis/gui/ComponentGraphEditor/InputPort.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/PortItem.hpp>
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
-
-
-#include <QPainterPath>
 
 namespace graph_analysis
 {
@@ -25,7 +22,7 @@ class InputPortItem : public PortItem
 {
   public:
     InputPortItem(GraphWidget *graphWidget,
-                  graph_analysis::Port::Ptr vertex, QGraphicsItem *parent);
+                  graph_analysis::InputPort::Ptr vertex, QGraphicsItem *parent);
     virtual ~InputPortItem();
     virtual int type() const { return InputPortItemType; };
 
@@ -33,12 +30,10 @@ class InputPortItem : public PortItem
                QWidget *widget = 0);
     QRectF boundingRect() const;
 
+    void updateStrings();
+
   protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
-  private:
-    QGraphicsTextItem *mpLabel;
-    QGraphicsRectItem *mpRect;
 };
 
 } // end namespace gui

@@ -4,13 +4,10 @@
 #include <QGraphicsItemGroup>
 
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
-#include <graph_analysis/gui/VertexItemBase.hpp>
 
 #include <graph_analysis/gui/ComponentGraphEditor/OutputPort.hpp>
 #include <graph_analysis/gui/ComponentGraphEditor/PortItem.hpp>
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
-
-class QGraphicsSceneMouseEvent;
 
 namespace graph_analysis
 {
@@ -29,16 +26,14 @@ class OutputPortItem : public PortItem
     virtual ~OutputPortItem();
     virtual int type() const { return OutputPortItemType; };
 
-void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+    QRectF boundingRect() const;
+
+    void updateStrings();
 
   protected:
-    // drag-n drops are started here
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
-  private:
-    QGraphicsTextItem *mpLabel;
-    QGraphicsRectItem *mpRect;
 };
 
 } // end namespace gui

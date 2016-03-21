@@ -79,7 +79,8 @@ void ComponentGraphEditor::updateLayout()
     {
         Vertex::Ptr vertex = nodeIt->current();
 
-        // creating new node items
+        // this widget only knows one type of "top level item", and this is the
+        // component. so creating then:
         graph_analysis::Component::Ptr comp =
             dynamic_pointer_cast<Component>(vertex);
         if(comp)

@@ -55,6 +55,8 @@ void EdgeItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
+// reimplement "shape()" because the default implementation calls
+// "boundingRect()" -- we are not rect!
 QPainterPath EdgeItemSimple::shape() const
 {
     QPainterPath path;

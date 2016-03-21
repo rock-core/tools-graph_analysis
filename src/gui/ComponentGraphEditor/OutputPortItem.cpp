@@ -14,16 +14,19 @@ OutputPortItem::OutputPortItem(GraphWidget *graphWidget,
                              QGraphicsItem *parent)
     : PortItem(graphWidget, vertex, parent)
 {
-    mpLabel = new QGraphicsTextItem(QString("out: ")+QString(vertex->getLabel().c_str()), this);
-    mpRect = new QGraphicsRectItem(this);
-    mpRect->setRect(mpLabel->boundingRect());
-    mpRect->setPen(QPen(Qt::red));
+    updateStrings();
 }
 
 OutputPortItem::~OutputPortItem()
 {
-    delete mpLabel;
-    delete mpRect;
+}
+
+void OutputPortItem::updateStrings()
+{
+    LOG_INFO_S<<mpRect->parentItem();
+    mpLabel->setPlainText(QString("in: ") +
+                          QString(mpVertex->getLabel().c_str()));
+    mpRect->setRect(mpLabel->boundingRect());
 }
 
 void OutputPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)

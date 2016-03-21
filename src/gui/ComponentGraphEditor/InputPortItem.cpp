@@ -10,29 +10,29 @@ namespace gui {
 
 // kiss:
 InputPortItem::InputPortItem(GraphWidget *graphWidget,
-                             graph_analysis::Port::Ptr vertex,
+                             graph_analysis::InputPort::Ptr vertex,
                              QGraphicsItem *parent)
     : PortItem(graphWidget, vertex, parent)
 {
-    mpLabel = new QGraphicsTextItem(
-        QString("in: ") + QString(vertex->getLabel().c_str()), this);
-    mpRect = new QGraphicsRectItem(this);
-    mpRect->setRect(mpLabel->boundingRect());
-    mpRect->setPen(QPen(Qt::red));
-    setFlag(ItemIsMovable);
-    setZValue(20);
+    updateStrings();
 }
 
 InputPortItem::~InputPortItem()
 {
-    LOG_INFO_S<<parentItem();
-    delete mpLabel;
-    delete mpRect;
+}
+
+void InputPortItem::updateStrings()
+{
+    mpLabel->setPlainText(QString("in: ") +
+                          QString(mpVertex->getLabel().c_str()));
+    mpRect->setRect(mpLabel->boundingRect());
 }
 
 void InputPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     LOG_INFO_S << "InputPortItem: pressEvent";
+    // when this event is ignored it will be passed to other item on the same
+    // location (of the click)
     event->ignore();
 }
 
