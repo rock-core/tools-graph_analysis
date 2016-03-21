@@ -91,6 +91,19 @@ void ComponentGraphEditor::updateLayout()
         }
     }
 
+    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+
+        // creating new edge items
+        EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;
+        scene()->addItem(e);
+        e_map[edge] = e;
+
+        mpLayoutingGraph->addEdge(edge);
+        mpGVGraph->addEdge(edge);
+    }
+
     shuffle();
 }
 
