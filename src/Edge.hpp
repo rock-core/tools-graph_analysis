@@ -6,6 +6,8 @@
 
 namespace graph_analysis {
 
+    class BaseGraph;
+
 /**
  * \brief An Edge represents the link between two vertices
  * \details For the purpose of storing data in a edge, the storage type needs to be defined by inheriting
@@ -75,6 +77,8 @@ public:
      * \return true if edges meet at least one vertex
      */
     static bool areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1);
+
+    Edge::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const;
 
 protected:
     /**

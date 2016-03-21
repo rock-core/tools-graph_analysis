@@ -1,4 +1,5 @@
 #include "Vertex.hpp"
+#include "BaseGraph.hpp"
 
 namespace graph_analysis {
 
@@ -12,6 +13,11 @@ Vertex::Ptr Vertex::clone() const
     Vertex::Ptr vertex( getClone());
     vertex->disassociateFromAll();
     return vertex;
+}
+
+Vertex::Ptr Vertex::getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const
+{
+    return pGraph->getVertex(getId(pGraph->getId()));
 }
 
 std::string Vertex::toString() const
@@ -31,5 +37,7 @@ std::string Vertex::toString(uint32_t indent) const
         return hspace + getClassName();
     }
 }
+
+
 
 } // end namespace graph_analysis

@@ -1,4 +1,5 @@
 #include "Edge.hpp"
+#include "BaseGraph.hpp"
 #include <sstream>
 
 namespace graph_analysis {
@@ -66,6 +67,11 @@ std::vector<Vertex::Ptr> Edge::getInvolvedVertices(const Edge::Ptr& e0, const Ed
 bool Edge::areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1)
 {
     return getInvolvedVertices(e0, e1).size() < 4;
+}
+
+Edge::Ptr Edge::getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const
+{
+    return pGraph->getEdge(getId(pGraph->getId()));
 }
 
 }

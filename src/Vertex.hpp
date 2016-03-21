@@ -6,6 +6,8 @@
 namespace graph_analysis
 {
 
+class BaseGraph;
+
 /**
  * \brief A vertex inherited to allow storing data of any type
  * \details For the purpose of storing data with a vertex, the storage type needs to inherit
@@ -35,6 +37,8 @@ public:
      * \return class type
      */
     static std::string vertexType() { return "graph_analysis::Vertex"; }
+
+    Vertex::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph>& pGraph) const;
 
     /**
      * Convert element to string
