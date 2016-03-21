@@ -1,13 +1,13 @@
 #include <boost/test/unit_test.hpp>
 #include <graph_analysis/WeightedEdge.hpp>
-#include <graph_analysis/algorithms/DFS.hpp>
+#include <graph_analysis/algorithms/BFS.hpp>
 
 using namespace graph_analysis;
 using namespace graph_analysis::algorithms;
 
-BOOST_AUTO_TEST_SUITE(algorithms_dfs)
+BOOST_AUTO_TEST_SUITE(algorithms_bfs)
 
-BOOST_AUTO_TEST_CASE(simple_dfs_1)
+BOOST_AUTO_TEST_CASE(simple_bfs_1)
 {
     graph_analysis::BaseGraph::Ptr graph = BaseGraph::getInstance();
 
@@ -45,13 +45,14 @@ BOOST_AUTO_TEST_CASE(simple_dfs_1)
     graph->addEdge(e3);
 
 
-    DFSVisitor::Ptr visitor(new DFSVisitor());
-    DFS dfs(graph, visitor);
-    dfs.run(v0);
+    BFSVisitor::Ptr visitor(new BFSVisitor());
+    BFS bfs(graph, visitor);
+    bfs.run(v0);
 
 }
 
-BOOST_AUTO_TEST_CASE(simple_dfs_2)
+
+BOOST_AUTO_TEST_CASE(simple_bfs_2)
 {
     graph_analysis::BaseGraph::Ptr graph = BaseGraph::getInstance();
 
@@ -137,10 +138,9 @@ BOOST_AUTO_TEST_CASE(simple_dfs_2)
     graph->addEdge(e9);
     graph->addEdge(ex);
 
-
-    DFSVisitor::Ptr visitor(new DFSVisitor());
-    DFS dfs(graph, visitor);
-    dfs.run(v0);
+    BFSVisitor::Ptr visitor(new BFSVisitor());
+    BFS bfs(graph, visitor);
+    bfs.run(v0);
 
 }
 BOOST_AUTO_TEST_SUITE_END()

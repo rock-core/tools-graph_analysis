@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED regex)
+find_package(Boost REQUIRED regex filesystem system)
 rock_library(graph_analysis
     SOURCES
         BaseGraph.cpp
@@ -16,6 +16,7 @@ rock_library(graph_analysis
         VertexIterable.cpp
         VertexIterator.cpp
         VertexTypeManager.cpp
+        algorithms/BFS.cpp
         algorithms/ConstraintViolation.cpp
         algorithms/CorrelationClustering.cpp
         algorithms/DFS.cpp
@@ -108,6 +109,8 @@ rock_library(graph_analysis
         VertexTypeManager.hpp
         WeightedEdge.hpp
         WeightedVertex.hpp
+        algorithms/BFS.hpp
+        algorithms/BFSVisitor.hpp
         algorithms/ConstraintViolation.hpp
         algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
@@ -221,6 +224,8 @@ set_target_properties(graph_analysis PROPERTIES LINK_FLAGS ${graph_analysis-link
 rock_executable(graph_analysis-bm Benchmark.cpp
     DEPS graph_analysis
     DEPS_PLAIN rt
+        Boost_FILESYSTEM
+        Boost_SYSTEM
     NOINSTALL)
 
 rock_executable(graph_analysis-gui gui/Main.cpp
