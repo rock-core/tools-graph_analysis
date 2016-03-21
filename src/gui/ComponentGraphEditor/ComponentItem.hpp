@@ -13,6 +13,8 @@ namespace graph_analysis
 namespace gui
 {
 
+class InputPortItem;
+class OutputPortItem;
 class GraphWidget;
 
 /* simplest possible implementation: just a box with two strings -- type and
@@ -29,6 +31,8 @@ class ComponentItem : public VertexItemBase
     QGraphicsTextItem *mpLabel;
     QGraphicsTextItem *mpClassName;
     QGraphicsRectItem *mpRect;
+    QVector<InputPortItem*> mvInputPorts;
+    QVector<OutputPortItem*> mvOutputPorts;
 };
 
 } // end namespace gui
