@@ -17,7 +17,7 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
                            graph_analysis::Edge::Ptr edge,
                            VertexItemBase *source, VertexItemBase *target,
                            QGraphicsItem *parent)
-    : QGraphicsItemGroup(parent), mpEdge(edge), mpGraphWidget(graphWidget),
+    : QGraphicsItem(parent), mpEdge(edge), mpGraphWidget(graphWidget),
       mpSource(source), mpTarget(target)
 {
     setAcceptedMouseButtons(Qt::NoButton);
@@ -46,16 +46,14 @@ void EdgeItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
     // Set the underlaying edge as focused element
     mpGraphWidget->setFocusedElement(mpEdge);
-    QGraphicsItemGroup::hoverEnterEvent(event);
+    QGraphicsItem::hoverEnterEvent(event);
 }
 
 void EdgeItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     mpGraphWidget->clearFocus();
-    QGraphicsItemGroup::hoverLeaveEvent(event);
+    QGraphicsItem::hoverLeaveEvent(event);
 }
-
-QRectF EdgeItemBase::boundingRect() const { return childrenBoundingRect(); }
 
 QPainterPath EdgeItemSimple::shape() const
 {
@@ -157,6 +155,14 @@ void EdgeItemSimple::adjust()
     mpArrowHead->setPolygon(QPolygonF() << mpLine->line().p2() << destArrowP1
                                         << destArrowP2);
 }
+
+void EdgeItemSimple::paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *option,
+                           QWidget *widget)
+{
+}
+
+QRectF EdgeItemSimple::boundingRect() const { return childrenBoundingRect(); }
 
 } // end namespace gui
 } // end namespace graph_analysis

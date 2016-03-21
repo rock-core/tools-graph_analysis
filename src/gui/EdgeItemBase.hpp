@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_EDGEITEMBASE_HPP
 #define GRAPH_ANALYSIS_GUI_EDGEITEMBASE_HPP
 
-#include <QGraphicsItemGroup>
+#include <QGraphicsItem>
 #include <graph_analysis/Edge.hpp>
 
 #include "GraphicsItemTypes.hpp"
@@ -20,7 +20,7 @@ class VertexItemBase;
  * \brief graphical node representation interface
  * \details used as polymorphic base for several graphical node implementations
  */
-class EdgeItemBase : public QGraphicsItemGroup
+class EdgeItemBase : public QGraphicsItem
 {
   public:
     /**
@@ -39,8 +39,6 @@ class EdgeItemBase : public QGraphicsItemGroup
     virtual int type() const { return EdgeItemBaseType; };
 
     virtual void adjust();
-
-    virtual QRectF boundingRect() const;
 
     /// getter method for retrieving the underlying conceptual graph edge
     graph_analysis::Edge::Ptr getEdge() const { return mpEdge; }
@@ -77,8 +75,13 @@ class EdgeItemSimple : public EdgeItemBase
     ~EdgeItemSimple();
     virtual int type() const { return EdgeItemSimpleType; };
 
+    // to be called when the positions of connected vertices changes
     void adjust();
 
+  protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+    QRectF boundingRect() const;
     virtual QPainterPath shape() const;
 
   private:

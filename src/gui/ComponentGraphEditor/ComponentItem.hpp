@@ -8,6 +8,8 @@
 
 #include <graph_analysis/gui/ComponentGraphEditor/Component.hpp>
 
+class QGraphicsSceneMouseEvent;
+
 namespace graph_analysis
 {
 namespace gui
@@ -26,6 +28,13 @@ class ComponentItem : public VertexItemBase
                   graph_analysis::Component::Ptr vertex, QGraphicsItem *parent);
     ~ComponentItem();
     virtual int type() const { return ComponentItemType; };
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+    QRectF boundingRect() const;
+
+  protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
   private:
     QGraphicsTextItem *mpLabel;

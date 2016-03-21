@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_VERTEXITEMBASE_HPP
 #define GRAPH_ANALYSIS_GUI_VERTEXITEMBASE_HPP
 
-#include <QGraphicsItemGroup>
+#include <QGraphicsItem>
 #include <graph_analysis/Vertex.hpp>
 
 #include "GraphicsItemTypes.hpp"
@@ -19,7 +19,7 @@ class GraphWidget;
  * \brief graphical node representation interface
  * \details used as polymorphic base for several graphical node implementations
  */
-class VertexItemBase : public QGraphicsItemGroup
+class VertexItemBase : public QGraphicsItem
 {
   public:
     /**
@@ -36,8 +36,6 @@ class VertexItemBase : public QGraphicsItemGroup
 
     virtual int type() const { return VertexItemBaseType; };
 
-    virtual QRectF boundingRect() const;
-
     /// getter method for retrieving the underlying conceptual graph vertex
     graph_analysis::Vertex::Ptr getVertex() const { return mpVertex; }
     /// setter method for updating the underlying conceptual graph vertex
@@ -45,6 +43,7 @@ class VertexItemBase : public QGraphicsItemGroup
     /// getter method for retrieving the parent managing graph widget
     GraphWidget *getGraphWidget() const { return mpGraphWidget; }
 
+    // callback to trigger the base-graph to adjust all edges of this vertex
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
   protected:
@@ -69,6 +68,10 @@ class VertexItemSimple : public VertexItemBase
                      graph_analysis::Vertex::Ptr vertex, QGraphicsItem *parent);
     ~VertexItemSimple();
     virtual int type() const { return VertexItemSimpleType; };
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+    QRectF boundingRect() const;
 
   private:
     QGraphicsTextItem *mpLabel;

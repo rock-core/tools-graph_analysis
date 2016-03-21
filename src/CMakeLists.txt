@@ -59,13 +59,14 @@ rock_library(graph_analysis
         gui/items/Label.cpp
         gui/BaseGraphView/BaseGraphView.cpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
-        gui/ComponentGraphEditor/ComponentItem.cpp
-        gui/ComponentGraphEditor/OutputPortItem.cpp
-        gui/ComponentGraphEditor/InputPortItem.cpp
         gui/ComponentGraphEditor/Component.cpp
+        gui/ComponentGraphEditor/ComponentItem.cpp
         gui/ComponentGraphEditor/Port.cpp
+        gui/ComponentGraphEditor/PortItem.cpp
         gui/ComponentGraphEditor/InputPort.cpp
+        gui/ComponentGraphEditor/InputPortItem.cpp
         gui/ComponentGraphEditor/OutputPort.cpp
+        gui/ComponentGraphEditor/OutputPortItem.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
@@ -156,12 +157,14 @@ rock_library(graph_analysis
         gui/items/Label.hpp
         gui/BaseGraphView/BaseGraphView.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.hpp
+        gui/ComponentGraphEditor/Component.hpp
         gui/ComponentGraphEditor/ComponentItem.hpp
-        gui/ComponentGraphEditor/OutputPortItem.hpp
-        gui/ComponentGraphEditor/InputPortItem.hpp
         gui/ComponentGraphEditor/Port.hpp
+        gui/ComponentGraphEditor/PortItem.hpp
         gui/ComponentGraphEditor/InputPort.hpp
+        gui/ComponentGraphEditor/InputPortItem.hpp
         gui/ComponentGraphEditor/OutputPort.hpp
+        gui/ComponentGraphEditor/OutputPortItem.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp

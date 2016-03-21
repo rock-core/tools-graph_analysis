@@ -15,7 +15,7 @@ namespace gui {
 VertexItemBase::VertexItemBase(GraphWidget *graphWidget,
                                graph_analysis::Vertex::Ptr vertex,
                                QGraphicsItem *parent)
-    : QGraphicsItemGroup(parent), mpVertex(vertex), mpGraphWidget(graphWidget)
+    : QGraphicsItem(parent), mpVertex(vertex), mpGraphWidget(graphWidget)
 {
     // this enabled "itemChange()" notifications. when this item moves, it has
     // to tell its edges to follow it, so they stay visually connected. this is
@@ -26,22 +26,17 @@ VertexItemBase::VertexItemBase(GraphWidget *graphWidget,
     setCacheMode(DeviceCoordinateCache);
 }
 
-QRectF VertexItemBase::boundingRect() const
-{
-    return childrenBoundingRect();
-}
-
 void VertexItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     // Set the underlaying vertex as focused element
     mpGraphWidget->setFocusedElement(mpVertex);
-    QGraphicsItemGroup::hoverEnterEvent(event);
+    QGraphicsItem::hoverEnterEvent(event);
 }
 
 void VertexItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     mpGraphWidget->clearFocus();
-    QGraphicsItemGroup::hoverLeaveEvent(event);
+    QGraphicsItem::hoverLeaveEvent(event);
 }
 
 QVariant VertexItemBase::itemChange(GraphicsItemChange change,
@@ -88,14 +83,20 @@ VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
     setFlag(ItemIsMovable);
 }
 
-
-
 VertexItemSimple::~VertexItemSimple()
 {
     delete mpLabel;
     delete mpClassName;
     delete mpRect;
 }
+
+void VertexItemSimple::paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *option,
+                           QWidget *widget)
+{
+}
+
+QRectF VertexItemSimple::boundingRect() const { return childrenBoundingRect(); }
 
 } // end namespace gui
 } // end namespace graph_analysis

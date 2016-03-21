@@ -7,8 +7,10 @@
 #include <graph_analysis/gui/VertexItemBase.hpp>
 
 #include <graph_analysis/gui/ComponentGraphEditor/OutputPort.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/PortItem.hpp>
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
 
+class QGraphicsSceneMouseEvent;
 
 namespace graph_analysis
 {
@@ -19,13 +21,20 @@ class GraphWidget;
 
 /* simplest possible implementation: just a box with two strings -- type and
  * label */
-class OutputPortItem : public VertexItemBase
+class OutputPortItem : public PortItem
 {
   public:
     OutputPortItem(GraphWidget *graphWidget,
                   graph_analysis::OutputPort::Ptr vertex, QGraphicsItem *parent);
-    ~OutputPortItem();
+    virtual ~OutputPortItem();
     virtual int type() const { return OutputPortItemType; };
+
+void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
+QRectF boundingRect() const;
+
+  protected:
+    // drag-n drops are started here
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
   private:
     QGraphicsTextItem *mpLabel;

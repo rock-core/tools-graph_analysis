@@ -7,6 +7,8 @@
 #include <graph_analysis/gui/ComponentGraphEditor/OutputPortItem.hpp>
 #include <graph_analysis/gui/ComponentGraphEditor/InputPortItem.hpp>
 
+#include <base/Logging.hpp>
+
 namespace graph_analysis {
 namespace gui {
 
@@ -104,6 +106,19 @@ ComponentItem::~ComponentItem()
         i.remove();
     }
 }
+
+void ComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    LOG_INFO_S << "ComponentItem: pressEvent";
+}
+
+void ComponentItem::paint(QPainter *painter,
+                          const QStyleOptionGraphicsItem *option,
+                          QWidget *widget)
+{
+}
+
+QRectF ComponentItem::boundingRect() const { return childrenBoundingRect(); }
 
 } // end namespace gui
 } // end namespace graph_analysis

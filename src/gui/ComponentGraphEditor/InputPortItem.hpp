@@ -4,11 +4,13 @@
 #include <QGraphicsItemGroup>
 
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
-#include <graph_analysis/gui/VertexItemBase.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/PortItem.hpp>
 
 #include <graph_analysis/gui/ComponentGraphEditor/InputPort.hpp>
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
 
+
+#include <QPainterPath>
 
 namespace graph_analysis
 {
@@ -19,13 +21,20 @@ class GraphWidget;
 
 /* simplest possible implementation: just a box with two strings -- type and
  * label */
-class InputPortItem : public VertexItemBase
+class InputPortItem : public PortItem
 {
   public:
     InputPortItem(GraphWidget *graphWidget,
-                  graph_analysis::InputPort::Ptr vertex, QGraphicsItem *parent);
-    ~InputPortItem();
+                  graph_analysis::Port::Ptr vertex, QGraphicsItem *parent);
+    virtual ~InputPortItem();
     virtual int type() const { return InputPortItemType; };
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget = 0);
+    QRectF boundingRect() const;
+
+  protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
   private:
     QGraphicsTextItem *mpLabel;

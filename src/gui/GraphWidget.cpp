@@ -246,7 +246,7 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
         QGraphicsView::mousePressEvent(event);
         return;
     }
-    LOG_INFO_S << "press";
+    LOG_INFO_S << "GraphWidget: pressEvent";
 
     QGraphicsView::mousePressEvent(event);
 }

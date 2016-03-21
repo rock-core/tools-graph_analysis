@@ -7,7 +7,7 @@ namespace graph_analysis {
 namespace gui {
 
 enum GraphicsItemTypes {
-    NodeItemType = QGraphicsItemGroup::UserType + 1,
+    NodeItemType = QGraphicsItem::UserType + 1,
     EdgeItemType,
     FeatureItemType,
     VertexItemBaseType,
