@@ -139,15 +139,4 @@ protected:
 } // end namespace boost_graph
 } // end namespace graph_analysis
 
-
-//EdgeList result;
-//EdgeRange range = boost::edges(mGraph);
-//for(EdgeIterator it = range.first; it != range.second; it++)
-//{
-//        if(type == 0 || mGraph[*it].edge_type == type)
-//        {
-//                mapInsert(it, result);
-//        }
-//}
-//return result;
 #endif // GRAPH_ANALYSIS_BOOST_DIRECTED_GRAPH_HPP
