@@ -105,7 +105,7 @@ struct Benchmark
 
         if(addEdgesStats.n() > 0)
         {
-            file_addEdges << numberOfNodes << " "
+            file_addEdges << numberOfEdges << " "
                 << addEdgesStats.mean() << " "
                 << addEdgesStats.stdev()
                 << std::endl;
@@ -113,7 +113,7 @@ struct Benchmark
 
         if(getEdgesStats.n() > 0)
         {
-            file_getEdges << numberOfNodes << " "
+            file_getEdges << numberOfEdges << " "
                 << getEdgesStats.mean() << " "
                 << getEdgesStats.stdev()
                 << std::endl;
@@ -121,7 +121,7 @@ struct Benchmark
 
         if(iterateEdgesStats.n() > 0)
         {
-            file_iterateEdges << numberOfNodes << " "
+            file_iterateEdges << numberOfEdges << " "
                 << iterateEdgesStats.mean() << " "
                 << iterateEdgesStats.stdev()
                 << std::endl;
@@ -129,7 +129,7 @@ struct Benchmark
 
         if(iterateStlEdgesStats.n() > 0)
         {
-            file_iterateStlEdges << numberOfNodes << " "
+            file_iterateStlEdges << numberOfEdges << " "
                 << iterateStlEdgesStats.mean() << " "
                 << iterateStlEdgesStats.stdev()
                 << std::endl;
@@ -148,19 +148,21 @@ int main(int argc, char** argv)
 {
     int nodeMax = 10000000;
     int edgeMax = 10000000;
-    int splits = 10;
     int epochs = 10;
-//
-    if(argc < 3)
+    int splits = 10;
+
+    if(argc < 3 || argc == 4)
     {
-        printf("usage: %s [-h|--help] <number-of-nodes> <number-of-edges> [<number-of-splits>]\n", argv[0]);
+        printf("usage: %s [-h|--help] <number-of-nodes> <number-of-edges> <number-of-epochs> <number-of-splits>\n", argv[0]);
         exit(0);
     }
     nodeMax = ::boost::lexical_cast<int>(argv[1]);
     edgeMax = ::boost::lexical_cast<int>(argv[2]);
-    if(argc == 4)
+
+    if(argc == 5)
     {
-        splits = ::boost::lexical_cast<int>(argv[3]);
+        epochs = ::boost::lexical_cast<int>(argv[3]);
+        splits = ::boost::lexical_cast<int>(argv[4]);
     }
 
     std::vector<Benchmark> benchmarks;
@@ -181,13 +183,13 @@ int main(int argc, char** argv)
         BaseGraph::Ptr graphX = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
         std::string graphName = graphX->getImplementationTypeName();
 
-        for (int j=1; j <= splits; ++j)
+        for (int s=1; s <= splits; ++s)
         {
             Benchmark graphMark(graphName);
-            graphMark.numberOfNodes = nodeMax* j / splits;
-            graphMark.numberOfEdges = edgeMax* j / splits;
+            graphMark.numberOfNodes = nodeMax* s / splits;
+            graphMark.numberOfEdges = edgeMax* s / splits;
 
-            for(int s = 0; s < epochs; ++s)
+            for(int e = 0; e < epochs; ++e)
             {
                 BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
 
@@ -283,22 +285,22 @@ int main(int argc, char** argv)
                 stop = base::Time::now();
                 graphMark.iterateStlEdgesStats.update((stop-start).toSeconds());
 
-            } // end of loop of ten
+            } // epochs
             graphMark.save(logDir);
             benchmarks.push_back(graphMark);
-        }
+        } // splits
     }
 
     // LEMON
     {
-        for (int j=1; j <= splits; ++j)
+        for (int s=1; s <= splits; ++s)
         {
             Benchmark graphMark("lemon");
-            for(int s = 0; s < epochs; ++s)
-            {
-                graphMark.numberOfNodes = nodeMax * j / splits;
-                graphMark.numberOfEdges = edgeMax * j / splits;
+            graphMark.numberOfNodes = nodeMax * s / splits;
+            graphMark.numberOfEdges = edgeMax * s / splits;
 
+            for(int e = 0; e < epochs; ++e)
+            {
                 graph_analysis::lemon::DirectedGraph graph;
                 ::lemon::ListDigraph& rawGraph = graph.raw();
 
@@ -354,20 +356,21 @@ int main(int argc, char** argv)
             } // epochs
             graphMark.save(logDir);
             benchmarks.push_back(graphMark);
-        }
+        } // splits
     }
 
     {
-        for(int j = 1; j <= splits; ++j)
+        for(int s = 1; s <= splits; ++s)
         {
             Benchmark graphMark("snap");
-            for(int s = 0; s < epochs; ++s)
+            graphMark.numberOfNodes = nodeMax * s / splits;
+            graphMark.numberOfEdges = edgeMax * s / splits;
+
+            for(int e = 0; e < epochs; ++e)
             {
                 //printf("snap -- raw\n");
                 graph_analysis::snap::DirectedGraph graph;
                 graph_analysis::snap::DirectedGraph::graph_t& rawGraph  = graph.raw();
-                graphMark.numberOfNodes = nodeMax * j / splits;
-                graphMark.numberOfEdges = edgeMax * j / splits;
 
                 //printf("    -- adding nodes\n");
                 start = base::Time::now();
