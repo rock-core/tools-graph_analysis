@@ -93,18 +93,8 @@ ComponentItem::~ComponentItem()
     delete mpLabel;
     delete mpClassName;
     delete mpRect;
-    QMutableVectorIterator<OutputPortItem *> o(mvOutputPorts);
-    while(o.hasNext())
-    {
-        delete o.next();
-        o.remove();
-    }
-    QMutableVectorIterator<InputPortItem *> i(mvInputPorts);
-    while(i.hasNext())
-    {
-        delete i.next();
-        i.remove();
-    }
+    // do NOT delete item created in this class. these will hopefully be
+    // deleted from the outside.
 }
 
 void ComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)

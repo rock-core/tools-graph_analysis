@@ -30,6 +30,12 @@ class OutputPortItem : public PortItem
                QWidget *widget = 0);
     QRectF boundingRect() const;
 
+    virtual QPointF getConnector() const
+    {
+        return mapToScene(QLineF(boundingRect().topLeft(), boundingRect().bottomLeft())
+            .pointAt(0.5));
+    };
+
     void updateStrings();
 
   protected:

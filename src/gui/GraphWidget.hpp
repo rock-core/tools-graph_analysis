@@ -54,8 +54,10 @@ public:
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItemBase*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, VertexItemBase*> VertexItemMap;
 
-    EdgeItemMap e_map;
-    VertexItemMap v_map;
+    void registerEdgeItem(graph_analysis::Edge::Ptr e, EdgeItemBase* i){ e_map[e] = i;};
+    void registerVertexItem(graph_analysis::Vertex::Ptr v, VertexItemBase* i){ v_map[v] = i;};
+    void deregisterEdgeItem(graph_analysis::Edge::Ptr e, EdgeItemBase* i){ e_map.erase(e);};
+    void deregisterVertexItem(graph_analysis::Vertex::Ptr v, VertexItemBase* i){ v_map.erase(v);};
 
     /**
      * \brief constructor
@@ -108,7 +110,7 @@ public:
      */
     virtual void clearVisualization();
 
-    /// \param msg Message in the statusbar
+    // \param msg Message in the statusbar
     /// \param time Number of milliseconds the message will be held on screen
     virtual void updateStatus(const std::string& msg, int timeInMS = 10) const;
 
@@ -152,6 +154,9 @@ protected:
 
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
+
+    EdgeItemMap e_map;
+    VertexItemMap v_map;
 };
 
 } // end namespace gui

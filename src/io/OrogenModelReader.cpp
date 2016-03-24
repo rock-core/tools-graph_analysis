@@ -46,7 +46,7 @@ void OrogenModelReader::read(const std::string &filename,
     Edge::Ptr edge3 = eManager->createEdge("graph_analysis::HasFeature",
                                            vertex2, vertex4, "has");
     Edge::Ptr edge4 = eManager->createEdge("graph_analysis::PortConnection",
-                                           vertex3, vertex4, "some-connection");
+                                           vertex4, vertex3, "some-connection");
 
     Edge::Ptr edge5 = eManager->createEdge("graph_analysis::HasFeature",
                                            vertex1, vertex7, "has");

@@ -11,6 +11,7 @@ namespace graph_analysis
 namespace gui
 {
 
+class EdgeItemBase;
 class GraphWidget;
 
 /**
@@ -31,8 +32,14 @@ class VertexItemBase : public QGraphicsItem
     VertexItemBase(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex,
                    QGraphicsItem *parent);
 
+    void registerConnection(EdgeItemBase *item);
+    void deregisterConnection(EdgeItemBase *item);
+    QVector<EdgeItemBase *> adjustConnections;
+
+    virtual QPointF getConnector() const {return mapToScene(boundingRect().center()); };
+
     /// destructor
-    virtual ~VertexItemBase(){};
+    virtual ~VertexItemBase();
 
     virtual int type() const { return VertexItemBaseType; };
 
@@ -72,6 +79,8 @@ class VertexItemSimple : public VertexItemBase
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget = 0);
     QRectF boundingRect() const;
+
+    virtual QPointF getConnector() const {return mapToScene(boundingRect().center()); };
 
   private:
     QGraphicsTextItem *mpLabel;

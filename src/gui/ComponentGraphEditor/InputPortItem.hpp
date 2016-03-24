@@ -32,6 +32,12 @@ class InputPortItem : public PortItem
 
     void updateStrings();
 
+    virtual QPointF getConnector() const
+    {
+        return mapToScene(QLineF(boundingRect().topRight(), boundingRect().bottomRight())
+            .pointAt(0.5));
+    };
+
   protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 };

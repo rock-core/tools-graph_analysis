@@ -24,6 +24,14 @@ VertexItemBase::VertexItemBase(GraphWidget *graphWidget,
     // this cache-mode is for items that can move. not sure if we can move --
     // edges can move?
     setCacheMode(DeviceCoordinateCache);
+
+    mpGraphWidget->registerVertexItem(mpVertex, this);
+    LOG_INFO_S<<"registered vertex " << this << " " << mpVertex << " " << mpVertex->getClassName();
+}
+
+VertexItemBase::~VertexItemBase()
+{
+    mpGraphWidget->deregisterVertexItem(mpVertex, this);
 }
 
 void VertexItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
@@ -39,6 +47,24 @@ void VertexItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
+void VertexItemBase::registerConnection(EdgeItemBase *item)
+{
+    adjustConnections.push_back(item);
+}
+
+void VertexItemBase::deregisterConnection(EdgeItemBase *item)
+{
+    int index = adjustConnections.indexOf(item);
+    if(index != -1)
+    {
+        adjustConnections.remove(index);
+    }
+    else
+    {
+        LOG_ERROR_S << "ba";
+    }
+}
+
 QVariant VertexItemBase::itemChange(GraphicsItemChange change,
                                     const QVariant &value)
 {
@@ -46,10 +72,9 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
     {
     case ItemPositionHasChanged:
     {
-        // FIXME: proper API
-        if(BaseGraphView *view = dynamic_cast<BaseGraphView *>(mpGraphWidget))
+        for(int i = 0; i < adjustConnections.size(); ++i)
         {
-            view->adjustEdgesOf(this);
+            adjustConnections.at(i)->adjust();
         }
         break;
     }

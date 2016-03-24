@@ -88,8 +88,15 @@ void ComponentGraphEditor::updateLayout()
         {
             ComponentItem *v = new ComponentItem(this, comp, NULL);
             scene()->addItem(v);
-            v_map[vertex] = v;
         }
+    }
+
+    std::map<graph_analysis::Vertex::Ptr, VertexItemBase *>::iterator jt =
+        v_map.begin();
+    LOG_INFO_S<<"ALL VERTICES REGISTERED:";
+    for(; jt != v_map.end(); jt++)
+    {
+        LOG_INFO_S << jt->second->getVertex()->getClassName();
     }
 
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
@@ -104,14 +111,21 @@ void ComponentGraphEditor::updateLayout()
             continue;
         }
 
-        VertexItemBase *sourceItem = v_map[conn->getSourcePort(mpGraph)->getComponent(mpGraph)];
-        VertexItemBase *targetItem = v_map[conn->getTargetPort(mpGraph)->getComponent(mpGraph)];
+        VertexItemBase *sourcePortItem =
+            v_map[conn->getSourcePort(mpGraph)];
+        VertexItemBase *targetPortItem =
+            v_map[conn->getTargetPort(mpGraph)];
+
+        LOG_INFO_S << conn->getSourcePort(mpGraph)->getClassName();
+        LOG_INFO_S << sourcePortItem << " " << targetPortItem;
+        LOG_INFO_S << sourcePortItem->getVertex()->getClassName();
+
 
         // creating new edge items
-        PortConnectionItem* e = new PortConnectionItem(this, conn, sourceItem, targetItem, NULL) ;
+        PortConnectionItem *e = new PortConnectionItem(
+            this, conn, sourcePortItem, targetPortItem, NULL);
 
         scene()->addItem(e);
-        e_map[conn] = e;
     }
 
     shuffle();

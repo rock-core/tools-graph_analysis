@@ -67,6 +67,8 @@ rock_library(graph_analysis
         gui/ComponentGraphEditor/InputPortItem.cpp
         gui/ComponentGraphEditor/OutputPort.cpp
         gui/ComponentGraphEditor/OutputPortItem.cpp
+        gui/ComponentGraphEditor/PortConnection.cpp
+        gui/ComponentGraphEditor/PortConnectionItem.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
@@ -165,6 +167,8 @@ rock_library(graph_analysis
         gui/ComponentGraphEditor/InputPortItem.hpp
         gui/ComponentGraphEditor/OutputPort.hpp
         gui/ComponentGraphEditor/OutputPortItem.hpp
+        gui/ComponentGraphEditor/PortConnection.hpp
+        gui/ComponentGraphEditor/PortConnectionItem.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp

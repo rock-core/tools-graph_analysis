@@ -60,7 +60,6 @@ void BaseGraphView::updateLayout()
         // creating new node items
         VertexItemSimple* v = new VertexItemSimple(this, vertex, NULL) ;
         scene()->addItem(v);
-        v_map[vertex] = v;
 
         // this? dunno!
         mpLayoutingGraph->addVertex(vertex);
@@ -78,7 +77,6 @@ void BaseGraphView::updateLayout()
         // creating new edge items
         EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;
         scene()->addItem(e);
-        e_map[edge] = e;
 
         mpLayoutingGraph->addEdge(edge);
         mpGVGraph->addEdge(edge);

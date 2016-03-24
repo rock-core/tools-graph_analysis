@@ -25,42 +25,38 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
     , mpSource(source)
     , mpTarget(target)
 {
+    // "edges" will not react to mouse-clicks. ever.
     setAcceptedMouseButtons(Qt::NoButton);
 
+    // tell the two vertices we are connected to that we want to be updated
+    // when their position changes
+    //
+    // problem: what if these are no longer member of the scene?
+    //
+    // IDEA: how about creating the connected edge via a QGraphicsItemGroup of
+    // the two ports?
     mpSource->registerConnection(this);
     mpTarget->registerConnection(this);
-
-    if(!edge->getSourceVertex())
-    {
-        LOG_ERROR_S << "no source in " << edge->getLabel() << "?";
-    }
-    if(!edge->getTargetVertex())
-    {
-        LOG_ERROR_S << "no target in " << edge->getLabel() << "?";
-    }
-    if(!source)
-    {
-        LOG_ERROR_S << "no source for " << edge->getLabel() << "?";
-    }
-    if(!target)
-    {
-        LOG_ERROR_S << "no target for " << edge->getLabel() << "?";
-    }
 }
 
 EdgeItemBase::~EdgeItemBase()
 {
-    // this crashes
-    /* mpSource->deregisterConnection(this); */
-    /* mpTarget->deregisterConnection(this); */
+    // this crashes because the pointers seize to be valid during tearing down
+    // of the scene
+    mpSource->deregisterConnection(this);
+    mpTarget->deregisterConnection(this);
 }
 
 void EdgeItemBase::adjust()
 {
-    mSourcePoint =
-        mapToScene(mpSource->pos() + mpSource->boundingRect().center());
-    mTargetPoint =
-        mapToScene(mpTarget->pos() + mpTarget->boundingRect().center());
+    mSourcePoint = mpSource->getConnector();
+    mTargetPoint = mpTarget->getConnector();
+    /* qDebug()<<"1"<<mSourcePoint<<mTargetPoint; */
+    /* mSourcePoint = */
+    /*     mapToScene(mpSource->pos() + mpSource->boundingRect().center()); */
+    /* mTargetPoint = */
+    /*     mapToScene(mpTarget->pos() + mpTarget->boundingRect().center()); */
+    /* qDebug()<<"2"<<mSourcePoint<<mTargetPoint; */
 
     prepareGeometryChange();
 }
@@ -105,6 +101,8 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
     setFlag(ItemIsMovable, false);
 
     adjust();
+
+    mpGraphWidget->registerEdgeItem(mpEdge, this);
 }
 
 EdgeItemSimple::~EdgeItemSimple()
@@ -113,6 +111,8 @@ EdgeItemSimple::~EdgeItemSimple()
     delete mpClassName;
     delete mpLine;
     delete mpArrowHead;
+
+    mpGraphWidget->deregisterEdgeItem(mpEdge, this);
 }
 
 QPointF EdgeItemSimple::getIntersectionPoint(QGraphicsItem *item) const
