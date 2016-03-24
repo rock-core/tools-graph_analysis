@@ -26,7 +26,6 @@ VertexItemBase::VertexItemBase(GraphWidget *graphWidget,
     setCacheMode(DeviceCoordinateCache);
 
     mpGraphWidget->registerVertexItem(mpVertex, this);
-    LOG_INFO_S<<"registered vertex " << this << " " << mpVertex << " " << mpVertex->getClassName();
 }
 
 VertexItemBase::~VertexItemBase()
@@ -61,7 +60,8 @@ void VertexItemBase::deregisterConnection(EdgeItemBase *item)
     }
     else
     {
-        LOG_ERROR_S << "ba";
+        LOG_ERROR_S << "uoh, cannot find item for edge"
+                    << item->getEdge()->toString();
     }
 }
 

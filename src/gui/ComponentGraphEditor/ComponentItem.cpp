@@ -38,17 +38,20 @@ ComponentItem::ComponentItem(GraphWidget *graphWidget,
         std::vector<OutputPort::Ptr>::const_iterator it = ports.begin();
         for(; it != ports.end(); it++)
         {
-            OutputPortItem *oPort = new OutputPortItem(graphWidget, *it, this);
+            OutputPortItem* oPort = new OutputPortItem(graphWidget, *it, this);
             if(mvOutputPorts.isEmpty())
             {
-                oPort->setPos(
-                    QPointF(penForRect.width(),
-                            mpClassName->boundingRect().bottomLeft().y() +
-                                oPort->boundingRect().height()));
+                oPort->setPos(QPointF(childrenBoundingRect().width() -
+                                          penForRect.width() -
+                                          oPort->boundingRect().width(),
+                                      mpClassName->boundingRect().height() +
+                                          oPort->boundingRect().height()));
             }
             else
             {
-                oPort->setPos(QPointF(penForRect.width(),
+                oPort->setPos(QPointF(childrenBoundingRect().width() -
+                                          penForRect.width() -
+                                          oPort->boundingRect().width(),
                                       mvOutputPorts.last()->pos().y() +
                                           oPort->boundingRect().height()));
             }
@@ -62,20 +65,17 @@ ComponentItem::ComponentItem(GraphWidget *graphWidget,
         std::vector<InputPort::Ptr>::const_iterator it = ports.begin();
         for(; it != ports.end(); it++)
         {
-            InputPortItem *iPort = new InputPortItem(graphWidget, *it, this);
+            InputPortItem* iPort = new InputPortItem(graphWidget, *it, this);
             if(mvInputPorts.isEmpty())
             {
-                iPort->setPos(QPointF(childrenBoundingRect().width() -
-                                          penForRect.width() -
-                                          iPort->boundingRect().width(),
-                                      mpClassName->boundingRect().height() +
-                                          iPort->boundingRect().height()));
+                iPort->setPos(
+                    QPointF(penForRect.width(),
+                            mpClassName->boundingRect().bottomLeft().y() +
+                                iPort->boundingRect().height()));
             }
             else
             {
-                iPort->setPos(QPointF(childrenBoundingRect().width() -
-                                          penForRect.width() -
-                                          iPort->boundingRect().width(),
+                iPort->setPos(QPointF(penForRect.width(),
                                       mvInputPorts.last()->pos().y() +
                                           iPort->boundingRect().height()));
             }

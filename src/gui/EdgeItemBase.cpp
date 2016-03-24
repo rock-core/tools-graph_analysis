@@ -36,7 +36,6 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
     // IDEA: how about creating the connected edge via a QGraphicsItemGroup
     // containing the two ports (which are also contained elsewhere) plus the
     // actual edge?
-    LOG_INFO_S<<"registering at"<<mpSource->getVertex()->toString();
     mpSource->registerConnection(this);
     mpTarget->registerConnection(this);
 }
@@ -55,7 +54,6 @@ void EdgeItemBase::adjust()
 {
     mSourcePoint = mpSource->getConnector();
     mTargetPoint = mpTarget->getConnector();
-    qDebug()<<"1"<<mSourcePoint<<mTargetPoint;
 
     prepareGeometryChange();
 }
@@ -98,8 +96,6 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
     mpArrowHead->setBrush(QBrush(Qt::black));
 
     setFlag(ItemIsMovable, false);
-
-    adjust();
 
     mpGraphWidget->registerEdgeItem(mpEdge, this);
 }

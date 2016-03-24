@@ -34,8 +34,8 @@ class InputPortItem : public PortItem
 
     virtual QPointF getConnector() const
     {
-        return mapToScene(QLineF(boundingRect().topRight(), boundingRect().bottomRight())
-            .pointAt(0.5));
+        return mapToScene(QLineF(boundingRect().topLeft(),
+                                 boundingRect().bottomLeft()).pointAt(0.5));
     };
 
   protected:

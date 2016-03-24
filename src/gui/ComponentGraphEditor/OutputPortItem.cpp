@@ -23,7 +23,7 @@ OutputPortItem::~OutputPortItem()
 
 void OutputPortItem::updateStrings()
 {
-    mpLabel->setPlainText(QString("in: ") +
+    mpLabel->setPlainText(QString("out: ") +
                           QString(mpVertex->getLabel().c_str()));
     mpRect->setRect(mpLabel->boundingRect());
 }
