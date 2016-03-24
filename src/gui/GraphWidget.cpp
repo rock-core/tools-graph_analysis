@@ -74,24 +74,11 @@ void GraphWidget::updateStatus(const std::string& message, int timeout) const
 void GraphWidget::clearVisualization()
 {
 
-    /* std::map<graph_analysis::Edge::Ptr, EdgeItemBase*>::iterator it = e_map.begin(); */
-    /* for (;it!=e_map.end();it++) { */
-    /*     if (it->second->parentItem()) */
-    /*         scene()->removeItem(it->second); */
-    /*     delete it->second; */
-    /* } */
-    /* std::map<graph_analysis::Vertex::Ptr, VertexItemBase*>::iterator jt = v_map.begin(); */
-    /* for (;jt!=v_map.end();jt++) { */
-    /*     if (it->second->parentItem()) */
-    /*         scene()->removeItem(jt->second); */
-    /*     delete jt->second; */
-    /* } */
-
     // does this leak memory like a bucket...
     e_map.clear();
     v_map.clear();
     // ...or does calling "clear()" on the scene correctly disposes of all the
-    // objetcs allocated?
+    // objetcs allocated? looks like to, the dtors are called... puh!
     scene()->clear();
 
     if(mpGVGraph)
@@ -277,7 +264,10 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
     QGraphicsView::mouseReleaseEvent(event);
 }
 
+void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
+{
 
+}
 
 void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
 {

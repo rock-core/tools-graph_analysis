@@ -97,7 +97,11 @@ public:
     /**
      * Trigger the layouting of the graph widget
      */
-    virtual void updateLayout() { throw std::runtime_error("graph_analysis::gui::GraphWidget::updateLayout: not implemented"); }
+    virtual void updateLayout()
+    {
+        throw std::runtime_error(
+            "graph_analysis::gui::GraphWidget::updateLayout: not implemented");
+    }
 
     // SELECT/ DESELECT
     void setFocusedElement(const GraphElement::Ptr& element);
@@ -154,6 +158,7 @@ protected:
 
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
+    void mouseDoubleClickEvent(QMouseEvent* event);
 
     EdgeItemMap e_map;
     VertexItemMap v_map;

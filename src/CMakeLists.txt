@@ -58,6 +58,7 @@ rock_library(graph_analysis
         gui/items/Feature.cpp
         gui/items/Label.cpp
         gui/BaseGraphView/BaseGraphView.cpp
+        gui/BaseGraphView/AddVertexDialog.cpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
         gui/ComponentGraphEditor/Component.cpp
         gui/ComponentGraphEditor/ComponentItem.cpp
@@ -158,6 +159,7 @@ rock_library(graph_analysis
         gui/items/Feature.hpp
         gui/items/Label.hpp
         gui/BaseGraphView/BaseGraphView.hpp
+        gui/BaseGraphView/AddVertexDialog.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.hpp
         gui/ComponentGraphEditor/Component.hpp
         gui/ComponentGraphEditor/ComponentItem.hpp
@@ -208,6 +210,7 @@ rock_library(graph_analysis
         gui/dialogs/SwapFeaturesDialog.hpp
         gui/dialogs/SwapFiltersDialog.hpp
         gui/BaseGraphView/BaseGraphView.hpp
+        gui/BaseGraphView/AddVertexDialog.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
     DEPS_PKGCONFIG QtGui
     UI
