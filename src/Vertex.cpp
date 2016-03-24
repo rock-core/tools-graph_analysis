@@ -1,4 +1,5 @@
 #include "Vertex.hpp"
+#include "BaseGraph.hpp"
 
 namespace graph_analysis {
 
@@ -32,4 +33,8 @@ std::string Vertex::toString(uint32_t indent) const
     }
 }
 
+Vertex::Ptr Vertex::getSharedPointer(const shared_ptr<BaseGraph>& pGraph) const
+{
+    return pGraph->getVertex(getId(pGraph->getId()));
+}
 } // end namespace graph_analysis

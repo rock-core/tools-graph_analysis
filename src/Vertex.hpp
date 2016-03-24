@@ -6,6 +6,8 @@
 namespace graph_analysis
 {
 
+class BaseGraph;
+
 /**
  * \brief A vertex inherited to allow storing data of any type
  * \details For the purpose of storing data with a vertex, the storage type needs to inherit
@@ -46,6 +48,16 @@ public:
      * spaces)
      */
     virtual std::string toString(uint32_t indentation) const;
+
+    /**
+     * in order for child-classes to iterate the graph, a way to obtain the
+     * shared pointer actually respresenting this vertex on a particular graph is
+     * needed.
+     *
+     * \param pGraph shared pointer to the graph where this vertex is contained
+     * \return shared pointer of this vertex belonging to the given graph
+     */
+    Vertex::Ptr getSharedPointer(const shared_ptr<BaseGraph>& pGraph) const;
 
 protected:
     /**
