@@ -8,7 +8,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <base/Logging.hpp>
 
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
 #include <vector>
 #include <iostream>
 
@@ -49,8 +49,8 @@ public:
     BaseGraph::Ptr copy() const;
     BaseGraph::Ptr newInstance() const;
 
-    typedef std::unordered_map<GraphElementId, VertexDescriptor> VertexMap;
-    typedef std::unordered_map<GraphElementId, EdgeDescriptor> EdgeMap;
+    typedef boost::unordered_map<GraphElementId, VertexDescriptor> VertexMap;
+    typedef boost::unordered_map<GraphElementId, EdgeDescriptor> EdgeMap;
 
     /**
      * \brief Add a vertex
