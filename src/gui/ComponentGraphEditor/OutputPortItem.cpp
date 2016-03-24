@@ -23,7 +23,6 @@ OutputPortItem::~OutputPortItem()
 
 void OutputPortItem::updateStrings()
 {
-    LOG_INFO_S<<mpRect->parentItem();
     mpLabel->setPlainText(QString("in: ") +
                           QString(mpVertex->getLabel().c_str()));
     mpRect->setRect(mpLabel->boundingRect());

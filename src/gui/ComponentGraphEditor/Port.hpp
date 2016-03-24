@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <graph_analysis/Vertex.hpp>
+#include <graph_analysis/BaseGraph.hpp>
 
 namespace graph_analysis {
+
+class Component;
 
 /**
  * \brief A Port vertex inherited to allow storing data of Port type
@@ -25,6 +28,10 @@ public:
      * \return class type
      */
     static std::string vertexType() { return "graph_analysis::Port"; }
+
+    // which component this port is attached to. not so nice: forward
+    // declaration of shared pointer...
+    shared_ptr<Component> getComponent(const BaseGraph::Ptr &graph) const;
 
 protected:
     /**

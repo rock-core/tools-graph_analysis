@@ -38,8 +38,6 @@ class ComponentGraphEditor : public GraphWidget
     MyEdgeItemMap e_map;
     MyVertexItemMap v_map;
 
-    void adjustEdgesOf(VertexItemBase* vertex);
-
     /**
      * deletes all internal information and rebuilds the visualization
      * according to the current BaseGraph. Respawns all graphical elements by

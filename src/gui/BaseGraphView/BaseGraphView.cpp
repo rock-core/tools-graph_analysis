@@ -56,9 +56,6 @@ void BaseGraphView::updateLayout()
     while(nodeIt->next())
     {
         Vertex::Ptr vertex = nodeIt->current();
-        if (!vertex.get()) {
-            LOG_ERROR_S << "hua";
-        }
 
         // creating new node items
         VertexItemSimple* v = new VertexItemSimple(this, vertex, NULL) ;
@@ -87,15 +84,6 @@ void BaseGraphView::updateLayout()
         mpGVGraph->addEdge(edge);
     }
     shuffle();
-}
-
-void BaseGraphView::adjustEdgesOf(VertexItemBase *vertexItem) {
-
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator(vertexItem->getVertex());
-    while(edgeIt->next())
-    {
-        e_map[edgeIt->current()]->adjust();
-    }
 }
 
 } // end namespace gui

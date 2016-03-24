@@ -34,7 +34,7 @@ class EdgeItemBase : public QGraphicsItem
                  QGraphicsItem *parent);
 
     /// destructor
-    virtual ~EdgeItemBase(){};
+    virtual ~EdgeItemBase();
 
     virtual int type() const { return EdgeItemBaseType; };
 

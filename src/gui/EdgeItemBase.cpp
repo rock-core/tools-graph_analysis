@@ -13,14 +13,22 @@ namespace graph_analysis
 namespace gui
 {
 
+// edge-routing mit graphviz: https://github.com/jmachowinski/qgv
+
 EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
                            graph_analysis::Edge::Ptr edge,
                            VertexItemBase *source, VertexItemBase *target,
                            QGraphicsItem *parent)
-    : QGraphicsItem(parent), mpEdge(edge), mpGraphWidget(graphWidget),
-      mpSource(source), mpTarget(target)
+    : QGraphicsItem(parent)
+    , mpEdge(edge)
+    , mpGraphWidget(graphWidget)
+    , mpSource(source)
+    , mpTarget(target)
 {
     setAcceptedMouseButtons(Qt::NoButton);
+
+    mpSource->registerConnection(this);
+    mpTarget->registerConnection(this);
 
     if(!edge->getSourceVertex())
     {
@@ -30,6 +38,21 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
     {
         LOG_ERROR_S << "no target in " << edge->getLabel() << "?";
     }
+    if(!source)
+    {
+        LOG_ERROR_S << "no source for " << edge->getLabel() << "?";
+    }
+    if(!target)
+    {
+        LOG_ERROR_S << "no target for " << edge->getLabel() << "?";
+    }
+}
+
+EdgeItemBase::~EdgeItemBase()
+{
+    // this crashes
+    /* mpSource->deregisterConnection(this); */
+    /* mpTarget->deregisterConnection(this); */
 }
 
 void EdgeItemBase::adjust()

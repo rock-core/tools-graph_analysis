@@ -28,9 +28,10 @@
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
-#include <graph_analysis/gui/ComponentGraphEditor/ComponentItem.hpp>
 #include <graph_analysis/gui/ComponentGraphEditor/PortConnection.hpp>
 #include <graph_analysis/gui/ComponentGraphEditor/HasFeature.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/ComponentItem.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/PortConnectionItem.hpp>
 
 using namespace graph_analysis;
 
@@ -94,22 +95,27 @@ void ComponentGraphEditor::updateLayout()
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
+        Edge::Ptr edge = edgeIt->current();
+
+        graph_analysis::PortConnection::Ptr conn =
+            dynamic_pointer_cast<PortConnection>(edge);
+        if(!conn)
+        {
+            continue;
+        }
+
+        VertexItemBase *sourceItem = v_map[conn->getSourcePort(mpGraph)->getComponent(mpGraph)];
+        VertexItemBase *targetItem = v_map[conn->getTargetPort(mpGraph)->getComponent(mpGraph)];
 
         // creating new edge items
-        EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;
-        scene()->addItem(e);
-        e_map[edge] = e;
+        PortConnectionItem* e = new PortConnectionItem(this, conn, sourceItem, targetItem, NULL) ;
 
-        mpLayoutingGraph->addEdge(edge);
-        mpGVGraph->addEdge(edge);
+        scene()->addItem(e);
+        e_map[conn] = e;
     }
 
     shuffle();
 }
-
-void ComponentGraphEditor::adjustEdgesOf(VertexItemBase *vertexItem) {
-}
-
 
 } // end namespace gui
 } // end namespace graph_analysis

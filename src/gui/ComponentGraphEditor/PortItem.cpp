@@ -22,5 +22,6 @@ PortItem::~PortItem()
     delete mpRect;
 }
 
+
 } // end namespace gui
 } // end namespace graph_analysis
