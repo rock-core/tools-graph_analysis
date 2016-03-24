@@ -22,5 +22,9 @@ PortConnectionItem::PortConnectionItem(GraphWidget *graphWidget,
 {
 }
 
+PortConnectionItem::~PortConnectionItem()
+{
+}
+
 } // end namespace gui
 } // end namespace graph_analysis

@@ -60,6 +60,8 @@ QString ComponentGraphEditor::getClassName() const
     return "graph_analysis::gui::ComponentGraphEditor";
 }
 
+// differs from the base-implementation in that here, only things of type
+// "ComponentItem" are shuffled.
 void ComponentGraphEditor::shuffle()
 {
     int diff = 600;
@@ -84,19 +86,13 @@ void ComponentGraphEditor::updateLayout()
         // component. so creating then:
         graph_analysis::Component::Ptr comp =
             dynamic_pointer_cast<Component>(vertex);
-        if(comp)
+        if(!comp)
         {
-            ComponentItem *v = new ComponentItem(this, comp, NULL);
-            scene()->addItem(v);
+            continue;
         }
-    }
 
-    std::map<graph_analysis::Vertex::Ptr, VertexItemBase *>::iterator jt =
-        v_map.begin();
-    LOG_INFO_S<<"ALL VERTICES REGISTERED:";
-    for(; jt != v_map.end(); jt++)
-    {
-        LOG_INFO_S << jt->second->getVertex()->getClassName();
+        ComponentItem *v = new ComponentItem(this, comp, NULL);
+        scene()->addItem(v);
     }
 
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
@@ -111,23 +107,14 @@ void ComponentGraphEditor::updateLayout()
             continue;
         }
 
-        VertexItemBase *sourcePortItem =
-            v_map[conn->getSourcePort(mpGraph)];
-        VertexItemBase *targetPortItem =
-            v_map[conn->getTargetPort(mpGraph)];
-
-        LOG_INFO_S << conn->getSourcePort(mpGraph)->getClassName();
-        LOG_INFO_S << sourcePortItem << " " << targetPortItem;
-        LOG_INFO_S << sourcePortItem->getVertex()->getClassName();
-
+        VertexItemBase *sourcePortItem = v_map[conn->getSourcePort(mpGraph)];
+        VertexItemBase *targetPortItem = v_map[conn->getTargetPort(mpGraph)];
 
         // creating new edge items
         PortConnectionItem *e = new PortConnectionItem(
             this, conn, sourcePortItem, targetPortItem, NULL);
-
         scene()->addItem(e);
     }
-
     shuffle();
 }
 

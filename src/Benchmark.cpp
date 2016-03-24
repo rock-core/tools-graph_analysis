@@ -60,15 +60,15 @@ struct Benchmark
     {
 
         std::ios_base::openmode mode = std::ofstream::out | std::ofstream::app;
-        std::ofstream file_addNodes    (getLogFilename(logDir,label,"addNodes"), mode );
-        std::ofstream file_getNodes    (getLogFilename(logDir,label,"getNodes"), mode );
-        std::ofstream file_iterateNodes(getLogFilename(logDir,label,"iterateNodes"), mode);
-        std::ofstream file_iterateStlNodes(getLogFilename(logDir,label,"iterateStlNodes"), mode);
+        std::ofstream file_addNodes    (getLogFilename(logDir,label,"addNodes").c_str(), mode );
+        std::ofstream file_getNodes    (getLogFilename(logDir,label,"getNodes").c_str(), mode );
+        std::ofstream file_iterateNodes(getLogFilename(logDir,label,"iterateNodes").c_str(), mode);
+        std::ofstream file_iterateStlNodes(getLogFilename(logDir,label,"iterateStlNodes").c_str(), mode);
 
-        std::ofstream file_addEdges    (getLogFilename(logDir,label,"addEdges"), mode);
-        std::ofstream file_getEdges    (getLogFilename(logDir,label,"getEdges"), mode);
-        std::ofstream file_iterateEdges(getLogFilename(logDir,label,"iterateEdges"), mode);
-        std::ofstream file_iterateStlEdges(getLogFilename(logDir,label,"iterateStlEdges"), mode);
+        std::ofstream file_addEdges    (getLogFilename(logDir,label,"addEdges").c_str(), mode);
+        std::ofstream file_getEdges    (getLogFilename(logDir,label,"getEdges").c_str(), mode);
+        std::ofstream file_iterateEdges(getLogFilename(logDir,label,"iterateEdges").c_str(), mode);
+        std::ofstream file_iterateStlEdges(getLogFilename(logDir,label,"iterateStlEdges").c_str(), mode);
 
         if(addNodesStats.n() > 0)
         {
@@ -438,7 +438,7 @@ int main(int argc, char** argv)
         }
     }
 
-    std::ofstream logFile(Benchmark::getLogFilename(logDir,"benchmark","report"));
+    std::ofstream logFile(Benchmark::getLogFilename(logDir,"benchmark","report").c_str());
     std::vector<Benchmark>::const_iterator cit = benchmarks.begin();
     for(; cit != benchmarks.end(); ++cit)
     {

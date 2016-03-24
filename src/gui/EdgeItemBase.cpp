@@ -33,30 +33,29 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
     //
     // problem: what if these are no longer member of the scene?
     //
-    // IDEA: how about creating the connected edge via a QGraphicsItemGroup of
-    // the two ports?
+    // IDEA: how about creating the connected edge via a QGraphicsItemGroup
+    // containing the two ports (which are also contained elsewhere) plus the
+    // actual edge?
+    LOG_INFO_S<<"registering at"<<mpSource->getVertex()->toString();
     mpSource->registerConnection(this);
     mpTarget->registerConnection(this);
 }
 
 EdgeItemBase::~EdgeItemBase()
 {
-    // this crashes because the pointers seize to be valid during tearing down
-    // of the scene
-    mpSource->deregisterConnection(this);
-    mpTarget->deregisterConnection(this);
+    // this can crash during tearing down of a scene because the pointers seize
+    // to be valid. guarding against this the expensive way...
+    if (scene()->items().contains(mpSource))
+        mpSource->deregisterConnection(this);
+    if (scene()->items().contains(mpTarget))
+        mpTarget->deregisterConnection(this);
 }
 
 void EdgeItemBase::adjust()
 {
     mSourcePoint = mpSource->getConnector();
     mTargetPoint = mpTarget->getConnector();
-    /* qDebug()<<"1"<<mSourcePoint<<mTargetPoint; */
-    /* mSourcePoint = */
-    /*     mapToScene(mpSource->pos() + mpSource->boundingRect().center()); */
-    /* mTargetPoint = */
-    /*     mapToScene(mpTarget->pos() + mpTarget->boundingRect().center()); */
-    /* qDebug()<<"2"<<mSourcePoint<<mTargetPoint; */
+    qDebug()<<"1"<<mSourcePoint<<mTargetPoint;
 
     prepareGeometryChange();
 }

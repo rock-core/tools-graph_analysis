@@ -24,7 +24,7 @@ class PortConnectionItem : public EdgeItemSimple
                        VertexItemBase *source, VertexItemBase *target,
                        QGraphicsItem *parent);
 
-    virtual ~PortConnectionItem(){};
+    virtual ~PortConnectionItem();
 
     virtual int type() const { return PortConnectionItemType; };
 

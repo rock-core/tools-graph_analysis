@@ -24,22 +24,22 @@ class GraphWidget;
 class ComponentItem : public VertexItemBase
 {
   public:
-    ComponentItem(GraphWidget *graphWidget,
-                  graph_analysis::Component::Ptr vertex, QGraphicsItem *parent);
+    ComponentItem(GraphWidget* graphWidget,
+                  graph_analysis::Component::Ptr vertex, QGraphicsItem* parent);
     ~ComponentItem();
     virtual int type() const { return ComponentItemType; };
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget = 0);
     QRectF boundingRect() const;
 
   protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
   private:
-    QGraphicsTextItem *mpLabel;
-    QGraphicsTextItem *mpClassName;
-    QGraphicsRectItem *mpRect;
+    QGraphicsTextItem* mpLabel;
+    QGraphicsTextItem* mpClassName;
+    QGraphicsRectItem* mpRect;
     QVector<InputPortItem*> mvInputPorts;
     QVector<OutputPortItem*> mvOutputPorts;
 };

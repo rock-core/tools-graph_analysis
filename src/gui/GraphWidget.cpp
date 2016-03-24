@@ -73,21 +73,25 @@ void GraphWidget::updateStatus(const std::string& message, int timeout) const
 
 void GraphWidget::clearVisualization()
 {
-    std::map<graph_analysis::Edge::Ptr, EdgeItemBase*>::iterator it = e_map.begin();
-    for (;it!=e_map.end();it++) {
-        scene()->removeItem(it->second);
-        delete it->second;
-    }
-    std::map<graph_analysis::Vertex::Ptr, VertexItemBase*>::iterator jt = v_map.begin();
-    for (;jt!=v_map.end();jt++) {
-        scene()->removeItem(jt->second);
-        delete jt->second;
-    }
 
-    // does this leak memory like a bucket?
+    /* std::map<graph_analysis::Edge::Ptr, EdgeItemBase*>::iterator it = e_map.begin(); */
+    /* for (;it!=e_map.end();it++) { */
+    /*     if (it->second->parentItem()) */
+    /*         scene()->removeItem(it->second); */
+    /*     delete it->second; */
+    /* } */
+    /* std::map<graph_analysis::Vertex::Ptr, VertexItemBase*>::iterator jt = v_map.begin(); */
+    /* for (;jt!=v_map.end();jt++) { */
+    /*     if (it->second->parentItem()) */
+    /*         scene()->removeItem(jt->second); */
+    /*     delete jt->second; */
+    /* } */
+
+    // does this leak memory like a bucket...
     e_map.clear();
     v_map.clear();
-
+    // ...or does calling "clear()" on the scene correctly disposes of all the
+    // objetcs allocated?
     scene()->clear();
 
     if(mpGVGraph)

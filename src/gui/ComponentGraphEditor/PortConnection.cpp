@@ -21,13 +21,6 @@ OutputPort::Ptr PortConnection::getSourcePort(const BaseGraph::Ptr &graph) const
 InputPort::Ptr PortConnection::getTargetPort(const BaseGraph::Ptr &graph) const
 {
     Edge::Ptr edgePtr = getSharedPointerFromGraph(graph);
-
-    LOG_INFO_S << edgePtr << " " << edgePtr->getTargetVertex()->getClassName()
-               << " " << edgePtr->getSourceVertex()->getClassName() << " " << edgePtr->getLabel();
-
-    InputPort::Ptr prt = dynamic_pointer_cast<InputPort>(edgePtr->getTargetVertex());
-    LOG_INFO_S << edgePtr << " " << edgePtr->getTargetVertex() << " " << prt;
-
     return dynamic_pointer_cast<InputPort>(edgePtr->getTargetVertex());
 }
 

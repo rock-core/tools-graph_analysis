@@ -66,7 +66,7 @@ void VertexItemBase::deregisterConnection(EdgeItemBase *item)
 }
 
 QVariant VertexItemBase::itemChange(GraphicsItemChange change,
-                                    const QVariant &value)
+                                    const QVariant& value)
 {
     switch(change)
     {

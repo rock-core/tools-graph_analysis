@@ -60,10 +60,6 @@ void BaseGraphView::updateLayout()
         // creating new node items
         VertexItemSimple* v = new VertexItemSimple(this, vertex, NULL) ;
         scene()->addItem(v);
-
-        // this? dunno!
-        mpLayoutingGraph->addVertex(vertex);
-        mpGVGraph->addNode(vertex);
     }
 
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
@@ -77,9 +73,6 @@ void BaseGraphView::updateLayout()
         // creating new edge items
         EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;
         scene()->addItem(e);
-
-        mpLayoutingGraph->addEdge(edge);
-        mpGVGraph->addEdge(edge);
     }
     shuffle();
 }
