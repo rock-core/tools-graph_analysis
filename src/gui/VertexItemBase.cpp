@@ -20,7 +20,7 @@ VertexItemBase::VertexItemBase(GraphWidget *graphWidget,
     // this enabled "itemChange()" notifications. when this item moves, it has
     // to tell its edges to follow it, so they stay visually connected. this is
     // done by calling "adjust()" for the respective edge
-    setFlag(ItemSendsGeometryChanges);
+    setFlag(ItemSendsScenePositionChanges);
     // this cache-mode is for items that can move. not sure if we can move --
     // edges can move?
     setCacheMode(DeviceCoordinateCache);
@@ -70,7 +70,7 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
 {
     switch(change)
     {
-    case ItemPositionHasChanged:
+    case ItemScenePositionHasChanged:
     {
         for(int i = 0; i < adjustConnections.size(); ++i)
         {
