@@ -14,6 +14,7 @@
 #include <graph_analysis/EdgeTypeManager.hpp>
 
 #include <graph_analysis/gui/WidgetManager.hpp>
+#include <graph_analysis/gui/BaseGraphView/AddVertexDialog.hpp>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -266,7 +267,16 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
 
 void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
-
+    AddVertexDialog dialog;
+    dialog.exec();
+    if(dialog.result() == QDialog::Accepted)
+    {
+        graph()->addVertex(VertexTypeManager::getInstance()->createVertex(
+            dialog.getClassname().toStdString(),
+            dialog.getLabel().toStdString()));
+        clearVisualization();
+        update();
+    }
 }
 
 void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)

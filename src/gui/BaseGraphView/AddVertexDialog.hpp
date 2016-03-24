@@ -3,6 +3,11 @@
 
 #include <QDialog>
 
+namespace Ui
+{
+class AddVertexDialog;
+}
+
 namespace graph_analysis
 {
 namespace gui
@@ -12,9 +17,11 @@ class AddVertexDialog : public QDialog
 {
     Q_OBJECT
 
-  public:
-    AddVertexDialog(QWidget* parent = NULL);
-    virtual ~AddVertexDialog(){};
+    ::Ui::AddVertexDialog* mpUi;
+
+public:
+    AddVertexDialog(QDialog* parent = NULL);
+    virtual ~AddVertexDialog();
 
     QString getClassname() const;
     QString getLabel() const;

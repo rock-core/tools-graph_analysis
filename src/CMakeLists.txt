@@ -214,6 +214,7 @@ rock_library(graph_analysis
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
     DEPS_PKGCONFIG QtGui
     UI
+        gui/BaseGraphView/AddVertexDialog.ui
         gui/dialogs/add_filter_dialog_gui.ui
         gui/dialogs/add_graph_element.ui
         gui/dialogs/graph_analysis_gui.ui
