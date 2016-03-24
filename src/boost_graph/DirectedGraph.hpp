@@ -8,12 +8,12 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <base/Logging.hpp>
 
-#include <unordered_map>
+#include <map>
 #include <vector>
 #include <iostream>
 
 namespace graph_analysis {
-/// not using boost namespace here to avoid collisions
+/// no using boost namespace here to avoid collisions
 namespace boost_graph {
 
 //typedef boost::undirectedS GType;
@@ -49,8 +49,8 @@ public:
     BaseGraph::Ptr copy() const;
     BaseGraph::Ptr newInstance() const;
 
-    typedef std::unordered_map<GraphElementId, VertexDescriptor> VertexMap;
-    typedef std::unordered_map<GraphElementId, EdgeDescriptor> EdgeMap;
+    typedef std::map<GraphElementId, VertexDescriptor> VertexMap;
+    typedef std::map<GraphElementId, EdgeDescriptor> EdgeMap;
 
     /**
      * \brief Add a vertex
