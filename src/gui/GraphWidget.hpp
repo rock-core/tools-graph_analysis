@@ -54,11 +54,14 @@ public:
 
     typedef std::map<graph_analysis::Edge::Ptr, EdgeItemBase*> EdgeItemMap;
     typedef std::map<graph_analysis::Vertex::Ptr, VertexItemBase*> VertexItemMap;
+    typedef std::map<graph_analysis::Vertex::Ptr, QPointF> VertexItemCoordinateCache;
 
     void registerEdgeItem(graph_analysis::Edge::Ptr e, EdgeItemBase* i){ e_map[e] = i;};
     void registerVertexItem(graph_analysis::Vertex::Ptr v, VertexItemBase* i){ v_map[v] = i;};
     void deregisterEdgeItem(graph_analysis::Edge::Ptr e, EdgeItemBase* i){ e_map.erase(e);};
     void deregisterVertexItem(graph_analysis::Vertex::Ptr v, VertexItemBase* i){ v_map.erase(v);};
+
+    void cachePosition(graph_analysis::Vertex::Ptr v, QPointF p) { coordindate_map[v] = p; };
 
     /**
      * \brief constructor
@@ -163,6 +166,8 @@ protected:
 
     EdgeItemMap e_map;
     VertexItemMap v_map;
+    VertexItemCoordinateCache coordindate_map;
+
 };
 
 } // end namespace gui

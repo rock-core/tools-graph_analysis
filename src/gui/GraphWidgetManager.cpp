@@ -263,6 +263,7 @@ void GraphWidgetManager::importGraph()
     {
         fromFile(filename.toStdString());
         refresh();
+        shuffle();
     } else
     {
         updateStatus("Failed to import graph: aborted by user - an empty input filename was provided");

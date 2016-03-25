@@ -88,6 +88,8 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
         {
             adjustConnections.at(i)->adjust();
         }
+        // and store the new position in the main GraphWidget
+        getGraphWidget()->cachePosition(getVertex(), pos());
         break;
     }
     default:

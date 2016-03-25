@@ -127,40 +127,27 @@ void GraphWidget::updateLayoutView()
 {
     resetLayoutingGraph();
 
-    // implemented by GraphWidgets
-    // needs to populate the layouting graph as needed
+    // implemented by child-GraphWidgets. should create all QGraphicsItems of
+    // the respective scene. needs to populate the layouting graph as needed.
     updateLayout();
 
-    // apply layouting - i.e. loading the designated layouting base graph into GraphViz then repositioning the correspoding scene nodes
-    if(mLayout.toLower() != "force")
+            qDebug() << "restoring from cache. have"<<coordindate_map.size()<<"entries";
+    VertexItemCoordinateCache::iterator it = coordindate_map.begin();
+    for(; it != coordindate_map.end(); it++)
     {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        LOG_INFO_S << "GV started layouting the graph for '" << getClassName().toStdString()
-                   << "'. This can take a while ...";
-        base::Time start = base::Time::now();
-        mpGVGraph->setNodeAttribute("height", boost::lexical_cast<std::string>(mMaxNodeHeight));
-        mpGVGraph->setNodeAttribute("width" , boost::lexical_cast<std::string>(mMaxNodeWidth ));
-        LOG_INFO_S << "Applying layout: " << mLayout.toStdString();
-        mpGVGraph->applyLayout(mLayout.toStdString());
-        base::Time delay = base::Time::now() - start;
-        QApplication::restoreOverrideCursor();
-        LOG_INFO_S << "GV layouted the graph after " << delay.toMilliseconds() << "ms";
+        VertexItemBase* item = v_map[it->first];
+        if(item)
         {
-            using namespace graph_analysis::io;
-            std::vector<GVNode> nodes = mpGVGraph->nodes();
-            std::vector<GVNode>::const_iterator cit = nodes.begin();
-            for(; cit != nodes.end(); ++cit)
-            {
-                GVNode gvNode = *cit;
-                /* NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()]; */
-                /* if(!nodeItem) */
-                /* { */
-                /*     LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null"; */
-                /*     continue; */
-                /* } */
-                /* // repositioning node in a scaled fashion */
-                /* nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y()); */
-            }
+            // we have an item in the cache which is still in the scene. reuse
+            // the old coordinate
+            qDebug() << "setting pos from" << item->pos() << "to" << it->second;
+            item->setPos(it->second);
+        }
+        else
+        {
+            qDebug() << "vertex"<<it->first->toString().c_str()<<"not in cache";
+            // invalid entry in the coordinate cache. clean it.
+            coordindate_map.erase(it);
         }
     }
 }

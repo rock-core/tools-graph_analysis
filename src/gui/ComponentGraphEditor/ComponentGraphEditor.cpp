@@ -115,7 +115,6 @@ void ComponentGraphEditor::updateLayout()
             this, conn, sourcePortItem, targetPortItem, NULL);
         scene()->addItem(e);
     }
-    shuffle();
 }
 
 } // end namespace gui

@@ -74,7 +74,6 @@ void BaseGraphView::updateLayout()
         EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;
         scene()->addItem(e);
     }
-    shuffle();
 }
 
 } // end namespace gui
