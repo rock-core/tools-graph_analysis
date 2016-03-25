@@ -8,6 +8,7 @@
 #include <graph_analysis/gui/EdgeItemBase.hpp>
 
 #include <QGraphicsView>
+#include <QMimeData>
 
 namespace graph_analysis {
 namespace io {

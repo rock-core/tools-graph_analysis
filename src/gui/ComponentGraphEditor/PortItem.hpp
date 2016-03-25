@@ -27,8 +27,8 @@ class PortItem : public VertexItemBase
     virtual void updateStrings() = 0;
 
   protected:
-    QGraphicsTextItem *mpLabel;
     QGraphicsRectItem *mpRect;
+    QGraphicsTextItem *mpLabel;
 };
 
 } // end namespace gui

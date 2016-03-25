@@ -14,7 +14,10 @@
 #include <graph_analysis/EdgeTypeManager.hpp>
 
 #include <graph_analysis/gui/WidgetManager.hpp>
+#include <graph_analysis/gui/EdgeMimeData.hpp>
+
 #include <graph_analysis/gui/BaseGraphView/AddVertexDialog.hpp>
+#include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -22,6 +25,7 @@
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QKeyEvent>
+#include <QDebug>
 
 using namespace graph_analysis;
 
@@ -39,6 +43,7 @@ GraphWidget::GraphWidget(QWidget *parent)
 {
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
+    setAcceptDrops(true);
 }
 
 GraphWidget::~GraphWidget()
@@ -267,15 +272,77 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
 
 void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    AddVertexDialog dialog;
-    dialog.exec();
-    if(dialog.result() == QDialog::Accepted)
+    if(event->button() == Qt::LeftButton)
     {
-        graph()->addVertex(VertexTypeManager::getInstance()->createVertex(
-            dialog.getClassname().toStdString(),
-            dialog.getLabel().toStdString()));
-        clearVisualization();
-        update();
+        // no item where the user clicked
+        if(!itemAt(event->pos()))
+        {
+            AddVertexDialog dialog;
+            dialog.exec();
+            if(dialog.result() == QDialog::Accepted)
+            {
+                graph()->addVertex(
+                    VertexTypeManager::getInstance()->createVertex(
+                        dialog.getClassname().toStdString(),
+                        dialog.getLabel().toStdString()));
+                clearVisualization();
+                update();
+            }
+        }
+        else
+        {
+            Vertex::Ptr sourceVertex;
+            Vertex::Ptr targetVertex;
+            // obtain the vertex of the item the user clicked on
+            QList<QGraphicsItem*> clickedItems = items(event->pos());
+            for(int i = 0; i < clickedItems.size(); i++)
+            {
+                VertexItemBase* sourceItem =
+                    dynamic_cast<VertexItemBase*>(clickedItems.at(i));
+                if(sourceItem)
+                {
+                    sourceVertex = sourceItem->getVertex();
+                    break;
+                }
+            }
+            if(!sourceVertex)
+            {
+                LOG_ERROR_S << "could not find a source vertex for dragEvent";
+                return;
+            }
+
+            QDrag* drag = new QDrag(this);
+            // stores reference to the two vertices, so that the receiving side
+            // can do error-checking and store its vertex as target on success.
+            EdgeMimeData* mimeData = new EdgeMimeData(sourceVertex, targetVertex);
+
+            drag->setMimeData(mimeData);
+
+            // when this returns, the user finished its drag-operation
+            Qt::DropAction dropAction = drag->exec();
+
+            if(dropAction == Qt::MoveAction)
+            {
+                // check that the targetVertex got updated
+                if(!targetVertex)
+                {
+                    LOG_ERROR_S
+                        << "could not find a target vertex after dropEvent";
+                    return;
+                }
+                AddEdgeDialog dialog;
+                dialog.exec();
+                if(dialog.result() == QDialog::Accepted)
+                {
+                    Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(
+                        dialog.getClassname().toStdString(), sourceVertex,
+                        targetVertex, dialog.getLabel().toStdString());
+                    graph()->addEdge(edge);
+                    clearVisualization();
+                    update();
+                }
+            }
+        }
     }
 }
 

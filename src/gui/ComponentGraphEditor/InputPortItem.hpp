@@ -20,14 +20,17 @@ class GraphWidget;
  * label */
 class InputPortItem : public PortItem
 {
-  public:
-    InputPortItem(GraphWidget *graphWidget,
-                  graph_analysis::InputPort::Ptr vertex, QGraphicsItem *parent);
+public:
+    InputPortItem(GraphWidget* graphWidget,
+                  graph_analysis::InputPort::Ptr vertex, QGraphicsItem* parent);
     virtual ~InputPortItem();
-    virtual int type() const { return InputPortItemType; };
+    virtual int type() const
+    {
+        return InputPortItemType;
+    };
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget = 0);
     QRectF boundingRect() const;
 
     void updateStrings();
@@ -38,8 +41,13 @@ class InputPortItem : public PortItem
                                  boundingRect().bottomLeft()).pointAt(0.5));
     };
 
-  protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+protected:
+    void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
+    void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
+    void dropEvent(QGraphicsSceneDragDropEvent* event);
+
+protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 };
 
 } // end namespace gui

@@ -57,8 +57,10 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.cpp
         gui/items/Feature.cpp
         gui/items/Label.cpp
+        gui/EdgeMimeData.cpp
         gui/BaseGraphView/BaseGraphView.cpp
         gui/BaseGraphView/AddVertexDialog.cpp
+        gui/BaseGraphView/AddEdgeDialog.cpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
         gui/ComponentGraphEditor/Component.cpp
         gui/ComponentGraphEditor/ComponentItem.cpp
@@ -158,8 +160,10 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.hpp
         gui/items/Feature.hpp
         gui/items/Label.hpp
+        gui/EdgeMimeData.hpp
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
+        gui/BaseGraphView/AddEdgeDialog.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.hpp
         gui/ComponentGraphEditor/Component.hpp
         gui/ComponentGraphEditor/ComponentItem.hpp
@@ -211,10 +215,12 @@ rock_library(graph_analysis
         gui/dialogs/SwapFiltersDialog.hpp
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
+        gui/BaseGraphView/AddEdgeDialog.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/BaseGraphView/AddVertexDialog.ui
+        gui/BaseGraphView/AddEdgeDialog.ui
         gui/dialogs/add_filter_dialog_gui.ui
         gui/dialogs/add_graph_element.ui
         gui/dialogs/graph_analysis_gui.ui

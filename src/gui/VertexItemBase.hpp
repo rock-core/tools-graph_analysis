@@ -8,6 +8,9 @@
 
 namespace graph_analysis
 {
+
+class BaseGraph;
+
 namespace gui
 {
 
@@ -22,70 +25,115 @@ class GraphWidget;
  */
 class VertexItemBase : public QGraphicsItem
 {
-  public:
+public:
     /**
      * \brief constructor
      * \param graphWidget the parent and managing graph widget
      * \param vertex the internal conceptual vertex
      * \param parent the parent
      */
-    VertexItemBase(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex,
-                   QGraphicsItem *parent);
+    VertexItemBase(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex,
+                   QGraphicsItem* parent);
 
-    void registerConnection(EdgeItemBase *item);
-    void deregisterConnection(EdgeItemBase *item);
-    QVector<EdgeItemBase *> adjustConnections;
-
-    virtual QPointF getConnector() const {return mapToScene(boundingRect().center()); };
-
-    /// destructor
+    // destructor
     virtual ~VertexItemBase();
 
-    virtual int type() const { return VertexItemBaseType; };
+    virtual int type() const
+    {
+        return VertexItemBaseType;
+    };
+
+    /**
+     * mechanism where edges can register as "to-be-notified" on position
+     * change of this item
+     */
+    void registerConnection(EdgeItemBase* item);
+    void deregisterConnection(EdgeItemBase* item);
+    QVector<EdgeItemBase*> adjustConnections;
+
+    /**
+     * return a point where an edge should point to when it connects to this
+     * vertex
+     */
+    virtual QPointF getConnector() const
+    {
+        return mapToScene(boundingRect().center());
+    };
 
     /// getter method for retrieving the underlying conceptual graph vertex
-    graph_analysis::Vertex::Ptr getVertex() const { return mpVertex; }
+    graph_analysis::Vertex::Ptr getVertex() const
+    {
+        return mpVertex;
+    }
     /// setter method for updating the underlying conceptual graph vertex
-    void setVertex(graph_analysis::Vertex::Ptr vertex) { mpVertex = vertex; }
+    void setVertex(graph_analysis::Vertex::Ptr vertex)
+    {
+        mpVertex = vertex;
+    }
     /// getter method for retrieving the parent managing graph widget
-    GraphWidget *getGraphWidget() const { return mpGraphWidget; }
+    GraphWidget* getGraphWidget() const
+    {
+        return mpGraphWidget;
+    }
 
-    // callback to trigger the base-graph to adjust all edges of this vertex
+    /**
+     * callback to trigger the base-graph to adjust all edges of this vertex
+     * after its position has changed in the scene.
+     */
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
-  protected:
+protected:
     /// underlying graph vertex pointer
     graph_analysis::Vertex::Ptr mpVertex;
 
     /// parent managing graph widget. this should be reachable via "scene()"?
-    GraphWidget *mpGraphWidget;
+    GraphWidget* mpGraphWidget;
 
-    // unsure...
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+    /**
+     * extracting the BaseGraph from the GraphWidget
+     */
+    shared_ptr<BaseGraph> getGraph() const;
 
+    /**
+     * this is used to update the statusbar of the current active widget with
+     * information about the currently hovered (or not hovered) vertex
+     */
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 };
 
-/* simplest possible implementation: just a box with two strings -- type and
- * label */
+/**
+ * simplest possible implementation: just a box with two strings -- type and
+ * label
+ */
 class VertexItemSimple : public VertexItemBase
 {
-  public:
-    VertexItemSimple(GraphWidget *graphWidget,
-                     graph_analysis::Vertex::Ptr vertex, QGraphicsItem *parent);
+public:
+    VertexItemSimple(GraphWidget* graphWidget,
+                     graph_analysis::Vertex::Ptr vertex, QGraphicsItem* parent);
     ~VertexItemSimple();
-    virtual int type() const { return VertexItemSimpleType; };
+    virtual int type() const
+    {
+        return VertexItemSimpleType;
+    };
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget = 0);
     QRectF boundingRect() const;
 
-    virtual QPointF getConnector() const {return mapToScene(boundingRect().center()); };
+protected:
+    /**
+     * all items by default accept drag-n-drop events. override this function
+     * in later classes to prevent certain drops?
+     */
+    void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
+    void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
+    void dropEvent(QGraphicsSceneDragDropEvent* event);
 
-  private:
-    QGraphicsTextItem *mpLabel;
-    QGraphicsTextItem *mpClassName;
-    QGraphicsRectItem *mpRect;
+private:
+    QGraphicsTextItem* mpLabel;
+    QGraphicsTextItem* mpClassName;
+    QGraphicsRectItem* mpRect;
 };
 
 } // end namespace gui

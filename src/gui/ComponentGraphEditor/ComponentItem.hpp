@@ -33,9 +33,6 @@ class ComponentItem : public VertexItemBase
                QWidget* widget = 0);
     QRectF boundingRect() const;
 
-  protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
-
   private:
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;

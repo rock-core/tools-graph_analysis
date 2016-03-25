@@ -97,11 +97,6 @@ ComponentItem::~ComponentItem()
     // deleted from the outside.
 }
 
-void ComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    LOG_INFO_S << "ComponentItem: pressEvent";
-}
-
 void ComponentItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option,
                           QWidget *widget)

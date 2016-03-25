@@ -4,18 +4,25 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QDebug>
 
 #include <base/Logging.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 #include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
+#include <graph_analysis/gui/GraphWidget.hpp>
+#include <graph_analysis/gui/EdgeMimeData.hpp>
 
-namespace graph_analysis {
-namespace gui {
+namespace graph_analysis
+{
+namespace gui
+{
 
-VertexItemBase::VertexItemBase(GraphWidget *graphWidget,
+VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
                                graph_analysis::Vertex::Ptr vertex,
-                               QGraphicsItem *parent)
-    : QGraphicsItem(parent), mpVertex(vertex), mpGraphWidget(graphWidget)
+                               QGraphicsItem* parent)
+    : QGraphicsItem(parent)
+    , mpVertex(vertex)
+    , mpGraphWidget(graphWidget)
 {
     // this enabled "itemChange()" notifications. when this item moves, it has
     // to tell its edges to follow it, so they stay visually connected. this is
@@ -33,6 +40,11 @@ VertexItemBase::~VertexItemBase()
     mpGraphWidget->deregisterVertexItem(mpVertex, this);
 }
 
+shared_ptr<BaseGraph> VertexItemBase::getGraph() const
+{
+    return mpGraphWidget->graph();
+}
+
 void VertexItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     // Set the underlaying vertex as focused element
@@ -46,12 +58,12 @@ void VertexItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
-void VertexItemBase::registerConnection(EdgeItemBase *item)
+void VertexItemBase::registerConnection(EdgeItemBase* item)
 {
     adjustConnections.push_back(item);
 }
 
-void VertexItemBase::deregisterConnection(EdgeItemBase *item)
+void VertexItemBase::deregisterConnection(EdgeItemBase* item)
 {
     int index = adjustConnections.indexOf(item);
     if(index != -1)
@@ -85,9 +97,9 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
 }
 
 // kiss:
-VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
+VertexItemSimple::VertexItemSimple(GraphWidget* graphWidget,
                                    graph_analysis::Vertex::Ptr vertex,
-                                   QGraphicsItem *parent)
+                                   QGraphicsItem* parent)
     : VertexItemBase(graphWidget, vertex, parent)
 {
     mpLabel = new QGraphicsTextItem(QString(vertex->getLabel().c_str()), this);
@@ -95,10 +107,10 @@ VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
     font.setBold(true);
     mpLabel->setFont(font);
 
-    mpClassName = new QGraphicsTextItem(
-        QString(vertex->getClassName().c_str()), this);
+    mpClassName =
+        new QGraphicsTextItem(QString(vertex->getClassName().c_str()), this);
     mpClassName->setPos(mpLabel->pos() +
-                       QPoint(0, mpLabel->boundingRect().height()));
+                        QPoint(0, mpLabel->boundingRect().height()));
     mpClassName->setDefaultTextColor(Qt::gray);
 
     mpRect = new QGraphicsRectItem(this);
@@ -106,6 +118,9 @@ VertexItemSimple::VertexItemSimple(GraphWidget *graphWidget,
     mpRect->setPen(QPen(Qt::blue));
 
     setFlag(ItemIsMovable);
+
+    // do this...?
+    setAcceptDrops(true);
 }
 
 VertexItemSimple::~VertexItemSimple()
@@ -115,13 +130,39 @@ VertexItemSimple::~VertexItemSimple()
     delete mpRect;
 }
 
-void VertexItemSimple::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget)
+void VertexItemSimple::paint(QPainter* painter,
+                             const QStyleOptionGraphicsItem* option,
+                             QWidget* widget)
 {
 }
 
-QRectF VertexItemSimple::boundingRect() const { return childrenBoundingRect(); }
+QRectF VertexItemSimple::boundingRect() const
+{
+    return childrenBoundingRect();
+}
+
+void VertexItemSimple::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
+{
+    qDebug() << "drag enter in VIB";
+    // TODO: check mimetype and such
+    event->acceptProposedAction();
+}
+
+void VertexItemSimple::dragLeaveEvent(QGraphicsSceneDragDropEvent* event)
+{
+    qDebug() << "drag leave in VIB";
+}
+
+void VertexItemSimple::dropEvent(QGraphicsSceneDragDropEvent* event)
+{
+    qDebug() << "drag drop VIB";
+    // TODO: check mimetype and such. can use event->mimeData()->mpSourceVertex
+    event->acceptProposedAction();
+    // store our Vertex-pointer inside the mimedata, so that the main-widget
+    // knows where the user dropped.
+    dynamic_cast<const EdgeMimeData*>(event->mimeData())->mpTargetVertex =
+        getVertex();
+}
 
 } // end namespace gui
 } // end namespace graph_analysis

@@ -1,24 +1,24 @@
-#include "AddVertexDialog.hpp"
+#include "AddEdgeDialog.hpp"
 
-#include "ui_AddVertexDialog.h"
+#include "ui_AddEdgeDialog.h"
 
-#include <graph_analysis/VertexTypeManager.hpp>
+#include <graph_analysis/EdgeTypeManager.hpp>
 
 namespace graph_analysis
 {
 namespace gui
 {
 
-AddVertexDialog::AddVertexDialog(QDialog* parent)
+AddEdgeDialog::AddEdgeDialog(QDialog* parent)
     : QDialog(parent)
-    , mpUi(new ::Ui::AddVertexDialog())
+    , mpUi(new ::Ui::AddEdgeDialog())
 {
     mpUi->setupUi(this);
-    mpUi->lineEdit_className->setText("graph_analysis::TheVertexClass");
+    mpUi->lineEdit_className->setText("graph_analysis::TheEdgeClass");
     mpUi->lineEdit_label->setText("TheLabel");
 
-    VertexTypeManager* vertexManager = VertexTypeManager::getInstance();
-    std::set<std::string> registeredTypes = vertexManager->getSupportedTypes();
+    EdgeTypeManager* edgeManager = EdgeTypeManager::getInstance();
+    std::set<std::string> registeredTypes = edgeManager->getSupportedTypes();
     std::set<std::string>::const_iterator it = registeredTypes.begin();
     for(; it != registeredTypes.end(); it++)
     {
@@ -27,12 +27,12 @@ AddVertexDialog::AddVertexDialog(QDialog* parent)
     mpUi->comboBox_className->setCurrentIndex(0);
 }
 
-AddVertexDialog::~AddVertexDialog()
+AddEdgeDialog::~AddEdgeDialog()
 {
     delete mpUi;
 }
 
-QString AddVertexDialog::getClassname() const
+QString AddEdgeDialog::getClassname() const
 {
     if(mpUi->tabWidget->currentIndex() == 0)
     {
@@ -44,7 +44,7 @@ QString AddVertexDialog::getClassname() const
     }
 }
 
-QString AddVertexDialog::getLabel() const
+QString AddEdgeDialog::getLabel() const
 {
     return mpUi->lineEdit_label->text();
 }

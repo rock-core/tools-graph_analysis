@@ -18,6 +18,7 @@ class Port : public Vertex
 {
 public:
     typedef shared_ptr< Port > Ptr;
+
     Port(const std::string& label = "");
     /** Get class name
      * \return class name
@@ -29,9 +30,28 @@ public:
      */
     static std::string vertexType() { return "graph_analysis::Port"; }
 
-    // which component this port is attached to. not so nice: forward
-    // declaration of shared pointer...
+    /**
+     * @brief returns the component this port belongs to
+     *
+     * will print an error if there is no component
+     *
+     * not so nice: forward declaration of shared pointer...
+     *
+     * @param graph the graph to work on
+     * @return shared pointer of the relevant component. will be null if there
+     *         is no component
+     */
     shared_ptr<Component> getComponent(const BaseGraph::Ptr &graph) const;
+
+    /**
+     * @brief counts the number of "PortConnection" edges attached to this vertex
+     *
+     * prints an error message if more than one PortConnection is detected.
+     *
+     * @param graph the graph to work on
+     * @return true if there is one or more PortConnection attached
+     */
+    bool isConnected(const BaseGraph::Ptr &graph) const;
 
 protected:
     /**
