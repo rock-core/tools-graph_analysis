@@ -131,7 +131,8 @@ void GraphWidget::updateLayoutView()
     // the respective scene. needs to populate the layouting graph as needed.
     updateLayout();
 
-            qDebug() << "restoring from cache. have"<<coordindate_map.size()<<"entries";
+    LOG_INFO_S << "restoring coordinates of " << coordindate_map.size()
+               << " entries from cache";
     VertexItemCoordinateCache::iterator it = coordindate_map.begin();
     for(; it != coordindate_map.end(); it++)
     {
@@ -140,12 +141,10 @@ void GraphWidget::updateLayoutView()
         {
             // we have an item in the cache which is still in the scene. reuse
             // the old coordinate
-            qDebug() << "setting pos from" << item->pos() << "to" << it->second;
             item->setPos(it->second);
         }
         else
         {
-            qDebug() << "vertex"<<it->first->toString().c_str()<<"not in cache";
             // invalid entry in the coordinate cache. clean it.
             coordindate_map.erase(it);
         }
@@ -276,61 +275,10 @@ void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
                 update();
             }
         }
-        else
-        {
-            Vertex::Ptr sourceVertex;
-            Vertex::Ptr targetVertex;
-            // obtain the vertex of the item the user clicked on
-            QList<QGraphicsItem*> clickedItems = items(event->pos());
-            for(int i = 0; i < clickedItems.size(); i++)
-            {
-                VertexItemBase* sourceItem =
-                    dynamic_cast<VertexItemBase*>(clickedItems.at(i));
-                if(sourceItem)
-                {
-                    sourceVertex = sourceItem->getVertex();
-                    break;
-                }
-            }
-            if(!sourceVertex)
-            {
-                LOG_ERROR_S << "could not find a source vertex for dragEvent";
-                return;
-            }
 
-            QDrag* drag = new QDrag(this);
-            // stores reference to the two vertices, so that the receiving side
-            // can do error-checking and store its vertex as target on success.
-            EdgeMimeData* mimeData = new EdgeMimeData(sourceVertex, targetVertex);
-
-            drag->setMimeData(mimeData);
-
-            // when this returns, the user finished its drag-operation
-            Qt::DropAction dropAction = drag->exec();
-
-            if(dropAction == Qt::MoveAction)
-            {
-                // check that the targetVertex got updated
-                if(!targetVertex)
-                {
-                    LOG_ERROR_S
-                        << "could not find a target vertex after dropEvent";
-                    return;
-                }
-                AddEdgeDialog dialog;
-                dialog.exec();
-                if(dialog.result() == QDialog::Accepted)
-                {
-                    Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(
-                        dialog.getClassname().toStdString(), sourceVertex,
-                        targetVertex, dialog.getLabel().toStdString());
-                    graph()->addEdge(edge);
-                    clearVisualization();
-                    update();
-                }
-            }
-        }
     }
+
+    QGraphicsView::mouseDoubleClickEvent(event);
 }
 
 void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)

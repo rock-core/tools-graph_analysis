@@ -28,6 +28,17 @@ public:
     EdgeMimeData(Vertex::Ptr& sourceVertex, Vertex::Ptr& targetVertex);
     Vertex::Ptr& mpSourceVertex;
     Vertex::Ptr& mpTargetVertex;
+
+    /**
+     * @brief compares the stored reference to the other vertex given.
+     *
+     * protects against "self drops", when edges are considered to not connect
+     * one edge to itself.
+     *
+     * @param other the vertex to check
+     * @return true if the given vertex is the as the stored one.
+     */
+    bool sourceVertexIsSameAs(const Vertex::Ptr& other) const;
 };
 
 } // end namespace gui

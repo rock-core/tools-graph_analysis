@@ -14,5 +14,10 @@ EdgeMimeData::EdgeMimeData(Vertex::Ptr& sourceVertex, Vertex::Ptr& targetVertex)
 {
 }
 
+bool EdgeMimeData::sourceVertexIsSameAs(const Vertex::Ptr& other) const
+{
+    return mpSourceVertex == other;
+}
+
 } // end namespace gui
 } // end namespace graph_analysis

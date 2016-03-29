@@ -6,6 +6,8 @@
 
 #include "GraphicsItemTypes.hpp"
 
+class QGraphicsSceneMouseEvent;
+
 namespace graph_analysis
 {
 
@@ -129,6 +131,8 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
+
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 
 private:
     QGraphicsTextItem* mpLabel;

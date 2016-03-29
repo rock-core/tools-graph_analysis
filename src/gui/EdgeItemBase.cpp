@@ -28,6 +28,15 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
     // "edges" will not react to mouse-clicks. ever.
     setAcceptedMouseButtons(Qt::NoButton);
 
+    // as lone as there is only the simple "straight connection" possible, we
+    // check this here. might be moved to later implementations in the future.
+    if(edge->getSourceVertex() == edge->getTargetVertex())
+    {
+        LOG_ERROR_S << "edge " << edge->toString()
+                    << " with target and source identical? "
+                    << edge->getSourceVertex()->toString();
+    }
+
     // tell the two vertices we are connected to that we want to be updated
     // when their position changes
     //
