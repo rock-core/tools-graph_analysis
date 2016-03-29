@@ -13,8 +13,6 @@ namespace graph_analysis
 namespace gui
 {
 
-// edge-routing mit graphviz: https://github.com/jmachowinski/qgv
-
 EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
                            graph_analysis::Edge::Ptr edge,
                            VertexItemBase* sourceItem,
@@ -28,7 +26,7 @@ EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
     // "edges" will not react to mouse-clicks. ever.
     setAcceptedMouseButtons(Qt::NoButton);
 
-    // as lone as there is only the simple "straight connection" possible, we
+    // as long as there is only the simple "straight connection" possible, we
     // check this here. might be moved to later implementations in the future.
     if(edge->getSourceVertex() == edge->getTargetVertex())
     {
@@ -45,36 +43,56 @@ EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
     // IDEA: how about creating the connected edge via a QGraphicsItemGroup
     // containing the two ports (which are also contained elsewhere) plus the
     // actual edge?
-    mpSourceItem->registerConnection(this);
-    mpTargetItem->registerConnection(this);
+    //
+    // Have to call "scene()" via the main-widgets, as this item is not yet
+    // added to the scene.
+    if(getGraphWidget()->scene()->items().contains(mpSourceItem))
+    {
+        mpSourceItem->registerPositionAdjustmentConnection(this);
+    }
+    else
+    {
+        LOG_ERROR_S << "problem registering source item for "
+                    << getEdge()->toString();
+    }
+    if(getGraphWidget()->scene()->items().contains(mpTargetItem))
+    {
+        mpTargetItem->registerPositionAdjustmentConnection(this);
+    }
+    else
+    {
+        LOG_ERROR_S << "problem registering target item for "
+                    << getEdge()->toString();
+    }
 }
 
 EdgeItemBase::~EdgeItemBase()
 {
     // this can crash during tearing down of a scene because the pointers seize
     // to be valid. guarding against this the expensive way...
-    if (scene()->items().contains(mpSourceItem))
-        mpSourceItem->deregisterConnection(this);
-    if (scene()->items().contains(mpTargetItem))
-        mpTargetItem->deregisterConnection(this);
+    if(scene()->items().contains(mpSourceItem))
+        mpSourceItem->deregisterPositionAdjustmentConnection(this);
+    if(scene()->items().contains(mpTargetItem))
+        mpTargetItem->deregisterPositionAdjustmentConnection(this);
 }
 
-void EdgeItemBase::adjust()
+int EdgeItemBase::type() const
 {
-    mSourcePoint = mpSourceItem->getConnector();
-    mTargetPoint = mpTargetItem->getConnector();
-
-    prepareGeometryChange();
+    return EdgeItemBaseType;
 }
 
-void EdgeItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void EdgeItemBase::adjustEdgePositioning()
 {
-    // Set the underlaying edge as focused element
+}
+
+void EdgeItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+    // set the underlaying edge as focused element
     mpGraphWidget->setFocusedElement(mpEdge);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
-void EdgeItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void EdgeItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
@@ -91,14 +109,16 @@ QPainterPath EdgeItemSimple::shape() const
 }
 
 // kiss:
-EdgeItemSimple::EdgeItemSimple(GraphWidget *graphWidget,
+EdgeItemSimple::EdgeItemSimple(GraphWidget* graphWidget,
                                graph_analysis::Edge::Ptr edge,
-                               VertexItemBase *source, VertexItemBase *target,
-                               QGraphicsItem *parent)
-    : EdgeItemBase(graphWidget, edge, source, target, parent), mArrowSize(10)
+                               VertexItemBase* source, VertexItemBase* target,
+                               QGraphicsItem* parent)
+    : EdgeItemBase(graphWidget, edge, source, target, parent)
+    , mArrowSize(10)
 {
     mpLabel = new QGraphicsTextItem(QString(edge->getLabel().c_str()), this);
-    mpClassName = new QGraphicsTextItem(QString(edge->getClassName().c_str()), this);
+    mpClassName =
+        new QGraphicsTextItem(QString(edge->getClassName().c_str()), this);
     mpClassName->setDefaultTextColor(Qt::gray);
     mpLine = new QGraphicsLineItem(this);
     mpArrowHead = new QGraphicsPolygonItem(this);
@@ -119,7 +139,12 @@ EdgeItemSimple::~EdgeItemSimple()
     mpGraphWidget->deregisterEdgeItem(mpEdge, this);
 }
 
-QPointF EdgeItemSimple::getIntersectionPoint(QGraphicsItem *item) const
+int EdgeItemSimple::type() const
+{
+    return EdgeItemSimpleType;
+}
+
+QPointF EdgeItemSimple::getIntersectionPoint(QGraphicsItem* item) const
 {
     QPolygonF polygon = item->boundingRect();
 
@@ -153,9 +178,17 @@ QPointF EdgeItemSimple::getIntersectionPoint(QGraphicsItem *item) const
     return intersectionPoint;
 }
 
-void EdgeItemSimple::adjust()
+void EdgeItemSimple::adjustEdgePositioning()
 {
-    EdgeItemBase::adjust();
+    if(!mpSourceItem || !mpTargetItem)
+    {
+        return;
+    }
+
+    mSourcePoint = mpSourceItem->getConnector();
+    mTargetPoint = mpTargetItem->getConnector();
+
+    prepareGeometryChange();
 
     mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
 
@@ -166,7 +199,7 @@ void EdgeItemSimple::adjust()
     mpLabel->setPos(mpLine->line().pointAt(0.5) -
                     mpLabel->boundingRect().center());
     mpClassName->setPos(mpLabel->pos() +
-                    QPointF(0, mpLabel->boundingRect().height()));
+                        QPointF(0, mpLabel->boundingRect().height()));
 
     // draw the arrow!
     double angle = std::acos(mpLine->line().dx() / mpLine->line().length());
@@ -185,13 +218,16 @@ void EdgeItemSimple::adjust()
                                         << destArrowP2);
 }
 
-void EdgeItemSimple::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget)
+void EdgeItemSimple::paint(QPainter* painter,
+                           const QStyleOptionGraphicsItem* option,
+                           QWidget* widget)
 {
 }
 
-QRectF EdgeItemSimple::boundingRect() const { return childrenBoundingRect(); }
+QRectF EdgeItemSimple::boundingRect() const
+{
+    return childrenBoundingRect();
+}
 
 } // end namespace gui
 } // end namespace graph_analysis

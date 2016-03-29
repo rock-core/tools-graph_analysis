@@ -67,8 +67,14 @@ void BaseGraphView::updateLayout()
     {
         Edge::Ptr edge = edgeIt->current();
 
-        VertexItemBase *sourceItem = v_map[edge->getSourceVertex()];
-        VertexItemBase *targetItem = v_map[edge->getTargetVertex()];
+    LOG_ERROR_S<<"sadsad " << edge->toString();
+    LOG_ERROR_S<<"sadsad " << edge->getTargetVertex()->toString();
+    LOG_ERROR_S<<"sadsad " << edge->getSourceVertex()->toString();
+
+        VertexItemBase* sourceItem =
+            lookupVertexItem(edge->getSourceVertex());
+        VertexItemBase* targetItem =
+            lookupVertexItem(edge->getTargetVertex());
 
         // creating new edge items
         EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;

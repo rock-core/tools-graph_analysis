@@ -329,6 +329,32 @@ void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
     v_map.erase(v);
 }
 
+EdgeItemBase*
+GraphWidget::lookupEdgeItem(const graph_analysis::Edge::Ptr& e) const
+{
+    EdgeItemMap::const_iterator it = e_map.find(e);
+    if(it == e_map.end())
+    {
+        /* throw std::runtime_error("cannot lookup egde item '" + e->toString() + */
+        /*                          "'"); */
+        return NULL;
+    }
+    return it->second;
+}
+
+VertexItemBase*
+GraphWidget::lookupVertexItem(const graph_analysis::Vertex::Ptr& v) const
+{
+    VertexItemMap::const_iterator it = v_map.find(v);
+    if(it == v_map.end())
+    {
+        /* throw std::runtime_error("cannot lookup vertex item '" + v->toString() + */
+        /*                          "'"); */
+        return NULL;
+    }
+    return it->second;
+}
+
 void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,
                                           QPointF p)
 {

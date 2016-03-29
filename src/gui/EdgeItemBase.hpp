@@ -15,83 +15,107 @@ class GraphWidget;
 class VertexItemBase;
 
 /**
- * \file EdgeItemBase.hpp
- * \class EdgeItemBase
- * \brief graphical node representation interface
- * \details used as polymorphic base for several graphical node implementations
+ * @file EdgeItemBase.hpp
+ * @class EdgeItemBase
+ * @brief standard implementation of graphical nodes for an Edge
+ *
+ *
+ *
+ * @details used as polymorphic base for several graphical node implementations
  */
 class EdgeItemBase : public QGraphicsItem
 {
-  public:
+public:
     /**
-     * \brief constructor
-     * \param graphWidget the parent and managing graph widget
-     * \param edge the internal conceptual edge
-     * \param parent the parent
+     * @brief constructor
+     * @param graphWidget the parent and managing graph widget
+     * @param edge the internal conceptual edge
+     * @param parent the parent
      */
-    EdgeItemBase(GraphWidget *graphWidget, graph_analysis::Edge::Ptr edge,
-                 VertexItemBase *source, VertexItemBase *target,
-                 QGraphicsItem *parent);
+    EdgeItemBase(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
+                 VertexItemBase* source, VertexItemBase* target,
+                 QGraphicsItem* parent);
 
-    /// destructor
     virtual ~EdgeItemBase();
+    virtual int type() const;
 
-    virtual int type() const { return EdgeItemBaseType; };
+    /**
+     * triggers this item to update its own position on the canvas
+     *
+     * this item can be coupled via the "registerPositionAdjustmentConnection"
+     * to the position-change-signal of VertexItems.
+     *
+     * this function is to be called after position updates of the coupled
+     * Vertex.
+     *
+     * does nothing by default.
+     */
+    virtual void adjustEdgePositioning();
 
-    virtual void adjust();
+    /** getter method for retrieving the underlying conceptual graph edge */
+    graph_analysis::Edge::Ptr getEdge() const
+    {
+        return mpEdge;
+    }
+    /** setter method for updating the underlying conceptual graph edge */
+    void setEdge(graph_analysis::Edge::Ptr edge)
+    {
+        mpEdge = edge;
+    }
+    /** getter method for retrieving the parent managing graph widget */
+    GraphWidget* getGraphWidget() const
+    {
+        return mpGraphWidget;
+    }
 
-    /// getter method for retrieving the underlying conceptual graph edge
-    graph_analysis::Edge::Ptr getEdge() const { return mpEdge; }
-    /// setter method for updating the underlying conceptual graph edge
-    void setEdge(graph_analysis::Edge::Ptr edge) { mpEdge = edge; }
-    /// getter method for retrieving the parent managing graph widget
-    GraphWidget *getGraphWidget() const { return mpGraphWidget; }
-
-  protected:
-    /// underlying graph edge pointer
+protected:
+    /** underlying graph edge pointer */
     graph_analysis::Edge::Ptr mpEdge;
 
-    /// parent managing graph widget
-    GraphWidget *mpGraphWidget;
+    /** parent managing graph widget */
+    GraphWidget* mpGraphWidget;
 
+    /** the two source- and target-items, where this Edge is connected to */
     VertexItemBase* mpSourceItem;
     VertexItemBase* mpTargetItem;
-
+    /** two points of the source and target, where this edge should attach */
     QPointF mSourcePoint;
     QPointF mTargetPoint;
 
-    // unsure...
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    /** provide mouse-over status updates of the currently selected Edge */
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 };
 
-/* simplest possible implementation: just a line from source to target */
+/**
+ *
+ * simplest possible implementation: just a line from source to target
+ *
+ */
 class EdgeItemSimple : public EdgeItemBase
 {
-  public:
-    EdgeItemSimple(GraphWidget *graphWidget, graph_analysis::Edge::Ptr edge,
-                   VertexItemBase *source, VertexItemBase *target,
-                   QGraphicsItem *parent);
+public:
+    EdgeItemSimple(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
+                   VertexItemBase* source, VertexItemBase* target,
+                   QGraphicsItem* parent);
     ~EdgeItemSimple();
-    virtual int type() const { return EdgeItemSimpleType; };
+    virtual int type() const;
+    void adjustEdgePositioning();
 
-    // to be called when the positions of connected vertices changes
-    void adjust();
-
-  protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+protected:
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
+               QWidget* widget = 0);
     QRectF boundingRect() const;
-    virtual QPainterPath shape() const;
+    QPainterPath shape() const;
 
-  private:
-    QPointF getIntersectionPoint(QGraphicsItem *item) const;
+private:
+    QPointF getIntersectionPoint(QGraphicsItem* item) const;
 
     int mArrowSize;
-    QGraphicsTextItem *mpLabel;
-    QGraphicsTextItem *mpClassName;
-    QGraphicsLineItem *mpLine;
-    QGraphicsPolygonItem *mpArrowHead;
+    QGraphicsTextItem* mpLabel;
+    QGraphicsTextItem* mpClassName;
+    QGraphicsLineItem* mpLine;
+    QGraphicsPolygonItem* mpArrowHead;
 };
 
 } // end namespace gui

@@ -26,5 +26,10 @@ PortConnectionItem::~PortConnectionItem()
 {
 }
 
+int PortConnectionItem::type() const
+{
+    return PortConnectionItemType;
+}
+
 } // end namespace gui
 } // end namespace graph_analysis

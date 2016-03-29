@@ -68,9 +68,15 @@ public:
         VertexItemCoordinateCache;
 
     void registerEdgeItem(const graph_analysis::Edge::Ptr& e, EdgeItemBase* i);
-    void registerVertexItem(const graph_analysis::Vertex::Ptr& v, VertexItemBase* i);
-    void deregisterEdgeItem(const graph_analysis::Edge::Ptr& e, EdgeItemBase* i);
-    void deregisterVertexItem(const graph_analysis::Vertex::Ptr& v, VertexItemBase* i);
+    void registerVertexItem(const graph_analysis::Vertex::Ptr& v,
+                            VertexItemBase* i);
+    void deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
+                            EdgeItemBase* i);
+    void deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
+                              VertexItemBase* i);
+    EdgeItemBase* lookupEdgeItem(const graph_analysis::Edge::Ptr& e) const;
+    VertexItemBase*
+    lookupVertexItem(const graph_analysis::Vertex::Ptr& v) const;
 
     /**
      * to be called when a vertex changes its position.

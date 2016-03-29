@@ -46,12 +46,16 @@ public:
     };
 
     /**
-     * mechanism where edges can register as "to-be-notified" on position
-     * change of this item
+     * mechanism where other EdgeItems can register as "to-be-notified" on position
+     * change of this VertexItem.
      */
-    void registerConnection(EdgeItemBase* item);
-    void deregisterConnection(EdgeItemBase* item);
-    QVector<EdgeItemBase*> adjustConnections;
+    void registerPositionAdjustmentConnection(EdgeItemBase* item);
+    void deregisterPositionAdjustmentConnection(EdgeItemBase* item);
+    /**
+     * all EdgeItems which registered here to be notified will be called when
+     * this vertex changes position.
+     */
+    QVector<EdgeItemBase*> positionAdjustmentConnections;
 
     /**
      * return a point where an edge should point to when it connects to this
@@ -85,10 +89,10 @@ public:
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
 protected:
-    /// underlying graph vertex pointer
+    /* underlying graph vertex pointer */
     graph_analysis::Vertex::Ptr mpVertex;
 
-    /// parent managing graph widget. this should be reachable via "scene()"?
+    /* parent managing graph widget. this should be reachable via "scene()"? */
     GraphWidget* mpGraphWidget;
 
     /**

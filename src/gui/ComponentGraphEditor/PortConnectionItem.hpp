@@ -25,9 +25,7 @@ class PortConnectionItem : public EdgeItemSimple
                        QGraphicsItem *parent);
 
     virtual ~PortConnectionItem();
-
-    virtual int type() const { return PortConnectionItemType; };
-
+    virtual int type() const;
 };
 
 } // end namespace gui

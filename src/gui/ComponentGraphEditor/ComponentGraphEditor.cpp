@@ -107,8 +107,11 @@ void ComponentGraphEditor::updateLayout()
             continue;
         }
 
-        VertexItemBase *sourcePortItem = v_map[conn->getSourcePort(mpGraph)];
-        VertexItemBase *targetPortItem = v_map[conn->getTargetPort(mpGraph)];
+        // this can fail if the graph has a "wrong" stucture.
+        VertexItemBase* sourcePortItem =
+            lookupVertexItem(conn->getSourcePort(mpGraph));
+        VertexItemBase* targetPortItem =
+            lookupVertexItem(conn->getTargetPort(mpGraph));
 
         // creating new edge items
         PortConnectionItem *e = new PortConnectionItem(

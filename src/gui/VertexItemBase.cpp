@@ -34,7 +34,10 @@ VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
     // this cache-mode is for items that can move. not sure if we can move --
     // edges can move?
     setCacheMode(DeviceCoordinateCache);
-
+    // with this we tell the graphwidget that "this" is responsible to
+    // represent "mpVertex"
+    //
+    // shouldn't this be moved elsewhere?
     mpGraphWidget->registerVertexItem(mpVertex, this);
 }
 
@@ -50,28 +53,34 @@ shared_ptr<BaseGraph> VertexItemBase::getGraph() const
 
 void VertexItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
-    // Set the underlaying vertex as focused element
+    // set the underlaying vertex as focused element in the statusbar
     mpGraphWidget->setFocusedElement(mpVertex);
     QGraphicsItem::hoverEnterEvent(event);
 }
 
 void VertexItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
+    // set focused element in the statusbar
     mpGraphWidget->clearFocus();
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
-void VertexItemBase::registerConnection(EdgeItemBase* item)
+void VertexItemBase::registerPositionAdjustmentConnection(EdgeItemBase* item)
 {
-    adjustConnections.push_back(item);
+    if(positionAdjustmentConnections.contains(item))
+    {
+        LOG_ERROR_S << "doubled entry while registering adjustment connecitons? "
+                    << item->getEdge()->toString();
+    }
+    positionAdjustmentConnections.push_back(item);
 }
 
-void VertexItemBase::deregisterConnection(EdgeItemBase* item)
+void VertexItemBase::deregisterPositionAdjustmentConnection(EdgeItemBase* item)
 {
-    int index = adjustConnections.indexOf(item);
+    int index = positionAdjustmentConnections.indexOf(item);
     if(index != -1)
     {
-        adjustConnections.remove(index);
+        positionAdjustmentConnections.remove(index);
     }
     else
     {
@@ -87,9 +96,9 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
     {
     case ItemScenePositionHasChanged:
     {
-        for(int i = 0; i < adjustConnections.size(); ++i)
+        for(int i = 0; i < positionAdjustmentConnections.size(); ++i)
         {
-            adjustConnections.at(i)->adjust();
+            positionAdjustmentConnections.at(i)->adjustEdgePositioning();
         }
         // and store the new position in the main GraphWidget
         getGraphWidget()->cacheVertexItemPosition(getVertex(), pos());
@@ -101,7 +110,11 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
     return QGraphicsItem::itemChange(change, value);
 }
 
-// kiss:
+/**
+ *
+ * kiss: very simple base implementation of a rectangle
+ *
+ */
 VertexItemSimple::VertexItemSimple(GraphWidget* graphWidget,
                                    graph_analysis::Vertex::Ptr vertex,
                                    QGraphicsItem* parent)
