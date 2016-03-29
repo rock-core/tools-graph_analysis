@@ -30,7 +30,7 @@ public:
     };
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
-               QWidget* widget = 0);
+               QWidget* widget = NULL);
     QRectF boundingRect() const;
 
     void updateStrings();
@@ -42,12 +42,12 @@ public:
     };
 
 protected:
+
     void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
 
 protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 };
 
 } // end namespace gui

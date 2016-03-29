@@ -30,7 +30,7 @@ public:
     virtual int type() const;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
-               QWidget* widget = 0);
+               QWidget* widget = NULL);
     QRectF boundingRect() const;
 
     /**
@@ -45,9 +45,6 @@ public:
     void updateStrings();
 
 protected:
-    void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
-    void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
-    void dropEvent(QGraphicsSceneDragDropEvent* event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 };
 

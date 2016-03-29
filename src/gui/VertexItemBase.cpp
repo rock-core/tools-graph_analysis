@@ -223,6 +223,7 @@ void VertexItemSimple::dropEvent(QGraphicsSceneDragDropEvent* event)
             // can actuall ycreate and insert the new Egde.
             pMimeData->mpTargetVertex = getVertex();
             event->acceptProposedAction();
+            mpRect->setBrush(Qt::NoBrush);
         }
         else
         {

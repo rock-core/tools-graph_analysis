@@ -6,6 +6,7 @@
 
 #include <base/Logging.hpp>
 #include <graph_analysis/gui/EdgeMimeData.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/OutputPort.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -31,14 +32,6 @@ void InputPortItem::updateStrings()
     mpRect->setRect(mpLabel->boundingRect());
 }
 
-void InputPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    LOG_INFO_S << "InputPortItem: pressEvent";
-    // when this event is ignored it will be passed to other item on the same
-    // location (of the click)
-    event->ignore();
-}
-
 void InputPortItem::paint(QPainter *painter,
                            const QStyleOptionGraphicsItem *option,
                            QWidget *widget)
@@ -52,18 +45,43 @@ QRectF InputPortItem::boundingRect() const
 
 void InputPortItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
 {
-    if(!dynamic_pointer_cast<InputPort>(mpVertex)->isConnected(getGraph()))
+    // by default, this is not accepted.
+    event->setAccepted(false);
+    // checking that the vertex stored in the mimetype is different from ours
+    // -- this prevents self-drag'n drops
+    const EdgeMimeData* pMimeData =
+        dynamic_cast<const EdgeMimeData*>(event->mimeData());
+    if(pMimeData)
     {
-        // TODO: more checking, like types and so son...
-        // TODO: check that the originating component is not the same component
-        // this port is attached to. needs to extract the sharedPtr from
-        // mimeData
-        event->acceptProposedAction();
-        mpRect->setBrush(Qt::green);
+        // check that the to ports are not part of the same component
+        graph_analysis::OutputPort::Ptr oPort =
+            dynamic_pointer_cast<OutputPort>(pMimeData->mpSourceVertex);
+        graph_analysis::InputPort::Ptr iPort =
+            dynamic_pointer_cast<InputPort>(getVertex());
+
+        if(oPort->getComponent(getGraph()) == iPort->getComponent(getGraph()))
+        {
+            return;
+        }
+        else if(oPort->isConnected(getGraph()))
+        {
+            return;
+        }
+        else if(iPort->isConnected(getGraph()))
+        {
+            return;
+        }
+        else
+        {
+            // after this, the mouse icon will change and the drag-object will
+            // be active
+            event->setAccepted(true);
+            mpRect->setBrush(Qt::green);
+        }
     }
     else
     {
-        mpRect->setBrush(Qt::red);
+        LOG_ERROR_S << "unexpected pointer type for mimedata?";
     }
 }
 
@@ -74,13 +92,30 @@ void InputPortItem::dragLeaveEvent(QGraphicsSceneDragDropEvent* event)
 
 void InputPortItem::dropEvent(QGraphicsSceneDragDropEvent* event)
 {
-    if(!dynamic_pointer_cast<InputPort>(mpVertex)->isConnected(getGraph()))
+    // the other side's vertex pointer is stored inside the mimedata. we can
+    // check that we did not get dropped on ourselfes for example.
+    const EdgeMimeData* pMimeData =
+        dynamic_cast<const EdgeMimeData*>(event->mimeData());
+    if(pMimeData)
     {
-        // TODO: more checking, like types and so son...
-        event->acceptProposedAction();
-        mpRect->setBrush(Qt::NoBrush);
-        dynamic_cast<const EdgeMimeData*>(event->mimeData())->mpTargetVertex =
-            getVertex();
+        if(!pMimeData->sourceVertexIsSameAs(getVertex()))
+        {
+            // we are ok with the drop. now store this Items vertex in the
+            // reference given in the mimedata, so that the originating side
+            // can actuall ycreate and insert the new Egde.
+            pMimeData->mpTargetVertex = getVertex();
+            event->acceptProposedAction();
+            mpRect->setBrush(Qt::NoBrush);
+        }
+        else
+        {
+            LOG_INFO_S << "source and target are the same?";
+            return;
+        }
+    }
+    else
+    {
+        LOG_ERROR_S << "unexpected pointer type for mimedata?";
     }
 }
 

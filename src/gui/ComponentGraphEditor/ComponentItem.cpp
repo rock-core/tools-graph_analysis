@@ -9,13 +9,15 @@
 
 #include <base/Logging.hpp>
 
-namespace graph_analysis {
-namespace gui {
+namespace graph_analysis
+{
+namespace gui
+{
 
 // kiss:
-ComponentItem::ComponentItem(GraphWidget *graphWidget,
+ComponentItem::ComponentItem(GraphWidget* graphWidget,
                              graph_analysis::Component::Ptr vertex,
-                             QGraphicsItem *parent)
+                             QGraphicsItem* parent)
     : VertexItemBase(graphWidget, vertex, parent)
 {
     mpLabel = new QGraphicsTextItem(QString(vertex->getLabel().c_str()), this);
@@ -23,10 +25,10 @@ ComponentItem::ComponentItem(GraphWidget *graphWidget,
     font.setBold(true);
     mpLabel->setFont(font);
 
-    mpClassName = new QGraphicsTextItem(
-        QString(vertex->getClassName().c_str()), this);
+    mpClassName =
+        new QGraphicsTextItem(QString(vertex->getClassName().c_str()), this);
     mpClassName->setPos(mpLabel->pos() +
-                       QPoint(0, mpLabel->boundingRect().height()));
+                        QPoint(0, mpLabel->boundingRect().height()));
     mpClassName->setDefaultTextColor(Qt::gray);
 
     QPen penForRect = QPen(Qt::blue);
@@ -97,13 +99,21 @@ ComponentItem::~ComponentItem()
     // deleted from the outside.
 }
 
-void ComponentItem::paint(QPainter *painter,
-                          const QStyleOptionGraphicsItem *option,
-                          QWidget *widget)
+int ComponentItem::type() const
+{
+    return ComponentItemType;
+}
+
+void ComponentItem::paint(QPainter* painter,
+                          const QStyleOptionGraphicsItem* option,
+                          QWidget* widget)
 {
 }
 
-QRectF ComponentItem::boundingRect() const { return childrenBoundingRect(); }
+QRectF ComponentItem::boundingRect() const
+{
+    return childrenBoundingRect();
+}
 
 } // end namespace gui
 } // end namespace graph_analysis

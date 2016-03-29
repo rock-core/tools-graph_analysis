@@ -23,17 +23,17 @@ class GraphWidget;
  * label */
 class ComponentItem : public VertexItemBase
 {
-  public:
+public:
     ComponentItem(GraphWidget* graphWidget,
                   graph_analysis::Component::Ptr vertex, QGraphicsItem* parent);
     ~ComponentItem();
-    virtual int type() const { return ComponentItemType; };
+    virtual int type() const;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
-               QWidget* widget = 0);
+               QWidget* widget = NULL);
     QRectF boundingRect() const;
 
-  private:
+private:
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;
     QGraphicsRectItem* mpRect;
