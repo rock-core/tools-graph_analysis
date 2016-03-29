@@ -54,8 +54,8 @@ class EdgeItemBase : public QGraphicsItem
     /// parent managing graph widget
     GraphWidget *mpGraphWidget;
 
-    VertexItemBase* mpSource;
-    VertexItemBase* mpTarget;
+    VertexItemBase* mpSourceItem;
+    VertexItemBase* mpTargetItem;
 
     QPointF mSourcePoint;
     QPointF mTargetPoint;

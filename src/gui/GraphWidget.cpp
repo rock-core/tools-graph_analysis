@@ -79,13 +79,12 @@ void GraphWidget::updateStatus(const std::string& message, int timeout) const
 
 void GraphWidget::clearVisualization()
 {
-
-    // does this leak memory like a bucket...
+    // calling "clear()" on the scene correctly disposes of all the
+    // objetcs allocated. looks like so, the dtors are called... puh!
+    scene()->clear();
+    // afterwards we can clear the "GraphElement to Item" caches.
     e_map.clear();
     v_map.clear();
-    // ...or does calling "clear()" on the scene correctly disposes of all the
-    // objetcs allocated? looks like to, the dtors are called... puh!
-    scene()->clear();
 
     if(mpGVGraph)
     {
@@ -241,7 +240,6 @@ void GraphWidget::mousePressEvent(QMouseEvent* event)
         QGraphicsView::mousePressEvent(event);
         return;
     }
-    LOG_INFO_S << "GraphWidget: pressEvent";
 
     QGraphicsView::mousePressEvent(event);
 }
@@ -290,6 +288,52 @@ void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
 }
 
 void GraphWidget::clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
+
+void GraphWidget::registerEdgeItem(const graph_analysis::Edge::Ptr& e,
+                                   EdgeItemBase* i)
+{
+    if(e_map.count(e))
+    {
+        LOG_ERROR_S << "re-registering existing edge item! " << e->toString();
+    }
+    e_map[e] = i;
+}
+
+void GraphWidget::registerVertexItem(const graph_analysis::Vertex::Ptr& v,
+                                     VertexItemBase* i)
+{
+    if(v_map.count(v))
+    {
+        LOG_ERROR_S << "re-registering existing vertex item! " << v->toString();
+    }
+    v_map[v] = i;
+}
+
+void GraphWidget::deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
+                                     EdgeItemBase* i)
+{
+    if(!e_map.count(e))
+    {
+        LOG_ERROR_S << "cannot deregister edge " << e->toString();
+    }
+    e_map.erase(e);
+}
+
+void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
+                                       VertexItemBase* i)
+{
+    if(!v_map.count(v))
+    {
+        LOG_ERROR_S << "cannot deregister vertex " << v->toString();
+    }
+    v_map.erase(v);
+}
+
+void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,
+                                          QPointF p)
+{
+    coordindate_map[v] = p;
+}
 
 } // end namespace gui
 } // end namespace graph_analysis

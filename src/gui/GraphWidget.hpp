@@ -52,16 +52,32 @@ class GraphWidget : public QGraphicsView
 
 public:
 
-    typedef std::map<graph_analysis::Edge::Ptr, EdgeItemBase*> EdgeItemMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, VertexItemBase*> VertexItemMap;
-    typedef std::map<graph_analysis::Vertex::Ptr, QPointF> VertexItemCoordinateCache;
+    /**
+     * storing a mapping from an "Edge" in the graph to a responsible "Item" on the scene.
+     */
+    typedef std::map<const graph_analysis::Edge::Ptr, EdgeItemBase*>
+        EdgeItemMap;
+    typedef std::map<const graph_analysis::Vertex::Ptr, VertexItemBase*>
+        VertexItemMap;
+    /**
+     * this is used to store where items for specific elements where positioned
+     * on the scene. can be asked after a "clearVisualization()" to reposition
+     * newly created items in the same location on the canvas.
+     */
+    typedef std::map<const graph_analysis::Vertex::Ptr, QPointF>
+        VertexItemCoordinateCache;
 
-    void registerEdgeItem(graph_analysis::Edge::Ptr e, EdgeItemBase* i){ e_map[e] = i;};
-    void registerVertexItem(graph_analysis::Vertex::Ptr v, VertexItemBase* i){ v_map[v] = i;};
-    void deregisterEdgeItem(graph_analysis::Edge::Ptr e, EdgeItemBase* i){ e_map.erase(e);};
-    void deregisterVertexItem(graph_analysis::Vertex::Ptr v, VertexItemBase* i){ v_map.erase(v);};
+    void registerEdgeItem(const graph_analysis::Edge::Ptr& e, EdgeItemBase* i);
+    void registerVertexItem(const graph_analysis::Vertex::Ptr& v, VertexItemBase* i);
+    void deregisterEdgeItem(const graph_analysis::Edge::Ptr& e, EdgeItemBase* i);
+    void deregisterVertexItem(const graph_analysis::Vertex::Ptr& v, VertexItemBase* i);
 
-    void cachePosition(graph_analysis::Vertex::Ptr v, QPointF p) { coordindate_map[v] = p; };
+    /**
+     * to be called when a vertex changes its position.
+     *
+     * used in order to attach edges to vertices.
+     */
+    void cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v, QPointF p);
 
     /**
      * \brief constructor

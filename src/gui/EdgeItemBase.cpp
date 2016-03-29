@@ -15,15 +15,15 @@ namespace gui
 
 // edge-routing mit graphviz: https://github.com/jmachowinski/qgv
 
-EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
+EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
                            graph_analysis::Edge::Ptr edge,
-                           VertexItemBase *source, VertexItemBase *target,
-                           QGraphicsItem *parent)
+                           VertexItemBase* sourceItem,
+                           VertexItemBase* targetItem, QGraphicsItem* parent)
     : QGraphicsItem(parent)
     , mpEdge(edge)
     , mpGraphWidget(graphWidget)
-    , mpSource(source)
-    , mpTarget(target)
+    , mpSourceItem(sourceItem)
+    , mpTargetItem(targetItem)
 {
     // "edges" will not react to mouse-clicks. ever.
     setAcceptedMouseButtons(Qt::NoButton);
@@ -45,24 +45,24 @@ EdgeItemBase::EdgeItemBase(GraphWidget *graphWidget,
     // IDEA: how about creating the connected edge via a QGraphicsItemGroup
     // containing the two ports (which are also contained elsewhere) plus the
     // actual edge?
-    mpSource->registerConnection(this);
-    mpTarget->registerConnection(this);
+    mpSourceItem->registerConnection(this);
+    mpTargetItem->registerConnection(this);
 }
 
 EdgeItemBase::~EdgeItemBase()
 {
     // this can crash during tearing down of a scene because the pointers seize
     // to be valid. guarding against this the expensive way...
-    if (scene()->items().contains(mpSource))
-        mpSource->deregisterConnection(this);
-    if (scene()->items().contains(mpTarget))
-        mpTarget->deregisterConnection(this);
+    if (scene()->items().contains(mpSourceItem))
+        mpSourceItem->deregisterConnection(this);
+    if (scene()->items().contains(mpTargetItem))
+        mpTargetItem->deregisterConnection(this);
 }
 
 void EdgeItemBase::adjust()
 {
-    mSourcePoint = mpSource->getConnector();
-    mTargetPoint = mpTarget->getConnector();
+    mSourcePoint = mpSourceItem->getConnector();
+    mTargetPoint = mpTargetItem->getConnector();
 
     prepareGeometryChange();
 }
@@ -159,8 +159,8 @@ void EdgeItemSimple::adjust()
 
     mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
 
-    mSourcePoint = getIntersectionPoint(mpSource);
-    mTargetPoint = getIntersectionPoint(mpTarget);
+    mSourcePoint = getIntersectionPoint(mpSourceItem);
+    mTargetPoint = getIntersectionPoint(mpTargetItem);
 
     mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
     mpLabel->setPos(mpLine->line().pointAt(0.5) -
