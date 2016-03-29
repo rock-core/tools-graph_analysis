@@ -186,9 +186,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent*);
     void mouseDoubleClickEvent(QMouseEvent* event);
 
-    EdgeItemMap e_map;
-    VertexItemMap v_map;
-    VertexItemCoordinateCache coordindate_map;
+    EdgeItemMap mEdgeItemMap;
+    VertexItemMap mVertexItemMap;
+    VertexItemCoordinateCache mItemCoordinateMap;
 
 };
 

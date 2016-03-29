@@ -27,6 +27,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 
+
 using namespace graph_analysis;
 
 namespace graph_analysis {
@@ -83,8 +84,8 @@ void GraphWidget::clearVisualization()
     // objetcs allocated. looks like so, the dtors are called... puh!
     scene()->clear();
     // afterwards we can clear the "GraphElement to Item" caches.
-    e_map.clear();
-    v_map.clear();
+    mEdgeItemMap.clear();
+    mVertexItemMap.clear();
 
     if(mpGVGraph)
     {
@@ -130,12 +131,12 @@ void GraphWidget::updateLayoutView()
     // the respective scene. needs to populate the layouting graph as needed.
     updateLayout();
 
-    LOG_INFO_S << "restoring coordinates of " << coordindate_map.size()
+    LOG_INFO_S << "restoring coordinates of " << mItemCoordinateMap.size()
                << " entries from cache";
-    VertexItemCoordinateCache::iterator it = coordindate_map.begin();
-    for(; it != coordindate_map.end(); it++)
+    VertexItemCoordinateCache::iterator it = mItemCoordinateMap.begin();
+    for(; it != mItemCoordinateMap.end(); it++)
     {
-        VertexItemBase* item = v_map[it->first];
+        VertexItemBase* item = mVertexItemMap[it->first];
         if(item)
         {
             // we have an item in the cache which is still in the scene. reuse
@@ -145,7 +146,7 @@ void GraphWidget::updateLayoutView()
         else
         {
             // invalid entry in the coordinate cache. clean it.
-            coordindate_map.erase(it);
+            mItemCoordinateMap.erase(it);
         }
     }
 }
@@ -292,48 +293,48 @@ void GraphWidget::clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
 void GraphWidget::registerEdgeItem(const graph_analysis::Edge::Ptr& e,
                                    EdgeItemBase* i)
 {
-    if(e_map.count(e))
+    if(mEdgeItemMap.count(e))
     {
         LOG_ERROR_S << "re-registering existing edge item! " << e->toString();
     }
-    e_map[e] = i;
+    mEdgeItemMap[e] = i;
 }
 
 void GraphWidget::registerVertexItem(const graph_analysis::Vertex::Ptr& v,
                                      VertexItemBase* i)
 {
-    if(v_map.count(v))
+    if(mVertexItemMap.count(v))
     {
         LOG_ERROR_S << "re-registering existing vertex item! " << v->toString();
     }
-    v_map[v] = i;
+    mVertexItemMap[v] = i;
 }
 
 void GraphWidget::deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
                                      EdgeItemBase* i)
 {
-    if(!e_map.count(e))
+    if(!mEdgeItemMap.count(e))
     {
         LOG_ERROR_S << "cannot deregister edge " << e->toString();
     }
-    e_map.erase(e);
+    mEdgeItemMap.erase(e);
 }
 
 void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
                                        VertexItemBase* i)
 {
-    if(!v_map.count(v))
+    if(!mVertexItemMap.count(v))
     {
         LOG_ERROR_S << "cannot deregister vertex " << v->toString();
     }
-    v_map.erase(v);
+    mVertexItemMap.erase(v);
 }
 
 EdgeItemBase*
 GraphWidget::lookupEdgeItem(const graph_analysis::Edge::Ptr& e) const
 {
-    EdgeItemMap::const_iterator it = e_map.find(e);
-    if(it == e_map.end())
+    EdgeItemMap::const_iterator it = mEdgeItemMap.find(e);
+    if(it == mEdgeItemMap.end())
     {
         /* throw std::runtime_error("cannot lookup egde item '" + e->toString() + */
         /*                          "'"); */
@@ -345,8 +346,8 @@ GraphWidget::lookupEdgeItem(const graph_analysis::Edge::Ptr& e) const
 VertexItemBase*
 GraphWidget::lookupVertexItem(const graph_analysis::Vertex::Ptr& v) const
 {
-    VertexItemMap::const_iterator it = v_map.find(v);
-    if(it == v_map.end())
+    VertexItemMap::const_iterator it = mVertexItemMap.find(v);
+    if(it == mVertexItemMap.end())
     {
         /* throw std::runtime_error("cannot lookup vertex item '" + v->toString() + */
         /*                          "'"); */
@@ -358,7 +359,7 @@ GraphWidget::lookupVertexItem(const graph_analysis::Vertex::Ptr& v) const
 void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,
                                           QPointF p)
 {
-    coordindate_map[v] = p;
+    mItemCoordinateMap[v] = p;
 }
 
 } // end namespace gui
