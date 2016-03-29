@@ -105,7 +105,9 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
         break;
     }
     default:
+    {
         break;
+    }
     };
     return QGraphicsItem::itemChange(change, value);
 }
@@ -166,6 +168,8 @@ QRectF VertexItemSimple::boundingRect() const
 {
     return childrenBoundingRect();
 }
+
+// drag'n drop!
 
 // this function is called as long as it is not "accepted" (by calling the
 // relevant function.

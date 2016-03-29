@@ -67,10 +67,6 @@ void BaseGraphView::updateLayout()
     {
         Edge::Ptr edge = edgeIt->current();
 
-    LOG_ERROR_S<<"sadsad " << edge->toString();
-    LOG_ERROR_S<<"sadsad " << edge->getTargetVertex()->toString();
-    LOG_ERROR_S<<"sadsad " << edge->getSourceVertex()->toString();
-
         VertexItemBase* sourceItem =
             lookupVertexItem(edge->getSourceVertex());
         VertexItemBase* targetItem =

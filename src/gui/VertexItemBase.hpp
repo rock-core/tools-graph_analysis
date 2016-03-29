@@ -135,7 +135,6 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
-
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 
 private:

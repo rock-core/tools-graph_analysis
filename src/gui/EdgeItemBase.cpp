@@ -71,9 +71,13 @@ EdgeItemBase::~EdgeItemBase()
     // this can crash during tearing down of a scene because the pointers seize
     // to be valid. guarding against this the expensive way...
     if(scene()->items().contains(mpSourceItem))
+    {
         mpSourceItem->deregisterPositionAdjustmentConnection(this);
+    }
     if(scene()->items().contains(mpTargetItem))
+    {
         mpTargetItem->deregisterPositionAdjustmentConnection(this);
+    }
 }
 
 int EdgeItemBase::type() const

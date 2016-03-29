@@ -16,8 +16,10 @@ namespace gui
 
 class GraphWidget;
 
-/* simplest possible implementation: just a box with two strings -- type and
- * label */
+/**
+ * simplest possible implementation: just a box with two strings -- type and label
+ *
+ */
 class OutputPortItem : public PortItem
 {
 public:
@@ -25,16 +27,16 @@ public:
                    graph_analysis::OutputPort::Ptr vertex,
                    QGraphicsItem* parent);
     virtual ~OutputPortItem();
-    virtual int type() const
-    {
-        return OutputPortItemType;
-    };
+    virtual int type() const;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
                QWidget* widget = 0);
     QRectF boundingRect() const;
 
-    virtual QPointF getConnector() const
+    /**
+     * our connector is the middle of our right-side.
+     */
+    QPointF getConnector() const
     {
         return mapToScene(QLineF(boundingRect().topRight(),
                                  boundingRect().bottomRight()).pointAt(0.5));
@@ -43,7 +45,10 @@ public:
     void updateStrings();
 
 protected:
-    /* void dragEnterEvent(QGraphicsSceneDragDropEvent* event); */
+    void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
+    void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
+    void dropEvent(QGraphicsSceneDragDropEvent* event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 };
 
 } // end namespace gui
