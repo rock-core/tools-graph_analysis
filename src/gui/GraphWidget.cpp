@@ -159,16 +159,6 @@ void GraphWidget::refresh(bool all)
 
 void GraphWidget::gvRender(const std::string& filename)
 {
-    try
-    {
-        mpGVGraph->renderToFile(filename, mLayout.toStdString());
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidgetManager::toDotFile: export via graphviz failed: " << e.what();
-        QMessageBox::critical(this, tr("Graph export via GraphViz failed"), e.what());
-        updateStatus("Dot Graph export failed: " + std::string(e.what()));
-    }
 }
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)

@@ -45,7 +45,7 @@ EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
     // actual edge?
     //
     // Have to call "scene()" via the main-widgets, as this item is not yet
-    // added to the scene.
+    // added to the scene <- re-test if this "contains" check is needed at all!
     if(getGraphWidget()->scene()->items().contains(mpSourceItem))
     {
         mpSourceItem->registerPositionAdjustmentConnection(this);

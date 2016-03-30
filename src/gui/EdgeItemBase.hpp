@@ -77,16 +77,9 @@ protected:
 
     /**
      * the two source- and target-items, where this Edge is connected to
-     *
-     * TODO: change this interface into "update according a list of points", and move the
-     * intersection code in the base-widget as one very simple layouter.
-     *
      */
     VertexItemBase* mpSourceItem;
     VertexItemBase* mpTargetItem;
-    /** two points of the source and target, where this edge should attach */
-    QPointF mSourcePoint;
-    QPointF mTargetPoint;
 
     /** provide mouse-over status updates of the currently selected Edge */
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
@@ -113,6 +106,16 @@ protected:
                QWidget* widget = 0);
     QRectF boundingRect() const;
     QPainterPath shape() const;
+
+    /**
+     * two points of the source and target, where this edge should attach
+     *
+     * TODO: change this interface into "update according a list of points",
+     * and move the intersection code in the base-widget as one very simple
+     * layouter.
+     */
+    QPointF mSourcePoint;
+    QPointF mTargetPoint;
 
 private:
     QPointF getIntersectionPoint(QGraphicsItem* item) const;
