@@ -75,7 +75,13 @@ protected:
     /** parent managing graph widget */
     GraphWidget* mpGraphWidget;
 
-    /** the two source- and target-items, where this Edge is connected to */
+    /**
+     * the two source- and target-items, where this Edge is connected to
+     *
+     * TODO: change this interface into "update according a list of points", and move the
+     * intersection code in the base-widget as one very simple layouter.
+     *
+     */
     VertexItemBase* mpSourceItem;
     VertexItemBase* mpTargetItem;
     /** two points of the source and target, where this edge should attach */

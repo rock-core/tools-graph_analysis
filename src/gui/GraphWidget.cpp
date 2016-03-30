@@ -36,10 +36,8 @@ namespace gui {
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpScene(new QGraphicsScene(this))
-    , mpGVGraph(NULL)
     , mMaxNodeHeight(0)
     , mMaxNodeWidth (0)
-    , mScaleFactor(2.2)
     , mLayout("dot")
 {
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -86,13 +84,6 @@ void GraphWidget::clearVisualization()
     // afterwards we can clear the "GraphElement to Item" caches.
     mEdgeItemMap.clear();
     mVertexItemMap.clear();
-
-    if(mpGVGraph)
-    {
-        mpGVGraph->clearEdges();
-        mpGVGraph->clearNodes();
-    }
-
 }
 
 void GraphWidget::reset(bool keepData)
@@ -102,13 +93,6 @@ void GraphWidget::reset(bool keepData)
 
 void GraphWidget::resetLayoutingGraph()
 {
-    if(mpGVGraph)
-    {
-        delete mpGVGraph;
-    }
-
-    mpLayoutingGraph = BaseGraph::getInstance();
-    mpGVGraph = new io::GVGraph(mpLayoutingGraph, "LayoutingGraph");
 }
 
 void GraphWidget::update()

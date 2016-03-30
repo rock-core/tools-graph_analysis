@@ -104,8 +104,8 @@ protected:
      * this is used to update the statusbar of the current active widget with
      * information about the currently hovered (or not hovered) vertex
      */
-    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
 };
 
 /**

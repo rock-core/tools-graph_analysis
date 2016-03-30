@@ -162,20 +162,19 @@ protected:
     graph_analysis::BaseGraph::Ptr mpGraph;
 
     /// Layouting
-    io::GVGraph* mpGVGraph;
-    graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
 
     /// max height of the nodes in the scene (relevant for GraphViz runtime layouting)
     qreal mMaxNodeHeight;
     /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
     qreal mMaxNodeWidth;
 
-    /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees
-    double mScaleFactor;
-
     /// layouting engine to be used on the next layouting
     QString mLayout;
 
+    /**
+     * this is (was?) used to display the name of the last focused element in
+     * the status bar.
+     */
     graph_analysis::GraphElement::Ptr mpFocusedElement;
 
     void gvRender(const std::string& filename);
