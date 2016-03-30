@@ -26,10 +26,13 @@ public:
     ~GraphAnalysisGui();
 
 private:
+    // gui elements
     Ui::GraphAnalysisGui* mpUi;
 
+    // the basegraph where the subwidgets will work upon
     graph_analysis::BaseGraph::Ptr mpGraph;
 
+    // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;
     ComponentGraphEditor* mpComponentGraphEditor;
 };

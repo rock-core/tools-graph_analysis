@@ -16,11 +16,10 @@ namespace gui
 GraphAnalysisGui::GraphAnalysisGui()
     : QMainWindow()
     , mpUi(new Ui::GraphAnalysisGui)
+    , mpGraph(BaseGraph::getInstance())
     , mpBaseGraphView(new BaseGraphView(this))
     , mpComponentGraphEditor(new ComponentGraphEditor(this))
 {
-
-    mpGraph = BaseGraph::getInstance();
 
     mpBaseGraphView->setGraph(mpGraph);
     mpComponentGraphEditor->setGraph(mpGraph);
@@ -44,6 +43,8 @@ GraphAnalysisGui::GraphAnalysisGui()
             mpUi->statusbar, SLOT(showMessage(QString, int)));
     connect(mpComponentGraphEditor, SIGNAL(currentStatus(QString, int)),
             mpUi->statusbar, SLOT(showMessage(QString, int)));
+
+    // missing: file import+export...
 }
 
 GraphAnalysisGui::~GraphAnalysisGui()
