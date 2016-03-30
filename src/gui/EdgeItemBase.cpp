@@ -64,6 +64,7 @@ EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
         LOG_ERROR_S << "problem registering target item for "
                     << getEdge()->toString();
     }
+    setAcceptHoverEvents(true);
 }
 
 EdgeItemBase::~EdgeItemBase()

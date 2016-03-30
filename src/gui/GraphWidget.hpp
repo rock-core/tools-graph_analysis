@@ -98,7 +98,7 @@ public:
     virtual QString getClassName() const { return "graph_analysis::gui::GraphWidget"; }
 
     /// getter method for retrieving the underlying base graph
-    graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
+    graph_analysis::BaseGraph::Ptr graph() const { return mpGraph; }
     /// setter method for updating the underlying base graph
     void setGraph(const graph_analysis::BaseGraph::Ptr& graph) { mpGraph = graph; }
 
@@ -106,7 +106,7 @@ public:
      * Triggers a reset of the underlying graph
      * via GraphWidgetManager::resetGraph
      */
-    virtual void reset(bool keepData = false);
+    virtual void reset();
 
     /**
      * Reset the layouting graph, i.e, deletes and reinstanciates it
@@ -142,11 +142,16 @@ public:
 
     // \param msg Message in the statusbar
     /// \param time Number of milliseconds the message will be held on screen
-    virtual void updateStatus(const std::string& msg, int timeInMS = 10) const;
+    virtual void updateStatus(const std::string& msg, int timeInMS = 10);
 
 public slots:
     virtual void shuffle();
     virtual void refresh(bool all = true);
+    virtual void updateVisualization();
+
+signals:
+    void currentStatus(QString, int);
+    void baseGraphChanged();
 
 protected:
 
@@ -158,26 +163,14 @@ protected:
     /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);
 
-    /// conceptual underlying graph
+    /// shared pointer of the conceptual, underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
-
-    /// Layouting
-
-    /// max height of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeHeight;
-    /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeWidth;
-
-    /// layouting engine to be used on the next layouting
-    QString mLayout;
 
     /**
      * this is (was?) used to display the name of the last focused element in
      * the status bar.
      */
     graph_analysis::GraphElement::Ptr mpFocusedElement;
-
-    void gvRender(const std::string& filename);
 
     void keyPressEvent(QKeyEvent *);
 

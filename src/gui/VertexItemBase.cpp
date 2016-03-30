@@ -39,6 +39,7 @@ VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
     //
     // shouldn't this be moved elsewhere?
     mpGraphWidget->registerVertexItem(mpVertex, this);
+    setAcceptHoverEvents(true);
 }
 
 VertexItemBase::~VertexItemBase()

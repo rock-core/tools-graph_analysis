@@ -30,6 +30,7 @@ rock_library(graph_analysis
         boost_graph/DirectedGraph.cpp
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
+        gui/GraphAnalysisGui.cpp
         gui/ActionCommander.cpp
         gui/EdgeItem.cpp
         gui/EdgeItemTypeManager.cpp
@@ -38,7 +39,6 @@ rock_library(graph_analysis
         gui/GraphWidget.cpp
         gui/GraphWidgetManager.cpp
         gui/IconManager.cpp
-        gui/Main.cpp
         gui/VertexItemBase.cpp
         gui/EdgeItemBase.cpp
         gui/NodeItem.cpp
@@ -134,6 +134,7 @@ rock_library(graph_analysis
         filters/CommonFilters.hpp
         filters/EdgeContextFilter.hpp
         filters/RegexFilters.hpp
+        gui/GraphAnalysisGui.hpp
         gui/ActionCommander.hpp
         gui/EdgeItem.hpp
         gui/EdgeItemTypeManager.hpp
@@ -203,6 +204,7 @@ rock_library(graph_analysis
     DEPS_PLAIN
         Boost_REGEX
     MOC
+        gui/GraphAnalysisGui.hpp
         gui/FilterManager.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
@@ -219,6 +221,7 @@ rock_library(graph_analysis
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
     DEPS_PKGCONFIG QtGui
     UI
+        gui/GraphAnalysisGui.ui
         gui/BaseGraphView/AddVertexDialog.ui
         gui/BaseGraphView/AddEdgeDialog.ui
         gui/dialogs/add_filter_dialog_gui.ui
@@ -245,7 +248,7 @@ rock_executable(graph_analysis-bm Benchmark.cpp
         Boost_SYSTEM
     NOINSTALL)
 
-rock_executable(graph_analysis-gui gui/Main.cpp
+rock_executable(graph_analysis-gui gui/main.cpp
     DEPS graph_analysis
     )
 

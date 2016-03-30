@@ -6,13 +6,15 @@
 
 #include <base/Logging.hpp>
 
-namespace graph_analysis {
+namespace graph_analysis
+{
 
 Port::Port(const std::string& label)
     : Vertex(label)
-{}
+{
+}
 
-shared_ptr<Component> Port::getComponent(const BaseGraph::Ptr &graph) const
+shared_ptr<Component> Port::getComponent(const BaseGraph::Ptr& graph) const
 {
     Vertex::Ptr vertexPtr = getSharedPointerFromGraph(graph);
     EdgeIterator::Ptr edgeIt = graph->getInEdgeIterator(vertexPtr);

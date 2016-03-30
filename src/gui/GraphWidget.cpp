@@ -13,7 +13,6 @@
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
-#include <graph_analysis/gui/WidgetManager.hpp>
 #include <graph_analysis/gui/EdgeMimeData.hpp>
 
 #include <graph_analysis/gui/BaseGraphView/AddVertexDialog.hpp>
@@ -36,13 +35,13 @@ namespace gui {
 GraphWidget::GraphWidget(QWidget *parent)
     : QGraphicsView(parent)
     , mpScene(new QGraphicsScene(this))
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
-    , mLayout("dot")
 {
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
     setAcceptDrops(true);
+
+    // when we change the base-graph, we wanna act on this immidiately
+    connect(this, SIGNAL(baseGraphChanged()), this, SLOT(updateVisualization()));
 }
 
 GraphWidget::~GraphWidget()
@@ -67,13 +66,12 @@ void GraphWidget::scaleView(qreal scaleFactor)
     }
     scale(scaleFactor, scaleFactor);
     std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
+    updateStatus(status_msg, 1000);
 }
 
-void GraphWidget::updateStatus(const std::string& message, int timeout) const
+void GraphWidget::updateStatus(const std::string& message, int timeout)
 {
-    WidgetManager::getInstance()->getGraphWidgetManager()->updateStatus(
-        QString(message.c_str()), timeout);
+    emit currentStatus(QString(message.c_str()), timeout);
 }
 
 void GraphWidget::clearVisualization()
@@ -86,9 +84,13 @@ void GraphWidget::clearVisualization()
     mVertexItemMap.clear();
 }
 
-void GraphWidget::reset(bool keepData)
+void GraphWidget::reset()
 {
-    WidgetManager::getInstance()->getGraphWidgetManager()->resetGraph(keepData);
+    LOG_ERROR_S<<"GraphWidget base class overwrites graph data";
+    mpGraph = BaseGraph::getInstance();
+
+    // and tell the rest of the world
+    emit baseGraphChanged();
 }
 
 void GraphWidget::resetLayoutingGraph()
@@ -152,13 +154,7 @@ void GraphWidget::shuffle()
 void GraphWidget::refresh(bool all)
 {
     LOG_DEBUG_S << "Refresh widget: " << getClassName().toStdString() << " keep all data";
-    reset(true /*keepData*/);
-
     update();
-}
-
-void GraphWidget::gvRender(const std::string& filename)
-{
 }
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
@@ -178,17 +174,32 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             return;
         }
 
+        case Qt::Key_L:
+        {
+            // re-layouting/re-displaying
+            clearVisualization();
+            update();
+            return;
+        }
+
+        case Qt::Key_C:
+        {
+            // CTRL+C deletes the graph (it first prompts again the user)
+            reset();
+            return;
+        }
+
         case Qt::Key_R:
         {
-            // CTRL+R deletes the graph (it first prompts again the user)
-            WidgetManager::getInstance()->getGraphWidgetManager()->resetGraph();
+            // "random" layout
+            shuffle();
             return;
         }
 
         case Qt::Key_E:
         case Qt::Key_S: {
             // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
-            WidgetManager::getInstance()->getGraphWidgetManager()->exportGraph();
+            /* WidgetManager::getInstance()->getGraphWidgetManager()->exportGraph(); */
             return;
         }
 
@@ -196,7 +207,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_I:
         {
             // CTRL+O (open) or CTRL+I (input graph)
-            WidgetManager::getInstance()->getGraphWidgetManager()->importGraph();
+            /* WidgetManager::getInstance()->getGraphWidgetManager()->importGraph(); */
             return;
         }
         }
@@ -244,14 +255,20 @@ void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
                     VertexTypeManager::getInstance()->createVertex(
                         dialog.getClassname().toStdString(),
                         dialog.getLabel().toStdString()));
-                clearVisualization();
-                update();
+                // and trigger relayouting
+                emit baseGraphChanged();
             }
         }
 
     }
 
     QGraphicsView::mouseDoubleClickEvent(event);
+}
+
+void GraphWidget::updateVisualization()
+{
+    clearVisualization();
+    update();
 }
 
 void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
@@ -262,7 +279,7 @@ void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
     mpFocusedElement = element;
 }
 
-void GraphWidget::clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
+void GraphWidget::clearFocus() { updateStatus("", 2500);mpFocusedElement = GraphElement::Ptr(); }
 
 void GraphWidget::registerEdgeItem(const graph_analysis::Edge::Ptr& e,
                                    EdgeItemBase* i)
