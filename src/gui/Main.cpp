@@ -8,11 +8,7 @@
 #include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
 #include <graph_analysis/gui/ComponentGraphEditor/ComponentGraphEditor.hpp>
 
-// prints verbose help message regarding usage of 'cmd' to string stream 'ss'
-void help_setup(std::stringstream& ss, const std::string& cmd, graph_analysis::gui::GraphWidgetManager& graphManager)
-{
-    graphManager.helpSetup(ss, cmd);
-}
+using namespace graph_analysis::gui;
 
 int main(int argc, char **argv)
 {
@@ -23,7 +19,6 @@ int main(int argc, char **argv)
     // ComponentEditorWidget
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-    using namespace graph_analysis::gui;
     GraphWidgetManager graphManager;
 
     if(argc > 1)
@@ -31,7 +26,7 @@ int main(int argc, char **argv)
         if("--help" == std::string(argv[1]))
         {
             std::stringstream help_message;
-            help_setup(help_message, std::string(argv[0]), graphManager);
+            graphManager.helpSetup(help_message, std::string(argv[0]));
             std::cout << help_message.rdbuf();
             exit(EXIT_FAILURE);
         }
