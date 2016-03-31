@@ -4,6 +4,7 @@
 #include <graph_analysis/EdgeTypeManager.hpp>
 
 #include <graph_analysis/gui/ComponentGraphEditor/Component.hpp>
+#include <graph_analysis/gui/ComponentGraphEditor/PortConnection.hpp>
 
 namespace graph_analysis {
 namespace io {
@@ -36,9 +37,20 @@ void OrogenModelReader::read(const std::string &filename,
     graph->addVertex(vertex7);
     graph->addVertex(vertex8);
 
-    // but why?
+    // fancier
     Component::Ptr comp = Component::Ptr(new Component("testcomp"));
     graph->addVertex(comp);
+    OutputPort::Ptr port1 = OutputPort::Ptr(new OutputPort("bla"));
+    graph->addVertex(port1);
+    graph->addEdge(
+        eManager->createEdge("graph_analysis::HasFeature", comp, port1, "has"));
+    InputPort::Ptr port2 = InputPort::Ptr(new InputPort("blupp"));
+    graph->addVertex(port2);
+    graph->addEdge(
+        eManager->createEdge("graph_analysis::HasFeature", comp, port2, "has"));
+    PortConnection::Ptr conn = PortConnection::Ptr(new PortConnection(
+        port1, dynamic_pointer_cast<InputPort>(vertex8), "testcomp"));
+    graph->addEdge(conn);
 
     // now add the ports to the respective clusters via "hasFeature" label
     Edge::Ptr edge1 = eManager->createEdge("graph_analysis::HasFeature",
