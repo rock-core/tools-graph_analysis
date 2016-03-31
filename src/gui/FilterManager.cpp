@@ -1,4 +1,3 @@
-
 #include "FilterManager.hpp"
 #include <graph_analysis/gui/IconManager.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
@@ -15,6 +14,7 @@
 #include <base/Logging.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <stdexcept>
 
 namespace graph_analysis {
 namespace gui {
