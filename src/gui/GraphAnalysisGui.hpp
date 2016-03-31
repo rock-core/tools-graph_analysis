@@ -35,6 +35,11 @@ private:
     // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;
     ComponentGraphEditor* mpComponentGraphEditor;
+
+    void importGraph();
+    void exportGraph();
+    void fromFile(const std::string& filename);
+    void notifyAll();
 };
 
 } // end namespace gui
