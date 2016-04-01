@@ -101,8 +101,13 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
         {
             positionAdjustmentConnections.at(i)->adjustEdgePositioning();
         }
-        // and store the new position in the main GraphWidget
-        getGraphWidget()->cacheVertexItemPosition(getVertex(), pos());
+        // if this item is movable (so not part of a larget group of items)
+        // then store the new position in the main GraphWidget, so that the
+        // position can be reused after re-layouting.
+        if(flags() & QGraphicsItem::ItemIsMovable)
+        {
+            getGraphWidget()->cacheVertexItemPosition(getVertex(), pos());
+        }
         break;
     }
     default:

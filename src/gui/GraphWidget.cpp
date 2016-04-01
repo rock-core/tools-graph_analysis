@@ -351,6 +351,14 @@ void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,
                                           QPointF p)
 {
     mItemCoordinateMap[v] = p;
+    // this map should only contain entries for movable items on the canvas.
+    // subitems, which are not individually movable, should not cache in this
+    // map.
+    if(!(mVertexItemMap[v]->flags() & QGraphicsItem::ItemIsMovable))
+    {
+        LOG_ERROR_S << "unmovable item in coordinate map: '" << v->toString()
+                    << "'";
+    }
 }
 
 } // end namespace gui
