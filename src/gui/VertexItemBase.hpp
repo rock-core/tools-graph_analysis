@@ -46,18 +46,6 @@ public:
     };
 
     /**
-     * mechanism where other EdgeItems can register as "to-be-notified" on position
-     * change of this VertexItem.
-     */
-    void registerPositionAdjustmentConnection(EdgeItemBase* item);
-    void deregisterPositionAdjustmentConnection(EdgeItemBase* item);
-    /**
-     * all EdgeItems which registered here to be notified will be called when
-     * this vertex changes position.
-     */
-    QVector<EdgeItemBase*> positionAdjustmentConnections;
-
-    /**
      * return a point where an edge should point to when it connects to this
      * vertex
      */
@@ -87,6 +75,13 @@ public:
      * after its position has changed in the scene.
      */
     QVariant itemChange(GraphicsItemChange change, const QVariant& value);
+
+    /**
+     * calculates the two intersection points between the connector of this
+     * item and the connector of the otherItem with the bounding-box of the two
+     * respective items.
+     */
+    QPointF getIntersectionPoint(VertexItemBase* otherItem) const;
 
 protected:
     /* underlying graph vertex pointer */

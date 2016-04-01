@@ -21,7 +21,6 @@ class PortConnectionItem : public EdgeItemSimple
   public:
     PortConnectionItem(GraphWidget *graphWidget,
                        graph_analysis::PortConnection::Ptr conn,
-                       VertexItemBase *source, VertexItemBase *target,
                        QGraphicsItem *parent);
 
     virtual ~PortConnectionItem();

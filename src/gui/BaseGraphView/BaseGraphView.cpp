@@ -67,13 +67,8 @@ void BaseGraphView::populateCanvas()
     {
         Edge::Ptr edge = edgeIt->current();
 
-        VertexItemBase* sourceItem =
-            lookupVertexItem(edge->getSourceVertex());
-        VertexItemBase* targetItem =
-            lookupVertexItem(edge->getTargetVertex());
-
         // creating new edge items
-        EdgeItemSimple* e = new EdgeItemSimple(this, edge, sourceItem, targetItem, NULL) ;
+        EdgeItemSimple* e = new EdgeItemSimple(this, edge, NULL) ;
         scene()->addItem(e);
     }
 }

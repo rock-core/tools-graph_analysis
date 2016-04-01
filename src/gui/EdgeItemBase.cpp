@@ -15,13 +15,10 @@ namespace gui
 
 EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
                            graph_analysis::Edge::Ptr edge,
-                           VertexItemBase* sourceItem,
-                           VertexItemBase* targetItem, QGraphicsItem* parent)
+                           QGraphicsItem* parent)
     : QGraphicsItem(parent)
     , mpEdge(edge)
     , mpGraphWidget(graphWidget)
-    , mpSourceItem(sourceItem)
-    , mpTargetItem(targetItem)
 {
     // "edges" will not react to mouse-clicks. ever.
     setAcceptedMouseButtons(Qt::NoButton);
@@ -35,50 +32,11 @@ EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
                     << edge->getSourceVertex()->toString();
     }
 
-    // tell the two vertices we are connected to that we want to be updated
-    // when their position changes
-    //
-    // problem: what if these are no longer member of the scene?
-    //
-    // IDEA: how about creating the connected edge via a QGraphicsItemGroup
-    // containing the two ports (which are also contained elsewhere) plus the
-    // actual edge?
-    //
-    // Have to call "scene()" via the main-widgets, as this item is not yet
-    // added to the scene <- re-test if this "contains" check is needed at all!
-    if(getGraphWidget()->scene()->items().contains(mpSourceItem))
-    {
-        mpSourceItem->registerPositionAdjustmentConnection(this);
-    }
-    else
-    {
-        LOG_ERROR_S << "problem registering source item for "
-                    << getEdge()->toString();
-    }
-    if(getGraphWidget()->scene()->items().contains(mpTargetItem))
-    {
-        mpTargetItem->registerPositionAdjustmentConnection(this);
-    }
-    else
-    {
-        LOG_ERROR_S << "problem registering target item for "
-                    << getEdge()->toString();
-    }
     setAcceptHoverEvents(true);
 }
 
 EdgeItemBase::~EdgeItemBase()
 {
-    // this can crash during tearing down of a scene because the pointers seize
-    // to be valid. guarding against this the expensive way...
-    if(scene()->items().contains(mpSourceItem))
-    {
-        mpSourceItem->deregisterPositionAdjustmentConnection(this);
-    }
-    if(scene()->items().contains(mpTargetItem))
-    {
-        mpTargetItem->deregisterPositionAdjustmentConnection(this);
-    }
 }
 
 int EdgeItemBase::type() const
@@ -86,9 +44,13 @@ int EdgeItemBase::type() const
     return EdgeItemBaseType;
 }
 
-void EdgeItemBase::adjustEdgePositioning()
+void EdgeItemBase::adjustEdgePoints(QList<QPointF> points)
 {
+    mPoints = points;
+    adjustEdgePositioning();
 }
+
+void EdgeItemBase::adjustEdgePositioning(){}
 
 void EdgeItemBase::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
@@ -116,9 +78,8 @@ QPainterPath EdgeItemSimple::shape() const
 // kiss:
 EdgeItemSimple::EdgeItemSimple(GraphWidget* graphWidget,
                                graph_analysis::Edge::Ptr edge,
-                               VertexItemBase* source, VertexItemBase* target,
                                QGraphicsItem* parent)
-    : EdgeItemBase(graphWidget, edge, source, target, parent)
+    : EdgeItemBase(graphWidget, edge, parent)
     , mArrowSize(10)
 {
     mpLabel = new QGraphicsTextItem(QString(edge->getLabel().c_str()), this);
@@ -149,58 +110,11 @@ int EdgeItemSimple::type() const
     return EdgeItemSimpleType;
 }
 
-QPointF EdgeItemSimple::getIntersectionPoint(QGraphicsItem* item) const
-{
-    QPolygonF polygon = item->boundingRect();
-
-    // Intersection with target
-    QPointF p1 = item->mapToScene(polygon.first());
-    QPointF p2;
-    QPointF intersectionPoint;
-    // iterates through the node boundaries until intersection is found; this
-    // fact is guaranteed to happen since one of the endpoints of 'line' lies in
-    // the center of the convex body analysed
-    //
-    // FIXME: catch the "no intersection" case
-    for(int i = 1; i < polygon.count(); ++i)
-    {
-        p2 = item->mapToScene(polygon.at(i));
-        QLineF pLine(p1, p2);
-        QLineF::IntersectType intersectType =
-            pLine.intersect(mpLine->line(), &intersectionPoint);
-
-        if(intersectType == QLineF::BoundedIntersection)
-        {
-            // intersection found
-            break;
-        }
-        else
-        {
-            // no intersection found
-            p1 = p2;
-        }
-    }
-    return intersectionPoint;
-}
-
 void EdgeItemSimple::adjustEdgePositioning()
 {
-    if(!mpSourceItem || !mpTargetItem)
-    {
-        return;
-    }
-
-    mSourcePoint = mpSourceItem->getConnector();
-    mTargetPoint = mpTargetItem->getConnector();
-
     prepareGeometryChange();
 
-    mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
-
-    mSourcePoint = getIntersectionPoint(mpSourceItem);
-    mTargetPoint = getIntersectionPoint(mpTargetItem);
-
-    mpLine->setLine(QLineF(mSourcePoint, mTargetPoint));
+    mpLine->setLine(QLineF(mPoints.front(), mPoints.back()));
     mpLabel->setPos(mpLine->line().pointAt(0.5) -
                     mpLabel->boundingRect().center());
     mpClassName->setPos(mpLabel->pos() +

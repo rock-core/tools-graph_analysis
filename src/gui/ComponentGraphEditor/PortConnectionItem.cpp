@@ -15,10 +15,8 @@ namespace gui
 
 PortConnectionItem::PortConnectionItem(GraphWidget *graphWidget,
                                        graph_analysis::PortConnection::Ptr edge,
-                                       VertexItemBase *source,
-                                       VertexItemBase *target,
                                        QGraphicsItem *parent)
-    : EdgeItemSimple(graphWidget, edge, source, target, parent)
+    : EdgeItemSimple(graphWidget, edge, parent)
 {
 }
 

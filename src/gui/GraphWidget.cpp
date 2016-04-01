@@ -132,6 +132,8 @@ void GraphWidget::updateLayoutView()
         else
         {
             // invalid entry in the coordinate cache. clean it.
+            LOG_ERROR_S << "deleting invalid entry '" << it->first->toString()
+                        << "' from cache";
             mItemCoordinateMap.erase(it);
         }
     }
@@ -321,30 +323,99 @@ void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
     mVertexItemMap.erase(v);
 }
 
-EdgeItemBase*
-GraphWidget::lookupEdgeItem(const graph_analysis::Edge::Ptr& e) const
+QList<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
+                                          VertexItemBase* secondItem) const
 {
-    EdgeItemMap::const_iterator it = mEdgeItemMap.find(e);
-    if(it == mEdgeItemMap.end())
+    QList<QPointF> retval;
+    QLineF directConnection(firstItem->getConnector(),
+                            secondItem->getConnector());
+    QPolygonF b1 = firstItem->mapToScene(firstItem->boundingRect());
+    if(b1.containsPoint(directConnection.p1(), Qt::OddEvenFill))
     {
-        /* throw std::runtime_error("cannot lookup egde item '" + e->toString() + */
-        /*                          "'"); */
-        return NULL;
+        for(int i = 1; i < b1.size(); i++)
+        {
+            QLineF l(b1.at(i - 1), b1.at(i));
+            QPointF p;
+            enum QLineF::IntersectType type = directConnection.intersect(l, &p);
+            if(type == QLineF::BoundedIntersection)
+            {
+                retval.push_back(p);
+                // only use the first intersection
+                break;
+            }
+        }
     }
-    return it->second;
+    else
+    {
+        retval.push_back(firstItem->getConnector());
+    }
+    QPolygonF b2 = secondItem->mapToScene(secondItem->boundingRect());
+    if(b2.containsPoint(directConnection.p2(), Qt::OddEvenFill))
+    {
+        for(int i = 1; i < b2.size(); i++)
+        {
+            QLineF l(b2.at(i - 1), b2.at(i));
+            QPointF p;
+            enum QLineF::IntersectType type = directConnection.intersect(l, &p);
+            if(type == QLineF::BoundedIntersection)
+            {
+                retval.push_back(p);
+                // only use the first intersection
+                break;
+            }
+        }
+    }
+    else
+    {
+        retval.push_back(secondItem->getConnector());
+    }
+    return retval;
 }
 
-VertexItemBase*
-GraphWidget::lookupVertexItem(const graph_analysis::Vertex::Ptr& v) const
+// this is intended for vertices which have edges connected to them
+void GraphWidget::vertexPositionHasChanged(VertexItemBase* item)
 {
-    VertexItemMap::const_iterator it = mVertexItemMap.find(v);
-    if(it == mVertexItemMap.end())
+    updateEdgePositions(item);
+
+    // also cache the position so that we can reload it in case we have to
+    // create the current layout after a reset.
+    if(item->flags() & QGraphicsItem::ItemIsMovable)
     {
-        /* throw std::runtime_error("cannot lookup vertex item '" + v->toString() + */
-        /*                          "'"); */
-        return NULL;
+        cacheVertexItemPosition(item->getVertex(), item->pos());
     }
-    return it->second;
+}
+
+void GraphWidget::updateEdgePositions(VertexItemBase* item)
+{
+    // checkout all edges of this vertex, and search for these which are
+    // registered as having an actual item associated with them.
+    EdgeIterator::Ptr edgeIt = graph()->getEdgeIterator(item->getVertex());
+    while(edgeIt->next())
+    {
+        EdgeItemMap::iterator edgeItemIt = mEdgeItemMap.find(edgeIt->current());
+
+        // if this "Edge" has an actual graphical representation on the canvas:
+        if(edgeItemIt != mEdgeItemMap.end())
+        {
+            VertexItemBase* targetItem =
+                mVertexItemMap[edgeItemIt->first->getTargetVertex()];
+            VertexItemBase* sourceItem =
+                mVertexItemMap[edgeItemIt->first->getSourceVertex()];
+
+            QList<QPointF> points = getEdgePoints(sourceItem, targetItem);
+
+            EdgeItemBase* edgeItem = edgeItemIt->second;
+            if(points.size() == 2)
+            {
+                edgeItem->adjustEdgePoints(points);
+            }
+            else
+            {
+                LOG_ERROR_S << "skipping edge points "
+                            << item->getVertex()->toString();
+            }
+        }
+    }
 }
 
 void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,

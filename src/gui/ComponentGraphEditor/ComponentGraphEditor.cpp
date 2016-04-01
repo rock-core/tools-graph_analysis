@@ -107,15 +107,9 @@ void ComponentGraphEditor::populateCanvas()
             continue;
         }
 
-        // this can fail if the graph has a "wrong" stucture.
-        VertexItemBase* sourcePortItem =
-            lookupVertexItem(conn->getSourcePort(mpGraph));
-        VertexItemBase* targetPortItem =
-            lookupVertexItem(conn->getTargetPort(mpGraph));
-
         // creating new edge items
         PortConnectionItem *e = new PortConnectionItem(
-            this, conn, sourcePortItem, targetPortItem, NULL);
+            this, conn, NULL);
         scene()->addItem(e);
     }
 }

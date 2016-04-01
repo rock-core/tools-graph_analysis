@@ -38,7 +38,7 @@ class BaseGraphView : public GraphWidget
      * according to the current BaseGraph. Respawns all graphical elements by
      * the underlying base graph and trigger the layouting
      */
-    virtual void populateCanvas();
+    void populateCanvas();
 
 };
 

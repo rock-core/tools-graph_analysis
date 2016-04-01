@@ -66,30 +66,6 @@ void VertexItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsItem::hoverLeaveEvent(event);
 }
 
-void VertexItemBase::registerPositionAdjustmentConnection(EdgeItemBase* item)
-{
-    if(positionAdjustmentConnections.contains(item))
-    {
-        LOG_ERROR_S << "doubled entry while registering adjustment connecitons? "
-                    << item->getEdge()->toString();
-    }
-    positionAdjustmentConnections.push_back(item);
-}
-
-void VertexItemBase::deregisterPositionAdjustmentConnection(EdgeItemBase* item)
-{
-    int index = positionAdjustmentConnections.indexOf(item);
-    if(index != -1)
-    {
-        positionAdjustmentConnections.remove(index);
-    }
-    else
-    {
-        LOG_ERROR_S << "uoh, cannot find item for edge"
-                    << item->getEdge()->toString();
-    }
-}
-
 QVariant VertexItemBase::itemChange(GraphicsItemChange change,
                                     const QVariant& value)
 {
@@ -97,17 +73,9 @@ QVariant VertexItemBase::itemChange(GraphicsItemChange change,
     {
     case ItemScenePositionHasChanged:
     {
-        for(int i = 0; i < positionAdjustmentConnections.size(); ++i)
-        {
-            positionAdjustmentConnections.at(i)->adjustEdgePositioning();
-        }
-        // if this item is movable (so not part of a larget group of items)
-        // then store the new position in the main GraphWidget, so that the
-        // position can be reused after re-layouting.
-        if(flags() & QGraphicsItem::ItemIsMovable)
-        {
-            getGraphWidget()->cacheVertexItemPosition(getVertex(), pos());
-        }
+        // notify the graph widget about our new position. there, relevant
+        // caching and updating of connected items is performed.
+        getGraphWidget()->vertexPositionHasChanged(this);
         break;
     }
     default:

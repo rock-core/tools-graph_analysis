@@ -33,24 +33,18 @@ public:
      * @param parent the parent
      */
     EdgeItemBase(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
-                 VertexItemBase* source, VertexItemBase* target,
                  QGraphicsItem* parent);
 
     virtual ~EdgeItemBase();
     virtual int type() const;
 
-    /**
-     * triggers this item to update its own position on the canvas
-     *
-     * this item can be coupled via the "registerPositionAdjustmentConnection"
-     * to the position-change-signal of VertexItems.
-     *
-     * this function is to be called after position updates of the coupled
-     * Vertex.
-     *
-     * does nothing by default.
-     */
+    virtual void adjustEdgePoints(QList<QPointF> points);
     virtual void adjustEdgePositioning();
+
+    /**
+     * two points of the source and target, where this edge should attach
+     */
+    QList<QPointF> mPoints;
 
     /** getter method for retrieving the underlying conceptual graph edge */
     graph_analysis::Edge::Ptr getEdge() const
@@ -75,12 +69,6 @@ protected:
     /** parent managing graph widget */
     GraphWidget* mpGraphWidget;
 
-    /**
-     * the two source- and target-items, where this Edge is connected to
-     */
-    VertexItemBase* mpSourceItem;
-    VertexItemBase* mpTargetItem;
-
     /** provide mouse-over status updates of the currently selected Edge */
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
@@ -95,10 +83,10 @@ class EdgeItemSimple : public EdgeItemBase
 {
 public:
     EdgeItemSimple(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
-                   VertexItemBase* source, VertexItemBase* target,
                    QGraphicsItem* parent);
     ~EdgeItemSimple();
     virtual int type() const;
+
     void adjustEdgePositioning();
 
 protected:
@@ -107,18 +95,7 @@ protected:
     QRectF boundingRect() const;
     QPainterPath shape() const;
 
-    /**
-     * two points of the source and target, where this edge should attach
-     *
-     * TODO: change this interface into "update according a list of points",
-     * and move the intersection code in the base-widget as one very simple
-     * layouter.
-     */
-    QPointF mSourcePoint;
-    QPointF mTargetPoint;
-
 private:
-    QPointF getIntersectionPoint(QGraphicsItem* item) const;
 
     int mArrowSize;
     QGraphicsTextItem* mpLabel;

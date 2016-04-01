@@ -19,38 +19,19 @@ namespace gui {
 
 /**
  *
- * \beginverbatim
-    GraphWidget* widget = new GraphWidget;
-
-    // Create vertices
-    for(int i = 0; i < 1; ++i)
-    {
-        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
-        widget->addVertex(vertex);
-    }
- \endverbatim
- */
-
-/**
- * \file GraphWidget.hpp
- * \class GraphWidget
- * \brief graph view widget interface
- * \details polymorphics base for the different kinds of graph widgets
- *      that make use of different kinds of node and edge items implementations
- *
- * The GraphWidget is meant to provide the base-class for several possible
- * graphical representations of an underlying graph_analysis::BaseGraph datastructure.
- * as the visual representation, it can map between entities of
- * graph_analysis::GraphElement and QGraphicsItem
- *
- * ??? the base-graph is adopted via a FilterManager to the actual graph to be displayed.
- *
  */
 class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
 
 public:
+
+    /** constructor */
+    GraphWidget(QWidget *parent = NULL);
+    /** destructor */
+    virtual ~GraphWidget();
+
+    virtual QString getClassName() const { return "graph_analysis::gui::GraphWidget"; }
 
     /**
      * storing a mapping from an "Edge" in the graph to a responsible "Item" on the scene.
@@ -59,6 +40,33 @@ public:
         EdgeItemMap;
     typedef std::map<const graph_analysis::Vertex::Ptr, VertexItemBase*>
         VertexItemMap;
+
+    /** to be called after a new "EdgeItem" is added to the canvas */
+    void registerEdgeItem(const graph_analysis::Edge::Ptr& e, EdgeItemBase* i);
+    /** to be called after a new "VertexItem" is added to the canvas */
+    void registerVertexItem(const graph_analysis::Vertex::Ptr& v,
+                            VertexItemBase* i);
+    /** to be called after an existing "EdgeItem" is removed from the canvas */
+    void deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
+                            EdgeItemBase* i);
+    /** to be called after an existing "VertexItem" is removed from the canvas */
+    void deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
+                              VertexItemBase* i);
+
+    /**
+     * takes the "connector" and the "boundingRect" of both items and tries to
+     * create a line between the intersection point of the connecting line and
+     * the boundingRects
+     *
+     * used to establish sensible coordinated to re-draw edges after their
+     * vertices changed position
+     */
+    QList<QPointF> getEdgePoints(VertexItemBase* firstItem, VertexItemBase* secondItem) const;
+
+    /**
+     * to be called by a VertexItem when it changes its position.
+     */
+    void vertexPositionHasChanged(VertexItemBase* item);
     /**
      * this is used to store where items for specific elements where positioned
      * on the scene. can be asked after a "clearVisualization()" to reposition
@@ -66,36 +74,19 @@ public:
      */
     typedef std::map<const graph_analysis::Vertex::Ptr, QPointF>
         VertexItemCoordinateCache;
-
-    void registerEdgeItem(const graph_analysis::Edge::Ptr& e, EdgeItemBase* i);
-    void registerVertexItem(const graph_analysis::Vertex::Ptr& v,
-                            VertexItemBase* i);
-    void deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
-                            EdgeItemBase* i);
-    void deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
-                              VertexItemBase* i);
-    EdgeItemBase* lookupEdgeItem(const graph_analysis::Edge::Ptr& e) const;
-    VertexItemBase*
-    lookupVertexItem(const graph_analysis::Vertex::Ptr& v) const;
-
     /**
-     * to be called when a vertex changes its position.
+     * when a vertex changes its position it is stored
      *
-     * used in order to attach edges to vertices.
+     * allows restoring the layout after automatic re-population
      */
     void cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v, QPointF p);
-
     /**
-     * \brief constructor
-     * \param mainWindow main qt application window
-     * \param parent qt parent widget
+     * update all edges associated with the given vertex after a position change
+     *
+     * the default implementation tries to draw a line between the intersection
+     * points of the "connectors" and the "boundingRect" of each item of the edge.
      */
-    GraphWidget(QWidget *parent = NULL);
-
-    /// destructor
-    virtual ~GraphWidget();
-
-    virtual QString getClassName() const { return "graph_analysis::gui::GraphWidget"; }
+    virtual void updateEdgePositions(VertexItemBase* item);
 
     /// getter method for retrieving the underlying base graph
     graph_analysis::BaseGraph::Ptr graph() const { return mpGraph; }
@@ -121,7 +112,8 @@ public:
     void updateLayoutView();
 
     /**
-     * Trigger the layouting of the graph widget
+     * trigger the creation of individual QGraphicsItems based on the
+     * referenced BaseGraph for this instance of a graph widget.
      */
     virtual void populateCanvas()
     {
@@ -129,7 +121,8 @@ public:
             "graph_analysis::gui::GraphWidget::populateCanvas: not implemented");
     }
 
-    // SELECT/ DESELECT
+    /** infrastructure for showing information about the currently hovered
+     * edge/vertex in the statusbar */
     void setFocusedElement(const GraphElement::Ptr& element);
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
     void clearFocus();

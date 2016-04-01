@@ -19,6 +19,7 @@ PortItem::PortItem(GraphWidget* graphWidget, graph_analysis::Port::Ptr vertex,
     , mpLabel(new QGraphicsTextItem(this))
 {
     mpRect->setPen(QPen(Qt::red));
+    setFlag(QGraphicsItem::ItemIsMovable, false);
 }
 
 PortItem::~PortItem()
