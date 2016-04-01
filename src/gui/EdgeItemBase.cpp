@@ -44,7 +44,7 @@ int EdgeItemBase::type() const
     return EdgeItemBaseType;
 }
 
-void EdgeItemBase::adjustEdgePoints(QList<QPointF> points)
+void EdgeItemBase::adjustEdgePoints(QVector<QPointF> points)
 {
     mPoints = points;
     adjustEdgePositioning();
@@ -70,7 +70,7 @@ void EdgeItemBase::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 QPainterPath EdgeItemSimple::shape() const
 {
     QPainterPath path;
-    path = mpLine->shape() + mpArrowHead->shape() + mpLabel->shape() +
+    path = mpMultiLine->shape() + mpArrowHead->shape() + mpLabel->shape() +
            mpClassName->shape();
     return path;
 }
@@ -86,7 +86,8 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget* graphWidget,
     mpClassName =
         new QGraphicsTextItem(QString(edge->getClassName().c_str()), this);
     mpClassName->setDefaultTextColor(Qt::gray);
-    mpLine = new QGraphicsLineItem(this);
+    mpMultiLine = new QGraphicsPolygonItem(this);
+    mpMultiLine->setBrush(Qt::NoBrush);
     mpArrowHead = new QGraphicsPolygonItem(this);
     mpArrowHead->setBrush(QBrush(Qt::black));
 
@@ -99,7 +100,7 @@ EdgeItemSimple::~EdgeItemSimple()
 {
     delete mpLabel;
     delete mpClassName;
-    delete mpLine;
+    delete mpMultiLine;
     delete mpArrowHead;
 
     mpGraphWidget->deregisterEdgeItem(mpEdge, this);
@@ -114,26 +115,25 @@ void EdgeItemSimple::adjustEdgePositioning()
 {
     prepareGeometryChange();
 
-    mpLine->setLine(QLineF(mPoints.front(), mPoints.back()));
-    mpLabel->setPos(mpLine->line().pointAt(0.5) -
+    mpMultiLine->setPolygon(mPoints);
+    mpLabel->setPos(mpMultiLine->boundingRect().center() -
                     mpLabel->boundingRect().center());
     mpClassName->setPos(mpLabel->pos() +
                         QPointF(0, mpLabel->boundingRect().height()));
 
     // draw the arrow!
-    double angle = std::acos(mpLine->line().dx() / mpLine->line().length());
-    if(mpLine->line().dy() >= 0)
+    QLineF lastSegment(mPoints.at(mPoints.size()-2), mPoints.at(mPoints.size()-1));
+    double angle = std::acos(lastSegment.dx() / lastSegment.length());
+    if(lastSegment.dy() >= 0)
         angle = 2 * M_PI - angle;
 
-    QPointF targetIntersectionPoint = mpLine->line().pointAt(1);
-
     QPointF destArrowP1 =
-        targetIntersectionPoint + QPointF(sin(angle - M_PI / 3) * mArrowSize,
+        mPoints.last() + QPointF(sin(angle - M_PI / 3) * mArrowSize,
                                           cos(angle - M_PI / 3) * mArrowSize);
-    QPointF destArrowP2 = targetIntersectionPoint +
+    QPointF destArrowP2 = mPoints.last() +
                           QPointF(sin(angle - M_PI + M_PI / 3) * mArrowSize,
                                   cos(angle - M_PI + M_PI / 3) * mArrowSize);
-    mpArrowHead->setPolygon(QPolygonF() << mpLine->line().p2() << destArrowP1
+    mpArrowHead->setPolygon(QPolygonF() << lastSegment.p2() << destArrowP1
                                         << destArrowP2);
 }
 

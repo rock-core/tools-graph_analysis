@@ -38,13 +38,16 @@ public:
     virtual ~EdgeItemBase();
     virtual int type() const;
 
-    virtual void adjustEdgePoints(QList<QPointF> points);
+    virtual void adjustEdgePoints(QVector<QPointF> points);
     virtual void adjustEdgePositioning();
 
     /**
      * two points of the source and target, where this edge should attach
+     *
+     * this can be as simple as two points which shall be connected by a
+     * straight line.
      */
-    QList<QPointF> mPoints;
+    QVector<QPointF> mPoints;
 
     /** getter method for retrieving the underlying conceptual graph edge */
     graph_analysis::Edge::Ptr getEdge() const
@@ -100,7 +103,7 @@ private:
     int mArrowSize;
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;
-    QGraphicsLineItem* mpLine;
+    QGraphicsPolygonItem* mpMultiLine;
     QGraphicsPolygonItem* mpArrowHead;
 };
 

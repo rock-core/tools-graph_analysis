@@ -323,10 +323,10 @@ void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
     mVertexItemMap.erase(v);
 }
 
-QList<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
+QVector<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
                                           VertexItemBase* secondItem) const
 {
-    QList<QPointF> retval;
+    QVector<QPointF> retval;
     QLineF directConnection(firstItem->getConnector(),
                             secondItem->getConnector());
     QPolygonF b1 = firstItem->mapToScene(firstItem->boundingRect());
@@ -402,18 +402,9 @@ void GraphWidget::updateEdgePositions(VertexItemBase* item)
             VertexItemBase* sourceItem =
                 mVertexItemMap[edgeItemIt->first->getSourceVertex()];
 
-            QList<QPointF> points = getEdgePoints(sourceItem, targetItem);
-
+            QVector<QPointF> points = getEdgePoints(sourceItem, targetItem);
             EdgeItemBase* edgeItem = edgeItemIt->second;
-            if(points.size() == 2)
-            {
-                edgeItem->adjustEdgePoints(points);
-            }
-            else
-            {
-                LOG_ERROR_S << "skipping edge points "
-                            << item->getVertex()->toString();
-            }
+            edgeItem->adjustEdgePoints(points);
         }
     }
 }

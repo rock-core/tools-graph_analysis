@@ -61,7 +61,8 @@ public:
      * used to establish sensible coordinated to re-draw edges after their
      * vertices changed position
      */
-    QList<QPointF> getEdgePoints(VertexItemBase* firstItem, VertexItemBase* secondItem) const;
+    QVector<QPointF> getEdgePoints(VertexItemBase* firstItem,
+                                   VertexItemBase* secondItem) const;
 
     /**
      * to be called by a VertexItem when it changes its position.
