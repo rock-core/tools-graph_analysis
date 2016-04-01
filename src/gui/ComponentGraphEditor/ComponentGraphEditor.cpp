@@ -75,7 +75,7 @@ void ComponentGraphEditor::shuffle()
         "Shuffelled all nodes representing a 'Vertex' of the ComponentGraphEditor");
 }
 
-void ComponentGraphEditor::updateLayout()
+void ComponentGraphEditor::populateCanvas()
 {
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())

@@ -123,10 +123,10 @@ public:
     /**
      * Trigger the layouting of the graph widget
      */
-    virtual void updateLayout()
+    virtual void populateCanvas()
     {
         throw std::runtime_error(
-            "graph_analysis::gui::GraphWidget::updateLayout: not implemented");
+            "graph_analysis::gui::GraphWidget::populateCanvas: not implemented");
     }
 
     // SELECT/ DESELECT

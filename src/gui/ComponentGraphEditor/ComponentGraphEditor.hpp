@@ -38,7 +38,7 @@ class ComponentGraphEditor : public GraphWidget
      * according to the current BaseGraph. Respawns all graphical elements by
      * the underlying base graph and trigger the layouting
      */
-    virtual void updateLayout();
+    virtual void populateCanvas();
 
 public slots:
     virtual void shuffle();

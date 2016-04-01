@@ -50,7 +50,7 @@ QString BaseGraphView::getClassName() const
     return "graph_analysis::gui::BaseGraphView";
 }
 
-void BaseGraphView::updateLayout()
+void BaseGraphView::populateCanvas()
 {
     VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
     while(nodeIt->next())

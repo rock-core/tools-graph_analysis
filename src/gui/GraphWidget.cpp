@@ -115,7 +115,7 @@ void GraphWidget::updateLayoutView()
 
     // implemented by child-GraphWidgets. should create all QGraphicsItems of
     // the respective scene. needs to populate the layouting graph as needed.
-    updateLayout();
+    populateCanvas();
 
     LOG_INFO_S << "restoring coordinates of " << mItemCoordinateMap.size()
                << " entries from cache";
