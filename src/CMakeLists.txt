@@ -200,7 +200,7 @@ rock_library(graph_analysis
         snap/Graph.hpp
         snap/NodeIterator.hpp
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf numeric gsl libgvc utilmm
+        lemon snap base-lib gexf numeric gsl libgvc utilmm yaml-cpp
     DEPS_PLAIN
         Boost_REGEX
     MOC
