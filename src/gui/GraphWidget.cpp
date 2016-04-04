@@ -307,7 +307,7 @@ void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
 }
 
 QVector<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
-                                          VertexItemBase* secondItem) const
+                                            VertexItemBase* secondItem) const
 {
     QVector<QPointF> retval;
     QLineF directConnection(firstItem->getConnector(),
@@ -328,7 +328,8 @@ QVector<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
             }
         }
     }
-    else
+    // fall back to use just the connector, in case we did not get anything.
+    if (retval.size() < 1)
     {
         retval.push_back(firstItem->getConnector());
     }
@@ -348,7 +349,7 @@ QVector<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
             }
         }
     }
-    else
+    if(retval.size() < 2)
     {
         retval.push_back(secondItem->getConnector());
     }
