@@ -61,6 +61,11 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.cpp
         gui/BaseGraphView/AddVertexDialog.cpp
         gui/BaseGraphView/AddEdgeDialog.cpp
+        task_graph/Task.cpp
+        task_graph/Port.cpp
+        task_graph/InputPort.cpp
+        task_graph/OutputPort.cpp
+        task_graph/PortConnection.cpp
         gui/ComponentGraphEditor/ComponentGraphEditor.cpp
         gui/ComponentGraphEditor/Component.cpp
         gui/ComponentGraphEditor/ComponentItem.cpp
@@ -165,6 +170,11 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
+        task_graph/Task.hpp
+        task_graph/Port.hpp
+        task_graph/InputPort.hpp
+        task_graph/OutputPort.hpp
+        task_graph/PortConnection.hpp
         gui/ComponentGraphEditor/ComponentGraphEditor.hpp
         gui/ComponentGraphEditor/Component.hpp
         gui/ComponentGraphEditor/ComponentItem.hpp
