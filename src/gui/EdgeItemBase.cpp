@@ -125,8 +125,17 @@ void EdgeItemSimple::adjustEdgePositioning()
     QLineF lastSegment(mPoints.at((size_t)mPoints.size() - 2),
                        mPoints.at((size_t)mPoints.size() - 1));
     double angle = std::acos(lastSegment.dx() / lastSegment.length());
+    // in case this is a very short edge we cannot infer how to actually draw
+    // the arrow. in this case we'll fall back to not draw it.
+    if(std::isnan(angle))
+    {
+        mpArrowHead->setPolygon(QPolygonF());
+        return;
+    }
     if(lastSegment.dy() >= 0)
+    {
         angle = 2 * M_PI - angle;
+    }
 
     QPointF destArrowP1 =
         mPoints.last() + QPointF(sin(angle - M_PI / 3) * mArrowSize,
@@ -134,7 +143,7 @@ void EdgeItemSimple::adjustEdgePositioning()
     QPointF destArrowP2 = mPoints.last() +
                           QPointF(sin(angle - M_PI + M_PI / 3) * mArrowSize,
                                   cos(angle - M_PI + M_PI / 3) * mArrowSize);
-    mpArrowHead->setPolygon(QPolygonF() << lastSegment.p2() << destArrowP1
+    mpArrowHead->setPolygon(QPolygonF() << mPoints.last() << destArrowP1
                                         << destArrowP2);
 }
 
