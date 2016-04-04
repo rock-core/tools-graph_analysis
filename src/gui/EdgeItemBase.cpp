@@ -47,7 +47,18 @@ int EdgeItemBase::type() const
 void EdgeItemBase::adjustEdgePoints(QVector<QPointF> points)
 {
     mPoints = points;
-    adjustEdgePositioning();
+    if(mPoints.size() > 1)
+    {
+        adjustEdgePositioning();
+    }
+    else
+    {
+        // if the two Vertices which are connected by this Edge are located on
+        // top of each other for example, it may be that no valid points could
+        // be calculated. we shall not crash in this case.
+        LOG_ERROR_S << "--- cannot adjst edge, know got " << mPoints.size()
+                    << " points";
+    }
 }
 
 void EdgeItemBase::adjustEdgePositioning(){}
