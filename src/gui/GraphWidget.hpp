@@ -16,6 +16,12 @@ namespace io {
 namespace gui {
 
 /**
+ * @brief Base-class for visual representations of a "Graph" in this framework
+ *
+ * A Qt-Widget using a qgraphicsview as a canvas. this class does not draw
+ * anything yet, but provides the infrastructure for handling with a graph. is
+ * intended to obtain a shared pointer to a graph which is stored elsewhere.
+ * this allows multiple independent visualizations of the same basegraph.
  *
  */
 class GraphWidget : public QGraphicsView
@@ -32,10 +38,15 @@ public:
     virtual QString getClassName() const { return "graph_analysis::gui::GraphWidget"; }
 
     /**
-     * storing a mapping from an "Edge" in the graph to a responsible "Item" on the scene.
+     * a mapping from an "Edge" in the graph to a responsible visualizing
+     * "Item" on the scene.
      */
     typedef std::map<const graph_analysis::Edge::Ptr, EdgeItemBase*>
         EdgeItemMap;
+    /**
+     * a mapping from an "Vertex" in the graph to a responsible visualizing
+     * "Item" on the scene.
+     */
     typedef std::map<const graph_analysis::Vertex::Ptr, VertexItemBase*>
         VertexItemMap;
 
@@ -63,20 +74,24 @@ public:
                                    VertexItemBase* secondItem) const;
 
     /**
-     * to be called by a VertexItem when it changes its position.
+     * to be called by a VertexItem when its position on the canvas changed.
      */
     void vertexPositionHasChanged(VertexItemBase* item);
     /**
-     * this is used to store where items for specific elements where positioned
-     * on the scene. can be asked after a "clearVisualization()" to reposition
-     * newly created items in the same location on the canvas.
+     * this is used to store where a Vertex element had its responsible
+     * VertexItem positioned on the scene.  can be queried after a
+     * "clearVisualization()" to reposition newly created items in the same
+     * canvas location as before.
+     *
+     * cannot store the pointer to a VertexItem directly as this pointer will
+     * change after repouluation of the canvas.
      */
     typedef std::map<const graph_analysis::Vertex::Ptr, QPointF>
         VertexItemCoordinateCache;
     /**
-     * when a vertex changes its position it is stored
+     * when a vertex changed its position, it can be stored
      *
-     * allows restoring the layout after automatic re-population
+     * allows restoring the layout after automatic re-population using.
      */
     void cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v, QPointF p);
     /**
