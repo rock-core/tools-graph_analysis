@@ -122,7 +122,8 @@ void EdgeItemSimple::adjustEdgePositioning()
                         QPointF(0, mpLabel->boundingRect().height()));
 
     // draw the arrow!
-    QLineF lastSegment(mPoints.at(mPoints.size()-2), mPoints.at(mPoints.size()-1));
+    QLineF lastSegment(mPoints.at((size_t)mPoints.size() - 2),
+                       mPoints.at((size_t)mPoints.size() - 1));
     double angle = std::acos(lastSegment.dx() / lastSegment.length());
     if(lastSegment.dy() >= 0)
         angle = 2 * M_PI - angle;
