@@ -3,8 +3,8 @@
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
-#include <graph_analysis/gui/ComponentGraphEditor/Component.hpp>
-#include <graph_analysis/gui/ComponentGraphEditor/HasFeature.hpp>
+#include <graph_analysis/task_graph/Task.hpp>
+#include <graph_analysis/task_graph/HasFeature.hpp>
 
 // Include some yaml parsing stuff
 #include <yaml-cpp/yaml.h>
@@ -38,7 +38,7 @@ template<typename T> void createPort(const std::string &label, BaseGraph::Ptr gr
 {
     typename T::Ptr port = typename T::Ptr(new T(label));
     graph->addVertex(port);
-    HasFeature::Ptr has = HasFeature::Ptr(new HasFeature(parent, port, "has"));
+    task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(new task_graph::HasFeature(parent, port, "has"));
     graph->addEdge(has);
 }
 
@@ -58,7 +58,7 @@ void OrogenModelReader::read(const std::string &filename,
     it=it->second.begin();
     std::string className = it->first.as<std::string>();
     // At first create the master node representing the whole task
-    Component::Ptr comp = Component::Ptr(new Component(baseClassName + "::" + className));
+    task_graph::Task::Ptr comp = task_graph::Task::Ptr(new task_graph::Task(baseClassName + "::" + className));
     graph->addVertex(comp);
 
     // Then we create all input ports and relate them to the master node
@@ -67,13 +67,13 @@ void OrogenModelReader::read(const std::string &filename,
     for (it = inputs.begin(); it != inputs.end(); ++it)
     {
         YAML::Node current = *it;
-        createPort<InputPort>(current["Name"].as<std::string>(), graph, comp);
+        createPort<task_graph::InputPort>(current["Name"].as<std::string>(), graph, comp);
     }
     YAML::Node outputs = ports["outputPorts"]; // its a seq!
     for (it = outputs.begin(); it != outputs.end(); ++it)
     {
         YAML::Node current = *it;
-        createPort<OutputPort>(current["Name"].as<std::string>(), graph, comp);
+        createPort<task_graph::OutputPort>(current["Name"].as<std::string>(), graph, comp);
     }
 }
 
