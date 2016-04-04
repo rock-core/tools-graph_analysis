@@ -76,19 +76,6 @@ void GraphWidget::clearVisualization()
     mVertexItemMap.clear();
 }
 
-void GraphWidget::reset()
-{
-    LOG_ERROR_S<<"GraphWidget base class overwrites graph data";
-    mpGraph = BaseGraph::getInstance();
-
-    // and tell the rest of the world
-    emit baseGraphChanged();
-}
-
-void GraphWidget::resetLayoutingGraph()
-{
-}
-
 void GraphWidget::update()
 {
     updateView();
@@ -103,7 +90,6 @@ void GraphWidget::updateView()
 
 void GraphWidget::updateLayoutView()
 {
-    resetLayoutingGraph();
 
     // implemented by child-GraphWidgets. should create all QGraphicsItems of
     // the respective scene. needs to populate the layouting graph as needed.
@@ -173,13 +159,6 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             // re-layouting/re-displaying
             clearVisualization();
             update();
-            return;
-        }
-
-        case Qt::Key_C:
-        {
-            // CTRL+C deletes the graph (it first prompts again the user)
-            reset();
             return;
         }
 

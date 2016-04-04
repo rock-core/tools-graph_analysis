@@ -93,17 +93,6 @@ public:
     void setGraph(const graph_analysis::BaseGraph::Ptr& graph) { mpGraph = graph; }
 
     /**
-     * Triggers a reset of the underlying graph
-     * via GraphWidgetManager::resetGraph
-     */
-    virtual void reset();
-
-    /**
-     * Reset the layouting graph, i.e, deletes and reinstanciates it
-     */
-    virtual void resetLayoutingGraph();
-
-    /**
      * Update the current view
      */
     virtual void update();
