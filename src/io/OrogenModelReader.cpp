@@ -75,6 +75,9 @@ void OrogenModelReader::read(const std::string &filename,
         YAML::Node current = *it;
         createPort<task_graph::OutputPort>(current["Name"].as<std::string>(), graph, comp);
     }
+    // TODO: Add properties
+    // TODO: Add data types to all ports
+    // TODO: Verify the graph
 }
 
 } // end namespace io
