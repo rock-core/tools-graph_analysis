@@ -1,6 +1,8 @@
 #ifndef GRAPH_ANALYSIS_TASK_GRAPH_TASK_HPP
 #define GRAPH_ANALYSIS_TASK_GRAPH_TASK_HPP
 
+// TODO: Add PropertyPort class and functions
+
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/Graph.hpp>
 
