@@ -2,13 +2,11 @@
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
 #include <graph_analysis/Graph.hpp>
-#include <graph_analysis/gui/GraphWidgetManager.hpp>
 
 #include <graph_analysis/gui/VertexItemBase.hpp>
 #include <graph_analysis/gui/EdgeItemBase.hpp>
 
 #include <QGraphicsView>
-#include <QMimeData>
 
 namespace graph_analysis {
 namespace io {

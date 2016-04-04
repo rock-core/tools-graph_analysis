@@ -1,14 +1,6 @@
 #include "GraphWidget.hpp"
 
-#include <sstream>
-#include <exception>
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-
 #include <base/Logging.hpp>
-#include <base/Time.hpp>
-
-#include <graph_analysis/io/GVGraph.hpp>
 
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
