@@ -202,7 +202,6 @@ void GraphAnalysisGui::fromFile(const std::string& filename)
 
 void GraphAnalysisGui::notifyAll()
 {
-    // FIXME: the different widget do actually use a copy of the important graph?
     mpBaseGraphView->setGraph(mpGraph);
     mpBaseGraphView->updateVisualization();
     mpComponentGraphEditor->setGraph(mpGraph);
