@@ -39,7 +39,9 @@ namespace graph_analysis
 namespace gui
 {
 
-BaseGraphView::BaseGraphView(QWidget *parent) : GraphWidget(parent)
+BaseGraphView::BaseGraphView(graph_analysis::BaseGraph::Ptr graph,
+                             QWidget* parent)
+    : GraphWidget(graph, parent)
 {
 }
 

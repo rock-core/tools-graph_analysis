@@ -28,7 +28,7 @@ class ComponentGraphEditor : public GraphWidget
      * \brief constructor
      * \param graph underlying base graph
      */
-    ComponentGraphEditor(QWidget *parent = NULL);
+    ComponentGraphEditor(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
     virtual ~ComponentGraphEditor();
 
     QString getClassName() const;

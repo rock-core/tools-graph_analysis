@@ -29,12 +29,10 @@ GraphAnalysisGui::GraphAnalysisGui()
     : QMainWindow()
     , mpUi(new Ui::GraphAnalysisGui)
     , mpGraph(BaseGraph::getInstance())
-    , mpBaseGraphView(new BaseGraphView(this))
-    , mpComponentGraphEditor(new ComponentGraphEditor(this))
+    , mpBaseGraphView(new BaseGraphView(mpGraph, this))
+    , mpComponentGraphEditor(new ComponentGraphEditor(mpGraph, this))
 {
 
-    mpBaseGraphView->setGraph(mpGraph);
-    mpComponentGraphEditor->setGraph(mpGraph);
 
     mpUi->setupUi(this);
     mpUi->tabWidget->clear();

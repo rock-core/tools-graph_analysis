@@ -24,9 +24,10 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(QWidget *parent)
+GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget* parent)
     : QGraphicsView(parent)
     , mpScene(new QGraphicsScene(this))
+    , mpGraph(graph)
 {
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
@@ -39,6 +40,17 @@ GraphWidget::GraphWidget(QWidget *parent)
 GraphWidget::~GraphWidget()
 {
     delete mpScene;
+}
+
+graph_analysis::BaseGraph::Ptr GraphWidget::graph() const
+{
+    return mpGraph;
+}
+
+void GraphWidget::setGraph(const graph_analysis::BaseGraph::Ptr& graph)
+{
+    mpGraph = graph;
+    emit baseGraphChanged();
 }
 
 void GraphWidget::wheelEvent(QWheelEvent *event)

@@ -25,7 +25,7 @@ class GraphWidget : public QGraphicsView
 public:
 
     /** constructor */
-    GraphWidget(QWidget *parent = NULL);
+    GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
     /** destructor */
     virtual ~GraphWidget();
 
@@ -88,9 +88,9 @@ public:
     virtual void updateEdgePositions(VertexItemBase* item);
 
     /// getter method for retrieving the underlying base graph
-    graph_analysis::BaseGraph::Ptr graph() const { return mpGraph; }
+    graph_analysis::BaseGraph::Ptr graph() const;
     /// setter method for updating the underlying base graph
-    void setGraph(const graph_analysis::BaseGraph::Ptr& graph) { mpGraph = graph; }
+    void setGraph(const graph_analysis::BaseGraph::Ptr& graph);
 
     /**
      * Update the current view

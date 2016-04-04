@@ -28,7 +28,7 @@ class BaseGraphView : public GraphWidget
      * \brief constructor
      * \param graph underlying base graph
      */
-    BaseGraphView(QWidget *parent = NULL);
+    BaseGraphView(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
     virtual ~BaseGraphView();
 
     QString getClassName() const;

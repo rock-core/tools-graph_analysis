@@ -40,7 +40,9 @@ namespace graph_analysis
 namespace gui
 {
 
-ComponentGraphEditor::ComponentGraphEditor(QWidget *parent) : GraphWidget(parent)
+ComponentGraphEditor::ComponentGraphEditor(graph_analysis::BaseGraph::Ptr graph,
+                                           QWidget* parent)
+    : GraphWidget(graph, parent)
 {
 
     VertexTypeManager* vertexManager = VertexTypeManager::getInstance();
