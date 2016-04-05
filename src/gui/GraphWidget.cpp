@@ -18,6 +18,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 
+#include <math.h>
 
 using namespace graph_analysis;
 
