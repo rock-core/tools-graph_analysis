@@ -20,6 +20,9 @@
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/dialogs/ExportFile.hpp>
 
+#include <graph_analysis/task_graph/TaskTemplate.hpp>
+#include <graph_analysis/task_graph/TaskTemplateContainer.hpp>
+
 namespace graph_analysis
 {
 namespace gui
@@ -31,6 +34,7 @@ GraphAnalysisGui::GraphAnalysisGui()
     , mpGraph(BaseGraph::getInstance())
     , mpBaseGraphView(new BaseGraphView(mpGraph, this))
     , mpComponentGraphEditor(new ComponentGraphEditor(mpGraph, this))
+    , mpTaskTemplContainer(new task_graph::TaskTemplateContainer())
 {
 
 
@@ -60,6 +64,7 @@ GraphAnalysisGui::GraphAnalysisGui()
 
 GraphAnalysisGui::~GraphAnalysisGui()
 {
+    delete mpTaskTemplContainer;
     delete mpUi;
 }
 
