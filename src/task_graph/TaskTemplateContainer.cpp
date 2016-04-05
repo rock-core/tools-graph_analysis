@@ -14,6 +14,12 @@ bool TaskTemplateContainer::add(TaskTemplate::Ptr templ)
     return true;
 }
 
+bool TaskTemplateContainer::add(const std::string& yamlFileName)
+{
+    TaskTemplate::Ptr templ = TaskTemplate::Ptr(new TaskTemplate(yamlFileName));
+    return add(templ);
+}
+
 void TaskTemplateContainer::remove(TaskTemplate::Ptr templ)
 {
     storage.erase(templ->yamlFileName());

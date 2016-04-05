@@ -13,6 +13,8 @@ namespace task_graph
 
             bool add(TaskTemplate::Ptr templ);
 
+            bool add(const std::string& yamlFileName);
+
             void remove(TaskTemplate::Ptr templ);
 
             TaskTemplate::Ptr find(const std::string& name);
