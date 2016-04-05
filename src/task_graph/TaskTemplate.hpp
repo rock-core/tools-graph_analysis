@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_TASK_GRAPH_TASK_TEMPLATE_HPP
 
 #include <graph_analysis/Graph.hpp>
+#include "Task.hpp"
 
 namespace graph_analysis
 {
@@ -9,8 +10,6 @@ namespace graph_analysis
 
 namespace task_graph
 {
-    class Task;
-
     class TaskTemplate
     {
         public:
@@ -35,9 +34,15 @@ namespace task_graph
                 return mYamlFileName;
             }
 
+            const Task::Ptr rootVertex()
+            {
+                return mpRootVertex;
+            }
+
         private:
             std::string     mYamlFileName;
             BaseGraph::Ptr  mpBaseGraph;
+            Task::Ptr       mpRootVertex;
     };
 
 }

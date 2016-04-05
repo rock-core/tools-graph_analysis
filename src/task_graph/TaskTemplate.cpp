@@ -12,6 +12,15 @@ namespace task_graph
         // Fill the BaseGraph from yaml file
         io::OrogenModelReader reader;
         reader.read(yamlFileName, mpBaseGraph);
+        // Find root (task) vertex
+        std::vector<Vertex::Ptr> vertices = mpBaseGraph->getAllVertices();
+        std::vector<Vertex::Ptr>::const_iterator it = vertices.begin();
+        for (;it != vertices.end(); ++it)
+        {
+            if ((*it)->getClassName() == Task::vertexType())
+                break;
+        }
+        mpRootVertex = dynamic_pointer_cast<Task>(*it);
         // Store the yaml file name
         mYamlFileName = yamlFileName;
     }
