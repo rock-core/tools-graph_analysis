@@ -3,7 +3,7 @@
 #include "ui_GraphAnalysisGui.h"
 
 #include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
-#include <graph_analysis/gui/ComponentGraphEditor/ComponentGraphEditor.hpp>
+#include <graph_analysis/gui/TaskGraphEditor/TaskGraphEditor.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
 #include <QDebug>
@@ -33,7 +33,7 @@ GraphAnalysisGui::GraphAnalysisGui()
     , mpUi(new Ui::GraphAnalysisGui)
     , mpGraph(BaseGraph::getInstance())
     , mpBaseGraphView(new BaseGraphView(mpGraph, this))
-    , mpComponentGraphEditor(new ComponentGraphEditor(mpGraph, this))
+    , mpTaskGraphEditor(new TaskGraphEditor(mpGraph, this))
     , mpTaskTemplContainer(new task_graph::TaskTemplateContainer())
 {
 
@@ -45,9 +45,9 @@ GraphAnalysisGui::GraphAnalysisGui()
                             mpComponentGraphEditor->getClassName());
 
     // bidrectional connection of "change->update" cycle between the two widgets
-    connect(mpBaseGraphView, SIGNAL(baseGraphChanged()), mpComponentGraphEditor,
+    connect(mpBaseGraphView, SIGNAL(baseGraphChanged()), mpTaskGraphEditor,
             SLOT(updateVisualization()));
-    connect(mpComponentGraphEditor, SIGNAL(baseGraphChanged()), mpBaseGraphView,
+    connect(mpTaskGraphEditor, SIGNAL(baseGraphChanged()), mpBaseGraphView,
             SLOT(updateVisualization()));
 
     // and show both' widgets status-messages on the statusbar. this simply
@@ -55,7 +55,7 @@ GraphAnalysisGui::GraphAnalysisGui()
     // they would interleave...
     connect(mpBaseGraphView, SIGNAL(currentStatus(QString, int)),
             mpUi->statusbar, SLOT(showMessage(QString, int)));
-    connect(mpComponentGraphEditor, SIGNAL(currentStatus(QString, int)),
+    connect(mpTaskGraphEditor, SIGNAL(currentStatus(QString, int)),
             mpUi->statusbar, SLOT(showMessage(QString, int)));
 
     // missing: file import+export...
@@ -209,8 +209,8 @@ void GraphAnalysisGui::notifyAll()
 {
     mpBaseGraphView->setGraph(mpGraph);
     mpBaseGraphView->updateVisualization();
-    mpComponentGraphEditor->setGraph(mpGraph);
-    mpComponentGraphEditor->updateVisualization();
+    mpTaskGraphEditor->setGraph(mpGraph);
+    mpTaskGraphEditor->updateVisualization();
 }
 
 } // end namespace gui

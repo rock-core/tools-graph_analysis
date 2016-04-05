@@ -68,17 +68,12 @@ rock_library(graph_analysis
         task_graph/InputPort.cpp
         task_graph/OutputPort.cpp
         task_graph/PortConnection.cpp
-        gui/ComponentGraphEditor/ComponentGraphEditor.cpp
-        gui/ComponentGraphEditor/Component.cpp
-        gui/ComponentGraphEditor/ComponentItem.cpp
-        gui/ComponentGraphEditor/Port.cpp
-        gui/ComponentGraphEditor/PortItem.cpp
-        gui/ComponentGraphEditor/InputPort.cpp
-        gui/ComponentGraphEditor/InputPortItem.cpp
-        gui/ComponentGraphEditor/OutputPort.cpp
-        gui/ComponentGraphEditor/OutputPortItem.cpp
-        gui/ComponentGraphEditor/PortConnection.cpp
-        gui/ComponentGraphEditor/PortConnectionItem.cpp
+        gui/TaskGraphEditor/TaskGraphEditor.cpp
+        gui/TaskGraphEditor/TaskItem.cpp
+        gui/TaskGraphEditor/PortItem.cpp
+        gui/TaskGraphEditor/InputPortItem.cpp
+        gui/TaskGraphEditor/OutputPortItem.cpp
+        gui/TaskGraphEditor/PortConnectionItem.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
@@ -179,17 +174,12 @@ rock_library(graph_analysis
         task_graph/InputPort.hpp
         task_graph/OutputPort.hpp
         task_graph/PortConnection.hpp
-        gui/ComponentGraphEditor/ComponentGraphEditor.hpp
-        gui/ComponentGraphEditor/Component.hpp
-        gui/ComponentGraphEditor/ComponentItem.hpp
-        gui/ComponentGraphEditor/Port.hpp
-        gui/ComponentGraphEditor/PortItem.hpp
-        gui/ComponentGraphEditor/InputPort.hpp
-        gui/ComponentGraphEditor/InputPortItem.hpp
-        gui/ComponentGraphEditor/OutputPort.hpp
-        gui/ComponentGraphEditor/OutputPortItem.hpp
-        gui/ComponentGraphEditor/PortConnection.hpp
-        gui/ComponentGraphEditor/PortConnectionItem.hpp
+        gui/TaskGraphEditor/TaskGraphEditor.hpp
+        gui/TaskGraphEditor/TaskItem.hpp
+        gui/TaskGraphEditor/PortItem.hpp
+        gui/TaskGraphEditor/InputPortItem.hpp
+        gui/TaskGraphEditor/OutputPortItem.hpp
+        gui/TaskGraphEditor/PortConnectionItem.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
@@ -232,7 +222,7 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
-        gui/ComponentGraphEditor/ComponentGraphEditor.cpp
+        gui/TaskGraphEditor/TaskGraphEditor.cpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/GraphAnalysisGui.ui
