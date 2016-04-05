@@ -5,6 +5,8 @@
 
 namespace graph_analysis
 {
+    class BaseGraph;
+
 namespace task_graph
 {
     class Task;
@@ -12,15 +14,11 @@ namespace task_graph
     class TaskTemplate
     {
         public:
+            typedef shared_ptr< TaskTemplate > Ptr;
             /**
              * The default constructor needs a filename to import a base graph model
              */
             TaskTemplate(const std::string &yamlFileName);
-
-            ~TaskTemplate() {
-                // Intentionally reset the shared ptr
-                mpBaseGraph.reset();
-            }
 
             /**
              * If called, a new instance of the stored BaseGraph is created.
@@ -31,6 +29,11 @@ namespace task_graph
              * If called, creates a new instance and adds it to the given graph argument
              */
             void instantiateAndAddTask(BaseGraph::Ptr graph);
+
+            std::string const &yamlFileName() const
+            {
+                return mYamlFileName;
+            }
 
         private:
             std::string     mYamlFileName;
