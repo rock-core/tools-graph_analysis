@@ -44,6 +44,9 @@ namespace graph_analysis
                 task_graph::TaskTemplateContainer*  mpTaskContainer;
                 QTreeWidgetItem*                    mpRootItem;
 
+                /** adding one new file into the task-container and the tree widget */
+                bool addFile(QString filename);
+
             signals:
                 // Will be triggered by the TaskGraphViewer
                 void baseGraphChanged();

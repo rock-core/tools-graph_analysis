@@ -74,22 +74,29 @@ namespace graph_analysis
 
             if(!filename.isEmpty())
             {
-                // Ok, user has selected a file
-                if (!mpTaskContainer->add(filename.toStdString()))
-                {
-                    std::string msg = "Failed to import '" + filename.toStdString() + "'";
-                    QMessageBox::critical(this, tr("Model import failed"), msg.c_str());
-                    return;
-                }
-
-                QTreeWidgetItem *child = new QTreeWidgetItem();
-                task_graph::Task::Ptr task = mpTaskContainer->find(filename.toStdString())->rootVertex();
-                child->setText(0, QString::fromStdString(task->toString()));
-                child->setText(1, filename);
-                mpRootItem->addChild(child);
-
-                //updateTreeWidget();
+                addFile(filename);
             }
+        }
+
+        bool TaskGraphEditor::addFile(QString filename)
+        {
+            // Ok, user has selected a file
+            if(!mpTaskContainer->add(filename.toStdString()))
+            {
+                std::string msg =
+                    "Failed to import '" + filename.toStdString() + "'";
+                QMessageBox::critical(this, tr("Model import failed"),
+                                      msg.c_str());
+                return false;
+            }
+
+            QTreeWidgetItem* child = new QTreeWidgetItem();
+            task_graph::Task::Ptr task =
+                mpTaskContainer->find(filename.toStdString())->rootVertex();
+            child->setText(0, QString::fromStdString(task->toString()));
+            child->setText(1, filename);
+            mpRootItem->addChild(child);
+            return true;
         }
 
         void TaskGraphEditor::on_removeButton_clicked()
