@@ -196,10 +196,8 @@ void GraphAnalysisGui::fromFile(const std::string& filename)
 
 void GraphAnalysisGui::notifyAll()
 {
-    mpBaseGraphView->setGraph(mpGraph);
     mpBaseGraphView->updateVisualization();
-    //mpTaskGraphEditor->setGraph(mpGraph);
-    //mpTaskGraphEditor->updateVisualization();
+    mpTaskGraphEditor->updateVisualization();
 }
 
 } // end namespace gui
