@@ -4,10 +4,6 @@
 #include <QApplication>
 #include <QTime>
 
-// the two widgets we wanna provide
-#include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
-#include <graph_analysis/gui/ComponentGraphEditor/ComponentGraphEditor.hpp>
-
 #include "GraphAnalysisGui.hpp"
 
 using namespace graph_analysis::gui;
