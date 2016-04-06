@@ -111,7 +111,6 @@ public:
      * Update the current view
      */
     virtual void update();
-    virtual void updateView();
     void updateLayoutView();
 
     /**

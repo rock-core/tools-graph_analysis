@@ -91,14 +91,9 @@ void GraphWidget::clearVisualization()
 
 void GraphWidget::update()
 {
-    updateView();
+    updateLayoutView();
 
     QWidget::update();
-}
-
-void GraphWidget::updateView()
-{
-    updateLayoutView();
 }
 
 void GraphWidget::updateLayoutView()
