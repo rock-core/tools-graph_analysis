@@ -111,10 +111,19 @@ VertexItemSimple::VertexItemSimple(GraphWidget* graphWidget,
     mpClassName->setPos(mpLabel->pos() +
                         QPoint(0, mpLabel->boundingRect().height()));
     mpClassName->setDefaultTextColor(Qt::gray);
+    // we wanna show the current qt-coordinate on the canvas
+    mpCoordinate = new QGraphicsTextItem(getPosAsString(), this);
+    mpCoordinate->setDefaultTextColor(Qt::darkGreen);
 
     // now that all the children are there, we use their bounding-rect to
-    // enlarge the background-rect
+    // enlarge the background-rect. note that we never modify the boundingRect
+    // afterwards.
     mpRect->setRect(childrenBoundingRect());
+
+    // change the position of the "coordinate" label to be pinned in the
+    // top-right corner of the blue rect
+    mpCoordinate->setPos(mpRect->rect().topRight()-
+                         QPointF(mpCoordinate->boundingRect().width(), 0));
 
     // for this "Simple" type we want to have it movable. this graphical
     // "object" will not be contained inside other items, so thats ok
@@ -129,6 +138,7 @@ VertexItemSimple::~VertexItemSimple()
 {
     delete mpLabel;
     delete mpClassName;
+    delete mpCoordinate;
     delete mpRect;
 }
 
@@ -248,6 +258,33 @@ void VertexItemSimple::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             getGraphWidget()->update();
         }
     }
+}
+
+QString VertexItemSimple::getScenePosAsString() const {
+    return QString("(%1, %2)").arg(scenePos().x()).arg(scenePos().y());
+}
+
+QVariant VertexItemSimple::itemChange(GraphicsItemChange change,
+                                    const QVariant& value)
+{
+    switch(change)
+    {
+    case ItemScenePositionHasChanged:
+    {
+        // notify the graph widget about our new position. there, relevant
+        // caching and updating of connected items is performed.
+        mpCoordinate->setPlainText(getScenePosAsString());
+        // and also move the whole label a bit to stay aligned with the rect
+        mpCoordinate->setPos(mpRect->rect().topRight()-
+                             QPointF(mpCoordinate->boundingRect().width(), 0));
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    };
+    return VertexItemBase::itemChange(change, value);
 }
 
 } // end namespace gui

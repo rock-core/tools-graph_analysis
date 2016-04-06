@@ -74,7 +74,7 @@ public:
      * callback to trigger the base-graph to adjust all edges of this vertex
      * after its position has changed in the scene.
      */
-    QVariant itemChange(GraphicsItemChange change, const QVariant& value);
+    virtual QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
     /**
      * calculates the two intersection points between the connector of this
@@ -122,6 +122,12 @@ public:
                QWidget* widget = 0);
     QRectF boundingRect() const;
 
+    /**
+     * uses this (read only) notification to update the label showing current
+     * canvas coordinate of the whole item. nice for debugging.
+     */
+    virtual QVariant itemChange(GraphicsItemChange change, const QVariant& value);
+
 protected:
     /**
      * all items by default accept drag-n-drop events. override this function
@@ -135,7 +141,11 @@ protected:
 private:
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;
+    QGraphicsTextItem* mpCoordinate;
     QGraphicsRectItem* mpRect;
+
+    /** convert the current scenePos of the item to smth like "(23, -14)" */
+    QString getScenePosAsString() const;
 };
 
 } // end namespace gui
