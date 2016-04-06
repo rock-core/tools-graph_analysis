@@ -165,8 +165,7 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_L:
         {
             // re-layouting/re-displaying
-            clearVisualization();
-            update();
+            updateVisualization();
             return;
         }
 
