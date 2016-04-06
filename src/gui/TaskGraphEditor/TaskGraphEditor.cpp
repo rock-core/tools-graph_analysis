@@ -27,6 +27,8 @@ namespace graph_analysis
 
             connect(mpTaskGraphViewer, SIGNAL(baseGraphChanged()),
                     this, SLOT(baseGraphChanged_internal()));
+            connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString,int)),
+                    this, SLOT(currentStatus_internal(QString,int)));
         }
 
         TaskGraphEditor::~TaskGraphEditor()
@@ -38,6 +40,11 @@ namespace graph_analysis
         void TaskGraphEditor::baseGraphChanged_internal()
         {
             emit baseGraphChanged();
+        }
+
+        void TaskGraphEditor::currentStatus_internal(QString msg, int lvl)
+        {
+            emit currentStatus(msg,lvl);
         }
 
         void TaskGraphEditor::updateVisualization()
@@ -55,7 +62,7 @@ namespace graph_analysis
             {
                 templ->instantiateAndAddTask(mpGraph);
                 updateVisualization();
-                emit baseGraphChanged();
+                baseGraphChanged_internal();
             }
         }
 
