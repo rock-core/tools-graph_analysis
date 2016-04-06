@@ -37,6 +37,7 @@ GraphAnalysisGui::GraphAnalysisGui()
     mpUi->tabWidget->addTab(mpBaseGraphView, mpBaseGraphView->getClassName());
     mpUi->tabWidget->addTab(mpTaskGraphEditor,
                             mpTaskGraphEditor->getClassName());
+    mpUi->tabWidget->setCurrentWidget(mpTaskGraphEditor);
     // bidrectional connection of "change->update" cycle between the two widgets
     connect(mpBaseGraphView, SIGNAL(baseGraphChanged()), mpTaskGraphEditor,
             SLOT(updateVisualization()));

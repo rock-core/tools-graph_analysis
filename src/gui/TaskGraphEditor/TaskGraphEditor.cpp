@@ -4,6 +4,7 @@
 #include "ui_TaskGraphEditor.h"
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDirIterator>
 
 #include <graph_analysis/task_graph/TaskTemplateContainer.hpp>
 
@@ -20,15 +21,26 @@ namespace graph_analysis
             mpUi->setupUi(this);
             mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
             mpUi->placeHolder->addWidget(mpTaskGraphViewer);
+            mpUi->splitter->setSizes(QList<int>()<<10<<1000);
 
-            mpUi->taskTemplateTree->clear();
             mpRootItem = new QTreeWidgetItem(mpUi->taskTemplateTree);
             mpRootItem->setText(0, QString("Task Templates"));
+            mpRootItem->setExpanded(true);
 
             connect(mpTaskGraphViewer, SIGNAL(baseGraphChanged()),
                     this, SLOT(baseGraphChanged_internal()));
             connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString,int)),
                     this, SLOT(currentStatus_internal(QString,int)));
+
+            QDirIterator it(".");
+            while(it.hasNext())
+            {
+                it.next();
+                if(it.fileInfo().suffix() == "yml")
+                {
+                    addFile(it.fileName());
+                }
+            }
         }
 
         TaskGraphEditor::~TaskGraphEditor()
