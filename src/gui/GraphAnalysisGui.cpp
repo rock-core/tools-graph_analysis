@@ -38,11 +38,6 @@ GraphAnalysisGui::GraphAnalysisGui()
     mpUi->tabWidget->addTab(mpTaskGraphEditor,
                             mpTaskGraphEditor->getClassName());
     mpUi->tabWidget->setCurrentWidget(mpTaskGraphEditor);
-    // bidrectional connection of "change->update" cycle between the two widgets
-    connect(mpBaseGraphView, SIGNAL(baseGraphChanged()), mpTaskGraphEditor,
-            SLOT(updateVisualization()));
-    connect(mpTaskGraphEditor, SIGNAL(baseGraphChanged()), mpBaseGraphView,
-            SLOT(updateVisualization()));
 
     // and show both' widgets status-messages on the statusbar. this simply
     // assumes that only the one in the front is sending updates. otherwise
