@@ -130,7 +130,7 @@ void GraphWidget::updateLayoutView()
     }
 }
 
-// remove this implemntation?
+// remove this implementation?
 void GraphWidget::shuffle()
 {
     int diff = 600;
