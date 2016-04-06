@@ -18,10 +18,10 @@ class GraphWidget;
 
 class PortConnectionItem : public EdgeItemSimple
 {
-  public:
-    PortConnectionItem(GraphWidget *graphWidget,
+public:
+    PortConnectionItem(GraphWidget* graphWidget,
                        graph_analysis::task_graph::PortConnection::Ptr conn,
-                       QGraphicsItem *parent);
+                       QGraphicsItem* parent);
 
     virtual ~PortConnectionItem();
     virtual int type() const;

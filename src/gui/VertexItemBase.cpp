@@ -32,13 +32,14 @@ VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
     // done by calling "adjust()" for the respective edge
     setFlag(ItemSendsScenePositionChanges);
     // this cache-mode is for items that can move. not sure if we can move --
-    // edges can move?
+    // vertices can move?
     setCacheMode(DeviceCoordinateCache);
     // with this we tell the graphwidget that "this" is responsible to
     // represent "mpVertex"
     //
     // shouldn't this be moved elsewhere?
     mpGraphWidget->registerVertexItem(mpVertex, this);
+    // drag'n drop is used to create edges between vertices
     setAcceptHoverEvents(true);
 }
 
@@ -47,7 +48,7 @@ VertexItemBase::~VertexItemBase()
     mpGraphWidget->deregisterVertexItem(mpVertex, this);
 }
 
-shared_ptr<BaseGraph> VertexItemBase::getGraph() const
+BaseGraph::Ptr VertexItemBase::getGraph() const
 {
     return mpGraphWidget->graph();
 }
