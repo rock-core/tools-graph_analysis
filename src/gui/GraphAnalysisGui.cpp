@@ -20,9 +20,6 @@
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/dialogs/ExportFile.hpp>
 
-#include <graph_analysis/task_graph/TaskTemplate.hpp>
-#include <graph_analysis/task_graph/TaskTemplateContainer.hpp>
-
 namespace graph_analysis
 {
 namespace gui
@@ -34,16 +31,12 @@ GraphAnalysisGui::GraphAnalysisGui()
     , mpGraph(BaseGraph::getInstance())
     , mpBaseGraphView(new BaseGraphView(mpGraph, this))
     , mpTaskGraphEditor(new TaskGraphEditor(mpGraph, this))
-    , mpTaskTemplContainer(new task_graph::TaskTemplateContainer())
 {
-
-
     mpUi->setupUi(this);
     mpUi->tabWidget->clear();
     mpUi->tabWidget->addTab(mpBaseGraphView, mpBaseGraphView->getClassName());
-    mpUi->tabWidget->addTab(mpComponentGraphEditor,
-                            mpComponentGraphEditor->getClassName());
-
+    mpUi->tabWidget->addTab(mpTaskGraphEditor,
+                            mpTaskGraphEditor->getClassName());
     // bidrectional connection of "change->update" cycle between the two widgets
     connect(mpBaseGraphView, SIGNAL(baseGraphChanged()), mpTaskGraphEditor,
             SLOT(updateVisualization()));
@@ -57,14 +50,10 @@ GraphAnalysisGui::GraphAnalysisGui()
             mpUi->statusbar, SLOT(showMessage(QString, int)));
     connect(mpTaskGraphEditor, SIGNAL(currentStatus(QString, int)),
             mpUi->statusbar, SLOT(showMessage(QString, int)));
-
-    // missing: file import+export...
-    fromFile("/home/mzenzes/rock_entern/iodrivers_base::Proxy.yml");
 }
 
 GraphAnalysisGui::~GraphAnalysisGui()
 {
-    delete mpTaskTemplContainer;
     delete mpUi;
 }
 
@@ -209,8 +198,8 @@ void GraphAnalysisGui::notifyAll()
 {
     mpBaseGraphView->setGraph(mpGraph);
     mpBaseGraphView->updateVisualization();
-    mpTaskGraphEditor->setGraph(mpGraph);
-    mpTaskGraphEditor->updateVisualization();
+    //mpTaskGraphEditor->setGraph(mpGraph);
+    //mpTaskGraphEditor->updateVisualization();
 }
 
 } // end namespace gui

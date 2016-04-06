@@ -68,6 +68,7 @@ rock_library(graph_analysis
         task_graph/InputPort.cpp
         task_graph/OutputPort.cpp
         task_graph/PortConnection.cpp
+        gui/TaskGraphEditor/TaskGraphViewer.cpp
         gui/TaskGraphEditor/TaskGraphEditor.cpp
         gui/TaskGraphEditor/TaskItem.cpp
         gui/TaskGraphEditor/PortItem.cpp
@@ -174,6 +175,7 @@ rock_library(graph_analysis
         task_graph/InputPort.hpp
         task_graph/OutputPort.hpp
         task_graph/PortConnection.hpp
+        gui/TaskGraphEditor/TaskGraphViewer.hpp
         gui/TaskGraphEditor/TaskGraphEditor.hpp
         gui/TaskGraphEditor/TaskItem.hpp
         gui/TaskGraphEditor/PortItem.hpp
@@ -222,12 +224,14 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
+        gui/TaskGraphEditor/TaskGraphViewer.cpp
         gui/TaskGraphEditor/TaskGraphEditor.cpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/GraphAnalysisGui.ui
         gui/BaseGraphView/AddVertexDialog.ui
         gui/BaseGraphView/AddEdgeDialog.ui
+        gui/TaskGraphEditor/TaskGraphEditor.ui
         gui/dialogs/add_filter_dialog_gui.ui
         gui/dialogs/add_graph_element.ui
         gui/dialogs/graph_analysis_gui.ui

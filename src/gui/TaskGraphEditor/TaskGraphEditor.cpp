@@ -1,119 +1,104 @@
 #include "TaskGraphEditor.hpp"
+#include "TaskGraphViewer.hpp"
 
-#include <exception>
-#include <set>
-#include <math.h>
-#include <string>
-#include <sstream>
-
-#include <QDir>
-#include <QTime>
-#include <QMenu>
-#include <QAction>
-#include <QKeyEvent>
-#include <QFileDialog>
+#include "ui_TaskGraphEditor.h"
 #include <QMessageBox>
-#include <QApplication>
-#include <QInputDialog>
-#include <QSignalMapper>
+#include <QFileDialog>
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
-#include <base/Time.hpp>
-#include <base/Logging.hpp>
-
-#include <graph_analysis/io/GVGraph.hpp>
-
-#include <graph_analysis/VertexTypeManager.hpp>
-#include <graph_analysis/EdgeTypeManager.hpp>
-
-#include <graph_analysis/task_graph/PortConnection.hpp>
-#include <graph_analysis/task_graph/HasFeature.hpp>
-
-#include "TaskItem.hpp"
-#include "PortConnectionItem.hpp"
-
-using namespace graph_analysis;
+#include <graph_analysis/task_graph/TaskTemplateContainer.hpp>
 
 namespace graph_analysis
 {
-namespace gui
-{
-
-TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph, QWidget *parent) : GraphWidget(graph, parent)
-{
-
-    VertexTypeManager* vertexManager = VertexTypeManager::getInstance();
-    vertexManager->registerType(task_graph::Task::vertexType(), Vertex::Ptr(new task_graph::Task()));
-    vertexManager->registerType(task_graph::InputPort::vertexType(), Vertex::Ptr(new task_graph::InputPort()));
-    vertexManager->registerType(task_graph::OutputPort::vertexType(), Vertex::Ptr(new task_graph::OutputPort()));
-
-    EdgeTypeManager* edgeManager = EdgeTypeManager::getInstance();
-    edgeManager->registerType(task_graph::HasFeature::edgeType(), Edge::Ptr(new task_graph::HasFeature()));
-    edgeManager->registerType(task_graph::PortConnection::edgeType(), Edge::Ptr(new task_graph::PortConnection()));
-}
-
-TaskGraphEditor::~TaskGraphEditor() {}
-
-QString TaskGraphEditor::getClassName() const
-{
-    return "graph_analysis::gui::TaskGraphEditor";
-}
-
-// differs from the base-implementation in that here, only things of type
-// "TaskItem" are shuffled.
-void TaskGraphEditor::shuffle()
-{
-    int diff = 600;
-    foreach(QGraphicsItem *item, scene()->items())
+    namespace gui
     {
-        if(dynamic_cast<TaskItem *>(item)) {
-            item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
-        }
-    }
-    updateStatus(
-        "Shuffelled all nodes representing a 'Vertex' of the TaskGraphEditor");
-}
-
-void TaskGraphEditor::populateCanvas()
-{
-    VertexIterator::Ptr nodeIt = mpGraph->getVertexIterator();
-    while(nodeIt->next())
-    {
-        Vertex::Ptr vertex = nodeIt->current();
-
-        // this widget only knows one type of "top level item", and this is the
-        // Task. so creating then:
-        graph_analysis::task_graph::Task::Ptr comp =
-            dynamic_pointer_cast<task_graph::Task>(vertex);
-        if(!comp)
+        TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph, QWidget *parent)
+            : QWidget(parent)
+            , mpUi(new Ui::TaskGraphEditor)
+            , mpGraph(graph)
+            , mpTaskContainer(new task_graph::TaskTemplateContainer())
         {
-            continue;
+            mpUi->setupUi(this);
+            mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
+            mpUi->placeHolder->addWidget(mpTaskGraphViewer);
+
+            mpUi->taskTemplateTree->clear();
+            mpRootItem = new QTreeWidgetItem(mpUi->taskTemplateTree);
+            mpRootItem->setText(0, QString("Task Templates"));
+
+            connect(mpTaskGraphViewer, SIGNAL(baseGraphChanged()),
+                    this, SLOT(baseGraphChanged_internal()));
         }
 
-        TaskItem *v = new TaskItem(this, comp, NULL);
-        scene()->addItem(v);
-    }
-
-    EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
-    while(edgeIt->next())
-    {
-        Edge::Ptr edge = edgeIt->current();
-
-        graph_analysis::task_graph::PortConnection::Ptr conn =
-            dynamic_pointer_cast<task_graph::PortConnection>(edge);
-        if(!conn)
+        TaskGraphEditor::~TaskGraphEditor()
         {
-            continue;
+            delete mpTaskContainer;
+            delete mpUi;
         }
 
-        // creating new edge items
-        PortConnectionItem *e = new PortConnectionItem(
-            this, conn, NULL);
-        scene()->addItem(e);
+        void TaskGraphEditor::baseGraphChanged_internal()
+        {
+            emit baseGraphChanged();
+        }
+
+        void TaskGraphEditor::updateVisualization()
+        {
+            mpTaskGraphViewer->updateVisualization();
+        }
+
+        void TaskGraphEditor::on_taskTemplateTree_itemDoubleClicked(QTreeWidgetItem *item, int column)
+        {
+            if (!item)
+                return;
+
+            task_graph::TaskTemplate::Ptr templ = mpTaskContainer->find(item->text(1).toStdString());
+            if (templ)
+            {
+                templ->instantiateAndAddTask(mpGraph);
+                updateVisualization();
+                emit baseGraphChanged();
+            }
+        }
+
+        void TaskGraphEditor::on_addButton_clicked()
+        {
+            QString filename = QFileDialog::getOpenFileName(
+                this, tr("Choose orogen model file"), QDir::currentPath(),
+                tr("Orogen Model Files (*.yml)"));
+
+            if(!filename.isEmpty())
+            {
+                // Ok, user has selected a file
+                if (!mpTaskContainer->add(filename.toStdString()))
+                {
+                    std::string msg = "Failed to import '" + filename.toStdString() + "'";
+                    QMessageBox::critical(this, tr("Model import failed"), msg.c_str());
+                    return;
+                }
+
+                QTreeWidgetItem *child = new QTreeWidgetItem();
+                task_graph::Task::Ptr task = mpTaskContainer->find(filename.toStdString())->rootVertex();
+                child->setText(0, QString::fromStdString(task->toString()));
+                child->setText(1, filename);
+                mpRootItem->addChild(child);
+
+                //updateTreeWidget();
+            }
+        }
+
+        void TaskGraphEditor::on_removeButton_clicked()
+        {
+            QTreeWidgetItem *item = mpUi->taskTemplateTree->currentItem();
+            if (!item)
+                return;
+
+            task_graph::TaskTemplate::Ptr templ = mpTaskContainer->find(item->text(1).toStdString());
+            if (templ)
+            {
+                item->parent()->removeChild(item);
+                delete item;
+                mpTaskContainer->remove(templ);
+                //updateTreeWidget();
+            }
+        }
     }
 }
-
-} // end namespace gui
-} // end namespace graph_analysis

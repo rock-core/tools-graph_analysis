@@ -11,10 +11,6 @@ class GraphAnalysisGui;
 
 namespace graph_analysis
 {
-    namespace task_graph
-    {
-        class TaskTemplateContainer;
-    }
 namespace gui
 {
 
@@ -39,8 +35,6 @@ private:
     // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;
     TaskGraphEditor* mpTaskGraphEditor;
-
-    task_graph::TaskTemplateContainer* mpTaskTemplContainer;
 
     void importGraph();
     void exportGraph();

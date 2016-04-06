@@ -1,49 +1,69 @@
 #ifndef GRAPH_ANALYSIS_GUI_TASKGRAPHEDITOR_HPP
 #define GRAPH_ANALYSIS_GUI_TASKGRAPHEDITOR_HPP
 
-#include <graph_analysis/gui/GraphWidget.hpp>
+#include <graph_analysis/Graph.hpp>
+#include <QWidget>
+#include <QTreeWidget>
 
-#include <graph_analysis/gui/VertexItemBase.hpp>
-#include <graph_analysis/gui/EdgeItemBase.hpp>
+namespace Ui
+{
+    class TaskGraphEditor;
+}
 
 namespace graph_analysis
 {
-namespace gui
-{
+    namespace task_graph
+    {
+        class TaskTemplateContainer;
+    }
 
-/**
- * \file TaskGraphEditor.hpp
- * \class TaskGraphEditor
- * \brief displaying the raw hypergraph in all its glory
- * \details maintains and displays a simple view of its BaseGraph
- *
- * treats the BaseGraph as read-only.
- */
-class TaskGraphEditor : public GraphWidget
-{
-    Q_OBJECT
+    namespace gui
+    {
+        class TaskGraphViewer;
 
-  public:
-    /**
-     * \brief constructor
-     * \param graph underlying base graph
-     */
-    TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
-    virtual ~TaskGraphEditor();
+        class TaskGraphEditor : public QWidget
+        {
+            Q_OBJECT
 
-    QString getClassName() const;
+            public:
+                TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
+                ~TaskGraphEditor();
 
-    /**
-     * deletes all internal information and rebuilds the visualization
-     * according to the current BaseGraph. Respawns all graphical elements by
-     * the underlying base graph and trigger the layouting
-     */
-    virtual void populateCanvas();
+                QString getClassName() const
+                { return "graph_analysis::gui::TaskGraphEditor"; }
 
-public slots:
-    virtual void shuffle();
-};
+            private:
+                // GUI Elements
+                Ui::TaskGraphEditor*                mpUi;
 
-} // end namespace gui
-} // end namespace graph_analysis
+                // Graph
+                graph_analysis::BaseGraph::Ptr      mpGraph;
+                TaskGraphViewer*                    mpTaskGraphViewer;
+
+                // Task Template stuff
+                task_graph::TaskTemplateContainer*  mpTaskContainer;
+                QTreeWidgetItem*                    mpRootItem;
+
+            signals:
+                // Will be triggered by the TaskGraphViewer
+                void baseGraphChanged();
+
+            private slots:
+                // Needed to observe the TaskGraphViewer
+                void baseGraphChanged_internal();
+
+            public slots:
+                // Adding/Removing TaskTemplates from Container
+                void on_addButton_clicked();
+                void on_removeButton_clicked();
+
+                // On double click we want to create new tasks :)
+                void on_taskTemplateTree_itemDoubleClicked(QTreeWidgetItem* item, int column);
+
+                // For updating the TaskGraphViewer
+                void updateVisualization();
+        };
+    }
+}
+
 #endif
