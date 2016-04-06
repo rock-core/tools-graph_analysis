@@ -112,7 +112,7 @@ VertexItemSimple::VertexItemSimple(GraphWidget* graphWidget,
                         QPoint(0, mpLabel->boundingRect().height()));
     mpClassName->setDefaultTextColor(Qt::gray);
     // we wanna show the current qt-coordinate on the canvas
-    mpCoordinate = new QGraphicsTextItem(getPosAsString(), this);
+    mpCoordinate = new QGraphicsTextItem(getScenePosAsString(), this);
     mpCoordinate->setDefaultTextColor(Qt::darkGreen);
 
     // now that all the children are there, we use their bounding-rect to
