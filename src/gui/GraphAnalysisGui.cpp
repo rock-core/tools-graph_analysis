@@ -46,6 +46,11 @@ GraphAnalysisGui::GraphAnalysisGui()
             mpUi->statusbar, SLOT(showMessage(QString, int)));
     connect(mpTaskGraphEditor, SIGNAL(currentStatus(QString, int)),
             mpUi->statusbar, SLOT(showMessage(QString, int)));
+
+    connect(mpBaseGraphView, SIGNAL(baseGraphChanged()),
+            mpTaskGraphEditor, SLOT(updateVisualization()));
+    connect(mpTaskGraphEditor, SIGNAL(baseGraphChanged()),
+            mpBaseGraphView, SLOT(updateVisualization()));
 }
 
 GraphAnalysisGui::~GraphAnalysisGui()

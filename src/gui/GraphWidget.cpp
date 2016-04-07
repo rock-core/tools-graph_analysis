@@ -49,10 +49,10 @@ GraphWidget::~GraphWidget()
 void GraphWidget::showEvent(QShowEvent* event)
 {
     // filter for non-spontaneous show events.
-    if((!event->spontaneous()) && (event->type() == QEvent::Show))
-    {
-        updateVisualization();
-    }
+    //if((!event->spontaneous()) && (event->type() == QEvent::Show))
+    //{
+        //updateVisualization();
+    //}
 }
 
 graph_analysis::BaseGraph::Ptr GraphWidget::graph() const
