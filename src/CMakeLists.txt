@@ -224,8 +224,8 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
-        gui/TaskGraphEditor/TaskGraphViewer.cpp
-        gui/TaskGraphEditor/TaskGraphEditor.cpp
+        gui/TaskGraphEditor/TaskGraphViewer.hpp
+        gui/TaskGraphEditor/TaskGraphEditor.hpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/GraphAnalysisGui.ui
