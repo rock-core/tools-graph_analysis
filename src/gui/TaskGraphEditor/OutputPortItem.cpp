@@ -88,9 +88,6 @@ void OutputPortItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                 dialog.getClassname().toStdString(), sourceVertex, targetVertex,
                 dialog.getLabel().toStdString());
             getGraph()->addEdge(edge);
-            // TODO: is there a nicer way of trigger redrawing the graph?
-            //getGraphWidget()->clearVisualization();
-            //getGraphWidget()->update();
             getGraphWidget()->updateVisualization();
         }
     }
