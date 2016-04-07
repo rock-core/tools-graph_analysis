@@ -134,7 +134,7 @@ void TaskGraphEditor::on_taskTemplateTree_itemDoubleClicked(
     {
         templ->instantiateAndAddTask(mpGraph);
         updateVisualization();
-        baseGraphChanged_internal();
+        emit baseGraphChanged();
     }
 }
 
