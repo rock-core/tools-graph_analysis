@@ -111,7 +111,7 @@ void GraphAnalysisGui::importGraph()
 void GraphAnalysisGui::exportGraph()
 {
     /* updateStatus("Exporting graph..."); */
-    if(mpGraph->empty())
+    if(mpQBaseGraph->getBaseGraph()->empty())
     {
         QMessageBox::critical(this, tr("Graph Export Failed"),
                               "Graph is empty");
@@ -156,7 +156,7 @@ void GraphAnalysisGui::exportGraph()
     {
         try
         {
-            io::GraphIO::write(dialog.getFilename().toStdString(), mpGraph,
+            io::GraphIO::write(dialog.getFilename().toStdString(), mpQBaseGraph->getBaseGraph(),
                                dialog.getTypeName());
             /* updateStatus("Exported graph to output file '" +
              * dialog.getFilename().toStdString() + "'"); */
@@ -178,20 +178,23 @@ void GraphAnalysisGui::exportGraph()
 
 void GraphAnalysisGui::fromFile(const std::string& filename)
 {
-    graph_analysis::BaseGraph::Ptr graph = BaseGraph::getInstance();
+    QBaseGraph* graph = new QBaseGraph(this);
 
     try
     {
-        io::GraphIO::read(filename, graph);
+        io::GraphIO::read(filename, graph->getBaseGraph());
     }
     catch(const std::exception& e)
     {
         std::string msg = "Failed to import '" + filename + "': " + e.what();
         QMessageBox::critical(this, tr("Graph Import Failed"), msg.c_str());
+        delete graph;
         return;
     }
 
-    mpGraph = graph;
+    delete mpQBaseGraph;
+    mpQBaseGraph = graph;
+
     notifyAll();
 }
 
