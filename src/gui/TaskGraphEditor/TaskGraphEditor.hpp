@@ -49,12 +49,10 @@ namespace graph_analysis
 
             signals:
                 // Will be triggered by the TaskGraphViewer
-                void baseGraphChanged();
                 void currentStatus(QString, int);
 
             private slots:
                 // Needed to observe the TaskGraphViewer
-                void baseGraphChanged_internal();
                 void currentStatus_internal(QString, int);
 
             public slots:

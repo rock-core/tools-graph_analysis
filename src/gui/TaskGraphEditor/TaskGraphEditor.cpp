@@ -36,8 +36,6 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     mpRootItem->setText(0, QString("Task Templates"));
     mpRootItem->setExpanded(true);
 
-    connect(mpTaskGraphViewer, SIGNAL(baseGraphChanged()), this,
-            SLOT(baseGraphChanged_internal()));
     connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString, int)), this,
             SLOT(currentStatus_internal(QString, int)));
 
@@ -109,11 +107,6 @@ TaskGraphEditor::~TaskGraphEditor()
     delete mpUi;
 }
 
-void TaskGraphEditor::baseGraphChanged_internal()
-{
-    emit baseGraphChanged();
-}
-
 void TaskGraphEditor::currentStatus_internal(QString msg, int lvl)
 {
     emit currentStatus(msg, lvl);
@@ -136,7 +129,6 @@ void TaskGraphEditor::on_taskTemplateTree_itemDoubleClicked(
     {
         templ->instantiateAndAddTask(mpGraph);
         updateVisualization();
-        emit baseGraphChanged();
     }
 }
 
