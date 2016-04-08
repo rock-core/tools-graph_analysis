@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_HPP
 
 #include <QMainWindow>
-#include <graph_analysis/BaseGraph.hpp>
+#include <graph_analysis/gui/QBaseGraph.hpp>
 
 namespace Ui
 {
@@ -30,7 +30,7 @@ private:
     Ui::GraphAnalysisGui* mpUi;
 
     // the basegraph where the subwidgets will work upon
-    graph_analysis::BaseGraph::Ptr mpGraph;
+    QBaseGraph* mpQBaseGraph;
 
     // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;

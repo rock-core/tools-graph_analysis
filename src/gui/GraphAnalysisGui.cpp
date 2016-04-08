@@ -28,9 +28,9 @@ namespace gui
 GraphAnalysisGui::GraphAnalysisGui()
     : QMainWindow()
     , mpUi(new Ui::GraphAnalysisGui)
-    , mpGraph(BaseGraph::getInstance())
-    , mpBaseGraphView(new BaseGraphView(mpGraph, this))
-    , mpTaskGraphEditor(new TaskGraphEditor(mpGraph, this))
+    , mpQBaseGraph(new QBaseGraph(this))
+    , mpBaseGraphView(new BaseGraphView(mpQBaseGraph->getBaseGraph(), this))
+    , mpTaskGraphEditor(new TaskGraphEditor(mpQBaseGraph->getBaseGraph(), this))
 {
     mpUi->setupUi(this);
     mpUi->tabWidget->clear();
@@ -47,9 +47,9 @@ GraphAnalysisGui::GraphAnalysisGui()
     connect(mpTaskGraphEditor, SIGNAL(currentStatus(QString, int)),
             mpUi->statusbar, SLOT(showMessage(QString, int)));
 
-    connect(mpBaseGraphView, SIGNAL(baseGraphChanged()),
+    connect(mpQBaseGraph, SIGNAL(graphChanged()),
             mpTaskGraphEditor, SLOT(updateVisualization()));
-    connect(mpTaskGraphEditor, SIGNAL(baseGraphChanged()),
+    connect(mpQBaseGraph, SIGNAL(graphChanged()),
             mpBaseGraphView, SLOT(updateVisualization()));
 }
 
