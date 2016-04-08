@@ -33,26 +33,11 @@ GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget* parent)
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
     setAcceptDrops(true);
-
-    // when we change the base-graph, we wanna act on this immidiately.
-    //
-    // problem is that when _we_ change the base-graph, nieghbouring widgets
-    // using the same basegraph have to update their view as well...
-    connect(this, SIGNAL(baseGraphChanged()), this, SLOT(updateVisualization()));
 }
 
 GraphWidget::~GraphWidget()
 {
     delete mpScene;
-}
-
-void GraphWidget::showEvent(QShowEvent* event)
-{
-    // filter for non-spontaneous show events.
-    //if((!event->spontaneous()) && (event->type() == QEvent::Show))
-    //{
-        //updateVisualization();
-    //}
 }
 
 graph_analysis::BaseGraph::Ptr GraphWidget::graph() const
@@ -63,7 +48,6 @@ graph_analysis::BaseGraph::Ptr GraphWidget::graph() const
 void GraphWidget::setGraph(const graph_analysis::BaseGraph::Ptr& graph)
 {
     mpGraph = graph;
-    emit baseGraphChanged();
 }
 
 void GraphWidget::wheelEvent(QWheelEvent *event)
@@ -247,8 +231,6 @@ void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
                     VertexTypeManager::getInstance()->createVertex(
                         dialog.getClassname().toStdString(),
                         dialog.getLabel().toStdString()));
-                // and trigger relayouting
-                emit baseGraphChanged();
             }
         }
 

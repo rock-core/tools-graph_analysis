@@ -102,17 +102,6 @@ public:
      */
     virtual void updateEdgePositions(VertexItemBase* item);
 
-    /**
-     * called before the widget is shown to the user.
-     *
-     * will call "updateVisualization" to clear and recreate the whole canvas
-     * when this widget is shown anew. the circumvents the problem that arises
-     * when one GraphWidget changes the common BaseGraph, and it can't tell
-     * possible neighbouring GraphWidgets of the change to that they can
-     * recreate their view. so now we do a bit more than needed. but it works.
-     */
-    void showEvent(QShowEvent* event);
-
     /// getter method for retrieving the underlying base graph
     graph_analysis::BaseGraph::Ptr graph() const;
     /// setter method for updating the underlying base graph
@@ -157,7 +146,6 @@ public slots:
 
 signals:
     void currentStatus(QString, int);
-    void baseGraphChanged();
 
 protected:
 
