@@ -87,9 +87,7 @@ void OutputPortItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(
                 dialog.getClassname().toStdString(), sourceVertex, targetVertex,
                 dialog.getLabel().toStdString());
-            getGraph()->addEdge(edge);
-            // Trigger baseGraphChanged() signal of GraphWidget by setting the same graph
-            getGraphWidget()->setGraph(getGraph());
+            getGraph()->addEdge(edge); // This should trigger an QBaseGraph graphChanged signal
         }
     }
 }
