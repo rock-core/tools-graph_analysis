@@ -14,6 +14,7 @@
 
 #include <graph_analysis/task_graph/TaskTemplateContainer.hpp>
 #include <graph_analysis/io/CndModelReader.hpp>
+#include <graph_analysis/io/CndModelWriter.hpp>
 
 namespace graph_analysis
 {
@@ -143,7 +144,7 @@ void TaskGraphEditor::on_loadButton_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(
         this, tr("Choose component network description file"), QDir::currentPath(),
-        tr("Component Network Definition File (*.yaml)"));
+        tr("Component Network Definition File (*.yaml *.yml)"));
 
     if(!filename.isEmpty())
     {
@@ -154,6 +155,15 @@ void TaskGraphEditor::on_loadButton_clicked()
 
 void TaskGraphEditor::on_saveButton_clicked()
 {
+    QString filename = QFileDialog::getSaveFileName(
+        this, tr("Choose component network description file"), QDir::currentPath(),
+        tr("Component Network Definition File (*.yaml *.yml)"));
+
+    if(!filename.isEmpty())
+    {
+        io::CndModelWriter writer;
+        writer.write(filename.toStdString(), mpGraph);
+    }
 }
 
 void TaskGraphEditor::on_addButton_clicked()
