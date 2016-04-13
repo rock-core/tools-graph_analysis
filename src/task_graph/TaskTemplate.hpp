@@ -40,7 +40,10 @@ namespace task_graph
             }
 
         private:
+            std::string     mLabel;
             std::string     mYamlFileName;
+
+            int mInstance;
             BaseGraph::Ptr  mpBaseGraph;
             Task::Ptr       mpRootVertex;
     };

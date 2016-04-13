@@ -2,6 +2,8 @@
 
 #include <graph_analysis/io/OrogenModelReader.hpp>
 
+#include <sstream>
+
 namespace graph_analysis
 {
 namespace task_graph
@@ -23,10 +25,18 @@ namespace task_graph
         mpRootVertex = dynamic_pointer_cast<Task>(*it);
         // Store the yaml file name
         mYamlFileName = yamlFileName;
+        mLabel = mpRootVertex->getTemplateLabel() + "::" + mpRootVertex->getLabel();
+        mpRootVertex->setTemplateLabel(mLabel);
+        mInstance = 0;
     }
 
     BaseGraph::Ptr TaskTemplate::instantiateTask() {
-        return (mpBaseGraph->clone());
+        mInstance++;
+        std::stringstream ss;
+        ss << mInstance;
+        mpRootVertex->setLabel(mLabel + ss.str());
+        mpRootVertex->setTemplateLabel(mLabel);
+        return mpBaseGraph->clone();
     }
 
     void TaskTemplate::instantiateAndAddTask(BaseGraph::Ptr graph) {
