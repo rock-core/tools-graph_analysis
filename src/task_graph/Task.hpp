@@ -25,6 +25,8 @@ class Task : public Vertex
     typedef shared_ptr< Task > Ptr;
 
     Task(const std::string &label = "");
+    Task(const std::string &templateLabel, const std::string &label = "");
+
     /** Get class name
      * \return class name
      */
@@ -35,11 +37,20 @@ class Task : public Vertex
     std::vector<OutputPort::Ptr> getOutputPorts(const BaseGraph::Ptr &graph) const;
     std::vector<InputPort::Ptr> getInputPorts(const BaseGraph::Ptr &graph) const;
 
+    std::string getTemplateLabel() const;
+    void setTemplateLabel (const std::string& templateLabel);
+
   protected:
     /**
      * Create a copy of this vertex
      */
     virtual Task *getClone() const { return new Task(*this); }
+
+  private:
+    /**
+     * Specifies the template from which this task has been instantiated
+     */
+    std::string mTemplateLabel;
 };
 
 }

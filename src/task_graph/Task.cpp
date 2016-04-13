@@ -8,6 +8,17 @@ namespace graph_analysis
 namespace task_graph {
 
 Task::Task(const std::string &label) : Vertex(label) {}
+Task::Task(const std::string &templateLabel, const std::string &label) : Vertex(label), mTemplateLabel(templateLabel) {}
+
+std::string Task::getTemplateLabel() const
+{
+    return mTemplateLabel;
+}
+
+void Task::setTemplateLabel (const std::string& templateLabel)
+{
+    mTemplateLabel = templateLabel;
+}
 
 std::vector<OutputPort::Ptr>
 Task::getOutputPorts(const BaseGraph::Ptr &graph) const
