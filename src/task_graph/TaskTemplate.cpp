@@ -39,8 +39,6 @@ namespace task_graph
         EdgeIterator::Ptr eit = copy->getEdgeIterator();
         while (eit->next())
             graph->addEdge(eit->current());
-        // Intentionally release the shared ptr
-        copy.reset();
     }
 }
 }
