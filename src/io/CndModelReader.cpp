@@ -93,7 +93,7 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
         // std::cout << "CONNECTION: " << it->first.as<std::string>() <<
         // std::endl;
 
-        std::string label = it->first.as<std::string>();
+        std::string label = it->second["transport"].as<std::string>();
         YAML::Node from(it->second["from"]);
         YAML::Node to(it->second["to"]);
         task_graph::Task::Ptr sourceTask =
