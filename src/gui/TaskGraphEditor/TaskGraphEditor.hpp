@@ -62,6 +62,10 @@ namespace graph_analysis
                 void on_addButton_clicked();
                 void on_removeButton_clicked();
 
+                // Loading/Storing Task Networks
+                void on_loadButton_clicked();
+                void on_saveButton_clicked();
+
                 // On double click we want to create new tasks :)
                 void on_taskTemplateTree_itemDoubleClicked(QTreeWidgetItem* item, int column);
 

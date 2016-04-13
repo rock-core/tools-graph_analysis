@@ -13,6 +13,7 @@
 #include <base/Logging.hpp>
 
 #include <graph_analysis/task_graph/TaskTemplateContainer.hpp>
+#include <graph_analysis/io/CndModelReader.hpp>
 
 namespace graph_analysis
 {
@@ -138,6 +139,23 @@ void TaskGraphEditor::on_taskTemplateTree_itemDoubleClicked(
     }
 }
 
+void TaskGraphEditor::on_loadButton_clicked()
+{
+    QString filename = QFileDialog::getOpenFileName(
+        this, tr("Choose component network description file"), QDir::currentPath(),
+        tr("Component Network Definition File (*.yaml)"));
+
+    if(!filename.isEmpty())
+    {
+        io::CndModelReader reader;
+        reader.read(filename.toStdString(), mpGraph);
+    }
+}
+
+void TaskGraphEditor::on_saveButton_clicked()
+{
+}
+
 void TaskGraphEditor::on_addButton_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(
@@ -163,7 +181,7 @@ bool TaskGraphEditor::addFile(QString filename)
     QTreeWidgetItem* child = new QTreeWidgetItem();
     task_graph::Task::Ptr task =
         mpTaskContainer->find(filename.toStdString())->rootVertex();
-    child->setText(0, QString::fromStdString(task->toString()));
+    child->setText(0, QString::fromStdString(task->getTemplateLabel()));
     child->setText(1, filename);
     mpRootItem->addChild(child);
     return true;
