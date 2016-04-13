@@ -8,6 +8,9 @@
 #include <graph_analysis/SubGraph.hpp>
 #include <graph_analysis/Algorithms.hpp>
 #include <graph_analysis/BaseIterable.hpp>
+#include <graph_analysis/BaseGraphObserver.hpp>
+
+#include <set>
 
 /**
  * The main namespace of this library
@@ -40,6 +43,16 @@ public:
      * \return Ptr to new instance
      */
     static Ptr getInstance(ImplementationType type = LEMON_DIRECTED_GRAPH);
+
+    /**
+     * Add an observer to the set of observers (see BaseGraphObserver.hpp)
+     */
+    void addObserver(const BaseGraphObserver::Ptr& observer);
+
+    /**
+     * Removes an observer from the set of observers.
+     */
+    void removeObserver(const BaseGraphObserver::Ptr& observer);
 
     /**
      * Create a copy of this graph
@@ -315,6 +328,13 @@ private:
 
     // Graph attribute
     bool mDirected;
+
+    // The current hook
+    std::set<BaseGraphObserver::Ptr> mObservers;
+
+    // Notification of observers
+    void notifyAll(const Vertex::Ptr& vertex, const EventType& event);
+    void notifyAll(const Edge::Ptr& edge, const EventType& event);
 };
 
 } // end namespace graph_analysis
