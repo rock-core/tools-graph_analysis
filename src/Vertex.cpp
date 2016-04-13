@@ -38,6 +38,4 @@ std::string Vertex::toString(uint32_t indent) const
     }
 }
 
-
-
 } // end namespace graph_analysis

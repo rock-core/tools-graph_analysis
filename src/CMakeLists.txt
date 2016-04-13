@@ -31,6 +31,7 @@ rock_library(graph_analysis
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
         gui/GraphAnalysisGui.cpp
+        gui/QBaseGraph.cpp
         gui/ActionCommander.cpp
         gui/EdgeItem.cpp
         gui/EdgeItemTypeManager.cpp
@@ -96,6 +97,7 @@ rock_library(graph_analysis
     HEADERS
         Algorithms.hpp
         BaseGraph.hpp
+        BaseGraphObserver.hpp
         BaseIterable.hpp
         BipartiteGraph.hpp
         DirectedGraphInterface.hpp
@@ -140,6 +142,7 @@ rock_library(graph_analysis
         filters/EdgeContextFilter.hpp
         filters/RegexFilters.hpp
         gui/GraphAnalysisGui.hpp
+        gui/QBaseGraph.hpp
         gui/ActionCommander.hpp
         gui/EdgeItem.hpp
         gui/EdgeItemTypeManager.hpp
@@ -215,6 +218,7 @@ rock_library(graph_analysis
         Boost_REGEX
     MOC
         gui/GraphAnalysisGui.hpp
+        gui/QBaseGraph.hpp
         gui/FilterManager.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp

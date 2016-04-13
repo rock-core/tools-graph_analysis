@@ -1,6 +1,5 @@
 #include "Edge.hpp"
 #include "BaseGraph.hpp"
-#include <sstream>
 
 namespace graph_analysis {
 
@@ -33,10 +32,15 @@ std::string Edge::toString() const
 
 std::string Edge::toString(uint32_t indent) const
 {
-    std::string hspace(indent,' ');
-    std::stringstream ss;
-    ss << hspace << (getLabel().empty() ? getClassName() : getLabel());
-    return ss.str();
+    std::string hspace(indent, ' ');
+    if(!mLabel.empty())
+    {
+        return hspace + mLabel;
+    }
+    else
+    {
+        return hspace + getClassName();
+    }
 }
 
 std::vector<Vertex::Ptr> Edge::getInvolvedVertices(const Edge::Ptr& e0, const Edge::Ptr& e1)
@@ -73,5 +77,4 @@ Edge::Ptr Edge::getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) c
 {
     return pGraph->getEdge(getId(pGraph->getId()));
 }
-
 }

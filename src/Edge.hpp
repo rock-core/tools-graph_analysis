@@ -4,9 +4,10 @@
 #include <graph_analysis/Vertex.hpp>
 #include <string>
 
-namespace graph_analysis {
+namespace graph_analysis
+{
 
-    class BaseGraph;
+class BaseGraph;
 
 /**
  * \brief An Edge represents the link between two vertices
@@ -78,6 +79,14 @@ public:
      */
     static bool areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1);
 
+    /**
+     * in order for child-classes to iterate the graph, a way to obtain the
+     * shared pointer actually respresenting this edge on a particular graph is
+     * needed.
+     *
+     * \param pGraph shared pointer to the graph where this edge is contained
+     * \return shared pointer of this edge belonging to the given graph
+     */
     Edge::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const;
 
 protected:
