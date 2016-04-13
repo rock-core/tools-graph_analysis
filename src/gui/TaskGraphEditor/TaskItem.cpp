@@ -25,10 +25,14 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
     font.setBold(true);
     mpLabel->setFont(font);
 
+    mpTemplateLabel = new QGraphicsTextItem(QString(vertex->getTemplateLabel().c_str()), this);
+    mpTemplateLabel->setPos(mpLabel->pos() +
+                        QPoint(0, mpLabel->boundingRect().height()));
+
     mpClassName =
         new QGraphicsTextItem(QString(vertex->getClassName().c_str()), this);
-    mpClassName->setPos(mpLabel->pos() +
-                        QPoint(0, mpLabel->boundingRect().height()));
+    mpClassName->setPos(mpTemplateLabel->pos() +
+                        QPoint(0, mpTemplateLabel->boundingRect().height()));
     mpClassName->setDefaultTextColor(Qt::gray);
 
     QPen penForRect = QPen(Qt::blue);
@@ -46,6 +50,7 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
                 oPort->setPos(QPointF(childrenBoundingRect().width() -
                                           penForRect.width() -
                                           oPort->boundingRect().width(),
+                                      mpTemplateLabel->boundingRect().height() +
                                       mpClassName->boundingRect().height() +
                                           oPort->boundingRect().height()));
             }
@@ -72,7 +77,8 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
             {
                 iPort->setPos(
                     QPointF(penForRect.width(),
-                            mpClassName->boundingRect().bottomLeft().y() +
+                            mpTemplateLabel->boundingRect().height() +
+                            mpClassName->boundingRect().height() +
                                 iPort->boundingRect().height()));
             }
             else
@@ -93,6 +99,7 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
 TaskItem::~TaskItem()
 {
     delete mpLabel;
+    delete mpTemplateLabel;
     delete mpClassName;
     delete mpRect;
     // do NOT delete item created in this class. these will hopefully be

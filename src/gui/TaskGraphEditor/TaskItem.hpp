@@ -35,6 +35,7 @@ public:
 
 private:
     QGraphicsTextItem* mpLabel;
+    QGraphicsTextItem* mpTemplateLabel;
     QGraphicsTextItem* mpClassName;
     QGraphicsRectItem* mpRect;
     QVector<InputPortItem*> mvInputPorts;
