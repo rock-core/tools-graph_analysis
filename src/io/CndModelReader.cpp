@@ -81,8 +81,9 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
         // std::cout << "TASK: " << it->first.as<std::string>() << std::endl;
 
         std::string label = it->first.as<std::string>();
+        std::string templ = it->second["type"].as<std::string>();
         task_graph::Task::Ptr comp =
-            task_graph::Task::Ptr(new task_graph::Task(label));
+            task_graph::Task::Ptr(new task_graph::Task(templ,label));
         graph->addVertex(comp);
     }
 
