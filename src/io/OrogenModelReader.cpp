@@ -58,7 +58,7 @@ void OrogenModelReader::read(const std::string &filename,
     it=it->second.begin();
     std::string className = it->first.as<std::string>();
     // At first create the master node representing the whole task
-    task_graph::Task::Ptr comp = task_graph::Task::Ptr(new task_graph::Task(baseClassName + "::" + className));
+    task_graph::Task::Ptr comp = task_graph::Task::Ptr(new task_graph::Task(baseClassName, className));
     graph->addVertex(comp);
 
     // Then we create all input ports and relate them to the master node
