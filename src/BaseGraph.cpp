@@ -20,8 +20,8 @@ BaseGraph::BaseGraph(ImplementationType type, bool directed)
     : mId(msId++)
     , mImplementationType(type)
     , mDirected(directed)
-{}
-
+{
+}
 
 BaseGraph::Ptr BaseGraph::getInstance(ImplementationType type)
 {
@@ -40,6 +40,38 @@ BaseGraph::Ptr BaseGraph::getInstance(ImplementationType type)
            throw std::invalid_argument("BaseGraph::getInstance: requested instanciation of unknown \
                    implementation type: " + ss.str());
    }
+}
+
+void BaseGraph::addObserver(const BaseGraphObserver::Ptr& observer)
+{
+    mObservers.insert(observer);
+}
+
+void BaseGraph::removeObserver(const BaseGraphObserver::Ptr& observer)
+{
+    mObservers.erase(observer);
+}
+
+void BaseGraph::notifyAll(const Vertex::Ptr& vertex, const EventType& event)
+{
+    std::set<BaseGraphObserver::Ptr>::const_iterator it;
+
+    // Call every registered observer
+    for(it = mObservers.begin(); it != mObservers.end(); ++it)
+    {
+        (*it)->notify(vertex, event, getId());
+    }
+}
+
+void BaseGraph::notifyAll(const Edge::Ptr& edge, const EventType& event)
+{
+    std::set<BaseGraphObserver::Ptr>::const_iterator it;
+
+    // Call every registered observer
+    for(it = mObservers.begin(); it != mObservers.end(); ++it)
+    {
+        (*it)->notify(edge, event, getId());
+    }
 }
 
 BaseGraph::Ptr BaseGraph::clone() const
@@ -120,6 +152,9 @@ GraphElementId BaseGraph::addVertex(const Vertex::Ptr& vertex)
         throw std::runtime_error("BaseGraph: vertex already exists in this graph");
     }
 
+    // Call observers
+    notifyAll(vertex, EVENT_TYPE_ADDED);
+
     return 0;
 }
 
@@ -130,6 +165,9 @@ void BaseGraph::removeVertex(const Vertex::Ptr& vertex)
         throw std::runtime_error("BaseGraph: vertex cannot be removed, since it does not exist in this graph");
     }
     vertex->disassociate(getId());
+
+    // Call observers
+    notifyAll(vertex, EVENT_TYPE_REMOVED);
 }
 
 GraphElementId BaseGraph::addEdge(const Edge::Ptr& edge)
@@ -162,7 +200,13 @@ GraphElementId BaseGraph::addEdge(const Edge::Ptr& edge)
     }
 
     try {
-        return addEdgeInternal(edge, getVertexId(source), getVertexId(target));
+        GraphElementId retVal =
+            addEdgeInternal(edge, getVertexId(source), getVertexId(target));
+
+        // Call observers
+        notifyAll(edge, EVENT_TYPE_ADDED);
+
+        return retVal;
     } catch(...)
     {
         edge->disassociate(getId());
@@ -177,6 +221,9 @@ void BaseGraph::removeEdge(const Edge::Ptr& edge)
         throw std::runtime_error("BaseGraph: edge cannot be removed, since it does not exist in this graph");
     }
     edge->disassociate(getId());
+
+    // Call observers
+    notifyAll(edge, EVENT_TYPE_REMOVED);
 }
 
 std::vector<Edge::Ptr> BaseGraph::getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const
