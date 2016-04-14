@@ -65,6 +65,7 @@ rock_library(graph_analysis
         task_graph/TaskTemplate.cpp
         task_graph/Task.cpp
         task_graph/Port.cpp
+        task_graph/Property.cpp
         task_graph/InputPort.cpp
         task_graph/OutputPort.cpp
         task_graph/PortConnection.cpp
@@ -175,10 +176,12 @@ rock_library(graph_analysis
         task_graph/TaskTemplate.hpp
         task_graph/Task.hpp
         task_graph/Port.hpp
+        task_graph/Property.hpp
         task_graph/InputPort.hpp
         task_graph/OutputPort.hpp
         task_graph/PortConnection.hpp
         task_graph/HasFeature.hpp
+        task_graph/HasUniqueFeature.hpp
         task_graph/InstanceOf.hpp
         gui/TaskGraphEditor/TaskGraphViewer.hpp
         gui/TaskGraphEditor/TaskGraphEditor.hpp
