@@ -27,4 +27,3 @@ public:
 } // end namespace io
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_IO_CND_MODEL_WRITER_HPP
-

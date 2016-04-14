@@ -3,6 +3,7 @@
 #include <graph_analysis/task_graph/HasFeature.hpp>
 #include <graph_analysis/task_graph/PortConnection.hpp>
 #include <graph_analysis/task_graph/Task.hpp>
+#include <graph_analysis/task_graph/TaskTemplate.hpp>
 #include <yaml-cpp/yaml.h>
 
 namespace graph_analysis
@@ -10,17 +11,18 @@ namespace graph_analysis
 namespace io
 {
 
-task_graph::Task::Ptr getTaskByLabel(BaseGraph::Ptr graph,
-                                     const std::string& name)
+// FIXME: This should be a member of BaseGraph
+template <typename T>
+typename T::Ptr getVertexByLabel(const std::string& label, BaseGraph::Ptr graph)
 {
     VertexIterator::Ptr it = graph->getVertexIterator();
     while(it->next())
     {
-        if(it->current()->getClassName() == task_graph::Task::vertexType())
-            if(it->current()->getLabel() == name)
-                return dynamic_pointer_cast<task_graph::Task>(it->current());
+        if(it->current()->getClassName() == T::vertexType())
+            if(it->current()->getLabel() == label)
+                return dynamic_pointer_cast<T>(it->current());
     }
-    return task_graph::Task::Ptr();
+    return typename T::Ptr();
 }
 
 // FIXME: This should be a member function of a Task/Task Template
@@ -67,8 +69,8 @@ typename T::Ptr createPort(const std::string& label, BaseGraph::Ptr graph,
 
 void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
 {
-    // Destroy old graph if necessary
-    graph->clear();
+    // TODO: We cannot clear the graph, because we would also kill all our
+    // templates!!!
 
     YAML::Node network = YAML::LoadFile(filename);
     YAML::Node tasks(network["tasks"]);
@@ -82,9 +84,22 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
 
         std::string label = it->first.as<std::string>();
         std::string templ = it->second["type"].as<std::string>();
-        task_graph::Task::Ptr comp =
-            task_graph::Task::Ptr(new task_graph::Task(templ,label));
-        graph->addVertex(comp);
+
+        // Find the template in given graph
+        task_graph::TaskTemplate::Ptr parent =
+            getVertexByLabel<task_graph::TaskTemplate>(templ, graph);
+        if(!parent)
+        {
+            throw std::runtime_error(
+                "CndModelReader::read(): Could not find template '" + templ +
+                "'");
+            return;
+        }
+        // Then instantiate from template
+        parent->instantiateAndAddTo(graph, label);
+        // TODO: Shall we compare/match instantiated tasks with task templates
+        // and
+        // warn if they dont fit?
     }
 
     // Create task interconnection (ports will be created on demand)
@@ -96,10 +111,10 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
         std::string label = it->second["transport"].as<std::string>();
         YAML::Node from(it->second["from"]);
         YAML::Node to(it->second["to"]);
-        task_graph::Task::Ptr sourceTask =
-            getTaskByLabel(graph, from["task_id"].as<std::string>());
-        task_graph::Task::Ptr targetTask =
-            getTaskByLabel(graph, to["task_id"].as<std::string>());
+        task_graph::Task::Ptr sourceTask = getVertexByLabel<task_graph::Task>(
+            from["task_id"].as<std::string>(), graph);
+        task_graph::Task::Ptr targetTask = getVertexByLabel<task_graph::Task>(
+            to["task_id"].as<std::string>(), graph);
         // std::cout << sourceTask->getLabel() << " -> " <<
         // targetTask->getLabel() << std::endl;
         task_graph::OutputPort::Ptr output = getOutputByLabel(
@@ -119,8 +134,6 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
         graph->addEdge(conn);
     }
 
-    // TODO: Shall we compare/match instantiated tasks with task templates and
-    // warn if they dont fit?
     // TODO: Add checks 'n' stuff
     // TODO: Add other stuff/parameters ...
 }
