@@ -25,7 +25,8 @@ class TaskItem : public VertexItemBase
 {
 public:
     TaskItem(GraphWidget* graphWidget,
-                  graph_analysis::task_graph::Task::Ptr vertex, QGraphicsItem* parent);
+             graph_analysis::task_graph::Task::Ptr vertex,
+             QGraphicsItem* parent);
     ~TaskItem();
     virtual int type() const;
 

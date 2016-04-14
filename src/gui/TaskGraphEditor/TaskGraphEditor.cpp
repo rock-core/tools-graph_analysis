@@ -3,18 +3,18 @@
 
 // QT specific includes
 #include "ui_TaskGraphEditor.h"
-#include <QMessageBox>
-#include <QFileDialog>
 #include <QDirIterator>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QProcessEnvironment>
 #include <QtDebug>
 
 // Rock specific includes
 #include <base/Logging.hpp>
 
-#include <graph_analysis/task_graph/TaskTemplateContainer.hpp>
 #include <graph_analysis/io/CndModelReader.hpp>
 #include <graph_analysis/io/CndModelWriter.hpp>
+#include <graph_analysis/task_graph/TaskTemplate.hpp>
 
 namespace graph_analysis
 {
@@ -25,7 +25,6 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     : QWidget(parent)
     , mpUi(new Ui::TaskGraphEditor)
     , mpGraph(graph)
-    , mpTaskContainer(new task_graph::TaskTemplateContainer())
 {
     mpUi->setupUi(this);
     mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
@@ -103,7 +102,6 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
 
 TaskGraphEditor::~TaskGraphEditor()
 {
-    delete mpTaskContainer;
     delete mpUi;
 }
 
@@ -117,25 +115,11 @@ void TaskGraphEditor::updateVisualization()
     mpTaskGraphViewer->updateVisualization();
 }
 
-void TaskGraphEditor::on_taskTemplateTree_itemDoubleClicked(
-    QTreeWidgetItem* item, int column)
-{
-    if(!item)
-        return;
-
-    task_graph::TaskTemplate::Ptr templ =
-        mpTaskContainer->find(item->text(1).toStdString());
-    if(templ)
-    {
-        templ->instantiateAndAddTask(mpGraph);
-        updateVisualization();
-    }
-}
-
 void TaskGraphEditor::on_loadButton_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(
-        this, tr("Choose component network description file"), QDir::currentPath(),
+        this, tr("Choose component network description file"),
+        QDir::currentPath(),
         tr("Component Network Definition File (*.yaml *.yml)"));
 
     if(!filename.isEmpty())
@@ -148,13 +132,44 @@ void TaskGraphEditor::on_loadButton_clicked()
 void TaskGraphEditor::on_saveButton_clicked()
 {
     QString filename = QFileDialog::getSaveFileName(
-        this, tr("Choose component network description file"), QDir::currentPath(),
+        this, tr("Choose component network description file"),
+        QDir::currentPath(),
         tr("Component Network Definition File (*.yaml *.yml)"));
 
     if(!filename.isEmpty())
     {
         io::CndModelWriter writer;
         writer.write(filename.toStdString(), mpGraph);
+    }
+}
+
+// FIXME: This should be a member of BaseGraph
+template <typename T>
+typename T::Ptr getVertexByLabel(const std::string& label, BaseGraph::Ptr graph)
+{
+    VertexIterator::Ptr it = graph->getVertexIterator();
+    while(it->next())
+    {
+        if(it->current()->getClassName() == T::vertexType())
+            if(it->current()->getLabel() == label)
+                return dynamic_pointer_cast<T>(it->current());
+    }
+    return typename T::Ptr();
+}
+
+void TaskGraphEditor::on_taskTemplateTree_itemDoubleClicked(
+    QTreeWidgetItem* item, int column)
+{
+    if(!item)
+        return;
+
+    task_graph::TaskTemplate::Ptr templ =
+        getVertexByLabel<task_graph::TaskTemplate>(item->text(0).toStdString(),
+                                                   mpGraph);
+    if(templ)
+    {
+        templ->instantiateAndAddTo(mpGraph);
+        updateVisualization();
     }
 }
 
@@ -172,20 +187,29 @@ void TaskGraphEditor::on_addButton_clicked()
 
 bool TaskGraphEditor::addFile(QString filename)
 {
-    // Ok, user has selected a file
-    if(!mpTaskContainer->add(filename.toStdString()))
+    // At first we create a new template
+    task_graph::TaskTemplate::Ptr newTemplate =
+        task_graph::TaskTemplate::Ptr(new task_graph::TaskTemplate());
+    newTemplate->loadFromFile(filename.toStdString());
+
+    // Check if template already exists
+    task_graph::TaskTemplate::Ptr templ =
+        getVertexByLabel<task_graph::TaskTemplate>(newTemplate->getLabel(),
+                                                   mpGraph);
+    if(templ)
     {
         std::string msg = "Failed to import '" + filename.toStdString() + "'";
         QMessageBox::critical(this, tr("Model import failed"), msg.c_str());
         return false;
     }
 
+    // It is a new template, so we are happy :)
+    mpGraph->addVertex(newTemplate);
     QTreeWidgetItem* child = new QTreeWidgetItem();
-    task_graph::Task::Ptr task =
-        mpTaskContainer->find(filename.toStdString())->rootVertex();
-    child->setText(0, QString::fromStdString(task->getTemplateLabel()));
+    child->setText(0, QString::fromStdString(newTemplate->getLabel()));
     child->setText(1, filename);
     mpRootItem->addChild(child);
+
     return true;
 }
 
@@ -196,13 +220,13 @@ void TaskGraphEditor::on_removeButton_clicked()
         return;
 
     task_graph::TaskTemplate::Ptr templ =
-        mpTaskContainer->find(item->text(1).toStdString());
+        getVertexByLabel<task_graph::TaskTemplate>(item->text(0).toStdString(),
+                                                   mpGraph);
     if(templ)
     {
         item->parent()->removeChild(item);
         delete item;
-        mpTaskContainer->remove(templ);
-        // updateTreeWidget();
+        mpGraph->removeVertex(templ);
     }
 }
 }
