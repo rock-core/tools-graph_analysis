@@ -2,52 +2,77 @@
 #define GRAPH_ANALYSIS_TASK_GRAPH_TASK_TEMPLATE_HPP
 
 #include <graph_analysis/Graph.hpp>
-#include "Task.hpp"
+#include <graph_analysis/Vertex.hpp>
 
 namespace graph_analysis
 {
-    class BaseGraph;
+class BaseGraph;
 
 namespace task_graph
 {
-    class TaskTemplate
+class Task;
+typedef shared_ptr<Task> TaskPtr;
+
+class TaskTemplate : public Vertex
+{
+public:
+    typedef shared_ptr<TaskTemplate> Ptr;
+
+    /**
+     * The default constructor creates an invalid task template !!!
+     */
+    TaskTemplate(const std::string& label = "");
+
+    /** Get class name
+     * \return class name
+     */
+    std::string getClassName() const
     {
-        public:
-            typedef shared_ptr< TaskTemplate > Ptr;
-            /**
-             * The default constructor needs a filename to import a base graph model
-             */
-            TaskTemplate(const std::string &yamlFileName);
+        return TaskTemplate::vertexType();
+    }
 
-            /**
-             * If called, a new instance of the stored BaseGraph is created.
-             */
-            BaseGraph::Ptr instantiateTask();
+    static std::string vertexType()
+    {
+        return "graph_analysis::task_graph::TaskTemplate";
+    }
 
-            /**
-             * If called, creates a new instance and adds it to the given graph argument
-             */
-            void instantiateAndAddTask(BaseGraph::Ptr graph);
+    /**
+     * \brief Creates a usable TaskTemplate from a yaml file spec
+     */
+    void loadFromFile(const std::string& yamlFileName);
 
-            std::string const &yamlFileName() const
-            {
-                return mYamlFileName;
-            }
+    /**
+     * If called, creates a new instance and adds it to the given graph argument
+     */
+    void instantiateAndAddTo(BaseGraph::Ptr graph,
+                             const std::string& label = "");
 
-            const Task::Ptr rootVertex()
-            {
-                return mpRootVertex;
-            }
+    std::string const& yamlFileName() const
+    {
+        return mYamlFileName;
+    }
 
-        private:
-            std::string     mLabel;
-            std::string     mYamlFileName;
+    TaskPtr const rootVertex() const
+    {
+        return mpRootVertex;
+    }
 
-            int mInstance;
-            BaseGraph::Ptr  mpBaseGraph;
-            Task::Ptr       mpRootVertex;
-    };
+protected:
+    /**
+     * Create a copy of this vertex
+     */
+    virtual TaskTemplate* getClone() const
+    {
+        return new TaskTemplate(*this);
+    }
 
+private:
+    std::string mYamlFileName;
+
+    int mInstance;
+    BaseGraph::Ptr mpBaseGraph;
+    TaskPtr mpRootVertex;
+};
 }
 }
 #endif

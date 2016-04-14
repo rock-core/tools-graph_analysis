@@ -1,27 +1,42 @@
 #include "Task.hpp"
 #include "HasFeature.hpp"
-
-//#include <base/Logging.hpp>
+#include "InstanceOf.hpp"
+#include "TaskTemplate.hpp"
 
 namespace graph_analysis
 {
-namespace task_graph {
-
-Task::Task(const std::string &label) : Vertex(label) {}
-Task::Task(const std::string &templateLabel, const std::string &label) : Vertex(label), mTemplateLabel(templateLabel) {}
-
-std::string Task::getTemplateLabel() const
+namespace task_graph
 {
-    return mTemplateLabel;
+
+Task::Task(const std::string& label)
+    : Vertex(label)
+{
 }
 
-void Task::setTemplateLabel (const std::string& templateLabel)
+TaskTemplatePtr Task::getTemplate(const BaseGraph::Ptr& graph) const
 {
-    mTemplateLabel = templateLabel;
+    TaskTemplatePtr myParent;
+    // obtain the shared pointer of "this"...
+    Vertex::Ptr vertexPtr = getSharedPointerFromGraph(graph);
+    EdgeIterator::Ptr eit = graph->getOutEdgeIterator(vertexPtr);
+    while(eit->next())
+    {
+        if(eit->current()->getClassName() != InstanceOf::edgeType())
+            continue;
+
+        if(myParent)
+            throw std::runtime_error(
+                "Task::getTemplate: Multiple parents detected");
+
+        myParent = dynamic_pointer_cast<TaskTemplate>(
+            eit->current()->getTargetVertex());
+    }
+
+    return myParent;
 }
 
 std::vector<OutputPort::Ptr>
-Task::getOutputPorts(const BaseGraph::Ptr &graph) const
+Task::getOutputPorts(const BaseGraph::Ptr& graph) const
 {
     std::vector<OutputPort::Ptr> retval;
     // obtain the shared pointer of "this"...
@@ -50,7 +65,7 @@ Task::getOutputPorts(const BaseGraph::Ptr &graph) const
 }
 
 std::vector<InputPort::Ptr>
-Task::getInputPorts(const BaseGraph::Ptr &graph) const
+Task::getInputPorts(const BaseGraph::Ptr& graph) const
 {
     std::vector<InputPort::Ptr> retval;
     // obtain the shared pointer of "this"...
@@ -77,6 +92,5 @@ Task::getInputPorts(const BaseGraph::Ptr &graph) const
     }
     return retval;
 }
-
 }
 } // end namespace graph_analysis

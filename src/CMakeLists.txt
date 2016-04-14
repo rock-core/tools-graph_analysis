@@ -180,6 +180,8 @@ rock_library(graph_analysis
         task_graph/InputPort.hpp
         task_graph/OutputPort.hpp
         task_graph/PortConnection.hpp
+        task_graph/HasFeature.hpp
+        task_graph/InstanceOf.hpp
         gui/TaskGraphEditor/TaskGraphViewer.hpp
         gui/TaskGraphEditor/TaskGraphEditor.hpp
         gui/TaskGraphEditor/TaskItem.hpp

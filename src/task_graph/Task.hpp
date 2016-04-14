@@ -3,15 +3,19 @@
 
 // TODO: Add PropertyPort class and functions
 
-#include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/Vertex.hpp>
 
-#include "OutputPort.hpp"
 #include "InputPort.hpp"
+#include "OutputPort.hpp"
 
 namespace graph_analysis
 {
-namespace task_graph {
+namespace task_graph
+{
+
+class TaskTemplate;
+typedef shared_ptr<TaskTemplate> TaskTemplatePtr;
 
 /**
  * \brief A Cluster vertex inherited to allow storing data of Cluster type
@@ -21,38 +25,48 @@ namespace task_graph {
  */
 class Task : public Vertex
 {
-  public:
-    typedef shared_ptr< Task > Ptr;
+public:
+    typedef shared_ptr<Task> Ptr;
 
-    Task(const std::string &label = "");
-    Task(const std::string &templateLabel, const std::string &label = "");
+    Task(const std::string& label = "");
 
     /** Get class name
      * \return class name
      */
-    std::string getClassName() const    { return Task::vertexType(); }
+    std::string getClassName() const
+    {
+        return Task::vertexType();
+    }
 
-    static std::string vertexType() { return "graph_analysis::task_graph::Task"; }
+    static std::string vertexType()
+    {
+        return "graph_analysis::task_graph::Task";
+    }
 
-    std::vector<OutputPort::Ptr> getOutputPorts(const BaseGraph::Ptr &graph) const;
-    std::vector<InputPort::Ptr> getInputPorts(const BaseGraph::Ptr &graph) const;
+    /**
+     * \brief Search a graph for vertices of class OutputPort which are
+     * associated to us via HasFeature edge
+     */
+    std::vector<OutputPort::Ptr>
+    getOutputPorts(const BaseGraph::Ptr& graph) const;
+    std::vector<InputPort::Ptr>
+    getInputPorts(const BaseGraph::Ptr& graph) const;
 
-    std::string getTemplateLabel() const;
-    void setTemplateLabel (const std::string& templateLabel);
+    /**
+     * \brief Search a graph for a TaskTemplate of which this task is an
+     * INSTANCE-OF
+     */
+    TaskTemplatePtr getTemplate(const BaseGraph::Ptr& graph) const;
 
-  protected:
+protected:
     /**
      * Create a copy of this vertex
      */
-    virtual Task *getClone() const { return new Task(*this); }
-
-  private:
-    /**
-     * Specifies the template from which this task has been instantiated
-     */
-    std::string mTemplateLabel;
+    virtual Task* getClone() const
+    {
+        return new Task(*this);
+    }
 };
-
 }
 } // end namespace graph_analysis
 #endif
