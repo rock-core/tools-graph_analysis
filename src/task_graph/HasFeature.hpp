@@ -12,8 +12,8 @@ class HasFeature : public Edge
 public:
     typedef shared_ptr<HasFeature> Ptr;
 
-    HasFeature(const Vertex::Ptr& output, const Vertex::Ptr& input, const std::string& label)
-        : Edge(output, input, label)
+    HasFeature(const Vertex::Ptr& parent, const Vertex::Ptr& child, const std::string& label)
+        : Edge(parent, child, label)
     {}
 
     HasFeature(const std::string& label = "")
