@@ -22,6 +22,14 @@ public:
      * \param graph the source graph
      */
     void write(const std::string& filename, const BaseGraph::Ptr& graph);
+
+    /**
+     * \brief Stores a base graph to the provided file
+     * In constrast to write it does not delete old content but just updates!
+     * \param filename provided output filename
+     * \param graph the source graph
+     */
+    void update(const std::string& filename, const BaseGraph::Ptr& graph);
 };
 
 } // end namespace io

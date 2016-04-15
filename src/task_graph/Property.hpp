@@ -4,6 +4,9 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/BaseGraph.hpp>
 
+#include "DataType.hpp"
+#include "DataValue.hpp"
+
 namespace graph_analysis
 {
 namespace task_graph {
@@ -45,11 +48,8 @@ public:
      */
     Vertex::Ptr getOwner(const BaseGraph::Ptr& graph) const;
 
-    /**
-     * \brief A string defining the type of data this property holds
-     */
-    std::string mType;
-    std::string mValue;
+    DataType::Ptr getType(const BaseGraph::Ptr& graph) const;
+    DataValue::Ptr getValue(const BaseGraph::Ptr& graph) const;
 
 protected:
     /**
