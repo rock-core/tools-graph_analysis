@@ -4,7 +4,9 @@
 #include <graph_analysis/VertexTypeManager.hpp>
 
 #include <graph_analysis/task_graph/HasFeature.hpp>
+#include <graph_analysis/task_graph/HasUniqueFeature.hpp>
 #include <graph_analysis/task_graph/Task.hpp>
+#include <graph_analysis/task_graph/Property.hpp>
 
 // Include some yaml parsing stuff
 #include <yaml-cpp/yaml.h>
@@ -37,14 +39,29 @@ namespace io
 // std::cout << std::endl;
 
 template <typename T>
-void createPort(const std::string& label, BaseGraph::Ptr graph,
+typename T::Ptr createPort(const std::string& label, const std::string& type, BaseGraph::Ptr graph,
                 Vertex::Ptr parent)
 {
     typename T::Ptr port = typename T::Ptr(new T(label));
+    port->mType = type;
     graph->addVertex(port);
     task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
         new task_graph::HasFeature(parent, port, "has"));
     graph->addEdge(has);
+    return port;
+}
+
+task_graph::Property::Ptr createProperty(const std::string& label, const std::string& type, const std::string& value, BaseGraph::Ptr graph,
+                Vertex::Ptr parent)
+{
+    task_graph::Property::Ptr prop = task_graph::Property::Ptr(new task_graph::Property(label));
+    prop->mType = type;
+    prop->mValue = value;
+    graph->addVertex(prop);
+    task_graph::HasUniqueFeature::Ptr has = task_graph::HasUniqueFeature::Ptr(
+            new task_graph::HasUniqueFeature(parent, prop, "has-unique"));
+    graph->addEdge(has);
+    return prop;
 }
 
 void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
@@ -73,19 +90,28 @@ void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
     for(it = inputs.begin(); it != inputs.end(); ++it)
     {
         YAML::Node current = *it;
-        createPort<task_graph::InputPort>(current["Name"].as<std::string>(),
+        createPort<task_graph::InputPort>(current["Name"].as<std::string>(), current["Type"].as<std::string>(),
                                           graph, comp);
     }
     YAML::Node outputs = ports["outputPorts"]; // its a seq!
     for(it = outputs.begin(); it != outputs.end(); ++it)
     {
         YAML::Node current = *it;
-        createPort<task_graph::OutputPort>(current["Name"].as<std::string>(),
+        createPort<task_graph::OutputPort>(current["Name"].as<std::string>(), current["Type"].as<std::string>(),
                                            graph, comp);
     }
-    // TODO: Add properties
-    // TODO: Add data types to all ports
-    // TODO: Verify the graph
+    // Finally properties of the task
+    YAML::Node properties = ports["properties"];
+    for(it = properties.begin(); it != properties.end(); ++it)
+    {
+        YAML::Node current = *it;
+        if (current["DefValue"])
+            createProperty(current["Name"].as<std::string>(), current["Type"].as<std::string>(), current["DefValue"].as<std::string>(),
+                                               graph, comp);
+        else
+            createProperty(current["Name"].as<std::string>(), current["Type"].as<std::string>(), "",
+                                               graph, comp);
+    }
 }
 
 } // end namespace io

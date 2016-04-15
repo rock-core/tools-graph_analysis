@@ -49,6 +49,7 @@ public:
      * \brief A string defining the type of data this property holds
      */
     std::string mType;
+    std::string mValue;
 
 protected:
     /**
