@@ -18,7 +18,8 @@ public:
                const std::string& label)
         : Edge(base, instantiated, label)
     {
-        // TODO: Check that instantiated has one and only one InstanceOf relation!!!
+        // TODO: Check that instantiated has one and only one InstanceOf
+        // relation!!!
     }
 
     InstanceOf(const std::string& label = "")

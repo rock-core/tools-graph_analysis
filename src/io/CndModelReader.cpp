@@ -1,11 +1,11 @@
 #include "CndModelReader.hpp"
 
+#include <graph_analysis/task_graph/DataType.hpp>
+#include <graph_analysis/task_graph/DataValue.hpp>
 #include <graph_analysis/task_graph/HasFeature.hpp>
 #include <graph_analysis/task_graph/HasUniqueFeature.hpp>
 #include <graph_analysis/task_graph/PortConnection.hpp>
 #include <graph_analysis/task_graph/Property.hpp>
-#include <graph_analysis/task_graph/DataType.hpp>
-#include <graph_analysis/task_graph/DataValue.hpp>
 #include <graph_analysis/task_graph/Task.hpp>
 #include <graph_analysis/task_graph/TaskTemplate.hpp>
 #include <yaml-cpp/yaml.h>
@@ -64,7 +64,7 @@ task_graph::Property::Ptr getPropertyByLabel(BaseGraph::Ptr graph,
 {
     task_graph::Property::Ptr prop;
     EdgeIterator::Ptr eit = graph->getOutEdgeIterator(vertex);
-    while (eit->next())
+    while(eit->next())
     {
         // Check type
         if(eit->current()->getClassName() != task_graph::HasFeature::edgeType())
@@ -83,59 +83,69 @@ task_graph::Property::Ptr getPropertyByLabel(BaseGraph::Ptr graph,
     return prop;
 }
 
-void readPropertiesRecursively(YAML::Node &node, Vertex::Ptr vertex, BaseGraph::Ptr graph)
+void readPropertiesRecursively(YAML::Node& node, Vertex::Ptr vertex,
+                               BaseGraph::Ptr graph)
 {
-    switch (node.Type()) {
-        case YAML::NodeType::Scalar:
+    switch(node.Type())
+    {
+    case YAML::NodeType::Scalar:
+    {
+        // Search for a data value vertex
+        task_graph::Property::Ptr prop =
+            dynamic_pointer_cast<task_graph::Property>(vertex);
+        task_graph::DataValue::Ptr dvalue = prop->getValue(graph);
+        if(!dvalue)
+        {
+            // If not found, create data value
+            dvalue = task_graph::DataValue::Ptr(
+                new task_graph::DataValue(node.as<std::string>()));
+            graph->addVertex(dvalue);
+            // Link data value to property
+            task_graph::HasUniqueFeature::Ptr hasU2 =
+                task_graph::HasUniqueFeature::Ptr(
+                    new task_graph::HasUniqueFeature(vertex, dvalue,
+                                                     "has-unique"));
+            graph->addEdge(hasU2);
+        }
+        else
+        {
+            // If found, update value
+            dvalue->setLabel(node.as<std::string>());
+        }
+        break;
+    }
+    case YAML::NodeType::Sequence:
+    case YAML::NodeType::Map:
+    {
+        // std::cout << "CONTAINER " << node.as<std::string>() << std::endl;
+        YAML::const_iterator it;
+        for(it = node.begin(); it != node.end(); ++it)
+        {
+            // Search for the property
+            task_graph::Property::Ptr prop =
+                getPropertyByLabel(graph, vertex, it->first.as<std::string>());
+            // Create property if not found
+            if(!prop)
             {
-                // Search for a data value vertex
-                task_graph::Property::Ptr prop = dynamic_pointer_cast<task_graph::Property>(vertex);
-                task_graph::DataValue::Ptr dvalue = prop->getValue(graph);
-                if (!dvalue)
-                {
-                    // If not found, create data value
-                    dvalue = task_graph::DataValue::Ptr(new task_graph::DataValue(node.as<std::string>()));
-                    graph->addVertex(dvalue);
-                    // Link data value to property
-                    task_graph::HasUniqueFeature::Ptr hasU2 = task_graph::HasUniqueFeature::Ptr(
-                            new task_graph::HasUniqueFeature(vertex, dvalue, "has-unique"));
-                    graph->addEdge(hasU2);
-                } else {
-                    // If found, update value
-                    dvalue->setLabel(node.as<std::string>());
-                }
-                break;
+                prop = task_graph::Property::Ptr(
+                    new task_graph::Property(it->first.as<std::string>()));
+                graph->addVertex(prop);
+                // Link property to parent
+                task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
+                    new task_graph::HasFeature(vertex, prop, "has"));
+                graph->addEdge(has);
             }
-        case YAML::NodeType::Sequence:
-        case YAML::NodeType::Map:
-            {
-                //std::cout << "CONTAINER " << node.as<std::string>() << std::endl;
-                YAML::const_iterator it;
-                for (it = node.begin(); it != node.end(); ++it)
-                {
-                    // Search for the property
-                    task_graph::Property::Ptr prop = getPropertyByLabel(graph, vertex, it->first.as<std::string>());
-                    // Create property if not found
-                    if (!prop)
-                    {
-                        prop = task_graph::Property::Ptr(new task_graph::Property(it->first.as<std::string>()));
-                        graph->addVertex(prop);
-                        // Link property to parent
-                        task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
-                                new task_graph::HasFeature(vertex, prop, "has"));
-                        graph->addEdge(has);
-                    }
-                    // This node may contain other properties, so dig deeper
-                    YAML::Node next(it->second);
-                    readPropertiesRecursively(next, prop, graph);
-                }
-                break;
-            }
-        default:
-            {
-                std::cout << "W00t?!";
-                break;
-            }
+            // This node may contain other properties, so dig deeper
+            YAML::Node next(it->second);
+            readPropertiesRecursively(next, prop, graph);
+        }
+        break;
+    }
+    default:
+    {
+        std::cout << "W00t?!";
+        break;
+    }
     }
 }
 
@@ -193,7 +203,8 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
         task_graph::InputPort::Ptr input = getInputByLabel(
             graph, targetTask, to["port_name"].as<std::string>());
 
-        // TODO: Check if ports can be connected (have to have the same DATA TYPE)
+        // TODO: Check if ports can be connected (have to have the same DATA
+        // TYPE)
         task_graph::PortConnection::Ptr conn = task_graph::PortConnection::Ptr(
             new task_graph::PortConnection(output, input, label));
         graph->addEdge(conn);

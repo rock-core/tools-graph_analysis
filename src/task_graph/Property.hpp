@@ -1,15 +1,16 @@
 #ifndef GRAPH_ANALYSIS_TASK_GRAPH_PROPERTY_HPP
 #define GRAPH_ANALYSIS_TASK_GRAPH_PROPERTY_HPP
 
-#include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/BaseGraph.hpp>
+#include <graph_analysis/Vertex.hpp>
 
 #include "DataType.hpp"
 #include "DataValue.hpp"
 
 namespace graph_analysis
 {
-namespace task_graph {
+namespace task_graph
+{
 
 /**
  * \brief A Property vertex which specifies a named property of another vertex
@@ -60,8 +61,6 @@ protected:
         return new Property(*this);
     }
 };
-
 }
 }
 #endif
-

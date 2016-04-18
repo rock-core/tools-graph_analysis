@@ -1,13 +1,14 @@
 #include "Port.hpp"
 #include "HasFeature.hpp"
-#include "Task.hpp"
 #include "PortConnection.hpp"
+#include "Task.hpp"
 
 #include <base/Logging.hpp>
 
 namespace graph_analysis
 {
-namespace task_graph {
+namespace task_graph
+{
 
 Port::Port(const std::string& label)
     : Vertex(label)
@@ -26,8 +27,7 @@ shared_ptr<Task> Port::getTask(const BaseGraph::Ptr& graph) const
         {
             continue;
         }
-        Task::Ptr comp =
-            dynamic_pointer_cast<Task>(feature->getSourceVertex());
+        Task::Ptr comp = dynamic_pointer_cast<Task>(feature->getSourceVertex());
         if(comp)
         {
             return comp;
@@ -58,6 +58,5 @@ bool Port::isConnected(const BaseGraph::Ptr& graph) const
     }
     return connections;
 }
-
 }
 } // end namespace graph_analysis

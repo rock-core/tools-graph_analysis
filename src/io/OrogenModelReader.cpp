@@ -3,12 +3,12 @@
 #include <graph_analysis/EdgeTypeManager.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
-#include <graph_analysis/task_graph/HasFeature.hpp>
-#include <graph_analysis/task_graph/HasUniqueFeature.hpp>
-#include <graph_analysis/task_graph/Task.hpp>
-#include <graph_analysis/task_graph/Property.hpp>
 #include <graph_analysis/task_graph/DataType.hpp>
 #include <graph_analysis/task_graph/DataValue.hpp>
+#include <graph_analysis/task_graph/HasFeature.hpp>
+#include <graph_analysis/task_graph/HasUniqueFeature.hpp>
+#include <graph_analysis/task_graph/Property.hpp>
+#include <graph_analysis/task_graph/Task.hpp>
 
 // Include some yaml parsing stuff
 #include <yaml-cpp/yaml.h>
@@ -41,8 +41,8 @@ namespace io
 // std::cout << std::endl;
 
 template <typename T>
-typename T::Ptr createPort(const std::string& label, const std::string& type, BaseGraph::Ptr graph,
-                Vertex::Ptr parent)
+typename T::Ptr createPort(const std::string& label, const std::string& type,
+                           BaseGraph::Ptr graph, Vertex::Ptr parent)
 {
     // Create port
     typename T::Ptr port = typename T::Ptr(new T(label));
@@ -52,39 +52,47 @@ typename T::Ptr createPort(const std::string& label, const std::string& type, Ba
         new task_graph::HasFeature(parent, port, "has"));
     graph->addEdge(has);
     // Create data type
-    task_graph::DataType::Ptr dtype = task_graph::DataType::Ptr(new task_graph::DataType(type));
+    task_graph::DataType::Ptr dtype =
+        task_graph::DataType::Ptr(new task_graph::DataType(type));
     graph->addVertex(dtype);
     // Link data type to port
     task_graph::HasUniqueFeature::Ptr hasU = task_graph::HasUniqueFeature::Ptr(
-            new task_graph::HasUniqueFeature(port, dtype, "has-unique"));
+        new task_graph::HasUniqueFeature(port, dtype, "has-unique"));
     graph->addEdge(hasU);
     return port;
 }
 
-task_graph::Property::Ptr createProperty(const std::string& label, const std::string& type, const std::string& value, BaseGraph::Ptr graph,
-                Vertex::Ptr parent)
+task_graph::Property::Ptr createProperty(const std::string& label,
+                                         const std::string& type,
+                                         const std::string& value,
+                                         BaseGraph::Ptr graph,
+                                         Vertex::Ptr parent)
 {
     // Create property
-    task_graph::Property::Ptr prop = task_graph::Property::Ptr(new task_graph::Property(label));
+    task_graph::Property::Ptr prop =
+        task_graph::Property::Ptr(new task_graph::Property(label));
     graph->addVertex(prop);
     // Link property to parent
     task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
-            new task_graph::HasFeature(parent, prop, "has"));
+        new task_graph::HasFeature(parent, prop, "has"));
     graph->addEdge(has);
     // Create data type
-    task_graph::DataType::Ptr dtype = task_graph::DataType::Ptr(new task_graph::DataType(type));
+    task_graph::DataType::Ptr dtype =
+        task_graph::DataType::Ptr(new task_graph::DataType(type));
     graph->addVertex(dtype);
     // Link data type to property
     task_graph::HasUniqueFeature::Ptr hasU = task_graph::HasUniqueFeature::Ptr(
-            new task_graph::HasUniqueFeature(prop, dtype, "has-unique"));
+        new task_graph::HasUniqueFeature(prop, dtype, "has-unique"));
     graph->addEdge(hasU);
-    if (!value.empty())
+    if(!value.empty())
     {
         // Create data value
-        task_graph::DataValue::Ptr dvalue = task_graph::DataValue::Ptr(new task_graph::DataValue(value));
+        task_graph::DataValue::Ptr dvalue =
+            task_graph::DataValue::Ptr(new task_graph::DataValue(value));
         graph->addVertex(dvalue);
         // Link data value to property
-        task_graph::HasUniqueFeature::Ptr hasU2 = task_graph::HasUniqueFeature::Ptr(
+        task_graph::HasUniqueFeature::Ptr hasU2 =
+            task_graph::HasUniqueFeature::Ptr(
                 new task_graph::HasUniqueFeature(prop, dvalue, "has-unique"));
         graph->addEdge(hasU2);
     }
@@ -117,35 +125,41 @@ void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
     for(it = inputs.begin(); it != inputs.end(); ++it)
     {
         YAML::Node current = *it;
-        createPort<task_graph::InputPort>(current["Name"].as<std::string>(), current["Type"].as<std::string>(),
+        createPort<task_graph::InputPort>(current["Name"].as<std::string>(),
+                                          current["Type"].as<std::string>(),
                                           graph, comp);
     }
     YAML::Node outputs = ports["outputPorts"]; // its a seq!
     for(it = outputs.begin(); it != outputs.end(); ++it)
     {
         YAML::Node current = *it;
-        createPort<task_graph::OutputPort>(current["Name"].as<std::string>(), current["Type"].as<std::string>(),
+        createPort<task_graph::OutputPort>(current["Name"].as<std::string>(),
+                                           current["Type"].as<std::string>(),
                                            graph, comp);
     }
 
-    // First, we create a master property 'config' for the properties (compliance with the CND model :/)
-    task_graph::Property::Ptr config = task_graph::Property::Ptr(
-            new task_graph::Property("config"));
+    // First, we create a master property 'config' for the properties
+    // (compliance with the CND model :/)
+    task_graph::Property::Ptr config =
+        task_graph::Property::Ptr(new task_graph::Property("config"));
     // Link property to component
     task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
-            new task_graph::HasFeature(comp, config, "has"));
+        new task_graph::HasFeature(comp, config, "has"));
     graph->addEdge(has);
     // Finally properties of the task
     YAML::Node properties = ports["properties"];
     for(it = properties.begin(); it != properties.end(); ++it)
     {
         YAML::Node current = *it;
-        if (current["DefValue"])
-            createProperty(current["Name"].as<std::string>(), current["Type"].as<std::string>(), current["DefValue"].as<std::string>(),
-                                               graph, config);
+        if(current["DefValue"])
+            createProperty(current["Name"].as<std::string>(),
+                           current["Type"].as<std::string>(),
+                           current["DefValue"].as<std::string>(), graph,
+                           config);
         else
-            createProperty(current["Name"].as<std::string>(), current["Type"].as<std::string>(), "",
-                                               graph, config);
+            createProperty(current["Name"].as<std::string>(),
+                           current["Type"].as<std::string>(), "", graph,
+                           config);
     }
 }
 

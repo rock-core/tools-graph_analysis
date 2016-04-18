@@ -1,12 +1,13 @@
 #ifndef GRAPH_ANALYSIS_TASK_GRAPH_DATAVALUE_HPP
 #define GRAPH_ANALYSIS_TASK_GRAPH_DATAVALUE_HPP
 
-#include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/BaseGraph.hpp>
+#include <graph_analysis/Vertex.hpp>
 
 namespace graph_analysis
 {
-namespace task_graph {
+namespace task_graph
+{
 
 /**
  * \brief A DataValue vertex which specifies the data type of a property/port
@@ -54,8 +55,6 @@ protected:
         return new DataValue(*this);
     }
 };
-
 }
 }
 #endif
-

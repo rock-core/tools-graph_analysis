@@ -42,7 +42,7 @@ void TaskTemplate::loadFromFile(const std::string& yamlFileName)
 }
 
 TaskPtr TaskTemplate::instantiateAndAddTo(BaseGraph::Ptr graph,
-                                       const std::string& label)
+                                          const std::string& label)
 {
     // Clone the graph
     BaseGraph::Ptr copy = mpBaseGraph->clone();

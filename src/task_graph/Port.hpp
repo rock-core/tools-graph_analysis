@@ -1,13 +1,14 @@
 #ifndef GRAPH_ANALYSIS_TASK_GRAPH_PORT_HPP
 #define GRAPH_ANALYSIS_TASK_GRAPH_PORT_HPP
 
-#include <iostream>
-#include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/BaseGraph.hpp>
+#include <graph_analysis/Vertex.hpp>
+#include <iostream>
 
 namespace graph_analysis
 {
-namespace task_graph {
+namespace task_graph
+{
 
 class Task;
 
@@ -72,7 +73,6 @@ protected:
         return new Port(*this);
     }
 };
-
 }
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_PORT_HPP

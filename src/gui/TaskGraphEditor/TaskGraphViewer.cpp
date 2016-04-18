@@ -1,42 +1,42 @@
 #include "TaskGraphViewer.hpp"
 
 #include <exception>
-#include <set>
 #include <math.h>
-#include <string>
+#include <set>
 #include <sstream>
+#include <string>
 
-#include <QDir>
-#include <QTime>
-#include <QMenu>
 #include <QAction>
-#include <QKeyEvent>
-#include <QFileDialog>
-#include <QMessageBox>
 #include <QApplication>
+#include <QDir>
+#include <QFileDialog>
 #include <QInputDialog>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QMessageBox>
 #include <QSignalMapper>
+#include <QTime>
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
-#include <base/Time.hpp>
 #include <base/Logging.hpp>
+#include <base/Time.hpp>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
 #include <graph_analysis/io/GVGraph.hpp>
 
-#include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
+#include <graph_analysis/VertexTypeManager.hpp>
 
-#include <graph_analysis/task_graph/Property.hpp>
 #include <graph_analysis/task_graph/DataType.hpp>
 #include <graph_analysis/task_graph/DataValue.hpp>
-#include <graph_analysis/task_graph/PortConnection.hpp>
 #include <graph_analysis/task_graph/HasFeature.hpp>
 #include <graph_analysis/task_graph/HasUniqueFeature.hpp>
+#include <graph_analysis/task_graph/PortConnection.hpp>
+#include <graph_analysis/task_graph/Property.hpp>
 
-#include "TaskItem.hpp"
 #include "PortConnectionItem.hpp"
+#include "TaskItem.hpp"
 
 using namespace graph_analysis;
 
@@ -45,24 +45,37 @@ namespace graph_analysis
 namespace gui
 {
 
-TaskGraphViewer::TaskGraphViewer(graph_analysis::BaseGraph::Ptr graph, QWidget *parent) : GraphWidget(graph, parent)
+TaskGraphViewer::TaskGraphViewer(graph_analysis::BaseGraph::Ptr graph,
+                                 QWidget* parent)
+    : GraphWidget(graph, parent)
 {
 
     VertexTypeManager* vertexManager = VertexTypeManager::getInstance();
-    vertexManager->registerType(task_graph::Task::vertexType(), Vertex::Ptr(new task_graph::Task()));
-    vertexManager->registerType(task_graph::InputPort::vertexType(), Vertex::Ptr(new task_graph::InputPort()));
-    vertexManager->registerType(task_graph::OutputPort::vertexType(), Vertex::Ptr(new task_graph::OutputPort()));
-    vertexManager->registerType(task_graph::Property::vertexType(), Vertex::Ptr(new task_graph::Property()));
-    vertexManager->registerType(task_graph::DataType::vertexType(), Vertex::Ptr(new task_graph::DataType()));
-    vertexManager->registerType(task_graph::DataValue::vertexType(), Vertex::Ptr(new task_graph::DataValue()));
+    vertexManager->registerType(task_graph::Task::vertexType(),
+                                Vertex::Ptr(new task_graph::Task()));
+    vertexManager->registerType(task_graph::InputPort::vertexType(),
+                                Vertex::Ptr(new task_graph::InputPort()));
+    vertexManager->registerType(task_graph::OutputPort::vertexType(),
+                                Vertex::Ptr(new task_graph::OutputPort()));
+    vertexManager->registerType(task_graph::Property::vertexType(),
+                                Vertex::Ptr(new task_graph::Property()));
+    vertexManager->registerType(task_graph::DataType::vertexType(),
+                                Vertex::Ptr(new task_graph::DataType()));
+    vertexManager->registerType(task_graph::DataValue::vertexType(),
+                                Vertex::Ptr(new task_graph::DataValue()));
 
     EdgeTypeManager* edgeManager = EdgeTypeManager::getInstance();
-    edgeManager->registerType(task_graph::HasFeature::edgeType(), Edge::Ptr(new task_graph::HasFeature()));
-    edgeManager->registerType(task_graph::HasUniqueFeature::edgeType(), Edge::Ptr(new task_graph::HasUniqueFeature()));
-    edgeManager->registerType(task_graph::PortConnection::edgeType(), Edge::Ptr(new task_graph::PortConnection()));
+    edgeManager->registerType(task_graph::HasFeature::edgeType(),
+                              Edge::Ptr(new task_graph::HasFeature()));
+    edgeManager->registerType(task_graph::HasUniqueFeature::edgeType(),
+                              Edge::Ptr(new task_graph::HasUniqueFeature()));
+    edgeManager->registerType(task_graph::PortConnection::edgeType(),
+                              Edge::Ptr(new task_graph::PortConnection()));
 }
 
-TaskGraphViewer::~TaskGraphViewer() {}
+TaskGraphViewer::~TaskGraphViewer()
+{
+}
 
 QString TaskGraphViewer::getClassName() const
 {
@@ -74,10 +87,12 @@ QString TaskGraphViewer::getClassName() const
 void TaskGraphViewer::shuffle()
 {
     int diff = 600 * mpGraph->order();
-    foreach(QGraphicsItem *item, scene()->items())
+    foreach(QGraphicsItem* item, scene()->items())
     {
-        if(dynamic_cast<TaskItem *>(item)) {
-            item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
+        if(dynamic_cast<TaskItem*>(item))
+        {
+            item->setPos(-diff / 2 + qrand() % diff,
+                         -diff / 2 + qrand() % diff);
         }
     }
     updateStatus(
@@ -100,7 +115,7 @@ void TaskGraphViewer::populateCanvas()
             continue;
         }
 
-        TaskItem *v = new TaskItem(this, comp, NULL);
+        TaskItem* v = new TaskItem(this, comp, NULL);
         scene()->addItem(v);
     }
 
@@ -117,8 +132,7 @@ void TaskGraphViewer::populateCanvas()
         }
 
         // creating new edge items
-        PortConnectionItem *e = new PortConnectionItem(
-            this, conn, NULL);
+        PortConnectionItem* e = new PortConnectionItem(this, conn, NULL);
         scene()->addItem(e);
     }
 }
