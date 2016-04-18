@@ -28,8 +28,12 @@
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
+#include <graph_analysis/task_graph/Property.hpp>
+#include <graph_analysis/task_graph/DataType.hpp>
+#include <graph_analysis/task_graph/DataValue.hpp>
 #include <graph_analysis/task_graph/PortConnection.hpp>
 #include <graph_analysis/task_graph/HasFeature.hpp>
+#include <graph_analysis/task_graph/HasUniqueFeature.hpp>
 
 #include "TaskItem.hpp"
 #include "PortConnectionItem.hpp"
@@ -48,9 +52,13 @@ TaskGraphViewer::TaskGraphViewer(graph_analysis::BaseGraph::Ptr graph, QWidget *
     vertexManager->registerType(task_graph::Task::vertexType(), Vertex::Ptr(new task_graph::Task()));
     vertexManager->registerType(task_graph::InputPort::vertexType(), Vertex::Ptr(new task_graph::InputPort()));
     vertexManager->registerType(task_graph::OutputPort::vertexType(), Vertex::Ptr(new task_graph::OutputPort()));
+    vertexManager->registerType(task_graph::Property::vertexType(), Vertex::Ptr(new task_graph::Property()));
+    vertexManager->registerType(task_graph::DataType::vertexType(), Vertex::Ptr(new task_graph::DataType()));
+    vertexManager->registerType(task_graph::DataValue::vertexType(), Vertex::Ptr(new task_graph::DataValue()));
 
     EdgeTypeManager* edgeManager = EdgeTypeManager::getInstance();
     edgeManager->registerType(task_graph::HasFeature::edgeType(), Edge::Ptr(new task_graph::HasFeature()));
+    edgeManager->registerType(task_graph::HasUniqueFeature::edgeType(), Edge::Ptr(new task_graph::HasUniqueFeature()));
     edgeManager->registerType(task_graph::PortConnection::edgeType(), Edge::Ptr(new task_graph::PortConnection()));
 }
 
