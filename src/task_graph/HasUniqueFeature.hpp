@@ -15,7 +15,7 @@ public:
     HasUniqueFeature(const Vertex::Ptr& parent, const Vertex::Ptr& child, const std::string& label)
         : Edge(parent, child, label)
     {
-        // TODO: Check that parent has no other child with the same type and the same label!!!
+        // TODO: Check that parent has no other child of the same type!!!
     }
 
     HasUniqueFeature(const std::string& label = "")

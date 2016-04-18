@@ -14,7 +14,9 @@ public:
 
     HasFeature(const Vertex::Ptr& parent, const Vertex::Ptr& child, const std::string& label)
         : Edge(parent, child, label)
-    {}
+    {
+        // TODO: Check that parent has no other child of the same type AND the same label
+    }
 
     HasFeature(const std::string& label = "")
         : Edge(label)

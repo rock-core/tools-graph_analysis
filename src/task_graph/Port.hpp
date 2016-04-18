@@ -63,11 +63,6 @@ public:
      */
     bool isConnected(const BaseGraph::Ptr& graph) const;
 
-    /**
-     * \brief Identifier of the type of data the port is capable to manage
-     */
-    std::string mType;
-
 protected:
     /**
      * Create a copy of this vertex
