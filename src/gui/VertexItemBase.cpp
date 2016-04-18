@@ -254,11 +254,6 @@ void VertexItemSimple::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                 dialog.getClassname().toStdString(), sourceVertex, targetVertex,
                 dialog.getLabel().toStdString());
             getGraph()->addEdge(edge);
-            // this is the same as a "baseGraphChanged" signal on the
-            // underlying GraphWidget. maybe there is a nicer way of trigger
-            // this signal directly? needed to trigger redrawing the graph on
-            // the canvas after the change in the BaseGraph.
-            getGraphWidget()->updateVisualization();
         }
     }
 }
