@@ -86,7 +86,7 @@ QString TaskGraphViewer::getClassName() const
 // "TaskItem" are shuffled.
 void TaskGraphViewer::shuffle()
 {
-    int diff = 600 * mpGraph->order();
+    int diff = 100 * mVertexItemMap.size();
     foreach(QGraphicsItem* item, scene()->items())
     {
         if(dynamic_cast<TaskItem*>(item))
