@@ -86,7 +86,7 @@ public:
      * \brief Add an edge
      * \return an edge interator
      */
-    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
+    virtual GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
 
     Vertex::Ptr getVertex(GraphElementId id) const;
     Edge::Ptr getEdge(GraphElementId id) const;
