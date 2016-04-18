@@ -41,7 +41,7 @@ void TaskTemplate::loadFromFile(const std::string& yamlFileName)
     mInstance = 0;
 }
 
-void TaskTemplate::instantiateAndAddTo(BaseGraph::Ptr graph,
+TaskPtr TaskTemplate::instantiateAndAddTo(BaseGraph::Ptr graph,
                                        const std::string& label)
 {
     // Clone the graph
@@ -94,6 +94,8 @@ void TaskTemplate::instantiateAndAddTo(BaseGraph::Ptr graph,
     InstanceOf::Ptr relation =
         InstanceOf::Ptr(new InstanceOf(mychild, myself, ss.str()));
     graph->addEdge(relation);
+
+    return newRootVertex;
 }
 }
 }

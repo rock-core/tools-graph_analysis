@@ -43,8 +43,9 @@ public:
 
     /**
      * If called, creates a new instance and adds it to the given graph argument
+     * The root vertex of the new instance is returned.
      */
-    void instantiateAndAddTo(BaseGraph::Ptr graph,
+    TaskPtr instantiateAndAddTo(BaseGraph::Ptr graph,
                              const std::string& label = "");
 
     std::string const& yamlFileName() const
