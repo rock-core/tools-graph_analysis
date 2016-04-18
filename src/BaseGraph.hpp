@@ -117,7 +117,7 @@ public:
      * \returns GraphElementId which identifies the vertex in this(!) graph
      * instance
      */
-    virtual GraphElementId addVertex(const Vertex::Ptr& vertex);
+    GraphElementId addVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Get the vertex id for this graph
@@ -305,6 +305,13 @@ protected:
      * Default constructor for a graph
      */
     BaseGraph(ImplementationType type, bool directed);
+
+    /**
+     * Add a vertex using source and target vertex on the internal graph
+     * representation
+     * \return Element id of this vertex within this graph
+     */
+    virtual GraphElementId addVertexInternal(const Vertex::Ptr&) { throw std::runtime_error("BaseGraph::addVertexInternal: not implemented"); }
 
     /**
      * Add an edge using source and target vertex on the internal

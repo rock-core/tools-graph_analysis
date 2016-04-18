@@ -36,10 +36,8 @@ DirectedGraph::~DirectedGraph()
 {
 }
 
-GraphElementId DirectedGraph::addVertex(const Vertex::Ptr& vertex)
+GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
 {
-    BaseGraph::addVertex(vertex);
-
     // Add a new vertex to the Graph
     VertexDescriptor vertexDescriptor = boost::add_vertex(mGraph);
     mGraph[vertexDescriptor] = vertex;

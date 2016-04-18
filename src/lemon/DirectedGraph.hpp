@@ -62,7 +62,7 @@ public:
      * \brief Add a vertex
      * \return the created vertex
      */
-    virtual GraphElementId addVertex(const Vertex::Ptr& vertex);
+    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
 
     /**
      * \brief Add an edge

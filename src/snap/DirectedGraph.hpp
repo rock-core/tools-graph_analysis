@@ -68,9 +68,9 @@ public:
 
     /**
      * \brief Add a vertex
-     * \return the created vertex
+     * \return the id of the newly created vertex
      */
-    GraphElementId addVertex(const Vertex::Ptr& vertex);
+    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
 
     /**
      * \brief Remove vertex
