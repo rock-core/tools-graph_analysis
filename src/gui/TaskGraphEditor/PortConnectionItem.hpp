@@ -3,9 +3,7 @@
 
 #include <QGraphicsItem>
 #include <graph_analysis/Edge.hpp>
-
 #include <graph_analysis/task_graph/PortConnection.hpp>
-
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
 #include <graph_analysis/gui/EdgeItemBase.hpp>
 
@@ -25,6 +23,12 @@ public:
 
     virtual ~PortConnectionItem();
     virtual int type() const;
+
+protected:
+    /**
+     * Needed for selecting and deleting a Task
+     */
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 };
 
 } // end namespace gui

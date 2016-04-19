@@ -7,6 +7,7 @@
 #include <cmath>
 
 #include <QDebug>
+#include <QGraphicsSceneMouseEvent>
 
 namespace graph_analysis
 {
@@ -18,6 +19,7 @@ PortConnectionItem::PortConnectionItem(GraphWidget *graphWidget,
                                        QGraphicsItem *parent)
     : EdgeItemSimple(graphWidget, edge, parent)
 {
+    setAcceptedMouseButtons(Qt::RightButton);
 }
 
 PortConnectionItem::~PortConnectionItem()
@@ -27,6 +29,17 @@ PortConnectionItem::~PortConnectionItem()
 int PortConnectionItem::type() const
 {
     return PortConnectionItemType;
+}
+
+void PortConnectionItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+    if (event->button() == Qt::RightButton)
+    {
+        // Delete myself oO
+        BaseGraph::Ptr graph = mpGraphWidget->graph();
+        graph_analysis::task_graph::PortConnection::Ptr edge = dynamic_pointer_cast<graph_analysis::task_graph::PortConnection>(mpEdge);
+        graph->removeEdge(edge);
+    }
 }
 
 } // end namespace gui

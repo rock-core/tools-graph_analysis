@@ -144,6 +144,10 @@ void TaskItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
         // Delete myself oO
         BaseGraph::Ptr graph = mpGraphWidget->graph();
         graph_analysis::task_graph::Task::Ptr vertex = dynamic_pointer_cast<graph_analysis::task_graph::Task>(getVertex());
+        // First, destroy my children and (grand)+children
+        vertex->destroyAllChildren(graph);
+        // .. then myself :]
+        graph->removeVertex(vertex);
         {
             vertex->destroyAllChildren(graph);
         }
