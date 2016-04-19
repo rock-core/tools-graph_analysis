@@ -118,7 +118,7 @@ void TaskGraphEditor::updateVisualization()
 void TaskGraphEditor::on_loadButton_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(
-        this, tr("Choose component network description file"),
+        this, tr("Load CND model"),
         QDir::currentPath(),
         tr("Component Network Definition File (*.yaml *.yml)"));
 
@@ -132,7 +132,7 @@ void TaskGraphEditor::on_loadButton_clicked()
 void TaskGraphEditor::on_saveButton_clicked()
 {
     QString filename = QFileDialog::getSaveFileName(
-        this, tr("Choose component network description file"),
+        this, tr("Store CND model"),
         QDir::currentPath(),
         tr("Component Network Definition File (*.yaml *.yml)"));
 
