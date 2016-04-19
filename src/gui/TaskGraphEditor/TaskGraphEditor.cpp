@@ -143,6 +143,19 @@ void TaskGraphEditor::on_saveButton_clicked()
     }
 }
 
+void TaskGraphEditor::on_updateButton_clicked()
+{
+    QString filename = QFileDialog::getSaveFileName(
+        this, tr("Update CND model"),
+        QDir::currentPath(),
+        tr("Component Network Definition File (*.yaml *.yml)"));
+
+    if(!filename.isEmpty())
+    {
+        io::CndModelWriter writer;
+        writer.update(filename.toStdString(), mpGraph);
+    }
+}
 // FIXME: This should be a member of BaseGraph
 template <typename T>
 typename T::Ptr getVertexByLabel(const std::string& label, BaseGraph::Ptr graph)

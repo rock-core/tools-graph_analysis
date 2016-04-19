@@ -60,6 +60,7 @@ public slots:
     // Loading/Storing Task Networks
     void on_loadButton_clicked();
     void on_saveButton_clicked();
+    void on_updateButton_clicked();
 
     // On double click we want to create new tasks :)
     void on_taskTemplateTree_itemDoubleClicked(QTreeWidgetItem* item,
