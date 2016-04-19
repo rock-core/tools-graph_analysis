@@ -124,7 +124,7 @@ void GraphWidget::updateLayoutView()
 // remove this implementation?
 void GraphWidget::shuffle()
 {
-    int diff = 600;
+    int diff = 100 *mVertexItemMap.size();
     foreach(QGraphicsItem *item, scene()->items())
     {
         if(dynamic_cast<VertexItemBase *>(item)) {
