@@ -152,10 +152,12 @@ GraphElementId BaseGraph::addVertex(const Vertex::Ptr& vertex)
         throw std::runtime_error("BaseGraph: vertex already exists in this graph");
     }
 
+    GraphElementId vertexId = addVertexInternal(vertex);
+
     // Call observers
     notifyAll(vertex, EVENT_TYPE_ADDED);
 
-    return 0;
+    return vertexId;
 }
 
 void BaseGraph::removeVertex(const Vertex::Ptr& vertex)

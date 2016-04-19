@@ -30,10 +30,8 @@ BaseGraph::Ptr DirectedGraph::newInstance() const
     return BaseGraph::Ptr(new DirectedGraph());
 }
 
-GraphElementId DirectedGraph::addVertex(const Vertex::Ptr& vertex)
+GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
 {
-    BaseGraph::addVertex(vertex);
-
     TInt nodeId = mGraph.AddNode();
     vertex->associate(getId(), nodeId);
 

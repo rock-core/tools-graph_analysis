@@ -23,10 +23,8 @@ DirectedGraph::DirectedGraph(const DirectedGraph& other)
 DirectedGraph::~DirectedGraph()
 {}
 
-GraphElementId DirectedGraph::addVertex(const Vertex::Ptr& vertex)
+GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
 {
-    BaseGraph::addVertex(vertex);
-
     graph_t::Node node = mGraph.addNode();
     int nodeId = mGraph.id(node);
     mVertexMap[node] = vertex;
