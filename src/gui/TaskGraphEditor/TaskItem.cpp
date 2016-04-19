@@ -148,12 +148,6 @@ void TaskItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
         vertex->destroyAllChildren(graph);
         // .. then myself :]
         graph->removeVertex(vertex);
-        {
-            vertex->destroyAllChildren(graph);
-        }
-        {
-            graph->removeVertex(vertex);
-        }
     }
 }
 
