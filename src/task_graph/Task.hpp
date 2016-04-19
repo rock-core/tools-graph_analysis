@@ -58,6 +58,8 @@ public:
      */
     TaskTemplatePtr getTemplate(const BaseGraph::Ptr& graph) const;
 
+    void destroyAllChildren(BaseGraph::Ptr graph);
+
 protected:
     /**
      * Create a copy of this vertex

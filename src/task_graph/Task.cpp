@@ -1,5 +1,6 @@
 #include "Task.hpp"
 #include "HasFeature.hpp"
+#include "HasUniqueFeature.hpp"
 #include "InstanceOf.hpp"
 #include "TaskTemplate.hpp"
 
@@ -11,6 +12,45 @@ namespace task_graph
 Task::Task(const std::string& label)
     : Vertex(label)
 {
+}
+
+// TODO: This should be a member of a task_graph vertex base class
+void _destroyAllChildren(Vertex::Ptr vertex, BaseGraph::Ptr graph)
+{
+    EdgeIterator::Ptr eit = graph->getOutEdgeIterator(vertex);
+    while(eit->next())
+    {
+        if(
+                (eit->current()->getClassName() != HasFeature::edgeType())
+                &&
+                (eit->current()->getClassName() != HasUniqueFeature::edgeType())
+          )
+            continue;
+
+        Vertex::Ptr child = eit->current()->getTargetVertex();
+
+        _destroyAllChildren(child, graph);
+    }
+    graph->removeVertex(vertex);
+}
+
+void Task::destroyAllChildren(BaseGraph::Ptr graph)
+{
+    Vertex::Ptr vertex = getSharedPointerFromGraph(graph);
+    EdgeIterator::Ptr eit = graph->getOutEdgeIterator(vertex);
+    while(eit->next())
+    {
+        if(
+                (eit->current()->getClassName() != HasFeature::edgeType())
+                &&
+                (eit->current()->getClassName() != HasUniqueFeature::edgeType())
+          )
+            continue;
+
+        Vertex::Ptr child = eit->current()->getTargetVertex();
+
+        _destroyAllChildren(child, graph);
+    }
 }
 
 TaskTemplatePtr Task::getTemplate(const BaseGraph::Ptr& graph) const
