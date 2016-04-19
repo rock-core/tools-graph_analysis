@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QFont>
+#include <QGraphicsSceneMouseEvent>
 
 #include "InputPortItem.hpp"
 #include "OutputPortItem.hpp"
@@ -134,6 +135,22 @@ void TaskItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
 QRectF TaskItem::boundingRect() const
 {
     return childrenBoundingRect();
+}
+
+void TaskItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+    if (event->button() == Qt::RightButton)
+    {
+        // Delete myself oO
+        BaseGraph::Ptr graph = mpGraphWidget->graph();
+        graph_analysis::task_graph::Task::Ptr vertex = dynamic_pointer_cast<graph_analysis::task_graph::Task>(getVertex());
+        {
+            vertex->destroyAllChildren(graph);
+        }
+        {
+            graph->removeVertex(vertex);
+        }
+    }
 }
 
 } // end namespace gui

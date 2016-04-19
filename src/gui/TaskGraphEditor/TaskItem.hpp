@@ -34,6 +34,13 @@ public:
                QWidget* widget = NULL);
     QRectF boundingRect() const;
 
+protected:
+
+    /**
+     * Needed for selecting and deleting a Task
+     */
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
+
 private:
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpTemplateLabel;
