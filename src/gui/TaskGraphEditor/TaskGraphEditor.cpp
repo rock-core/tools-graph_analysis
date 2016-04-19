@@ -156,6 +156,23 @@ void TaskGraphEditor::on_updateButton_clicked()
         writer.update(filename.toStdString(), mpGraph);
     }
 }
+
+void TaskGraphEditor::on_clearButton_clicked()
+{
+    // When this button is clicked we want to remove
+    // every vertex except TaskTemplates
+    std::vector<Vertex::Ptr> vertices = mpGraph->getAllVertices();
+    std::vector<Vertex::Ptr>::const_iterator it;
+    for (it = vertices.begin(); it != vertices.end(); ++it)
+    {
+        task_graph::TaskTemplate::Ptr templ = dynamic_pointer_cast<task_graph::TaskTemplate>(*it);
+        if (templ)
+            continue;
+
+        mpGraph->removeVertex(*it);
+    }
+}
+
 // FIXME: This should be a member of BaseGraph
 template <typename T>
 typename T::Ptr getVertexByLabel(const std::string& label, BaseGraph::Ptr graph)
