@@ -136,7 +136,7 @@ public:
      * In order to reimplement, call the base function first
      * BaseGraph::addVertex(v)
      */
-    virtual void removeVertex(const Vertex::Ptr& vertex);
+    void removeVertex(const Vertex::Ptr& vertex);
 
     /**
      * \brief Add an edge
@@ -149,7 +149,7 @@ public:
      * In order to reimplement, call the base function first
      * BaseGraph::addVertex(v)
      */
-    virtual void removeEdge(const Edge::Ptr& edge);
+    void removeEdge(const Edge::Ptr& edge);
 
     /**
      * Remove edges which link two vertices
@@ -307,11 +307,16 @@ protected:
     BaseGraph(ImplementationType type, bool directed);
 
     /**
-     * Add a vertex using source and target vertex on the internal graph
-     * representation
+     * Add a vertex from the internal graph representation
      * \return Element id of this vertex within this graph
      */
     virtual GraphElementId addVertexInternal(const Vertex::Ptr&) { throw std::runtime_error("BaseGraph::addVertexInternal: not implemented"); }
+
+    /**
+     * Remove a vertex from the internal graph representation
+     * \return Element id of this vertex within this graph
+     */
+    virtual void removeVertexInternal(const Vertex::Ptr&) { throw std::runtime_error("BaseGraph::removeVertexInternal: not implemented"); }
 
     /**
      * Add an edge using source and target vertex on the internal
@@ -319,6 +324,12 @@ protected:
      * \return Element id of this edge within this graph
      */
     virtual GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId edgeVertexId) { (void) edge; (void) sourceVertexId; (void) edgeVertexId; throw std::runtime_error("BaseGraph::addEdgeInternal: not implemented"); }
+
+    /**
+     * Remove an edge from the internal graph representation
+     * \return Element id of this vertex within this graph
+     */
+    virtual void removeEdgeInternal(const Edge::Ptr&) { throw std::runtime_error("BaseGraph::removeEdgeInternal: not implemented"); }
 
     /**
      * Create subgraph of the given baseGraph

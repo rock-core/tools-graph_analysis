@@ -52,18 +52,6 @@ public:
     typedef boost::unordered_map<GraphElementId, VertexDescriptor> VertexMap;
     typedef boost::unordered_map<GraphElementId, EdgeDescriptor> EdgeMap;
 
-    /**
-     * \brief Add a vertex
-     * \return the id of the created vertex
-     */
-    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
-
-    /**
-     * \brief Add an edge
-     * \return the created edge
-     */
-    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
-
     Vertex::Ptr getVertex(GraphElementId id) const;
     Edge::Ptr getEdge(GraphElementId id) const;
 
@@ -78,9 +66,6 @@ public:
      * \return edge descriptor
      */
     EdgeDescriptor getEdgeDescriptor(const Edge::Ptr& edge) const;
-
-    void removeVertex(const Vertex::Ptr& vertex);
-    void removeEdge(const Edge::Ptr& edge);
 
     DirectedGraph(const DirectedGraph& other);
 
@@ -129,6 +114,29 @@ public:
     std::vector<Edge::Ptr> getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const;
 
 protected:
+    /**
+     * \brief Add a vertex
+     * \return the id of the created vertex
+     */
+    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
+
+    /**
+     * Remove a vertex from the internal graph representation
+     */
+    virtual void removeVertexInternal(const Vertex::Ptr&);
+
+    /**
+     * \brief Add an edge
+     * \return the created edge
+     */
+    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
+
+    /**
+     * Remove an edge from the internal graph representation
+     * \return Element id of this vertex within this graph
+     */
+    virtual void removeEdgeInternal(const Edge::Ptr&);
+
     // Property maps to store data associated with vertices and edges
     EdgeMap mEdgeMap;
     VertexMap mVertexMap;

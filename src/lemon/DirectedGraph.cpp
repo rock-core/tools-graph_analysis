@@ -33,6 +33,13 @@ GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
     return nodeId;
 }
 
+void DirectedGraph::removeVertexInternal(const Vertex::Ptr& vertex)
+{
+    int nodeId = getVertexId( vertex );
+    graph_t::Node node = mGraph.nodeFromId(nodeId);
+    mGraph.erase(node);
+}
+
 GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
     graph_t::Node sourceNode = mGraph.nodeFromId( sourceVertexId );
@@ -44,6 +51,13 @@ GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElemen
     mEdgeMap[arc] = edge;
 
     return arcId;
+}
+
+void DirectedGraph::removeEdgeInternal(const Edge::Ptr& edge)
+{
+    int edgeId = getEdgeId(edge);
+    graph_t::Arc arc = mGraph.arcFromId(edgeId);
+    mGraph.erase(arc);
 }
 
 DirectedGraph::graph_t::Node DirectedGraph::getNode(const Vertex::Ptr& vertex) const
@@ -86,26 +100,6 @@ Vertex::Ptr DirectedGraph::getTargetVertex(const Edge::Ptr& e) const
 {
     GraphElementId edgeId = getEdgeId(e);
     return mVertexMap[ mGraph.target( mGraph.arcFromId(edgeId)) ];
-}
-
-void DirectedGraph::removeVertex(const Vertex::Ptr& vertex)
-{
-    int nodeId = getVertexId( vertex );
-
-    BaseGraph::removeVertex(vertex);
-
-    graph_t::Node node = mGraph.nodeFromId(nodeId);
-    mGraph.erase(node);
-}
-
-void DirectedGraph::removeEdge(const Edge::Ptr& edge)
-{
-    int edgeId = getEdgeId(edge);
-
-    BaseGraph::removeEdge(edge);
-
-    graph_t::Arc arc = mGraph.arcFromId(edgeId);
-    mGraph.erase(arc);
 }
 
 /**

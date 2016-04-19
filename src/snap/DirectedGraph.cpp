@@ -39,26 +39,12 @@ GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
     return nodeId;
 }
 
-void DirectedGraph::removeVertex(const Vertex::Ptr& vertex)
+void DirectedGraph::removeVertexInternal(const Vertex::Ptr& vertex)
 {
     int nodeId = getVertexId( vertex );
-    BaseGraph::removeVertex(vertex);
-
     mGraph.DelNode(nodeId);
 }
 
-void DirectedGraph::removeEdge(const Edge::Ptr& edge)
-{
-    int edgeId = getEdgeId( edge );
-    BaseGraph::removeEdge(edge);
-
-    mGraph.DelEdge(edgeId);
-}
-
-/**
- * \brief Add an edge
- * \return an edge id
- */
 GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId)
 {
     TInt edgeId = mGraph.AddEdge(sourceVertexId,targetVertexId);
@@ -66,6 +52,12 @@ GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElemen
 
     mGraph.SetEDat(edgeId, Serializable<Edge::Ptr>(edge));
     return edgeId;
+}
+
+void DirectedGraph::removeEdgeInternal(const Edge::Ptr& edge)
+{
+    int edgeId = getEdgeId( edge );
+    mGraph.DelEdge(edgeId);
 }
 
 Vertex::Ptr DirectedGraph::getVertex(GraphElementId id) const
