@@ -1,0 +1,55 @@
+---
+gps:
+  MB500Task:
+    inputPorts: []
+    outputPorts:
+    - Name: solution
+      Type: "::gps::Solution"
+    - Name: position_samples
+      Type: "::base::samples::RigidBodyState"
+    - Name: state
+      Type: boost::int32_t
+    - Name: constellation
+      Type: "::gps::ConstellationInfo"
+    - Name: time
+      Type: "::gps::Time"
+    properties:
+    - Name: utm_zone
+      Type: boost::int32_t
+      DefaultVal: 32
+    - Name: utm_north
+      Type: bool
+      DefaultVal: true
+    - Name: origin
+      Type: "::base::Vector3d"
+    - Name: device
+      Type: "::std::string"
+    - Name: port
+      Type: "::std::string"
+    - Name: correction_port
+      Type: "::std::string"
+    - Name: period
+      Type: double
+    - Name: fix_threshold
+      Type: "::gps::MB500_AMBIGUITY_THRESHOLD"
+      DefaultVal: :MB500_FIX_99_0
+    - Name: dynamics_model
+      Type: "::gps::MB500_DYNAMICS_MODEL"
+    - Name: user_dynamics
+      Type: "::gps::UserDynamics"
+    - Name: ntpd_shm_unit
+      Type: boost::int32_t
+      DefaultVal: -1
+    operations:
+    - Name: getModelName
+      Doc: returns the oroGen model name for this task
+      Return:
+        Type: "::std::string"
+        Doc: ''
+      Arguments: []
+    - Name: __orogen_getTID
+      Doc: returns the PID for this task
+      Return:
+        Type: boost::int32_t
+        Doc: ''
+      Arguments: []

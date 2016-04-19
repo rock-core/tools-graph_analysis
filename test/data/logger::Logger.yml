@@ -1,0 +1,97 @@
+---
+logger:
+  Logger:
+    inputPorts: []
+    outputPorts:
+    - Name: state
+      Type: boost::int32_t
+    properties:
+    - Name: file
+      Type: "::std::string"
+    operations:
+    - Name: reportComponent
+      Doc: 
+      Return:
+        Type: bool
+        Doc: ''
+      Arguments:
+      - Name: name
+        Type: "::std::string"
+        Doc: the name of the component whose ports should be reported
+    - Name: unreportComponent
+      Doc: 
+      Return:
+        Type: bool
+        Doc: ''
+      Arguments:
+      - Name: name
+        Type: "::std::string"
+        Doc: the name of the component whose ports should not be reported anymore
+    - Name: reportPort
+      Doc: 
+      Return:
+        Type: bool
+        Doc: ''
+      Arguments:
+      - Name: component
+        Type: "::std::string"
+        Doc: the name of the port's component
+      - Name: port
+        Type: "::std::string"
+        Doc: the name of the port that should be reported
+    - Name: unreportPort
+      Doc: 
+      Return:
+        Type: bool
+        Doc: ''
+      Arguments:
+      - Name: component
+        Type: "::std::string"
+        Doc: the name of the port's component
+      - Name: port
+        Type: "::std::string"
+        Doc: the name of the port that should not be reported anymore
+    - Name: createLoggingPort
+      Doc: creates a port that is associated with a given log stream of the same name,
+        with associated metadata. Any data written to that port will be logged into
+        that stream
+      Return:
+        Type: bool
+        Doc: ''
+      Arguments:
+      - Name: port_name
+        Type: "::std::string"
+        Doc: the name of the port to be created
+      - Name: type_name
+        Type: "::std::string"
+        Doc: the name of the type the port should handle
+      - Name: metadata
+        Type: "::std::vector< ::logger::StreamMetadata >"
+        Doc: the stream metadata
+    - Name: removeLoggingPort
+      Doc: removes a logging port created by createLoggingPort
+      Return:
+        Type: bool
+        Doc: ''
+      Arguments:
+      - Name: port_name
+        Type: "::std::string"
+        Doc: the name of the port to be removed
+    - Name: clear
+      Doc: removes all logging ports
+      Return:
+        Type: void
+        Doc: ''
+      Arguments: []
+    - Name: getModelName
+      Doc: returns the oroGen model name for this task
+      Return:
+        Type: "::std::string"
+        Doc: ''
+      Arguments: []
+    - Name: __orogen_getTID
+      Doc: returns the PID for this task
+      Return:
+        Type: boost::int32_t
+        Doc: ''
+      Arguments: []

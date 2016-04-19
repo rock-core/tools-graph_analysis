@@ -1,0 +1,33 @@
+---
+gps:
+  BaseTask:
+    inputPorts: []
+    outputPorts:
+    - Name: solution
+      Type: "::gps::Solution"
+    - Name: position_samples
+      Type: "::base::samples::RigidBodyState"
+    - Name: state
+      Type: boost::int32_t
+    properties:
+    - Name: utm_zone
+      Type: boost::int32_t
+      DefaultVal: 32
+    - Name: utm_north
+      Type: bool
+      DefaultVal: true
+    - Name: origin
+      Type: "::base::Vector3d"
+    operations:
+    - Name: getModelName
+      Doc: returns the oroGen model name for this task
+      Return:
+        Type: "::std::string"
+        Doc: ''
+      Arguments: []
+    - Name: __orogen_getTID
+      Doc: returns the PID for this task
+      Return:
+        Type: boost::int32_t
+        Doc: ''
+      Arguments: []
