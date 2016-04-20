@@ -89,7 +89,7 @@ void OutputPortItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         task_graph::PortConnection::Ptr conn = task_graph::PortConnection::Ptr(new task_graph::PortConnection(output, input, ""));
         std::stringstream ss;
         ss << conn->getUid();
-        conn->setLabel("connection"+ss.str());
+        conn->setLabel(ss.str());
         getGraph()->addEdge(conn);
     }
 }
