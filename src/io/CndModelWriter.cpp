@@ -105,9 +105,10 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
             target->getLabel();
 
         // FIXME: These have to be included into the port connection model!!!
-        // doc["connections"][i]["transport"] = conn->getLabel();
-        // doc["connections"][i]["type"] = "BUFFER";
-        // doc["connections"][i]["size"] = 20;
+        // TODO: For this we need CONNECTORS
+        doc["connections"][conn->getLabel()]["transport"] = "CORBA";
+        doc["connections"][conn->getLabel()]["type"] = "BUFFER";
+        doc["connections"][conn->getLabel()]["size"] = 20;
     }
 }
 
