@@ -41,6 +41,21 @@ void TaskTemplate::loadFromFile(const std::string& yamlFileName)
     mInstance = 0;
 }
 
+std::string searchAndReplace(const std::string& original, const std::string& token, const std::string& replacement)
+{
+    std::string newStr("");
+    std::size_t pos;
+    std::size_t lastPos = 0;
+    while ((pos = original.find(token, lastPos)) != std::string::npos)
+    {
+        newStr += original.substr(lastPos, pos);
+        newStr += replacement;
+        lastPos = pos + token.length();
+    }
+    newStr += original.substr(lastPos, std::string::npos);
+    return newStr;
+}
+
 TaskPtr TaskTemplate::instantiateAndAddTo(BaseGraph::Ptr graph,
                                           const std::string& label)
 {
@@ -65,7 +80,10 @@ TaskPtr TaskTemplate::instantiateAndAddTo(BaseGraph::Ptr graph,
     ss << mInstance;
     if(label.empty())
     {
-        newRootVertex->setLabel(mLabel + ss.str());
+        // When we use the default label we have to
+        // get rid of any '::' and replace them by '-'
+        std::string fixed(searchAndReplace(mLabel + ss.str(), "::", "-"));
+        newRootVertex->setLabel(fixed);
     }
     else
     {
