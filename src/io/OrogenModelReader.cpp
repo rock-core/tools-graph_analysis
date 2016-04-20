@@ -52,6 +52,8 @@ typename T::Ptr createPort(const std::string& label, const std::string& type,
         new task_graph::HasFeature(parent, port, "has"));
     graph->addEdge(has);
     // Create data type
+    // TODO: Create a data type only if it is not yet known (?)
+    // TODO: Create a data type modelling layer/view
     task_graph::DataType::Ptr dtype =
         task_graph::DataType::Ptr(new task_graph::DataType(type));
     graph->addVertex(dtype);
@@ -77,6 +79,8 @@ task_graph::Property::Ptr createProperty(const std::string& label,
         new task_graph::HasFeature(parent, prop, "has"));
     graph->addEdge(has);
     // Create data type
+    // TODO: Create a data type only if it is not yet known (?)
+    // TODO: Create a data type modelling layer/view
     task_graph::DataType::Ptr dtype =
         task_graph::DataType::Ptr(new task_graph::DataType(type));
     graph->addVertex(dtype);
