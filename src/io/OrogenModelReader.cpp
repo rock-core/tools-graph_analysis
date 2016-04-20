@@ -138,6 +138,24 @@ void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
                                            graph, comp);
     }
 
+    // Add a 'state' property (compliance with CND model)
+    createProperty("state",
+                   "std::string",
+                   "RUNNING",
+                   graph,
+                   comp);
+    // Add a 'config_file' property (compliance with CND model)
+    createProperty("config_file",
+                   "std::string",
+                   "",
+                   graph,
+                   comp);
+    // Add a 'config_names' property (compliance with CND model)
+    createProperty("config_names",
+                   "std::string",
+                   "",
+                   graph,
+                   comp);
     // First, we create a master property 'config' for the properties
     // (compliance with the CND model :/)
     task_graph::Property::Ptr config =
