@@ -65,7 +65,7 @@ void InputPortItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
             LOG_INFO_S << "No drag-accept, Ports are part of the same Task";
             return;
         }
-        else if(oPort->isOwnDataTypeSameAs(getGraph(), iPort))
+        else if(!oPort->isOwnDataTypeSameAs(getGraph(), iPort))
         {
             LOG_INFO_S << "No drag-accept, DataType does not match";
             return;
