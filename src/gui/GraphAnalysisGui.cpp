@@ -48,9 +48,7 @@ GraphAnalysisGui::GraphAnalysisGui()
             mpUi->statusbar, SLOT(showMessage(QString, int)));
 
     connect(mpQBaseGraph, SIGNAL(graphChanged()),
-            mpTaskGraphEditor, SLOT(updateVisualization()));
-    connect(mpQBaseGraph, SIGNAL(graphChanged()),
-            mpBaseGraphView, SLOT(updateVisualization()));
+            this, SLOT(updateVisualization()));
 }
 
 GraphAnalysisGui::~GraphAnalysisGui()
@@ -195,13 +193,23 @@ void GraphAnalysisGui::fromFile(const std::string& filename)
     delete mpQBaseGraph;
     mpQBaseGraph = graph;
 
-    notifyAll();
 }
 
-void GraphAnalysisGui::notifyAll()
+void GraphAnalysisGui::on_tabWidget_currentChanged(int index)
 {
-    mpBaseGraphView->updateVisualization();
-    mpTaskGraphEditor->updateVisualization();
+    // When the tab changed, we want to update the widget
+    this->updateVisualization();
+}
+
+void GraphAnalysisGui::updateVisualization()
+{
+    // Call the current tab widget's update function
+    if (mpUi->tabWidget->currentWidget() == mpTaskGraphEditor)
+    {
+        mpTaskGraphEditor->updateVisualization();
+    } else {
+        mpBaseGraphView->updateVisualization();
+    }
 }
 
 } // end namespace gui

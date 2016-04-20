@@ -31,10 +31,6 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     mpUi->placeHolder->addWidget(mpTaskGraphViewer);
     mpUi->splitter->setSizes(QList<int>() << 10 << 1000);
 
-    mpRootItem = new QTreeWidgetItem(mpUi->taskTemplateTree);
-    mpRootItem->setText(0, QString("Task Templates"));
-    mpRootItem->setExpanded(true);
-
     connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString, int)), this,
             SLOT(currentStatus_internal(QString, int)));
 
@@ -110,9 +106,34 @@ void TaskGraphEditor::currentStatus_internal(QString msg, int lvl)
     emit currentStatus(msg, lvl);
 }
 
+void TaskGraphEditor::updateTreeWidget()
+{
+    // Clear the tree widget
+    mpUi->taskTemplateTree->clear();
+
+    // Cycle through all vertices
+    std::vector<Vertex::Ptr> vertices = mpGraph->getAllVertices();
+    std::vector<Vertex::Ptr>::const_iterator it;
+    for (it = vertices.begin(); it != vertices.end(); ++it)
+    {
+        // Check if the vertex is a task template
+        task_graph::TaskTemplate::Ptr templ = dynamic_pointer_cast<task_graph::TaskTemplate>(*it);
+        if (!templ)
+            continue;
+
+        // It is, so add it to the tree widget
+        QTreeWidgetItem* child = new QTreeWidgetItem(mpUi->taskTemplateTree);
+        child->setText(0, QString::fromStdString(templ->getLabel()));
+        child->setText(1, QString::fromStdString(templ->yamlFileName()));
+    }
+}
+
 void TaskGraphEditor::updateVisualization()
 {
+    // TODO: Only update if a Task or a PortConnection has been added/removed
     mpTaskGraphViewer->updateVisualization();
+    // TODO: Only update if a Task template has been added/removed
+    updateTreeWidget();
 }
 
 void TaskGraphEditor::on_loadButton_clicked()
@@ -199,7 +220,6 @@ void TaskGraphEditor::on_taskTemplateTree_itemDoubleClicked(
     if(templ)
     {
         templ->instantiateAndAddTo(mpGraph);
-        updateVisualization();
     }
 }
 
@@ -235,10 +255,6 @@ bool TaskGraphEditor::addFile(QString filename)
 
     // It is a new template, so we are happy :)
     mpGraph->addVertex(newTemplate);
-    QTreeWidgetItem* child = new QTreeWidgetItem();
-    child->setText(0, QString::fromStdString(newTemplate->getLabel()));
-    child->setText(1, filename);
-    mpRootItem->addChild(child);
 
     return true;
 }
@@ -254,8 +270,6 @@ void TaskGraphEditor::on_removeButton_clicked()
                                                    mpGraph);
     if(templ)
     {
-        item->parent()->removeChild(item);
-        delete item;
         mpGraph->removeVertex(templ);
     }
 }

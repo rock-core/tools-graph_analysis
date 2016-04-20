@@ -38,11 +38,9 @@ private:
     graph_analysis::BaseGraph::Ptr mpGraph;
     TaskGraphViewer* mpTaskGraphViewer;
 
-    // Task Template Tree stuff
-    QTreeWidgetItem* mpRootItem;
-
     /** adding one new file into the task-container and the tree widget */
     bool addFile(QString filename);
+    void updateTreeWidget();
 
 signals:
     // Will be triggered by the TaskGraphViewer

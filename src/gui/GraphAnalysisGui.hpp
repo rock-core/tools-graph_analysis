@@ -40,6 +40,12 @@ private:
     void exportGraph();
     void fromFile(const std::string& filename);
     void notifyAll();
+
+private slots:
+    /*Connected to QBaseGraph*/
+    void updateVisualization();
+    void on_tabWidget_currentChanged(int index);
+
 };
 
 } // end namespace gui
