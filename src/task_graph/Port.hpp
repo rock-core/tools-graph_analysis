@@ -11,6 +11,7 @@ namespace task_graph
 {
 
 class Task;
+class DataType;
 
 /**
  * \brief A Port vertex inherited to allow storing data of Port type
@@ -63,6 +64,23 @@ public:
      * @return true if there is one or more PortConnection attached
      */
     bool isConnected(const BaseGraph::Ptr& graph) const;
+
+    /**
+     * @brief return the vertex of the "DataType" of this port
+     * @param the graph to operate on
+     */
+    shared_ptr<DataType> getDataType(const BaseGraph::Ptr& graph) const;
+
+    /**
+     * @brief checks if the given "Port" has the same "DataType" as this Port
+     *
+     * this function does not enforce direction, input or output direction
+     *
+     * @param graph the graph where this vertex (and the other one) is attached to
+     * @param port the other port to check its DataType against
+     */
+    bool isOwnDataTypeSameAs(const BaseGraph::Ptr& graph,
+                             const shared_ptr<Port> port);
 
 protected:
     /**

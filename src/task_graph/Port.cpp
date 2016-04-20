@@ -2,6 +2,8 @@
 #include "HasFeature.hpp"
 #include "PortConnection.hpp"
 #include "Task.hpp"
+#include "DataType.hpp"
+#include "HasUniqueFeature.hpp"
 
 #include <base/Logging.hpp>
 
@@ -57,6 +59,44 @@ bool Port::isConnected(const BaseGraph::Ptr& graph) const
                     << " connections. only one is expected?";
     }
     return connections;
+}
+
+shared_ptr<DataType> Port::getDataType(const BaseGraph::Ptr& graph) const
+{
+    Vertex::Ptr vertexPtr = getSharedPointerFromGraph(graph);
+    EdgeIterator::Ptr edgeIt = graph->getOutEdgeIterator(vertexPtr);
+    while(edgeIt->next())
+    {
+
+        HasUniqueFeature::Ptr feature =
+            dynamic_pointer_cast<HasUniqueFeature>(edgeIt->current());
+        if(!feature)
+        {
+            continue;
+        }
+        DataType::Ptr data = dynamic_pointer_cast<DataType>(
+            edgeIt->current()->getTargetVertex());
+        if(data)
+        {
+            return data;
+        }
+    }
+    return shared_ptr<DataType>();
+}
+
+bool Port::isOwnDataTypeSameAs(const BaseGraph::Ptr& graph,
+                                     const shared_ptr<Port> port)
+{
+    Port::Ptr ownPtr =
+        dynamic_pointer_cast<Port>(getSharedPointerFromGraph(graph));
+    if(!ownPtr)
+    {
+        LOG_ERROR_S << "unexpected self, am not a 'Port'. fix this!";
+        return false;
+    }
+
+    return ownPtr->getDataType(graph)->toString() ==
+           port->getDataType(graph)->toString();
 }
 }
 } // end namespace graph_analysis
