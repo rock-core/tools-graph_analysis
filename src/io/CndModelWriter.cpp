@@ -17,6 +17,27 @@ namespace graph_analysis
 namespace io
 {
 
+bool hasProperties(const Vertex::Ptr& vertex, const BaseGraph::Ptr& graph)
+{
+    EdgeIterator::Ptr eit = graph->getOutEdgeIterator(vertex);
+    while(eit->next())
+    {
+        // Check type
+        if(eit->current()->getClassName() != task_graph::HasFeature::edgeType())
+            continue;
+
+        // Check if target is a property
+        Vertex::Ptr target = eit->current()->getTargetVertex();
+        if(target->getClassName() != task_graph::Property::vertexType())
+            continue;
+
+        // If we have found at least one property we are finished :)
+        return true;
+    }
+
+    return false;
+}
+
 std::string createDefaultDeploymentPrefix(const std::string& templateLabel)
 {
     std::string prefix = "orogen_default_";
@@ -86,8 +107,11 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
         writePropertiesRecursively(uerg, task, graph);
 
         // FIXME
-        // Produce DEFAULT config_name for every task
-        doc["tasks"][task->getLabel()]["config_names"][0] = "default";
+        // Produce DEFAULT config_name for every task if he has at least one property
+        if (hasProperties(task, graph))
+        {
+            doc["tasks"][task->getLabel()]["config_names"][0] = "default";
+        }
 
         // FIXME
         // Produce DEFAULT deployment for every task (TODO: Introduce deployment concept)
