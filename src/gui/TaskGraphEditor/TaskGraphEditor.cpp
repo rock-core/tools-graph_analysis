@@ -34,6 +34,16 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString, int)), this,
             SLOT(currentStatus_internal(QString, int)));
 
+    // FIXME
+    // Hide some buttons for demo
+    mpUi->updateButton->setVisible(false);
+    // FIXME
+    // Set a template file
+    mTemplate = QFileDialog::getOpenFileName(
+        this, tr("Load CND template model"),
+        QDir::currentPath(),
+        tr("Component Network Definition File (*.yaml *.yml)"));
+
     // Get all system environment variables
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
@@ -160,7 +170,12 @@ void TaskGraphEditor::on_saveButton_clicked()
     if(!filename.isEmpty())
     {
         io::CndModelWriter writer;
-        writer.write(filename.toStdString(), mpGraph);
+        if (mTemplate.isEmpty())
+        {
+            writer.write(filename.toStdString(), mpGraph);
+        } else {
+            writer.update(mTemplate.toStdString(), filename.toStdString(), mpGraph);
+        }
     }
 }
 
@@ -174,7 +189,7 @@ void TaskGraphEditor::on_updateButton_clicked()
     if(!filename.isEmpty())
     {
         io::CndModelWriter writer;
-        writer.update(filename.toStdString(), mpGraph);
+        writer.update(filename.toStdString(), filename.toStdString(), mpGraph);
     }
 }
 

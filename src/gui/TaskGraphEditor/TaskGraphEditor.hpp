@@ -38,6 +38,10 @@ private:
     graph_analysis::BaseGraph::Ptr mpGraph;
     TaskGraphViewer* mpTaskGraphViewer;
 
+    // FIXME
+    // Stores a template file name
+    QString mTemplate;
+
     /** adding one new file into the task-container and the tree widget */
     bool addFile(QString filename);
     void updateTreeWidget();
