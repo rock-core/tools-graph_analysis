@@ -137,15 +137,16 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
     }
 }
 
-void CndModelWriter::update(const std::string& filename,
+void CndModelWriter::update(const std::string& in,
+                            const std::string& out,
                             const BaseGraph::Ptr& graph)
 {
-    YAML::Node doc = YAML::LoadFile(filename);
+    YAML::Node doc = YAML::LoadFile(in);
 
     internal_write(doc, graph);
 
     std::ofstream fout;
-    fout.open(filename.c_str());
+    fout.open(out.c_str());
     fout << doc;
     fout.close();
 }

@@ -24,12 +24,13 @@ public:
     void write(const std::string& filename, const BaseGraph::Ptr& graph);
 
     /**
-     * \brief Stores a base graph to the provided file
-     * In constrast to write it does not delete old content but just updates!
-     * \param filename provided output filename
+     * \brief Stores a base graph in a file
+     * In contrast to write this function first loads a yml file, adds content from graph and the stores to output file
+     * \param in provided input filename
+     * \param out provided output filename
      * \param graph the source graph
      */
-    void update(const std::string& filename, const BaseGraph::Ptr& graph);
+    void update(const std::string& in, const std::string& out, const BaseGraph::Ptr& graph);
 };
 
 } // end namespace io
