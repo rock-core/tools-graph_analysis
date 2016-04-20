@@ -62,18 +62,22 @@ void InputPortItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
 
         if(oPort->getTask(getGraph()) == iPort->getTask(getGraph()))
         {
+            LOG_INFO_S << "No drag-accept, Ports are part of the same Task";
             return;
         }
         else if(oPort->isOwnDataTypeSameAs(getGraph(), iPort))
         {
+            LOG_INFO_S << "No drag-accept, DataType does not match";
             return;
         }
         else if(oPort->isConnected(getGraph()))
         {
+            LOG_INFO_S << "No drag-accept, oPort is already connected";
             return;
         }
         else if(iPort->isConnected(getGraph()))
         {
+            LOG_INFO_S << "No drag-accept, iPort is already connected";
             return;
         }
         else
