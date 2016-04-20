@@ -115,6 +115,8 @@ void readPropertiesRecursively(YAML::Node& node, Vertex::Ptr vertex,
         break;
     }
     case YAML::NodeType::Sequence:
+        std::cout << "Seq unsupported :/" << std::endl;
+        break;
     case YAML::NodeType::Map:
     {
         // std::cout << "CONTAINER " << node.as<std::string>() << std::endl;
@@ -143,7 +145,7 @@ void readPropertiesRecursively(YAML::Node& node, Vertex::Ptr vertex,
     }
     default:
     {
-        std::cout << "W00t?!";
+        std::cout << "W00t?!" << std::endl;
         break;
     }
     }
