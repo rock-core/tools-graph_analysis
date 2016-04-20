@@ -97,7 +97,7 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
         std::string deployerPrefix(createDefaultDeploymentPrefix(taskTemp->getLabel()));
         doc["deployments"][i]["process_name"] = deployerPrefix;
         doc["deployments"][i]["taskList"][task->getLabel()] = deployerPrefix;
-        doc["deployments"][i]["taskList"][task->getLabel() + "_Logger"] = deployerPrefix + "_Logger";
+        //doc["deployments"][i]["taskList"][task->getLabel() + "_Logger"] = deployerPrefix + "_Logger";
         i++;
     }
 
