@@ -288,5 +288,12 @@ void TaskGraphEditor::on_removeButton_clicked()
         mpGraph->removeVertex(templ);
     }
 }
+
+void TaskGraphEditor::on_executeNetwork_clicked()
+{
+    QProcess test;
+    test.execute("ruby "+mTemplate);
+    qDebug()<<"output we got: "<<test.readAllStandardOutput();
+}
 }
 }
