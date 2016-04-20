@@ -64,6 +64,10 @@ void InputPortItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
         {
             return;
         }
+        else if(oPort->isOwnDataTypeSameAs(getGraph(), iPort))
+        {
+            return;
+        }
         else if(oPort->isConnected(getGraph()))
         {
             return;
