@@ -25,6 +25,7 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     : QWidget(parent)
     , mpUi(new Ui::TaskGraphEditor)
     , mpGraph(graph)
+    , mLauncher(this)
 {
     mpUi->setupUi(this);
     mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
@@ -33,6 +34,9 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
 
     connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString, int)), this,
             SLOT(currentStatus_internal(QString, int)));
+
+    connect(&mLauncher, SIGNAL(finished(int, QProcess::ExitStatus)), this,
+            SLOT(launcher_execution_done(int, QProcess::ExitStatus)));
 
     // FIXME
     // Hide some buttons for demo
@@ -289,11 +293,43 @@ void TaskGraphEditor::on_removeButton_clicked()
     }
 }
 
+void TaskGraphEditor::launcher_execution_done(int exitCode,
+                                              QProcess::ExitStatus exitStatus)
+{
+    // check if all is alright
+    if(exitStatus == QProcess::CrashExit)
+    {
+        QMessageBox::critical(this, "D-Rock", "ruby launcher crashed with:\n" +
+                                                  mLauncher.readAll(),
+                              QMessageBox::Ok);
+    }
+    else
+    {
+        qDebug() << mLauncher.readAll();
+    }
+
+    // reenable the button
+    mpUi->executeNetwork->setEnabled(true);
+    // just for good measure, to be sure:
+    mLauncher.terminate();
+}
+
 void TaskGraphEditor::on_executeNetwork_clicked()
 {
-    QProcess test;
-    test.execute("ruby "+mTemplate);
-    qDebug()<<"output we got: "<<test.readAllStandardOutput();
+    // launch the shit out of this
+    mLauncher.start("ruby execute_launcher_wrapper.rb " + mTemplate);
+    if(!mLauncher.waitForStarted(1000))
+    {
+        QMessageBox::critical(this, "D-Rock",
+                              "launching ruby failed with timeout:\n" +
+                                  mLauncher.readAll(),
+                              QMessageBox::Ok);
+    }
+    else
+    {
+        // if it worked disable the button
+        mpUi->executeNetwork->setDisabled(true);
+    }
 }
 }
 }

@@ -3,6 +3,7 @@
 
 #include <QTreeWidget>
 #include <QWidget>
+#include <QProcess>
 #include <graph_analysis/Graph.hpp>
 
 namespace Ui
@@ -46,6 +47,9 @@ private:
     bool addFile(QString filename);
     void updateTreeWidget();
 
+    // just for HMI
+    QProcess mLauncher;
+
 signals:
     // Will be triggered by the TaskGraphViewer
     void currentStatus(QString, int);
@@ -53,6 +57,9 @@ signals:
 private slots:
     // Needed to observe the TaskGraphViewer
     void currentStatus_internal(QString, int);
+
+    // just for HMI
+    void launcher_execution_done(int, QProcess::ExitStatus);
 
 public slots:
     // Adding/Removing TaskTemplates
