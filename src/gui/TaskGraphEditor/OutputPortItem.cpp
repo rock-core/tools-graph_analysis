@@ -1,6 +1,8 @@
 #include "OutputPortItem.hpp"
 
 #include <graph_analysis/task_graph/OutputPort.hpp>
+#include <graph_analysis/task_graph/InputPort.hpp>
+#include <graph_analysis/task_graph/PortConnection.hpp>
 #include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
 #include <graph_analysis/gui/EdgeMimeData.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
@@ -11,6 +13,7 @@
 #include <QDrag>
 
 #include <base/Logging.hpp>
+#include <sstream>
 
 namespace graph_analysis
 {
@@ -80,15 +83,14 @@ void OutputPortItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             << "could not find a target vertex after dropEvent";
             return;
         }
-        AddEdgeDialog dialog;
-        dialog.exec();
-        if(dialog.result() == QDialog::Accepted)
-        {
-            Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(
-                dialog.getClassname().toStdString(), sourceVertex, targetVertex,
-                dialog.getLabel().toStdString());
-            getGraph()->addEdge(edge); // This should trigger an QBaseGraph graphChanged signal
-        }
+
+        task_graph::OutputPort::Ptr output = dynamic_pointer_cast<task_graph::OutputPort>(sourceVertex);
+        task_graph::InputPort::Ptr input = dynamic_pointer_cast<task_graph::InputPort>(targetVertex);
+        task_graph::PortConnection::Ptr conn = task_graph::PortConnection::Ptr(new task_graph::PortConnection(output, input, ""));
+        std::stringstream ss;
+        ss << conn->getUid();
+        conn->setLabel("connection"+ss.str());
+        getGraph()->addEdge(conn);
     }
 }
 
