@@ -53,6 +53,15 @@ GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
     return newVertexId;
 }
 
+void DirectedGraph::removeVertexInternal(const Vertex::Ptr& vertex)
+{
+    int vertexId = getVertexId(vertex);
+    VertexDescriptor vertexDescriptor = mVertexMap[vertexId];
+    mVertexMap.erase(vertexId);
+    boost::clear_vertex(vertexDescriptor, mGraph);
+    boost::remove_vertex(vertexDescriptor, mGraph);
+}
+
 Vertex::Ptr DirectedGraph::getVertex(GraphElementId id) const
 {
     VertexMap::const_iterator cit = mVertexMap.find(id);
@@ -103,6 +112,15 @@ GraphElementId DirectedGraph::addEdgeInternal(const Edge::Ptr& edge, GraphElemen
     return newEdgeId;
 }
 
+void DirectedGraph::removeEdgeInternal(const Edge::Ptr& edge)
+{
+    int edgeId = getEdgeId(edge);
+    EdgeDescriptor edgeDescriptor = mEdgeMap[edgeId];
+    mEdgeMap.erase(edgeId);
+    boost::remove_edge(edgeDescriptor, mGraph);
+}
+
+
 Edge::Ptr DirectedGraph::getEdge(GraphElementId id) const
 {
     EdgeMap::const_iterator cit = mEdgeMap.find(id);
@@ -115,28 +133,6 @@ Edge::Ptr DirectedGraph::getEdge(GraphElementId id) const
     std::stringstream ss;
     ss << id;
     throw std::invalid_argument("graph_analysis::boost::DirectedGraph::getEdge with id '" + ss.str() +"' does not exist");
-}
-
-void DirectedGraph::removeVertex(const Vertex::Ptr& vertex)
-{
-    int vertexId = getVertexId(vertex);
-
-    BaseGraph::removeVertex(vertex);
-
-    VertexDescriptor vertexDescriptor = mVertexMap[vertexId];
-    mVertexMap.erase(vertexId);
-    boost::clear_vertex(vertexDescriptor, mGraph);
-    boost::remove_vertex(vertexDescriptor, mGraph);
-}
-
-void DirectedGraph::removeEdge(const Edge::Ptr& edge)
-{
-    int edgeId = getEdgeId(edge);
-
-    BaseGraph::removeEdge(edge);
-    EdgeDescriptor edgeDescriptor = mEdgeMap[edgeId];
-    mEdgeMap.erase(edgeId);
-    boost::remove_edge(edgeDescriptor, mGraph);
 }
 
 VertexIterator::Ptr DirectedGraph::getVertexIterator() const

@@ -166,6 +166,7 @@ void BaseGraph::removeVertex(const Vertex::Ptr& vertex)
     {
         throw std::runtime_error("BaseGraph: vertex cannot be removed, since it does not exist in this graph");
     }
+    removeVertexInternal(vertex);
     vertex->disassociate(getId());
 
     // Call observers
@@ -233,6 +234,7 @@ void BaseGraph::removeEdge(const Edge::Ptr& edge)
     {
         throw std::runtime_error("BaseGraph: edge cannot be removed, since it does not exist in this graph");
     }
+    removeEdgeInternal(edge);
     edge->disassociate(getId());
 
     // Call observers

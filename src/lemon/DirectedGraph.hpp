@@ -59,18 +59,6 @@ public:
     friend class OutArcIterator<DirectedGraph>;
 
     /**
-     * \brief Add a vertex
-     * \return the created vertex
-     */
-    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
-
-    /**
-     * \brief Add an edge
-     * \return the created edge
-     */
-    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
-
-    /**
      * Translate between wrapper and native formats
      */
     graph_t::Node getNode(const Vertex::Ptr& vertex) const;
@@ -93,9 +81,6 @@ public:
      * \return Pointer to the vertex data
      */
     Vertex::Ptr getTargetVertex(const Edge::Ptr& e) const;
-
-    void removeVertex(const Vertex::Ptr& vertex);
-    void removeEdge(const Edge::Ptr& edge);
 
     DirectedGraph(const DirectedGraph& other);
 
@@ -128,15 +113,39 @@ public:
     SubGraph::Ptr identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const;
 
 protected:
-    // Property maps to store data associated with vertices and edges
-    EdgeMap mEdgeMap;
-    VertexMap mVertexMap;
+    /**
+     * \brief Add a vertex
+     * \return the created vertex
+     */
+    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
+
+    /**
+     * Remove a vertex from the internal graph representation
+     */
+    virtual void removeVertexInternal(const Vertex::Ptr&);
+
+    /**
+     * \brief Add an edge
+     * \return the created edge
+     */
+    GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
+
+    /**
+     * Remove an edge from the internal graph representation
+     * \return Element id of this vertex within this graph
+     */
+    virtual void removeEdgeInternal(const Edge::Ptr&);
 
     /**
      * Get the subgraph -- by default all vertices and edges of the
      * base graph are available (enabled)
      */
-    SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& graph) const;
+    virtual SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& graph) const;
+
+    // Property maps to store data associated with vertices and edges
+    EdgeMap mEdgeMap;
+    VertexMap mVertexMap;
+
 };
 
 } // end namespace lemon

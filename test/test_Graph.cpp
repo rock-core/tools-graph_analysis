@@ -14,38 +14,54 @@ BOOST_AUTO_TEST_CASE(add_remove_edges_and_vertices)
 {
     for(int i = BaseGraph::BOOST_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)
     {
-        BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
-        BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
+        {
+            BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
+            BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
 
-        Vertex::Ptr v0( new Vertex());
-        Vertex::Ptr v1( new Vertex());
+            Vertex::Ptr v0( new Vertex());
+            Vertex::Ptr v1( new Vertex());
 
-        Edge::Ptr e0(new Edge());
-        e0->setSourceVertex(v0);
-        e0->setTargetVertex(v1);
+            Edge::Ptr e0(new Edge());
+            e0->setSourceVertex(v0);
+            e0->setTargetVertex(v1);
 
-        BOOST_REQUIRE_NO_THROW(graph->addEdge(e0));
-        BOOST_REQUIRE_THROW(graph->addVertex(v0), std::runtime_error);
-        BOOST_REQUIRE_THROW(graph->addVertex(v1), std::runtime_error);
+            BOOST_REQUIRE_NO_THROW(graph->addEdge(e0));
+            BOOST_REQUIRE_THROW(graph->addVertex(v0), std::runtime_error);
+            BOOST_REQUIRE_THROW(graph->addVertex(v1), std::runtime_error);
 
-        int vertexCount = graph->getVertexCount();
-        BOOST_REQUIRE_MESSAGE(graph->getVertexCount() == 2, "Count nodes: expected 2 vertices but was " << vertexCount);
-        BOOST_REQUIRE_MESSAGE(graph->getEdgeCount() == 1, "Count edges: expected 1 edge but was " << vertexCount);
+            int vertexCount = graph->getVertexCount();
+            BOOST_REQUIRE_MESSAGE(graph->getVertexCount() == 2, "Count nodes: expected 2 vertices but was " << vertexCount);
+            BOOST_REQUIRE_MESSAGE(graph->getEdgeCount() == 1, "Count edges: expected 1 edge but was " << vertexCount);
 
-        size_t order = graph->order();
-        BOOST_REQUIRE_MESSAGE(order == 2, "Graph order: expected order 2, but was " << order);
+            size_t order = graph->order();
+            BOOST_REQUIRE_MESSAGE(order == 2, "Graph order: expected order 2, but was " << order);
 
-        size_t size = graph->size();
-        BOOST_REQUIRE_MESSAGE(size == 1, "Graph size: expected size 1, but was " << size);
+            size_t size = graph->size();
+            BOOST_REQUIRE_MESSAGE(size == 1, "Graph size: expected size 1, but was " << size);
 
-        BOOST_REQUIRE_NO_THROW(graph->removeEdge(e0));
-        BOOST_REQUIRE_NO_THROW(graph->removeVertex(v0));
-        BOOST_REQUIRE_NO_THROW(graph->removeVertex(v1));
+            BOOST_REQUIRE_NO_THROW(graph->removeEdge(e0));
+            BOOST_REQUIRE_NO_THROW(graph->removeVertex(v0));
+            BOOST_REQUIRE_NO_THROW(graph->removeVertex(v1));
 
-        vertexCount = graph->getVertexCount();
-        BOOST_REQUIRE_MESSAGE(vertexCount == 0, "Removed vertices: expected 0 but was " << vertexCount);
-        BOOST_REQUIRE_MESSAGE(graph->getVertexCount() == 0, "Removed vertices: expected 0 but was " << vertexCount);
+            vertexCount = graph->getVertexCount();
+            BOOST_REQUIRE_MESSAGE(vertexCount == 0, "Removed vertices: expected 0 but was " << vertexCount);
+            BOOST_REQUIRE_MESSAGE(graph->getVertexCount() == 0, "Removed vertices: expected 0 but was " << vertexCount);
+        }
+        {
+            BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
+            for(int i = 0; i < 10; ++i)
+            {
+                graph->addVertex( Vertex::Ptr( new Vertex() ) );
+            }
+            BaseGraph::Ptr clonedGraph = graph->clone();
 
+            std::vector<Vertex::Ptr> vertices = clonedGraph->getAllVertices();
+            std::vector<Vertex::Ptr>::const_iterator cit = vertices.begin();
+            for(; cit != vertices.end(); ++cit)
+            {
+                clonedGraph->removeVertex( *cit );
+            }
+        }
     }
 }
 
@@ -255,12 +271,12 @@ BOOST_AUTO_TEST_CASE(get_edges)
 
         {
             std::vector<Edge::Ptr> edges = graph->getEdges(v0,v1);
-            BOOST_REQUIRE_MESSAGE(edges.size() == 1, "Get edges expected to return 1 edge, was " << edges.size() << 
+            BOOST_REQUIRE_MESSAGE(edges.size() == 1, "Get edges expected to return 1 edge, was " << edges.size() <<
                     " for " << graph->getImplementationTypeName());
         }
         {
             std::vector<Edge::Ptr> edges = graph->getEdges(v1,v0);
-            BOOST_REQUIRE_MESSAGE(edges.size() == 1, "Get edges expected to return 1 edge for reverse direction, was " << edges.size() << 
+            BOOST_REQUIRE_MESSAGE(edges.size() == 1, "Get edges expected to return 1 edge for reverse direction, was " << edges.size() <<
                     " for " << graph->getImplementationTypeName());
         }
     }

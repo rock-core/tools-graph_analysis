@@ -66,28 +66,6 @@ public:
 
     BaseGraph::Ptr newInstance() const;
 
-    /**
-     * \brief Add a vertex
-     * \return the id of the newly created vertex
-     */
-    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
-
-    /**
-     * \brief Remove vertex
-     */
-    void removeVertex(const Vertex::Ptr& vertex);
-
-    /**
-     * \brief Remove edge
-     */
-    void removeEdge(const Edge::Ptr& edge);
-
-    /**
-     * \brief Add an edge
-     * \return an edge interator
-     */
-    virtual GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
-
     Vertex::Ptr getVertex(GraphElementId id) const;
     Edge::Ptr getEdge(GraphElementId id) const;
 
@@ -119,7 +97,30 @@ public:
 
     graph_analysis::EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const;
 
-    SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& baseGraph) const;
+protected:
+    /**
+     * \brief Add a vertex
+     * \return the id of the newly created vertex
+     */
+    virtual GraphElementId addVertexInternal(const Vertex::Ptr& vertex);
+
+    /**
+     * \brief Remove vertex from the graph
+     */
+    virtual void removeVertexInternal(const Vertex::Ptr& vertex);
+
+    /**
+     * \brief Add an edge
+     * \return an edge interator
+     */
+    virtual GraphElementId addEdgeInternal(const Edge::Ptr& edge, GraphElementId sourceVertexId, GraphElementId targetVertexId);
+
+    /**
+     * Remove an edge from the graph
+     */
+    virtual void removeEdgeInternal(const Edge::Ptr& edge);
+
+    virtual SubGraph::Ptr createSubGraph(const BaseGraph::Ptr& baseGraph) const;
 };
 
 } // end namespace snap
