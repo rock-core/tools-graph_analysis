@@ -17,6 +17,15 @@ namespace graph_analysis
 namespace io
 {
 
+std::string createDefaultDeploymentPrefix(const std::string& templateLabel)
+{
+    std::string prefix = "orogen_default_";
+    std::string::size_type pos = templateLabel.find("::");
+    std::string base(templateLabel.substr(0,pos));
+    std::string name(templateLabel.substr(pos+2));
+    return (prefix + base + "__" + name);
+}
+
 void writePropertiesRecursively(YAML::Node& node, const Vertex::Ptr& vertex,
                                 const BaseGraph::Ptr& graph)
 {
@@ -54,6 +63,7 @@ void writePropertiesRecursively(YAML::Node& node, const Vertex::Ptr& vertex,
 
 void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
 {
+    int i = 1;
     // Cycle thorugh all vertices
     VertexIterator::Ptr vit = graph->getVertexIterator();
     while(vit->next())
@@ -74,6 +84,21 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
 
         // For all associated properties
         writePropertiesRecursively(uerg, task, graph);
+
+        // FIXME
+        // Produce DEFAULT config_name for every task
+        doc["tasks"][task->getLabel()]["config_names"][0] = "default";
+
+        // FIXME
+        // Produce DEFAULT deployment for every task (TODO: Introduce deployment concept)
+        // Test this ... maybe the logger stuff has to be removed?
+        doc["deployments"][i]["deployer"] = "orogen";
+        doc["deployments"][i]["hostID"] = "localhost";
+        std::string deployerPrefix(createDefaultDeploymentPrefix(taskTemp->getLabel()));
+        doc["deployments"][i]["process_name"] = deployerPrefix;
+        doc["deployments"][i]["taskList"][task->getLabel()] = deployerPrefix;
+        doc["deployments"][i]["taskList"][task->getLabel() + "_Logger"] = deployerPrefix + "_Logger";
+        i++;
     }
 
     // Cycle thorugh all edges
@@ -107,8 +132,8 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
         // FIXME: These have to be included into the port connection model!!!
         // TODO: For this we need CONNECTORS
         doc["connections"][conn->getLabel()]["transport"] = "CORBA";
-        doc["connections"][conn->getLabel()]["type"] = "BUFFER";
-        doc["connections"][conn->getLabel()]["size"] = 20;
+        doc["connections"][conn->getLabel()]["type"] = "DATA";
+        //doc["connections"][conn->getLabel()]["size"] = 20;
     }
 }
 
