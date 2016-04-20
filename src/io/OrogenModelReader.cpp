@@ -160,6 +160,12 @@ void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
                    "",
                    graph,
                    comp);
+
+    // Finally properties of the task (if it has at least one)
+    YAML::Node properties = ports["properties"];
+    if (properties.begin() == properties.end())
+        return;
+
     // First, we create a master property 'config' for the properties
     // (compliance with the CND model :/)
     task_graph::Property::Ptr config =
@@ -168,8 +174,7 @@ void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
     task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
         new task_graph::HasFeature(comp, config, "has"));
     graph->addEdge(has);
-    // Finally properties of the task
-    YAML::Node properties = ports["properties"];
+    // Cycle through all and create
     for(it = properties.begin(); it != properties.end(); ++it)
     {
         YAML::Node current = *it;

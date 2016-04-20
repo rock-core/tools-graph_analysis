@@ -17,7 +17,7 @@ namespace graph_analysis
 namespace io
 {
 
-bool hasProperties(const Vertex::Ptr& vertex, const BaseGraph::Ptr& graph)
+bool needsConfig(const Vertex::Ptr& vertex, const BaseGraph::Ptr& graph)
 {
     EdgeIterator::Ptr eit = graph->getOutEdgeIterator(vertex);
     while(eit->next())
@@ -31,7 +31,10 @@ bool hasProperties(const Vertex::Ptr& vertex, const BaseGraph::Ptr& graph)
         if(target->getClassName() != task_graph::Property::vertexType())
             continue;
 
-        // If we have found at least one property we are finished :)
+        // Check if property is named 'config'
+        if (target->toString() != "config")
+            continue;
+
         return true;
     }
 
@@ -107,8 +110,8 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
         writePropertiesRecursively(uerg, task, graph);
 
         // FIXME
-        // Produce DEFAULT config_name for every task if he has at least one property
-        if (hasProperties(task, graph))
+        // Produce DEFAULT config_name for every task if he has at least one property named 'config'
+        if (needsConfig(task, graph))
         {
             doc["tasks"][task->getLabel()]["config_names"][0] = "default";
         }
