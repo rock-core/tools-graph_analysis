@@ -196,6 +196,10 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
             from["task_id"].as<std::string>(), graph);
         task_graph::Task::Ptr targetTask = getVertexByLabel<task_graph::Task>(
             to["task_id"].as<std::string>(), graph);
+        if (!sourceTask || !targetTask)
+        {
+            continue;
+        }
 
         task_graph::OutputPort::Ptr output = getOutputByLabel(
             graph, sourceTask, from["port_name"].as<std::string>());
