@@ -9,6 +9,7 @@
 #include <graph_analysis/task_graph/Task.hpp>
 
 class QGraphicsSceneMouseEvent;
+class QFatRact;
 
 namespace graph_analysis
 {
@@ -44,8 +45,7 @@ protected:
 private:
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpTemplateLabel;
-    QGraphicsTextItem* mpClassName;
-    QGraphicsRectItem* mpRect;
+    QFatRact* mpRect;
     QVector<InputPortItem*> mvInputPorts;
     QVector<OutputPortItem*> mvOutputPorts;
 };

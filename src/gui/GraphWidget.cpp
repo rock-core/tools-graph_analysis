@@ -33,6 +33,8 @@ GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget* parent)
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
     setAcceptDrops(true);
+    setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                   QPainter::SmoothPixmapTransform);
 }
 
 GraphWidget::~GraphWidget()

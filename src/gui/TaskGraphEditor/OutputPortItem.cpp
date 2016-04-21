@@ -3,10 +3,12 @@
 #include <graph_analysis/task_graph/OutputPort.hpp>
 #include <graph_analysis/task_graph/InputPort.hpp>
 #include <graph_analysis/task_graph/PortConnection.hpp>
+#include <graph_analysis/task_graph/DataType.hpp>
 #include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
 #include <graph_analysis/gui/EdgeMimeData.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
+#include <graph_analysis/gui/QFatRact.hpp>
 
 #include <QPen>
 #include <QGraphicsSceneMoveEvent>
@@ -41,9 +43,28 @@ int OutputPortItem::type() const
 
 void OutputPortItem::updateStrings()
 {
+    // carefull, the DataType can be invalid, during graph-buildup for example
+    graph_analysis::task_graph::DataType::Ptr data =
+        dynamic_pointer_cast<graph_analysis::task_graph::Port>(
+            getVertex())->getDataType(getGraph());
     mpLabel->setPlainText(QString("out: ") +
                           QString(mpVertex->getLabel().c_str()));
-    mpRect->setRect(mpLabel->boundingRect());
+
+    if(!data)
+    {
+        mpDataType->setPlainText("N/A");
+        mpDataType->setDefaultTextColor(Qt::red);
+    }
+    else
+    {
+        mpDataType->setPlainText(QString::fromStdString(data->toString()));
+        mpDataType->setDefaultTextColor(Qt::gray);
+    }
+
+    mpDataType->setPos(mpLabel->boundingRect().bottomRight()-
+                         QPointF(mpDataType->boundingRect().width(), 0));
+
+    mpRect->setRect(childrenBoundingRect());
 }
 
 void OutputPortItem::paint(QPainter* painter,

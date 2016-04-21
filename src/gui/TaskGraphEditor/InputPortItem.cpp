@@ -8,6 +8,8 @@
 #include <graph_analysis/gui/EdgeMimeData.hpp>
 #include <graph_analysis/task_graph/InputPort.hpp>
 #include <graph_analysis/task_graph/OutputPort.hpp>
+#include <graph_analysis/task_graph/DataType.hpp>
+#include <graph_analysis/gui/QFatRact.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -28,9 +30,29 @@ InputPortItem::~InputPortItem()
 
 void InputPortItem::updateStrings()
 {
+    // carefull, the DataType can be invalid, during graph-buildup for example
+    graph_analysis::task_graph::DataType::Ptr data =
+        dynamic_pointer_cast<graph_analysis::task_graph::Port>(
+            getVertex())->getDataType(getGraph());
+
     mpLabel->setPlainText(QString("in: ") +
                           QString(mpVertex->getLabel().c_str()));
-    mpRect->setRect(mpLabel->boundingRect());
+
+    if(!data)
+    {
+        mpDataType->setPlainText("N/A");
+        mpDataType->setDefaultTextColor(Qt::red);
+    }
+    else
+    {
+        mpDataType->setPlainText(QString::fromStdString(data->toString()));
+        mpDataType->setDefaultTextColor(Qt::gray);
+    }
+
+    mpDataType->setPos(mpLabel->pos() +
+                       QPoint(0, mpLabel->boundingRect().height()));
+
+    mpRect->setRect(childrenBoundingRect());
 }
 
 void InputPortItem::paint(QPainter *painter,

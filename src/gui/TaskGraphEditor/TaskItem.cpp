@@ -11,6 +11,7 @@
 #include <base/Logging.hpp>
 
 #include <graph_analysis/task_graph/TaskTemplate.hpp>
+#include <graph_analysis/gui/QFatRact.hpp>
 
 namespace graph_analysis
 {
@@ -26,6 +27,7 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
     mpLabel = new QGraphicsTextItem(QString(vertex->getLabel().c_str()), this);
     QFont font = mpLabel->font();
     font.setBold(true);
+    mpLabel->setDefaultTextColor(Qt::black);
     mpLabel->setFont(font);
 
     // FIXME: We have to check the return value of getTemplate ... this
@@ -35,23 +37,25 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
     task_graph::TaskTemplate::Ptr templ =
         vertex->getTemplate(graphWidget->graph());
     if(templ)
+    {
         mpTemplateLabel = new QGraphicsTextItem(
             QString(
                 vertex->getTemplate(graphWidget->graph())->getLabel().c_str()),
             this);
+    }
     else
+    {
         mpTemplateLabel = new QGraphicsTextItem(QString("???"), this);
-    mpTemplateLabel->setPos(mpLabel->pos() +
-                            QPoint(0, mpLabel->boundingRect().height()));
+    }
+    mpTemplateLabel->setDefaultTextColor(Qt::darkGray);
+    // watch-up, the scaling of the beast in action. AGAIN!!!
+    mpTemplateLabel->setPos(
+        QPoint(500 * 0.666, mpLabel->boundingRect().height()));
 
-    mpClassName =
-        new QGraphicsTextItem(QString(vertex->getClassName().c_str()), this);
-    mpClassName->setPos(mpTemplateLabel->pos() +
-                        QPoint(0, mpTemplateLabel->boundingRect().height()));
-    mpClassName->setDefaultTextColor(Qt::gray);
-
-    QPen penForRect = QPen(Qt::blue);
     setFlag(ItemIsMovable);
+
+    // i don't care. hmi.
+    int penWidthTheHack = QFatRact::getPlannedPenWidth();
 
     {
         std::vector<task_graph::OutputPort::Ptr> ports =
@@ -64,19 +68,18 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
             if(mvOutputPorts.isEmpty())
             {
                 oPort->setPos(QPointF(childrenBoundingRect().width() -
-                                          penForRect.width() -
+                                          penWidthTheHack / 2.0 -
                                           oPort->boundingRect().width(),
                                       mpTemplateLabel->boundingRect().height() +
-                                          mpClassName->boundingRect().height() +
                                           oPort->boundingRect().height()));
             }
             else
             {
-                oPort->setPos(QPointF(childrenBoundingRect().width() -
-                                          penForRect.width() -
-                                          oPort->boundingRect().width(),
-                                      mvOutputPorts.last()->pos().y() +
-                                          oPort->boundingRect().height()));
+                oPort->setPos(QPointF(
+                    childrenBoundingRect().width() - penWidthTheHack / 2.0 -
+                        oPort->boundingRect().width(),
+                    mvOutputPorts.last()->pos().y() - penWidthTheHack +
+                        oPort->boundingRect().height()));
             }
             mvOutputPorts.push_back(oPort);
         }
@@ -92,31 +95,38 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
             InputPortItem* iPort = new InputPortItem(graphWidget, *it, this);
             if(mvInputPorts.isEmpty())
             {
-                iPort->setPos(QPointF(penForRect.width(),
+                iPort->setPos(QPointF(penWidthTheHack,
                                       mpTemplateLabel->boundingRect().height() +
-                                          mpClassName->boundingRect().height() +
                                           iPort->boundingRect().height()));
             }
             else
             {
-                iPort->setPos(QPointF(penForRect.width(),
-                                      mvInputPorts.last()->pos().y() +
+                iPort->setPos(QPointF(mvInputPorts.last()->pos().x(),
+                                      mvInputPorts.last()->pos().y() -
+                                          penWidthTheHack +
                                           iPort->boundingRect().height()));
             }
             mvInputPorts.push_back(iPort);
         }
     }
 
-    mpRect = new QGraphicsRectItem(this);
-    mpRect->setRect(childrenBoundingRect());
-    mpRect->setPen(penForRect);
+    mpRect = new QFatRact(this, Qt::blue);
+    mpRect->setRect(
+        childrenBoundingRect().adjusted(0, 0, 0, penWidthTheHack / 2.));
+
+    QLinearGradient gradient(QPoint(0, -50), QPoint(0, 70));
+    gradient.setColorAt(0, QColor::fromRgbF(0, 0, 1, 0.7));
+    gradient.setColorAt(1, QColor::fromRgbF(1, 1, 1, 0.7));
+    QBrush brush(gradient);
+
+    mpRect->setBrush(brush);
+    mpRect->setZValue(-1);
 }
 
 TaskItem::~TaskItem()
 {
     delete mpLabel;
     delete mpTemplateLabel;
-    delete mpClassName;
     delete mpRect;
     // do NOT delete item created in this class. these will hopefully be
     // deleted from the outside.

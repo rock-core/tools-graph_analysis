@@ -9,6 +9,7 @@
 #include <graph_analysis/task_graph/Port.hpp>
 
 class QGraphicsSceneMouseEvent;
+class QFatRact;
 
 namespace graph_analysis
 {
@@ -27,8 +28,9 @@ class PortItem : public VertexItemBase
     virtual void updateStrings() = 0;
 
   protected:
-    QGraphicsRectItem *mpRect;
+    QFatRact *mpRect;
     QGraphicsTextItem *mpLabel;
+    QGraphicsTextItem *mpDataType;
 };
 
 } // end namespace gui

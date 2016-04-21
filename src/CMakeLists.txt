@@ -32,6 +32,7 @@ rock_library(graph_analysis
         filters/RegexFilters.cpp
         gui/GraphAnalysisGui.cpp
         gui/QBaseGraph.cpp
+        gui/QFatRact.cpp
         gui/ActionCommander.cpp
         gui/EdgeItem.cpp
         gui/EdgeItemTypeManager.cpp
@@ -145,6 +146,7 @@ rock_library(graph_analysis
         filters/RegexFilters.hpp
         gui/GraphAnalysisGui.hpp
         gui/QBaseGraph.hpp
+        gui/QFatRact.hpp
         gui/ActionCommander.hpp
         gui/EdgeItem.hpp
         gui/EdgeItemTypeManager.hpp
@@ -226,6 +228,7 @@ rock_library(graph_analysis
     MOC
         gui/GraphAnalysisGui.hpp
         gui/QBaseGraph.hpp
+        gui/QFatRact.hpp
         gui/FilterManager.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
