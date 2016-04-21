@@ -98,8 +98,6 @@ protected:
     QRectF boundingRect() const;
     QPainterPath shape() const;
 
-private:
-
     int mArrowSize;
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;

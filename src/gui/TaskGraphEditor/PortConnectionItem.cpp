@@ -20,6 +20,8 @@ PortConnectionItem::PortConnectionItem(GraphWidget *graphWidget,
     : EdgeItemSimple(graphWidget, edge, parent)
 {
     setAcceptedMouseButtons(Qt::RightButton);
+    mpMultiLine->setPen(QPen(QBrush(Qt::black), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    mpArrowHead->setPen(QPen(QBrush(Qt::black), 2, Qt::SolidLine, Qt::RoundCap, Qt::MiterJoin));
 }
 
 PortConnectionItem::~PortConnectionItem()
