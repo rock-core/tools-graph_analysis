@@ -321,16 +321,22 @@ TaskGraphEditor::launcher_execution_finished(int exitCode,
     // check if all is alright
     if(exitStatus == QProcess::CrashExit)
     {
-        QMessageBox::critical(this, "D-Rock",
-                              "launcher did not work:\n" + mLauncher.readAll(),
-                              QMessageBox::Ok);
+        QMessageBox::information(this, "D-Rock",
+                                 QString("launcher closed with exitCode %1")
+                                     .arg(mLauncher.exitCode()),
+                                 QMessageBox::Ok);
     }
     else
     {
         qDebug() << mLauncher.readAll();
-        QMessageBox::information(this, "D-Rock", "launcher launched",
-                                 QMessageBox::Ok);
+        QMessageBox::information(
+            this, "D-Rock",
+            QString("launcher finished by itself with exitCode %1")
+                .arg(mLauncher.exitCode()),
+            QMessageBox::Ok);
     }
+
+    qDebug()<<mLauncher.readAll();
 
     // reset the text of the button, so that future clicks on the button will
     // trigger "start" again
