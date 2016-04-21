@@ -60,7 +60,8 @@ private slots:
     void currentStatus_internal(QString, int);
 
     // just for HMI
-    void launcher_execution_done(int, QProcess::ExitStatus);
+    void launcher_execution_finished(int, QProcess::ExitStatus);
+    void launcher_execution_started();
 
 public slots:
     // Adding/Removing TaskTemplates

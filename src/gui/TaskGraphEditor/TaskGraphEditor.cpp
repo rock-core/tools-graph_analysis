@@ -36,7 +36,9 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
             SLOT(currentStatus_internal(QString, int)));
 
     connect(&mLauncher, SIGNAL(finished(int, QProcess::ExitStatus)), this,
-            SLOT(launcher_execution_done(int, QProcess::ExitStatus)));
+            SLOT(launcher_execution_finished(int, QProcess::ExitStatus)));
+    connect(&mLauncher, SIGNAL(started()), this,
+            SLOT(launcher_execution_started()));
 
     // FIXME
     // Hide some buttons for demo
@@ -306,42 +308,41 @@ void TaskGraphEditor::on_removeButton_clicked()
     }
 }
 
-void TaskGraphEditor::launcher_execution_done(int exitCode,
-                                              QProcess::ExitStatus exitStatus)
+void TaskGraphEditor::launcher_execution_started()
+{
+    mpUi->executeNetwork->setDisabled(true);
+}
+
+void
+TaskGraphEditor::launcher_execution_finished(int exitCode,
+                                             QProcess::ExitStatus exitStatus)
 {
     // check if all is alright
     if(exitStatus == QProcess::CrashExit)
     {
-        QMessageBox::critical(this, "D-Rock", "ruby launcher crashed with:\n" +
-                                                  mLauncher.readAll(),
+        QMessageBox::critical(this, "D-Rock",
+                              "launcher did not work:\n" + mLauncher.readAll(),
                               QMessageBox::Ok);
     }
     else
     {
         qDebug() << mLauncher.readAll();
+        QMessageBox::information(this, "D-Rock", "launcher launched",
+                                 QMessageBox::Ok);
     }
 
     // reenable the button
     mpUi->executeNetwork->setEnabled(true);
-    // just for good measure, to be sure:
-    mLauncher.terminate();
 }
 
 void TaskGraphEditor::on_executeNetwork_clicked()
 {
     // launch the shit out of this
-    mLauncher.start("ruby execute_launcher_wrapper.rb " + mTemplate);
-    if(!mLauncher.waitForStarted(1000))
+    mLauncher.start("launcher " + lastSavedComponentNetworkDescription);
+    if(!mLauncher.waitForStarted())
     {
-        QMessageBox::critical(this, "D-Rock",
-                              "launching ruby failed with timeout:\n" +
-                                  mLauncher.readAll(),
+        QMessageBox::critical(this, "D-Rock", "launcher failed early...",
                               QMessageBox::Ok);
-    }
-    else
-    {
-        // if it worked disable the button
-        mpUi->executeNetwork->setDisabled(true);
     }
 }
 }
