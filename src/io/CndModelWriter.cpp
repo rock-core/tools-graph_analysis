@@ -10,6 +10,7 @@
 #include <graph_analysis/task_graph/Task.hpp>
 #include <graph_analysis/task_graph/TaskTemplate.hpp>
 #include <iostream>
+#include <base/Logging.hpp>
 #include <yaml-cpp/yaml.h>
 
 namespace graph_analysis
@@ -187,7 +188,20 @@ void CndModelWriter::write(const std::string& filename,
 
     std::ofstream fout;
     fout.open(filename.c_str());
-    fout << doc;
+    if(!fout.good())
+    {
+        LOG_ERROR_S << "error when opening cnd-safe-file '" << filename << "'";
+    }
+    else if(doc.size() == 0)
+    {
+        LOG_ERROR_S << "cannot export cnd to '" << filename
+                    << "', the model is empty";
+    }
+    else
+    {
+        LOG_INFO_S << "exporting cnd-model to '" << filename << "'";
+        fout << doc;
+    }
     fout.close();
 }
 }
