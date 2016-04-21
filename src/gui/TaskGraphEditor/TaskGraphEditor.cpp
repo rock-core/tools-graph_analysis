@@ -111,7 +111,8 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
         msgBox->show();
     }
 
-    // disable the "execute" button at first. will be initially enabled by pressing "save"
+    // disable the "execute" button at first. will be initially enabled by
+    // pressing "save"
     mpUi->executeNetwork->setDisabled(true);
     mpUi->executeNetwork->setToolTip("save current CND to execute it with the launcher");
 }
@@ -310,7 +311,7 @@ void TaskGraphEditor::on_removeButton_clicked()
 
 void TaskGraphEditor::launcher_execution_started()
 {
-    mpUi->executeNetwork->setDisabled(true);
+    mpUi->executeNetwork->setText("terminate");
 }
 
 void
@@ -331,18 +332,25 @@ TaskGraphEditor::launcher_execution_finished(int exitCode,
                                  QMessageBox::Ok);
     }
 
-    // reenable the button
-    mpUi->executeNetwork->setEnabled(true);
+    // reset the text of the button, so that future clicks on the button will
+    // trigger "start" again
+    mpUi->executeNetwork->setText("execute");
 }
 
 void TaskGraphEditor::on_executeNetwork_clicked()
 {
+    if (mpUi->executeNetwork->text() == "execute")
+    {
     // launch the shit out of this
-    mLauncher.start("launcher " + lastSavedComponentNetworkDescription);
+    mLauncher.start("sleep 10");
     if(!mLauncher.waitForStarted())
     {
         QMessageBox::critical(this, "D-Rock", "launcher failed early...",
                               QMessageBox::Ok);
+    }
+    } else if (mpUi->executeNetwork->text()=="terminate")
+    {
+        mLauncher.terminate();
     }
 }
 }
