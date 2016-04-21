@@ -35,6 +35,8 @@
 #include <graph_analysis/task_graph/PortConnection.hpp>
 #include <graph_analysis/task_graph/Property.hpp>
 
+#include <graph_analysis/algorithms/BFS.hpp>
+
 #include "PortConnectionItem.hpp"
 #include "TaskItem.hpp"
 
@@ -84,15 +86,28 @@ QString TaskGraphViewer::getClassName() const
 
 // differs from the base-implementation in that here, only things of type
 // "TaskItem" are shuffled.
+// Uses an archimedal spiral to layout the things :)
+// TODO:
+// * Should incorporate the size of nodes
+// * Parameters should be formalized (especially alpha update)
+// * alpha has to increase with a delta decreasing faster than 1/x
 void TaskGraphViewer::shuffle()
 {
-    int diff = 25 * mVertexItemMap.size();
+    double alpha = M_PI / 2;
+    double scale = 400 / (M_PI * 2);
+
     foreach(QGraphicsItem* item, scene()->items())
     {
         if(dynamic_cast<TaskItem*>(item))
         {
-            item->setPos(-diff / 2 + qrand() % diff,
-                         -diff / 2 + qrand() % diff);
+            // Set item pos in a spiral manner
+            double x = scale * alpha * cos(alpha);
+            double y = scale * alpha * sin(alpha);
+            std::cout << x << "," << y << std::endl;
+            item->setPos(x, y);
+            // Update alpha
+            alpha += ((M_PI / 2.) / (alpha/10. + 1.));
+            //alpha += (M_PI / 2.);
         }
     }
     updateStatus(
