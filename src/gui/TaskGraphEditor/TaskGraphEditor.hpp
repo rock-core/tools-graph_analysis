@@ -49,6 +49,7 @@ private:
 
     // just for HMI
     QProcess mLauncher;
+    QString lastSavedComponentNetworkDescription;
 
 signals:
     // Will be triggered by the TaskGraphViewer

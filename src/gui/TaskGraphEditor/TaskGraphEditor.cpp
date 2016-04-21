@@ -108,6 +108,10 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
         msgBox->setIcon(QMessageBox::Warning);
         msgBox->show();
     }
+
+    // disable the "execute" button at first. will be initially enabled by pressing "save"
+    mpUi->executeNetwork->setDisabled(true);
+    mpUi->executeNetwork->setToolTip("save current CND to execute it with the launcher");
 }
 
 TaskGraphEditor::~TaskGraphEditor()
@@ -180,6 +184,15 @@ void TaskGraphEditor::on_saveButton_clicked()
         } else {
             writer.update(mTemplate.toStdString(), filename.toStdString(), mpGraph);
         }
+
+        // note the filename, so that we can execute it upon user-request later
+        lastSavedComponentNetworkDescription = filename;
+        // and enable the execute button, so that it can be executed
+        mpUi->executeNetwork->setEnabled(true);
+        mpUi->executeNetwork->setToolTip(
+            "will execute the saved CND '" +
+            lastSavedComponentNetworkDescription +
+            "' using the launcher");
     }
 }
 
