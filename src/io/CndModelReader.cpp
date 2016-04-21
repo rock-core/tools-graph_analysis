@@ -171,10 +171,8 @@ void CndModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
             getVertexByLabel<task_graph::TaskTemplate>(templ, graph);
         if(!parent)
         {
-            throw std::runtime_error(
-                "CndModelReader::read(): Could not find template '" + templ +
-                "'");
-            return;
+            std::cout << "Ignoring " << label << " because of missing template" << std::endl;
+            continue;
         }
         // Then instantiate from template
         task_graph::Task::Ptr task = parent->instantiateAndAddTo(graph, label);
