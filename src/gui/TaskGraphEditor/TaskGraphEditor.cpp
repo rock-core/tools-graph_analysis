@@ -39,6 +39,10 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
             SLOT(launcher_execution_finished(int, QProcess::ExitStatus)));
     connect(&mLauncher, SIGNAL(started()), this,
             SLOT(launcher_execution_started()));
+    // this will cause the launched windows to appear on the remote display
+    QStringList env;
+    env << "DISPLAY=:0";
+    mLauncher.setEnvironment(env);
 
     // FIXME
     // Hide some buttons for demo
