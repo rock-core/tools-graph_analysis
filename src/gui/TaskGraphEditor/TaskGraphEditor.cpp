@@ -40,9 +40,9 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     connect(&mLauncher, SIGNAL(started()), this,
             SLOT(launcher_execution_started()));
     // this will cause the launched windows to appear on the remote display
-    QStringList env;
-    env << "DISPLAY=:0";
-    mLauncher.setEnvironment(env);
+    QStringList bla(QProcess::systemEnvironment());
+    bla << "DISPLAY=:0";
+    mLauncher.setEnvironment(bla);
 
     // FIXME
     // Hide some buttons for demo
@@ -172,6 +172,15 @@ void TaskGraphEditor::on_loadButton_clicked()
     {
         io::CndModelReader reader;
         reader.read(filename.toStdString(), mpGraph);
+
+        // note the filename, so that we can execute it upon user-request later
+        lastSavedComponentNetworkDescription = filename;
+        // and enable the execute button, so that it can be executed
+        mpUi->executeNetwork->setEnabled(true);
+        mpUi->executeNetwork->setToolTip(
+            "will execute the saved CND '" +
+            lastSavedComponentNetworkDescription +
+            "' using the launcher");
     }
 }
 
