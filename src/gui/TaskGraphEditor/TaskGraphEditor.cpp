@@ -339,16 +339,17 @@ TaskGraphEditor::launcher_execution_finished(int exitCode,
 
 void TaskGraphEditor::on_executeNetwork_clicked()
 {
-    if (mpUi->executeNetwork->text() == "execute")
+    if(mpUi->executeNetwork->text() == "execute")
     {
-    // launch the shit out of this
-    mLauncher.start("sleep 10");
-    if(!mLauncher.waitForStarted())
-    {
-        QMessageBox::critical(this, "D-Rock", "launcher failed early...",
-                              QMessageBox::Ok);
+        // launch the shit out of this
+        mLauncher.start("launcher " + lastSavedComponentNetworkDescription);
+        if(!mLauncher.waitForStarted())
+        {
+            QMessageBox::critical(this, "D-Rock", "launcher failed early...",
+                                  QMessageBox::Ok);
+        }
     }
-    } else if (mpUi->executeNetwork->text()=="terminate")
+    else if(mpUi->executeNetwork->text() == "terminate")
     {
         mLauncher.terminate();
     }
