@@ -48,44 +48,19 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
         mpTemplateLabel = new QGraphicsTextItem(QString("???"), this);
     }
     mpTemplateLabel->setDefaultTextColor(Qt::darkGray);
-    // watch-up, the scaling of the beast in action. AGAIN!!!
     mpTemplateLabel->setPos(
-        QPoint(500 * 0.666, mpLabel->boundingRect().height()));
+        QPointF(0, mpLabel->boundingRect().height()));
 
     setFlag(ItemIsMovable);
 
     // i don't care. hmi.
     int penWidthTheHack = QFatRact::getPlannedPenWidth();
 
+    // First, we just create the ports
+    float maxInputWidth = 0;
+    float initialY = mpLabel->boundingRect().height() + mpTemplateLabel->boundingRect().height();
     {
-        std::vector<task_graph::OutputPort::Ptr> ports =
-            vertex->getOutputPorts(graphWidget->graph());
-        std::vector<task_graph::OutputPort::Ptr>::const_iterator it =
-            ports.begin();
-        for(; it != ports.end(); it++)
-        {
-            OutputPortItem* oPort = new OutputPortItem(graphWidget, *it, this);
-            if(mvOutputPorts.isEmpty())
-            {
-                oPort->setPos(QPointF(childrenBoundingRect().width() -
-                                          penWidthTheHack / 2.0 -
-                                          oPort->boundingRect().width(),
-                                      mpTemplateLabel->boundingRect().height() +
-                                          oPort->boundingRect().height()));
-            }
-            else
-            {
-                oPort->setPos(QPointF(
-                    childrenBoundingRect().width() - penWidthTheHack / 2.0 -
-                        oPort->boundingRect().width(),
-                    mvOutputPorts.last()->pos().y() - penWidthTheHack +
-                        oPort->boundingRect().height()));
-            }
-            mvOutputPorts.push_back(oPort);
-        }
-    }
-
-    {
+        // Draw inputs first.
         std::vector<task_graph::InputPort::Ptr> ports =
             vertex->getInputPorts(graphWidget->graph());
         std::vector<task_graph::InputPort::Ptr>::const_iterator it =
@@ -93,21 +68,62 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
         for(; it != ports.end(); it++)
         {
             InputPortItem* iPort = new InputPortItem(graphWidget, *it, this);
-            if(mvInputPorts.isEmpty())
-            {
-                iPort->setPos(QPointF(penWidthTheHack,
-                                      mpTemplateLabel->boundingRect().height() +
-                                          iPort->boundingRect().height()));
-            }
-            else
-            {
-                iPort->setPos(QPointF(mvInputPorts.last()->pos().x(),
-                                      mvInputPorts.last()->pos().y() -
-                                          penWidthTheHack +
-                                          iPort->boundingRect().height()));
-            }
             mvInputPorts.push_back(iPort);
+            // Remember maximum width
+            if (iPort->boundingRect().width() > maxInputWidth)
+            {
+                maxInputWidth = iPort->boundingRect().width();
+            }
         }
+    }
+    float maxOutputWidth = 0;
+    {
+        // Draw the outputs secondly
+        std::vector<task_graph::OutputPort::Ptr> ports =
+            vertex->getOutputPorts(graphWidget->graph());
+        std::vector<task_graph::OutputPort::Ptr>::const_iterator it =
+            ports.begin();
+        for(; it != ports.end(); it++)
+        {
+            OutputPortItem* oPort = new OutputPortItem(graphWidget, *it, this);
+            mvOutputPorts.push_back(oPort);
+            // Remember maximum width
+            if (oPort->boundingRect().width() > maxOutputWidth)
+            {
+                maxOutputWidth = oPort->boundingRect().width();
+            }
+        }
+    }
+
+    // Now we adjust the positions
+    {
+        // Inputs
+        QVector<InputPortItem*>::const_iterator it = mvInputPorts.begin();
+        float lastY = initialY;
+        for(;it != mvInputPorts.end(); ++it)
+        {
+            InputPortItem* iPort = *it;
+            iPort->setPos(QPointF(penWidthTheHack,
+                    lastY));
+            lastY += iPort->boundingRect().height() - penWidthTheHack;
+        }
+    }
+    maxInputWidth += penWidthTheHack;
+    {
+        std::cout << "START" << std::endl;
+        // Outputs
+        QVector<OutputPortItem*>::const_iterator it = mvOutputPorts.begin();
+        float lastY = initialY;
+        for(;it != mvOutputPorts.end(); ++it)
+        {
+            OutputPortItem* oPort = *it;
+            std::cout << "PREV " << maxOutputWidth << "," << maxInputWidth << "," << oPort->boundingRect().width();
+            oPort->setPos(QPointF(maxInputWidth + maxOutputWidth + 10.f - penWidthTheHack / 2.f - oPort->boundingRect().width(),
+                    lastY));
+            std::cout << " AFTER " << maxOutputWidth << "," << maxInputWidth << "," << oPort->boundingRect().width() << std::endl;
+            lastY += oPort->boundingRect().height() - penWidthTheHack;
+        }
+        std::cout << "END" << std::endl;
     }
 
     mpRect = new QFatRact(this, Qt::blue);
