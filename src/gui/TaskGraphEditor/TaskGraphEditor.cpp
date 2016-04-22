@@ -344,7 +344,7 @@ void TaskGraphEditor::on_executeLauncher_clicked()
 {
     if(mpUi->executeLauncher->text() == "execute")
     {
-        mLauncher.start();
+        mLauncher.start(QStringList()<<"startup_mars.yml");
     }
     else if(mpUi->executeLauncher->text() == "terminate")
     {
@@ -358,8 +358,6 @@ void TaskGraphEditor::on_executeLauncher_clicked()
 
 void TaskGraphEditor::on_submitNetwork_clicked()
 {
-    // FIXME Because of sequencing issues we have to provide the launcher with two files
-    mLauncher.writeToStdin("startup_mars.yml");
     mLauncher.writeToStdin(lastSavedComponentNetworkDescription.toAscii());
 }
 
