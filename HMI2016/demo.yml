@@ -1,0 +1,83 @@
+connections:
+  6525:
+    to:
+      task_id: pedestrian_detector-Task1
+      port_name: inputImage
+    from:
+      port_name: pure_frame
+      task_id: camera_usb-Task1
+    transport: CORBA
+    type: DATA
+  5729:
+    transport: CORBA
+    type: DATA
+    from:
+      task_id: pedestrian_detector-Task1
+      port_name: bestPedestrian
+    to:
+      port_name: image_coordinates
+      task_id: head_demo_control-Task1
+  6526:
+    from:
+      port_name: pure_frame
+      task_id: camera_usb-Task1
+    type: DATA
+    to:
+      port_name: image
+      task_id: aruco-MarkerBoardDetector1
+    transport: CORBA
+  6527:
+    type: DATA
+    from:
+      port_name: best_marker_simple
+      task_id: aruco-MarkerBoardDetector1
+    to:
+      port_name: marker_information
+      task_id: head_demo_control-Task1
+    transport: CORBA
+tasks:
+  head_demo_control-Task1:
+    config_names:
+      - default
+    state: RUNNING
+    type: head_demo_control::Task
+  aruco-MarkerBoardDetector1:
+    config_names:
+      - default
+    type: aruco::MarkerBoardDetector
+    state: RUNNING
+  pedestrian_detector-Task1:
+    type: pedestrian_detector::Task
+    config_names:
+      - default
+    state: RUNNING
+  camera_usb-Task1:
+    type: camera_usb::Task
+    state: RUNNING
+    config_names:
+      - default
+deployments:
+  2:
+    deployer: orogen
+    hostID: localhost
+    taskList:
+      aruco-MarkerBoardDetector1: orogen_default_aruco__MarkerBoardDetector
+    process_name: orogen_default_aruco__MarkerBoardDetector
+  3:
+    deployer: orogen
+    taskList:
+      head_demo_control-Task1: orogen_default_head_demo_control__Task
+    hostID: localhost
+    process_name: orogen_default_head_demo_control__Task
+  1:
+    deployer: orogen
+    process_name: orogen_default_camera_usb__Task
+    hostID: localhost
+    taskList:
+      camera_usb-Task1: orogen_default_camera_usb__Task
+  4:
+    process_name: orogen_default_pedestrian_detector__Task
+    hostID: localhost
+    deployer: orogen
+    taskList:
+      pedestrian_detector-Task1: orogen_default_pedestrian_detector__Task
