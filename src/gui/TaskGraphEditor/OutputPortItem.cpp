@@ -23,9 +23,9 @@ namespace gui
 {
 
 // kiss:
-OutputPortItem::OutputPortItem(GraphWidget* graphWidget,
-                               graph_analysis::task_graph::OutputPort::Ptr vertex,
-                               QGraphicsItem* parent)
+OutputPortItem::OutputPortItem(
+    GraphWidget* graphWidget,
+    graph_analysis::task_graph::OutputPort::Ptr vertex, QGraphicsItem* parent)
     : PortItem(graphWidget, vertex, parent)
 {
     updateStrings();
@@ -43,10 +43,10 @@ int OutputPortItem::type() const
 
 void OutputPortItem::updateStrings()
 {
-    // carefull, the DataType can be invalid, during graph-buildup for example
+    // careful, the DataType can be invalid, during graph-buildup for example
     graph_analysis::task_graph::DataType::Ptr data =
-        dynamic_pointer_cast<graph_analysis::task_graph::Port>(
-            getVertex())->getDataType(getGraph());
+        dynamic_pointer_cast<graph_analysis::task_graph::Port>(getVertex())
+            ->getDataType(getGraph());
     mpLabel->setPlainText(QString("out: ") +
                           QString(mpVertex->getLabel().c_str()));
 
@@ -61,8 +61,19 @@ void OutputPortItem::updateStrings()
         mpDataType->setDefaultTextColor(Qt::gray);
     }
 
-    mpDataType->setPos(mpLabel->boundingRect().bottomRight()-
-                         QPointF(mpDataType->boundingRect().width(), 0));
+    // Check whether the label or the data type have the greater width
+    if(mpDataType->boundingRect().width() < mpLabel->boundingRect().width())
+    {
+        mpDataType->setPos(mpLabel->boundingRect().bottomRight() -
+                           QPointF(mpDataType->boundingRect().width(), 0));
+    }
+    else
+    {
+        mpDataType->setPos(QPointF(0, mpLabel->boundingRect().height()));
+        mpLabel->setPos(QPointF(mpDataType->boundingRect().width() -
+                                    mpLabel->boundingRect().width(),
+                                0));
+    }
 
     mpRect->setRect(childrenBoundingRect());
 }
@@ -100,14 +111,16 @@ void OutputPortItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         // check that the targetVertex got updated
         if(!targetVertex)
         {
-            LOG_ERROR_S
-            << "could not find a target vertex after dropEvent";
+            LOG_ERROR_S << "could not find a target vertex after dropEvent";
             return;
         }
 
-        task_graph::OutputPort::Ptr output = dynamic_pointer_cast<task_graph::OutputPort>(sourceVertex);
-        task_graph::InputPort::Ptr input = dynamic_pointer_cast<task_graph::InputPort>(targetVertex);
-        task_graph::PortConnection::Ptr conn = task_graph::PortConnection::Ptr(new task_graph::PortConnection(output, input, ""));
+        task_graph::OutputPort::Ptr output =
+            dynamic_pointer_cast<task_graph::OutputPort>(sourceVertex);
+        task_graph::InputPort::Ptr input =
+            dynamic_pointer_cast<task_graph::InputPort>(targetVertex);
+        task_graph::PortConnection::Ptr conn = task_graph::PortConnection::Ptr(
+            new task_graph::PortConnection(output, input, ""));
         std::stringstream ss;
         ss << conn->getUid();
         conn->setLabel(ss.str());
