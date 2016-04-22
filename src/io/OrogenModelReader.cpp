@@ -78,27 +78,28 @@ task_graph::Property::Ptr createProperty(const std::string& label,
     task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
         new task_graph::HasFeature(parent, prop, "has"));
     graph->addEdge(has);
-    // Create data type
-    // TODO: Create a data type only if it is not yet known (?)
-    // TODO: Create a data type modelling layer/view
-    task_graph::DataType::Ptr dtype =
-        task_graph::DataType::Ptr(new task_graph::DataType(type));
-    graph->addVertex(dtype);
-    // Link data type to property
-    task_graph::HasUniqueFeature::Ptr hasU = task_graph::HasUniqueFeature::Ptr(
-        new task_graph::HasUniqueFeature(prop, dtype, "has-unique"));
-    graph->addEdge(hasU);
-    if(!value.empty())
+    if (!type.empty())
     {
-        // Create data value
-        task_graph::DataValue::Ptr dvalue =
-            task_graph::DataValue::Ptr(new task_graph::DataValue(value));
-        graph->addVertex(dvalue);
-        // Link data value to property
-        task_graph::HasUniqueFeature::Ptr hasU2 =
-            task_graph::HasUniqueFeature::Ptr(
-                new task_graph::HasUniqueFeature(prop, dvalue, "has-unique"));
-        graph->addEdge(hasU2);
+        // Create data type
+        task_graph::DataType::Ptr dtype =
+            task_graph::DataType::Ptr(new task_graph::DataType(type));
+        graph->addVertex(dtype);
+        // Link data type to property
+        task_graph::HasUniqueFeature::Ptr hasU = task_graph::HasUniqueFeature::Ptr(
+            new task_graph::HasUniqueFeature(prop, dtype, "has-unique"));
+        graph->addEdge(hasU);
+        if(!value.empty())
+        {
+            // Create data value
+            task_graph::DataValue::Ptr dvalue =
+                task_graph::DataValue::Ptr(new task_graph::DataValue(value));
+            graph->addVertex(dvalue);
+            // Link data value to property
+            task_graph::HasUniqueFeature::Ptr hasU2 =
+                task_graph::HasUniqueFeature::Ptr(
+                    new task_graph::HasUniqueFeature(prop, dvalue, "has-unique"));
+            graph->addEdge(hasU2);
+        }
     }
     return prop;
 }
@@ -155,11 +156,17 @@ void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
                    graph,
                    comp);
     // Add a 'config_names' property (compliance with CND model)
+    task_graph::Property::Ptr config =
     createProperty("config_names",
-                   "std::string",
+                   "",
                    "",
                    graph,
                    comp);
+    createProperty("0",
+                   "std::string",
+                   "default",
+                   graph,
+                   config);
 
     // Finally properties of the task (if it has at least one)
     YAML::Node properties = ports["properties"];
@@ -168,7 +175,7 @@ void OrogenModelReader::read(const std::string& filename, BaseGraph::Ptr graph)
 
     // First, we create a master property 'config' for the properties
     // (compliance with the CND model :/)
-    task_graph::Property::Ptr config =
+    config =
         task_graph::Property::Ptr(new task_graph::Property("config"));
     // Link property to component
     task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(

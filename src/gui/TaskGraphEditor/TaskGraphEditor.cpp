@@ -361,7 +361,9 @@ void TaskGraphEditor::on_executeNetwork_clicked()
     if(mpUi->executeNetwork->text() == "execute")
     {
         // launch the shit out of this
-        mLauncher.start("launcher " + lastSavedComponentNetworkDescription);
+        //mLauncher.start("launcher " + lastSavedComponentNetworkDescription);
+        // FIXME Because of sequencing issues we have to provide the launcher with two files
+        mLauncher.start("launcher startup_mars.yml " + lastSavedComponentNetworkDescription);
         if(!mLauncher.waitForStarted())
         {
             QMessageBox::critical(this, "D-Rock", "launcher failed early...",

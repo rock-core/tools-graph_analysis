@@ -2,6 +2,7 @@
 #include "HasFeature.hpp"
 #include "HasUniqueFeature.hpp"
 #include <iostream>
+#include <cstdlib>
 
 namespace graph_analysis
 {
@@ -85,5 +86,25 @@ DataValue::Ptr Property::getValue(const BaseGraph::Ptr& graph) const
 
     return value;
 }
+
+bool Property::isNumeric() const
+{
+    int blob;
+    return isNumeric(&blob);
+}
+
+bool Property::isNumeric(int *value) const
+{
+    const char *label = getLabel().c_str();
+    char *str_end;
+
+    *value = strtol(label, &str_end, 10);
+
+    // If invalid (no-digit) characters have been found we have a NON purely numeric label
+    if (*str_end != '\0')
+        return false;
+    return true;
+}
+
 }
 }

@@ -4,14 +4,16 @@
 QFatRact::QFatRact(QGraphicsItem* parent, QColor color)
     : QGraphicsRectItem(parent)
 {
-    setPen(QPen(QBrush(color), getPlannedPenWidth(), Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin));
+    setPen(QPen(QBrush(color), getPlannedPenWidth(), Qt::SolidLine,
+                Qt::SquareCap, Qt::MiterJoin));
 }
-void QFatRact::paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
-                     QWidget* widget)
+void QFatRact::setPen(const QPen& suggestedPen)
 {
-    QGraphicsRectItem::paint(painter, option, widget);
+    QPen alteredPen = suggestedPen;
+    alteredPen.setWidth(getPlannedPenWidth());
+    QGraphicsRectItem::setPen(alteredPen);
 }
 int QFatRact::getPlannedPenWidth()
 {
-    return 2;
+    return 1;
 }
