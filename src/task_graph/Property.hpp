@@ -52,6 +52,11 @@ public:
     DataType::Ptr getType(const BaseGraph::Ptr& graph) const;
     DataValue::Ptr getValue(const BaseGraph::Ptr& graph) const;
 
+    /**
+     * @brief Function to determine if the label can be converted to a integer
+     */
+    bool isNumeric() const;
+
 protected:
     /**
      * Create a copy of this vertex

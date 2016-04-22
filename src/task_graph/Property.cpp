@@ -85,5 +85,17 @@ DataValue::Ptr Property::getValue(const BaseGraph::Ptr& graph) const
 
     return value;
 }
+
+bool Property::isNumeric() const
+{
+    const char *label = getLabel().c_str();
+    char *str_end;
+    int test = strtol(label, &str_end, 10);
+    // If invalid (no-digit) characters have been found we have a NON purely numeric label
+    if (*str_end != '\0')
+        return false;
+    return true;
+}
+
 }
 }
