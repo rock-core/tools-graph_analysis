@@ -10,6 +10,8 @@
 #include <graph_analysis/task_graph/TaskTemplate.hpp>
 #include <yaml-cpp/yaml.h>
 
+#include <cstdio>
+
 namespace graph_analysis
 {
 namespace io
@@ -115,8 +117,36 @@ void readPropertiesRecursively(YAML::Node& node, Vertex::Ptr vertex,
         break;
     }
     case YAML::NodeType::Sequence:
-        std::cout << "Seq unsupported :/" << std::endl;
+    {
+        int index = 0;
+        YAML::const_iterator it;
+        for(it = node.begin(); it != node.end(); ++it)
+        {
+            char buf[10];
+            snprintf(buf, 10, "%u", index);
+
+            // Search for the property
+            task_graph::Property::Ptr prop =
+                getPropertyByLabel(graph, vertex, buf);
+
+            // Create property if not found
+            if(!prop)
+            {
+                prop = task_graph::Property::Ptr(
+                    new task_graph::Property(buf));
+                graph->addVertex(prop);
+                // Link property to parent
+                task_graph::HasFeature::Ptr has = task_graph::HasFeature::Ptr(
+                    new task_graph::HasFeature(vertex, prop, "has"));
+                graph->addEdge(has);
+            }
+            index++;
+            // This node may contain other properties, so dig deeper
+            YAML::Node next(*it);
+            readPropertiesRecursively(next, prop, graph);
+        }
         break;
+    }
     case YAML::NodeType::Map:
     {
         // std::cout << "CONTAINER " << node.as<std::string>() << std::endl;
