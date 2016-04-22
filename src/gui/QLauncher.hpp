@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QProcess>
 
+class QShellOutput;
+
 /**
  * wrapper-class to hold something like the "launcher"
  *
@@ -24,17 +26,19 @@ signals:
     void finished();
 
 public slots:
-    void start(QString argument = "");
+    void start(QStringList arguments = QStringList());
     void stop();
     void writeToStdin(const QByteArray data);
 
 private:
     QProcess mProcess;
     QString mBinaryName;
+    QShellOutput *mpOutput;
 
 private slots:
     void launcher_execution_finished(int, QProcess::ExitStatus);
     void launcher_execution_started();
+    void processDataFromProcess();
 };
 
 #endif /*QLAUNCHER_H*/

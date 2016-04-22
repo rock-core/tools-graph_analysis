@@ -97,8 +97,8 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     else
     {
         // Log the anomaly
-        LOG_WARN("The 'AUTOPROJ_CURRENT_ROOT' has not been found - check if "
-                 "'env.sh' has been sourced.\n");
+        LOG_WARN_S << "The 'AUTOPROJ_CURRENT_ROOT' has not been found - check "
+                      "if 'env.sh' has been sourced.";
 
         // Notify the user
         QMessageBox* msgBox = new QMessageBox(this);
@@ -113,8 +113,8 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
 
     // disable the "execute" button at first. will be initially enabled by
     // pressing "save"
-    mpUi->executeNetwork->setDisabled(true);
-    mpUi->executeNetwork->setToolTip("save current CND to execute it with the launcher");
+    mpUi->submitNetwork->setDisabled(true);
+    mpUi->submitNetwork->setToolTip("submit the saved CND to the launcher");
 }
 
 TaskGraphEditor::~TaskGraphEditor()
@@ -171,12 +171,15 @@ void TaskGraphEditor::on_loadButton_clicked()
 
         // note the filename, so that we can execute it upon user-request later
         lastSavedComponentNetworkDescription = filename;
-        // and enable the execute button, so that it can be executed
-        mpUi->executeNetwork->setEnabled(true);
-        mpUi->executeNetwork->setToolTip(
-            "will execute the saved CND '" +
-            lastSavedComponentNetworkDescription +
-            "' using the launcher");
+        // and enable the execute button if the launcher is running, so that it
+        // can be executed
+        if(mpUi->executeLauncher->text() == "terminate")
+        {
+            mpUi->submitNetwork->setEnabled(true);
+        }
+        mpUi->submitNetwork->setToolTip("will submit the saved CND '" +
+                                        lastSavedComponentNetworkDescription +
+                                        "' using the running launcher");
     }
 }
 
@@ -199,12 +202,15 @@ void TaskGraphEditor::on_saveButton_clicked()
 
         // note the filename, so that we can execute it upon user-request later
         lastSavedComponentNetworkDescription = filename;
-        // and enable the execute button, so that it can be executed
-        mpUi->executeNetwork->setEnabled(true);
-        mpUi->executeNetwork->setToolTip(
-            "will execute the saved CND '" +
-            lastSavedComponentNetworkDescription +
-            "' using the launcher");
+        // and enable the execute button if the launcher is running, so that it
+        // can be executed
+        if(mpUi->executeLauncher->text() == "terminate")
+        {
+            mpUi->submitNetwork->setEnabled(true);
+        }
+        mpUi->submitNetwork->setToolTip("will submit the saved CND '" +
+                                        lastSavedComponentNetworkDescription +
+                                        "' using the running launcher");
     }
 }
 
@@ -320,23 +326,27 @@ void TaskGraphEditor::on_removeButton_clicked()
 
 void TaskGraphEditor::launcher_execution_started()
 {
-    mpUi->executeNetwork->setText("terminate");
-    QMessageBox::information(this, "D-Rock", "launcher started", QMessageBox::Ok);
+    mpUi->executeLauncher->setText("terminate");
+    if(!lastSavedComponentNetworkDescription.isEmpty())
+    {
+        mpUi->submitNetwork->setEnabled(true);
+    }
 }
 
 void TaskGraphEditor::launcher_execution_finished()
 {
-    mpUi->executeNetwork->setText("execute");
+    mpUi->executeLauncher->setText("execute");
+    mpUi->submitNetwork->setDisabled(true);
     QMessageBox::information(this, "D-Rock", "launcher stopped", QMessageBox::Ok);
 }
 
-void TaskGraphEditor::on_executeNetwork_clicked()
+void TaskGraphEditor::on_executeLauncher_clicked()
 {
-    if(mpUi->executeNetwork->text() == "execute")
+    if(mpUi->executeLauncher->text() == "execute")
     {
-        mLauncher.start(lastSavedComponentNetworkDescription);
+        mLauncher.start();
     }
-    else if(mpUi->executeNetwork->text() == "terminate")
+    else if(mpUi->executeLauncher->text() == "terminate")
     {
         mLauncher.stop();
     }
@@ -345,5 +355,13 @@ void TaskGraphEditor::on_executeNetwork_clicked()
         LOG_ERROR_S << "strange button name";
     }
 }
+
+void TaskGraphEditor::on_submitNetwork_clicked()
+{
+    // FIXME Because of sequencing issues we have to provide the launcher with two files
+    mLauncher.writeToStdin("startup_mars.yml");
+    mLauncher.writeToStdin(lastSavedComponentNetworkDescription.toAscii());
+}
+
 }
 }

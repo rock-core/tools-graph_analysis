@@ -131,9 +131,16 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="executeNetwork">
+          <widget class="QPushButton" name="executeLauncher">
            <property name="text">
             <string>execute</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="submitNetwork">
+           <property name="text">
+            <string>submit</string>
            </property>
           </widget>
          </item>

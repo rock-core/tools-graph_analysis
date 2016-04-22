@@ -1,11 +1,15 @@
 #include "QLauncher.hpp"
 
+#include <QDebug>
+#include <graph_analysis/gui/QShellOutput.hpp>
+
 #include <base/Logging.hpp>
 
 QLauncher::QLauncher(QObject* parent, QString binary, QString additionalEnvVar)
     : QObject(parent)
     , mProcess(this)
     , mBinaryName(binary)
+    , mpOutput(new QShellOutput(NULL))
 {
     if(!additionalEnvVar.isEmpty())
     {
@@ -16,6 +20,12 @@ QLauncher::QLauncher(QObject* parent, QString binary, QString additionalEnvVar)
             SLOT(launcher_execution_finished(int, QProcess::ExitStatus)));
     connect(&mProcess, SIGNAL(started()), this,
             SLOT(launcher_execution_started()));
+
+    // no matter what kind of output is available: we'll process it
+    connect(&mProcess, SIGNAL(readyReadStandardError()), this,
+            SLOT(processDataFromProcess()));
+    connect(&mProcess, SIGNAL(readyReadStandardOutput()), this,
+            SLOT(processDataFromProcess()));
 }
 
 QLauncher::~QLauncher()
@@ -26,6 +36,7 @@ QLauncher::~QLauncher()
         LOG_ERROR_S << "have to kill the process";
         mProcess.terminate();
     }
+    delete mpOutput;
 }
 
 void QLauncher::setBinary(QString binary)
@@ -38,7 +49,7 @@ void QLauncher::addToEnv(QString envVar)
     mProcess.setEnvironment(mProcess.environment() << envVar);
 }
 
-void QLauncher::start(QString argument)
+void QLauncher::start(QStringList arguments)
 {
     if(mProcess.state() != QProcess::NotRunning)
     {
@@ -46,7 +57,14 @@ void QLauncher::start(QString argument)
         return;
     }
 
-    mProcess.start(mBinaryName, QStringList() << argument);
+    if(arguments.empty())
+    {
+        mProcess.start(mBinaryName);
+    }
+    else
+    {
+        mProcess.start(mBinaryName, arguments);
+    }
     if(!mProcess.waitForStarted())
     {
         LOG_ERROR_S << "timeout while starting";
@@ -64,7 +82,7 @@ void QLauncher::stop()
 
 void QLauncher::writeToStdin(const QByteArray data)
 {
-    mProcess.write(QByteArray(data));
+    mProcess.write(data);
 }
 
 void QLauncher::launcher_execution_finished(int exitCode,
@@ -72,10 +90,19 @@ void QLauncher::launcher_execution_finished(int exitCode,
 {
     LOG_DEBUG_S << "process closed with exitCode " << mProcess.exitCode();
     emit finished();
+    mpOutput->hide();
+    mpOutput->clearText();
 }
 
 void QLauncher::launcher_execution_started()
 {
     LOG_INFO_S << "process started";
     emit started();
+    mpOutput->show();
+}
+
+void QLauncher::processDataFromProcess()
+{
+    mpOutput->insertNewStderr(mProcess.readAllStandardError());
+    mpOutput->insertNewStdout(mProcess.readAllStandardOutput());
 }
