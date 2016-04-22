@@ -25,7 +25,7 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     : QWidget(parent)
     , mpUi(new Ui::TaskGraphEditor)
     , mpGraph(graph)
-    , mLauncher(this)
+    , mLauncher(this, "launcher")
 {
     mpUi->setupUi(this);
     mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
@@ -35,14 +35,10 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString, int)), this,
             SLOT(currentStatus_internal(QString, int)));
 
-    connect(&mLauncher, SIGNAL(finished(int, QProcess::ExitStatus)), this,
-            SLOT(launcher_execution_finished(int, QProcess::ExitStatus)));
+    connect(&mLauncher, SIGNAL(finished()), this,
+            SLOT(launcher_execution_finished()));
     connect(&mLauncher, SIGNAL(started()), this,
             SLOT(launcher_execution_started()));
-    // this will cause the launched windows to appear on the remote display
-    QStringList bla(QProcess::systemEnvironment());
-    bla << "DISPLAY=:0";
-    mLauncher.setEnvironment(bla);
 
     // FIXME
     // Hide some buttons for demo
@@ -325,52 +321,28 @@ void TaskGraphEditor::on_removeButton_clicked()
 void TaskGraphEditor::launcher_execution_started()
 {
     mpUi->executeNetwork->setText("terminate");
+    QMessageBox::information(this, "D-Rock", "launcher started", QMessageBox::Ok);
 }
 
-void
-TaskGraphEditor::launcher_execution_finished(int exitCode,
-                                             QProcess::ExitStatus exitStatus)
+void TaskGraphEditor::launcher_execution_finished()
 {
-    // check if all is alright
-    if(exitStatus == QProcess::CrashExit)
-    {
-        QMessageBox::information(this, "D-Rock",
-                                 QString("launcher closed with exitCode %1")
-                                     .arg(mLauncher.exitCode()),
-                                 QMessageBox::Ok);
-    }
-    else
-    {
-        qDebug() << mLauncher.readAll();
-        QMessageBox::information(
-            this, "D-Rock",
-            QString("launcher finished by itself with exitCode %1")
-                .arg(mLauncher.exitCode()),
-            QMessageBox::Ok);
-    }
-
-    qDebug()<<mLauncher.readAll();
-
-    // reset the text of the button, so that future clicks on the button will
-    // trigger "start" again
     mpUi->executeNetwork->setText("execute");
+    QMessageBox::information(this, "D-Rock", "launcher stopped", QMessageBox::Ok);
 }
 
 void TaskGraphEditor::on_executeNetwork_clicked()
 {
     if(mpUi->executeNetwork->text() == "execute")
     {
-        // launch the shit out of this
-        mLauncher.start("launcher " + lastSavedComponentNetworkDescription);
-        if(!mLauncher.waitForStarted())
-        {
-            QMessageBox::critical(this, "D-Rock", "launcher failed early...",
-                                  QMessageBox::Ok);
-        }
+        mLauncher.start(lastSavedComponentNetworkDescription);
     }
     else if(mpUi->executeNetwork->text() == "terminate")
     {
-        mLauncher.terminate();
+        mLauncher.stop();
+    }
+    else
+    {
+        LOG_ERROR_S << "strange button name";
     }
 }
 }

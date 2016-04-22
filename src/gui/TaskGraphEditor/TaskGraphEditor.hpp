@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QProcess>
 #include <graph_analysis/Graph.hpp>
+#include <graph_analysis/gui/QLauncher.hpp>
 
 namespace Ui
 {
@@ -48,7 +49,7 @@ private:
     void updateTreeWidget();
 
     // just for HMI
-    QProcess mLauncher;
+    QLauncher mLauncher;
     QString lastSavedComponentNetworkDescription;
 
 signals:
@@ -60,7 +61,7 @@ private slots:
     void currentStatus_internal(QString, int);
 
     // just for HMI
-    void launcher_execution_finished(int, QProcess::ExitStatus);
+    void launcher_execution_finished();
     void launcher_execution_started();
 
 public slots:
