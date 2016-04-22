@@ -76,8 +76,21 @@ void writePropertiesRecursively(YAML::Node& node, const Vertex::Ptr& vertex,
             value = prop->getValue(graph)->getLabel();
         }
 
-        YAML::Node uerg(node[prop->getLabel()]);
+        // Here we handle SEQ or MAP
+        int index;
+        YAML::Node uerg;
+        if (prop->isNumeric(&index))
+        {
+            // YAML shit: Before indexing, we need to size the sequence accordingly
+            // NOTE: If we would insert index 1 before 0 this would become a map :(
+            for (int i = 0; i <= index; ++i)
+                node[i] = node[i];
+            uerg = node[index];
+        } else {
+            uerg = node[prop->getLabel()];
+        }
 
+        // Check if we should write something
         if(!value.empty())
             uerg = value;
         else
@@ -112,10 +125,10 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
 
         // FIXME
         // Produce DEFAULT config_name for every task if he has at least one property named 'config'
-        if (needsConfig(task, graph))
-        {
-            doc["tasks"][task->getLabel()]["config_names"][0] = "default";
-        }
+        //if (needsConfig(task, graph))
+        //{
+            //doc["tasks"][task->getLabel()]["config_names"][0] = "default";
+        //}
 
         // FIXME
         // Produce DEFAULT deployment for every task (TODO: Introduce deployment concept)

@@ -56,6 +56,7 @@ public:
      * @brief Function to determine if the label can be converted to a integer
      */
     bool isNumeric() const;
+    bool isNumeric(int *value) const;
 
 protected:
     /**
