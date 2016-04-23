@@ -20,6 +20,7 @@ public:
 
     void setBinary(QString binary);
     void addToEnv(QString envVar);
+    bool isRunning() const;
 
 signals:
     void started();

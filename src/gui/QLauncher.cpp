@@ -75,6 +75,11 @@ void QLauncher::start(QStringList arguments)
     }
 }
 
+bool QLauncher::isRunning() const
+{
+    return (mProcess.state() != QProcess::NotRunning);
+}
+
 void QLauncher::stop()
 {
     mProcess.terminate();
