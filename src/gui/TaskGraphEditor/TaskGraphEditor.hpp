@@ -75,7 +75,6 @@ public slots:
     void on_updateButton_clicked();
     void on_clearButton_clicked();
     void on_executeLauncher_clicked();
-    void on_submitNetwork_clicked();
 
     // On double click we want to create new tasks :)
     void on_taskTemplateTree_itemDoubleClicked(QTreeWidgetItem* item,

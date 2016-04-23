@@ -41,9 +41,6 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
             SLOT(launcher_execution_started()));
 
     // FIXME
-    // Hide some buttons for demo
-    mpUi->updateButton->setVisible(false);
-    // FIXME
     // Set a template file
     mTemplate = QFileDialog::getOpenFileName(
         this, tr("Load CND template model"),
@@ -111,10 +108,10 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
         msgBox->show();
     }
 
-    // disable the "execute" button at first. will be initially enabled by
+    // disable the "Start Launcher" button at first. will be initially enabled by
     // pressing "save"
-    mpUi->submitNetwork->setDisabled(true);
-    mpUi->submitNetwork->setToolTip("submit the saved CND to the launcher");
+    mpUi->updateButton->setDisabled(true);
+    mpUi->updateButton->setToolTip("Save and Submit to Launcher");
 }
 
 TaskGraphEditor::~TaskGraphEditor()
@@ -171,15 +168,6 @@ void TaskGraphEditor::on_loadButton_clicked()
 
         // note the filename, so that we can execute it upon user-request later
         lastSavedComponentNetworkDescription = filename;
-        // and enable the execute button if the launcher is running, so that it
-        // can be executed
-        if(mpUi->executeLauncher->text() == "terminate")
-        {
-            mpUi->submitNetwork->setEnabled(true);
-        }
-        mpUi->submitNetwork->setToolTip("will submit the saved CND '" +
-                                        lastSavedComponentNetworkDescription +
-                                        "' using the running launcher");
     }
 }
 
@@ -202,29 +190,6 @@ void TaskGraphEditor::on_saveButton_clicked()
 
         // note the filename, so that we can execute it upon user-request later
         lastSavedComponentNetworkDescription = filename;
-        // and enable the execute button if the launcher is running, so that it
-        // can be executed
-        if(mpUi->executeLauncher->text() == "terminate")
-        {
-            mpUi->submitNetwork->setEnabled(true);
-        }
-        mpUi->submitNetwork->setToolTip("will submit the saved CND '" +
-                                        lastSavedComponentNetworkDescription +
-                                        "' using the running launcher");
-    }
-}
-
-void TaskGraphEditor::on_updateButton_clicked()
-{
-    QString filename = QFileDialog::getSaveFileName(
-        this, tr("Update CND model"),
-        QDir::currentPath(),
-        tr("Component Network Definition File (*.yaml *.yml)"));
-
-    if(!filename.isEmpty())
-    {
-        io::CndModelWriter writer;
-        writer.update(filename.toStdString(), filename.toStdString(), mpGraph);
     }
 }
 
@@ -326,27 +291,27 @@ void TaskGraphEditor::on_removeButton_clicked()
 
 void TaskGraphEditor::launcher_execution_started()
 {
-    mpUi->executeLauncher->setText("terminate");
+    mpUi->executeLauncher->setText("Stop Launcher");
     if(!lastSavedComponentNetworkDescription.isEmpty())
     {
-        mpUi->submitNetwork->setEnabled(true);
+        mpUi->updateButton->setEnabled(true);
     }
 }
 
 void TaskGraphEditor::launcher_execution_finished()
 {
-    mpUi->executeLauncher->setText("execute");
-    mpUi->submitNetwork->setDisabled(true);
-    QMessageBox::information(this, "D-Rock", "launcher stopped", QMessageBox::Ok);
+    mpUi->executeLauncher->setText("Start Launcher");
+    mpUi->updateButton->setDisabled(true);
+    QMessageBox::information(this, "D-Rock", "Launcher stopped", QMessageBox::Ok);
 }
 
 void TaskGraphEditor::on_executeLauncher_clicked()
 {
-    if(mpUi->executeLauncher->text() == "execute")
+    if(mpUi->executeLauncher->text() == "Start Launcher")
     {
         mLauncher.start(QStringList()<<"startup_mars.yml");
     }
-    else if(mpUi->executeLauncher->text() == "terminate")
+    else if(mpUi->executeLauncher->text() == "Stop Launcher")
     {
         mLauncher.stop();
     }
@@ -356,8 +321,21 @@ void TaskGraphEditor::on_executeLauncher_clicked()
     }
 }
 
-void TaskGraphEditor::on_submitNetwork_clicked()
+void TaskGraphEditor::on_updateButton_clicked()
 {
+    // Store the file
+    if(!lastSavedComponentNetworkDescription.isEmpty())
+    {
+        io::CndModelWriter writer;
+        if (mTemplate.isEmpty())
+        {
+            writer.write(lastSavedComponentNetworkDescription.toStdString(), mpGraph);
+        } else {
+            writer.update(mTemplate.toStdString(), lastSavedComponentNetworkDescription.toStdString(), mpGraph);
+        }
+    }
+
+    // ... and execute!!
     mLauncher.writeToStdin(lastSavedComponentNetworkDescription.toAscii());
 }
 
