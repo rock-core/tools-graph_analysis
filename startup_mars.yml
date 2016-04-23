@@ -13,5 +13,6 @@ tasks:
       - default
 #      - mantis
       - aila
-      - outdoor
+#      - outdoor
+      - emptyScene
     state: RUNNING
