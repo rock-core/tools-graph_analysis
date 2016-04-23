@@ -101,7 +101,6 @@ void writePropertiesRecursively(YAML::Node& node, const Vertex::Ptr& vertex,
 
 void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
 {
-    int i = 1;
     // Cycle thorugh all vertices
     VertexIterator::Ptr vit = graph->getVertexIterator();
     while(vit->next())
@@ -133,13 +132,13 @@ void internal_write(YAML::Node& doc, const BaseGraph::Ptr& graph)
         // FIXME
         // Produce DEFAULT deployment for every task (TODO: Introduce deployment concept)
         // Test this ... maybe the logger stuff has to be removed?
-        doc["deployments"][i]["deployer"] = "orogen";
-        doc["deployments"][i]["hostID"] = "localhost";
+	int uid = task->getUid(); // Little fix: We need a Unique ID for all time not execution time only
+        doc["deployments"][uid]["deployer"] = "orogen";
+        doc["deployments"][uid]["hostID"] = "localhost";
         std::string deployerPrefix(createDefaultDeploymentPrefix(taskTemp->getLabel()));
-        doc["deployments"][i]["process_name"] = deployerPrefix;
-        doc["deployments"][i]["taskList"][task->getLabel()] = deployerPrefix;
+        doc["deployments"][uid]["process_name"] = deployerPrefix;
+        doc["deployments"][uid]["taskList"][task->getLabel()] = deployerPrefix;
         //doc["deployments"][i]["taskList"][task->getLabel() + "_Logger"] = deployerPrefix + "_Logger";
-        i++;
     }
 
     // Cycle thorugh all edges
