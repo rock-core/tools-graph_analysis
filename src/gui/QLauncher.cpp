@@ -83,6 +83,7 @@ void QLauncher::stop()
 void QLauncher::writeToStdin(const QByteArray data)
 {
     mProcess.write(data);
+    mProcess.write("\n");
 }
 
 void QLauncher::launcher_execution_finished(int exitCode,
