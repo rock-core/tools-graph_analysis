@@ -15,7 +15,6 @@
 QTaskPreview::QTaskPreview(QWidget* parent)
     : QWidget(parent)
     , mpUi(new Ui::QTaskPreview)
-    , mpBaseGraph(graph_analysis::BaseGraph::Ptr())
 {
     mpUi->setupUi(this);
 
@@ -29,14 +28,9 @@ QTaskPreview::~QTaskPreview()
 {
 }
 
-void QTaskPreview::setGraph(graph_analysis::BaseGraph::Ptr graph)
-{
-    mpBaseGraph = graph;
-}
-
 void QTaskPreview::updatePreview(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
-    if(mpBaseGraph && current)
+    if(current)
     {
         graph_analysis::Vertex::Ptr vertex =
             current->data(0, Qt::UserRole).value<graph_analysis::Vertex::Ptr>();

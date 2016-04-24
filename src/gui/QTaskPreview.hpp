@@ -3,8 +3,6 @@
 
 #include <QWidget>
 
-#include <graph_analysis/BaseGraph.hpp>
-
 class QTreeWidgetItem;
 
 namespace Ui
@@ -20,15 +18,10 @@ public:
     ~QTaskPreview();
     Ui::QTaskPreview* mpUi;
 
-    void setGraph(graph_analysis::BaseGraph::Ptr graph);
-
 signals:
 
 public slots:
     void updatePreview(QTreeWidgetItem*, QTreeWidgetItem*);
-
-private:
-    graph_analysis::BaseGraph::Ptr mpBaseGraph;
 
 private slots:
 };

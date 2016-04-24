@@ -30,8 +30,6 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
 {
     mpUi->setupUi(this);
 
-    mpUi->taskPreview->setGraph(graph);
-
     mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
     mpUi->placeHolder->addWidget(mpTaskGraphViewer);
     mpUi->splitter->setSizes(QList<int>() << 10 << 1000);
