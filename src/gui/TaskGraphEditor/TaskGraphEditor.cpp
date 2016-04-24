@@ -15,6 +15,7 @@
 #include <graph_analysis/io/CndModelReader.hpp>
 #include <graph_analysis/io/CndModelWriter.hpp>
 #include <graph_analysis/task_graph/TaskTemplate.hpp>
+#include <graph_analysis/gui/RegisterQtMetatypes.hpp>
 
 namespace graph_analysis
 {
@@ -28,6 +29,9 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     , mLauncher(this, "launcher")
 {
     mpUi->setupUi(this);
+
+    mpUi->taskPreview->setGraph(graph);
+
     mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
     mpUi->placeHolder->addWidget(mpTaskGraphViewer);
     mpUi->splitter->setSizes(QList<int>() << 10 << 1000);
@@ -40,6 +44,11 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
             SLOT(launcher_execution_finished()));
     connect(&mLauncher, SIGNAL(started()), this,
             SLOT(launcher_execution_started()));
+
+    connect(mpUi->taskTemplateTree,
+            SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+            mpUi->taskPreview,
+            SLOT(updatePreview(QTreeWidgetItem*, QTreeWidgetItem*)));
 
     // FIXME
     // Set a template file
@@ -142,6 +151,7 @@ void TaskGraphEditor::updateTreeWidget()
 
         // It is, so add it to the tree widget
         QTreeWidgetItem* child = new QTreeWidgetItem(mpUi->taskTemplateTree);
+        child->setData(0, Qt::UserRole, QVariant::fromValue(*it));
         child->setText(0, QString::fromStdString(templ->getLabel()));
         child->setText(1, QString::fromStdString(templ->yamlFileName()));
     }

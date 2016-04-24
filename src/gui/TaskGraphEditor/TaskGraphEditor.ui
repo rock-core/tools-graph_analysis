@@ -43,6 +43,9 @@
         </widget>
        </item>
        <item>
+        <widget class="QTaskPreview" name="taskPreview" native="true"/>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QPushButton" name="addButton">
@@ -75,7 +78,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QHBoxLayout" name="placeHolder">
@@ -149,6 +152,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QTaskPreview</class>
+   <extends>QWidget</extends>
+   <header>graph_analysis/gui/QTaskPreview.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
