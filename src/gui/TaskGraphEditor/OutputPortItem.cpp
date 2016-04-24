@@ -7,7 +7,6 @@
 #include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
 #include <graph_analysis/gui/EdgeMimeData.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
-#include <graph_analysis/EdgeTypeManager.hpp>
 #include <graph_analysis/gui/QFatRact.hpp>
 
 #include <QPen>
