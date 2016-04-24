@@ -31,6 +31,7 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
     mpUi->placeHolder->addWidget(mpTaskGraphViewer);
     mpUi->splitter->setSizes(QList<int>() << 10 << 1000);
+    mpUi->taskTemplateTree->sortByColumn(0, Qt::AscendingOrder);
 
     connect(mpTaskGraphViewer, SIGNAL(currentStatus(QString, int)), this,
             SLOT(currentStatus_internal(QString, int)));
