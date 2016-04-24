@@ -2,6 +2,8 @@
 
 #include "ui_QShellOutput.h"
 
+#include <QDateTime>
+
 QShellOutput::QShellOutput(QWidget* parent)
     : QWidget(parent)
     , mpUi(new Ui::QShellOutput)
@@ -14,12 +16,18 @@ QShellOutput::~QShellOutput()
 }
 void QShellOutput::appendNewStdout(const QByteArray data)
 {
-    mpUi->plainTextEdit->appendPlainText(splitLine("out: ", data).join("\n"));
+    appendColoredHtmlWithTimestamp(data, "Black");
 }
 
 void QShellOutput::appendNewStderr(const QByteArray data)
 {
-    mpUi->plainTextEdit->appendPlainText(splitLine("err: ", data).join("\n"));
+    appendColoredHtmlWithTimestamp(data, "Red");
+}
+
+void QShellOutput::clearText()
+{
+    appendColoredHtmlWithTimestamp("-------- process restarted -------",
+                                   "Gray");
 }
 
 QStringList QShellOutput::splitLine(QString prefix, const QByteArray data)
@@ -42,7 +50,14 @@ QStringList QShellOutput::splitLine(QString prefix, const QByteArray data)
     return lines;
 }
 
-void QShellOutput::clearText()
+void QShellOutput::appendColoredHtmlWithTimestamp(const QByteArray data,
+                                                  const QString color)
 {
-    mpUi->plainTextEdit->appendPlainText("--------------------");
+    QDateTime now = QDateTime::currentDateTime();
+    QString newText =
+        splitLine(QString("<font color=\"%1\">[%2] ").arg(color).arg(
+                      now.toString("HH:mm:ss-zzz")),
+                  data).join("\n") +
+        QString("</font>");
+    mpUi->plainTextEdit->appendHtml(newText);
 }
