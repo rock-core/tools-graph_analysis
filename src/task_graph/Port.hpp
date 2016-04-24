@@ -82,6 +82,19 @@ public:
     bool isOwnDataTypeSameAs(const BaseGraph::Ptr& graph,
                              const shared_ptr<Port> port) const;
 
+    /**
+     * returns true if a new PortConnection would be allowed between this Port
+     * and the one in the argument.
+     *
+     * A new PortConnection is not allowsd between two Ports belonging to the
+     * same Task, between Ports with differing DataType and only between an
+     * OutputPort and an InputPort. NOTE that this function is implemented as
+     * part of the common "Port" base-class. as a feature, it does not
+     * explicitly check dataflow-direction.
+     */
+    bool checkIfPortConnectionWouldBeLegal( const BaseGraph::Ptr& graph, const
+            graph_analysis::task_graph::Port::Ptr otherPort) const;
+
 protected:
     /**
      * Create a copy of this vertex

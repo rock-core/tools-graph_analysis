@@ -79,31 +79,13 @@ void InputPortItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
     {
         // check that the to ports are not part of the same task
         graph_analysis::task_graph::OutputPort::Ptr oPort =
-            dynamic_pointer_cast<graph_analysis::task_graph::OutputPort>(pMimeData->mpSourceVertex);
+            dynamic_pointer_cast<graph_analysis::task_graph::OutputPort>(
+                pMimeData->mpSourceVertex);
         graph_analysis::task_graph::InputPort::Ptr iPort =
-            dynamic_pointer_cast<graph_analysis::task_graph::InputPort>(getVertex());
+            dynamic_pointer_cast<graph_analysis::task_graph::InputPort>(
+                getVertex());
 
-        if(oPort->getTask(getGraph()) == iPort->getTask(getGraph()))
-        {
-            LOG_INFO_S << "No drag-accept, Ports are part of the same Task";
-            return;
-        }
-        else if(!oPort->isOwnDataTypeSameAs(getGraph(), iPort))
-        {
-            LOG_INFO_S << "No drag-accept, DataType does not match";
-            return;
-        }
-        else if(oPort->isConnected(getGraph()))
-        {
-            LOG_INFO_S << "No drag-accept, oPort is already connected";
-            return;
-        }
-        else if(iPort->isConnected(getGraph()))
-        {
-            LOG_INFO_S << "No drag-accept, iPort is already connected";
-            return;
-        }
-        else
+        if(oPort->checkIfPortConnectionWouldBeLegal(getGraph(), iPort))
         {
             // after this, the mouse icon will change and the drag-object will
             // be active
