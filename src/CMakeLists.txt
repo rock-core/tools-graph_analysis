@@ -151,6 +151,7 @@ rock_library(graph_analysis
         gui/QFatRact.hpp
         gui/QLauncher.hpp
         gui/QShellOutput.hpp
+        gui/RegisterQtMetatypes.hpp
         gui/ActionCommander.hpp
         gui/EdgeItem.hpp
         gui/EdgeItemTypeManager.hpp

@@ -15,6 +15,7 @@
 #include <graph_analysis/io/CndModelReader.hpp>
 #include <graph_analysis/io/CndModelWriter.hpp>
 #include <graph_analysis/task_graph/TaskTemplate.hpp>
+#include <graph_analysis/gui/RegisterQtMetatypes.hpp>
 
 namespace graph_analysis
 {
@@ -142,6 +143,7 @@ void TaskGraphEditor::updateTreeWidget()
 
         // It is, so add it to the tree widget
         QTreeWidgetItem* child = new QTreeWidgetItem(mpUi->taskTemplateTree);
+        child->setData(0, Qt::UserRole, QVariant::fromValue(*it));
         child->setText(0, QString::fromStdString(templ->getLabel()));
         child->setText(1, QString::fromStdString(templ->yamlFileName()));
     }
