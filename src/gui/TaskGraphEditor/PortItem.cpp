@@ -30,6 +30,11 @@ PortItem::PortItem(GraphWidget* graphWidget, graph_analysis::task_graph::Port::P
     mpDataType->setFont(font);
 }
 
+void PortItem::setRectBrush(QBrush brush)
+{
+    mpRect->setBrush(brush);
+}
+
 PortItem::~PortItem()
 {
     delete mpLabel;

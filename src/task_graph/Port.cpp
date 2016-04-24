@@ -85,7 +85,7 @@ shared_ptr<DataType> Port::getDataType(const BaseGraph::Ptr& graph) const
 }
 
 bool Port::isOwnDataTypeSameAs(const BaseGraph::Ptr& graph,
-                                     const shared_ptr<Port> port)
+                                     const shared_ptr<Port> port) const
 {
     Port::Ptr ownPtr =
         dynamic_pointer_cast<Port>(getSharedPointerFromGraph(graph));
@@ -97,6 +97,60 @@ bool Port::isOwnDataTypeSameAs(const BaseGraph::Ptr& graph,
 
     return ownPtr->getDataType(graph)->toString() ==
            port->getDataType(graph)->toString();
+}
+
+bool Port::checkIfPortConnectionWouldBeLegal(
+    const BaseGraph::Ptr& graph,
+    const graph_analysis::task_graph::Port::Ptr otherPort) const
+{
+    graph_analysis::task_graph::Port::Ptr thisPort =
+        dynamic_pointer_cast<graph_analysis::task_graph::Port>(
+            getSharedPointerFromGraph(graph));
+
+    if(otherPort->getTask(graph) == thisPort->getTask(graph))
+    {
+        LOG_INFO_S << "proposed port connection illegal, Ports are part of the "
+                      "same Task";
+        return false;
+    }
+    else if(!isOwnDataTypeSameAs(graph, otherPort))
+    {
+        LOG_INFO_S
+        << "proposed port connection illegal, DataType does not match";
+        return false;
+    }
+    else if(thisPort->isConnected(graph))
+    {
+        LOG_INFO_S
+        << "proposed port connection illegal, this Port is already connected";
+        return false;
+    }
+    else if(otherPort->isConnected(graph))
+    {
+        LOG_INFO_S
+        << "proposed port connection illegal, other Port is already connected";
+        return false;
+    }
+    else if(dynamic_pointer_cast<graph_analysis::task_graph::OutputPort>(
+                thisPort) &&
+            dynamic_pointer_cast<graph_analysis::task_graph::OutputPort>(
+                otherPort))
+    {
+        LOG_INFO_S
+        << "proposed port connection illegal, both ports are OutputPort";
+        return false;
+    }
+    else if(dynamic_pointer_cast<graph_analysis::task_graph::InputPort>(
+                thisPort) &&
+            dynamic_pointer_cast<graph_analysis::task_graph::InputPort>(
+                otherPort))
+    {
+        LOG_INFO_S
+        << "proposed port connection illegal, both ports are InputPort";
+        return false;
+    }
+    LOG_INFO_S << "proposed port connection LEGAL, evetything alright";
+    return true;
 }
 }
 } // end namespace graph_analysis

@@ -27,6 +27,8 @@ class PortItem : public VertexItemBase
 
     virtual void updateStrings() = 0;
 
+    void setRectBrush(QBrush brush);
+
   protected:
     QFatRact *mpRect;
     QGraphicsTextItem *mpLabel;

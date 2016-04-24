@@ -4,10 +4,10 @@
 #include <graph_analysis/task_graph/InputPort.hpp>
 #include <graph_analysis/task_graph/PortConnection.hpp>
 #include <graph_analysis/task_graph/DataType.hpp>
+#include <graph_analysis/gui/TaskGraphEditor/InputPortItem.hpp>
 #include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
 #include <graph_analysis/gui/EdgeMimeData.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
-#include <graph_analysis/EdgeTypeManager.hpp>
 #include <graph_analysis/gui/QFatRact.hpp>
 
 #include <QPen>
@@ -104,7 +104,12 @@ void OutputPortItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
     drag->setMimeData(mimeData);
 
     // when this returns, the user finished its drag-operation
+    // this will change all fitting input-ports
+    setBrushOfInputPortsWithSameDatatype(QBrush(Qt::green, Qt::Dense6Pattern));
+    // drag-n-drop happens during the "exec", is finished when function returns
     Qt::DropAction dropAction = drag->exec();
+    // and when the drag-n-drop is finished, the color is restored to "nothin"
+    setBrushOfInputPortsWithSameDatatype(Qt::NoBrush);
 
     if(dropAction == Qt::MoveAction)
     {
@@ -125,6 +130,33 @@ void OutputPortItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         ss << conn->getUid();
         conn->setLabel(ss.str());
         getGraph()->addEdge(conn);
+    }
+}
+
+void OutputPortItem::setBrushOfInputPortsWithSameDatatype(QBrush brush)
+{
+    QList<QGraphicsItem*> allItems = scene()->items();
+    for(int i = 0; i < allItems.size(); ++i)
+    {
+        // filter out item which are not InputPortItem
+        if(InputPortItem* inputItem =
+               dynamic_cast<InputPortItem*>(allItems.at(i)))
+        {
+            // obtain the actual vertices of the two underlying graph objects
+            graph_analysis::task_graph::Port::Ptr iPort =
+                dynamic_pointer_cast<graph_analysis::task_graph::Port>(
+                    inputItem->getVertex());
+            graph_analysis::task_graph::OutputPort::Ptr oPort =
+                dynamic_pointer_cast<graph_analysis::task_graph::OutputPort>(
+                    getVertex());
+
+            // ask the oPort if the datatype matches with the found-out iPort
+            if(oPort->checkIfPortConnectionWouldBeLegal(getGraph(), iPort))
+            {
+                // if so, apply brush
+                inputItem->setRectBrush(brush);
+            }
+        }
     }
 }
 
