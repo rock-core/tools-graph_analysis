@@ -44,6 +44,14 @@ public:
 
     void updateStrings();
 
+    /**
+     * colours the "rect" of every InputPort which has the same DataType as
+     * this port with a "assuring" color pattern
+     *
+     * @param brush the new brush to be applied to all machting ports
+     */
+    void setBrushOfInputPortsWithSameDatatype(QBrush brush);
+
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 };
