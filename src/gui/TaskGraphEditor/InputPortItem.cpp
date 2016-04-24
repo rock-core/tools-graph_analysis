@@ -15,10 +15,11 @@ namespace graph_analysis {
 namespace gui {
 
 // kiss:
-InputPortItem::InputPortItem(GraphWidget *graphWidget,
+InputPortItem::InputPortItem(GraphWidget* graphWidget,
                              graph_analysis::task_graph::InputPort::Ptr vertex,
-                             QGraphicsItem *parent)
+                             QGraphicsItem* parent)
     : PortItem(graphWidget, vertex, parent)
+    , lastRectBrush(Qt::NoBrush)
 {
     updateStrings();
     setAcceptDrops(true);
@@ -107,6 +108,7 @@ void InputPortItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
             // after this, the mouse icon will change and the drag-object will
             // be active
             event->setAccepted(true);
+            lastRectBrush = mpRect->brush();
             mpRect->setBrush(Qt::green);
         }
     }
@@ -118,7 +120,7 @@ void InputPortItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
 
 void InputPortItem::dragLeaveEvent(QGraphicsSceneDragDropEvent* event)
 {
-    mpRect->setBrush(Qt::NoBrush);
+    mpRect->setBrush(lastRectBrush);
 }
 
 void InputPortItem::dropEvent(QGraphicsSceneDragDropEvent* event)
@@ -136,7 +138,7 @@ void InputPortItem::dropEvent(QGraphicsSceneDragDropEvent* event)
             // can actuall ycreate and insert the new Egde.
             pMimeData->mpTargetVertex = getVertex();
             event->acceptProposedAction();
-            mpRect->setBrush(Qt::NoBrush);
+            mpRect->setBrush(lastRectBrush);
         }
         else
         {

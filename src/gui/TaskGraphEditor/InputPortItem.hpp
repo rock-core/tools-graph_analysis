@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_INPUTPORTITEM_HPP
 
 #include <QGraphicsItemGroup>
+#include <QBrush>
 
 #include <graph_analysis/gui/GraphicsItemTypes.hpp>
 #include <graph_analysis/task_graph/InputPort.hpp>
@@ -46,8 +47,13 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent* event);
     void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
-
-protected:
+private:
+    /**
+     * since we change our rect-brush during accepted hover events this
+     * variable is used to remember the color it hadd _before_ so we can
+     * correctly restore it
+     */
+    QBrush lastRectBrush;
 };
 
 } // end namespace gui
