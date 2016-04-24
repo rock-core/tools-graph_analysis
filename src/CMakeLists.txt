@@ -34,6 +34,7 @@ rock_library(graph_analysis
         gui/QBaseGraph.cpp
         gui/QFatRact.cpp
         gui/QLauncher.cpp
+        gui/QTaskPreview.cpp
         gui/QShellOutput.cpp
         gui/ActionCommander.cpp
         gui/EdgeItem.cpp
@@ -150,6 +151,7 @@ rock_library(graph_analysis
         gui/QBaseGraph.hpp
         gui/QFatRact.hpp
         gui/QLauncher.hpp
+        gui/QTaskPreview.hpp
         gui/QShellOutput.hpp
         gui/RegisterQtMetatypes.hpp
         gui/ActionCommander.hpp
@@ -235,6 +237,7 @@ rock_library(graph_analysis
         gui/QBaseGraph.hpp
         gui/QFatRact.hpp
         gui/QLauncher.hpp
+        gui/QTaskPreview.hpp
         gui/QShellOutput.hpp
         gui/FilterManager.hpp
         gui/GraphWidget.hpp
@@ -255,6 +258,7 @@ rock_library(graph_analysis
     UI
         gui/GraphAnalysisGui.ui
         gui/QShellOutput.ui
+        gui/QTaskPreview.ui
         gui/BaseGraphView/AddVertexDialog.ui
         gui/BaseGraphView/AddEdgeDialog.ui
         gui/TaskGraphEditor/TaskGraphEditor.ui

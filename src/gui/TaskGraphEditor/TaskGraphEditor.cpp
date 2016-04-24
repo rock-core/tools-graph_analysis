@@ -29,6 +29,9 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
     , mLauncher(this, "launcher")
 {
     mpUi->setupUi(this);
+
+    mpUi->taskPreview->setGraph(graph);
+
     mpTaskGraphViewer = new TaskGraphViewer(mpGraph);
     mpUi->placeHolder->addWidget(mpTaskGraphViewer);
     mpUi->splitter->setSizes(QList<int>() << 10 << 1000);
@@ -41,6 +44,11 @@ TaskGraphEditor::TaskGraphEditor(graph_analysis::BaseGraph::Ptr graph,
             SLOT(launcher_execution_finished()));
     connect(&mLauncher, SIGNAL(started()), this,
             SLOT(launcher_execution_started()));
+
+    connect(mpUi->taskTemplateTree,
+            SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+            mpUi->taskPreview,
+            SLOT(updatePreview(QTreeWidgetItem*, QTreeWidgetItem*)));
 
     // FIXME
     // Set a template file
