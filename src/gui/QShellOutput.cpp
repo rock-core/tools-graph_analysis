@@ -12,12 +12,12 @@ QShellOutput::~QShellOutput()
 {
     delete mpUi;
 }
-void QShellOutput::insertNewStdout(const QByteArray data)
+void QShellOutput::appendNewStdout(const QByteArray data)
 {
     mpUi->plainTextEdit->appendPlainText(splitLine("out: ", data).join("\n"));
 }
 
-void QShellOutput::insertNewStderr(const QByteArray data)
+void QShellOutput::appendNewStderr(const QByteArray data)
 {
     mpUi->plainTextEdit->appendPlainText(splitLine("err: ", data).join("\n"));
 }
