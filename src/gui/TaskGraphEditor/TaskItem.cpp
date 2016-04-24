@@ -117,7 +117,7 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
         MaxInputPortWidth + MaxOutputPortWidth + InputOutputGap;
     double MaximumContainerWidth = (InputOutputGapWidth >= MaximumLabelWidth)
                                        ? InputOutputGapWidth
-                                       : MaximumLabelWidth;
+                                       : MaximumLabelWidth + penWidthTheHack;
 
     // ------------------------------------
     // Second, adjust the position
