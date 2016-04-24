@@ -9,6 +9,7 @@ QLauncher::QLauncher(QObject* parent, QString binary, QString additionalEnvVar)
     : QObject(parent)
     , mProcess(this)
     , mBinaryName(binary)
+    /* with "NULL" parent so that the widget will become a new window */
     , mpOutput(new QShellOutput(NULL))
 {
     if(!additionalEnvVar.isEmpty())
@@ -30,13 +31,18 @@ QLauncher::QLauncher(QObject* parent, QString binary, QString additionalEnvVar)
 
 QLauncher::~QLauncher()
 {
+    // at first delete the output window, set the pointer to NULL
+    delete mpOutput;
+    mpOutput = NULL;
+    // so that we can safely terminate the running process -- any signal
+    // arriving at this class now can check the null-pointer of the window to
+    // check its validity
     if(mProcess.state() != QProcess::NotRunning)
     {
         // killing, just for good measure!
         LOG_ERROR_S << "have to kill the process";
         mProcess.terminate();
     }
-    delete mpOutput;
 }
 
 void QLauncher::setBinary(QString binary)
@@ -96,8 +102,12 @@ void QLauncher::launcher_execution_finished(int exitCode,
 {
     LOG_DEBUG_S << "process closed with exitCode " << mProcess.exitCode();
     emit finished();
-    mpOutput->hide();
-    mpOutput->clearText();
+    // the window might not be present
+    if(mpOutput)
+    {
+        mpOutput->hide();
+        mpOutput->clearText();
+    }
 }
 
 void QLauncher::launcher_execution_started()
