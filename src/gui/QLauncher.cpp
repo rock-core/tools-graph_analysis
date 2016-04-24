@@ -119,6 +119,6 @@ void QLauncher::launcher_execution_started()
 
 void QLauncher::processDataFromProcess()
 {
-    mpOutput->insertNewStderr(mProcess.readAllStandardError());
-    mpOutput->insertNewStdout(mProcess.readAllStandardOutput());
+    mpOutput->appendNewStderr(mProcess.readAllStandardError());
+    mpOutput->appendNewStdout(mProcess.readAllStandardOutput());
 }
