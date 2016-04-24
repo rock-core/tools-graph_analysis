@@ -58,6 +58,8 @@ public:
         return mpRootVertex;
     }
 
+    const BaseGraph::Ptr& getInternalBaseGraph() const;
+
 protected:
     /**
      * Create a copy of this vertex

@@ -115,5 +115,10 @@ TaskPtr TaskTemplate::instantiateAndAddTo(BaseGraph::Ptr graph,
 
     return newRootVertex;
 }
+
+const BaseGraph::Ptr& TaskTemplate::getInternalBaseGraph() const
+{
+    return mpBaseGraph;
+}
 }
 }
