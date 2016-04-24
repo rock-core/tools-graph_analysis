@@ -32,17 +32,41 @@ void QTaskPreview::updatePreview(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
     if(current)
     {
-        graph_analysis::Vertex::Ptr vertex =
-            current->data(0, Qt::UserRole).value<graph_analysis::Vertex::Ptr>();
+        graph_analysis::task_graph::TaskTemplate::Ptr templ =
+            graph_analysis::dynamic_pointer_cast<
+                graph_analysis::task_graph::TaskTemplate>(
+                current->data(0, Qt::UserRole)
+                    .value<graph_analysis::Vertex::Ptr>());
 
         mpUi->url->setText(
             QString("<a "
                     "href=\"http://rock-robotics.org/stable/tasks/"
-                    "%1.html\">Browse Online</a>")
-                .arg(QString::fromStdString(vertex->toString())));
+                    "%1.html\">%2</a>")
+                .arg(QString::fromStdString(templ->toString()))
+                .arg(QString::fromStdString(templ->toString())));
+
+        graph_analysis::task_graph::Task::Ptr task;
+        graph_analysis::VertexIterator::Ptr it =
+            templ->getInternalBaseGraph()->getVertexIterator();
+        while(it->next())
+        {
+            if(it->current()->getClassName() ==
+               graph_analysis::task_graph::Task::vertexType())
+            {
+                task = graph_analysis::dynamic_pointer_cast<
+                    graph_analysis::task_graph::Task>(it->current());
+                break;
+            }
+        }
+        mpUi->outputPorts->setText(QString("%1").arg(
+            task->getOutputPorts(templ->getInternalBaseGraph()).size()));
+        mpUi->inputPorts->setText(QString("%1").arg(
+            task->getInputPorts(templ->getInternalBaseGraph()).size()));
     }
     else
     {
         mpUi->url->clear();
+        mpUi->inputPorts->clear();
+        mpUi->outputPorts->clear();
     }
 }
