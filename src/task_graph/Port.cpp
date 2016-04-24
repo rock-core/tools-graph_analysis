@@ -85,7 +85,7 @@ shared_ptr<DataType> Port::getDataType(const BaseGraph::Ptr& graph) const
 }
 
 bool Port::isOwnDataTypeSameAs(const BaseGraph::Ptr& graph,
-                                     const shared_ptr<Port> port)
+                                     const shared_ptr<Port> port) const
 {
     Port::Ptr ownPtr =
         dynamic_pointer_cast<Port>(getSharedPointerFromGraph(graph));

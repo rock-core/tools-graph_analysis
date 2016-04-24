@@ -80,7 +80,7 @@ public:
      * @param port the other port to check its DataType against
      */
     bool isOwnDataTypeSameAs(const BaseGraph::Ptr& graph,
-                             const shared_ptr<Port> port);
+                             const shared_ptr<Port> port) const;
 
 protected:
     /**
