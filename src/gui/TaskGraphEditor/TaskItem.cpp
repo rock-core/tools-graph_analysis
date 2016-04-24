@@ -132,9 +132,6 @@ TaskItem::TaskItem(GraphWidget* graphWidget,
         {
             InputPortItem* iPort = *it;
 
-            // Set the output port width to the maximum output port width
-            iPort->boundingRect().setWidth(MaxInputPortWidth);
-
             // Set the position of the port
             iPort->setPos(QPointF(double(penWidthTheHack), lastY));
 
