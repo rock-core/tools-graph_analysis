@@ -3,7 +3,6 @@
 #include "ui_GraphAnalysisGui.h"
 
 #include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
-#include <graph_analysis/gui/TaskGraphEditor/TaskGraphEditor.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
 #include <QDebug>
@@ -30,21 +29,15 @@ GraphAnalysisGui::GraphAnalysisGui()
     , mpUi(new Ui::GraphAnalysisGui)
     , mpQBaseGraph(new QBaseGraph(this))
     , mpBaseGraphView(new BaseGraphView(mpQBaseGraph->getBaseGraph(), this))
-    , mpTaskGraphEditor(new TaskGraphEditor(mpQBaseGraph->getBaseGraph(), this))
 {
     mpUi->setupUi(this);
     mpUi->tabWidget->clear();
     mpUi->tabWidget->addTab(mpBaseGraphView, mpBaseGraphView->getClassName());
-    mpUi->tabWidget->addTab(mpTaskGraphEditor,
-                            mpTaskGraphEditor->getClassName());
-    mpUi->tabWidget->setCurrentWidget(mpTaskGraphEditor);
 
     // and show both' widgets status-messages on the statusbar. this simply
     // assumes that only the one in the front is sending updates. otherwise
     // they would interleave...
     connect(mpBaseGraphView, SIGNAL(currentStatus(QString, int)),
-            mpUi->statusbar, SLOT(showMessage(QString, int)));
-    connect(mpTaskGraphEditor, SIGNAL(currentStatus(QString, int)),
             mpUi->statusbar, SLOT(showMessage(QString, int)));
 
     connect(mpQBaseGraph, SIGNAL(graphChanged()),
@@ -203,13 +196,7 @@ void GraphAnalysisGui::on_tabWidget_currentChanged(int index)
 
 void GraphAnalysisGui::updateVisualization()
 {
-    // Call the current tab widget's update function
-    if (mpUi->tabWidget->currentWidget() == mpTaskGraphEditor)
-    {
-        mpTaskGraphEditor->updateVisualization();
-    } else {
-        mpBaseGraphView->updateVisualization();
-    }
+    mpBaseGraphView->updateVisualization();
 }
 
 } // end namespace gui

@@ -15,7 +15,6 @@ namespace gui
 {
 
 class BaseGraphView;
-class TaskGraphEditor;
 
 class GraphAnalysisGui : public QMainWindow
 {
@@ -34,7 +33,6 @@ private:
 
     // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;
-    TaskGraphEditor* mpTaskGraphEditor;
 
     void importGraph();
     void exportGraph();

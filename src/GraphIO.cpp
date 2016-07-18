@@ -5,7 +5,6 @@
 
 #include "io/GexfWriter.hpp"
 #include "io/GexfReader.hpp"
-#include "io/OrogenModelReader.hpp"
 #include "io/YamlWriter.hpp"
 #include "io/YamlReader.hpp"
 #include "io/GraphvizWriter.hpp"
@@ -21,7 +20,6 @@ std::map<Type, std::string> TypeTxt = InitMap<Type, std::string>
     (LEMON, "LEMON")
     (GRAPHVIZ, "GRAPHVIZ")
     (YAML, "YAML")
-    (OROGEN_MODEL, "OROGEN_MODEL")
     ;
 // TODO3: "typemanager"
 // -kanten checken: is ein drag-drop event, der false zurückgeben kann
@@ -60,12 +58,10 @@ GraphIO::WriterMap GraphIO::msWriters = InitMap<representation::Type, Writer::Pt
 GraphIO::ReaderMap GraphIO::msReaders = InitMap<representation::Type, Reader::Ptr>
     (representation::GEXF, Reader::Ptr( new GexfReader()))
     (representation::YAML, Reader::Ptr( new YamlReader()))
-    (representation::OROGEN_MODEL, Reader::Ptr( new OrogenModelReader()))
     ;
 
 std::map<representation::Suffix, representation::Type> GraphIO::msSuffixes = InitMap<representation::Suffix, representation::Type>
 // FIXME: is it desireable to have identical suffixes for different formats?
-    ("yml", representation::OROGEN_MODEL)
     ("yaml", representation::YAML)
     //("yml", representation::YAML)
     ("gexf", representation::GEXF)

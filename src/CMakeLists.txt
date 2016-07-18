@@ -33,9 +33,6 @@ rock_library(graph_analysis
         gui/GraphAnalysisGui.cpp
         gui/QBaseGraph.cpp
         gui/QFatRact.cpp
-        gui/QLauncher.cpp
-        gui/QTaskPreview.cpp
-        gui/QShellOutput.cpp
         gui/ActionCommander.cpp
         gui/EdgeItem.cpp
         gui/EdgeItemTypeManager.cpp
@@ -66,29 +63,10 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.cpp
         gui/BaseGraphView/AddVertexDialog.cpp
         gui/BaseGraphView/AddEdgeDialog.cpp
-        task_graph/TaskTemplate.cpp
-        task_graph/Task.cpp
-        task_graph/Port.cpp
-        task_graph/Property.cpp
-        task_graph/DataType.cpp
-        task_graph/DataValue.cpp
-        task_graph/InputPort.cpp
-        task_graph/OutputPort.cpp
-        task_graph/PortConnection.cpp
-        gui/TaskGraphEditor/TaskGraphViewer.cpp
-        gui/TaskGraphEditor/TaskGraphEditor.cpp
-        gui/TaskGraphEditor/TaskItem.cpp
-        gui/TaskGraphEditor/PortItem.cpp
-        gui/TaskGraphEditor/InputPortItem.cpp
-        gui/TaskGraphEditor/OutputPortItem.cpp
-        gui/TaskGraphEditor/PortConnectionItem.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
         io/GraphvizWriter.cpp
-        io/OrogenModelReader.cpp
-        io/CndModelReader.cpp
-        io/CndModelWriter.cpp
         io/YamlReader.cpp
         io/YamlWriter.cpp
         lemon/DirectedGraph.cpp
@@ -150,9 +128,6 @@ rock_library(graph_analysis
         gui/GraphAnalysisGui.hpp
         gui/QBaseGraph.hpp
         gui/QFatRact.hpp
-        gui/QLauncher.hpp
-        gui/QTaskPreview.hpp
-        gui/QShellOutput.hpp
         gui/RegisterQtMetatypes.hpp
         gui/ActionCommander.hpp
         gui/EdgeItem.hpp
@@ -184,33 +159,11 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
-        task_graph/TaskTemplate.hpp
-        task_graph/Task.hpp
-        task_graph/Port.hpp
-        task_graph/Property.hpp
-        task_graph/DataType.cpp
-        task_graph/DataValue.cpp
-        task_graph/InputPort.hpp
-        task_graph/OutputPort.hpp
-        task_graph/PortConnection.hpp
-        task_graph/HasFeature.hpp
-        task_graph/HasUniqueFeature.hpp
-        task_graph/InstanceOf.hpp
-        gui/TaskGraphEditor/TaskGraphViewer.hpp
-        gui/TaskGraphEditor/TaskGraphEditor.hpp
-        gui/TaskGraphEditor/TaskItem.hpp
-        gui/TaskGraphEditor/PortItem.hpp
-        gui/TaskGraphEditor/InputPortItem.hpp
-        gui/TaskGraphEditor/OutputPortItem.hpp
-        gui/TaskGraphEditor/PortConnectionItem.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
         io/GraphvizStyle.hpp
         io/GraphvizWriter.hpp
-        io/OrogenModelReader.hpp
-        io/CndModelReader.hpp
-        io/CndModelWriter.hpp
         io/YamlReader.hpp
         io/YamlWriter.hpp
         lemon/ArcIterator.hpp
@@ -236,9 +189,6 @@ rock_library(graph_analysis
         gui/GraphAnalysisGui.hpp
         gui/QBaseGraph.hpp
         gui/QFatRact.hpp
-        gui/QLauncher.hpp
-        gui/QTaskPreview.hpp
-        gui/QShellOutput.hpp
         gui/FilterManager.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
@@ -252,16 +202,11 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
-        gui/TaskGraphEditor/TaskGraphViewer.hpp
-        gui/TaskGraphEditor/TaskGraphEditor.hpp
     DEPS_PKGCONFIG QtGui
     UI
         gui/GraphAnalysisGui.ui
-        gui/QShellOutput.ui
-        gui/QTaskPreview.ui
         gui/BaseGraphView/AddVertexDialog.ui
         gui/BaseGraphView/AddEdgeDialog.ui
-        gui/TaskGraphEditor/TaskGraphEditor.ui
         gui/dialogs/add_filter_dialog_gui.ui
         gui/dialogs/add_graph_element.ui
         gui/dialogs/graph_analysis_gui.ui
