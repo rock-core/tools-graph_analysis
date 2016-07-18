@@ -3,7 +3,7 @@
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/snap/DirectedGraph.hpp>
 #include <graph_analysis/MapInitializer.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <sstream>
 
 namespace graph_analysis {

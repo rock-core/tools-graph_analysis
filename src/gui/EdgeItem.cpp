@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <QPainter>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {

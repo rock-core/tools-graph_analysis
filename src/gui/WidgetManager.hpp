@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_WIDGET_MANAGER_HPP
 #define GRAPH_ANALYSIS_GUI_WIDGET_MANAGER_HPP
 
-#include <base/Singleton.hpp>
+#include <base-logging/Singleton.hpp>
 #include <QMainWindow>
 
 namespace graph_analysis {

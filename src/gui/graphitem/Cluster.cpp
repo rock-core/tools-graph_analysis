@@ -7,7 +7,7 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/gui/items/Label.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 

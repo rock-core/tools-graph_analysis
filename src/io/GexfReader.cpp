@@ -1,5 +1,5 @@
 #include "GexfReader.hpp"
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <libgexf/nodeiter.h>
 #include <libgexf/edgeiter.h>
 #include <libgexf/filereader.h>

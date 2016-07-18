@@ -12,7 +12,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QToolBar>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 #include <graph_analysis/GraphIO.hpp>
 #include <graph_analysis/io/YamlWriter.hpp>

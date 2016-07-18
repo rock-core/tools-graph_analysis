@@ -3,7 +3,7 @@
 #include <iterator>
 #include <math.h>
 #include <graph_analysis/DirectedGraphInterface.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace algorithms {

@@ -9,7 +9,7 @@
 #include "io/YamlReader.hpp"
 #include "io/GraphvizWriter.hpp"
 
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace representation {

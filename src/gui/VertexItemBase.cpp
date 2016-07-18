@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QDrag>
 
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 #include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>

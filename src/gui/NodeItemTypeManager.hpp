@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_NODE_ITEM_TYPE_MANAGER_HPP
 
 #include <map>
-#include <base/Singleton.hpp>
+#include <base-logging/Singleton.hpp>
 #include <graph_analysis/Vertex.hpp>
 
 #include <QPainter>

@@ -11,7 +11,7 @@
 #include <QSizeF>
 #include <QMessageBox>
 #include <QInputDialog>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <stdexcept>

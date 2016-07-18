@@ -1,6 +1,6 @@
 #include "GLPKSolver.hpp"
 #include <sstream>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace algorithms {

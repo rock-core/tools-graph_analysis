@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QStyleOption>
 
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <boost/assign/list_of.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 

@@ -2,7 +2,7 @@
 
 #include <graph_analysis/gui/VertexItemBase.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 #include <cmath>
 

@@ -4,7 +4,7 @@
 #include <QMenu>
 #include <exception>
 #include <boost/lexical_cast.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 

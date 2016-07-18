@@ -1,5 +1,5 @@
 #include "YamlReader.hpp"
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 
 namespace graph_analysis {

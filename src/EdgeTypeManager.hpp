@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_EDGE_TYPE_MANAGER_HPP
 
 #include <graph_analysis/Edge.hpp>
-#include <base/Singleton.hpp>
+#include <base-logging/Singleton.hpp>
 #include <map>
 #include <set>
 #include <string>

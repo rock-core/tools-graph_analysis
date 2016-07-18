@@ -1,6 +1,6 @@
 #include "GraphWidget.hpp"
 
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>

@@ -2,7 +2,7 @@
 
 #include <QMenu>
 #include <exception>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <boost/lexical_cast.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>

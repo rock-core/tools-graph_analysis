@@ -1,4 +1,4 @@
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include "GraphvizWriter.hpp"
 #include "GVGraph.hpp"
 

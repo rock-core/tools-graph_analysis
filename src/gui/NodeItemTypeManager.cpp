@@ -5,7 +5,7 @@
 #include <QStyleOption>
 
 #include <boost/assign/list_of.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include "graphitem/Simple.hpp"
 #include "graphitem/Cluster.hpp"
 #include "layeritem/Resource.hpp"

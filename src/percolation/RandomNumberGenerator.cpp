@@ -1,5 +1,5 @@
 #include "RandomNumberGenerator.hpp"
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace percolation {

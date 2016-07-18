@@ -21,7 +21,7 @@
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <base/Time.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 #include <graph_analysis/io/GVGraph.hpp>
 
