@@ -134,6 +134,7 @@ rock_library(graph_analysis
         gui/EdgeItemTypeManager.hpp
         gui/FilterItem.hpp
         gui/FilterManager.hpp
+        gui/GraphicsItemTypes.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
         gui/IconManager.hpp
