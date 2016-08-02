@@ -5,7 +5,7 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/Edge.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace filters {

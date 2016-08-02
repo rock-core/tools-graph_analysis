@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_BFS_VISITOR_HPP
 
 #include <graph_analysis/algorithms/Visitor.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace algorithms {

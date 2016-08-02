@@ -7,29 +7,29 @@
 #include <QPainter>
 #include <QStyleOption>
 
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <boost/assign/list_of.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
 
 namespace graph_analysis {
 namespace gui {
 
-NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : QGraphicsItemGroup()
-    , mpVertex(vertex)
-    , mpGraphWidget(graphWidget)
+NodeItem::NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex,
+                   QGraphicsItem *parent)
+    : QGraphicsItemGroup(parent), mpVertex(vertex), mpGraphWidget(graphWidget)
 {
-    setFlag(ItemIsMovable, false);
+    // this enabled "itemChange()" notifications. when this item moves, it has
+    // to tell its edges to follow it, so they stay visually connected. this is
+    // done by calling "adjust()" for the respective edge
     setFlag(ItemSendsGeometryChanges);
+    // this cache-mode is for items that can move. not sure if we can move --
+    // edges can move?
     setCacheMode(DeviceCoordinateCache);
-    setZValue(-1);
-    setToolTip(QString(vertex->getClassName().c_str()));
-    setAcceptDrops(true);
 }
 
 bool NodeItem::advance()
 {
-    if (mNewPos != pos())
+    if(mNewPos != pos())
     {
         setPos(mNewPos);
         return true;
@@ -43,15 +43,17 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
     {
         case ItemPositionHasChanged:
         {
-            GraphWidget::EdgeItemMap::const_iterator it = mpGraphWidget->edgeItemMap().begin();
-            for(; it != mpGraphWidget->edgeItemMap().end(); ++it)
-            {
-                EdgeItem* edge = it->second;
-                if(edge)
-                {
-                    edge->adjust();
-                }
-            }
+            // FIXME: this is slightly inefficient... better would be to
+            // "adjust()" only the edges connected to this Node
+            /* GraphWidget::EdgeItemMap::const_iterator it = mpGraphWidget->edgeItemMap().begin(); */
+            /* for(; it != mpGraphWidget->edgeItemMap().end(); ++it) */
+            /* { */
+            /*     EdgeItem* edge = it->second; */
+            /*     if(edge) */
+            /*     { */
+            /*         edge->adjust(); */
+            /*     } */
+            /* } */
             break;
         }
         default:

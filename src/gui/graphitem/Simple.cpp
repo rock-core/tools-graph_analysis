@@ -9,7 +9,7 @@ namespace gui {
 namespace graphitem {
 
 Simple::Simple(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : NodeItem(graphWidget, vertex) 
+    : NodeItem(graphWidget, vertex, this)
 {
 }
 

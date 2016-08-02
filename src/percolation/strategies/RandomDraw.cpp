@@ -2,7 +2,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <cmath>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/percolation/RandomNumberGenerator.hpp>
 
 namespace graph_analysis {

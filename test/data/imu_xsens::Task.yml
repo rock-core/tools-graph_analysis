@@ -1,0 +1,60 @@
+---
+imu_xsens:
+  Task:
+    inputPorts: []
+    outputPorts:
+    - Name: orientation_samples
+      Type: "::base::samples::RigidBodyState"
+    - Name: calibrated_sensors
+      Type: "::base::samples::IMUSensors"
+    - Name: solution
+      Type: "::gps::Solution"
+    - Name: timestamp_estimator_status
+      Type: "::aggregator::TimestampEstimatorStatus"
+    - Name: state
+      Type: boost::int32_t
+    properties:
+    - Name: port
+      Type: "::std::string"
+      DefaultVal: "/dev/ttyUSB0"
+    - Name: baudrate
+      Type: boost::int32_t
+      DefaultVal: 115200
+    - Name: freq
+      Type: boost::int32_t
+      DefaultVal: 100
+    - Name: filter_profile
+      Type: boost::int32_t
+      DefaultVal: 0
+    - Name: imu_frame
+      Type: "::std::string"
+      DefaultVal: imu
+    - Name: world_frame
+      Type: "::std::string"
+      DefaultVal: world
+    - Name: timeout
+      Type: double
+      DefaultVal: 5
+    operations:
+    - Name: estimate_bias
+      Doc: Triggers bias estimation on the xsens imu, only works if device is not
+        moving for the given amount of time (seconds).
+      Return:
+        Type: bool
+        Doc: ''
+      Arguments:
+      - Name: duration
+        Type: boost::uint16_t
+        Doc: ''
+    - Name: getModelName
+      Doc: returns the oroGen model name for this task
+      Return:
+        Type: "::std::string"
+        Doc: ''
+      Arguments: []
+    - Name: __orogen_getTID
+      Doc: returns the PID for this task
+      Return:
+        Type: boost::int32_t
+        Doc: ''
+      Arguments: []

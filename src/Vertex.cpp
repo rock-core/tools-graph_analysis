@@ -15,6 +15,11 @@ Vertex::Ptr Vertex::clone() const
     return vertex;
 }
 
+Vertex::Ptr Vertex::getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const
+{
+    return pGraph->getVertex(getId(pGraph->getId()));
+}
+
 std::string Vertex::toString() const
 {
     return toString(0);
@@ -33,8 +38,4 @@ std::string Vertex::toString(uint32_t indent) const
     }
 }
 
-Vertex::Ptr Vertex::getSharedPointer(const shared_ptr<BaseGraph>& pGraph) const
-{
-    return pGraph->getVertex(getId(pGraph->getId()));
-}
 } // end namespace graph_analysis

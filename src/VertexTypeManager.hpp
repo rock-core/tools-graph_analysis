@@ -5,7 +5,7 @@
 #include <set>
 #include <list>
 #include <string>
-#include <base/Singleton.hpp>
+#include <base-logging/Singleton.hpp>
 #include <graph_analysis/Vertex.hpp>
 
 namespace graph_analysis {

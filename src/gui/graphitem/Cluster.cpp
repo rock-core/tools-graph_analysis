@@ -7,10 +7,9 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/gui/items/Label.hpp>
 #include <graph_analysis/gui/items/Feature.hpp>
-
 
 using namespace graph_analysis::gui::items;
 
@@ -19,17 +18,14 @@ namespace gui {
 namespace graphitem {
 
 Cluster::Cluster(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex)
-    : NodeItem(graphWidget, vertex)
+    : NodeItem(graphWidget, vertex, this)
     , mpLabel(new Label(vertex->toString(), this))
-    , mPen(Qt::blue)
-    , mPenDefault(Qt::blue)
-    , mFocused(false)
-    , mSelected(false)
 {
     QFont mainLabelFont;
     mainLabelFont.setBold(true);
     mpLabel->setFont(mainLabelFont);
-
+    // hm, why does this have to be set here? isn't this controlled via the
+    // "EDIT", "MOVE" and "CONNECT" mode?
     setFlag(ItemIsMovable);
 }
 
@@ -49,11 +45,40 @@ QRectF Cluster::boundingRect() const
     return childrenRect;
 }
 
+void Cluster::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    LOG_INFO_S << "hER";
+    QGraphicsItem::mousePressEvent(event);
+    myUpdate();
+}
+
 QPainterPath Cluster::shape() const
 {
     QPainterPath path;
     path.addRect(boundingRect());
     return path;
+}
+
+void Cluster::myUpdate()
+{
+    Vertex::Ptr underlyingVertex = getVertex();
+
+    EdgeIterator::Ptr edgeIt = mpGraphWidget->graph()->getOutEdgeIterator(underlyingVertex);
+    while(edgeIt->next())
+    {
+        Edge::Ptr currentEdge = edgeIt->current();
+        if(currentEdge->getLabel() == "hasFeature")
+        {
+            LOG_INFO_S << currentEdge->getTargetVertex()->getClassName()
+                       << " with name "
+                       << currentEdge->getTargetVertex()->getLabel();
+        }
+
+        // merke: "cluster" ist "task" != deployment
+        // deployment: beinhaltet viele cluster
+        // und: mapping von "deployment" auf "system"
+        // - kann man inseln haben, die gar nicht verbunden sind?
+
+    }
 }
 
 void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* )
@@ -68,35 +93,39 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
     qreal featureLabelVSpace = ptSize*2;
 
     QGraphicsTextItem* lastFeatureLabel = 0;
-    items::Feature* lastFeature = 0;
+    items::Feature* previousFeature = 0;
     qreal closestItemYBottom = 0;
 
-    bool addLabel = true;
+    // this decides wether the "topic" label of a cluster is added just before
+    // a new section of features is begun
+    bool addFeatureLabel = true;
     std::set<std::string> supportedTypes = VertexTypeManager::getInstance()->getSupportedTypes();
     std::set<std::string>::const_iterator cit = supportedTypes.begin();
+    // iterating over all possible types of "features":
     for(; cit != supportedTypes.end(); ++cit)
     {
         int xPosition = 0;
-        int yPosition = 0;
+        /* int yPosition = 0; */
 
         std::string supportedType = *cit;
         foreach(items::Feature* feature, mFeatures)
         {
             if(feature->getGraphElement()->getClassName() == supportedType)
             {
-                if(addLabel)
+                if(addFeatureLabel)
                 {
-                    addLabel = false;
-                    std::string labelTxt = supportedType;
-                    QGraphicsTextItem* label = getOrCreateLabel(labelTxt, this);
-                    if(lastFeature)
+                    addFeatureLabel = false;
+                    QGraphicsTextItem* label = getOrCreateLabel(supportedType, this);
+                    if(previousFeature)
                     {
-                        label->setY(lastFeature->y() + lastFeature->boundingRect().bottom() + featureLabelVSpace);
+                        label->setY(previousFeature->y() + previousFeature->boundingRect().bottom() + featureLabelVSpace);
                     } else {
                         label->setY(featureLabelVSpace);
                     }
 
+                    // we'll need to remember which "feature" top-label was the last
                     lastFeatureLabel = label;
+                    // and where the lower position in Y was for this last label
                     closestItemYBottom = label->y() + label->boundingRect().bottom();
 
                     painter->drawLine(QPoint(label->x(), closestItemYBottom), 
@@ -106,43 +135,26 @@ void Cluster::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
                 feature->setX(lastFeatureLabel->x() + featureHSpace*xPosition);
                 feature->setY(closestItemYBottom + featureVSpace);
 
+                // this should take care of parent-child relationschips
                 addToGroup(feature);
                 closestItemYBottom = feature->y() + feature->boundingRect().bottom();
-                lastFeature = feature;
+                previousFeature = feature;
             }
         }
 
-        addLabel = true;
-    }
-
-    //// Drawing of border: back to transparent background
-    painter->setPen(mPen);
-    QRectF rect = boundingRect();
-
-    update(rect);
-
-    itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
-    //// triggering edges to update
-    foreach(items::Feature* feature, mFeatures)
-    {
-        //// triggering edges to update
-        feature->itemChange(QGraphicsItem::ItemPositionHasChanged, QVariant());
+        addFeatureLabel = true;
     }
 }
 
 void Cluster::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     mpGraphWidget->setFocusedElement(mpVertex);
+    QGraphicsItem::hoverEnterEvent(event);
 }
 
 void Cluster::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
     LOG_DEBUG_S << "Cluster hover leave event : " << mpVertex->toString();
-    if(!mFocused)
-    {
-        mPen = mPenDefault;
-    }
-    mSelected = false;
     QGraphicsItem::hoverLeaveEvent(event);
 }
 

@@ -8,7 +8,7 @@ namespace graph_analysis {
 
 namespace representation {
 
-enum Type { UNKNOWN = 0, GEXF, LEMON, YAML, GRAPHVIZ, END_MARKER };
+enum Type { UNKNOWN = 0, GEXF, LEMON, YAML, GRAPHVIZ, OROGEN_MODEL, END_MARKER };
 
 typedef std::string Suffix;
 

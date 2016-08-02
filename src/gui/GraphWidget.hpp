@@ -1,14 +1,12 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
-#include <map>
-#include <QIcon>
-#include <QMainWindow>
-#include <QGraphicsView>
-#include <QStackedWidget>
 #include <graph_analysis/Graph.hpp>
-#include <graph_analysis/gui/GraphWidgetManager.hpp>
-#include <graph_analysis/gui/NodeItem.hpp>
+
+#include <graph_analysis/gui/VertexItemBase.hpp>
+#include <graph_analysis/gui/EdgeItemBase.hpp>
+
+#include <QGraphicsView>
 
 namespace graph_analysis {
 namespace io {
@@ -18,25 +16,13 @@ namespace io {
 namespace gui {
 
 /**
+ * @brief Base-class for visual representations of a "Graph" in this framework
  *
- * \beginverbatim
-    GraphWidget* widget = new GraphWidget;
-
-    // Create vertices
-    for(int i = 0; i < 1; ++i)
-    {
-        graph_analysis::Vertex::Ptr vertex(new graph_analysis::Vertex());
-        widget->addVertex(vertex);
-    }
- \endverbatim
- */
-
-/**
- * \file GraphWidget.hpp
- * \class GraphWidget
- * \brief graph view widget interface
- * \details polymorphics base for the different kinds of graph widgets
- *      that make use of different kinds of node and edge items implementations
+ * A Qt-Widget using a qgraphicsview as a canvas. this class does not draw
+ * anything yet, but provides the infrastructure for handling with a graph. is
+ * intended to obtain a shared pointer to a graph which is stored elsewhere.
+ * this allows multiple independent visualizations of the same basegraph.
+ *
  */
 class GraphWidget : public QGraphicsView
 {
@@ -44,124 +30,123 @@ class GraphWidget : public QGraphicsView
 
 public:
 
-    typedef std::map<graph_analysis::Edge::Ptr, graph_analysis::Edge::Ptr> EdgeMap; // meant to map default edges to their correspondent initial edges in the base graph
-    typedef std::map<graph_analysis::Edge::Ptr, EdgeItem*> EdgeItemMap; // maps conceptual edges to the graphical edges in the scene
-    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> NodeItemMap; // maps conceptual cluster vertices to graphical nodes in the scene
-    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem*> FeatureMap; // maps conceptual feature vertices to their graphical node in the scene
-    typedef std::map<graph_analysis::Vertex::Ptr, NodeItem::id_t> FeatureIDMap; // maps conceptual feature vertices to their feature ID
-
-    /**
-     * \brief constructor
-     * \param mainWindow main qt application window
-     * \param parent qt parent widget
-     */
-    GraphWidget(QWidget *parent = NULL);
-
-    /// destructor
+    /** constructor */
+    GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
+    /** destructor */
     virtual ~GraphWidget();
 
     virtual QString getClassName() const { return "graph_analysis::gui::GraphWidget"; }
 
-    /// getter method for retrieving the note scene items map
-    NodeItemMap& nodeItemMap() { return mNodeItemMap; }
-    /// getter method for retrieving the edge scene items map
-    EdgeItemMap& edgeItemMap() { return mEdgeItemMap; }
+    /**
+     * a mapping from an "Edge" in the graph to a responsible visualizing
+     * "Item" on the scene.
+     */
+    typedef std::map<const graph_analysis::Edge::Ptr, EdgeItemBase*>
+        EdgeItemMap;
+    /**
+     * a mapping from an "Vertex" in the graph to a responsible visualizing
+     * "Item" on the scene.
+     */
+    typedef std::map<const graph_analysis::Vertex::Ptr, VertexItemBase*>
+        VertexItemMap;
+
+    /** to be called after a new "EdgeItem" is added to the canvas */
+    void registerEdgeItem(const graph_analysis::Edge::Ptr& e, EdgeItemBase* i);
+    /** to be called after a new "VertexItem" is added to the canvas */
+    void registerVertexItem(const graph_analysis::Vertex::Ptr& v,
+                            VertexItemBase* i);
+    /** to be called after an existing "EdgeItem" is removed from the canvas */
+    void deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
+                            EdgeItemBase* i);
+    /** to be called after an existing "VertexItem" is removed from the canvas */
+    void deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
+                              VertexItemBase* i);
+
+    /**
+     * takes the "connector" and the "boundingRect" of both items and tries to
+     * create a line between the intersection point of the connecting line and
+     * the boundingRects
+     *
+     * used to establish sensible coordinated to re-draw edges after their
+     * vertices changed position
+     */
+    QVector<QPointF> getEdgePoints(VertexItemBase* firstItem,
+                                   VertexItemBase* secondItem) const;
+
+    /**
+     * to be called by a VertexItem when its position on the canvas changed.
+     */
+    void vertexPositionHasChanged(VertexItemBase* item);
+    /**
+     * this is used to store where a Vertex element had its responsible
+     * VertexItem positioned on the scene.  can be queried after a
+     * "clearVisualization()" to reposition newly created items in the same
+     * canvas location as before.
+     *
+     * cannot store the pointer to a VertexItem directly as this pointer will
+     * change after repouluation of the canvas.
+     */
+    typedef std::map<const graph_analysis::Vertex::Ptr, QPointF>
+        VertexItemCoordinateCache;
+    /**
+     * when a vertex changed its position, it can be stored
+     *
+     * allows restoring the layout after automatic re-population using.
+     */
+    void cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v, QPointF p);
+    /**
+     * update all edges associated with the given vertex after a position change
+     *
+     * the default implementation tries to draw a line between the intersection
+     * points of the "connectors" and the "boundingRect" of each item of the edge.
+     */
+    virtual void updateEdgePositions(VertexItemBase* item);
 
     /// getter method for retrieving the underlying base graph
-    graph_analysis::BaseGraph::Ptr graph() { return mpGraph; }
+    graph_analysis::BaseGraph::Ptr graph() const;
     /// setter method for updating the underlying base graph
-    void setGraph(const graph_analysis::BaseGraph::Ptr& graph) { mpGraph = graph; }
-
-    void setGraphWidgetManager(GraphWidgetManager* graphWidgetManager) { mpGraphWidgetManager = graphWidgetManager; }
-    GraphWidgetManager* getGraphWidgetManager() const;
-
-    /**
-     * Triggers a reset of the underlying graph
-     * via GraphWidgetManager::resetGraph
-     */
-    virtual void reset(bool keepData = false);
-
-    /**
-     * Reset the layouting graph, i.e, deletes and reinstanciates it
-     */
-    virtual void resetLayoutingGraph();
+    void setGraph(const graph_analysis::BaseGraph::Ptr& graph);
 
     /**
      * Update the current view
      */
     virtual void update();
-    virtual void updateView();
     void updateLayoutView();
 
     /**
-     * Trigger the layouting of the graph widget
+     * trigger the creation of individual QGraphicsItems based on the
+     * referenced BaseGraph for this instance of a graph widget.
      */
-    virtual void updateLayout() { throw std::runtime_error("graph_analysis::gui::GraphWidget::updateLayout: not implemented"); }
+    virtual void populateCanvas()
+    {
+        throw std::runtime_error(
+            "graph_analysis::gui::GraphWidget::populateCanvas: not implemented");
+    }
 
-    /// setter method for updating the scaling factor
-    void    setScaleFactor (double scaleFactor) { mScaleFactor = scaleFactor; }
-    /// getter method for retrieving the scaling factor
-    double  getScaleFactor () const { return mScaleFactor; }
-
-
-    // SELECT/ DESELECT
+    /** infrastructure for showing information about the currently hovered
+     * edge/vertex in the statusbar */
     void setFocusedElement(const GraphElement::Ptr& element);
     GraphElement::Ptr getFocusedElement() const { return mpFocusedElement; }
     void clearFocus();
     bool isFocused(const GraphElement::Ptr& element) const { return mpFocusedElement == element; }
-
-    NodeItem* getFocusedNodeItem() const;
-    EdgeItem* getFocusedEdgeItem() const;
-
-    void selectElement(const GraphElement::Ptr& element);
-    void unselectElement(const GraphElement::Ptr& element);
-    void clearElementSelection() { mElementSelection.clear(); }
 
     /**
      * Clear visualization and scene not(!) the underlying graph
      */
     virtual void clearVisualization();
 
-    bool isInElementSelection(graph_analysis::GraphElement::Ptr element) { return std::find(mElementSelection.begin(), mElementSelection.end(), element) != mElementSelection.end(); }
-    std::vector<graph_analysis::GraphElement::Ptr> getElementSelection() const { return mElementSelection; }
-
-    // EDIT
-    virtual Vertex::Ptr addVertex(const std::string& type, const std::string& label, QPoint* position = 0);
-    virtual Edge::Ptr addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
-
-    virtual void removeElement(const GraphElement::Ptr& element);
-    void removeVertex(const Vertex::Ptr& vertex);
-    void removeEdge(const Edge::Ptr& edge);
-
-    /// \param msg Message in the statusbar
+    // \param msg Message in the statusbar
     /// \param time Number of milliseconds the message will be held on screen
-    virtual void updateStatus(const std::string& msg, int timeInMS = 10) const;
-
-    virtual void setGraphLayout(const QString& layoutName);
-
-    virtual void modeChanged(GraphWidgetManager::Mode mode);
-    GraphWidgetManager::Mode getMode() const { return mMode; }
-
-    virtual QStringList getSupportedLayouts() const;
-    void renameElement(GraphElement::Ptr element, const std::string& label);
+    virtual void updateStatus(const std::string& msg, int timeInMS = 10);
 
 public slots:
-    virtual void shuffle() { throw std::runtime_error("graph_analysis::gui::GraphWidget::shuffle is not reimplemented"); }
+    virtual void shuffle();
     virtual void refresh(bool all = true);
+    virtual void updateVisualization();
 
-    void clearDialog();
+signals:
+    void currentStatus(QString, int);
 
-    virtual void addVertexDialog(QObject* object = 0);
-    void addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex);
-
-    /**
-     * Default implementation triggers a renaming of the element
-     * \param element Element to edit, if NULL used the currently focused element
-     */
-    virtual void editElementDialog(const GraphElement::Ptr& element = GraphElement::Ptr());
-    virtual void removeElementDialog(const GraphElement::Ptr& element = GraphElement::Ptr());
-
-    void selectLayoutDialog();
 protected:
 
     // the QGraphicsScene to be used by this widget
@@ -172,46 +157,25 @@ protected:
     /// scales scene (zooms into or out of the scene)
     void scaleView(qreal scaleFactor);
 
-    /// conceptual underlying graph
+    /// shared pointer of the conceptual, underlying graph
     graph_analysis::BaseGraph::Ptr mpGraph;
 
-    /// Layouting
-    io::GVGraph* mpGVGraph;
-    graph_analysis::BaseGraph::Ptr mpLayoutingGraph;
-
-    /// max height of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeHeight;
-    /// max width of the nodes in the scene (relevant for GraphViz runtime layouting)
-    qreal mMaxNodeWidth;
-
-    // Allow mapping from graph vertices to nodes in the scene
-    NodeItemMap mNodeItemMap;
-    // Allow mapping from graph edges to edges in the scene
-    EdgeItemMap mEdgeItemMap;
-
-    /// |mScaleFactor| > 1.0 makes edges longer; otherwise, it makes them shorter | if negative, it rotates the graph 180 degrees
-    double mScaleFactor;
-
-    /// layouting engine to be used on the next layouting
-    QString mLayout;
-
+    /**
+     * this is (was?) used to display the name of the last focused element in
+     * the status bar.
+     */
     graph_analysis::GraphElement::Ptr mpFocusedElement;
-    std::vector<graph_analysis::GraphElement::Ptr> mElementSelection;
-
-    GraphWidgetManager* mpGraphWidgetManager;
-    GraphWidgetManager::Mode mMode;
-
-    void gvRender(const std::string& filename);
 
     void keyPressEvent(QKeyEvent *);
 
     void mousePressEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
+    void mouseDoubleClickEvent(QMouseEvent* event);
 
-    // iterate over all QGraphicItems of scene with type "...::NodeItemType". sets
-    // or clears the flag.
-    void setFlagOnAllNodes(enum QGraphicsItem::GraphicsItemFlag flag,
-                           bool value = true);
+    EdgeItemMap mEdgeItemMap;
+    VertexItemMap mVertexItemMap;
+    VertexItemCoordinateCache mItemCoordinateMap;
+
 };
 
 } // end namespace gui

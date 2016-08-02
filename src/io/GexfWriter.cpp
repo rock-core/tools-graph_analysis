@@ -4,7 +4,7 @@
 #include <libgexf/filewriter.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/xpressive/xpressive.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 

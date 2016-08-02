@@ -57,7 +57,7 @@ public:
      * \param pGraph shared pointer to the graph where this vertex is contained
      * \return shared pointer of this vertex belonging to the given graph
      */
-    Vertex::Ptr getSharedPointer(const shared_ptr<BaseGraph>& pGraph) const;
+    Vertex::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph>& pGraph) const;
 
 protected:
     /**

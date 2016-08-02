@@ -73,7 +73,7 @@ bool Edge::areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1)
     return getInvolvedVertices(e0, e1).size() < 4;
 }
 
-Edge::Ptr Edge::getSharedPointer(const shared_ptr<BaseGraph>& pGraph) const
+Edge::Ptr Edge::getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const
 {
     return pGraph->getEdge(getId(pGraph->getId()));
 }

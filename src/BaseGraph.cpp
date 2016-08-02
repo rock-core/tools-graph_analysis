@@ -3,7 +3,7 @@
 #include <graph_analysis/lemon/Graph.hpp>
 #include <graph_analysis/snap/DirectedGraph.hpp>
 #include <graph_analysis/MapInitializer.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <sstream>
 
 namespace graph_analysis {
@@ -175,18 +175,29 @@ void BaseGraph::removeVertex(const Vertex::Ptr& vertex)
 
 GraphElementId BaseGraph::addEdge(const Edge::Ptr& edge)
 {
-    if(edge->associated(getId()) )
+    if(edge->associated(getId()))
     {
-        throw std::runtime_error("BaseGraph: edge already exists in this graph");
+        throw std::runtime_error("BaseGraph: edge '" + edge->toString() +
+                                 "' already exists in this graph");
     }
 
     Vertex::Ptr source = edge->getSourceVertex();
     Vertex::Ptr target = edge->getTargetVertex();
 
-    if(!source || !target)
+    if(!source)
     {
-        throw std::runtime_error("BaseGraph: cannot add edge, since it has no source and/or target vertex specified");
-    } else {
+        throw std::runtime_error("BaseGraph: cannot add edge '" +
+                                 edge->toString() +
+                                 "' since it has no source vertex specified");
+    }
+    else if(!target)
+    {
+        throw std::runtime_error("BaseGraph: cannot add edge '" +
+                                 edge->toString() +
+                                 "' since it has no target vertex specified");
+    }
+    else
+    {
         try {
             addVertex(source);
         } catch(const std::runtime_error& e)

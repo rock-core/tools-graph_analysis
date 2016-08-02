@@ -9,7 +9,7 @@
 #include "io/YamlReader.hpp"
 #include "io/GraphvizWriter.hpp"
 
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace representation {
@@ -21,11 +21,16 @@ std::map<Type, std::string> TypeTxt = InitMap<Type, std::string>
     (GRAPHVIZ, "GRAPHVIZ")
     (YAML, "YAML")
     ;
+// TODO3: "typemanager"
+// -kanten checken: is ein drag-drop event, der false zurückgeben kann
+// -position sollte einfach anzupassen sein
+// -importer/exporter muss properties wie "config file" für eine kompoenente zusätzlich laden
 
 } // end namespace representation
 
 namespace io {
 
+// this is producing a memory leak?
 struct null_deleter
 {
         void operator()(void const *) const {}
@@ -56,8 +61,9 @@ GraphIO::ReaderMap GraphIO::msReaders = InitMap<representation::Type, Reader::Pt
     ;
 
 std::map<representation::Suffix, representation::Type> GraphIO::msSuffixes = InitMap<representation::Suffix, representation::Type>
+// FIXME: is it desireable to have identical suffixes for different formats?
     ("yaml", representation::YAML)
-    ("yml", representation::YAML)
+    //("yml", representation::YAML)
     ("gexf", representation::GEXF)
     ("xml", representation::GEXF)
     ("lemon", representation::LEMON)

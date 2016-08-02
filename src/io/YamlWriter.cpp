@@ -1,5 +1,5 @@
 #include "YamlWriter.hpp"
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <boost/lexical_cast.hpp>
 #include <graph_analysis/GraphElement.hpp>
 

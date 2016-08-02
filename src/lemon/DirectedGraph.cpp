@@ -1,5 +1,5 @@
 #include "DirectedGraph.hpp"
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 #include <graph_analysis/filters/CommonFilters.hpp>
 #include <boost/make_shared.hpp>
 

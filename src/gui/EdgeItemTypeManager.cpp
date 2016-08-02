@@ -11,14 +11,13 @@ namespace gui {
 EdgeItemTypeManager::EdgeItemTypeManager()
 {
     registerVisualization("default",dynamic_cast<EdgeItem*>(new graphitem::edges::Simple()));
-    registerVisualization(LAYER_EDGE_TYPE,dynamic_cast<EdgeItem*>(new layeritem::edges::Simple()));
-
 }
 
 void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItem* graphicsItem)
 {
     try {
         graphicsItemByType(type);
+        // wtf? just throw?
         throw std::runtime_error("graph_analysis::gui::EdgeItemTypeManager::registerVisualization: type '" + type + "' is already registered");
     } catch(...)
     {

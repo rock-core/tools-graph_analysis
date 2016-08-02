@@ -6,7 +6,7 @@
 #include <graph_analysis/BaseGraph.hpp>
 #include <graph_analysis/boost_graph/ArcIterator.hpp>
 #include <boost/graph/adjacency_list.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 #include <boost/unordered_map.hpp>
 #include <vector>

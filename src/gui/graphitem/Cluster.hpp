@@ -8,7 +8,8 @@
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/items/Label.hpp>
-#include <base/Logging.hpp>
+// remove this include when "ConnectionRequest" is gone
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -75,6 +76,10 @@ public:
 
 protected:
 
+    void myUpdate();
+
+    void mousePressEvent(QGraphicsSceneMouseEvent* event);
+
     /// qt hovering LEAVE callback
     void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
@@ -83,15 +88,6 @@ protected:
 private:
     /// main node text label
     items::Label *mpLabel;
-
-    /// qt drawing pen
-    QPen mPen;
-    /// default qt drawing pen
-    QPen mPenDefault;
-    /// boolean flag: true when current node is being the focused node of the scene (has been double clicked); false otherwise
-    bool mFocused;
-    /// boolean flag: true when current node is being the seleted node of the scene (is being hovered on); false otherwise
-    bool mSelected;
 
     std::map<std::string, QGraphicsTextItem*> mLabels;
 

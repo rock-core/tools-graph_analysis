@@ -34,7 +34,7 @@ public:
     /// empty constructor
     Resource() {}
     /// destructor
-    virtual ~Resource() {};
+    virtual ~Resource();
 
     /// retrieves the bounding rectangular box around the area occupied by the node in the scene
     virtual QRectF boundingRect() const;
@@ -47,12 +47,6 @@ public:
     virtual NodeItem* createNewItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex) const { return new Resource(graphWidget, vertex); }
 
 protected:
-    /// qt mouse double-click callback
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
-    /// qt mouse press callback
-    void mousePressEvent(QGraphicsSceneMouseEvent* event);
-    /// qt mouse release callback
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
     /// qt hovering ENTER callback
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
@@ -61,11 +55,8 @@ protected:
 
 private:
     /// main node text label
-    items::Label* mLabel;
-    /// qt drawing pen
-    QPen mPen;
-    /// default qt drawing pen
-    QPen mPenDefault;
+    QGraphicsTextItem* mClassName;
+    QGraphicsTextItem* mLabel;
 };
 
 } // end namespace layeritem

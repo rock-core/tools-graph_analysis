@@ -12,7 +12,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QToolBar>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 #include <graph_analysis/GraphIO.hpp>
 #include <graph_analysis/io/YamlWriter.hpp>
@@ -21,7 +21,6 @@
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
-#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
 #include <graph_analysis/gui/dialogs/ExportFile.hpp>
 
 namespace graph_analysis {
@@ -71,46 +70,13 @@ GraphWidgetManager::GraphWidgetManager()
     // Edit Menu
     QMenu *editMenu = new QMenu(QObject::tr("&Edit"));
 
-    QMenu *modesMenu = editMenu->addMenu(QObject::tr("&Mode"));
-    QActionGroup *actionModeGroup = new QActionGroup(this);
-    QAction *actionEditMode = comm.addAction("Edit", SLOT(setEditMode()), *(IconManager::getInstance()->getIcon("edit_mode_white")));
-    actionEditMode->setCheckable(true);
-    QAction *actionConnectMode = comm.addAction("Connect", SLOT(setConnectMode()), *(IconManager::getInstance()->getIcon("connection_mode_white")));
-    actionConnectMode->setCheckable(true);
-    QAction *actionMoveMode = comm.addAction("Move", SLOT(setMoveMode()), *(IconManager::getInstance()->getIcon("move_mode_white")));
-    actionMoveMode->setCheckable(true);
-    actionMoveMode->setChecked(true);
-
-    actionModeGroup->addAction(actionEditMode);
-    actionModeGroup->addAction(actionConnectMode);
-    actionModeGroup->addAction(actionMoveMode);
-
-    modesMenu->addAction(actionEditMode);
-    modesMenu->addAction(actionConnectMode);
-    modesMenu->addAction(actionMoveMode);
-
-    QAction *actionAddNode = comm.addAction("Add vertex", SLOT(addVertex()), *(IconManager::getInstance()->getIcon("addNode_white")));
-    QAction *actionRenameSelection = comm.addAction("Rename selection", SLOT(renameSelection()), *(IconManager::getInstance()->getIcon("label_white")));
-    QAction *actionRemoveSelection  = comm.addAction("Remove selection", SLOT(removeSelection()), *(IconManager::getInstance()->getIcon("remove_white")));
-    QAction *actionAddFeature     = comm.addAction("Add feature", SLOT(addFeature()), *(IconManager::getInstance()->getIcon("addFeature_white")));
-    QAction *actionSwapFeatures   = comm.addAction("Swap features", SLOT(swapFeatures()), *(IconManager::getInstance()->getIcon("swap_white")));
-
-    editMenu->addAction(actionAddNode);
-    editMenu->addSeparator();
-    editMenu->addAction(actionRenameSelection);
-    editMenu->addAction(actionRemoveSelection);
-    editMenu->addAction(actionAddFeature);
-    editMenu->addAction(actionSwapFeatures);
-
     // View Menu
     QMenu *viewMenu = new QMenu(QObject::tr("&View"));
     QAction *actionRefresh = comm.addAction("Refresh", SLOT(refresh()), *(IconManager::getInstance()->getIcon("refresh_white")));
     QAction *actionShuffle = comm.addAction("Shuffle", SLOT(shuffle()), *(IconManager::getInstance()->getIcon("shuffle_white")));
-    QAction *actionSelectLayout = comm.addAction("Layout", SLOT(selectLayout()), *(IconManager::getInstance()->getIcon("layout_white")));
 
     viewMenu->addAction(actionRefresh);
     viewMenu->addAction(actionShuffle);
-    viewMenu->addAction(actionSelectLayout);
 
     // loading menus in the bar
     bar->addMenu(fileMenu);
@@ -118,12 +84,6 @@ GraphWidgetManager::GraphWidgetManager()
     bar->addMenu(viewMenu);
 
     mpMainWindow->setWindowTitle(QObject::tr("Graph Analysis"));
-
-    for(int index = 0; index < mpTabWidget->count(); index++)
-    {
-        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
-        graphWidget->setGraphLayout(mLayout);
-    }
 
     mpMainWindow->show();
     updateStatus("Ready");
@@ -133,20 +93,6 @@ GraphWidgetManager::~GraphWidgetManager()
 {
     delete mpTabWidget;
     delete mpMainWindow;
-}
-
-void GraphWidgetManager::reloadPropertyDialog(void)
-{
-    updateStatus(std::string("reloading command panel..."));
-    if(mpPropertyDialog)
-    {
-        delete mpPropertyDialog;
-        mpPropertyDialog = NULL;
-    }
-    //mpPropertyDialog = new PropertyDialog(mpGraphWidgetManager->getDragDrop(), mpGraphWidgetManager->getVertexFocused(), mpGraphWidgetManager->getEdgeFocused());
-    //
-    WidgetManager::getInstance()->setPropertyDialog(mpPropertyDialog); // IMPORTANT!!! - now updating the corresponding field in the WidgetManager
-    updateStatus(std::string("Reloaded command panel!"), GraphWidgetManager::TIMEOUT);
 }
 
 void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd)
@@ -243,90 +189,6 @@ void GraphWidgetManager::helpSetup(std::stringstream& ss, const std::string& cmd
     ss << std::endl;
 }
 
-void GraphWidgetManager::renameSelection()
-{
-    std::vector<GraphElement::Ptr> elements = currentGraphWidget()->getElementSelection();
-    std::vector<GraphElement::Ptr>::const_iterator it = elements.begin();
-    for(; it != elements.end(); ++it)
-    {
-        GraphElement::Ptr element = *it;
-        currentGraphWidget()->editElementDialog(element);
-    }
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->changeFocusedVertexLabel();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Rename Focused Node"), tr("Cannot Rename Focused Node: no node is focused on!"));
-//    }
-}
-
-void GraphWidgetManager::removeSelection()
-{
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->removeFocusedVertex();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Remove Focused Node"), tr("Cannot Remove Focused Node: no node is focused on!"));
-//    }
-}
-
-void GraphWidgetManager::addFeature()
-{
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->addFeatureFocused();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Add a Feature to the Focused Node"), tr("Cannot Add a Feature to the Focused Node: no node is focused on!"));
-//    }
-}
-
-void GraphWidgetManager::swapFeatures()
-{
-//    if(mpGraphWidgetManager->getVertexFocused())
-//    {
-//        mpGraphWidgetManager->swapFeaturesFocused();
-//    }
-//    else
-//    {
-//        QMessageBox::information(mpStackedWidget, tr("Cannot Swap Features of the Focused Node"), tr("Cannot Swap Features of the Focused Node: no node is focused on!"));
-//    }
-}
-
-//void GraphWidgetManager::renameSelection()
-//{
-////    if(mpGraphWidgetManager->getVertexFocused())
-////    {
-////        mpGraphWidgetManager->renameFeatureFocused();
-////    }
-////    else
-////    {
-////        QMessageBox::information(mpStackedWidget, tr("Cannot Rename a Feature of the Focused Node"), tr("Cannot Rename a Feature of the Focused Node: no node is focused on!"));
-////    }
-//}
-//
-//void GraphWidgetManager::removeSelection()
-//{
-////    if(mpGraphWidgetManager->getVertexFocused())
-////    {
-////        mpGraphWidgetManager->removeFeaturesFocused();
-////    }
-////    else
-////    {
-////        QMessageBox::information(mpStackedWidget, tr("Cannot Remove the Features of the Focused Node"), tr("Cannot Remove the Features of the Focused Node: no node is focused on!"));
-////    }
-//}
-
-void GraphWidgetManager::addVertex()
-{
-    currentGraphWidget()->addVertexDialog();
-}
-
 void GraphWidgetManager::refresh()
 {
     LOG_DEBUG_S << "Refresh current widget: " << currentGraphWidget()->getClassName().toStdString();
@@ -339,24 +201,6 @@ void GraphWidgetManager::shuffle()
     currentGraphWidget()->shuffle();
 }
 
-void GraphWidgetManager::selectLayout()
-{
-    GraphWidget* widget = currentGraphWidget();
-    widget->selectLayoutDialog();
-}
-
-void GraphWidgetManager::reloadPropertyDialogMainWindow()
-{
-    if(!mpPropertyDialog->isRunning())
-    {
-        reloadPropertyDialog();
-    }
-    else
-    {
-        QMessageBox::information(mpTabWidget, tr("Cannot Reload Property Dialog"), tr("Cannot Reload Property Dialog: the dialog is still active! It needs closing first."));
-    }
-}
-
 void GraphWidgetManager::addGraphWidget(GraphWidget* graphWidget)
 {
     mpTabWidget->insertTab(mpTabWidget->count(), graphWidget, graphWidget->getClassName());
@@ -367,6 +211,8 @@ void GraphWidgetManager::resetGraph(bool keepData)
 {
     if(!keepData)
     {
+        // overwrite the existing shared to pointer to the BaseGraph with a
+        // new, empty, instance.
         mpGraph = BaseGraph::getInstance();
     }
 
@@ -417,6 +263,7 @@ void GraphWidgetManager::importGraph()
     {
         fromFile(filename.toStdString());
         refresh();
+        shuffle();
     } else
     {
         updateStatus("Failed to import graph: aborted by user - an empty input filename was provided");
@@ -498,21 +345,12 @@ void GraphWidgetManager::fromFile(const std::string& filename)
     notifyAll();
 }
 
-void GraphWidgetManager::notifyModeChange(Mode mode)
-{
-    for(int index = 0; index < mpTabWidget->count(); index++)
-    {
-        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
-        graphWidget->modeChanged(mode);
-    }
-}
-
 void GraphWidgetManager::notifyAll()
 {
     for(int index = 0; index < mpTabWidget->count(); index++)
     {
-        GraphWidget* graphWidget = dynamic_cast<GraphWidget*>(mpTabWidget->widget(index));
-        graphWidget->setGraphLayout(mLayout);
+        GraphWidget *graphWidget =
+            dynamic_cast<GraphWidget *>(mpTabWidget->widget(index));
         graphWidget->refresh(false);
     }
 }

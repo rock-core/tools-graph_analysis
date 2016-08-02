@@ -16,16 +16,26 @@ namespace gui {
 
 class GraphWidget;
 
-namespace dialogs {
-    class PropertyDialog;
-}
-
 /**
  * \file GraphWidgetManager.hpp
  * \class GraphWidgetManager
  * \brief The GraphWidgetManager loads and connect all main graph widget components
- * \details manages graph widgetsunder a common stack widget
- *      as well as the main window and the dockable properties dialog and other housekeeping e.g. GUI icons
+ * \details manages graph widgets under a common stack widget as well as the
+ *          main window and the dockable properties dialog and other
+ *          housekeeping e.g. GUI icons
+ *
+ * this is the main-qobject in the hierarchy, which binds all higher-level
+ * editor/visualization widgets of graph_analysis::GraphWidget to the currently loaded
+ * instance of graph_analysis::BaseGraph. This class also handles importing and
+ * exporting from a file.
+ *
+ * this thing also provides a statusbar-like mechanism, where proper widgets
+ * can display information for the user about the current state.
+ *
+ * this class provides all actions, menus and other mode-elements
+ *
+ * this class also provides the GraphFilter elements to allow restricting
+ * editing operations.
  */
 class GraphWidgetManager : public QObject
 {
@@ -62,23 +72,14 @@ public:
     }
 
 public slots:
-    /// re-loads the property dialog/panel in the scene
-    void reloadPropertyDialog();
-    /// triggers refresh() in the currently displayed graph widget
+    /**
+     * @brief triggers a refresh() in the currently displayed graph widget
+     *
+     * this will re-layout the whole graph
+     */
     void refresh();
     /// triggers shuffle() in the currently displayed graph widget
     void shuffle();
-    /// triggers changeLayout() in the currently displayed graph widget
-    void selectLayout();
-    /// reloads the property dialog/panel if it is not running any more
-    void reloadPropertyDialogMainWindow();
-
-    void removeSelection();
-    void renameSelection();
-
-    void addFeature();
-    void swapFeatures();
-    void addVertex();
 
     void addGraphWidget(GraphWidget* graphWidget);
 
@@ -86,13 +87,6 @@ public slots:
 
     void importGraph();
     void exportGraph();
-
-    void setMoveMode() { setMode(MOVE_MODE); }
-    void setConnectMode() { setMode(CONNECT_MODE); }
-    void setEditMode() { setMode(EDIT_MODE); }
-
-    void setMode(Mode mode) { mMode = mode; notifyModeChange(mode); }
-    Mode getMode() const { return mMode; }
 
     /**
      * Handle tab changes
@@ -108,26 +102,29 @@ protected:
     void notifyAll();
 
     /**
-     * \brief loads base graph from file 'filename' (either from custom yml format, or gexf standard format)
+     * \brief loads base graph from file 'filename'
      * \param filename the input file to parse the graph from
+     *
+     * automatically chooses apropriate loader based on file-ending.
      */
     void fromFile(const std::string& filename);
-
 
 private:
     /// main window of the qt application
     QMainWindow *mpMainWindow;
-    /// stacked widget to toggle between the diagram editor and layers viewer (the actual central widget of the main window)
+    /**
+     * stacked widget to toggle between different available views, like the
+     * diagram editor and layers viewer.
+     */
     QTabWidget* mpTabWidget;
     /// status bar
     QStatusBar* mpStatus;
-    /// the property dialog (a.k.a. command panel) dockable GUI component
-    dialogs::PropertyDialog *mpPropertyDialog;
     /// the layouting engine to be used when initializing the graph widgets
     QString mLayout;
 
     GraphWidget* currentGraphWidget();
 
+    /// currently used editing mode. will be propagated to all available views.
     Mode mMode;
 };
 

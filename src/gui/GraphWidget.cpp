@@ -1,75 +1,55 @@
 #include "GraphWidget.hpp"
 
-#include <set>
-#include <math.h>
-#include <sstream>
-#include <vector>
-#include <exception>
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-#include <boost/lexical_cast.hpp>
+#include <base-logging/Logging.hpp>
 
-#include <base/Logging.hpp>
-#include <base/Time.hpp>
-
-#include <graph_analysis/io/GVGraph.hpp>
-#include <graph_analysis/GraphIO.hpp>
-#include <graph_analysis/io/YamlWriter.hpp>
-#include <graph_analysis/io/GexfWriter.hpp>
-#include <graph_analysis/io/GexfReader.hpp>
-#include <graph_analysis/io/YamlReader.hpp>
-#include <graph_analysis/io/GraphvizWriter.hpp>
-#include <graph_analysis/gui/items/EdgeLabel.hpp>
-#include <graph_analysis/gui/WidgetManager.hpp>
-#include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
 #include <graph_analysis/EdgeTypeManager.hpp>
 
-#include <QDir>
-#include <QTime>
-#include <QMenu>
-#include <QMenuBar>
-#include <QAction>
-#include <QKeyEvent>
+#include <graph_analysis/gui/EdgeMimeData.hpp>
+
+#include <graph_analysis/gui/BaseGraphView/AddVertexDialog.hpp>
+#include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
+
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QApplication>
 #include <QInputDialog>
-#include <QSignalMapper>
+#include <QApplication>
+#include <QGraphicsScene>
+#include <QKeyEvent>
+#include <QDebug>
 
-#include "EdgeItem.hpp"
-#include "NodeItem.hpp"
-#include "NodeItemTypeManager.hpp"
-#include "EdgeItemTypeManager.hpp"
-#include "ActionCommander.hpp"
-#include "dialogs/AddGraphElement.hpp"
-#include "dialogs/PropertyDialog.hpp"
-
-#define DEFAULT_SCALING_FACTOR 2.269
+#include <math.h>
 
 using namespace graph_analysis;
 
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(QWidget *parent)
+GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget* parent)
     : QGraphicsView(parent)
     , mpScene(new QGraphicsScene(this))
-    , mpGVGraph(NULL)
-    , mMaxNodeHeight(0)
-    , mMaxNodeWidth (0)
-    , mScaleFactor(DEFAULT_SCALING_FACTOR)
-    , mLayout("dot")
-    , mpGraphWidgetManager(WidgetManager::getInstance()->getGraphWidgetManager())
-    , mMode(GraphWidgetManager::MOVE_MODE)
+    , mpGraph(graph)
 {
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
+    setAcceptDrops(true);
+    setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
+                   QPainter::SmoothPixmapTransform);
 }
 
 GraphWidget::~GraphWidget()
 {
     delete mpScene;
+}
+
+graph_analysis::BaseGraph::Ptr GraphWidget::graph() const
+{
+    return mpGraph;
+}
+
+void GraphWidget::setGraph(const graph_analysis::BaseGraph::Ptr& graph)
+{
+    mpGraph = graph;
 }
 
 void GraphWidget::wheelEvent(QWheelEvent *event)
@@ -89,176 +69,82 @@ void GraphWidget::scaleView(qreal scaleFactor)
     }
     scale(scaleFactor, scaleFactor);
     std::string status_msg = scaleFactor > 1. ? "Zoomed-in" : "Zoomed-out";
-    updateStatus(status_msg, GraphWidgetManager::TIMEOUT);
+    updateStatus(status_msg, 1000);
 }
 
-void GraphWidget::updateStatus(const std::string& message, int timeout) const
+void GraphWidget::updateStatus(const std::string& message, int timeout)
 {
-    WidgetManager::getInstance()->getGraphWidgetManager()->updateStatus(QString(message.c_str()), timeout);
-}
-
-void GraphWidget::setGraphLayout(const QString& layoutName)
-{
-    mLayout = layoutName;
-    refresh();
+    emit currentStatus(QString(message.c_str()), timeout);
 }
 
 void GraphWidget::clearVisualization()
 {
-    if(mpGVGraph)
-    {
-        mpGVGraph->clearEdges();
-        mpGVGraph->clearNodes();
-    }
-
-    mNodeItemMap.clear();
-    mEdgeItemMap.clear();
+    // calling "clear()" on the scene correctly disposes of all the
+    // objetcs allocated. looks like so, the dtors are called... puh!
     scene()->clear();
-}
-
-void GraphWidget::reset(bool keepData)
-{
-    getGraphWidgetManager()->resetGraph(keepData);
-}
-
-void GraphWidget::clearDialog()
-{
-    updateStatus(std::string("Clear the graph ..."));
-    if(mpGraph->empty())
-    {
-        QMessageBox::information(this, tr("Nothing to clear"), "The graph is empty");
-        updateStatus("Done clearing the graph");
-    }
-    else
-    {
-        QMessageBox::StandardButton button = QMessageBox::question(this, tr("Confirm clear"), tr("The graph will be erased! Are you sure you want to continue?"), QMessageBox::Yes | QMessageBox::No);
-        switch(button)
-        {
-            case QMessageBox::Yes:
-                reset(false);
-                updateStatus("Done clearing the graph");
-            break;
-
-            default:
-                updateStatus("Clearing the graph aborted by user");
-            break;
-        }
-    }
-}
-
-void GraphWidget::resetLayoutingGraph()
-{
-    if(mpGVGraph)
-    {
-        delete mpGVGraph;
-    }
-
-    mpLayoutingGraph = BaseGraph::getInstance();
-    mpGVGraph = new io::GVGraph(mpLayoutingGraph, "LayoutingGraph");
+    // afterwards we can clear the "GraphElement to Item" caches.
+    mEdgeItemMap.clear();
+    mVertexItemMap.clear();
 }
 
 void GraphWidget::update()
 {
-    updateView();
+    updateLayoutView();
 
     QWidget::update();
 }
 
-void GraphWidget::updateView()
-{
-    updateLayoutView();
-}
-
 void GraphWidget::updateLayoutView()
 {
-    resetLayoutingGraph();
 
-    // implemented by GraphWidgets
-    // needs to populate the layouting graph as needed
-    updateLayout();
+    // implemented by child-GraphWidgets. should create all QGraphicsItems of
+    // the respective scene. needs to populate the layouting graph as needed.
+    populateCanvas();
 
-    // apply layouting - i.e. loading the designated layouting base graph into GraphViz then repositioning the correspoding scene nodes
-    if(mLayout.toLower() != "force")
+    LOG_INFO_S << "restoring coordinates of " << mItemCoordinateMap.size()
+               << " entries from cache";
+    VertexItemCoordinateCache::iterator it = mItemCoordinateMap.begin();
+    for(; it != mItemCoordinateMap.end(); it++)
     {
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-        LOG_INFO_S << "GV started layouting the graph. This can take a while ...";
-        base::Time start = base::Time::now();
-        mpGVGraph->setNodeAttribute("height", boost::lexical_cast<std::string>(mMaxNodeHeight));
-        mpGVGraph->setNodeAttribute("width" , boost::lexical_cast<std::string>(mMaxNodeWidth ));
-        LOG_INFO_S << "Applying layout: " << mLayout.toStdString();
-        mpGVGraph->applyLayout(mLayout.toStdString());
-        base::Time delay = base::Time::now() - start;
-        QApplication::restoreOverrideCursor();
-        LOG_INFO_S << "GV layouted the graph after " << delay.toMilliseconds() << "ms";
+        VertexItemBase* item = mVertexItemMap[it->first];
+        if(item)
         {
-            using namespace graph_analysis::io;
-            std::vector<GVNode> nodes = mpGVGraph->nodes();
-            std::vector<GVNode>::const_iterator cit = nodes.begin();
-            for(; cit != nodes.end(); ++cit)
-            {
-                GVNode gvNode = *cit;
-                NodeItem* nodeItem = mNodeItemMap[gvNode.getVertex()];
-                if(!nodeItem)
-                {
-                    LOG_WARN_S << "NodeItem: mapped from " <<  gvNode.getVertex()->toString() << "is null";
-                    continue;
-                }
-                // repositioning node in a scaled fashion
-                nodeItem->setPos(mScaleFactor * gvNode.x(), mScaleFactor * gvNode.y());
-            }
+            // we have an item in the cache which is still in the scene. reuse
+            // the old coordinate
+            item->setPos(it->second);
+        }
+        else
+        {
+            // invalid entry in the coordinate cache. clean it.
+            LOG_ERROR_S << "deleting invalid entry '" << it->first->toString()
+                        << "' from cache";
+            mItemCoordinateMap.erase(it);
         }
     }
+}
+
+// remove this implementation?
+void GraphWidget::shuffle()
+{
+    int diff = 25 *mVertexItemMap.size();
+    foreach(QGraphicsItem *item, scene()->items())
+    {
+        if(dynamic_cast<VertexItemBase *>(item)) {
+            item->setPos(-diff/2 + qrand() % diff, -diff/2 + qrand() % diff);
+        }
+    }
+    updateStatus(
+        "Shuffelled all nodes representing a 'Vertex' of basic GraphWidget");
 }
 
 void GraphWidget::refresh(bool all)
 {
     LOG_DEBUG_S << "Refresh widget: " << getClassName().toStdString() << " keep all data";
-    reset(true /*keepData*/);
-
     update();
-
-    // Making sure mode applies to all elements
-    modeChanged(mMode);
-}
-
-QStringList GraphWidget::getSupportedLayouts() const
-{
-    QStringList options;
-
-    std::set<std::string> supportedLayouts = mpGVGraph->getSupportedLayouts();
-    foreach(std::string supportedLayout, supportedLayouts)
-    {
-        options << tr(supportedLayout.c_str());
-    }
-
-    return options;
-}
-
-
-void GraphWidget::gvRender(const std::string& filename)
-{
-    try
-    {
-        mpGVGraph->renderToFile(filename, mLayout.toStdString());
-    }
-    catch(std::runtime_error e)
-    {
-        LOG_ERROR_S << "graph_analysis::gui::GraphWidgetManager::toDotFile: export via graphviz failed: " << e.what();
-        QMessageBox::critical(this, tr("Graph export via GraphViz failed"), e.what());
-        updateStatus("Dot Graph export failed: " + std::string(e.what()));
-    }
 }
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
 {
-    // some error checking
-    if(!mpGraphWidgetManager)
-    {
-        throw std::runtime_error("graph_analysis::gui::GraphWidget::"
-                                 "keyPressEvent: GraphWidgetManager is not set "
-                                 "for this widget");
-    }
-
     // check some key combinations which will be accepting while holding the
     // 'ctrl' key:
     if(event->modifiers() & Qt::ControlModifier)
@@ -274,17 +160,24 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
             return;
         }
 
+        case Qt::Key_L:
+        {
+            // re-layouting/re-displaying
+            updateVisualization();
+            return;
+        }
+
         case Qt::Key_R:
         {
-            // CTRL+R deletes the graph (it first prompts again the user)
-            getGraphWidgetManager()->resetGraph();
+            // "random" layout
+            shuffle();
             return;
         }
 
         case Qt::Key_E:
         case Qt::Key_S: {
             // CTRL+S (save) or CTRL+E (export graph) saves the graph to file
-            getGraphWidgetManager()->exportGraph();
+            /* WidgetManager::getInstance()->getGraphWidgetManager()->exportGraph(); */
             return;
         }
 
@@ -292,27 +185,8 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
         case Qt::Key_I:
         {
             // CTRL+O (open) or CTRL+I (input graph)
-            getGraphWidgetManager()->importGraph();
+            /* WidgetManager::getInstance()->getGraphWidgetManager()->importGraph(); */
             return;
-        }
-        case Qt::Key_L:
-        {
-            // CTRL+L (layout graph) opens a graph from file
-            getGraphWidgetManager()->selectLayout();
-            return;
-        }
-
-        case Qt::Key_P:
-        {
-            // CTRL+P reloads the property dialog (if it is currently not
-            // running)
-            if(!WidgetManager::getInstance()->getPropertyDialog()->isRunning())
-            {
-                WidgetManager::getInstance()
-                    ->getGraphWidgetManager()
-                    ->reloadPropertyDialog();
-                return;
-            }
         }
         }
     }
@@ -321,371 +195,206 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     QGraphicsView::keyPressEvent(event);
 }
 
-GraphWidgetManager* GraphWidget::getGraphWidgetManager() const
-{
-    if(!mpGraphWidgetManager)
-    {
-        throw std::runtime_error("graph_analysis::gui::GraphWidget::getGraphWigetManager: widget manager is NULL");
-    }
-    return mpGraphWidgetManager;
-}
-
-void GraphWidget::selectElement(const graph_analysis::GraphElement::Ptr& element)
-{
-    std::vector<GraphElement::Ptr>::const_iterator cit = std::find(mElementSelection.begin(),
-            mElementSelection.end(), element);
-
-    if(cit == mElementSelection.end())
-    {
-        LOG_DEBUG_S << "Select element: '" << element->toString();
-        mElementSelection.push_back(element);
-    } else {
-        throw std::invalid_argument("graph_analysis::gui::GraphWidget::selectElement: '" + element->toString() + "' already in selection");
-    }
-}
-
-void GraphWidget::unselectElement(const graph_analysis::GraphElement::Ptr& element)
-{
-    // no const interator, will be used to erease later
-    std::vector<GraphElement::Ptr>::iterator it =
-        std::find(mElementSelection.begin(), mElementSelection.end(), element);
-
-    if(it == mElementSelection.end())
-    {
-        throw std::invalid_argument("graph_analysis::gui::GraphWidget::unselectElement: '" + element->toString() + "' not in selection");
-    } else {
-        LOG_DEBUG_S << "Unselect element: '" << element->toString();
-        mElementSelection.erase(it);
-    }
-}
-
 void GraphWidget::mousePressEvent(QMouseEvent* event)
 {
-    if(event->button() == Qt::LeftButton)
-    {
-        GraphElement::Ptr element = getFocusedElement();
-        if(!element)
-        {
-            clearElementSelection();
-        } else {
-            // Allow to use SHIFT to create selection group
-            if(event->modifiers() != Qt::ShiftModifier)
-            {
-                clearElementSelection();
-            }
-
-            try {
-                selectElement(element);
-            } catch(const std::runtime_error& e)
-            {
-                unselectElement(element);
-            }
-
-            if(getMode() == GraphWidgetManager::CONNECT_MODE)
-            {
-                QDrag* drag = new QDrag(this);
-                QMimeData* mimeData = new QMimeData;
-
-                // Setting the id of the graph element as mime data
-                std::stringstream ss;
-                ss << element->getId(mpGraph->getId());
-                mimeData->setText(ss.str().c_str());
-                drag->setMimeData(mimeData);
-
-                drag->exec(Qt::CopyAction); // | Qt::MoveAction);
-            }
-        }
-
-        QGraphicsView::mousePressEvent(event);
-    } else if(event->button() == Qt::MidButton)
-    {
-        //Use ScrollHand Drag Mode to enable Panning
+    // enable panning by pressing+dragging the left mouse button if there is
+    // _no_ item under the cursor right now.
+    if ((event->button() == Qt::LeftButton) && (!itemAt(event->pos()))) {
         setDragMode(ScrollHandDrag);
-        // deflecting the current event into propagating a custom default-panning left-mouse-button oriented behaviour
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mousePressEvent(&fake);
-    } else {
         QGraphicsView::mousePressEvent(event);
+        return;
     }
+
+    QGraphicsView::mousePressEvent(event);
 }
 
 void GraphWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    if(event->button() == Qt::MidButton)
-    {
-        //Use ScrollHand Drag Mode to end Panning
+    // always try to reset drag mode, just to be sure
+    if (dragMode() != QGraphicsView::NoDrag) {
         setDragMode(NoDrag);
-        QMouseEvent fake(event->type(), event->pos(), Qt::LeftButton, Qt::LeftButton, event->modifiers());
-        QGraphicsView::mouseReleaseEvent(&fake);
     }
 
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void GraphWidget::renameElement(GraphElement::Ptr element, const std::string& label)
+void GraphWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    element->setLabel(label);
-}
-
-// EDIT
-Vertex::Ptr GraphWidget::addVertex(const std::string& type, const std::string& label, QPoint* position)
-{
-    LOG_DEBUG_S << "Add vertex: type: " << type << " label: " << label;
-    graph_analysis::Vertex::Ptr vertex = VertexTypeManager::getInstance()->createVertex(type, label);
-    mpGraph->addVertex(vertex);
-    return vertex;
-}
-
-void GraphWidget::addVertexDialog(QObject* object)
-{
-    LOG_DEBUG_S << "Add vertex dialog";
-    updateStatus("Adding vertex ...");
-
-    // the scene position where to place the new node
-    QPoint *position = (QPoint *) object;
-    position = new QPoint(100,100);
-
-    std::set<std::string> types = VertexTypeManager::getInstance()->getSupportedTypes();
-    QStringList supportedTypes;
-    std::set<std::string>::const_iterator cit = types.begin();
-    for(; cit != types.end(); ++cit)
+    if(event->button() == Qt::LeftButton)
     {
-        supportedTypes << QString(cit->c_str());
-    }
-
-    dialogs::AddGraphElement graphElementDialog(supportedTypes, this);
-    graphElementDialog.exec();
-    if(graphElementDialog.result() == QDialog::Accepted)
-    {
-        Vertex::Ptr vertex = addVertex(graphElementDialog.getType().toStdString(), graphElementDialog.getLabel().toStdString(), position);
-        updateStatus("Added vertex '" + vertex->toString() + "' of type '" + vertex->getClassName() + "'", GraphWidgetManager::TIMEOUT);
-        refresh();
-    } else
-    {
-        updateStatus("Adding vertex aborted by user", GraphWidgetManager::TIMEOUT);
-    }
-}
-
-Edge::Ptr GraphWidget::addEdge(const std::string& type, const std::string& label, Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex)
-{
-    Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(type, sourceVertex, targetVertex, label);
-    mpGraph->addEdge(edge);
-    return edge;
-}
-
-void GraphWidget::addEdgeDialog(Vertex::Ptr sourceVertex, Vertex::Ptr targetVertex)
-{
-    updateStatus("Adding edge ...");
-    std::set<std::string> types = EdgeTypeManager::getInstance()->getSupportedTypes();
-    std::set<std::string>::const_iterator cit = types.begin();
-    QStringList typesList;
-    for(; cit != types.end(); ++cit)
-    {
-        typesList << cit->c_str();
-    }
-
-    dialogs::AddGraphElement graphElementDialog(typesList);
-
-    LOG_DEBUG_S << "Add edge dialog";
-
-    graphElementDialog.exec();
-    if(graphElementDialog.result() == QDialog::Accepted)
-    {
-        Edge::Ptr edge = addEdge(graphElementDialog.getType().toStdString(), graphElementDialog.getLabel().toStdString(), sourceVertex, targetVertex);
-        updateStatus("Added edge '" + edge->toString() + "' of type '" + edge->getClassName() + "' with label: " + graphElementDialog.getLabel().toStdString(),
-                GraphWidgetManager::TIMEOUT);
-        refresh();
-    } else
-    {
-        updateStatus("Adding edge aborted by user", GraphWidgetManager::TIMEOUT);
-    }
-}
-
-NodeItem* GraphWidget::getFocusedNodeItem() const
-{
-    NodeItemMap::const_iterator cit = mNodeItemMap.begin();
-    for(; cit != mNodeItemMap.end(); ++cit)
-    {
-        NodeItem* nodeItem = cit->second;
-        if(nodeItem->isUnderMouse())
+        // no item where the user clicked
+        if(!itemAt(event->pos()))
         {
-            return nodeItem;
+            AddVertexDialog dialog;
+            dialog.exec();
+            if(dialog.result() == QDialog::Accepted)
+            {
+                graph()->addVertex(
+                    VertexTypeManager::getInstance()->createVertex(
+                        dialog.getClassname().toStdString(),
+                        dialog.getLabel().toStdString()));
+            }
         }
+
     }
-    return NULL;
+
+    QGraphicsView::mouseDoubleClickEvent(event);
 }
 
-EdgeItem* GraphWidget::getFocusedEdgeItem() const
+void GraphWidget::updateVisualization()
 {
-    EdgeItemMap::const_iterator cit = mEdgeItemMap.begin();
-    for(; cit != mEdgeItemMap.end(); ++cit)
-    {
-        EdgeItem* edgeItem = cit->second;
-        if(edgeItem->isUnderMouse())
-        {
-            return edgeItem;
-        }
-    }
-    return NULL;
-}
-
-void GraphWidget::selectLayoutDialog()
-{
-    updateStatus(std::string("Selecting graph layout..."));
-
-    bool ok;
-    QString desiredLayout = QInputDialog::getItem(this, tr("Select Layout"),
-                                         tr("select a layout:"), getSupportedLayouts(),
-                                         0, false, &ok);
-    if (ok && !desiredLayout.isEmpty())
-    {
-        refresh(true /*keep all data*/);
-        setGraphLayout(desiredLayout);
-
-        updateStatus("Changed graph layout to '" + desiredLayout.toStdString() + "'");
-    } else
-    {
-        updateStatus("Changing graph layout aborted by user");
-    }
-}
-
-void GraphWidget::editElementDialog(const GraphElement::Ptr& element)
-{
-    GraphElement::Ptr elementToEdit;
-    if(element)
-    {
-        elementToEdit = element;
-    } else if( !(elementToEdit = getFocusedElement()) )
-    {
-        updateStatus("Editing failed -- cannot identify element which shall be edited");
-        return;
-    }
-
-    updateStatus("Editing '" + elementToEdit->toString() + "'");
-    bool ok;
-    QString label = QInputDialog::getText(this, tr(std::string("Change label of '" + elementToEdit->toString() + "'").c_str()),
-                                         tr("New label:"), QLineEdit::Normal,
-                                         QString(elementToEdit->getLabel().c_str()), &ok);
-    if (ok && !label.isEmpty())
-    {
-        std::string old_label = elementToEdit->toString();
-        std::string new_label = label.toStdString();
-
-        renameElement(elementToEdit, new_label);
-        updateStatus("Changed from '" + old_label + "' to '" + new_label + "'");
-        refresh();
-    } else
-    {
-        updateStatus("Editing aborted by user");
-    }
-}
-
-void GraphWidget::removeElement(const GraphElement::Ptr& element)
-{
-    if(element)
-    {
-        Vertex::Ptr vertex = dynamic_pointer_cast<Vertex>(element);
-        if(vertex)
-        {
-            removeVertex(vertex);
-            return;
-        }
-        Edge::Ptr edge = dynamic_pointer_cast<Edge>(element);
-        if(edge)
-        {
-            removeEdge(edge);
-            return;
-        }
-    }
-}
-void GraphWidget::removeVertex(const Vertex::Ptr& vertex)
-{
-    // Check if vertex relates to a registered node item
-    NodeItemMap::const_iterator it = mNodeItemMap.find(vertex);
-    if(it == mNodeItemMap.end())
-    {
-        // not a node item (but a feature) -- so safe to remove edge
-    } else {
-        NodeItem* nodeItem = it->second;
-        nodeItem->removeFeatures();
-    }
-    mpGraph->removeVertex(vertex);
-}
-
-void GraphWidget::removeEdge(const Edge::Ptr& edge)
-{
-    mpGraph->removeEdge(edge);
-}
-
-void GraphWidget::removeElementDialog(const GraphElement::Ptr& element)
-{
-    GraphElement::Ptr elementToRemove;
-    if(element)
-    {
-        elementToRemove = element;
-    } else if( !(elementToRemove = getFocusedElement()) )
-    {
-        updateStatus("Removal failed -- cannot identify element which shall be removed");
-        return;
-    }
-
-    updateStatus("Removing '" + elementToRemove->toString() + "'");
-    QMessageBox msgBox;
-    msgBox.setText(tr(std::string("Remove '" + elementToRemove->toString() + "'?").c_str()) );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    if(QMessageBox::Ok == msgBox.exec())
-    {
-        removeElement(elementToRemove);
-        refresh();
-    } else
-    {
-        updateStatus("Removal aborted by user");
-    }
-}
-
-void GraphWidget::modeChanged(GraphWidgetManager::Mode mode)
-{
-    switch(mode)
-    {
-        case GraphWidgetManager::CONNECT_MODE:
-            LOG_DEBUG_S << "Mode changed to connect mode";
-            setFlagOnAllNodes(QGraphicsItem::ItemIsMovable, false);
-            break;
-        case GraphWidgetManager::EDIT_MODE:
-            LOG_DEBUG_S << "Mode changed to edit mode";
-            setFlagOnAllNodes(QGraphicsItem::ItemIsMovable, false);
-            break;
-        case GraphWidgetManager::MOVE_MODE:
-            LOG_DEBUG_S << "Mode changed to move mode";
-            setFlagOnAllNodes(QGraphicsItem::ItemIsMovable, true);
-            break;
-        default:
-            throw std::invalid_argument("graph_analysis::gui::GraphWidget: "
-                    "changed into unknown mode");
-    }
-
-    mMode = mode;
+    clearVisualization();
+    update();
 }
 
 void GraphWidget::setFocusedElement(const GraphElement::Ptr &element)
 {
-    updateStatus("Focus: '" + element->toString() + "'", 5000);
+    updateStatus("GraphElement: '" + element->getClassName() + " " +
+                     element->getLabel() + "' (" + element->toString() + ")",
+                 2500);
     mpFocusedElement = element;
 }
 
-void GraphWidget::clearFocus() { mpFocusedElement = GraphElement::Ptr(); }
+void GraphWidget::clearFocus() { updateStatus("", 2500);mpFocusedElement = GraphElement::Ptr(); }
 
-void GraphWidget::setFlagOnAllNodes(enum QGraphicsItem::GraphicsItemFlag flag,
-                                    bool value)
+void GraphWidget::registerEdgeItem(const graph_analysis::Edge::Ptr& e,
+                                   EdgeItemBase* i)
 {
-    QList<QGraphicsItem *> allItems = items();
-    QGraphicsItem *item;
-    foreach(item, allItems)
+    if(mEdgeItemMap.count(e))
     {
-        if(item->type() == graph_analysis::gui::NodeItem::Type)
+        LOG_ERROR_S << "re-registering existing edge item! " << e->toString();
+    }
+    mEdgeItemMap[e] = i;
+}
+
+void GraphWidget::registerVertexItem(const graph_analysis::Vertex::Ptr& v,
+                                     VertexItemBase* i)
+{
+    if(mVertexItemMap.count(v))
+    {
+        LOG_ERROR_S << "re-registering existing vertex item! " << v->toString();
+    }
+    mVertexItemMap[v] = i;
+}
+
+void GraphWidget::deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
+                                     EdgeItemBase* i)
+{
+    if(!mEdgeItemMap.count(e))
+    {
+        LOG_ERROR_S << "cannot deregister edge " << e->toString();
+    }
+    mEdgeItemMap.erase(e);
+}
+
+void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
+                                       VertexItemBase* i)
+{
+    if(!mVertexItemMap.count(v))
+    {
+        LOG_ERROR_S << "cannot deregister vertex " << v->toString();
+    }
+    mVertexItemMap.erase(v);
+}
+
+QVector<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
+                                            VertexItemBase* secondItem) const
+{
+    QVector<QPointF> retval;
+    QLineF directConnection(firstItem->getConnector(),
+                            secondItem->getConnector());
+    QPolygonF b1 = firstItem->mapToScene(firstItem->boundingRect());
+    if(b1.containsPoint(directConnection.p1(), Qt::OddEvenFill))
+    {
+        for(int i = 1; i < b1.size(); i++)
         {
-            item->setFlag(flag, value);
+            QLineF l(b1.at(i - 1), b1.at(i));
+            QPointF p;
+            enum QLineF::IntersectType type = directConnection.intersect(l, &p);
+            if(type == QLineF::BoundedIntersection)
+            {
+                retval.push_back(p);
+                // only use the first intersection
+                break;
+            }
         }
+    }
+    // fall back to use just the connector, in case we did not get anything.
+    if (retval.size() < 1)
+    {
+        retval.push_back(firstItem->getConnector());
+    }
+    QPolygonF b2 = secondItem->mapToScene(secondItem->boundingRect());
+    if(b2.containsPoint(directConnection.p2(), Qt::OddEvenFill))
+    {
+        for(int i = 1; i < b2.size(); i++)
+        {
+            QLineF l(b2.at(i - 1), b2.at(i));
+            QPointF p;
+            enum QLineF::IntersectType type = directConnection.intersect(l, &p);
+            if(type == QLineF::BoundedIntersection)
+            {
+                retval.push_back(p);
+                // only use the first intersection
+                break;
+            }
+        }
+    }
+    if(retval.size() < 2)
+    {
+        retval.push_back(secondItem->getConnector());
+    }
+    return retval;
+}
+
+// this is intended for vertices which have edges connected to them
+void GraphWidget::vertexPositionHasChanged(VertexItemBase* item)
+{
+    updateEdgePositions(item);
+
+    // also cache the position so that we can reload it in case we have to
+    // create the current layout after a reset.
+    if(item->flags() & QGraphicsItem::ItemIsMovable)
+    {
+        cacheVertexItemPosition(item->getVertex(), item->pos());
+    }
+}
+
+void GraphWidget::updateEdgePositions(VertexItemBase* item)
+{
+    // checkout all edges of this vertex, and search for these which are
+    // registered as having an actual item associated with them.
+    EdgeIterator::Ptr edgeIt = graph()->getEdgeIterator(item->getVertex());
+    while(edgeIt->next())
+    {
+        EdgeItemMap::iterator edgeItemIt = mEdgeItemMap.find(edgeIt->current());
+
+        // if this "Edge" has an actual graphical representation on the canvas:
+        if(edgeItemIt != mEdgeItemMap.end())
+        {
+            VertexItemBase* targetItem =
+                mVertexItemMap[edgeItemIt->first->getTargetVertex()];
+            VertexItemBase* sourceItem =
+                mVertexItemMap[edgeItemIt->first->getSourceVertex()];
+
+            QVector<QPointF> points = getEdgePoints(sourceItem, targetItem);
+            EdgeItemBase* edgeItem = edgeItemIt->second;
+            edgeItem->adjustEdgePoints(points);
+        }
+    }
+}
+
+void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,
+                                          QPointF p)
+{
+    mItemCoordinateMap[v] = p;
+    // this map should only contain entries for movable items on the canvas.
+    // subitems, which are not individually movable, should not cache in this
+    // map.
+    if(!(mVertexItemMap[v]->flags() & QGraphicsItem::ItemIsMovable))
+    {
+        LOG_ERROR_S << "unmovable item in coordinate map: '" << v->toString()
+                    << "'";
     }
 }
 

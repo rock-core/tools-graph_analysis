@@ -12,6 +12,9 @@
 #include <graph_analysis/Edge.hpp>
 #include <iostream>
 
+// relative include path... bad...
+#include "../GraphicsItemTypes.hpp"
+
 namespace graph_analysis {
 namespace gui {
 
@@ -46,14 +49,7 @@ public:
      * \param item parent NodeItem implementing instance
      * \param graphWidget managing widget
      */
-    Feature(GraphElement::Ptr element, GraphWidget *graphWidget);
-
-    /**
-     * \brief toggles direct editing options of the displayed text
-     * \param on boolean flag - true when the editing mode is to be turned on; false otherwise
-     * \param selectAll boolean flag - true when in editing mode the whole text shall be initially automatically selected; false otherwise
-     */
-    void setTextInteraction(bool on, bool selectAll = false);
+    Feature(GraphElement::Ptr element, GraphWidget *graphWidget, QGraphicsItem* parent);
 
     /// getter method: retrieves the assigned ID
     GraphElement::Ptr getGraphElement() const { return mpGraphElement; }
@@ -61,21 +57,13 @@ public:
     Edge::Ptr getEdge() const;
     Vertex::Ptr getVertex() const;
 
-    int type() const { return UserType + 10; }
+    int type() const { return FeatureItemType; }
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget);
 
-    /// qt item changed callback
-    QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
-
 protected:
 
-    /// qt mouse drag start callback
-    void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
-    /// qt mouse drag move callback
-    void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
-    /// qt dropping callback
-    void dropEvent(QGraphicsSceneDragDropEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 };
 

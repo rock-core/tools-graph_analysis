@@ -1,0 +1,43 @@
+---
+iodrivers_base:
+  Proxy:
+    inputPorts:
+    - Name: io_raw_in
+      Type: "::iodrivers_base::RawPacket"
+    - Name: tx
+      Type: "::iodrivers_base::RawPacket"
+    outputPorts:
+    - Name: io_raw_out
+      Type: "::iodrivers_base::RawPacket"
+    - Name: io_read_listener
+      Type: "::iodrivers_base::RawPacket"
+    - Name: io_write_listener
+      Type: "::iodrivers_base::RawPacket"
+    - Name: io_status
+      Type: "::iodrivers_base::Status"
+    - Name: state
+      Type: boost::int32_t
+    - Name: rx
+      Type: "::iodrivers_base::RawPacket"
+    properties:
+    - Name: io_port
+      Type: "::std::string"
+    - Name: io_write_timeout
+      Type: "::base::Time"
+    - Name: io_read_timeout
+      Type: "::base::Time"
+    - Name: io_status_interval
+      Type: "::base::Time"
+    operations:
+    - Name: getModelName
+      Doc: returns the oroGen model name for this task
+      Return:
+        Type: "::std::string"
+        Doc: ''
+      Arguments: []
+    - Name: __orogen_getTID
+      Doc: returns the PID for this task
+      Return:
+        Type: boost::int32_t
+        Doc: ''
+      Arguments: []

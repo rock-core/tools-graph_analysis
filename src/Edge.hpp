@@ -87,7 +87,7 @@ public:
      * \param pGraph shared pointer to the graph where this edge is contained
      * \return shared pointer of this edge belonging to the given graph
      */
-    Edge::Ptr getSharedPointer(const shared_ptr<BaseGraph>& pGraph) const;
+    Edge::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const;
 
 protected:
     /**

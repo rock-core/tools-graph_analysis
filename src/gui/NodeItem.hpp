@@ -11,6 +11,8 @@
 #include <graph_analysis/Vertex.hpp>
 #include <graph_analysis/Edge.hpp>
 
+#include "GraphicsItemTypes.hpp"
+
 #define LABEL_SWAPPING
 
 class QGraphicsSceneMouseEvent;
@@ -31,6 +33,9 @@ class GraphWidget;
  * \class NodeItem
  * \brief graphical node representation interface
  * \details used as polymorphic base for several graphical node implementations
+ *
+ * this is used as the base-class for any "Vertex" in the basic "LayerView"
+ * widget as well as other more specilized widgets.
  */
 class NodeItem : public QGraphicsItemGroup
 {
@@ -46,8 +51,10 @@ protected:
      * \brief constructor
      * \param graphWidget the parent and managing graph widget
      * \param vertex the internal conceptual vertex
+     * \param parent the parent
      */
-    NodeItem(GraphWidget* graphWidget, graph_analysis::Vertex::Ptr vertex);
+    NodeItem(GraphWidget *graphWidget, graph_analysis::Vertex::Ptr vertex,
+             QGraphicsItem *parent);
 
 public:
     /// empty constructor
@@ -56,8 +63,8 @@ public:
     /// destructor
     virtual ~NodeItem() {};
 
-    enum { Type = UserType + 1 };
-    int type() const { return Type; }
+    int type() const { return NodeItemType; }
+
 
     /// actuator method the same force field (automatic re-arranging) algorithm
     void advance(int phase) { if(phase == 2) advance(); }

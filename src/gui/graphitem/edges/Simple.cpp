@@ -2,7 +2,7 @@
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/items/EdgeLabel.hpp>
-#include <base/Logging.hpp>
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
@@ -150,13 +150,6 @@ void Simple::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
     mSelected = false;
     LOG_DEBUG_S << "Hover LEAVE event for " << mpEdge->toString();
     QGraphicsItem::hoverLeaveEvent(event);
-}
-
-void Simple::grabFocus()
-{
-    mPen = QPen(Qt::red, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    update();
-    mFocused = true;
 }
 
 void Simple::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)

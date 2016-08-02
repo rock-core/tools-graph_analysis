@@ -3,8 +3,6 @@
 #include <graph_analysis/gui/IconManager.hpp>
 #include <graph_analysis/gui/GraphWidgetManager.hpp>
 #include <graph_analysis/gui/WidgetManager.hpp>
-#include <graph_analysis/gui/component_editor/ComponentEditorWidget.hpp>
-#include <graph_analysis/gui/layer_view/LayerViewWidget.hpp>
 
 #include <QScrollBar>
 
@@ -403,8 +401,8 @@ void PropertyDialog::setupUi(CustomDialog *Dialog, bool dragDropIsChecked)
     mpVerticalLayoutComponentsLayer->setContentsMargins(0, PADDING, 0, PADDING);
 
     // the 2 handles are to be needed throughout the rest of this method
-    LayerViewWidget *layerWidget = WidgetManager::getInstance() -> getLayerViewWidget();
-    ComponentEditorWidget  * viewWidget = WidgetManager::getInstance() -> getComponentEditorWidget();
+    LayerViewWidget *layerWidget = NULL;
+    ComponentEditorWidget  * viewWidget = NULL;
 
     // right hand-side in the layers view tab; filtering specific commands
     int verticalLayoutComponentsLayerLeftover;
