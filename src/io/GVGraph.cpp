@@ -27,7 +27,7 @@ std::set<std::string> GVGraph::msSupportedLayouts = boost::assign::list_of
     ("twopi")
     ;
 
-GVGraph::GVGraph(BaseGraph::Ptr baseGraph, const std::string& name, double node_size)
+GVGraph::GVGraph(const BaseGraph::Ptr& baseGraph, const std::string& name, double node_size)
     : mpContext(gvContext())
     , mpGVGraph(_agopen(name, Agdirected)) // see also agstrictdirected graph -- one edgde between two nodes, see libgraph doc
     , mpBaseGraph(baseGraph)
@@ -227,7 +227,7 @@ void GVGraph::clearNodes()
     }
 }
 
-void GVGraph::setRootNode(Vertex::Ptr vertex)
+void GVGraph::setRootNode(const Vertex::Ptr& vertex)
 {
     GraphElementId id = mpBaseGraph->getVertexId(vertex);
     if(mNodes.count(id))
@@ -483,7 +483,7 @@ GraphElementId GVGraph::getId(Agedge_t* edge) const
 }
 
 
-std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
+std::string GVGraph::getUniqueName(const Vertex::Ptr& vertex) const
 {
     std::stringstream ss;
     ss << vertex->toString() << " (v:" << mpBaseGraph->getVertexId(vertex) << ")";
@@ -501,7 +501,7 @@ std::string GVGraph::getUniqueName(Vertex::Ptr vertex) const
     return ss.str();
 }
 
-std::string GVGraph::getUniqueName(Edge::Ptr edge) const
+std::string GVGraph::getUniqueName(const Edge::Ptr& edge) const
 {
     std::stringstream ss;
     ss << edge->toString() << " (e:" << mpBaseGraph->getEdgeId(edge) << ")";

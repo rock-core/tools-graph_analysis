@@ -25,7 +25,7 @@ using namespace graph_analysis;
 namespace graph_analysis {
 namespace gui {
 
-GraphWidget::GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget* parent)
+GraphWidget::GraphWidget(const graph_analysis::BaseGraph::Ptr& graph, QWidget* parent)
     : QGraphicsView(parent)
     , mpScene(new QGraphicsScene(this))
     , mpGraph(graph)

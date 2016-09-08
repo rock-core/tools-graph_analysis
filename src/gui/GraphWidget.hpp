@@ -9,10 +9,6 @@
 #include <QGraphicsView>
 
 namespace graph_analysis {
-namespace io {
-    class GVGraph;
-}
-
 namespace gui {
 
 /**
@@ -31,7 +27,7 @@ class GraphWidget : public QGraphicsView
 public:
 
     /** constructor */
-    GraphWidget(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
+    GraphWidget(const graph_analysis::BaseGraph::Ptr& graph, QWidget *parent = NULL);
     /** destructor */
     virtual ~GraphWidget();
 
@@ -84,7 +80,7 @@ public:
      * canvas location as before.
      *
      * cannot store the pointer to a VertexItem directly as this pointer will
-     * change after repouluation of the canvas.
+     * change after repopulation of the canvas.
      */
     typedef std::map<const graph_analysis::Vertex::Ptr, QPointF>
         VertexItemCoordinateCache;

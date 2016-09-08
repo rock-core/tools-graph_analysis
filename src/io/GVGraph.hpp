@@ -112,6 +112,9 @@ private:
 /**
  * \class GVGraph
  * \brief An object containing a libgraph graph and its associated nodes and edges
+ * \details The GVGraph (GV for graphviz) allows to compute the layout for a
+ * given graph -- however after initialization the nodes and edges have to be
+ * added explicitely using
  */
 class GVGraph
 {
@@ -126,7 +129,7 @@ public:
      * \param name The name of the graph, must be unique in the application
      * \param node_size The size in pixels of each node
      */
-    GVGraph(BaseGraph::Ptr baseGraph, const std::string& name, double node_size = 0);
+    GVGraph(const BaseGraph::Ptr& baseGraph, const std::string& name, double node_size = 0);
 
     /**
      *
@@ -197,7 +200,7 @@ public:
     void renderToFile(const std::string& filename, const std::string& layout = "dot", bool forced = false);
 
     boxf boundingRect() const;
-    void setRootNode(Vertex::Ptr vertex);
+    void setRootNode(const Vertex::Ptr& vertex);
 
     std::vector<GVNode> nodes() const;
     std::vector<GVEdge> edges() const;
@@ -205,8 +208,8 @@ public:
     GraphElementId getId(Agnode_t* node) const;
     GraphElementId getId(Agedge_t* edge) const;
 
-    std::string getUniqueName(Vertex::Ptr vertex) const;
-    std::string getUniqueName(Edge::Ptr edge) const;
+    std::string getUniqueName(const Vertex::Ptr& vertex) const;
+    std::string getUniqueName(const Edge::Ptr& edge) const;
 
 private:
     /// GraphViz to-file rendering context

@@ -52,7 +52,7 @@ private:
 signals:
     void graphChanged();
 };
-}
-}
 
+} // end namespace gui
+} // end namespace graph_analysis
 #endif
