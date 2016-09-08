@@ -30,21 +30,26 @@ rock_library(graph_analysis
         boost_graph/DirectedGraph.cpp
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
-        gui/GraphAnalysisGui.cpp
-        gui/QBaseGraph.cpp
-        gui/QFatRact.cpp
         gui/ActionCommander.cpp
+        gui/BaseGraphView/AddEdgeDialog.cpp
+        gui/BaseGraphView/AddVertexDialog.cpp
+        gui/BaseGraphView/BaseGraphView.cpp
         gui/EdgeItem.cpp
+        gui/EdgeItemBase.cpp
         gui/EdgeItemTypeManager.cpp
+        gui/EdgeMimeData.cpp
         gui/FilterItem.cpp
         gui/FilterManager.cpp
+        gui/GraphAnalysisGui.cpp
+        gui/GraphLayout.cpp
         gui/GraphWidget.cpp
         gui/GraphWidgetManager.cpp
         gui/IconManager.cpp
-        gui/VertexItemBase.cpp
-        gui/EdgeItemBase.cpp
         gui/NodeItem.cpp
         gui/NodeItemTypeManager.cpp
+        gui/QBaseGraph.cpp
+        gui/QFatRact.cpp
+        gui/VertexItemBase.cpp
         gui/WidgetManager.cpp
         gui/dialogs/AddFilterDialog.cpp
         gui/dialogs/AddGraphElement.cpp
@@ -59,10 +64,7 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.cpp
         gui/items/Feature.cpp
         gui/items/Label.cpp
-        gui/EdgeMimeData.cpp
-        gui/BaseGraphView/BaseGraphView.cpp
-        gui/BaseGraphView/AddVertexDialog.cpp
-        gui/BaseGraphView/AddEdgeDialog.cpp
+        gui/layouts/GVLayout.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
@@ -125,23 +127,28 @@ rock_library(graph_analysis
         filters/CommonFilters.hpp
         filters/EdgeContextFilter.hpp
         filters/RegexFilters.hpp
+        gui/ActionCommander.hpp
+        gui/BaseGraphView/AddEdgeDialog.hpp
+        gui/BaseGraphView/AddVertexDialog.hpp
+        gui/BaseGraphView/BaseGraphView.hpp
+        gui/EdgeItem.hpp
+        gui/EdgeItemBase.hpp
+        gui/EdgeItemTypeManager.hpp
+        gui/EdgeMimeData.hpp
+        gui/FilterItem.hpp
+        gui/FilterManager.hpp
         gui/GraphAnalysisGui.hpp
+        gui/GraphLayout.hpp
+        gui/GraphWidget.hpp
+        gui/GraphWidgetManager.hpp
+        gui/GraphicsItemTypes.hpp
+        gui/IconManager.hpp
+        gui/NodeItem.hpp
+        gui/NodeItemTypeManager.hpp
         gui/QBaseGraph.hpp
         gui/QFatRact.hpp
         gui/RegisterQtMetatypes.hpp
-        gui/ActionCommander.hpp
-        gui/EdgeItem.hpp
-        gui/EdgeItemTypeManager.hpp
-        gui/FilterItem.hpp
-        gui/FilterManager.hpp
-        gui/GraphicsItemTypes.hpp
-        gui/GraphWidget.hpp
-        gui/GraphWidgetManager.hpp
-        gui/IconManager.hpp
         gui/VertexItemBase.hpp
-        gui/EdgeItemBase.hpp
-        gui/NodeItem.hpp
-        gui/NodeItemTypeManager.hpp
         gui/WidgetManager.hpp
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
@@ -156,10 +163,7 @@ rock_library(graph_analysis
         gui/graphitem/edges/Simple.hpp
         gui/items/Feature.hpp
         gui/items/Label.hpp
-        gui/EdgeMimeData.hpp
-        gui/BaseGraphView/BaseGraphView.hpp
-        gui/BaseGraphView/AddVertexDialog.hpp
-        gui/BaseGraphView/AddEdgeDialog.hpp
+        gui/layouts/GVLayout.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
