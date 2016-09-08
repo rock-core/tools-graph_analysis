@@ -101,13 +101,31 @@ public:
     /// getter method for retrieving the underlying base graph
     graph_analysis::BaseGraph::Ptr graph() const;
     /// setter method for updating the underlying base graph
-    void setGraph(const graph_analysis::BaseGraph::Ptr& graph);
+    virtual void setGraph(const graph_analysis::BaseGraph::Ptr& graph);
 
     /**
      * Update the current view
      */
     virtual void update();
-    void updateLayoutView();
+
+    /**
+     * Current layout in item coordinates
+     */
+    VertexItemCoordinateCache getCurrentLayout() const;
+
+    /**
+     * Cache the current view
+     */
+    void cacheCurrentLayout();
+
+    void applyCachedLayout();
+
+    /**
+     * Apply the given layout (via coordinates)
+     * \return the actually applied layout, i.e. which does not contain already
+     * removed vertices
+     */
+    VertexItemCoordinateCache applyLayout(const VertexItemCoordinateCache& coordinates);
 
     /**
      * trigger the creation of individual QGraphicsItems based on the
@@ -170,7 +188,7 @@ protected:
 
     EdgeItemMap mEdgeItemMap;
     VertexItemMap mVertexItemMap;
-    VertexItemCoordinateCache mItemCoordinateMap;
+    VertexItemCoordinateCache mItemCoordinateCache;
 
 };
 

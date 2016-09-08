@@ -9,6 +9,7 @@
 
 #include <graph_analysis/gui/BaseGraphView/AddVertexDialog.hpp>
 #include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
+#include <graph_analysis/io/GVGraph.hpp>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -89,28 +90,55 @@ void GraphWidget::clearVisualization()
 
 void GraphWidget::update()
 {
-    updateLayoutView();
-
+    applyCachedLayout();
     QWidget::update();
 }
 
-void GraphWidget::updateLayoutView()
+GraphWidget::VertexItemCoordinateCache GraphWidget::getCurrentLayout() const
 {
+    VertexItemCoordinateCache vertexItemCoordinates;
+    VertexItemMap::const_iterator cit = mVertexItemMap.begin();
+    for(; cit != mVertexItemMap.end(); ++cit)
+    {
+        Vertex::Ptr vertex = cit->first;
+        VertexItemBase* item = cit->second;
+        vertexItemCoordinates[vertex] = item->pos();
+    }
+    return vertexItemCoordinates;
+}
 
+void GraphWidget::applyCachedLayout()
+{
+    applyLayout(mItemCoordinateCache);
+}
+
+void GraphWidget::cacheCurrentLayout()
+{
+    mItemCoordinateCache = getCurrentLayout();
+}
+
+GraphWidget::VertexItemCoordinateCache GraphWidget::applyLayout(const VertexItemCoordinateCache& _coordinates)
+{
+    VertexItemCoordinateCache coordinates = _coordinates;
     // implemented by child-GraphWidgets. should create all QGraphicsItems of
     // the respective scene. needs to populate the layouting graph as needed.
     populateCanvas();
 
-    LOG_INFO_S << "restoring coordinates of " << mItemCoordinateMap.size()
+    if(coordinates.empty())
+    {
+        LOG_WARN_S << "cannot apply layout: no item coordinates provided";
+    }
+
+    LOG_INFO_S << "restoring coordinates of " << coordinates.size()
                << " entries from cache";
-    VertexItemCoordinateCache::iterator it = mItemCoordinateMap.begin();
-    for(; it != mItemCoordinateMap.end(); it++)
+    VertexItemCoordinateCache::iterator it = coordinates.begin();
+    for(; it != coordinates.end(); ++it)
     {
         VertexItemBase* item = mVertexItemMap[it->first];
         if(item)
         {
-            // we have an item in the cache which is still in the scene. reuse
-            // the old coordinate
+            // we have an item in the cache which is still in the scene.
+            // use the cached coordinates
             item->setPos(it->second);
         }
         else
@@ -118,9 +146,10 @@ void GraphWidget::updateLayoutView()
             // invalid entry in the coordinate cache. clean it.
             LOG_ERROR_S << "deleting invalid entry '" << it->first->toString()
                         << "' from cache";
-            mItemCoordinateMap.erase(it);
+            coordinates.erase(it);
         }
     }
+    return coordinates;
 }
 
 // remove this implementation?
@@ -387,7 +416,7 @@ void GraphWidget::updateEdgePositions(VertexItemBase* item)
 void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,
                                           QPointF p)
 {
-    mItemCoordinateMap[v] = p;
+    mItemCoordinateCache[v] = p;
     // this map should only contain entries for movable items on the canvas.
     // subitems, which are not individually movable, should not cache in this
     // map.
