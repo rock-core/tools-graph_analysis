@@ -175,15 +175,20 @@ public:
      */
     bool setAttribute(const graph_analysis::Edge::Ptr& edge, const std::string& name, const std::string& value);
 
+    // Remove edges then nodes
+    void clear();
+
     /// Add and remove nodes
+    void initializeFromBaseGraph();
     GraphElementId addNode(const graph_analysis::Vertex::Ptr& vertex);
-    void addNodes(const std::vector<Vertex::Ptr>& names);
+    void addNodes(const std::vector<Vertex::Ptr>& vertices);
     void removeNode(const graph_analysis::Vertex::Ptr& vertex);
     void removeNode(GraphElementId id);
     void clearNodes();
 
     /// Add and remove edges
     GraphElementId addEdge(const Edge::Ptr& edge);
+    void addEdges(const std::vector<Edge::Ptr>& edges);
     void removeEdge(const Edge::Ptr& edge);
     void removeEdge(GraphElementId id);
     void clearEdges();

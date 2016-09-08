@@ -151,6 +151,30 @@ bool GVGraph::setAttribute(const graph_analysis::Edge::Ptr& edge, const std::str
                      const_cast<char *>(value.c_str()));
 }
 
+void GVGraph::initializeFromBaseGraph()
+{
+    std::vector<Vertex::Ptr> vertices = mpBaseGraph->getAllVertices();
+    addNodes(vertices);
+    addEdges(mpBaseGraph->getAllEdges());
+
+    if(!vertices.empty())
+    {
+        setRootNode(vertices.front());
+    }
+}
+
+void GVGraph::clear()
+{
+    if(mAppliedLayout)
+    {
+        gvFreeLayout(mpContext, mpGVGraph);
+        mpContext = NULL;
+    }
+
+    clearEdges();
+    clearNodes();
+}
+
 GraphElementId GVGraph::addNode(const graph_analysis::Vertex::Ptr& vertex)
 {
     GraphElementId id;
@@ -233,6 +257,15 @@ void GVGraph::setRootNode(const Vertex::Ptr& vertex)
     if(mNodes.count(id))
     {
         setGraphAttribute("root", getUniqueName(vertex));
+    }
+}
+
+void GVGraph::addEdges(const std::vector<Edge::Ptr>& edges)
+{
+    std::vector<Edge::Ptr>::const_iterator cit = edges.begin();
+    for(; cit != edges.end(); ++cit)
+    {
+        addEdge(*cit);
     }
 }
 
