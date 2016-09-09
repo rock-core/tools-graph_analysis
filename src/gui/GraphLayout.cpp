@@ -3,8 +3,7 @@
 namespace graph_analysis {
 namespace gui {
 
-GraphLayout::GraphLayout(const graph_analysis::BaseGraph::Ptr& graph)
-    : mpBaseGraph(graph)
+GraphLayout::GraphLayout()
 {}
 
 GraphLayout::~GraphLayout()

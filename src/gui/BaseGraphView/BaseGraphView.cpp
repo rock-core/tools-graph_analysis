@@ -31,8 +31,7 @@
 #include <graph_analysis/gui/EdgeItemTypeManager.hpp>
 
 #include <graph_analysis/gui/VertexItemBase.hpp>
-
-#include <graph_analysis/gui/layouts/GVLayout.hpp>
+#include <graph_analysis/gui/GraphLayoutManager.hpp>
 
 using namespace graph_analysis;
 
@@ -44,14 +43,11 @@ namespace gui
 BaseGraphView::BaseGraphView(graph_analysis::BaseGraph::Ptr graph,
                              QWidget* parent)
     : GraphWidget(graph, parent)
-    , mpLayout(NULL)
 {
-    initializeLayout();
 }
 
 BaseGraphView::~BaseGraphView()
 {
-    delete mpLayout;
 }
 
 QString BaseGraphView::getClassName() const
@@ -62,13 +58,6 @@ QString BaseGraphView::getClassName() const
 void BaseGraphView::setGraph(const graph_analysis::BaseGraph::Ptr& graph)
 {
     GraphWidget::setGraph(graph);
-    initializeLayout();
-}
-
-void BaseGraphView::initializeLayout()
-{
-    delete mpLayout;
-    mpLayout = new layouts::GVLayout(graph());
 }
 
 void BaseGraphView::populateCanvas()
@@ -97,8 +86,10 @@ void BaseGraphView::populateCanvas()
 
 void BaseGraphView::applyLayout(const std::string& layoutName)
 {
-    mpLayout->update(layoutName);
-    GraphWidget::VertexItemCoordinateCache coordinates = mpLayout->getCoordinates();
+    using namespace graph_analysis::gui;
+    GraphLayoutManager* layoutManager = GraphLayoutManager::getInstance();
+    GraphWidget::VertexItemCoordinateCache coordinates = layoutManager->getCoordinates(mpGraph, layoutName);
+
     GraphWidget::applyLayout(coordinates);
 }
 
@@ -106,7 +97,8 @@ QStringList BaseGraphView::getSupportedLayouts() const
 {
     QStringList options;
 
-    std::set<std::string> supportedLayouts = mpLayout->getSupportedLayouts();
+    GraphLayoutManager* layoutManager = GraphLayoutManager::getInstance();
+    std::set<std::string> supportedLayouts = layoutManager->getSupportedLayouts();
     foreach(std::string supportedLayout, supportedLayouts)
     {
         options << tr(supportedLayout.c_str());

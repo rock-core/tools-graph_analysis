@@ -42,6 +42,7 @@ rock_library(graph_analysis
         gui/FilterManager.cpp
         gui/GraphAnalysisGui.cpp
         gui/GraphLayout.cpp
+        gui/GraphLayoutManager.cpp
         gui/GraphWidget.cpp
         gui/GraphWidgetManager.cpp
         gui/IconManager.cpp
@@ -65,6 +66,7 @@ rock_library(graph_analysis
         gui/items/Feature.cpp
         gui/items/Label.cpp
         gui/layouts/GVLayout.cpp
+        gui/layouts/GridLayout.cpp
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
@@ -139,6 +141,7 @@ rock_library(graph_analysis
         gui/FilterManager.hpp
         gui/GraphAnalysisGui.hpp
         gui/GraphLayout.hpp
+        gui/GraphLayoutManager.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
         gui/GraphicsItemTypes.hpp
@@ -164,6 +167,7 @@ rock_library(graph_analysis
         gui/items/Feature.hpp
         gui/items/Label.hpp
         gui/layouts/GVLayout.hpp
+        gui/layouts/GridLayout.hpp
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp

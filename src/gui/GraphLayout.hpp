@@ -10,32 +10,31 @@ namespace gui {
 class GraphLayout
 {
 public:
+    typedef shared_ptr<GraphLayout> Ptr;
+
     /**
-     * Create Graph Layout using the base graph
+     * Create Graph Layout
      */
-    GraphLayout(const graph_analysis::BaseGraph::Ptr& graph);
+    GraphLayout();
 
     /**
      * Default destructor
      */
     virtual ~GraphLayout();
 
+    virtual std::string getClassName() const = 0;
+
     /**
      * Get the coordinates of the layout
      */
-    virtual GraphWidget::VertexItemCoordinateCache getCoordinates() const { throw std::runtime_error("graph_analysis::gui::GraphLayout::getCoordinates not implemented"); }
+    virtual GraphWidget::VertexItemCoordinateCache getCoordinates(const graph_analysis::BaseGraph::Ptr& graph) const = 0;
 
     /**
      * Update the current layout, e.g. after changes to the underlying graph
      */
-    virtual void update(const std::string& layoutName = "") { throw std::runtime_error("graph_analysis::gui::GraphLayout::update not implemented"); }
+    virtual void update(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName = "") = 0;
 
-    graph_analysis::BaseGraph::Ptr getBaseGraph() const { return mpBaseGraph; }
-
-    virtual std::set<std::string> getSupportedLayouts() const { throw std::runtime_error("graph_analysis::gui::GraphLayout::getSupportedLayouts: not implemented"); }
-
-protected:
-    graph_analysis::BaseGraph::Ptr mpBaseGraph;
+    virtual std::set<std::string> getSupportedLayouts() const = 0;
 };
 
 } // end namespace gui

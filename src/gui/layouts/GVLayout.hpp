@@ -14,27 +14,25 @@ namespace layouts {
 class GVLayout : public graph_analysis::gui::GraphLayout
 {
 public:
-    GVLayout(const graph_analysis::BaseGraph::Ptr& graph,
-            const std::string& layoutName = "dot",
-            const std::string& graphName = "");
-
+    GVLayout();
     virtual ~GVLayout();
 
-    void initialize();
+    virtual std::string getClassName() const { return "graph_analysis::gui::layouts::GVLayout"; }
 
-    GraphWidget::VertexItemCoordinateCache getCoordinates() const;
+    void initialize(const graph_analysis::BaseGraph::Ptr& graph);
 
-    void update(const std::string& layoutName = "");
+    GraphWidget::VertexItemCoordinateCache getCoordinates(const graph_analysis::BaseGraph::Ptr& graph) const;
 
-    void applyLayout(const std::string& name);
+    void update(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName = "");
 
     std::set<std::string> getSupportedLayouts() const;
 
 protected:
-    graph_analysis::io::GVGraph* mpLayoutGraph;
-    std::string mLayoutName;
-    std::string mGraphName;
+    void applyLayout(const std::string& name);
 
+    graph_analysis::io::GVGraph* mpLayoutGraph;
+    std::string mDefaultLayoutName;
+    std::string mGraphName;
 };
 
 } // end namespace layouts

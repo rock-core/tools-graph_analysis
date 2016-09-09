@@ -8,15 +8,11 @@ namespace graph_analysis{
 namespace gui {
 namespace layouts {
 
-GVLayout::GVLayout(const graph_analysis::BaseGraph::Ptr& graph,
-            const std::string& layoutName,
-            const std::string& graphName)
-    : GraphLayout(graph)
-    , mpLayoutGraph(NULL)
-    , mLayoutName(layoutName)
-    , mGraphName(graphName)
+GVLayout::GVLayout()
+    : GraphLayout()
+    , mpLayoutGraph(new graph_analysis::io::GVGraph(graph_analysis::BaseGraph::getInstance(), "default-basegraph"))
+    , mDefaultLayoutName("dot")
 {
-    update();
 }
 
 GVLayout::~GVLayout()
@@ -24,34 +20,33 @@ GVLayout::~GVLayout()
     delete mpLayoutGraph;
 }
 
-void GVLayout::initialize()
+void GVLayout::initialize(const graph_analysis::BaseGraph::Ptr& graph)
 {
-    std::string name = mGraphName;
-    if(name.empty())
-    {
-        std::stringstream ss;
-        ss << "graph_" << mpBaseGraph->getId();
-        name = ss.str();
-    }
+    std::stringstream ss;
+    ss << "graph_" << graph->getId();
 
     delete mpLayoutGraph;
-    mpLayoutGraph = new graph_analysis::io::GVGraph(mpBaseGraph, name);
+    mpLayoutGraph = new graph_analysis::io::GVGraph(graph, ss.str());
     mpLayoutGraph->initializeFromBaseGraph();
 }
 
-void GVLayout::update(const std::string& layoutName)
+void GVLayout::update(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName)
 {
-    std::string selectedLayout = mLayoutName;
+    std::string selectedLayout = mDefaultLayoutName;
     if(!layoutName.empty())
     {
         selectedLayout = layoutName;
     }
-    initialize();
-    LOG_WARN_S << "Applying layout: " << selectedLayout;
+
+    // This the cleanup of gv is not very robust (bugs in GV)
+    // , we recreate structure
+    initialize(graph);
+
+    assert(mpLayoutGraph);
     mpLayoutGraph->applyLayout(selectedLayout);
 }
 
-GraphWidget::VertexItemCoordinateCache GVLayout::getCoordinates() const
+GraphWidget::VertexItemCoordinateCache GVLayout::getCoordinates(const graph_analysis::BaseGraph::Ptr& graph) const
 {
     using namespace graph_analysis::io;
 
@@ -70,6 +65,7 @@ GraphWidget::VertexItemCoordinateCache GVLayout::getCoordinates() const
 
 std::set<std::string> GVLayout::getSupportedLayouts() const
 {
+    assert(mpLayoutGraph);
     return mpLayoutGraph->getSupportedLayouts();
 }
 

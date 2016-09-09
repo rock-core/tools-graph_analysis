@@ -69,12 +69,6 @@ public:
     void applyLayout(const std::string& layoutName = "");
 
     virtual QStringList getSupportedLayouts() const;
-
-protected:
-    graph_analysis::gui::GraphLayout* mpLayout;
-
-    void initializeLayout();
-
 };
 
 } // end namespace gui
