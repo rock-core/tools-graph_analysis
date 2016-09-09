@@ -46,16 +46,18 @@ Edge::Ptr EdgeTypeManager::edgeByType(const edge::Type& type, bool throwOnDefaul
     return it->second;
 }
 
-Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const std::string& label)
+Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const std::string& label, bool throwOnMissing)
 {
-    Edge::Ptr clonedEdge = edgeByType(type)->clone();
+    Edge::Ptr clonedEdge = edgeByType(type, throwOnMissing)->clone();
     clonedEdge->setLabel(label);
     return clonedEdge;
 }
 
-Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const Vertex::Ptr& source, const Vertex::Ptr& target, const std::string& label)
+Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const Vertex::Ptr& source, const Vertex::Ptr& target,
+        const std::string& label,
+        bool throwOnMissing)
 {
-    Edge::Ptr clonedEdge = edgeByType(type)->clone();
+    Edge::Ptr clonedEdge = edgeByType(type, throwOnMissing)->clone();
     clonedEdge->setLabel(label);
     clonedEdge->setSourceVertex(source);
     clonedEdge->setTargetVertex(target);

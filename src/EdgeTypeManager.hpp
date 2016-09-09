@@ -18,7 +18,7 @@ namespace edge {
 
 /**
  * \brief Factory for Edge subclasses
- * \details EdgeTypeManager allows to register edge classes by type 
+ * \details EdgeTypeManager allows to register edge classes by type
  * - which is a given string. When loading a serialized graph via GraphIO::read
  * the EdgeTypeManager allows to instanciate edges corresponding to the
  * given class type -- which has to match the type string.
@@ -55,11 +55,14 @@ public:
      * \brief clones a new edge of a specified type
      * \param type the requested edge type
      * \param label the requested edge label
+     * \param throw when edge type is missing
      * \return smart pointer to the newly created edge instance
      */
-    Edge::Ptr createEdge(const edge::Type& type, const std::string& label = "");
+    Edge::Ptr createEdge(const edge::Type& type, const std::string& label = "", bool throwOnMissing = false);
 
-    Edge::Ptr createEdge(const edge::Type& type, const Vertex::Ptr& source, const Vertex::Ptr& target, const std::string& label = "");
+    Edge::Ptr createEdge(const edge::Type& type, const Vertex::Ptr& source, const Vertex::Ptr& target
+            , const std::string& label = ""
+            , bool throwOnMissing = false);
     /// lists the registered types
     std::set<std::string> getSupportedTypes();
 };

@@ -35,7 +35,14 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         libgexf::t_id current = node_it->next();
         std::string nodeClass = data.getNodeAttribute(current, classAttr);
         std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
-        Vertex::Ptr vertex = vManager->createVertex(nodeClass, nodeLabel);
+        Vertex::Ptr vertex;
+        try {
+            vertex = vManager->createVertex(nodeClass, nodeLabel, true);
+        } catch(const std::exception& e)
+        {
+            LOG_WARN_S << "Unsupported vertex type: '" << nodeClass << "' -- will use a placeholder node";
+            vertex = Vertex::Ptr(new Vertex("Instance of unsupported vertex type: " + nodeLabel));
+        }
         graph->addVertex(vertex);
 
         std::list<std::string> members = vManager->getMembers(vertex->getClassName());
@@ -62,7 +69,14 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         std::string edgeLabel = data.getEdgeAttribute(current, labelAttr);
         Vertex::Ptr sourceVertex = vertexMap[edge_it->currentSource()]; // NOTE: assumes the .gexf(.xml) file is valid
         Vertex::Ptr targetVertex = vertexMap[edge_it->currentTarget()]; // NOTE: assumes the .gexf(.xml) file is valid
-        Edge::Ptr edge = eManager->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel);
+        Edge::Ptr edge;
+        try {
+            edge = eManager->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel, true);
+        } catch(const std::exception& e)
+        {
+            LOG_WARN_S << "Unsupported edge type: '" << edgeClass << "' -- will use a placeholder edge";
+            edge = Edge::Ptr(new Edge(sourceVertex, targetVertex, "Instance of unsupported edge type: " + edgeLabel));
+        }
         graph->addEdge(edge);
     }
 

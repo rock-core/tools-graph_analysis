@@ -53,10 +53,10 @@ private:
     /**
      * \brief internal method for type identification
      * \param type requested vertex type
-     * \param throwOnDefault flag indicating whether exceptions shall be thrown when fed with unregistered types; on false it silently picks the default type
+     * \param throwOnMissing flag indicating whether exceptions shall be thrown when fed with unregistered types; on false it silently picks the default type
      * \return smart pointer to the witness vertex instance of the requested type
      */
-    Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnDefault = false);
+    Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnMissing = false);
 
 protected:
     /// constructor
@@ -98,9 +98,12 @@ public:
      * \brief clones a new vertex of a specified type
      * \param type the requested vertex type
      * \param label the requested vertex label
+     * \param throwOnMissing Throw exception when the vertex type is unknown,
+     * otherwise a default vertex will be created
      * \return smart pointer to the newly created vertex instance
      */
-    Vertex::Ptr createVertex(const vertex::Type& type, const std::string& label = std::string());
+    Vertex::Ptr createVertex(const vertex::Type& type, const std::string& label = std::string(),
+            bool throwOnMissing = false);
 
     /**
      * Lists the registered types

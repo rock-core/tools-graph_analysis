@@ -52,15 +52,16 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
     return it->second;
 }
 
-Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std::string& label)
+Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std::string& label, bool throwOnMissing)
 {
-    Vertex::Ptr v = vertexByType(type);
+    Vertex::Ptr v = vertexByType(type, throwOnMissing);
     if(!v){
-        throw std::invalid_argument("Cannot get node for type: " + type + " and label " + label);
+        throw std::invalid_argument("graph_analysis::VertexTypeManager: cannot get node for type: " + type + " and label " + label);
     }
     Vertex::Ptr clonedVertex = v->clone();
-    if(v->getClassName() != clonedVertex->getClassName()){
-        throw std::runtime_error("Cannot create cloned vertex of type " + v->getClassName() + " it seems the 'virtual Vertex* getClone() const' funtion of this class is implemented wrong");
+    if(v->getClassName() != clonedVertex->getClassName())
+    {
+        throw std::runtime_error("graph_analysis::VertexTypeManager: cannot create cloned vertex of type " + v->getClassName() + " it seems the 'virtual Vertex* getClone() const' funtion of this class is implemented wrong");
     }
 
     clonedVertex->setLabel(label);
