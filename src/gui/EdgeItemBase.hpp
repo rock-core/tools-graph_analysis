@@ -6,10 +6,8 @@
 
 #include "GraphicsItemTypes.hpp"
 
-namespace graph_analysis
-{
-namespace gui
-{
+namespace graph_analysis {
+namespace gui {
 
 class GraphWidget;
 class VertexItemBase;
@@ -75,34 +73,6 @@ protected:
     /** provide mouse-over status updates of the currently selected Edge */
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
-};
-
-/**
- *
- * simplest possible implementation: just a line from source to target
- *
- */
-class EdgeItemSimple : public EdgeItemBase
-{
-public:
-    EdgeItemSimple(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
-                   QGraphicsItem* parent);
-    ~EdgeItemSimple();
-    virtual int type() const;
-
-    void adjustEdgePositioning();
-
-protected:
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
-               QWidget* widget = 0);
-    QRectF boundingRect() const;
-    QPainterPath shape() const;
-
-    int mArrowSize;
-    QGraphicsTextItem* mpLabel;
-    QGraphicsTextItem* mpClassName;
-    QGraphicsPolygonItem* mpMultiLine;
-    QGraphicsPolygonItem* mpArrowHead;
 };
 
 } // end namespace gui

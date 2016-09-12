@@ -14,11 +14,9 @@ enum GraphicsItemTypes {
     VertexItemSimpleType,
     EdgeItemBaseType,
     EdgeItemSimpleType,
-    TaskItemType,
-    OutputPortItemType,
-    InputPortItemType,
-    PortConnectionItemType,
+    UserType
 };
+
 }
 }
 

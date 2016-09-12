@@ -30,7 +30,8 @@
 #include <graph_analysis/gui/NodeItemTypeManager.hpp>
 #include <graph_analysis/gui/EdgeItemTypeManager.hpp>
 
-#include <graph_analysis/gui/VertexItemBase.hpp>
+#include <graph_analysis/gui/VertexItemSimple.hpp>
+#include <graph_analysis/gui/EdgeItemSimple.hpp>
 #include <graph_analysis/gui/GraphLayoutManager.hpp>
 
 using namespace graph_analysis;

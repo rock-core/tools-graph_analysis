@@ -36,6 +36,7 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.cpp
         gui/EdgeItem.cpp
         gui/EdgeItemBase.cpp
+        gui/EdgeItemSimple.cpp
         gui/EdgeItemTypeManager.cpp
         gui/EdgeMimeData.cpp
         gui/FilterItem.cpp
@@ -51,6 +52,7 @@ rock_library(graph_analysis
         gui/QBaseGraph.cpp
         gui/QFatRact.cpp
         gui/VertexItemBase.cpp
+        gui/VertexItemSimple.cpp
         gui/WidgetManager.cpp
         gui/dialogs/AddFilterDialog.cpp
         gui/dialogs/AddGraphElement.cpp
@@ -135,6 +137,7 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/EdgeItem.hpp
         gui/EdgeItemBase.hpp
+        gui/EdgeItemSimple.hpp
         gui/EdgeItemTypeManager.hpp
         gui/EdgeMimeData.hpp
         gui/FilterItem.hpp
@@ -152,6 +155,7 @@ rock_library(graph_analysis
         gui/QFatRact.hpp
         gui/RegisterQtMetatypes.hpp
         gui/VertexItemBase.hpp
+        gui/VertexItemSimple.hpp
         gui/WidgetManager.hpp
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
