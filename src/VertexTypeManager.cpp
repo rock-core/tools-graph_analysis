@@ -7,16 +7,30 @@ namespace graph_analysis {
 
 VertexTypeManager::VertexTypeManager()
 {
-    registerType(Vertex::Ptr(new Vertex()));
+    Vertex::Ptr vertex(new Vertex());
+    registerType(vertex);
+    setDefaultType( vertex->getClassName() );
+
 }
 
-void VertexTypeManager::registerType(const vertex::Type& type, Vertex::Ptr node, bool throwOnAlreadyRegistered)
+void VertexTypeManager::registerType(const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered)
 {
-    assert(node.get());
+    //Create a empty structure for this type to make sure getMembers raise if a unregistered vertex type is queried
+    registerType(vertex->getClassName(), vertex, throwOnAlreadyRegistered);
+}
 
-    if(node->getClassName() != type){
-        throw std::runtime_error("Cannot register vertex of type " + type + " it seems the getClassName() funtion of this class is implemented wrong it returned " + node->getClassName());
+void VertexTypeManager::registerType(const vertex::Type& type, const Vertex::Ptr& node, bool throwOnAlreadyRegistered)
+{
+    assert(node);
+
+    if(node->getClassName() != type)
+    {
+        throw std::runtime_error("graph_analysis::VertexTypeManager: cannot"
+            "register vertex of type " + type + " it seems the getClassName()"
+            "function of this class is implemented wrong it returned '" +
+            node->getClassName() + "'");
     }
+
     try {
         vertexByType(type, true);
         LOG_INFO_S << "VertexType '" + type + "' is already registered.";
@@ -44,12 +58,22 @@ Vertex::Ptr VertexTypeManager::vertexByType(const vertex::Type& type, bool throw
         {
             throw std::runtime_error("graph_analysis::VertexTypeManager::vertexByType: type '" + type + "' is not registered");
         }
-        LOG_DEBUG_S << "Using default VertexType " << graph_analysis::Vertex::vertexType() << ".";
-        return mTypeMap[graph_analysis::Vertex::vertexType()];
+        LOG_DEBUG_S << "Using default VertexType '" << mDefaultVertexType << "'";
+        return mTypeMap[mDefaultVertexType];
     }
 
     LOG_DEBUG_S << "VertexType '" + type + "' found.";
     return it->second;
+}
+
+void VertexTypeManager::setDefaultType(const std::string& defaultType)
+{
+    if( std::find(mRegisteredTypes.begin(), mRegisteredTypes.end(), defaultType) == mRegisteredTypes.end())
+    {
+        throw std::runtime_error("graph_analysis::VertexTypeManager::setDefaultVertexType: type '"
+                + defaultType + "' is not a registered vertex type");
+    }
+    mDefaultVertexType = defaultType;
 }
 
 Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std::string& label, bool throwOnMissing)
@@ -77,7 +101,7 @@ void VertexTypeManager::registerAttribute(const std::string &typeName, const std
 {
     if(mRegisteredCallbacks.find(typeName) == mRegisteredCallbacks.end())
     {
-        throw std::invalid_argument("Cannot register attribute for unknown Type: " + typeName);
+        throw std::invalid_argument("graph_analysis::VertexTypeManager::registerAttribute: cannot register attribute for unknown type: " + typeName);
     }
     MemberCallbacks mc = {sF,dsF,pF};
     mRegisteredCallbacks[typeName][attributeName] = mc;
@@ -103,19 +127,13 @@ VertexTypeManager::MemberCallbacks VertexTypeManager::getMemberCallbacks(const s
 {
     if(mRegisteredCallbacks.find(typeName) == mRegisteredCallbacks.end())
     {
-        throw std::invalid_argument("Cannot get Callbacks for unknown type " + typeName);
+        throw std::invalid_argument("graph_analysis::VertexTypeManager: cannot get callbacks for unknown type '" + typeName + "'");
     }
     if(mRegisteredCallbacks[typeName].find(memberName) == mRegisteredCallbacks[typeName].end())
     {
-        throw std::invalid_argument("Cannot get Callbacks for unknown member" + memberName + " of " + typeName);
+        throw std::invalid_argument("graph_analysis::VertexTypeManager cannot get callbacks for unknown member '" + memberName + "' of type '" + typeName + "'");
     }
     return mRegisteredCallbacks[typeName][memberName];
-}
-
-void VertexTypeManager::registerType(Vertex::Ptr vertex, bool throwOnAlreadyRegistered)
-{
-    //Create a empty structure for this type to make sure getMembers raise if a unregistered vertex type is queried
-    registerType(vertex->getClassName(), vertex, throwOnAlreadyRegistered);
 }
 
 } // end namespace graph_analysis

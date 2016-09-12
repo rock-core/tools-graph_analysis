@@ -6,12 +6,29 @@ namespace graph_analysis {
 
 EdgeTypeManager::EdgeTypeManager()
 {
-    // registering known implemented class-types
-    registerType("default", Edge::Ptr (new Edge()));
+    Edge::Ptr edge(new Edge());
+    registerType(edge);
+    setDefaultType(edge->getClassName());
 }
 
-void EdgeTypeManager::registerType(const edge::Type& type, Edge::Ptr edge, bool throwOnAlreadyRegistered)
+void EdgeTypeManager::registerType(const Edge::Ptr& edge, bool throwOnAlreadyRegistered)
 {
+    //Create a empty structure for this type to make sure getMembers raise if a unregistered edge type is queried
+    registerType(edge->getClassName(), edge, throwOnAlreadyRegistered);
+}
+
+void EdgeTypeManager::registerType(const edge::Type& type, const Edge::Ptr& edge, bool throwOnAlreadyRegistered)
+{
+    assert(edge);
+
+    if(edge->getClassName() != type)
+    {
+        throw std::runtime_error("graph_analysis::EdgeTypeManager: cannot"
+                "register edge of type " + type + " it seems the getClassName()"
+                "function of this class is implemented wrong it returned '" +
+                edge->getClassName() + "'");
+    }
+
     try {
         edgeByType(type, true);
         LOG_INFO_S << "EdgeType '" + type + "' is already registered.";
@@ -38,12 +55,22 @@ Edge::Ptr EdgeTypeManager::edgeByType(const edge::Type& type, bool throwOnDefaul
         {
             throw std::runtime_error("graph_analysis::EdgeTypeManager::edgeByType: type '" + type + "' is not registered");
         }
-        LOG_DEBUG_S << "Using default EdgeType 'default'.";
-        return mTypeMap["default"];
+        LOG_DEBUG_S << "Using default EdgeType '" << mDefaultType << "'";
+        return mTypeMap[mDefaultType];
     }
 
     LOG_DEBUG_S << "EdgeType '" + type + "' found";
     return it->second;
+}
+
+void EdgeTypeManager::setDefaultType(const std::string& defaultType)
+{
+    if( std::find(mRegisteredTypes.begin(), mRegisteredTypes.end(), defaultType) == mRegisteredTypes.end())
+    {
+        throw std::runtime_error("graph_analysis::EdgeTypeManager::setDefaultType: type '"
+                + defaultType + "' is not a registered edge type");
+    }
+    mDefaultType = defaultType;
 }
 
 Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const std::string& label, bool throwOnMissing)

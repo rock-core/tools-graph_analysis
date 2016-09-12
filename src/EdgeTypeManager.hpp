@@ -34,6 +34,9 @@ private:
     TypeMap mTypeMap;
     /// registration list - maintains a complete list of all registered types
     std::set<std::string> mRegisteredTypes;
+    /// The default edge type
+    std::string mDefaultType;
+
     /**
      * \brief internal method for type identification
      * \param type requested edge type
@@ -48,9 +51,17 @@ protected:
     friend class base::Singleton<EdgeTypeManager>;
 public:
 
-    // Register visualization class
-    // takes ownership of graphicsItem
-    void registerType(const edge::Type& type, Edge::Ptr edge, bool throwOnAlreadyRegistered = false);
+    // Register edge class
+    void registerType(const Edge::Ptr& edge, bool throwOnAlreadyRegistered = false);
+
+    // Register edge class
+    void registerType(const edge::Type& type, const Edge::Ptr& edge, bool throwOnAlreadyRegistered = false);
+
+    /**
+     * Select the default edge type from the list of registered types
+     */
+    void setDefaultType(const std::string& type);
+
     /**
      * \brief clones a new edge of a specified type
      * \param type the requested edge type

@@ -48,6 +48,7 @@ private:
     TypeMap mTypeMap;
     /// registration list - maintains a complete list of all registered types
     std::set<std::string> mRegisteredTypes;
+    std::string mDefaultVertexType;
 
     std::map<std::string, std::map<std::string, MemberCallbacks> > mRegisteredCallbacks;
     /**
@@ -58,6 +59,11 @@ private:
      */
     Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnMissing = false);
 
+    /**
+     * Select the default vertex type from the list of registered types
+     */
+    void setDefaultType(const std::string& type);
+
 protected:
     /// constructor
     VertexTypeManager();
@@ -65,10 +71,10 @@ protected:
 public:
 
     // Register vertex class
-    void registerType(Vertex::Ptr vertex, bool throwOnAlreadyRegistered = false);
+    void registerType(const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered = false);
 
     // Register vertex class
-    void registerType(const vertex::Type& type, Vertex::Ptr vertex, bool throwOnAlreadyRegistered = false);
+    void registerType(const vertex::Type& type, const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered = false);
 
     /**
      *  \brief register a new attribute for serialization and deserialization

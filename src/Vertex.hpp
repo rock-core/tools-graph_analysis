@@ -33,11 +33,6 @@ public:
      */
     virtual std::string getClassName() const { return "graph_analysis::Vertex"; }
 
-    /** Get class type
-     * \return class type
-     */
-    static std::string vertexType() { return "graph_analysis::Vertex"; }
-
     /**
      * Convert element to string
      */
@@ -61,7 +56,7 @@ public:
 
 protected:
     /**
-     * Create a copy of this vertex using a explicit clone of 
+     * Create a copy of this vertex using a explicit clone of
      * the subclass of Vertex
      \verbatim
      return new MyVertex(*this);
