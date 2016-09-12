@@ -19,7 +19,11 @@ public:
 
     void registerLayout(const GraphLayout::Ptr& ptr);
 
-    GraphWidget::VertexItemCoordinateCache getCoordinates(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName) const;
+    GraphWidget::VertexItemCoordinateCache getCoordinates(const graph_analysis::BaseGraph::Ptr& graph,
+            const std::string& layoutName,
+            GraphWidget::VertexItemMap& vertexItemMap,
+            QGraphicsScene* scene = NULL
+            ) const;
 
     std::set<std::string> getSupportedLayouts() const;
 

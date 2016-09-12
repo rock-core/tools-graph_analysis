@@ -3,6 +3,7 @@
 
 #include <graph_analysis/gui/GraphLayout.hpp>
 #include <QPointF>
+#include <QGraphicsGridLayout>
 #include <boost/function.hpp>
 
 namespace graph_analysis {
@@ -40,7 +41,10 @@ public:
 
     QPointF getPosition(const Vertex::Ptr& vertex) const;
 
-    void update(const BaseGraph::Ptr& graph, const std::string& layout);
+    void update(const BaseGraph::Ptr& graph,
+            const std::string& layoutName,
+            GraphWidget::VertexItemMap& map,
+            QGraphicsScene* scene);
 
     void setColumnScalingFactor(double f) { mColumnScalingFactor = f; }
     void setRowScalingFactor(double f) { mRowScalingFactor = f; }
@@ -56,6 +60,9 @@ private:
 
     std::vector<ColumnLabel> mColumnLabels;
     std::vector<RowLabel> mRowLabels;
+
+    QGraphicsGridLayout* mpGridLayout;
+    GraphWidget::VertexItemCoordinateCache mCoordinates;
 };
 
 } // end namespace layouts

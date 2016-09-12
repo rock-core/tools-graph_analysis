@@ -88,7 +88,7 @@ void BaseGraphView::applyLayout(const std::string& layoutName)
 {
     using namespace graph_analysis::gui;
     GraphLayoutManager* layoutManager = GraphLayoutManager::getInstance();
-    GraphWidget::VertexItemCoordinateCache coordinates = layoutManager->getCoordinates(mpGraph, layoutName);
+    GraphWidget::VertexItemCoordinateCache coordinates = layoutManager->getCoordinates(mpGraph, layoutName, mVertexItemMap, scene());
 
     GraphWidget::applyLayout(coordinates);
 }

@@ -32,7 +32,10 @@ public:
     /**
      * Update the current layout, e.g. after changes to the underlying graph
      */
-    virtual void update(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName = "") = 0;
+    virtual void update(const BaseGraph::Ptr& graph,
+            const std::string& layoutName,
+            GraphWidget::VertexItemMap& VertexItemMap,
+            QGraphicsScene* scene) = 0;
 
     virtual std::set<std::string> getSupportedLayouts() const = 0;
 };

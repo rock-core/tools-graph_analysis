@@ -12,24 +12,25 @@ GridLayout::GridLayout(GetLabelFunction getColumnLabelFunction,
     , mRowLabelFunction(getRowLabelFunction)
     , mColumnScalingFactor(100)
     , mRowScalingFactor(100)
+    , mpGridLayout(NULL)
 {
 }
 
 GridLayout::~GridLayout()
-{
-}
+{}
 
 GraphWidget::VertexItemCoordinateCache GridLayout::getCoordinates(const BaseGraph::Ptr& graph) const
 {
-    GraphWidget::VertexItemCoordinateCache coordinates;
-    VertexIterator::Ptr vertexIt = graph->getVertexIterator();
-    while(vertexIt->next())
-    {
-        Vertex::Ptr vertex = vertexIt->current();
-        coordinates[vertex] = getPosition(vertex);
+    //GraphWidget::VertexItemCoordinateCache coordinates;
+    //VertexIterator::Ptr vertexIt = graph->getVertexIterator();
+    //while(vertexIt->next())
+    //{
+    //    Vertex::Ptr vertex = vertexIt->current();
+    //    coordinates[vertex] = getPosition(vertex);
 
-    }
-    return coordinates;
+    //}
+    //return coordinates;
+    return mCoordinates;
 }
 
 size_t GridLayout::getColumnIndex(const ColumnLabel& label) const
@@ -89,14 +90,22 @@ GridLayout::RowLabel GridLayout::getRowLabel(const Vertex::Ptr& vertex) const
     return rowLabel;
 }
 
-void GridLayout::update(const BaseGraph::Ptr& graph, const std::string& layoutName)
+void GridLayout::update(const BaseGraph::Ptr& graph,
+        const std::string& layoutName,
+        GraphWidget::VertexItemMap& vertexItemMap,
+        QGraphicsScene* scene)
 {
+
     using namespace graph_analysis;
+
+    // we expect scene->clear() to be called before
+    mpGridLayout = new QGraphicsGridLayout;
 
     mColumnLabels.clear();
     mRowLabels.clear();
 
     VertexIterator::Ptr vertexIt = graph->getVertexIterator();
+    int i = 0;
     while(vertexIt->next())
     {
         Vertex::Ptr vertex = vertexIt->current();
@@ -111,8 +120,37 @@ void GridLayout::update(const BaseGraph::Ptr& graph, const std::string& layoutNa
         {
             mRowLabels.push_back(rowLabel);
         }
+
+        GraphWidget::VertexItemMap::iterator vit = vertexItemMap.find(vertex);
+        if(vit == vertexItemMap.end())
+        {
+            LOG_WARN_S << "graph_analysis::gui::layouts::GridLayout: failed to find vertex that corresponds to vertex: " << vertex->toString();
+        } else {
+            mpGridLayout->addItem(vit->second , getColumnIndex(columnLabel), getRowIndex(rowLabel));
+        }
+    }
+
+    QGraphicsWidget* widget = new QGraphicsWidget;
+    widget->setLayout(mpGridLayout);
+    scene->addItem(widget);
+    mpGridLayout->activate();
+
+    {
+        VertexIterator::Ptr vertexIt = graph->getVertexIterator();
+        while(vertexIt->next())
+        {
+            Vertex::Ptr vertex = vertexIt->current();
+            GraphWidget::VertexItemMap::iterator vit = vertexItemMap.find(vertex);
+            if(vit == vertexItemMap.end())
+            {
+            LOG_WARN_S << "graph_analysis::gui::layouts::GridLayout: failed to find vertex that corresponds to vertex: " << vertex->toString();
+            } else {
+                mCoordinates[vertex] = vertexItemMap[ vertex ]->pos();
+            }
+        }
     }
 }
+
 
 std::set<std::string> GridLayout::getSupportedLayouts() const
 {

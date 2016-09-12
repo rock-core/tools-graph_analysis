@@ -30,7 +30,10 @@ void GVLayout::initialize(const graph_analysis::BaseGraph::Ptr& graph)
     mpLayoutGraph->initializeFromBaseGraph();
 }
 
-void GVLayout::update(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName)
+void GVLayout::update(const graph_analysis::BaseGraph::Ptr& graph,
+        const std::string& layoutName,
+        GraphWidget::VertexItemMap& vertexItemMap,
+        QGraphicsScene* scene)
 {
     std::string selectedLayout = mDefaultLayoutName;
     if(!layoutName.empty())

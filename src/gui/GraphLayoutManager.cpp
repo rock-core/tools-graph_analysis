@@ -17,11 +17,15 @@ GraphLayoutManager::~GraphLayoutManager()
 {}
 
 
-GraphWidget::VertexItemCoordinateCache GraphLayoutManager::getCoordinates(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName) const
+GraphWidget::VertexItemCoordinateCache GraphLayoutManager::getCoordinates(const graph_analysis::BaseGraph::Ptr& graph,
+        const std::string& layoutName,
+        GraphWidget::VertexItemMap& vertexItemMap,
+        QGraphicsScene* scene
+        ) const
 {
     GraphLayout::Ptr layout = getGraphLayout(layoutName);
 
-    layout->update(graph, layoutName);
+    layout->update(graph, layoutName, vertexItemMap, scene);
     return layout->getCoordinates(graph);
 }
 

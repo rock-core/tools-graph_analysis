@@ -23,7 +23,10 @@ public:
 
     GraphWidget::VertexItemCoordinateCache getCoordinates(const graph_analysis::BaseGraph::Ptr& graph) const;
 
-    void update(const graph_analysis::BaseGraph::Ptr& graph, const std::string& layoutName = "");
+    virtual void update(const graph_analysis::BaseGraph::Ptr& graph,
+            const std::string& layoutName,
+            GraphWidget::VertexItemMap& vertexItemMap,
+            QGraphicsScene* scene);
 
     std::set<std::string> getSupportedLayouts() const;
 
