@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_VERTEXITEMBASE_HPP
 #define GRAPH_ANALYSIS_GUI_VERTEXITEMBASE_HPP
 
-#include <QGraphicsItem>
+#include <QGraphicsWidget>
 #include <graph_analysis/Vertex.hpp>
 
 #include "GraphicsItemTypes.hpp"
@@ -25,7 +25,7 @@ class GraphWidget;
  * \brief graphical node representation interface
  * \details used as polymorphic base for several graphical node implementations
  */
-class VertexItemBase : public QGraphicsItem
+class VertexItemBase : public QGraphicsItem, public QGraphicsLayoutItem
 {
 public:
     /**
@@ -118,6 +118,11 @@ public:
         return VertexItemSimpleType;
     };
 
+    // inherited from QGraphicsLayoutItem
+    virtual void setGeometry(const QRectF& geometry);
+    virtual QSizeF sizeHint(Qt::SizeHint which, const QSizeF& constraint = QSizeF()) const;
+
+    // inherited from QGraphicsItem
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option,
                QWidget* widget = 0);
     QRectF boundingRect() const;

@@ -24,6 +24,7 @@ VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
                                graph_analysis::Vertex::Ptr vertex,
                                QGraphicsItem* parent)
     : QGraphicsItem(parent)
+    , QGraphicsLayoutItem()
     , mpVertex(vertex)
     , mpGraphWidget(graphWidget)
 {
@@ -41,6 +42,9 @@ VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
     mpGraphWidget->registerVertexItem(mpVertex, this);
     // drag'n drop is used to create edges between vertices
     setAcceptHoverEvents(true);
+
+    // for QGraphicsLayoutItem
+    setGraphicsItem(this);
 }
 
 VertexItemBase::~VertexItemBase()
@@ -141,6 +145,29 @@ VertexItemSimple::~VertexItemSimple()
     delete mpClassName;
     delete mpCoordinate;
     delete mpRect;
+}
+
+void VertexItemSimple::setGeometry(const QRectF& geometry)
+{
+    prepareGeometryChange();
+    QGraphicsLayoutItem::setGeometry(geometry);
+    setPos(geometry.topLeft());
+}
+
+
+QSizeF VertexItemSimple::sizeHint(Qt::SizeHint which, const QSizeF& constraint) const
+{
+    switch (which) {
+        case Qt::MinimumSize:
+        case Qt::PreferredSize:
+            // Do not allow a size smaller than 30x30
+            return QSize(30, 30);
+        case Qt::MaximumSize:
+            return QSizeF(1000,1000);
+        default:
+            break;
+    }
+    return constraint;
 }
 
 void VertexItemSimple::paint(QPainter* painter,
