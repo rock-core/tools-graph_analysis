@@ -11,6 +11,10 @@ namespace algorithms {
 enum LPProblemFormat { UNKNOWN_PROBLEM_FORMAT = 0, CPLEX, GLPK, MPS };
 enum LPSolutionFormat { UNKNOWN_SOLUTION_FORMAT = 0 };
 
+/**
+ * General class to interface with the Gnu Linear Programming Kit
+ * \see http://kam.mff.cuni.cz/~elias/glpk.pdf
+ */
 class GLPKSolver
 {
 public:

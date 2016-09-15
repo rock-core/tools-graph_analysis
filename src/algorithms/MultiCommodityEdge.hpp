@@ -18,9 +18,17 @@ public:
 
     virtual std::string toString() const;
 
+    /**
+     * Set the general capacity bound for this edge
+     * sum of all flows on this edge cannot exceed this bound
+     */
     void setCapacityUpperBound(uint32_t capacity) { mCapacityUpperBound = capacity; }
     uint32_t getCapacityUpperBound() const { return mCapacityUpperBound; }
 
+    /**
+     * Set the commodity specific bound for this edge, i.e.
+     * the flow of a commodity cannot exceed this bound across this edge
+     */
     void setCommodityCapacityUpperBound(uint32_t commodity, uint32_t capacity);
     uint32_t getCommodityCapacityUpperBound(uint32_t commodity) const { return mCommodityCapacityUpperBound.at(commodity); }
 

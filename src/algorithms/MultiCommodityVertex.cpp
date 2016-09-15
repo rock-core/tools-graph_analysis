@@ -7,7 +7,7 @@ std::string MultiCommodityVertex::toString() const
 {
     std::stringstream ss;
     {
-        ss << getClassName() << " supply/demand: [";
+        ss << getLabel() << "(" << getClassName() << ")" << " supply/demand: [";
         std::vector<int32_t>::const_iterator cit = mCommoditySupply.begin();
         for(; cit != mCommoditySupply.end();)
         {

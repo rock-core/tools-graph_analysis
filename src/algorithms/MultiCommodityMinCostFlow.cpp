@@ -45,7 +45,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
     // foreach vertex
     //     if transshipment node
     //         overall (timewise) inflow = outflow, i.e. consumed capacity overall all incoming edges - consumed capacity over all outgoing edges = 0
-    //         set min level of inflow / outflow to 'control/ancor' flow 
+    //         set min level of inflow / outflow to 'control/ancor' flow
     //     flow
 
     // # orderOfGraph rows to define balance constraints (from in/out flow on a vertex);
@@ -63,8 +63,36 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
     }
 
     // first index
+    // e.g. for
+    //     maximize
+    //          z = 10x_1 + 6x_2 + 4x3
+    //
+    //      subject to
+    //          p =   x_1 +  x_2 +  x_3
+    //          q = 10x_1 + 4x_2 + 5x_3
+    //          r =  2x_1 + 2x_2 + 6x_3
+    //
+    //      and bounds of variables
+    //          -inf < p <= 100    0 <= x_1 < +inf
+    //          -inf < q <= 600    0 <= x_2 < +inf
+    //          -inf < r <= 300    0 <= x_3 < +inf
+    //
+    // e.g.,
+    // describing the first rows coefficients
+    //  ia[1]=1, ja[1]=1, ar[1] = 1.0
+    //  ia[2]=1, ja[2]=2, ar[2] = 1.0
+    //  ia[3]=1, ja[3]=3, ar[3] = 1.0
+    //
+    // describing the second rows coefficients
+    //  ia[4]=2, ja[4]=1, ar[4] = 10.0
+    //  ia[5]=2, ja[5]=2, ar[5] = 4.0
+    //  ia[7]=2, ja[7]=3, ar[2] = 5.0
+    //
+    // ia: row indeces
     int ia[1 + numberOfIndices];
+    // ja: column indeces
     int ja[1 + numberOfIndices];
+    // numerical values of elements corresponding to ia and ja values
     double ar[1 + numberOfIndices];
 
 
@@ -84,7 +112,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
     {
-        // add 
+        // add
         // MaxEdgeCapacity >=  0*... + 1.0*currentEdgeComm0 + 1.0*currentEdgeComm1 ... + 0*edgeCom
         MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>( edgeIt->current() );
         if(!edge)
@@ -101,7 +129,15 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
         std::stringstream rs;
         rs << "y" << row;
         glp_set_row_name(mpProblem, row, rs.str().c_str());
-        glp_set_row_bnds(mpProblem, row, GLP_DB, 0.0, edge->getCapacityUpperBound());
+        uint32_t capacityUpperBound = edge->getCapacityUpperBound();
+        if(capacityUpperBound == 0)
+        {
+            throw
+                std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::run:"
+                        " trying to add edge with CapacityUpperBound = 0");
+        } else {
+            glp_set_row_bnds(mpProblem, row, GLP_DB, 0.0, capacityUpperBound);
+        }
 
         // Bounds on individual commodity capacities
         for(size_t k = 0; k < mCommodities; ++k,++col,++index)
@@ -109,10 +145,16 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
             glp_add_cols(mpProblem, 1);
             std::stringstream cs;
             cs << "x" << col;
-            // for each edge create k columns, where k is the number of commodities 
+            // for each edge create k columns, where k is the number of commodities
             glp_set_col_name(mpProblem, col, cs.str().c_str());
             // set the bound for the column to 0 as lower and commodity capacity upper bound
-            glp_set_col_bnds(mpProblem, col, GLP_DB, 0.0, edge->getCommodityCapacityUpperBound(k));
+            uint32_t commodityCapacityUpperBound = edge->getCommodityCapacityUpperBound(k);
+            if(commodityCapacityUpperBound == 0)
+            {
+                glp_set_col_bnds(mpProblem, col, GLP_FX, 0.0, 0.0);
+            } else {
+                glp_set_col_bnds(mpProblem, col, GLP_DB, 0.0, commodityCapacityUpperBound);
+            }
 
             LOG_DEBUG_S << "Adding column '" << cs.str() << "' for edge: '" << edge->toString() << "' and commodity '" << k  << "' -- lb: 0.0, ub: " << edge->getCommodityCapacityUpperBound(k);
 
@@ -134,7 +176,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
         }
         ++row;
     }
-    // no need for grouping even for time expanded networks, since the condition 
+    // no need for grouping even for time expanded networks, since the condition
     // still holds if the demand is not used, then we transport it locally on
     // that edge -- allow to identify locally positioned items (at higher cost)
     VertexIterator::Ptr vertexIt = mpGraph->getVertexIterator();
@@ -149,7 +191,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
         //---------------------
         // DEAL WITH INFLOW-OUTFLOW BALANCE
         //---------------------
-        // Adding rows for all commodities for a given vertex 
+        // Adding rows for all commodities for a given vertex
         // to set the supply/demand
         for(size_t k = 0; k < mCommodities; ++k)
         {
@@ -161,16 +203,21 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
             // supply - outflow = 0
             // inflow + (demand + supply) - outflow = 0
             // (demand + supply) = outflow - inflow
+            //
+            // Supply: a positive value is supply, negative demand
             int32_t supply = vertex->getCommoditySupply(k);
             glp_set_row_bnds(mpProblem, row, GLP_FX, supply, supply);
 
             LOG_DEBUG_S << "Adding row '" << rs.str() << "' for vertex '" << mpGraph->getVertexId(vertex) << "' and commodity '" << k << "' with supply: " << supply;
             ++row;
-            
+
         }
 
         for(size_t k = 0; k < mCommodities; ++k)
         {
+
+            // Adding all incoming edges and setting the inflow for the
+            // associated commodities
             EdgeIterator::Ptr inEdgeIt = diGraph->getInEdgeIterator(vertex);
             while(inEdgeIt->next())
             {
@@ -181,13 +228,15 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
                 ja[index] = commodityCol;
                 // inflow (thus multiply by -1.0)
                 ar[index] = -1.0;
-                LOG_DEBUG_S << "Add out edge: " << mpGraph->getEdgeId(edge) << std::endl
+                LOG_DEBUG_S << "Add inflow (from incoming edge: " << mpGraph->getEdgeId(edge) << ")" << std::endl
                         << "ij["<< index << "] = " << row - mCommodities + k << std::endl
                         << "ja["<< index << "] = " << commodityCol << std::endl
                         << "ar["<< index << "] = -1.0";
                 ++index;
             }
 
+            // Adding all outgoing edges and setting the outflow for the
+            // associated commodities
             EdgeIterator::Ptr outEdgeIt = diGraph->getOutEdgeIterator(vertex);
             while(outEdgeIt->next())
             {
@@ -199,7 +248,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
                 // outflow (thus multiply by 1.0)
                 ar[index] = 1.0;
 
-                LOG_DEBUG_S << "Add in edge: " << mpGraph->getEdgeId(edge) << std::endl
+                LOG_DEBUG_S << "Add outflow (from outgoing edge: " << mpGraph->getEdgeId(edge) << ")" << std::endl
                         << "ij["<< index << "] = " << row - mCommodities + k << std::endl
                         << "ja["<< index << "] = " << commodityCol << std::endl
                         << "ar["<< index << "] = 1.0";
@@ -210,7 +259,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
         //---------------------
         // INFLOW-OUTFLOW MINIMUM LEVEL
         //---------------------
-        // Adding rows for all commodities for a given vertex 
+        // Adding rows for all commodities for a given vertex
         // to set the supply/demand
         for(size_t k = 0; k < mCommodities; ++k)
         {
@@ -238,7 +287,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
                     ja[index] = commodityCol;
                     // inflow (thus multiply by -1.0)
                     ar[index] = -1.0;
-                    LOG_DEBUG_S << "Add out edge: " << mpGraph->getEdgeId(edge) << std::endl
+                    LOG_DEBUG_S << "Add inflow to consider transflow (incoming edge: " << mpGraph->getEdgeId(edge) << ")" << std::endl
                             << "ij["<< index << "] = " << row - mCommodities + k << std::endl
                             << "ja["<< index << "] = " << commodityCol << std::endl
                             << "ar["<< index << "] = -1.0";
@@ -256,7 +305,7 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
                     // outflow (thus multiply by 1.0)
                     ar[index] = 1.0;
 
-                    LOG_DEBUG_S << "Add in edge: " << mpGraph->getEdgeId(edge) << std::endl
+                    LOG_DEBUG_S << "Add outflow to consider transflow (outgoing edge: " << mpGraph->getEdgeId(edge) << ")" << std::endl
                             << "ij["<< index << "] = " << row - mCommodities + k << std::endl
                             << "ja["<< index << "] = " << commodityCol << std::endl
                             << "ar["<< index << "] = 1.0";
@@ -364,7 +413,7 @@ int MultiCommodityMinCostFlow::getColumnIndex(const Edge::Ptr& e, uint32_t commo
     {
         int distance = std::distance(mColumnToEdge.begin(), cit)*mCommodities + commodity + 1;
         LOG_DEBUG_S << "Column index '" << e->toString() << "' commodity: '" << commodity << "' is " << distance;
-        return distance; 
+        return distance;
     }
     throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow::getColumnIndex: edge '" + e->toString() + "' is not associated with a column");
 }
