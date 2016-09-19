@@ -212,6 +212,28 @@ public:
     }
 
     /**
+     * \brief Get all vertices of a given type 
+     * Type should be a subclass of vertex
+     * If dynamic_pointer_cast returns null pointer, object is not added
+     */
+    template<typename T>
+    std::vector< shared_ptr<T> > getVertices() const
+    {
+        std::vector< shared_ptr<T> > vertices;
+        VertexIterator::Ptr vertexIt = getVertexIterator();
+        while(vertexIt->next())
+        {
+            shared_ptr<T> vertex = dynamic_pointer_cast<T>( vertexIt->current() );
+            if(vertex)
+            {
+                vertices.push_back(vertex);
+            }
+        }
+
+        return vertices;
+    }
+
+    /**
      * Get the graph id
      * \return id
      */
