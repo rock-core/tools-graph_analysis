@@ -19,6 +19,18 @@ enum EventType
 };
 
 /**
+ * @brief Transaction events 
+ * These events are triggers for the notification system to allow transactions
+ * to be framed. E.g. perform rollbacks of entire transactions, or store
+ * transaction events and flush them once a transaction is completed.
+ */
+enum TransactionType
+{
+    TRANSACTION_START,
+    TRANSACTION_STOP
+};
+
+/**
  * \brief Virtual interface class for observing a base graph
  */
 class BaseGraphObserver
@@ -39,6 +51,11 @@ public:
     {
         throw std::runtime_error(
             "BaseGraphObserver::notify(Edge) not implemented");
+    };
+    virtual void notify( const TransactionType& event, const GraphId& origin )
+    {
+        // does not need to throw if not implemented
+        // this is also to keep backwards compatibility
     };
 };
 }

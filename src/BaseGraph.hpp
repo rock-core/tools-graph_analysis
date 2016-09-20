@@ -55,6 +55,24 @@ public:
     void removeObserver(const BaseGraphObserver::Ptr& observer);
 
     /**
+     * @brief issue a transaction event 
+     * The transaction event is passed to all observers, which can implement
+     * the respective response to the transaction. E.g. rollback,
+     * hold-and-forward, etc.
+     *
+     * Any combined actions like e.g. loading of files a.s.o. should have a
+     *
+     * transactionsEvent( TRANSACTION_START );
+     * ...
+     * // modify graph vertices and edges
+     * ...
+     * transactionEvent( TRANSACTION_STOP );
+     *
+     * bracket, 
+     */
+    void transactionEvent( TransactionType eventType );
+
+    /**
      * Create a copy of this graph
      * The copy of the graph and this graph will still share the same set of
      * edges and vertices.
@@ -375,6 +393,7 @@ private:
     // Notification of observers
     void notifyAll(const Vertex::Ptr& vertex, const EventType& event);
     void notifyAll(const Edge::Ptr& edge, const EventType& event);
+    void notifyAll(const TransactionType& event);
 };
 
 } // end namespace graph_analysis

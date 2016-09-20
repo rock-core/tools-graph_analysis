@@ -74,6 +74,17 @@ void BaseGraph::notifyAll(const Edge::Ptr& edge, const EventType& event)
     }
 }
 
+void BaseGraph::notifyAll(const TransactionType& event)
+{
+    std::set<BaseGraphObserver::Ptr>::const_iterator it;
+
+    // Call every registered observer
+    for(it = mObservers.begin(); it != mObservers.end(); ++it)
+    {
+        (*it)->notify(event, getId());
+    }
+}
+
 BaseGraph::Ptr BaseGraph::clone() const
 {
     std::map<Vertex::Ptr, Vertex::Ptr> current2Clone;
