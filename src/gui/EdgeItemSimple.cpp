@@ -1,6 +1,7 @@
 #include "EdgeItemSimple.hpp"
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <base-logging/Logging.hpp>
+#include <cmath>
 
 namespace graph_analysis {
 namespace gui {
