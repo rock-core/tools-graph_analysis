@@ -30,20 +30,23 @@ private:
 
     // the basegraph where the subwidgets will work upon
     QBaseGraph* mpQBaseGraph;
+    BaseGraph::Ptr mpBaseGraph;
 
     // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;
 
-    void importGraph();
-    void exportGraph();
     void fromFile(const std::string& filename);
     void notifyAll();
+
+public slots:
+    void importGraph();
+    void exportGraph();
+    void selectLayout();
 
 private slots:
     /*Connected to QBaseGraph*/
     void updateVisualization();
     void on_tabWidget_currentChanged(int index);
-
 };
 
 } // end namespace gui
