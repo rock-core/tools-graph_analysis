@@ -88,6 +88,7 @@ rock_library(graph_analysis
         Algorithms.hpp
         BaseGraph.hpp
         BaseGraphObserver.hpp
+        TransactionObserver.hpp
         BaseIterable.hpp
         BipartiteGraph.hpp
         DirectedGraphInterface.hpp
