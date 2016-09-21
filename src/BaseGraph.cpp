@@ -85,6 +85,11 @@ void BaseGraph::notifyAll(const TransactionType& event)
     }
 }
 
+void BaseGraph::transactionEvent( TransactionType eventType )
+{
+   notifyAll( eventType );
+}
+
 BaseGraph::Ptr BaseGraph::clone() const
 {
     std::map<Vertex::Ptr, Vertex::Ptr> current2Clone;
