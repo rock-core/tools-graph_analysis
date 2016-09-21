@@ -58,7 +58,7 @@ public:
     }
 
     explicit TransactionObserver( BaseGraphObserver::Ptr &observer )
-        : observer( observer ), inTransaction( false ) {} 
+        : observer( observer ), transactionLevel( 0 ) {} 
 
     virtual ~TransactionObserver() {}
 
@@ -82,17 +82,27 @@ public:
                 emitEvent( *it );
             }
             events.clear();
-            inTransaction = false;
+            transactionLevel -= 1;
+            
+            if( transactionLevel < 0 )
+                throw std::runtime_error("Got TRANSACTION_STOP event without a corresponding start.");
         }
 
         if( event == TRANSACTION_START )
         {
-            inTransaction = true;
+            transactionLevel += 1;
         }
 
         // also forwared the transaction event itself
         observer->notify( event, origin );
     };
+
+    /** @brief return true if a transaction is currently running
+     */
+    bool inTransaction()
+    {
+        return transactionLevel > 0;
+    }
 
 private:
     void addEvent( ObserverEvent event )
@@ -101,7 +111,7 @@ private:
         // result in removal of both events alltogether.
 
         // only hold events when in a transaction
-        if( inTransaction )
+        if( inTransaction() )
             events.push_back( event );
         else
             emitEvent( event );
@@ -125,7 +135,7 @@ private:
 
     std::vector<ObserverEvent> events;
     BaseGraphObserver::Ptr observer;
-    bool inTransaction;
+    int transactionLevel;
 
 };
 }
