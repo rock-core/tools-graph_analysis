@@ -47,7 +47,7 @@ struct ObserverEvent
  * observer at once.
  *
  */
-class TransactionObserver
+class TransactionObserver : public BaseGraphObserver
 {
 public:
     typedef shared_ptr<TransactionObserver> Ptr;
@@ -58,7 +58,7 @@ public:
     }
 
     explicit TransactionObserver( BaseGraphObserver::Ptr &observer )
-        : observer( observer ) {} 
+        : observer( observer ), inTransaction( false ) {} 
 
     virtual ~TransactionObserver() {}
 
@@ -79,23 +79,16 @@ public:
         {
             for( std::vector<ObserverEvent>::iterator it = events.begin(); it != events.end(); ++it )
             {
-                Vertex::Ptr vertex = dynamic_pointer_cast<Vertex>( it->element );
-                if( vertex )
-                {
-                    observer->notify( vertex, it->event, it->origin );
-                    continue;
-                }
-                Edge::Ptr edge = dynamic_pointer_cast<Edge>( it->element );
-                if( edge )
-                {
-                    observer->notify( edge, it->event, it->origin );
-                    continue;
-                }
+                emitEvent( *it );
             }
-
+            events.clear();
+            inTransaction = false;
         }
-        // in any case, the event queue should be cleared
-        events.clear();
+
+        if( event == TRANSACTION_START )
+        {
+            inTransaction = true;
+        }
 
         // also forwared the transaction event itself
         observer->notify( event, origin );
@@ -107,11 +100,32 @@ private:
         // TODO we need to filter here, that paired add/remove events 
         // result in removal of both events alltogether.
 
-        events.push_back( event );
+        // only hold events when in a transaction
+        if( inTransaction )
+            events.push_back( event );
+        else
+            emitEvent( event );
+    }
+
+    void emitEvent( ObserverEvent event )
+    {
+        Vertex::Ptr vertex = dynamic_pointer_cast<Vertex>( event.element );
+        if( vertex )
+        {
+            observer->notify( vertex, event.event, event.origin );
+            return; 
+        }
+        Edge::Ptr edge = dynamic_pointer_cast<Edge>( event.element );
+        if( edge )
+        {
+            observer->notify( edge, event.event, event.origin );
+            return;
+        }
     }
 
     std::vector<ObserverEvent> events;
     BaseGraphObserver::Ptr observer;
+    bool inTransaction;
 
 };
 }
