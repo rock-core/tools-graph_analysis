@@ -16,6 +16,7 @@ rock_library(graph_analysis
         VertexIterable.cpp
         VertexIterator.cpp
         VertexTypeManager.cpp
+        TransactionObserver.cpp
         algorithms/BFS.cpp
         algorithms/ConstraintViolation.cpp
         algorithms/CorrelationClustering.cpp
