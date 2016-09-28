@@ -5,7 +5,9 @@ using namespace graph_analysis;
 ObserverEvent::ObserverEvent() {}
 
 ObserverEvent::ObserverEvent( GraphElement::Ptr element, GraphId origin, EventType event )
-    : element( element ), origin( origin ), event( event ) {}
+    : element( element )
+    , origin( origin )
+    , event( event ) {}
 
 bool ObserverEvent::match( const ObserverEvent& other ) const
 {
@@ -31,7 +33,8 @@ TransactionObserver::Ptr TransactionObserver::getInstance( BaseGraphObserver::Pt
 }
 
 TransactionObserver::TransactionObserver( BaseGraphObserver::Ptr &observer )
-    : observer( observer ), transactionLevel( 0 ) {} 
+    : mpObserver( observer )
+    , mTransactionLevel( 0 ) {} 
 
 TransactionObserver::~TransactionObserver() {}
 
@@ -52,31 +55,31 @@ void TransactionObserver::notify( const TransactionType& event, const GraphId& o
     // for a TRANSACTION_STOP event, we will emit all the events collected so far
     if( event == TRANSACTION_STOP )
     {
-        for( std::vector<ObserverEvent>::iterator it = events.begin(); it != events.end(); ++it )
+        for( std::vector<ObserverEvent>::iterator it = mEvents.begin(); it != mEvents.end(); ++it )
         {
             emitEvent( *it );
         }
-        events.clear();
-        transactionLevel -= 1;
+        mEvents.clear();
+        mTransactionLevel -= 1;
 
-        if( transactionLevel < 0 )
+        if( mTransactionLevel < 0 )
             throw std::runtime_error("Got TRANSACTION_STOP event without a corresponding start.");
     }
 
     if( event == TRANSACTION_START )
     {
-        transactionLevel += 1;
+        mTransactionLevel += 1;
     }
 
     // also forwared the transaction event itself
-    observer->notify( event, origin );
+    mpObserver->notify( event, origin );
 };
 
 /** @brief return true if a transaction is currently running
 */
 bool TransactionObserver::inTransaction()
 {
-    return transactionLevel > 0;
+    return mTransactionLevel > 0;
 }
 
 void TransactionObserver::addEvent( ObserverEvent event )
@@ -86,7 +89,7 @@ void TransactionObserver::addEvent( ObserverEvent event )
 
     // only hold events when in a transaction
     if( inTransaction() )
-        events.push_back( event );
+        mEvents.push_back( event );
     else
         emitEvent( event );
 }
@@ -96,13 +99,13 @@ void TransactionObserver::emitEvent( ObserverEvent event )
     Vertex::Ptr vertex = dynamic_pointer_cast<Vertex>( event.element );
     if( vertex )
     {
-        observer->notify( vertex, event.event, event.origin );
+        mpObserver->notify( vertex, event.event, event.origin );
         return; 
     }
     Edge::Ptr edge = dynamic_pointer_cast<Edge>( event.element );
     if( edge )
     {
-        observer->notify( edge, event.event, event.origin );
+        mpObserver->notify( edge, event.event, event.origin );
         return;
     }
 }

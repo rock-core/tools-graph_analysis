@@ -80,9 +80,9 @@ private:
     void addEvent( ObserverEvent event );
     void emitEvent( ObserverEvent event );
 
-    std::vector<ObserverEvent> events;
-    BaseGraphObserver::Ptr observer;
-    int transactionLevel;
+    std::vector<ObserverEvent> mEvents;
+    BaseGraphObserver::Ptr mpObserver;
+    int mTransactionLevel;
 
 };
 }
