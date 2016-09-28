@@ -36,6 +36,20 @@ GraphAnalysisGui::GraphAnalysisGui()
     , mpQBaseGraph(new QBaseGraph(this))
     , mpBaseGraphView(new BaseGraphView(mpQBaseGraph->getBaseGraph(), this))
 {
+    init();
+}
+
+GraphAnalysisGui::GraphAnalysisGui( BaseGraph::Ptr graph )
+    : QMainWindow()
+    , mpUi(new Ui::GraphAnalysisGui)
+    , mpQBaseGraph(new QBaseGraph(graph, this))
+    , mpBaseGraphView(new BaseGraphView(mpQBaseGraph->getBaseGraph(), this))
+{
+    init();
+}
+
+void GraphAnalysisGui::init()
+{
     mpUi->setupUi(this);
     mpUi->tabWidget->clear();
     mpUi->tabWidget->addTab(mpBaseGraphView, mpBaseGraphView->getClassName());

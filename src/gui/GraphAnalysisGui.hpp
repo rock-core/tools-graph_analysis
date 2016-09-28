@@ -22,9 +22,12 @@ class GraphAnalysisGui : public QMainWindow
 
 public:
     GraphAnalysisGui();
+    explicit GraphAnalysisGui( BaseGraph::Ptr graph );
     ~GraphAnalysisGui();
 
 private:
+    void init();
+
     // gui elements
     Ui::GraphAnalysisGui* mpUi;
 
