@@ -98,7 +98,6 @@ protected:
 private:
     Vertex::Ptr mSourceVertex;
     Vertex::Ptr mTargetVertex;
-    std::string mLabel;
 };
 
 } // end namespace graph_analysis
