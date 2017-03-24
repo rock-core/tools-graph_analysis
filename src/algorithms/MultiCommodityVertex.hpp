@@ -7,6 +7,12 @@
 namespace graph_analysis {
 namespace algorithms {
 
+/**
+ * \class MultiCommodityVertex
+ * \brief A MultiCommodityVertex represents the combination of commodity supply
+ * demand and a required transition flow
+ *
+ */
 class MultiCommodityVertex : public Vertex
 {
 public:
