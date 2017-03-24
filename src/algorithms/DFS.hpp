@@ -8,7 +8,7 @@
 namespace graph_analysis {
 namespace algorithms {
 
-typedef function1<bool,Edge::Ptr> Skipper;
+typedef function1<bool,const Edge::Ptr&> Skipper;
 
 /**
  *
