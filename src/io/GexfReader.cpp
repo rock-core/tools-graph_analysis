@@ -20,8 +20,65 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
     libgexf::GEXF gexf = reader->getGEXFCopy();
     libgexf::DirectedGraph& gexf_graph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
-    std::string classAttr = CLASS;
-    std::string labelAttr = LABEL;
+
+    std::string nodeClassAttr;
+    std::string nodeLabelAttr;
+    {
+        libgexf::AttributeIter* gexf_attribute_it = data.getNodeAttributeColumn();
+        while(gexf_attribute_it->hasNext())
+        {
+            libgexf::t_id id = gexf_attribute_it->next();
+            std::string attributeLabel = gexf_attribute_it->currentTitle();
+
+            if(attributeLabel == "class" || attributeLabel == "CLASS")
+            {
+                nodeClassAttr = id;
+            }
+            if(attributeLabel == "label" || attributeLabel == "LABEL")
+            {
+                nodeLabelAttr = id;
+            }
+        }
+
+        if(nodeClassAttr.empty())
+        {
+            LOG_WARN_S << "No node attribute 'class' found";
+        }
+        if(nodeLabelAttr.empty())
+        {
+            LOG_WARN_S << "No node attribute 'label' found";
+        }
+    }
+
+    std::string edgeClassAttr;
+    std::string edgeLabelAttr;
+    {
+
+        libgexf::AttributeIter* gexf_attribute_it = data.getEdgeAttributeColumn();
+        while(gexf_attribute_it->hasNext())
+        {
+            libgexf::t_id id = gexf_attribute_it->next();
+            std::string attributeLabel = gexf_attribute_it->currentTitle();
+
+            if(attributeLabel == "class" || attributeLabel == "CLASS")
+            {
+                edgeClassAttr = id;
+            }
+            if(attributeLabel == "label" || attributeLabel == "LABEL")
+            {
+                edgeLabelAttr = id;
+            }
+        }
+
+        if(edgeClassAttr.empty())
+        {
+            LOG_WARN_S << "No edge attribute 'class' found";
+        }
+        if(edgeLabelAttr.empty())
+        {
+            LOG_WARN_S << "No edge attribute 'label' found";
+        }
+    }
 
     // storing the graph elements to the internal baseGraph
     graph->clear();
@@ -33,8 +90,21 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
     while(node_it->hasNext())
     {
         libgexf::t_id current = node_it->next();
-        std::string nodeClass = data.getNodeAttribute(current, classAttr);
-        std::string nodeLabel = data.getNodeAttribute(current, labelAttr);
+        std::string nodeLabel = "";
+        if(!nodeLabelAttr.empty())
+        {
+            nodeLabel = data.getNodeAttribute(current, nodeLabelAttr);
+        } else if(data.hasNodeLabel(current))
+        {
+            nodeLabel = data.getNodeLabel(current);
+        }
+
+        std::string nodeClass = vManager->getDefaultType();
+        if(!nodeClassAttr.empty())
+        {
+            nodeClass = data.getNodeAttribute(current, nodeClassAttr);
+        }
+
         Vertex::Ptr vertex;
         try {
             vertex = vManager->createVertex(nodeClass, nodeLabel, true);
@@ -45,15 +115,19 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         }
         graph->addVertex(vertex);
 
-        std::list<std::string> members = vManager->getMembers(vertex->getClassName());
+        std::vector<std::string> attributes = vManager->getAttributes(vertex->getClassName());
 
         uint32_t memberCount = 0;
-        for(std::list<std::string>::const_iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
+        for(; attributesIt != attributes.end(); ++attributesIt)
         {
             std::stringstream attrId;
-            attrId << vertex->getClassName() << "-" << memberCount++;
+            attrId << vertex->getClassName() << "-attribute-" << memberCount++;
+            /// Retrieve GEXF data
             std::string attributeData = data.getNodeAttribute(current, attrId.str());
-            (vertex.get()->*vManager->getMemberCallbacks(vertex->getClassName(),*members_it).deserializeFunction)(attributeData);
+
+            io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
+            (vertex.get()->*callbacks.deserializeFunction)(attributeData);
         }
 
         vertexMap[current] = vertex;
@@ -65,8 +139,21 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
     while(edge_it->hasNext())
     {
         libgexf::t_id current = edge_it->next();
-        std::string edgeClass = data.getEdgeAttribute(current, classAttr);
-        std::string edgeLabel = data.getEdgeAttribute(current, labelAttr);
+        std::string edgeLabel = "";
+        if(!edgeLabelAttr.empty())
+        {
+            edgeLabel = data.getEdgeAttribute(current, edgeLabelAttr);
+        } else if(data.hasEdgeLabel(current))
+        {
+            edgeLabel = data.getEdgeLabel(current);
+        }
+
+        std::string edgeClass = eManager->getDefaultType();
+        if(!edgeClassAttr.empty())
+        {
+            edgeClass = data.getEdgeAttribute(current, edgeClassAttr);
+        }
+
         Vertex::Ptr sourceVertex = vertexMap[edge_it->currentSource()]; // NOTE: assumes the .gexf(.xml) file is valid
         Vertex::Ptr targetVertex = vertexMap[edge_it->currentTarget()]; // NOTE: assumes the .gexf(.xml) file is valid
         Edge::Ptr edge;
@@ -74,10 +161,38 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
             edge = eManager->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel, true);
         } catch(const std::exception& e)
         {
-            LOG_WARN_S << "Unsupported edge type: '" << edgeClass << "' -- will use a placeholder edge";
+            LOG_WARN_S << "Unsupported edge type: '" << edgeClass << "' -- will use a placeholder edge: " << e.what();
+
+            std::stringstream ss;
+            std::set<std::string> supportedTypes = eManager->getSupportedTypes();
+            std::set<std::string>::const_iterator cit = supportedTypes.begin();
+            for(; cit != supportedTypes.end(); ++cit)
+            {
+                ss << *cit << ",";
+            }
+            LOG_WARN_S << "Supported types are: " << ss.str();
             edge = Edge::Ptr(new Edge(sourceVertex, targetVertex, "Instance of unsupported edge type: " + edgeLabel));
         }
         graph->addEdge(edge);
+
+
+        std::vector<std::string> attributes = eManager->getAttributes(edge->getClassName());
+
+        uint32_t memberCount = 0;
+        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
+        for(; attributesIt != attributes.end(); ++attributesIt)
+        {
+            std::stringstream attrId;
+            attrId << edge->getClassName() << "-attribute-" << memberCount++;
+            /// Retrieve GEXF data
+            std::string attributeData = data.getEdgeAttribute(current, attrId.str());
+
+            if(!attributeData.empty())
+            {
+                io::AttributeSerializationCallbacks callbacks = eManager->getAttributeSerializationCallbacks(edge->getClassName(),*attributesIt);
+                (edge.get()->*callbacks.deserializeFunction)(attributeData);
+            }
+        }
     }
 
     delete reader;

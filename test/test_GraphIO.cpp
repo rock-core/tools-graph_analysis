@@ -5,6 +5,7 @@
 #include <graph_analysis/WeightedVertex.hpp>
 #include <graph_analysis/WeightedEdge.hpp>
 #include <graph_analysis/VertexTypeManager.hpp>
+#include <graph_analysis/EdgeTypeManager.hpp>
 
 #include <graph_analysis/io/GVGraph.hpp>
 
@@ -56,6 +57,28 @@ public:
     std::string mMember1;
 protected:
     virtual graph_analysis::Vertex* getClone() const { return new DerivedVertex("CLONE"); }
+
+};
+
+class DerivedEdge : public graph_analysis::Edge
+{
+public:
+    DerivedEdge(std::string name)
+        : graph_analysis::Edge(name)
+    {}
+
+    std::string serializeMember0() { return mMember0; }
+    std::string serializeMember1() { return mMember1; }
+
+    void deserializeMember0(const std::string& s) { mMember0= s; }
+    void deserializeMember1(const std::string& s) { mMember1 = s; }
+
+    virtual std::string getClassName() const{ return "DerivedEdge"; }
+
+    std::string mMember0;
+    std::string mMember1;
+protected:
+    virtual graph_analysis::Edge* getClone() const { return new DerivedEdge("CLONE"); }
 
 };
 
@@ -189,14 +212,14 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
 
     vManager->registerType(empty);
     vManager->registerAttribute(empty->getClassName(), "m0",
-            (VertexTypeManager::serialize_func_t)&DerivedVertex::serializeMember0,
-            (VertexTypeManager::deserialize_func_t)&DerivedVertex::deserializeMember0,
-            (VertexTypeManager::print_func_t)&DerivedVertex::serializeMember0);
+            (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertex::serializeMember0,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertex::deserializeMember0,
+            (io::AttributeSerializationCallbacks::print_func_t)&DerivedVertex::serializeMember0);
 
     vManager->registerAttribute(empty->getClassName(), "m1",
-            (VertexTypeManager::serialize_func_t)&DerivedVertex::serializeMember1,
-            (VertexTypeManager::deserialize_func_t)&DerivedVertex::deserializeMember1,
-            (VertexTypeManager::print_func_t)&DerivedVertex::serializeMember1);
+            (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertex::serializeMember1,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertex::deserializeMember1,
+            (io::AttributeSerializationCallbacks::print_func_t) &DerivedVertex::serializeMember1);
 
     Vertex::Ptr v0( new DerivedVertex("v1"));
     Vertex::Ptr v1( new DerivedVertex("v2"));
@@ -211,10 +234,27 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     graph->addVertex(v0);
     graph->addVertex(v1);
 
-    Edge::Ptr e0(new Edge());
+
+    Edge::Ptr e0(new DerivedEdge("derived-edge"));
+    EdgeTypeManager* eManager = EdgeTypeManager::getInstance();
+    eManager->registerType(e0);
+    eManager->registerAttribute(e0->getClassName(), "a0",
+            (io::AttributeSerializationCallbacks::serialize_func_t) &DerivedEdge::serializeMember0,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdge::deserializeMember0,
+            (io::AttributeSerializationCallbacks::print_func_t)&DerivedEdge::serializeMember0);
+
+    eManager->registerAttribute(e0->getClassName(), "a1",
+            (io::AttributeSerializationCallbacks::serialize_func_t) &DerivedEdge::serializeMember1,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdge::deserializeMember1,
+            (io::AttributeSerializationCallbacks::print_func_t)&DerivedEdge::serializeMember1);
 
     e0->setSourceVertex(v0);
     e0->setTargetVertex(v1);
+
+    DerivedEdge* originalEdge = dynamic_cast<DerivedEdge*>( e0.get () );
+    originalEdge->mMember0 ="e0-a0";
+    originalEdge->mMember1 ="e0-a1";
+
     graph->addEdge(e0);
 
     std::cout << "Write graph" << std::endl;
@@ -222,7 +262,7 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     io::GraphIO::write(filename, graph, representation::GEXF);
 
     std::cout << "Read graph" << std::endl;
-    BaseGraph::Ptr read_graph = BaseGraph::getInstance(BaseGraph::LEMON_DIRECTED_GRAPH);
+    BaseGraph::Ptr read_graph = BaseGraph::getInstance(graph->getImplementationType());
     io::GraphIO::read(filename, read_graph, representation::GEXF);
 
     BOOST_REQUIRE_MESSAGE(read_graph->size() == 1, "Read graph has wrong size ");
@@ -236,6 +276,11 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
 
         Edge::Ptr edge0 = edgeIt->current();
         BOOST_REQUIRE_MESSAGE( edge0->getTargetVertex()->getClassName() == v0->getClassName(), "Imported Class name is invalid" );
+        DerivedEdge* importedEdge = dynamic_cast<DerivedEdge*>(edge0.get());
+        BOOST_REQUIRE_MESSAGE( importedEdge->mMember0 == originalEdge->mMember0, "Edge: member0 was imported wrongly");
+        BOOST_REQUIRE_MESSAGE( importedEdge->mMember1 == originalEdge->mMember1, "Edge: member1 was imported wrongly");
+
+
         BOOST_REQUIRE_MESSAGE( edge0->getSourceVertex()->getClassName() == v1->getClassName(), "Imported Class name is invalid" );
         DerivedVertex *importedSource = dynamic_cast<DerivedVertex*>(edge0->getSourceVertex().get());
         DerivedVertex *importedTarget= dynamic_cast<DerivedVertex*>(edge0->getTargetVertex().get());

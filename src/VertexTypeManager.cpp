@@ -6,6 +6,8 @@
 namespace graph_analysis {
 
 VertexTypeManager::VertexTypeManager()
+    : base::Singleton<VertexTypeManager>()
+    , AttributeManager()
 {
     Vertex::Ptr vertex(new Vertex());
     registerType(vertex);
@@ -15,7 +17,7 @@ VertexTypeManager::VertexTypeManager()
 
 void VertexTypeManager::registerType(const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered)
 {
-    //Create a empty structure for this type to make sure getMembers raise if a unregistered vertex type is queried
+    //Create a empty structure for this type to make sure getAttributes raise if a unregistered vertex type is queried
     registerType(vertex->getClassName(), vertex, throwOnAlreadyRegistered);
 }
 
@@ -39,7 +41,8 @@ void VertexTypeManager::registerType(const vertex::Type& type, const Vertex::Ptr
         LOG_INFO_S << "VertexType '" + type + "' is newly registered";
         mTypeMap[type] = node;
         mRegisteredTypes.insert(type);
-        mRegisteredCallbacks[type];
+
+        activateAttributedType(type);
         return;
     }
     if(throwOnAlreadyRegistered)
@@ -95,45 +98,6 @@ Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std:
 std::set<std::string> VertexTypeManager::getSupportedTypes()
 {
     return mRegisteredTypes;
-}
-
-void VertexTypeManager::registerAttribute(const std::string &typeName, const std::string &attributeName, serialize_func_t sF, deserialize_func_t dsF, print_func_t pF)
-{
-    if(mRegisteredCallbacks.find(typeName) == mRegisteredCallbacks.end())
-    {
-        throw std::invalid_argument("graph_analysis::VertexTypeManager::registerAttribute: cannot register attribute for unknown type: " + typeName);
-    }
-    MemberCallbacks mc = {sF,dsF,pF};
-    mRegisteredCallbacks[typeName][attributeName] = mc;
-}
-
-std::list<std::string> VertexTypeManager::getMembers(const std::string &typeName)
-{
-    std::list<std::string> res;
-    if(mRegisteredCallbacks.find(typeName) == mRegisteredCallbacks.end())
-    {
-        //No registered callbacks
-        return res;
-    }
-
-    for(std::map<std::string, MemberCallbacks>::const_iterator it = mRegisteredCallbacks[typeName].begin(); it != mRegisteredCallbacks[typeName].end(); ++it)
-    {
-        res.push_back(it->first);
-    }
-    return res;
-}
-
-VertexTypeManager::MemberCallbacks VertexTypeManager::getMemberCallbacks(const std::string &typeName, const std::string &memberName)
-{
-    if(mRegisteredCallbacks.find(typeName) == mRegisteredCallbacks.end())
-    {
-        throw std::invalid_argument("graph_analysis::VertexTypeManager: cannot get callbacks for unknown type '" + typeName + "'");
-    }
-    if(mRegisteredCallbacks[typeName].find(memberName) == mRegisteredCallbacks[typeName].end())
-    {
-        throw std::invalid_argument("graph_analysis::VertexTypeManager cannot get callbacks for unknown member '" + memberName + "' of type '" + typeName + "'");
-    }
-    return mRegisteredCallbacks[typeName][memberName];
 }
 
 } // end namespace graph_analysis

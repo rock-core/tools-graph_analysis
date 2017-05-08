@@ -137,6 +137,94 @@ public:
     Edge::Ptr edge = EdgeTypeManager::getInstance()->createEdge(edgeClass, sourceVertex, targetVertex, edgeLabel);
     graph->addEdge(edge);
  \endverbatim
+
+ * To fully support (de)serialization of a graph, edges and vertices have to be
+ * store custom attribute data -- apart from the default 'class' and 'label'
+ * attributes.
+ * For that purpose a general mechanism exists in order to implement a custom
+ * serialization:
+ *
+ * \beginverbatim
+class DerivedVertex : public graph_analysis::Vertex
+{
+public:
+    DerivedVertex(std::string name)
+        : graph_analysis::Vertex(name)
+    {}
+
+    std::string serializeMember0() { return mMember0; }
+    std::string serializeMember1() { return mMember1; }
+
+    void deserializeMember0(const std::string& s) { mMember0= s; }
+    void deserializeMember1(const std::string& s) { mMember1 = s; }
+
+    virtual std::string getClassName() const{ return "DerivedVertex"; }
+
+    std::string mMember0;
+    std::string mMember1;
+protected:
+    virtual graph_analysis::Vertex* getClone() const { return new DerivedVertex("CLONE"); }
+
+};
+
+class DerivedEdge : public graph_analysis::Edge
+{
+public:
+    DerivedEdge(std::string name)
+        : graph_analysis::Edge(name)
+    {}
+
+    std::string serializeMember0() { return mMember0; }
+    std::string serializeMember1() { return mMember1; }
+
+    void deserializeMember0(const std::string& s) { mMember0= s; }
+    void deserializeMember1(const std::string& s) { mMember1 = s; }
+
+    virtual std::string getClassName() const{ return "DerivedEdge"; }
+
+    std::string mMember0;
+    std::string mMember1;
+protected:
+    virtual graph_analysis::Edge* getClone() const { return new DerivedEdge("CLONE"); }
+
+};
+
+    Vertex::Ptr empty( new DerivedVertex("derived-vertex"));
+    VertexTypeManager *vManager = VertexTypeManager::getInstance();
+
+    vManager->registerAttribute(empty->getClassName(), "m0",
+            (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertex::serializeMember0,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertex::deserializeMember0,
+            (io::AttributeSerializationCallbacks::print_func_t)&DerivedVertex::serializeMember0);
+
+    vManager->registerAttribute(empty->getClassName(), "m1",
+            (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertex::serializeMember1,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertex::deserializeMember1,
+            (io::AttributeSerializationCallbacks::print_func_t) &DerivedVertex::serializeMember1);
+
+    Edge::Ptr e0(new DerivedEdge("derived-edge"));
+    EdgeTypeManager* eManager = EdgeTypeManager::getInstance();
+    eManager->registerType(e0);
+    eManager->registerAttribute(e0->getClassName(), "a0",
+            (io::AttributeSerializationCallbacks::serialize_func_t) &DerivedEdge::serializeMember0,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdge::deserializeMember0,
+            (io::AttributeSerializationCallbacks::print_func_t)&DerivedEdge::serializeMember0);
+
+    eManager->registerAttribute(e0->getClassName(), "a1",
+            (io::AttributeSerializationCallbacks::serialize_func_t) &DerivedEdge::serializeMember1,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdge::deserializeMember1,
+            (io::AttributeSerializationCallbacks::print_func_t)&DerivedEdge::serializeMember1);
+
+
+...
+
+    io::GraphIO::write(filename, graph, representation::GEXF);
+    ...
+    BaseGraph::Ptr read_graph = BaseGraph::getInstance();
+    io::GraphIO::read(filename, read_graph, representation::GEXF);
+
+
+ *
  *
  */
 class GraphIO

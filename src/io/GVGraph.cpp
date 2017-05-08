@@ -522,13 +522,14 @@ std::string GVGraph::getUniqueName(const Vertex::Ptr& vertex) const
     ss << vertex->toString() << " (v:" << mpBaseGraph->getVertexId(vertex) << ")";
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
 
-    std::list<std::string> members = vManager->getMembers(vertex->getClassName());
-    for(std::list<std::string>::const_iterator members_it = members.begin(); members_it != members.end(); ++members_it)
+    std::vector<std::string> attributes = vManager->getAttributes(vertex->getClassName());
+    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
+    for(; attributesIt != attributes.end(); ++attributesIt)
     {
-        VertexTypeManager::MemberCallbacks mc = vManager->getMemberCallbacks(vertex->getClassName(),*members_it);
-        if(mc.printFunction)
+        io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
+        if(callbacks.printFunction)
         {
-            ss << std::endl << *members_it << " " << (vertex.get()->*mc.printFunction)();
+            ss << std::endl << *attributesIt << " " << (vertex.get()->*callbacks.printFunction)();
         }
     }
     return ss.str();

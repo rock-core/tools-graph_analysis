@@ -37,6 +37,8 @@ void EdgeTypeManager::registerType(const edge::Type& type, const Edge::Ptr& edge
         LOG_INFO_S << "EdgeType '" + type + "' is newly registered.";
         mTypeMap[type] = edge;
         mRegisteredTypes.insert(type);
+
+        activateAttributedType(type);
         return;
     }
     if(throwOnAlreadyRegistered)

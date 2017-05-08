@@ -3,10 +3,11 @@
 
 #include <map>
 #include <set>
-#include <list>
 #include <string>
 #include <base-logging/Singleton.hpp>
-#include <graph_analysis/Vertex.hpp>
+
+#include "Vertex.hpp"
+#include "AttributeManager.hpp"
 
 namespace graph_analysis {
 
@@ -24,22 +25,9 @@ namespace vertex {
  * given class type -- which has to match the type string.
  * Instanciation is done via cloning the corresponding vertex instance.
  */
-class VertexTypeManager : public base::Singleton<VertexTypeManager>
+class VertexTypeManager : public base::Singleton<VertexTypeManager>, public AttributeManager
 {
 public:
-    typedef std::string (graph_analysis::Vertex::*serialize_func_t)();
-    typedef std::string (graph_analysis::Vertex::*print_func_t)();
-    typedef void (graph_analysis::Vertex::*deserialize_func_t)(const std::string&);
-
-    /// MemberCallbacks -- currently only io-related callbacks
-    struct MemberCallbacks
-    {
-        serialize_func_t serializeFunction;
-        deserialize_func_t deserializeFunction;
-
-        print_func_t printFunction;
-    };
-
     typedef std::map<vertex::Type, Vertex::Ptr> TypeMap;
 
 private:
@@ -50,7 +38,6 @@ private:
     std::set<std::string> mRegisteredTypes;
     std::string mDefaultVertexType;
 
-    std::map<std::string, std::map<std::string, MemberCallbacks> > mRegisteredCallbacks;
     /**
      * \brief internal method for type identification
      * \param type requested vertex type
@@ -59,46 +46,27 @@ private:
      */
     Vertex::Ptr vertexByType(const vertex::Type& type, bool throwOnMissing = false);
 
+protected:
+    /// constructor
+    VertexTypeManager();
+    friend class base::Singleton<VertexTypeManager>;
+
+public:
     /**
      * Select the default vertex type from the list of registered types
      */
     void setDefaultType(const std::string& type);
 
-protected:
-    /// constructor
-    VertexTypeManager();
-    friend class base::Singleton<VertexTypeManager>;
-public:
+    /**
+     * Get the default vertex type
+     */
+    const std::string& getDefaultType() const { return mDefaultVertexType; }
 
     // Register vertex class
     void registerType(const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered = false);
 
     // Register vertex class
     void registerType(const vertex::Type& type, const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered = false);
-
-    /**
-     *  \brief register a new attribute for serialization and deserialization
-     *  \param typeName the class Name (normally equals Vertex::getClassName()
-     *  \param attributeName arbitrary unique name for the attribute that should added
-     *  \param sF Serialization function
-     *  \param dF DeSerialization function
-     *  \param pF PrintFunction
-     */
-    void registerAttribute(const std::string &typeName, const std::string &attributeName, serialize_func_t sF, deserialize_func_t dsF, print_func_t pF);
-
-    /**
-     *  \brief returns all registeres member for the given vertex
-     *  \param typeName the class Name (normally equals Vertex::getClassName()
-     *  \return a list of members that are registered
-     */
-    std::list<std::string> getMembers(const std::string &typeName);
-
-    /**
-     *  \param typeName the class Name (normally equals Vertex::getClassName()
-     *  \param attributeName arbitrary unique name for the attribute that should added
-     *  \return the struct with all callback function
-     */
-    MemberCallbacks getMemberCallbacks(const std::string &typeName, const std::string &attributeName);
 
     /**
      * \brief clones a new vertex of a specified type

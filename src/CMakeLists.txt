@@ -1,6 +1,7 @@
 find_package(Boost REQUIRED regex filesystem system)
 rock_library(graph_analysis
     SOURCES
+        AttributeManager.cpp
         BaseGraph.cpp
         BipartiteGraph.cpp
         Edge.cpp
@@ -86,6 +87,7 @@ rock_library(graph_analysis
         snap/DirectedGraph.cpp
         snap/DirectedSubGraph.cpp
     HEADERS
+        AttributeManager.hpp
         Algorithms.hpp
         BaseGraph.hpp
         BaseGraphObserver.hpp

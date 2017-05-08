@@ -1,11 +1,13 @@
 #ifndef GRAPH_ANALYSIS_EDGE_TYPE_MANAGER_HPP
 #define GRAPH_ANALYSIS_EDGE_TYPE_MANAGER_HPP
 
-#include <graph_analysis/Edge.hpp>
 #include <base-logging/Singleton.hpp>
 #include <map>
 #include <set>
 #include <string>
+
+#include "Edge.hpp"
+#include "AttributeManager.hpp"
 
 namespace graph_analysis {
 
@@ -24,7 +26,7 @@ namespace edge {
  * given class type -- which has to match the type string.
  * Instanciation is done via cloning the corresponding edge instance.
  */
-class EdgeTypeManager : public base::Singleton<EdgeTypeManager>
+class EdgeTypeManager : public base::Singleton<EdgeTypeManager>, public AttributeManager
 {
 public:
     typedef std::map<edge::Type, Edge::Ptr> TypeMap;
@@ -36,6 +38,9 @@ private:
     std::set<std::string> mRegisteredTypes;
     /// The default edge type
     std::string mDefaultType;
+
+    typedef std::map<std::string, io::AttributeSerializationCallbacks> AttributeSerializationCallbackMap;
+    std::map<std::string, AttributeSerializationCallbackMap > mRegisteredCallbacks;
 
     /**
      * \brief internal method for type identification
@@ -61,6 +66,11 @@ public:
      * Select the default edge type from the list of registered types
      */
     void setDefaultType(const std::string& type);
+
+    /**
+     * Get the current default edge type
+     */
+    const std::string& getDefaultType() const { return mDefaultType; }
 
     /**
      * \brief clones a new edge of a specified type

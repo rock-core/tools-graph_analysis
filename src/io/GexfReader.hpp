@@ -19,6 +19,7 @@ namespace io {
 class GexfReader : public Reader
 {
     typedef std::map < libgexf::t_id, Vertex::Ptr > VertexMap;
+
 public:
     /**
      * \brief reads the graph from the given file and stores it to the provided graph argument
