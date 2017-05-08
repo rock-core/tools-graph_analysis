@@ -111,7 +111,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         } catch(const std::exception& e)
         {
             LOG_WARN_S << "Unsupported vertex type: '" << nodeClass << "' -- will use a placeholder node";
-            vertex = Vertex::Ptr(new Vertex("Instance of unsupported vertex type: " + nodeLabel));
+            vertex = Vertex::Ptr(new Vertex("Instance of unsupported vertex type: " + nodeClass + ": " + nodeLabel));
         }
         graph->addVertex(vertex);
 
@@ -171,7 +171,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
                 ss << *cit << ",";
             }
             LOG_WARN_S << "Supported types are: " << ss.str();
-            edge = Edge::Ptr(new Edge(sourceVertex, targetVertex, "Instance of unsupported edge type: " + edgeLabel));
+            edge = Edge::Ptr(new Edge(sourceVertex, targetVertex, "Instance of unsupported edge type: " + edgeClass + ": " + edgeLabel));
         }
         graph->addEdge(edge);
 

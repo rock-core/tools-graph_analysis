@@ -127,6 +127,7 @@ GraphWidget::VertexItemCoordinateCache GraphWidget::applyLayout(const VertexItem
     if(coordinates.empty())
     {
         LOG_WARN_S << "cannot apply layout: no item coordinates provided";
+        return coordinates;
     }
 
     LOG_INFO_S << "restoring coordinates of " << coordinates.size()
@@ -289,9 +290,9 @@ void GraphWidget::clearFocus() { updateStatus("", 2500);mpFocusedElement = Graph
 void GraphWidget::registerEdgeItem(const graph_analysis::Edge::Ptr& e,
                                    EdgeItemBase* i)
 {
-    if(mEdgeItemMap.count(e))
+    if(mEdgeItemMap.count(e) > 0)
     {
-        LOG_ERROR_S << "re-registering existing edge item! " << e->toString();
+        LOG_INFO_S << "re-registering existing edge item! " << e->toString();
     }
     mEdgeItemMap[e] = i;
 }
@@ -299,9 +300,9 @@ void GraphWidget::registerEdgeItem(const graph_analysis::Edge::Ptr& e,
 void GraphWidget::registerVertexItem(const graph_analysis::Vertex::Ptr& v,
                                      VertexItemBase* i)
 {
-    if(mVertexItemMap.count(v))
+    if(mVertexItemMap.count(v) > 0)
     {
-        LOG_ERROR_S << "re-registering existing vertex item! " << v->toString();
+        LOG_INFO_S << "re-registering existing vertex item! " << v->toString();
     }
     mVertexItemMap[v] = i;
 }
@@ -309,21 +310,23 @@ void GraphWidget::registerVertexItem(const graph_analysis::Vertex::Ptr& v,
 void GraphWidget::deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
                                      EdgeItemBase* i)
 {
-    if(!mEdgeItemMap.count(e))
+    if(mEdgeItemMap.count(e) > 0)
     {
-        LOG_ERROR_S << "cannot deregister edge " << e->toString();
+        mEdgeItemMap.erase(e);
+    } else {
+        LOG_INFO_S << "cannot deregister edge " << e->toString() << " -- edge has never been registered";
     }
-    mEdgeItemMap.erase(e);
 }
 
 void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
                                        VertexItemBase* i)
 {
-    if(!mVertexItemMap.count(v))
+    if(mVertexItemMap.count(v) > 0)
     {
-        LOG_ERROR_S << "cannot deregister vertex " << v->toString();
+        mVertexItemMap.erase(v);
+    } else {
+        LOG_INFO_S << "cannot deregister vertex " << v->toString() << " -- vertex has never been registered";
     }
-    mVertexItemMap.erase(v);
 }
 
 QVector<QPointF> GraphWidget::getEdgePoints(VertexItemBase* firstItem,
