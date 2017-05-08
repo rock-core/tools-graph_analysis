@@ -10,12 +10,36 @@ namespace graph_analysis {
 
 class BaseGraph;
 
+/**
+ * \brief A subgraph represent a particular filtered 'view' on a BaseGraph
+ * \details Initialize the Subgraph G'(V',E') with a BaseGraph G(V,E), where the following holds
+ *
+ \f[ V' \subseteq V \land E' \subseteq E \f]
+ *
+ * The subset membership for vertices and edges can be controlled via functions
+ * SubGraph::enable and SubGraph::disable
+ *
+ * The iterators of the subgraph check the membership in order to transparently
+ * skip vertices / edges that are not members of the subgraph
+ *
+ * Disabling a vertex will result in disabling all outgoing or incoming edges
+ * Reenabling such vertex however will only reenable the particular vertex
+ *
+ * In order to export the SubGraph as a BaseGraph use SubGraph::toBaseGraph
+ *
+ */
 class SubGraph : public VertexIterable, public EdgeIterable
 {
     /// Ptr which refers to the original (super) graph
     shared_ptr<BaseGraph> mpBaseGraph;
 
 public:
+    /**
+     * Default constructor
+     * \param graph Initialize the Subgraph G'(V',E') with a BaseGraph G(V,E), where the following holds
+     *
+     \f[ V' \subseteq V \land E' \subseteq E \f]
+     */
     SubGraph(const shared_ptr<BaseGraph>& graph);
 
     virtual ~SubGraph() {}

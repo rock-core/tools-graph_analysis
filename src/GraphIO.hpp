@@ -144,7 +144,7 @@ public:
  * For that purpose a general mechanism exists in order to implement a custom
  * serialization:
  *
- * \beginverbatim
+ * \verbatim
 class DerivedVertex : public graph_analysis::Vertex
 {
 public:
