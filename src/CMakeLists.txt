@@ -181,6 +181,7 @@ rock_library(graph_analysis
         io/GexfWriter.hpp
         io/GraphvizStyle.hpp
         io/GraphvizWriter.hpp
+        io/Serialization.hpp
         io/YamlReader.hpp
         io/YamlWriter.hpp
         lemon/ArcIterator.hpp
