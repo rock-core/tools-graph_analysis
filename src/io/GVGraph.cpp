@@ -48,6 +48,8 @@ GVGraph::GVGraph(const BaseGraph::Ptr& baseGraph, const std::string& name, doubl
     //Set default attributes for the future nodes
     setNodeAttribute("fixedsize", "false");
     setNodeAttribute("shape","box");
+    setNodeAttribute("pin","false");
+    setNodeAttribute("pos","0,0");
 //    setNodeAttribute("regular", "true");
 
     //Divide the wanted width by the DPI to get the value in points

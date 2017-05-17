@@ -74,6 +74,7 @@ rock_library(graph_analysis
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
+        io/GraphvizGridStyle.cpp
         io/GraphvizWriter.cpp
         io/YamlReader.cpp
         io/YamlWriter.cpp
@@ -180,6 +181,7 @@ rock_library(graph_analysis
         io/GexfReader.hpp
         io/GexfWriter.hpp
         io/GraphvizStyle.hpp
+        io/GraphvizGridStyle.hpp
         io/GraphvizWriter.hpp
         io/Serialization.hpp
         io/YamlReader.hpp

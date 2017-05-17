@@ -8,6 +8,7 @@
 #include <graph_analysis/EdgeTypeManager.hpp>
 
 #include <graph_analysis/io/GVGraph.hpp>
+#include <graph_analysis/io/GraphvizGridStyle.hpp>
 
 using namespace graph_analysis;
 
@@ -79,6 +80,37 @@ public:
     std::string mMember1;
 protected:
     virtual graph_analysis::Edge* getClone() const { return new DerivedEdge("CLONE"); }
+
+};
+
+class RowColumnVertex : public graph_analysis::Vertex
+{
+public:
+    typedef shared_ptr<RowColumnVertex> Ptr;
+
+    RowColumnVertex(const std::string& name, size_t row, size_t column)
+        : graph_analysis::Vertex(name)
+        , row(row)
+        , column(column)
+    {}
+
+    virtual std::string getClassName() const{ return "RowColumnVertex"; }
+
+    size_t row;
+    size_t column;
+
+    static size_t getRow(const graph_analysis::Vertex::Ptr& vertex)
+    {
+        return dynamic_pointer_cast<RowColumnVertex>(vertex)->row;
+    }
+
+    static size_t getColumn(const graph_analysis::Vertex::Ptr& vertex)
+    {
+        return dynamic_pointer_cast<RowColumnVertex>(vertex)->column;
+    }
+
+protected:
+    virtual graph_analysis::Vertex* getClone() const { return new RowColumnVertex(getLabel(), row, column); }
 
 };
 
@@ -298,6 +330,13 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     BOOST_REQUIRE_MESSAGE( count == 1, "Iterator in graph failed");
 }
 
+BOOST_AUTO_TEST_CASE(gexf_viz)
+{
+    BaseGraph::Ptr read_graph = BaseGraph::getInstance();
+    std::string filename = "/opt/workspace/2maz/dev/external/gexf/yeast.gexf";
+    io::GraphIO::read(filename, read_graph, representation::GEXF);
+}
+
 BOOST_AUTO_TEST_CASE(graphviz_css)
 {
     BaseGraph::Ptr graph = BaseGraph::getInstance();
@@ -320,5 +359,42 @@ BOOST_AUTO_TEST_CASE(graphviz_css)
 
     gvWriter.write("/tmp/graph_analysis-test-graph_io-graphviz_css-simple.dot", graph);
 }
+
+BOOST_AUTO_TEST_CASE(graphviz_grid_layout)
+{
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+
+    Vertex::Ptr v00(new RowColumnVertex("v0-0",0,0));
+    Vertex::Ptr v10(new RowColumnVertex("v1-0",1,0));
+    Vertex::Ptr v20(new RowColumnVertex("v2-0",2,0));
+    Vertex::Ptr v01(new RowColumnVertex("v0-1",0,1));
+    Vertex::Ptr v11(new RowColumnVertex("v1-1",1,1));
+    Vertex::Ptr v21(new RowColumnVertex("v2-1",2,1));
+    Vertex::Ptr v33(new RowColumnVertex("v3-3",3,3));
+
+    Edge::Ptr e0(new Edge(v00,v10,"e0"));
+    Edge::Ptr e1(new Edge(v10,v20,"e1"));
+
+    Edge::Ptr e2(new Edge(v01,v11,"e01->11"));
+    Edge::Ptr e3(new Edge(v11,v21,"e11->21"));
+
+    graph->addVertex(v33);
+    graph->addEdge(e0);
+    graph->addEdge(e1);
+    graph->addEdge(e2);
+    graph->addEdge(e3);
+
+    io::GraphvizWriter gvWriter("neato","canon");
+    io::GraphvizGridStyle::Ptr style(new io::GraphvizGridStyle(3,3,
+                &RowColumnVertex::getRow,
+                &RowColumnVertex::getColumn
+                ));
+    style->setColumnScalingFactor(2.0);
+    style->setRowScalingFactor(2.0);
+    gvWriter.setStyle(style);
+
+    gvWriter.write("/tmp/graph_analysis-test-graph_io-graphviz_grid_layout.dot", graph);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
