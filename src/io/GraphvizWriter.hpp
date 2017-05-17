@@ -71,11 +71,13 @@ class GraphvizWriter : public Writer
 {
     /// layouting engine to re-arrange the graph through GraphViz rendering
     std::string mLayout;
+    /// Renderer e.g. dot, pdf, svg, png
+    std::string mRenderer;
     GraphvizStyle::Ptr mpStyle;
 
 public:
     /// constructor
-    GraphvizWriter(const std::string& layout = "dot");
+    GraphvizWriter(const std::string& layout = "dot", const std::string& renderer = "dot");
     /// destructor
     ~GraphvizWriter();
 

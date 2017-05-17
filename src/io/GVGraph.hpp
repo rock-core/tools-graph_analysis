@@ -202,8 +202,16 @@ public:
      *  \see http://www.graphviz.org/Documentation.php for available layouts
      */
     void applyLayout(const std::string& layout = "dot");
-    void renderToFile(const std::string& filename, const std::string& layout = "dot", bool forced = false);
 
+
+    /**
+     * Render graph to file using a particular layout
+     * \param filename Name of the output file
+     * \param layout define the layout of the graph: circo, dot, fdp, neato, osage, sfdp, twopi
+     * \param renderer define the output format for this file, e.g., dot, pdf, svn, png
+     * \param forced apply a relayouting
+     */
+    void renderToFile(const std::string& filename, const std::string& layout = "dot", const std::string& renderer = "dot", bool forced = false);
     boxf boundingRect() const;
     void setRootNode(const Vertex::Ptr& vertex);
 

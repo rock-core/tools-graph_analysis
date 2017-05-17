@@ -358,16 +358,17 @@ void GVGraph::applyLayout(const std::string& layout)
 
 }
 
-void GVGraph::renderToFile(const std::string& filename, const std::string& layout, bool forced)
+void GVGraph::renderToFile(const std::string& filename, const std::string& layout, const std::string& renderer, bool forced)
 {
     if(forced || !mAppliedLayout)
     {
         applyLayout(layout);
     }
-    int rc = gvRenderFilename(mpContext, mpGVGraph, layout.c_str(), filename.c_str());
+    int rc = gvRenderFilename(mpContext, mpGVGraph, renderer.c_str(), filename.c_str());
     if(-1 == rc)
     {
-        std::string error_msg = std::string("graph_analysis::io::GVGraph: failed to make graphviz apply layout ") + layout + " for graph rendering";
+        std::string error_msg = std::string("graph_analysis::io::GVGraph: failed to make graphviz apply layout '") + layout
+            + "' for graph rendering to '" + renderer + "'";
         LOG_ERROR_S << error_msg;
         throw std::runtime_error(error_msg);
     }

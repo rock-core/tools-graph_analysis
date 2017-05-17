@@ -5,8 +5,9 @@
 namespace graph_analysis {
 namespace io {
 
-GraphvizWriter::GraphvizWriter(const std::string& layout)
+GraphvizWriter::GraphvizWriter(const std::string& layout, const std::string& renderer)
     : mLayout(layout)
+    , mRenderer(renderer)
     , mpStyle()
 {}
 
@@ -48,9 +49,9 @@ void GraphvizWriter::write(const std::string& filename, const BaseGraph::Ptr& gr
     }
     // layouting and rendering
     LOG_INFO("GraphvizWriter: Applying default layout such that GVGraph context is not empty");
-    gvGraph.applyLayout();
+    gvGraph.applyLayout(mLayout);
     LOG_INFO("GraphvizWriter: rendering GVGraph to file \"%s\" by layout \"%s\"", filename.c_str(), mLayout.c_str());
-    gvGraph.renderToFile(filename, mLayout); // at the rendering stage, the graph is relayouted internally
+    gvGraph.renderToFile(filename, mLayout, mRenderer); // at the rendering stage, the graph is relayouted internally
     LOG_INFO("GraphvizWriter: done rendering GVGraph to file \"%s\"", filename.c_str());
 }
 
