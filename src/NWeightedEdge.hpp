@@ -46,7 +46,7 @@ public:
     virtual std::string getClassName() const { return "graph_analysis::NWeightedEdge"; }
 
 protected:
-    virtual NWeightedEdge<T,Dim>* getClone() const { return new NWeightedEdge<T,Dim>(*this); }
+    virtual Edge* getClone() const { return new NWeightedEdge<T,Dim>(*this); }
 };
 
 } // end namespace graph_analysis

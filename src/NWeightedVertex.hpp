@@ -28,7 +28,7 @@ public:
     virtual std::string getClassName() const { return "graph_analysis::NWeightedVertex"; }
 
 protected:
-    virtual NWeightedVertex<T,Dim>* getClone() const { return new NWeightedVertex<T,Dim>(*this); }
+    virtual Vertex* getClone() const { return new NWeightedVertex<T,Dim>(*this); }
 };
 
 } // end namespace graph_analysis
