@@ -223,7 +223,7 @@ protected:
     BaseGraph::Ptr read_graph = BaseGraph::getInstance();
     io::GraphIO::read(filename, read_graph, representation::GEXF);
 
-
+ \endverbatim
  *
  *
  */
