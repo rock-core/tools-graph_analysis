@@ -56,7 +56,7 @@ public:
     void removeObserver(const BaseGraphObserver::Ptr& observer);
 
     /**
-     * @brief issue a transaction event 
+     * @brief issue a transaction event
      * The transaction event is passed to all observers, which can implement
      * the respective response to the transaction. E.g. rollback,
      * hold-and-forward, etc.
@@ -69,7 +69,7 @@ public:
      * ...
      * transactionEvent( TRANSACTION_STOP );
      *
-     * bracket, 
+     * bracket,
      */
     void transactionEvent( TransactionType eventType );
 
@@ -243,7 +243,7 @@ public:
     }
 
     /**
-     * \brief Get all vertices of a given type 
+     * \brief Get all vertices of a given type
      * Type should be a subclass of vertex
      * If dynamic_pointer_cast returns null pointer, object is not added
      */
