@@ -396,5 +396,36 @@ BOOST_AUTO_TEST_CASE(graphviz_grid_layout)
     gvWriter.write("/tmp/graph_analysis-test-graph_io-graphviz_grid_layout.dot", graph);
 }
 
+BOOST_AUTO_TEST_CASE(nweight_serialization)
+{
+    WeightedEdge::Ptr edge(new WeightedEdge(10));
+    std::string s = edge->serializeWeights();
+
+    BOOST_TEST_MESSAGE("Serialized weight is: '" << s << "'");
+
+    WeightedEdge::Ptr deserializedEdge(new WeightedEdge());
+    deserializedEdge->deserializeWeights(s);
+
+    BOOST_REQUIRE_MESSAGE(edge->getWeight() == deserializedEdge->getWeight(), "Expected weight " << edge->getWeight() << " got " << deserializedEdge->getWeight());
+
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+    Vertex::Ptr v0(new Vertex("v0"));
+    Vertex::Ptr v1(new Vertex("v1"));
+
+    edge->setSourceVertex(v0);
+    edge->setTargetVertex(v0);
+    graph->addEdge(edge);
+
+    EdgeTypeManager* eManager = EdgeTypeManager::getInstance();
+    eManager->registerType(edge);
+    eManager->registerAttribute(edge->getClassName(), "weights",
+            (io::AttributeSerializationCallbacks::serialize_func_t)&WeightedEdge::serializeWeights,
+            (io::AttributeSerializationCallbacks::deserialize_func_t)&WeightedEdge::deserializeWeights,
+            (io::AttributeSerializationCallbacks::print_func_t)&WeightedEdge::serializeWeights);
+
+
+    io::GraphIO::write("/tmp/graph_analysis-test-graph_io-nweight-serialization.gexf", graph, representation::GEXF);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

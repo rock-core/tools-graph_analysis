@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED regex filesystem system)
+find_package(Boost REQUIRED regex filesystem system serialization)
 rock_library(graph_analysis
     SOURCES
         AttributeManager.cpp
@@ -205,6 +205,7 @@ rock_library(graph_analysis
         lemon snap base-lib gexf numeric gsl libgvc utilmm yaml-cpp
     DEPS_PLAIN
         Boost_REGEX
+        Boost_SERIALIZATION
     MOC
         gui/GraphAnalysisGui.hpp
         gui/QBaseGraph.hpp

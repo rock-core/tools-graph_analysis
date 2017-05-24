@@ -4,7 +4,12 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#include <iomanip>
 #include <graph_analysis/SharedPtr.hpp>
+
+#include <boost/serialization/vector.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 namespace graph_analysis {
 
@@ -85,9 +90,9 @@ public:
         mWeights = weights;
     }
 
-    std::vector<T> getWeights() const 
-    { 
-        return mWeights; 
+    std::vector<T> getWeights() const
+    {
+        return mWeights;
     }
 
     void setWeight(T value, size_t index = 0)
@@ -115,6 +120,22 @@ public:
         {
             throw std::out_of_range("graph_analysis::NWeighted::getWeight: " + std::string(e.what()) );
         }
+    }
+
+    std::string serializeWeights()
+    {
+        std::stringstream ss;
+        boost::archive::text_oarchive oarch(ss);
+        oarch << mWeights;
+        return ss.str();
+    }
+
+    void deserializeWeights(const std::string& s)
+    {
+        std::stringstream ss;
+        ss << s;
+        boost::archive::text_iarchive iarch(ss);
+        iarch >> mWeights;
     }
 
 protected:
