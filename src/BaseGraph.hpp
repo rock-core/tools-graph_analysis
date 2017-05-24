@@ -9,6 +9,7 @@
 #include <graph_analysis/Algorithms.hpp>
 #include <graph_analysis/BaseIterable.hpp>
 #include <graph_analysis/BaseGraphObserver.hpp>
+#include <graph_analysis/HyperEdge.hpp>
 
 #include <set>
 
@@ -174,6 +175,18 @@ public:
      * \return number of removed edges
      */
     virtual size_t removeEdges(const Vertex::Ptr& a, const Vertex::Ptr& b);
+
+    /**
+     * Utility function to add a hyper edge (internally handled as vertex)
+     * \return id of this element
+     */
+    GraphElementId addHyperEdge(const HyperEdge::Ptr& hyperEdge) { return addVertex(hyperEdge); }
+
+    /**
+     * Utility function to remove a hyper edge (internally handled as vertex)
+     * Remove hyper edge
+     */
+    void removeHyperEdge(const HyperEdge::Ptr& hyperEdge) { removeVertex(hyperEdge); }
 
     /**
      * Test if graph contains this edge

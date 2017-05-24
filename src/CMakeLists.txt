@@ -11,6 +11,7 @@ rock_library(graph_analysis
         Filter.cpp
         GraphElement.cpp
         GraphIO.cpp
+        HyperEdge.cpp
         Percolation.cpp
         SubGraph.cpp
         Vertex.cpp
@@ -105,6 +106,7 @@ rock_library(graph_analysis
         GraphAnalysis.hpp
         GraphElement.hpp
         GraphIO.hpp
+        HyperEdge.hpp
         NWeighted.hpp
         NWeightedEdge.hpp
         Percolation.hpp
