@@ -18,6 +18,8 @@ class Edge : public GraphElement
 {
 public:
     typedef shared_ptr< Edge > Ptr;
+    typedef std::vector< Ptr > PtrList;
+    typedef std::set< Ptr > PtrSet;
 
     Edge(const std::string& label = std::string());
 

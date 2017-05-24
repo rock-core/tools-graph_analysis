@@ -1,6 +1,8 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_HPP
 #define GRAPH_ANALYSIS_VERTEX_HPP
 
+#include <vector>
+#include <set>
 #include <graph_analysis/GraphElement.hpp>
 
 namespace graph_analysis
@@ -17,6 +19,8 @@ class Vertex : public GraphElement
 {
 public:
     typedef shared_ptr< Vertex > Ptr;
+    typedef std::vector< Ptr > PtrList;
+    typedef std::set< Ptr > PtrSet;
 
     virtual ~Vertex() {}
 
