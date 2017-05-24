@@ -15,6 +15,7 @@ namespace gui {
 
 class EdgeItemBase;
 class GraphWidget;
+class VertexItemTypeManager;
 
 /**
  * \file VertexItemBase.hpp
@@ -24,6 +25,11 @@ class GraphWidget;
  */
 class VertexItemBase : public QGraphicsItem, public QGraphicsLayoutItem
 {
+    friend class VertexItemTypeManager;
+
+protected:
+    VertexItemBase();
+
 public:
     /**
      * \brief constructor
@@ -108,6 +114,10 @@ protected:
      */
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+
+    virtual VertexItemBase* createNewItem(GraphWidget* graphWidget,
+                const graph_analysis::Vertex::Ptr& vertex,
+                QGraphicsItem* parent) const = 0;
 };
 
 } // end namespace gui

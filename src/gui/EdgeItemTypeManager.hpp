@@ -15,8 +15,8 @@ namespace edge {
     typedef std::string Type;
 }
 
-class NodeItem;
-class EdgeItem;
+class VertexItemBase;
+class EdgeItemBase;
 class GraphWidget;
 
 /**
@@ -27,13 +27,13 @@ class GraphWidget;
 class EdgeItemTypeManager : public base::Singleton<EdgeItemTypeManager>
 {
 public:
-    typedef std::map<edge::Type, EdgeItem*> ClassVisualizationMap;
+    typedef std::map<edge::Type, EdgeItemBase*> ClassVisualizationMap;
 
 private:
     /// registration map - stores the registered types, mapping them to the example edge instances (i.e. from which new ones to be forked on request)
     ClassVisualizationMap mClassVisualizationMap;
     /// internal method to query the instance map
-    EdgeItem* graphicsItemByType(const edge::Type& type);
+    EdgeItemBase* graphicsItemByType(const edge::Type& type);
 
 protected:
     /// constructor
@@ -43,7 +43,7 @@ public:
 
     // Register visualization class
     // takes ownership of graphicsItem
-    void registerVisualization(const edge::Type& type, EdgeItem* graphicsItem);
+    void registerVisualization(const edge::Type& type, EdgeItemBase* graphicsItem);
 
     /**
      * \brief clones a new graphical edge of a specified type
@@ -54,7 +54,10 @@ public:
      * \param type optional type parameter
      * \return smart pointer to the newly created graphical edge instance
      */
-    EdgeItem* createItem(GraphWidget* graphWidget, QGraphicsItem* sourceNode, QGraphicsItem* targetNode, graph_analysis::Edge::Ptr edge, const std::string& type = std::string());
+    EdgeItemBase* createItem(GraphWidget* graphWidget,
+            const graph_analysis::Edge::Ptr& edge,
+            QGraphicsItem* parent,
+            const std::string& type = std::string());
 
     QStringList getSupportedTypes() const;
 };

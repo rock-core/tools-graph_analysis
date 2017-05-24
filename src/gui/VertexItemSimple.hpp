@@ -13,6 +13,11 @@ namespace gui {
  */
 class VertexItemSimple : public VertexItemBase
 {
+    friend class VertexItemTypeManager;
+
+protected:
+    VertexItemSimple();
+
 public:
     VertexItemSimple(GraphWidget* graphWidget,
                      graph_analysis::Vertex::Ptr vertex, QGraphicsItem* parent);
@@ -38,6 +43,11 @@ protected:
     void dragLeaveEvent(QGraphicsSceneDragDropEvent* event);
     void dropEvent(QGraphicsSceneDragDropEvent* event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
+
+
+    VertexItemBase* createNewItem(GraphWidget* graphWidget,
+                const graph_analysis::Vertex::Ptr& vertex,
+                QGraphicsItem* parent) const;
 
 private:
     QGraphicsTextItem* mpLabel;

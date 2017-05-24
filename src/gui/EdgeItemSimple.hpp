@@ -13,6 +13,11 @@ namespace gui {
  */
 class EdgeItemSimple : public EdgeItemBase
 {
+    friend class EdgeItemTypeManager;
+
+protected:
+    EdgeItemSimple() {}
+
 public:
     EdgeItemSimple(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
                    QGraphicsItem* parent);
@@ -32,6 +37,10 @@ protected:
     QGraphicsTextItem* mpClassName;
     QGraphicsPolygonItem* mpMultiLine;
     QGraphicsPolygonItem* mpArrowHead;
+
+    EdgeItemBase* createNewItem(GraphWidget* graphWidget,
+                const graph_analysis::Edge::Ptr& edge,
+                QGraphicsItem* parent) const;
 };
 
 } // end namespace gui

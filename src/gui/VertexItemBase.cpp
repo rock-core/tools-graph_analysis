@@ -7,11 +7,17 @@
 #include <QDebug>
 
 #include <base-logging/Logging.hpp>
-#include <graph_analysis/gui/items/Feature.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {
 namespace gui {
+
+VertexItemBase::VertexItemBase()
+    : QGraphicsItem(NULL)
+    , QGraphicsLayoutItem()
+    , mpVertex()
+    , mpGraphWidget(NULL)
+{}
 
 VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
                                graph_analysis::Vertex::Ptr vertex,
@@ -116,7 +122,6 @@ QRectF VertexItemBase::boundingRect() const
 {
     return childrenBoundingRect();
 }
-
 
 } // end namespace gui
 } // end namespace graph_analysis

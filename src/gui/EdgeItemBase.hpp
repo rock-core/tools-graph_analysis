@@ -11,6 +11,7 @@ namespace gui {
 
 class GraphWidget;
 class VertexItemBase;
+class EdgeItemTypeManager;
 
 /**
  * @file EdgeItemBase.hpp
@@ -23,6 +24,11 @@ class VertexItemBase;
  */
 class EdgeItemBase : public QGraphicsItem
 {
+    friend class EdgeItemTypeManager;
+
+protected:
+    EdgeItemBase();
+
 public:
     /**
      * @brief constructor
@@ -30,8 +36,9 @@ public:
      * @param edge the internal conceptual edge
      * @param parent the parent
      */
-    EdgeItemBase(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
-                 QGraphicsItem* parent);
+    EdgeItemBase(GraphWidget* graphWidget,
+            const graph_analysis::Edge::Ptr& edge,
+            QGraphicsItem* parent);
 
     virtual ~EdgeItemBase();
     virtual int type() const;
@@ -73,6 +80,11 @@ protected:
     /** provide mouse-over status updates of the currently selected Edge */
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+
+    virtual EdgeItemBase* createNewItem(GraphWidget* graphWidget,
+                const graph_analysis::Edge::Ptr& edge,
+                QGraphicsItem* parent) const = 0;
+
 };
 
 } // end namespace gui

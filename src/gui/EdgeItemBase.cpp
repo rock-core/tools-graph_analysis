@@ -11,8 +11,14 @@
 namespace graph_analysis {
 namespace gui {
 
+EdgeItemBase::EdgeItemBase()
+    : QGraphicsItem(NULL)
+    , mpEdge()
+    , mpGraphWidget(NULL)
+{}
+
 EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
-                           graph_analysis::Edge::Ptr edge,
+                           const graph_analysis::Edge::Ptr& edge,
                            QGraphicsItem* parent)
     : QGraphicsItem(parent)
     , mpEdge(edge)

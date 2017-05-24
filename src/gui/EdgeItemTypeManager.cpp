@@ -1,19 +1,18 @@
 #include "EdgeItemTypeManager.hpp"
+#include "EdgeItemSimple.hpp"
 
 #include <QGraphicsItem>
-
-#include "graphitem/edges/Simple.hpp"
-#include "layeritem/edges/Simple.hpp"
+#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 namespace gui {
 
 EdgeItemTypeManager::EdgeItemTypeManager()
 {
-    registerVisualization("default",dynamic_cast<EdgeItem*>(new graphitem::edges::Simple()));
+    registerVisualization("default",dynamic_cast<EdgeItemBase*>(new EdgeItemSimple()));
 }
 
-void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItem* graphicsItem)
+void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItemBase* graphicsItem)
 {
     try {
         graphicsItemByType(type);
@@ -25,7 +24,7 @@ void EdgeItemTypeManager::registerVisualization(const edge::Type& type, EdgeItem
     }
 }
 
-EdgeItem* EdgeItemTypeManager::graphicsItemByType(const edge::Type& type)
+EdgeItemBase* EdgeItemTypeManager::graphicsItemByType(const edge::Type& type)
 {
     ClassVisualizationMap::const_iterator it = mClassVisualizationMap.find(type);
     if(it == mClassVisualizationMap.end())
@@ -35,7 +34,7 @@ EdgeItem* EdgeItemTypeManager::graphicsItemByType(const edge::Type& type)
     return it->second;
 }
 
-EdgeItem* EdgeItemTypeManager::createItem(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsItem* target, graph_analysis::Edge::Ptr edge, const std::string& type)
+EdgeItemBase* EdgeItemTypeManager::createItem(GraphWidget* graphWidget, const graph_analysis::Edge::Ptr& edge, QGraphicsItem* parent, const std::string& type)
 {
     // conditionally returning a clone of the default when type is an empty string; using type in the types map otherwise
     std::string edgeType = type;
@@ -43,7 +42,7 @@ EdgeItem* EdgeItemTypeManager::createItem(GraphWidget* graphWidget, QGraphicsIte
     {
         edgeType = edge->getClassName();
     }
-    return graphicsItemByType(edgeType)->createNewItem(graphWidget, source, target, edge);
+    return graphicsItemByType(edgeType)->createNewItem(graphWidget, edge, parent);
 }
 
 QStringList EdgeItemTypeManager::getSupportedTypes() const

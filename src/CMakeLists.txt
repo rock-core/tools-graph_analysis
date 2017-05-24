@@ -37,7 +37,6 @@ rock_library(graph_analysis
         gui/BaseGraphView/AddEdgeDialog.cpp
         gui/BaseGraphView/AddVertexDialog.cpp
         gui/BaseGraphView/BaseGraphView.cpp
-        gui/EdgeItem.cpp
         gui/EdgeItemBase.cpp
         gui/EdgeItemSimple.cpp
         gui/EdgeItemTypeManager.cpp
@@ -50,8 +49,7 @@ rock_library(graph_analysis
         gui/GraphWidget.cpp
         gui/GraphWidgetManager.cpp
         gui/IconManager.cpp
-        gui/NodeItem.cpp
-        gui/NodeItemTypeManager.cpp
+        gui/VertexItemTypeManager.cpp
         gui/QBaseGraph.cpp
         gui/QFatRact.cpp
         gui/VertexItemBase.cpp
@@ -142,7 +140,6 @@ rock_library(graph_analysis
         gui/BaseGraphView/AddEdgeDialog.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/BaseGraphView.hpp
-        gui/EdgeItem.hpp
         gui/EdgeItemBase.hpp
         gui/EdgeItemSimple.hpp
         gui/EdgeItemTypeManager.hpp

@@ -99,5 +99,12 @@ QPainterPath EdgeItemSimple::shape() const
     return path;
 }
 
+EdgeItemBase* EdgeItemSimple::createNewItem(GraphWidget* graphWidget,
+        const graph_analysis::Edge::Ptr& edge,
+        QGraphicsItem* parent) const
+{
+    return new EdgeItemSimple(graphWidget, edge, parent);
+}
+
 } // end namespace gui
 } // end namespace graph_analysis

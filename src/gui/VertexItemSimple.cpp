@@ -11,6 +11,11 @@
 
 namespace graph_analysis {
 namespace gui {
+
+VertexItemSimple::VertexItemSimple()
+    : VertexItemBase()
+{}
+
 /**
  *
  * kiss: very simple base implementation of a rectangle
@@ -196,6 +201,13 @@ QVariant VertexItemSimple::itemChange(GraphicsItemChange change,
     }
     };
     return VertexItemBase::itemChange(change, value);
+}
+
+VertexItemBase* VertexItemSimple::createNewItem(GraphWidget* graphWidget,
+           const graph_analysis::Vertex::Ptr& vertex,
+            QGraphicsItem* parent) const
+{
+    return new VertexItemSimple(graphWidget, vertex, parent);
 }
 
 } // end namespace gui

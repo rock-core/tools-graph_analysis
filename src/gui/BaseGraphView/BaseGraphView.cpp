@@ -25,13 +25,9 @@
 
 #include <graph_analysis/io/GVGraph.hpp>
 
-#include <graph_analysis/gui/layeritem/Resource.hpp>
-#include <graph_analysis/gui/layeritem/edges/Simple.hpp>
-#include <graph_analysis/gui/NodeItemTypeManager.hpp>
+#include <graph_analysis/gui/VertexItemTypeManager.hpp>
 #include <graph_analysis/gui/EdgeItemTypeManager.hpp>
 
-#include <graph_analysis/gui/VertexItemSimple.hpp>
-#include <graph_analysis/gui/EdgeItemSimple.hpp>
 #include <graph_analysis/gui/GraphLayoutManager.hpp>
 
 using namespace graph_analysis;
@@ -70,7 +66,7 @@ void BaseGraphView::populateCanvas()
         Vertex::Ptr vertex = nodeIt->current();
 
         // creating new node items
-        VertexItemSimple* v = new VertexItemSimple(this, vertex, NULL) ;
+        VertexItemBase* v = VertexItemTypeManager::getInstance()->createItem(this, vertex, NULL) ;
         scene()->addItem(v);
     }
 
@@ -80,7 +76,7 @@ void BaseGraphView::populateCanvas()
         Edge::Ptr edge = edgeIt->current();
 
         // creating new edge items
-        EdgeItemSimple* e = new EdgeItemSimple(this, edge, NULL) ;
+        EdgeItemBase* e = EdgeItemTypeManager::getInstance()->createItem(this, edge, NULL) ;
         scene()->addItem(e);
     }
 }
