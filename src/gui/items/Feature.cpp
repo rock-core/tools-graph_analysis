@@ -5,7 +5,6 @@
 #include <exception>
 #include <boost/lexical_cast.hpp>
 #include <base-logging/Logging.hpp>
-#include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 
 namespace graph_analysis {
@@ -19,7 +18,6 @@ Feature::Feature(GraphElement::Ptr element, GraphWidget *graphWidget, QGraphicsI
 {
     setAcceptHoverEvents(true);
     setAcceptDrops(true);
-    LOG_INFO_S<<"IMA FEATURE"<<element->getLabel();
 }
 
 
@@ -43,8 +41,8 @@ Vertex::Ptr Feature::getVertex() const
     return vertex;
 }
 
-void Feature::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    LOG_INFO_S << "\n\nbaaaah" << mpGraphElement->getClassName();
+void Feature::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
     QGraphicsItem::mousePressEvent(event);
 }
 

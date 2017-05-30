@@ -37,10 +37,16 @@ EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
     }
 
     setAcceptHoverEvents(true);
+
+    graphWidget->registerEdgeItem(edge, this);
 }
 
 EdgeItemBase::~EdgeItemBase()
 {
+    if(mpGraphWidget && mpEdge)
+    {
+        mpGraphWidget->deregisterEdgeItem(mpEdge, this);
+    }
 }
 
 int EdgeItemBase::type() const

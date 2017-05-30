@@ -6,11 +6,24 @@
 namespace graph_analysis {
 namespace gui {
 
+EdgeItemSimple::EdgeItemSimple()
+    : EdgeItemBase()
+    , mpLabel(NULL)
+    , mpClassName(NULL)
+    , mpMultiLine(NULL)
+    , mpArrowHead(NULL)
+    , mArrowSize(10)
+{
+}
 // kiss:
 EdgeItemSimple::EdgeItemSimple(GraphWidget* graphWidget,
-                               graph_analysis::Edge::Ptr edge,
+                               const graph_analysis::Edge::Ptr& edge,
                                QGraphicsItem* parent)
     : EdgeItemBase(graphWidget, edge, parent)
+    , mpLabel(NULL)
+    , mpClassName(NULL)
+    , mpMultiLine(NULL)
+    , mpArrowHead(NULL)
     , mArrowSize(10)
 {
     mpLabel = new QGraphicsTextItem(QString(edge->getLabel().c_str()), this);
@@ -24,7 +37,6 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget* graphWidget,
 
     setFlag(ItemIsMovable, false);
 
-    mpGraphWidget->registerEdgeItem(mpEdge, this);
 }
 
 EdgeItemSimple::~EdgeItemSimple()
@@ -34,7 +46,6 @@ EdgeItemSimple::~EdgeItemSimple()
     delete mpMultiLine;
     delete mpArrowHead;
 
-    mpGraphWidget->deregisterEdgeItem(mpEdge, this);
 }
 
 int EdgeItemSimple::type() const

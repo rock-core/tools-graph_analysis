@@ -4,7 +4,6 @@
 #include <exception>
 #include <base-logging/Logging.hpp>
 #include <boost/lexical_cast.hpp>
-#include <graph_analysis/gui/NodeItem.hpp>
 #include <graph_analysis/gui/GraphWidget.hpp>
 #include <graph_analysis/gui/ActionCommander.hpp>
 
@@ -12,8 +11,8 @@ namespace graph_analysis {
 namespace gui {
 namespace items {
 
-Label::Label(const std::string& label, QGraphicsItem* item)
-    : QGraphicsTextItem( QString(label.c_str()), item)
+Label::Label(const std::string& label, QGraphicsItem* parent)
+    : QGraphicsTextItem( QString(label.c_str()), parent)
 {
     setFlags(QGraphicsTextItem::ItemIsSelectable | ItemIsFocusable);
     setTextInteractionFlags(Qt::NoTextInteraction);

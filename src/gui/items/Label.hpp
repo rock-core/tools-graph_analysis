@@ -14,7 +14,6 @@
 namespace graph_analysis {
 namespace gui {
 
-class NodeItem;
 class GraphWidget;
 
 namespace items {
@@ -34,10 +33,10 @@ public:
     /**
      * \brief constructor
      * \param label text to be displayed
-     * \param item parent NodeItem implementing instance
+     * \param parent
      * \param graphWidget managing widget
      */
-    Label(const std::string& label, QGraphicsItem* item);
+    Label(const std::string& label, QGraphicsItem* parent);
     /**
      * \brief toggles direct editing options of the displayed text
      * \param on boolean flag - true when the editing mode is to be turned on; false otherwise

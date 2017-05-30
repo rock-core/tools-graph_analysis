@@ -12,13 +12,11 @@
 #include <graph_analysis/Edge.hpp>
 #include <iostream>
 
-// relative include path... bad...
 #include "../GraphicsItemTypes.hpp"
 
 namespace graph_analysis {
 namespace gui {
 
-class NodeItem;
 class GraphWidget;
 
 namespace items {
@@ -26,13 +24,8 @@ namespace items {
 /**
  * \file Feature.hpp
  * \class Feature
- * \brief A feature can be added to a node item, however it directly maps to a
- * vertex in a graph
+ * \brief A feature directly maps to a vertex in a graph
  * \details specific to the diagram editor widget: editable text representation
- *
- * the "Feature" is representing all things of the "hasFeature" relation in a
- * Node (Cluster?), like "Operation" and "InputPort".
- *
  */
 class Feature : public QGraphicsTextItem
 {

@@ -27,7 +27,7 @@ private:
     Ui::Dialog* mUi;
 };
 
-} // end namespaec dialogs
+} // end namespace dialogs
 } // end namespace gui
 } // end graph_analysis
 #endif // GRAPH_ANALYSIS_GUI_ADD_FILTER_HPP

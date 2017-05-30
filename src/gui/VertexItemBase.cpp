@@ -48,7 +48,10 @@ VertexItemBase::VertexItemBase(GraphWidget* graphWidget,
 
 VertexItemBase::~VertexItemBase()
 {
-    mpGraphWidget->deregisterVertexItem(mpVertex, this);
+    if(mpGraphWidget && mpVertex)
+    {
+        mpGraphWidget->deregisterVertexItem(mpVertex, this);
+    }
 }
 
 BaseGraph::Ptr VertexItemBase::getGraph() const

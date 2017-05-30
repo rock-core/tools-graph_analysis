@@ -12,7 +12,7 @@ namespace gui {
 
 namespace items {
     class Label;
-} // end namespace layeritem
+} // end namespace items
 
 class FilterManager;
 

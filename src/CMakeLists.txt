@@ -59,13 +59,8 @@ rock_library(graph_analysis
         gui/dialogs/AddGraphElement.cpp
         gui/dialogs/CustomDialog.cpp
         gui/dialogs/ExportFile.cpp
-        gui/dialogs/RenameFeatureDialog.cpp
         gui/dialogs/RenameFilterDialog.cpp
-        gui/dialogs/SwapFeaturesDialog.cpp
         gui/dialogs/SwapFiltersDialog.cpp
-        gui/graphitem/Cluster.cpp
-        gui/graphitem/Simple.cpp
-        gui/graphitem/edges/Simple.cpp
         gui/items/Feature.cpp
         gui/items/Label.cpp
         gui/layouts/GVLayout.cpp
@@ -153,8 +148,7 @@ rock_library(graph_analysis
         gui/GraphWidgetManager.hpp
         gui/GraphicsItemTypes.hpp
         gui/IconManager.hpp
-        gui/NodeItem.hpp
-        gui/NodeItemTypeManager.hpp
+        gui/VertexItemTypeManager.hpp
         gui/QBaseGraph.hpp
         gui/QFatRact.hpp
         gui/RegisterQtMetatypes.hpp
@@ -165,13 +159,8 @@ rock_library(graph_analysis
         gui/dialogs/AddGraphElement.hpp
         gui/dialogs/CustomDialog.hpp
         gui/dialogs/ExportFile.hpp
-        gui/dialogs/RenameFeatureDialog.hpp
         gui/dialogs/RenameFilterDialog.hpp
-        gui/dialogs/SwapFeaturesDialog.hpp
         gui/dialogs/SwapFiltersDialog.hpp
-        gui/graphitem/Cluster.hpp
-        gui/graphitem/Simple.hpp
-        gui/graphitem/edges/Simple.hpp
         gui/items/Feature.hpp
         gui/items/Label.hpp
         gui/layouts/GVLayout.hpp
@@ -215,9 +204,7 @@ rock_library(graph_analysis
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
         gui/dialogs/ExportFile.hpp
-        gui/dialogs/RenameFeatureDialog.hpp
         gui/dialogs/RenameFilterDialog.hpp
-        gui/dialogs/SwapFeaturesDialog.hpp
         gui/dialogs/SwapFiltersDialog.hpp
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
@@ -231,8 +218,6 @@ rock_library(graph_analysis
         gui/dialogs/add_graph_element.ui
         gui/dialogs/graph_analysis_gui.ui
         gui/dialogs/property_dialog_gui.ui
-        gui/dialogs/rename_feature_dialog_gui.ui
-        gui/dialogs/swap_features_dialog_gui.ui
         gui/dialogs/swap_filters_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk cgraph)

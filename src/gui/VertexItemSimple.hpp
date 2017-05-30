@@ -20,7 +20,9 @@ protected:
 
 public:
     VertexItemSimple(GraphWidget* graphWidget,
-                     graph_analysis::Vertex::Ptr vertex, QGraphicsItem* parent);
+                     const graph_analysis::Vertex::Ptr& vertex,
+                     QGraphicsItem* parent);
+
     virtual ~VertexItemSimple();
 
     virtual int type() const

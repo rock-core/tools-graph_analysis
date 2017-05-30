@@ -14,6 +14,10 @@ namespace gui {
 
 VertexItemSimple::VertexItemSimple()
     : VertexItemBase()
+    , mpLabel(NULL)
+    , mpClassName(NULL)
+    , mpCoordinate(NULL)
+    , mpRect(NULL)
 {}
 
 /**
@@ -22,9 +26,13 @@ VertexItemSimple::VertexItemSimple()
  *
  */
 VertexItemSimple::VertexItemSimple(GraphWidget* graphWidget,
-                                   graph_analysis::Vertex::Ptr vertex,
+                                   const graph_analysis::Vertex::Ptr& vertex,
                                    QGraphicsItem* parent)
     : VertexItemBase(graphWidget, vertex, parent)
+    , mpLabel(NULL)
+    , mpClassName(NULL)
+    , mpCoordinate(NULL)
+    , mpRect(NULL)
 {
 
     // at the lowest (so in the background) the rectangle

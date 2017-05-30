@@ -16,12 +16,13 @@ class EdgeItemSimple : public EdgeItemBase
     friend class EdgeItemTypeManager;
 
 protected:
-    EdgeItemSimple() {}
+    EdgeItemSimple();
 
 public:
-    EdgeItemSimple(GraphWidget* graphWidget, graph_analysis::Edge::Ptr edge,
-                   QGraphicsItem* parent);
-    ~EdgeItemSimple();
+    EdgeItemSimple(GraphWidget* graphWidget,
+            const graph_analysis::Edge::Ptr& edge,
+            QGraphicsItem* parent);
+    virtual ~EdgeItemSimple();
     virtual int type() const;
 
     void adjustEdgePositioning();
@@ -32,11 +33,11 @@ protected:
     QRectF boundingRect() const;
     QPainterPath shape() const;
 
-    int mArrowSize;
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;
     QGraphicsPolygonItem* mpMultiLine;
     QGraphicsPolygonItem* mpArrowHead;
+    int mArrowSize;
 
     EdgeItemBase* createNewItem(GraphWidget* graphWidget,
                 const graph_analysis::Edge::Ptr& edge,
