@@ -38,7 +38,6 @@ private:
     // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;
 
-    void fromFile(const std::string& filename);
     void notifyAll();
 
 public slots:

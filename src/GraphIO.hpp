@@ -244,7 +244,6 @@ public:
     static ReaderMap getReaderMap() { return msReaders; }
     static SuffixMap getSuffixMap() { return msSuffixes; }
 
-protected:
     static representation::Type getTypeFromSuffix(representation::Suffix suffix);
     static representation::Type getTypeFromFilename(const std::string& filename);
     static std::string appendSuffix(const std::string& filename, representation::Type format);

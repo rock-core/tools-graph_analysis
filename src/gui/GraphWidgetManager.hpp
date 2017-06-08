@@ -101,14 +101,6 @@ protected:
     void notifyModeChange(Mode mode);
     void notifyAll();
 
-    /**
-     * \brief loads base graph from file 'filename'
-     * \param filename the input file to parse the graph from
-     *
-     * automatically chooses apropriate loader based on file-ending.
-     */
-    void fromFile(const std::string& filename);
-
 private:
     /// main window of the qt application
     QMainWindow *mpMainWindow;

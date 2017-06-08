@@ -20,8 +20,8 @@
 #include <graph_analysis/io/GexfReader.hpp>
 #include <graph_analysis/io/YamlReader.hpp>
 #include <graph_analysis/io/GraphvizWriter.hpp>
-#include <graph_analysis/gui/GraphWidget.hpp>
-#include <graph_analysis/gui/dialogs/ExportFile.hpp>
+#include "GraphWidget.hpp"
+#include "dialogs/IODialog.hpp"
 
 namespace graph_analysis {
 namespace gui {
@@ -226,47 +226,15 @@ void GraphWidgetManager::resetGraph(bool keepData)
 
 void GraphWidgetManager::importGraph()
 {
-    updateStatus("importing graph...");
-    QString selectedFilter;
-    // Constructing the writer suffix filter
-    io::GraphIO::SuffixMap suffixMap = io::GraphIO::getSuffixMap();
-    io::GraphIO::ReaderMap readerMap = io::GraphIO::getReaderMap();
-    io::GraphIO::ReaderMap::const_iterator rit = readerMap.begin();
-
-    std::stringstream ss;
-    for(;;)
+    updateStatus("Importing graph...");
+    BaseGraph::Ptr graph = dialogs::IODialog::importGraph();
+    if(graph)
     {
-        ss << representation::TypeTxt[ rit->first ] << " (";
-        io::GraphIO::SuffixMap::const_iterator sit = suffixMap.begin();
-        for(; sit != suffixMap.end(); ++sit)
-        {
-            if(sit->second == rit->first)
-            {
-                ss << "*." << sit->first << " ";
-            }
-        }
-        ss << ")";
+        mpGraph = graph;
+        notifyAll();
 
-        ++rit;
-        if(rit != readerMap.end())
-        {
-            ss << ";;";
-        } else {
-            break;
-        }
-    }
-    // End constructing the writer suffix filter
-
-    QString filename =  QFileDialog::getOpenFileName(currentGraphWidget(), tr("Choose input file"), QDir::currentPath(), tr(ss.str().c_str()), &selectedFilter);
-
-    if (!filename.isEmpty())
-    {
-        fromFile(filename.toStdString());
         refresh();
         shuffle();
-    } else
-    {
-        updateStatus("Failed to import graph: aborted by user - an empty input filename was provided");
     }
 }
 
@@ -279,70 +247,7 @@ void GraphWidgetManager::exportGraph()
         return;
     }
 
-    QString selectedFilter;
-
-    // Constructing the writer suffix filter
-    io::GraphIO::SuffixMap suffixMap = io::GraphIO::getSuffixMap();
-    io::GraphIO::WriterMap writerMap = io::GraphIO::getWriterMap();
-    io::GraphIO::WriterMap::const_iterator wit = writerMap.begin();
-
-    std::stringstream ss;
-    for(;;)
-    {
-        ss << representation::TypeTxt[ wit->first ] << " (";
-        io::GraphIO::SuffixMap::const_iterator sit = suffixMap.begin();
-        for(; sit != suffixMap.end(); ++sit)
-        {
-            if(sit->second == wit->first)
-            {
-                ss << "*." << sit->first << " ";
-            }
-        }
-        ss << ")";
-
-        ++wit;
-        if(wit != writerMap.end())
-        {
-            ss << ";;";
-        } else {
-            break;
-        }
-    }
-    // End constructing the writer suffix filter
-
-    dialogs::ExportFile dialog(ss.str().c_str());
-    if( dialog.exec() == QFileDialog::Accepted)
-    {
-        try {
-            io::GraphIO::write(dialog.getFilename().toStdString(), mpGraph, dialog.getTypeName());
-            updateStatus("Exported graph to output file '" + dialog.getFilename().toStdString() + "'");
-        } catch(const std::exception& e)
-        {
-            std::string msg = "Export of graph to '" + dialog.getFilename().toStdString() + "' failed " + e.what();
-            QMessageBox::critical(currentGraphWidget(), tr("Graph Export Failed"), msg.c_str());
-            return;
-        }
-    } else
-    {
-        updateStatus("Exporting graph aborted by user");
-    }
-}
-
-void GraphWidgetManager::fromFile(const std::string& filename)
-{
-    graph_analysis::BaseGraph::Ptr graph = BaseGraph::getInstance();
-
-    try {
-        io::GraphIO::read(filename, graph);
-    } catch(const std::exception& e)
-    {
-        std::string msg = "Failed to import '" + filename + "': " + e.what();
-        QMessageBox::critical(currentGraphWidget(), tr("Graph Import Failed"), msg.c_str());
-        return;
-    }
-
-    mpGraph = graph;
-    notifyAll();
+    dialogs::IODialog::exportGraph(mpGraph);
 }
 
 void GraphWidgetManager::notifyAll()

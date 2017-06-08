@@ -58,7 +58,7 @@ rock_library(graph_analysis
         gui/dialogs/AddFilterDialog.cpp
         gui/dialogs/AddGraphElement.cpp
         gui/dialogs/CustomDialog.cpp
-        gui/dialogs/ExportFile.cpp
+        gui/dialogs/IODialog.cpp
         gui/dialogs/RenameFilterDialog.cpp
         gui/dialogs/SwapFiltersDialog.cpp
         gui/items/Feature.cpp
@@ -158,7 +158,7 @@ rock_library(graph_analysis
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
         gui/dialogs/CustomDialog.hpp
-        gui/dialogs/ExportFile.hpp
+        gui/dialogs/IODialog.hpp
         gui/dialogs/RenameFilterDialog.hpp
         gui/dialogs/SwapFiltersDialog.hpp
         gui/items/Feature.hpp
@@ -203,7 +203,6 @@ rock_library(graph_analysis
         gui/GraphWidgetManager.hpp
         gui/dialogs/AddFilterDialog.hpp
         gui/dialogs/AddGraphElement.hpp
-        gui/dialogs/ExportFile.hpp
         gui/dialogs/RenameFilterDialog.hpp
         gui/dialogs/SwapFiltersDialog.hpp
         gui/BaseGraphView/BaseGraphView.hpp
