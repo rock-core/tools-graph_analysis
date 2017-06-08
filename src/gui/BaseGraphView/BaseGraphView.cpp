@@ -52,11 +52,6 @@ QString BaseGraphView::getClassName() const
     return "graph_analysis::gui::BaseGraphView";
 }
 
-void BaseGraphView::setGraph(const graph_analysis::BaseGraph::Ptr& graph)
-{
-    GraphWidget::setGraph(graph);
-}
-
 void BaseGraphView::populateCanvas()
 {
     assert(mpGraph);

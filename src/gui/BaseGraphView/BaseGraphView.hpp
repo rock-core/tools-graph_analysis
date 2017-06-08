@@ -61,8 +61,6 @@ public:
      */
     void populateCanvas();
 
-    virtual void setGraph(const graph_analysis::BaseGraph::Ptr& graph);
-
     /**
      * Set a layout name
      */
