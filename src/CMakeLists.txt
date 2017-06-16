@@ -194,6 +194,7 @@ rock_library(graph_analysis
     DEPS_PLAIN
         Boost_REGEX
         Boost_SERIALIZATION
+        Boost_FILESYSTEM
     MOC
         gui/GraphAnalysisGui.hpp
         gui/QBaseGraph.hpp

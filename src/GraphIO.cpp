@@ -1,6 +1,7 @@
 #include "GraphIO.hpp"
 #include <sstream>
 #include <boost/regex.hpp>
+#include <boost/filesystem.hpp>
 #include <graph_analysis/MapInitializer.hpp>
 
 #include "io/GexfWriter.hpp"
@@ -119,6 +120,11 @@ void GraphIO::write(const std::string& filename, const BaseGraph::Ptr& graph, re
 
 void GraphIO::read(const std::string& filename, BaseGraph& graph, representation::Type format)
 {
+    if(!boost::filesystem::exists(filename))
+    {
+        throw std::invalid_argument("graph_analysis::GraphIO::read: file '" + filename + "' does not exist");
+    }
+
     if(format == representation::UNKNOWN)
     {
         format = getTypeFromFilename(filename);
