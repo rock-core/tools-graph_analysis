@@ -93,6 +93,7 @@ rock_library(graph_analysis
         Edge.hpp
         EdgeIterable.hpp
         EdgeIterator.hpp
+        EdgeRegistration.hpp
         EdgeTypeManager.hpp
         Filter.hpp
         Graph.hpp
@@ -110,6 +111,7 @@ rock_library(graph_analysis
         Vertex.hpp
         VertexIterable.hpp
         VertexIterator.hpp
+        VertexRegistration.hpp
         VertexTypeManager.hpp
         WeightedEdge.hpp
         WeightedVertex.hpp

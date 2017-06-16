@@ -9,6 +9,7 @@ namespace graph_analysis
 {
 
 class BaseGraph;
+class VertexTypeManager;
 
 /**
  * \brief A vertex inherited to allow storing data of any type
@@ -57,6 +58,28 @@ public:
      * \return shared pointer of this vertex belonging to the given graph
      */
     Vertex::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph>& pGraph) const;
+
+    /**
+     * Hook to register attributes of this vertex, in order to properly
+     * perform serialization
+     *
+     * If serialization is not needed, then registration is optional
+     * Otherwise each Vertex implementation has to implement this
+     * method, and add a static member
+     \verbatim
+     #include "VertexRegistration.hpp"
+
+     class DerivedVertex : Vertex
+     {
+        static const VertexRegistration<DerivedVertex> msRegistration;
+     }
+     \endverbatim
+     * in the source file, e.g. DerivedVertex.cpp add
+     \verbatim
+     const VertexRegistration<DerivedVertex> DerivedVertex::msRegistration;
+     \endverbatim
+     */
+    virtual void registerAttributes(VertexTypeManager*) const {}
 
 protected:
     /**

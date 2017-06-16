@@ -8,6 +8,7 @@ namespace graph_analysis
 {
 
 class BaseGraph;
+class EdgeTypeManager;
 
 /**
  * \brief An Edge represents the link between two vertices
@@ -91,6 +92,10 @@ public:
      */
     Edge::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const;
 
+    /**
+     * Register all attributes
+     */
+    virtual void registerAttributes(EdgeTypeManager*) const {}
 protected:
     /**
      * Get instance of an edge
