@@ -23,7 +23,14 @@ class FloydWarshall
 {
     static double getDistanceLazy(DistanceMatrix& distanceMatrix, Vertex::Ptr i, Vertex::Ptr k);
 public:
-    static DistanceMatrix allShortestPaths(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle = true);
+    /**
+     * \param graph The graph to search on
+     * \param edgeWeightFunction function that allows retrieving the weight of
+     * an edge
+     * \param detectNegativeCycle whether to throw as soon as a negative cycle
+     * has been detected
+     */
+    static DistanceMatrix allShortestPaths(const BaseGraph::Ptr& graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle = true);
 };
 
 } // end namespace algorithms

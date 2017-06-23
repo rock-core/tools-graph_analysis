@@ -1,5 +1,6 @@
 #include "FloydWarshall.hpp"
 #include <limits>
+#include <cmath>
 
 namespace graph_analysis {
 namespace algorithms {
@@ -19,7 +20,7 @@ double FloydWarshall::getDistanceLazy(DistanceMatrix& distanceMatrix, Vertex::Pt
     return distanceIK;
 }
 
-DistanceMatrix FloydWarshall::allShortestPaths(BaseGraph::Ptr graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle)
+DistanceMatrix FloydWarshall::allShortestPaths(const BaseGraph::Ptr& graph, EdgeWeightFunction edgeWeightFunction, bool detectNegativeCycle)
 {
     DistanceMatrix distanceMatrix;
 
@@ -49,6 +50,8 @@ DistanceMatrix FloydWarshall::allShortestPaths(BaseGraph::Ptr graph, EdgeWeightF
             Vertex::Ptr j = j_vertexIt->current();
             double distanceJI = getDistanceLazy(distanceMatrix,j,i);
 
+            // Direct: J-->K
+            // Transitive:  J->I->K
             VertexIterator::Ptr k_vertexIt = graph->getVertexIterator();
             while(k_vertexIt->next())
             {
@@ -57,7 +60,12 @@ DistanceMatrix FloydWarshall::allShortestPaths(BaseGraph::Ptr graph, EdgeWeightF
                 double distanceIK = getDistanceLazy(distanceMatrix,i,k);
                 double transitiveDistanceJK = distanceJI + distanceIK;
 
-                if( distanceJK > transitiveDistanceJK)
+                if( j == k && abs(transitiveDistanceJK) < std::numeric_limits<double>::epsilon())
+                {
+                    continue;
+                }
+
+                if(distanceJK > transitiveDistanceJK)
                 {
                     if(detectNegativeCycle && j == k && transitiveDistanceJK < 0)
                     {
