@@ -198,10 +198,17 @@ graph_analysis::representation::Type IODialog::getTypeNameFromFilter(QString fil
     return representation::UNKNOWN;
 }
 
-BaseGraph::Ptr IODialog::importGraph(QWidget* parent)
+BaseGraph::Ptr IODialog::importGraph(QWidget* parent, const QString& file)
 {
     BaseGraph::Ptr graph = BaseGraph::getInstance();
-    QString filename = getImportGraphFilename(parent);
+    QString filename;
+    if(file.isEmpty())
+    {
+        filename = getImportGraphFilename(parent);
+    } else {
+        filename = file;
+    }
+
     if(filename.isEmpty())
     {
         return BaseGraph::Ptr();

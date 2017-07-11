@@ -45,9 +45,11 @@ public:
     /**
      * Retrieve the imported graph, i.e. opens a file dialog (filtered by
      * supported import types)
+     * \param parent Parent of this dialog
+     * \param filename of the file to be loaded (to skip showing the menu)
      * \return the imported graph, or empty shared pointer, on failure
      */
-    static BaseGraph::Ptr importGraph(QWidget* parent = NULL);
+    static BaseGraph::Ptr importGraph(QWidget* parent = NULL, const QString& filename = QString());
 
     /**
      * Export a given graph, i.e. opens a file dialog for selecting the target
