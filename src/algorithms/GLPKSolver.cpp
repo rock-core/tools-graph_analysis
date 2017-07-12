@@ -18,9 +18,30 @@ GLPKSolver::~GLPKSolver()
     glp_delete_prob(mpProblem);
 }
 
-void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format)
+void GLPKSolver::loadProblem(const std::string& filename, LPProblemFormat format)
 {
     int result = 1;
+    switch(format)
+    {
+        case CPLEX:
+            result = glp_read_lp(mpProblem, NULL, filename.c_str());
+        case GLPK:
+            result = glp_read_prob(mpProblem, 0, filename.c_str());
+        case MPS:
+            result = glp_read_mps(mpProblem, GLP_MPS_FILE, NULL, filename.c_str());
+        default:
+            throw std::invalid_argument("GLPKSolver: " + getProblemName() + " failed to load problem to '" + filename + "' since selected output format is unknown");
+    }
+
+    if(result != 0)
+    {
+        throw std::runtime_error("GLPKSolver: " + getProblemName() + " failed to load problem from '" + filename + "'");
+    }
+}
+
+void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format)
+{
+    int result = -1;
     switch(format)
     {
         case CPLEX:
@@ -42,9 +63,25 @@ void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format
     }
 }
 
-void GLPKSolver::saveSolution(const std::string& filename, LPSolutionFormat format)
+void GLPKSolver::saveSolution(const std::string& filename, LPSolutionType format)
 {
-    int result = glp_write_sol(mpProblem, filename.c_str());
+    int result = -1;
+
+    switch(format)
+    {
+        case BASIC_SOLUTION:
+            result = glp_write_sol(mpProblem, filename.c_str());
+            break;
+        case IPT_SOLUTION:
+            result = glp_write_ipt(mpProblem, filename.c_str());
+            break;
+        case MIP_SOLUTION:
+            result = glp_write_mip(mpProblem, filename.c_str());
+            break;
+        default:
+            throw std::invalid_argument("GLPKSolver: " + getProblemName() + " failed to save solution to '" + filename + "' since selected solution type is unknown");
+    }
+
     if(result != 0)
     {
         throw std::runtime_error("GLPKSolver: " + getProblemName() + " failed to save solution to '" + filename + "'");

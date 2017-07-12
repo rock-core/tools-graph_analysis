@@ -9,7 +9,9 @@ namespace graph_analysis {
 namespace algorithms {
 
 enum LPProblemFormat { UNKNOWN_PROBLEM_FORMAT = 0, CPLEX, GLPK, MPS };
-enum LPSolutionFormat { UNKNOWN_SOLUTION_FORMAT = 0 };
+
+/// Solution types: basic, IPT = interior point, MIP = mixed integer
+enum LPSolutionType { UNKNOWN_SOLUTION_TYPE = 0, BASIC_SOLUTION, IPT_SOLUTION, MIP_SOLUTION };
 
 /**
  * General class to interface with the Gnu Linear Programming Kit
@@ -25,9 +27,11 @@ public:
 
     std::string getProblemName() const { return std::string( glp_get_prob_name(mpProblem) ) ; }
 
+    void loadProblem(const std::string& filename, LPProblemFormat format = CPLEX);
+
     void saveProblem(const std::string& filename, LPProblemFormat format = CPLEX);
 
-    void saveSolution(const std::string& filename, LPSolutionFormat format = UNKNOWN_SOLUTION_FORMAT);
+    void saveSolution(const std::string& filename, LPSolutionType format = BASIC_SOLUTION);
 
     double getObjectiveValue() const { return glp_get_obj_val(mpProblem); }
 
