@@ -88,7 +88,10 @@ Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std:
     Vertex::Ptr clonedVertex = v->clone();
     if(v->getClassName() != clonedVertex->getClassName())
     {
-        throw std::runtime_error("graph_analysis::VertexTypeManager: cannot create cloned vertex of type " + v->getClassName() + " it seems the 'virtual Vertex* getClone() const' funtion of this class is implemented wrong");
+        std::stringstream ss;
+        ss << "graph_analysis::VertexTypeManager: cannot create cloned vertex of type " + v->getClassName() + " it seems the 'virtual Vertex* getClone() const' function of this class is implemented wrong";
+        LOG_WARN_S << ss.str();
+        throw std::runtime_error(ss.str());
     }
 
     clonedVertex->setLabel(label);

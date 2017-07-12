@@ -110,7 +110,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
             vertex = vManager->createVertex(nodeClass, nodeLabel, true);
         } catch(const std::exception& e)
         {
-            LOG_WARN_S << "Unsupported vertex type: '" << nodeClass << "' -- will use a placeholder node";
+            LOG_WARN_S << "Unsupported vertex type: '" << nodeClass << "' -- will use a placeholder node: " << e.what();
             vertex = Vertex::Ptr(new Vertex("Instance of unsupported vertex type: " + nodeClass + ": " + nodeLabel));
         }
         graph->addVertex(vertex);
