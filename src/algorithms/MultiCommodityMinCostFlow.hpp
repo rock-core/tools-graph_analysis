@@ -1,11 +1,12 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_MIN_COST_FLOW_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_MIN_COST_FLOW_HPP
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/algorithms/GLPKSolver.hpp>
-#include <graph_analysis/algorithms/MultiCommodityEdge.hpp>
-#include <graph_analysis/algorithms/MultiCommodityVertex.hpp>
-#include <graph_analysis/algorithms/ConstraintViolation.hpp>
+#include "../BaseGraph.hpp"
+#include "../GraphIO.hpp"
+#include "GLPKSolver.hpp"
+#include "MultiCommodityEdge.hpp"
+#include "MultiCommodityVertex.hpp"
+#include "ConstraintViolation.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
@@ -171,11 +172,22 @@ public:
     typedef MultiCommodityVertex vertex_t;
 
     /**
+     * Create a MultiCommodityMinCostFlow problem by loading (problem graph) from file
+     */
+    static MultiCommodityMinCostFlow fromFile(const std::string& filename, representation::Type format = representation::UNKNOWN);
+
+    /**
+     * Save the MultiCommodityMinCostFlow problem to a file
+     */
+    void save(const std::string& filename, representation::Type format = representation::GEXF);
+
+    /**
      * \param graph that contains only (!) MultiCommodityVertices and
      * MultiCommodityEdges (!)
-     * \param commodities number of commodities that need to be accounted for
+     * \param commodities number of commodities that need to be accounted for,
+     * if 0 is given then information is extracted from the edges
      */
-    MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities);
+    MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities = 0);
 
     virtual ~MultiCommodityMinCostFlow() {}
 

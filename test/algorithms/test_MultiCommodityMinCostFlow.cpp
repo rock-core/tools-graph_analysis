@@ -10,6 +10,7 @@ BOOST_AUTO_TEST_SUITE(algorithms)
 
 BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
 {
+    std::string savedProblem;
     {
         BaseGraph::Ptr graph = BaseGraph::getInstance();
         uint32_t commodities = 3;
@@ -64,8 +65,17 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
 
+        savedProblem = file + "savedProblem.gexf";
+        minCostFlow.save(savedProblem);
+
         minCostFlow.storeResult();
         io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_0.dot", graph);
+    }
+
+    {
+        MultiCommodityMinCostFlow minCostFlow = MultiCommodityMinCostFlow::fromFile(savedProblem);
+        uint32_t cost = minCostFlow.run();
+        BOOST_TEST_MESSAGE("Cost after reloading are: " << cost);
     }
 }
 

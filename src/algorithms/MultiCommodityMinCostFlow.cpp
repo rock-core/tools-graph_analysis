@@ -26,6 +26,39 @@ MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph
         throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow:"
                 " given graph is not directed (or cannot be casted to DirectedGraphInterface)");
     }
+
+    // Pick any available edge to retrieve the number of commodities
+    uint32_t edgeAssociatedCommodity = 0;
+    EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        MultiCommodityEdge::Ptr edge = dynamic_pointer_cast<MultiCommodityEdge>(edgeIt->current());
+        edgeAssociatedCommodity = edge->numberOfCommodities();
+        break;
+    }
+
+    if(commodities == 0)
+    {
+        mCommodities = edgeAssociatedCommodity;
+    }
+
+    // We assume that the edges are always containing the correct information
+    // about commodities
+    assert(mCommodities == edgeAssociatedCommodity);
+}
+
+
+MultiCommodityMinCostFlow MultiCommodityMinCostFlow::fromFile(const std::string& filename, representation::Type format)
+{
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+    io::GraphIO::read(filename, graph, format);
+
+    return MultiCommodityMinCostFlow(graph);
+}
+
+void MultiCommodityMinCostFlow::save(const std::string& filename, representation::Type format)
+{
+    io::GraphIO::write(filename, mpGraph, format);
 }
 
 GLPKSolver::Status MultiCommodityMinCostFlow::run()
