@@ -93,7 +93,24 @@ public:
     Edge::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const;
 
     /**
-     * Register all attributes
+     * Hook to register attributes of this vertex, in order to properly
+     * perform serialization
+     *
+     * If serialization is not needed, then registration is optional
+     * Otherwise each Edge implementation has to implement this
+     * method, and add a static member
+     \verbatim
+     #include "EdgeRegistration.hpp"
+
+     class DerivedEdge : Edge
+     {
+        static const EdgeRegistration<DerivedEdge> msRegistration;
+     }
+     \endverbatim
+     * in the source file, e.g. DerivedEdge.cpp add
+     \verbatim
+     const EdgeRegistration<DerivedEdge> DerivedEdge::msRegistration;
+     \endverbatim
      */
     virtual void registerAttributes(EdgeTypeManager*) const {}
 protected:
