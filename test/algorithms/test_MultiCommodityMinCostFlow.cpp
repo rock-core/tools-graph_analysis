@@ -1,4 +1,5 @@
 #include <boost/test/unit_test.hpp>
+#include "../test_utils.hpp"
 
 #include <graph_analysis/algorithms/MultiCommodityMinCostFlow.hpp>
 #include <graph_analysis/GraphIO.hpp>
@@ -352,5 +353,14 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
         }
         BOOST_TEST_MESSAGE("Final objective value: " << minCostFlow.getObjectiveValue());
     }
+}
+
+BOOST_AUTO_TEST_CASE(problem_from_file_0)
+{
+    std::string filename = getRootDir() + "/test/data/multicommodity-min-cost-flow.gexf";
+    MultiCommodityMinCostFlow minCostFlow = MultiCommodityMinCostFlow::fromFile(filename);
+    uint32_t cost = minCostFlow.run();
+    BOOST_TEST_MESSAGE("Resulting cost are: " << cost);
+
 }
 BOOST_AUTO_TEST_SUITE_END();
