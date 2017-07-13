@@ -39,6 +39,9 @@ protected:
     QGraphicsPolygonItem* mpArrowHead;
     int mArrowSize;
 
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+
     EdgeItemBase* createNewItem(GraphWidget* graphWidget,
                 const graph_analysis::Edge::Ptr& edge,
                 QGraphicsItem* parent) const;

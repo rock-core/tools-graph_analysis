@@ -110,6 +110,19 @@ QPainterPath EdgeItemSimple::shape() const
     return path;
 }
 
+void EdgeItemSimple::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+    mpClassName->setPlainText("");
+    mpLabel->setPlainText(getEdge()->toString().c_str());
+}
+
+void EdgeItemSimple::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+{
+    mpClassName->setPlainText(getEdge()->getClassName().c_str());
+    mpLabel->setPlainText("");
+}
+
+
 EdgeItemBase* EdgeItemSimple::createNewItem(GraphWidget* graphWidget,
         const graph_analysis::Edge::Ptr& edge,
         QGraphicsItem* parent) const

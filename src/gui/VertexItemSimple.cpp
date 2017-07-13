@@ -211,6 +211,18 @@ QVariant VertexItemSimple::itemChange(GraphicsItemChange change,
     return VertexItemBase::itemChange(change, value);
 }
 
+void VertexItemSimple::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+    mpClassName->setPlainText("");
+    mpLabel->setPlainText(getVertex()->toString().c_str());
+}
+
+void VertexItemSimple::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+{
+    mpClassName->setPlainText(getVertex()->getClassName().c_str());
+    mpLabel->setPlainText("");
+}
+
 VertexItemBase* VertexItemSimple::createNewItem(GraphWidget* graphWidget,
            const graph_analysis::Vertex::Ptr& vertex,
             QGraphicsItem* parent) const

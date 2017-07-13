@@ -46,6 +46,9 @@ protected:
     void dropEvent(QGraphicsSceneDragDropEvent* event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
 
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+
 
     VertexItemBase* createNewItem(GraphWidget* graphWidget,
                 const graph_analysis::Vertex::Ptr& vertex,
