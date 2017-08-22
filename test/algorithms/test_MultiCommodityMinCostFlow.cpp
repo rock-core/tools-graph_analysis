@@ -239,7 +239,6 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
     {
         BaseGraph::Ptr graph = BaseGraph::getInstance();
         uint32_t commodities = 2;
-        uint32_t edgeCapacityUpperBound = 3;
 
         /**
          *  +     O     O     O
