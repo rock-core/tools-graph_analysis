@@ -5,6 +5,13 @@
 namespace graph_analysis {
 namespace algorithms {
 
+GLPKSolver::GLPKSolver()
+    : mpProblem()
+{
+    mpProblem = glp_create_prob();
+    glp_set_prob_name(mpProblem, "glpk-default-problem");
+}
+
 GLPKSolver::GLPKSolver(const std::string& problemName)
     : mpProblem(NULL)
 {
@@ -25,10 +32,13 @@ void GLPKSolver::loadProblem(const std::string& filename, LPProblemFormat format
     {
         case CPLEX:
             result = glp_read_lp(mpProblem, NULL, filename.c_str());
+            break;
         case GLPK:
             result = glp_read_prob(mpProblem, 0, filename.c_str());
+            break;
         case MPS:
             result = glp_read_mps(mpProblem, GLP_MPS_FILE, NULL, filename.c_str());
+            break;
         default:
             throw std::invalid_argument("GLPKSolver: " + getProblemName() + " failed to load problem to '" + filename + "' since selected output format is unknown");
     }
@@ -39,7 +49,7 @@ void GLPKSolver::loadProblem(const std::string& filename, LPProblemFormat format
     }
 }
 
-void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format)
+void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format) const
 {
     int result = -1;
     switch(format)
@@ -61,9 +71,11 @@ void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format
     {
         throw std::runtime_error("GLPKSolver: " + getProblemName() + " failed to save problem to '" + filename + "'");
     }
+
+    mProblemFile = filename;
 }
 
-void GLPKSolver::saveSolution(const std::string& filename, LPSolutionType format)
+void GLPKSolver::saveSolution(const std::string& filename, LPSolutionType format) const
 {
     int result = -1;
 
@@ -86,14 +98,43 @@ void GLPKSolver::saveSolution(const std::string& filename, LPSolutionType format
     {
         throw std::runtime_error("GLPKSolver: " + getProblemName() + " failed to save solution to '" + filename + "'");
     }
+
+    mSolutionFile = filename;
 }
+
+void GLPKSolver::loadSolution(const std::string& filename, LPSolutionType format)
+{
+    int result = -1;
+
+    switch(format)
+    {
+        case BASIC_SOLUTION:
+            result = glp_read_sol(mpProblem, filename.c_str());
+            break;
+        case IPT_SOLUTION:
+            result = glp_read_ipt(mpProblem, filename.c_str());
+            break;
+        case MIP_SOLUTION:
+            result = glp_read_mip(mpProblem, filename.c_str());
+            break;
+        default:
+            throw std::invalid_argument("GLPKSolver: " + getProblemName() + " failed to read solution to '" + filename + "' since selected solution type is unknown");
+    }
+
+    if(result != 0)
+    {
+        throw std::runtime_error("GLPKSolver: " + getProblemName() + " failed to read solution to '" + filename + "'");
+    }
+}
+
+
 
 GLPKSolver::Status GLPKSolver::translateSimplexReturnCode(int code)
 {
     switch(code)
     {
         case 0:
-            LOG_DEBUG_S << "The LP problem instance has been successfully solved. "
+            LOG_WARN_S << "The LP problem instance has been successfully solved. "
                 << "This does not necessarily mean that the solver has found an optimal solution."
                 << "It only means that the solution process was successful";
             return SOLUTION_FOUND;
@@ -171,6 +212,15 @@ GLPKSolver::Status GLPKSolver::translateIntoptReturnCode(int code)
                     " unknown return code: " + ss.str());
         }
     }
+}
+
+GLPKSolver::Status GLPKSolver::run(const std::string& problem,
+        LPProblemFormat problemFormat)
+{
+    loadProblem(problem, problemFormat);
+    // SIMPLEX
+    int result = glp_simplex(mpProblem, NULL);
+    return translateSimplexReturnCode(result);
 }
 
 } // end namespace algorithms

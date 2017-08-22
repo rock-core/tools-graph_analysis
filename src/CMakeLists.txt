@@ -1,4 +1,13 @@
 find_package(Boost REQUIRED regex filesystem system serialization)
+find_package(SCIP)
+
+add_definitions(-DWITH_GLPK)
+if(SCIP_FOUND)
+    list(APPEND EXTRA_HPP algorithms/ScipSolver.hpp)
+    list(APPEND EXTRA_CPP algorithms/ScipSolver.cpp)
+    add_definitions(-DWITH_SCIP)
+endif()
+
 rock_library(graph_analysis
     SOURCES
         AttributeManager.cpp
@@ -24,6 +33,7 @@ rock_library(graph_analysis
         algorithms/CorrelationClustering.cpp
         algorithms/DFS.cpp
         algorithms/FloydWarshall.cpp
+        algorithms/LPSolver.cpp
         algorithms/GLPKSolver.cpp
         algorithms/MinCostFlow.cpp
         algorithms/MultiCommodityEdge.cpp
@@ -81,6 +91,7 @@ rock_library(graph_analysis
         percolation/strategies/UniformRandomVertexRemoval.cpp
         snap/DirectedGraph.cpp
         snap/DirectedSubGraph.cpp
+        ${EXTRA_CPP}
     HEADERS
         AttributeManager.hpp
         Algorithms.hpp
@@ -123,6 +134,7 @@ rock_library(graph_analysis
         algorithms/DFS.hpp
         algorithms/DFSVisitor.hpp
         algorithms/FloydWarshall.hpp
+        algorithms/LPSolver.hpp
         algorithms/GLPKSolver.hpp
         algorithms/MinCostFlow.hpp
         algorithms/MultiCommodityEdge.hpp
@@ -191,6 +203,7 @@ rock_library(graph_analysis
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
+        ${EXTRA_HPP}
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric gsl libgvc utilmm yaml-cpp
     DEPS_PLAIN
@@ -223,6 +236,11 @@ rock_library(graph_analysis
         gui/dialogs/swap_filters_dialog_gui.ui
 )
 target_link_libraries(graph_analysis glpk cgraph)
+if(SCIP_FOUND)
+    message(STATUS "Linking SCIP Library: ${SCIP_LIBRARIES}")
+    target_link_libraries(graph_analysis ${SCIP_LIBRARIES})
+endif()
+
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)
 if(graph_analysis-linker_flags)
     set(graph_analysis-linker_flags "${graph_analysis-linker_flags} -Wl,--exclude-libs=libsnap.a" )

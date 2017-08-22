@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
         graph->addEdge(e1);
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost =  minCostFlow.run();
+        uint32_t cost =  minCostFlow.solve();
         BOOST_TEST_MESSAGE("Cost are: " << cost);
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-0.");
@@ -69,13 +69,12 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
         savedProblem = file + "savedProblem.gexf";
         minCostFlow.save(savedProblem);
 
-        minCostFlow.storeResult();
         io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_0.dot", graph);
     }
 
     {
         MultiCommodityMinCostFlow minCostFlow = MultiCommodityMinCostFlow::fromFile(savedProblem);
-        uint32_t cost = minCostFlow.run();
+        uint32_t cost = minCostFlow.solve();
         BOOST_TEST_MESSAGE("Cost after reloading are: " << cost);
     }
 }
@@ -125,13 +124,12 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_1)
         graph->addEdge(e1);
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost =  minCostFlow.run();
+        uint32_t cost =  minCostFlow.solve();
         BOOST_TEST_MESSAGE("Cost are: " << cost);
 
         std::string file("/tmp/graph_analysis-test-algorithms-multicommodity-mincostflow-1.");
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
-        minCostFlow.storeResult();
         io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_1.dot", graph);
     }
 }
@@ -208,14 +206,13 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_2)
 
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost = minCostFlow.run();
+        uint32_t cost = minCostFlow.solve();
         BOOST_TEST_MESSAGE("Cost are: " << cost);
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-2.");
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
 
-        minCostFlow.storeResult();
         io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_3.dot", graph);
         EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
         while(edgeIt->next())
@@ -326,14 +323,13 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
         }
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost = minCostFlow.run();
+        uint32_t cost = minCostFlow.solve();
         BOOST_TEST_MESSAGE("Cost are: " << cost);
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-2.");
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
 
-        minCostFlow.storeResult();
         io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_3.dot", graph);
         EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
         while(edgeIt->next())
@@ -359,7 +355,7 @@ BOOST_AUTO_TEST_CASE(problem_from_file_0)
 {
     std::string filename = getRootDir() + "/test/data/multicommodity-min-cost-flow.gexf";
     MultiCommodityMinCostFlow minCostFlow = MultiCommodityMinCostFlow::fromFile(filename);
-    uint32_t cost = minCostFlow.run();
+    uint32_t cost = minCostFlow.solve();
     BOOST_TEST_MESSAGE("Resulting cost are: " << cost);
 
 }

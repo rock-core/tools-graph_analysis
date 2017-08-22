@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iterator>
 #include <math.h>
+#include <boost/filesystem.hpp>
 #include <graph_analysis/DirectedGraphInterface.hpp>
 #include <base-logging/Logging.hpp>
 
@@ -61,7 +62,26 @@ void MultiCommodityMinCostFlow::save(const std::string& filename, representation
     io::GraphIO::write(filename, mpGraph, format);
 }
 
-GLPKSolver::Status MultiCommodityMinCostFlow::run()
+LPSolver::Status MultiCommodityMinCostFlow::solve(const LPSolverType& solverType, const std::string& solutionFile)
+{
+    std::string problemFile = createProblem(CPLEX);
+    LPSolver::Ptr solver = LPSolver::getInstance(solverType);
+    LPSolver::Status status = solver->run(problemFile, CPLEX);
+
+    std::string filename = solutionFile;
+    if(filename.empty())
+    {
+        filename = saveSolutionToTempfile(BASIC_SOLUTION);
+    } else {
+        LOG_INFO_S << "Saving solution to: " << filename;
+        saveSolution(filename, BASIC_SOLUTION);
+    }
+
+    storeResult(filename, BASIC_SOLUTION);
+    return status;
+}
+
+std::string MultiCommodityMinCostFlow::createProblem(LPProblemFormat format)
 {
     DirectedGraphInterface::Ptr diGraph = dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);
 
@@ -354,13 +374,23 @@ GLPKSolver::Status MultiCommodityMinCostFlow::run()
     LOG_INFO_S << "MultiCommodityMinCostFlow: size of load matrix " << index - 1;
     glp_load_matrix(mpProblem, index - 1, ia, ja, ar);
 
-    // SIMPLEX
-    int result = glp_simplex(mpProblem, NULL);
-    return translateSimplexReturnCode(result);
+    boost::filesystem::path tempDir = boost::filesystem::temp_directory_path();
+    boost::filesystem::path temp = tempDir / boost::filesystem::unique_path();
+    const std::string tempFile = temp.native() + "-multi-commodity-flow.lp";
+
+    LOG_INFO_S << "Saving the problem into: " << tempFile;
+
+    saveProblem(tempFile, format);
+
+    return tempFile;
 }
 
-void MultiCommodityMinCostFlow::storeResult()
+
+void MultiCommodityMinCostFlow::storeResult(const std::string& lp_solution_file, LPSolutionType solutionFormat)
 {
+    LOG_INFO_S << "store result: " << lp_solution_file;
+    loadSolution(lp_solution_file, solutionFormat);
+
     // Write solution
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
@@ -378,7 +408,6 @@ void MultiCommodityMinCostFlow::storeResult()
             double flow = glp_get_col_prim(mpProblem, col);
 
             edge->setCommodityFlow(k, ceil(flow) );
-
         }
     }
 }

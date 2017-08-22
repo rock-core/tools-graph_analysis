@@ -191,21 +191,49 @@ public:
 
     virtual ~MultiCommodityMinCostFlow() {}
 
-    Status run();
+    /**
+     * Creates the problem instance and return the temporary file in which the
+     * problem is saved
+     */
+    std::string createProblem(LPProblemFormat format = CPLEX);
 
-    // Store the result in the edges of the graph
-    void storeResult();
+    /**
+     * Solve the multicommodity problem with the given LP solver
+     * save the solution to the given filename (or a temporary file),
+     * and store the flow status into the base graph with with which the problem
+     * has been initalized
+     * \param solver The LP solver type
+     * \param solutionFile the filename to save the solution
+     */
+    LPSolver::Status solve(const LPSolverType& solver = GLPK_SOLVER, const std::string& solutionFile = "");
+
+    /**
+     * Save the solution to a given file and format
+     * \param lp_solution_file filename of the solution file
+     * \param format format of the solution
+     */
+    void storeResult(const std::string& lp_solution_file, LPSolutionType format = BASIC_SOLUTION);
 
     // Validate the result and return the number of violated inflow constraints
     std::vector<ConstraintViolation> validateInflow() const;
 private:
+    /// Number of commodities -- in order to identify the flow of a each
+    /// individual commodity instance, the vector of commodities has
+    /// as length the number of instances of goods
     uint32_t mCommodities;
+    /// The graph defining the overall flow network
     BaseGraph::Ptr mpGraph;
+    /// Map a column to a particular edge
     std::vector<Edge::Ptr> mColumnToEdge;
 
+    /// The total number of columns of the linear problem
     uint32_t mTotalNumberOfColumns;
+    /// The total number of rows of the linear problem
     uint32_t mTotalNumberOfRows;
 
+    /**
+     * Get the column index of a given edge and for a particular commodity
+     */
     int getColumnIndex(const Edge::Ptr& e, uint32_t commodity = 0);
 
 };

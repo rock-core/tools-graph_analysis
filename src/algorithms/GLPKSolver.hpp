@@ -4,38 +4,39 @@
 #include <glpk.h>
 #include <string>
 #include <stdexcept>
+#include "LPSolver.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
-
-enum LPProblemFormat { UNKNOWN_PROBLEM_FORMAT = 0, CPLEX, GLPK, MPS };
-
-/// Solution types: basic, IPT = interior point, MIP = mixed integer
-enum LPSolutionType { UNKNOWN_SOLUTION_TYPE = 0, BASIC_SOLUTION, IPT_SOLUTION, MIP_SOLUTION };
 
 /**
  * General class to interface with the Gnu Linear Programming Kit
  * \see http://kam.mff.cuni.cz/~elias/glpk.pdf
  */
-class GLPKSolver
+class GLPKSolver : public LPSolver
 {
 public:
-    enum Status { INVALID_PROBLEM_DEFINITION, NO_SOLUTION_FOUND, SOLUTION_FOUND };
-
+    GLPKSolver();
     GLPKSolver(const std::string& problemName);
     virtual ~GLPKSolver();
 
+    LPSolverType getSolverType() const override { return GLPK_SOLVER; }
+
     std::string getProblemName() const { return std::string( glp_get_prob_name(mpProblem) ) ; }
 
-    void loadProblem(const std::string& filename, LPProblemFormat format = CPLEX);
+    void loadProblem(const std::string& filename, LPProblemFormat format = CPLEX) override;
 
-    void saveProblem(const std::string& filename, LPProblemFormat format = CPLEX);
+    void saveProblem(const std::string& filename, LPProblemFormat format = CPLEX) const override;
 
-    void saveSolution(const std::string& filename, LPSolutionType format = BASIC_SOLUTION);
+    void loadSolution(const std::string& filename, LPSolutionType format = BASIC_SOLUTION) override;
 
-    double getObjectiveValue() const { return glp_get_obj_val(mpProblem); }
+    void saveSolution(const std::string& filename, LPSolutionType format = BASIC_SOLUTION) const override;
 
-    virtual Status run() { throw std::runtime_error("graph_analysis::algorithms::GLPKSolver::run not implemented"); }
+    double getObjectiveValue() const override { return glp_get_obj_val(mpProblem); };
+
+    Status run() override { throw std::runtime_error("graph_analysis::algorithms::GLPKSolver::run not implemented"); }
+
+    Status run(const std::string& problem, LPProblemFormat problemFormat = CPLEX) override;
 
 protected:
     glp_prob* mpProblem;
