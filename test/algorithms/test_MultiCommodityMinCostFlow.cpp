@@ -9,6 +9,12 @@ using namespace graph_analysis;
 
 BOOST_AUTO_TEST_SUITE(algorithms)
 
+/**
+ * v0  -- e0 --> v1 -- e1 --> v2
+ *
+ * Route a number of commodities across this single line
+ *
+ */
 BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
 {
     std::string savedProblem;
@@ -25,10 +31,10 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
         {
             // Source node
             v0->setCommoditySupply(i, 10);
-            BOOST_REQUIRE_MESSAGE(v0->getCommoditySupply(i) == 10, "Supply set to 10");
+            BOOST_REQUIRE_MESSAGE(v0->getCommoditySupply(i) == 10, "Source node: supply set to 10");
             // Target node
             v2->setCommoditySupply(i, -10);
-            BOOST_REQUIRE_MESSAGE(v0->getCommoditySupply(i) == 10, "Supply set to -10");
+            BOOST_REQUIRE_MESSAGE(v2->getCommoditySupply(i) == -10, "Target node: supply set to -10 (negative values meaning demand)");
         }
 
         graph->addVertex(v0);
@@ -50,9 +56,9 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
         for(size_t i = 0; i < commodities; ++i)
         {
             e0->setCommodityCapacityUpperBound(i, 10);
-            BOOST_REQUIRE_MESSAGE(e0->getCommodityCapacityUpperBound(i) == 10, "Edge capacity upper bound is set to 10");
+            BOOST_REQUIRE_MESSAGE(e0->getCommodityCapacityUpperBound(i) == 10, "First edge capacity upper bound is set to 10");
             e1->setCommodityCapacityUpperBound(i, 10);
-            BOOST_REQUIRE_MESSAGE(e1->getCommodityCapacityUpperBound(i) == 10, "Edge capacity upper bound is set to 10");
+            BOOST_REQUIRE_MESSAGE(e1->getCommodityCapacityUpperBound(i) == 10, "Second edge capacity upper bound is set to 10");
         }
 
         graph->addEdge(e0);
@@ -68,6 +74,9 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
 
         savedProblem = file + "savedProblem.gexf";
         minCostFlow.save(savedProblem);
+
+        std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+        BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should have no flaws, but has " << ConstraintViolation::toString(flaws) );
 
         io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_0.dot", graph);
     }
@@ -131,6 +140,10 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_1)
         minCostFlow.saveProblem(file + "problem");
         minCostFlow.saveSolution(file + "solution");
         io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_1.dot", graph);
+
+        std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+        BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should have no flaws, but has " << flaws.size() << " flaws");
+
     }
 }
 
@@ -231,7 +244,11 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_2)
             }
         }
         BOOST_TEST_MESSAGE("Final objective value: " << minCostFlow.getObjectiveValue());
+
+        std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+        BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should have no flaws, but has " << flaws.size() << " flaws");
     }
+
 }
 
 BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
@@ -347,6 +364,9 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
             }
         }
         BOOST_TEST_MESSAGE("Final objective value: " << minCostFlow.getObjectiveValue());
+
+        std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+        BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should have no flaws, but has " << flaws.size() << " flaws");
     }
 }
 
@@ -356,6 +376,9 @@ BOOST_AUTO_TEST_CASE(problem_from_file_0)
     MultiCommodityMinCostFlow minCostFlow = MultiCommodityMinCostFlow::fromFile(filename);
     uint32_t cost = minCostFlow.solve();
     BOOST_TEST_MESSAGE("Resulting cost are: " << cost);
+
+    std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+    BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should have no flaws, but has " << flaws.size() << " flaws");
 
 }
 BOOST_AUTO_TEST_SUITE_END();
