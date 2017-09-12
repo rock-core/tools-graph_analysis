@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_CONSTRAINT_VIOLATION_HPP
 
 #include <map>
+#include <vector>
 #include <graph_analysis/algorithms/MultiCommodityVertex.hpp>
 
 namespace graph_analysis {
@@ -21,7 +22,9 @@ public:
     int32_t getDelta() const { return mDelta; }
     Type getType() const { return mType; }
 
-    std::string toString() const;
+    std::string toString(size_t indent = 0) const;
+
+    static std::string toString(const std::vector<ConstraintViolation>& flaws, size_t indent = 0);
 
 private:
     Vertex::Ptr mpVertex;
