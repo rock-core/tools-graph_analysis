@@ -71,13 +71,13 @@ LPSolver::Status MultiCommodityMinCostFlow::solve(const LPSolverType& solverType
     std::string filename = solutionFile;
     if(filename.empty())
     {
-        filename = saveSolutionToTempfile(BASIC_SOLUTION);
+        filename = solver->saveSolutionToTempfile(BASIC_SOLUTION);
     } else {
         LOG_INFO_S << "Saving solution to: " << filename;
-        saveSolution(filename, BASIC_SOLUTION);
+        solver->saveSolution(filename, BASIC_SOLUTION);
     }
 
-    storeResult(filename, BASIC_SOLUTION);
+    storeResult(problemFile, filename, CPLEX, BASIC_SOLUTION);
     return status;
 }
 
@@ -386,9 +386,15 @@ std::string MultiCommodityMinCostFlow::createProblem(LPProblemFormat format)
 }
 
 
-void MultiCommodityMinCostFlow::storeResult(const std::string& lp_solution_file, LPSolutionType solutionFormat)
+void MultiCommodityMinCostFlow::storeResult(const std::string& lp_problem_file,
+        const std::string& lp_solution_file,
+        LPProblemFormat problemFormat,
+        LPSolutionType solutionFormat)
 {
-    LOG_INFO_S << "store result: " << lp_solution_file;
+    LOG_INFO_S << "store result: problem " << lp_problem_file
+        << ", solution " << lp_solution_file;
+
+    loadProblem(lp_problem_file, problemFormat);
     loadSolution(lp_solution_file, solutionFormat);
 
     // Write solution

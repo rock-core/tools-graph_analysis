@@ -209,10 +209,14 @@ public:
 
     /**
      * Save the solution to a given file and format
+     * \param lp_problem_file problem file
      * \param lp_solution_file filename of the solution file
      * \param format format of the solution
      */
-    void storeResult(const std::string& lp_solution_file, LPSolutionType format = BASIC_SOLUTION);
+    void storeResult(const std::string& lp_problem_file,
+            const std::string& lp_solution_file,
+            LPProblemFormat problemFormat = CPLEX,
+            LPSolutionType format = BASIC_SOLUTION);
 
     // Validate the result and return the number of violated inflow constraints
     std::vector<ConstraintViolation> validateInflow() const;
