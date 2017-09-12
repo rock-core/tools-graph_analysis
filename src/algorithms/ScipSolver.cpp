@@ -106,7 +106,7 @@ void ScipSolver::saveSolution(const std::string& filename, LPSolutionType format
 
 double ScipSolver::getObjectiveValue() const
 {
-    return 0.0;
+    return SCIPgetPrimalbound(mpScip);
 }
 
 LPSolver::Status ScipSolver::getStatus() const
