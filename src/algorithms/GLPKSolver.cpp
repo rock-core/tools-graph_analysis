@@ -40,7 +40,7 @@ void GLPKSolver::loadProblem(const std::string& filename, LPProblemFormat format
             result = glp_read_mps(mpProblem, GLP_MPS_FILE, NULL, filename.c_str());
             break;
         default:
-            throw std::invalid_argument("GLPKSolver: " + getProblemName() + " failed to load problem to '" + filename + "' since selected output format is unknown");
+            throw std::invalid_argument("GLPKSolver: " + getProblemName() + " failed to load problem from '" + filename + "' since selected output format is unknown");
     }
 
     if(result != 0)
