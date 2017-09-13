@@ -70,8 +70,26 @@ void MultiCommodityMinCostFlow::save(const std::string& filename, representation
 
 LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix)
 {
-    std::string problemFile = createProblem(CPLEX);
-    LPSolver::Status status = mpSolver->run(problemFile, CPLEX);
+
+    LPSolver::Status status;
+    switch(mpSolver->getSolverType())
+    {
+        case GLPK_SOLVER:
+            {
+                std::string problemFile = createProblem(GLPK);
+                status = mpSolver->run(problemFile, GLPK);
+            }
+            break;
+        case SCIP_SOLVER:
+            {
+                std::string problemFile = createProblem(CPLEX);
+                status = mpSolver->run(problemFile, CPLEX);
+            }
+            break;
+        default:
+            throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow::solve: solver type not supported: " + LPSolver::TypeTxt[mpSolver->getSolverType()] );
+            break;
+    }
 
     std::string filename;
     if(prefix.empty())
