@@ -9,8 +9,9 @@
 namespace graph_analysis {
 namespace algorithms {
 
-MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities)
+MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities, LPSolver::Type solverType)
     : GLPKSolver("multicommodity_min_cost_flow")
+    , mpSolver( LPSolver::getInstance(solverType) )
     , mCommodities(commodities)
     , mpGraph(graph)
     , mTotalNumberOfColumns(0)
@@ -41,6 +42,7 @@ MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph
     if(commodities == 0)
     {
         mCommodities = edgeAssociatedCommodity;
+        LOG_INFO_S << "Number of commodities inferred from edges: " << mCommodities;
     }
 
     // We assume that the edges are always containing the correct information
@@ -49,12 +51,16 @@ MultiCommodityMinCostFlow::MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph
 }
 
 
-MultiCommodityMinCostFlow MultiCommodityMinCostFlow::fromFile(const std::string& filename, representation::Type format)
+MultiCommodityMinCostFlow MultiCommodityMinCostFlow::fromFile(const std::string& filename,
+        representation::Type format,
+        LPSolver::Type solverType)
 {
     BaseGraph::Ptr graph = BaseGraph::getInstance();
     io::GraphIO::read(filename, graph, format);
 
-    return MultiCommodityMinCostFlow(graph);
+    // In order to infer number of commodities, set to 0
+    uint32_t commodities = 0;
+    return MultiCommodityMinCostFlow(graph,commodities, solverType);
 }
 
 void MultiCommodityMinCostFlow::save(const std::string& filename, representation::Type format)
@@ -62,26 +68,28 @@ void MultiCommodityMinCostFlow::save(const std::string& filename, representation
     io::GraphIO::write(filename, mpGraph, format);
 }
 
-LPSolver::Status MultiCommodityMinCostFlow::solve(const LPSolverType& solverType, const std::string& solutionFile)
+LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix)
 {
     std::string problemFile = createProblem(CPLEX);
-    LPSolver::Ptr solver = LPSolver::getInstance(solverType);
-    LPSolver::Status status = solver->run(problemFile, CPLEX);
+    LPSolver::Status status = mpSolver->run(problemFile, CPLEX);
 
-    std::string filename = solutionFile;
-    if(filename.empty())
+    std::string filename;
+    if(prefix.empty())
     {
-        filename = solver->saveSolutionToTempfile(BASIC_SOLUTION);
+        filename = mpSolver->saveSolutionToTempfile(BASIC_SOLUTION);
     } else {
-        LOG_INFO_S << "Saving solution to: " << filename;
-        solver->saveSolution(filename, BASIC_SOLUTION);
+        filename = prefix + ".problem";
+        mpSolver->saveProblem(filename);
+
+        filename = prefix + ".solution";
+        mpSolver->saveSolution(filename, BASIC_SOLUTION);
     }
 
-    storeResult(problemFile, filename, CPLEX, BASIC_SOLUTION);
+    storeResult();
     return status;
 }
 
-std::string MultiCommodityMinCostFlow::createProblem(LPProblemFormat format)
+std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat format)
 {
     DirectedGraphInterface::Ptr diGraph = dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);
 
@@ -196,10 +204,10 @@ std::string MultiCommodityMinCostFlow::createProblem(LPProblemFormat format)
         for(size_t k = 0; k < mCommodities; ++k,++col,++index)
         {
             glp_add_cols(mpProblem, 1);
-            std::stringstream cs;
-            cs << "x" << col;
+            std::string cs = mpSolver->getVariableNameByColumnIdx(col);
+
             // for each edge create k columns, where k is the number of commodities
-            glp_set_col_name(mpProblem, col, cs.str().c_str());
+            glp_set_col_name(mpProblem, col, cs.c_str());
             // set the bound for the column to 0 as lower and commodity capacity upper bound
             uint32_t commodityCapacityUpperBound = edge->getCommodityCapacityUpperBound(k);
             if(commodityCapacityUpperBound == 0)
@@ -209,7 +217,7 @@ std::string MultiCommodityMinCostFlow::createProblem(LPProblemFormat format)
                 glp_set_col_bnds(mpProblem, col, GLP_DB, 0.0, commodityCapacityUpperBound);
             }
 
-            LOG_DEBUG_S << "Adding column '" << cs.str() << "' for edge: '" << edge->toString() << "' and commodity '" << k  << "' -- lb: 0.0, ub: " << edge->getCommodityCapacityUpperBound(k);
+            LOG_DEBUG_S << "Adding column '" << cs << "' for edge: '" << edge->toString() << "' (id: " << mpGraph->getEdgeId(edge) << ") and commodity '" << k  << "' -- lb: 0.0, ub: " << edge->getCommodityCapacityUpperBound(k);
 
             // Set column to GLP_IV := integer variable (see documentationc chapter 2.10.1)
             // (other types are GLP_CV := continuous or GLP_BV := binary variabe)
@@ -374,29 +382,12 @@ std::string MultiCommodityMinCostFlow::createProblem(LPProblemFormat format)
     LOG_INFO_S << "MultiCommodityMinCostFlow: size of load matrix " << index - 1;
     glp_load_matrix(mpProblem, index - 1, ia, ja, ar);
 
-    boost::filesystem::path tempDir = boost::filesystem::temp_directory_path();
-    boost::filesystem::path temp = tempDir / boost::filesystem::unique_path();
-    const std::string tempFile = temp.native() + "-multi-commodity-flow.lp";
-
-    LOG_INFO_S << "Saving the problem into: " << tempFile;
-
-    saveProblem(tempFile, format);
-
-    return tempFile;
+    return saveProblemToTempfile(format);
 }
 
 
-void MultiCommodityMinCostFlow::storeResult(const std::string& lp_problem_file,
-        const std::string& lp_solution_file,
-        LPProblemFormat problemFormat,
-        LPSolutionType solutionFormat)
+void MultiCommodityMinCostFlow::storeResult()
 {
-    LOG_INFO_S << "store result: problem " << lp_problem_file
-        << ", solution " << lp_solution_file;
-
-    loadProblem(lp_problem_file, problemFormat);
-    loadSolution(lp_solution_file, solutionFormat);
-
     // Write solution
     EdgeIterator::Ptr edgeIt = mpGraph->getEdgeIterator();
     while(edgeIt->next())
@@ -411,7 +402,8 @@ void MultiCommodityMinCostFlow::storeResult(const std::string& lp_problem_file,
         for(uint32_t k = 0; k < mCommodities; ++k)
         {
             uint32_t col = getColumnIndex(edge, k);
-            double flow = glp_get_col_prim(mpProblem, col);
+            double flow = mpSolver->getVariableValueByColumnIdx(col);
+
 
             edge->setCommodityFlow(k, ceil(flow) );
         }

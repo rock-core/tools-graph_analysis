@@ -25,7 +25,7 @@ GLPKSolver::~GLPKSolver()
     glp_delete_prob(mpProblem);
 }
 
-void GLPKSolver::loadProblem(const std::string& filename, LPProblemFormat format)
+void GLPKSolver::loadProblem(const std::string& filename, LPSolver::ProblemFormat format)
 {
     int result = 1;
     switch(format)
@@ -49,7 +49,7 @@ void GLPKSolver::loadProblem(const std::string& filename, LPProblemFormat format
     }
 }
 
-void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format) const
+void GLPKSolver::saveProblem(const std::string& filename, LPSolver::ProblemFormat format) const
 {
     int result = -1;
     switch(format)
@@ -75,7 +75,7 @@ void GLPKSolver::saveProblem(const std::string& filename, LPProblemFormat format
     mProblemFile = filename;
 }
 
-void GLPKSolver::saveSolution(const std::string& filename, LPSolutionType format) const
+void GLPKSolver::saveSolution(const std::string& filename, LPSolver::SolutionType format) const
 {
     int result = -1;
 
@@ -102,7 +102,7 @@ void GLPKSolver::saveSolution(const std::string& filename, LPSolutionType format
     mSolutionFile = filename;
 }
 
-void GLPKSolver::loadSolution(const std::string& filename, LPSolutionType format)
+void GLPKSolver::loadSolution(const std::string& filename, LPSolver::SolutionType format)
 {
     int result = -1;
 
@@ -214,8 +214,13 @@ GLPKSolver::Status GLPKSolver::translateIntoptReturnCode(int code)
     }
 }
 
+double GLPKSolver::getVariableValueByColumnIdx(uint32_t idx) const
+{
+    return glp_get_col_prim(mpProblem, static_cast<int>(idx) );
+}
+
 GLPKSolver::Status GLPKSolver::run(const std::string& problem,
-        LPProblemFormat problemFormat)
+        LPSolver::ProblemFormat problemFormat)
 {
     loadProblem(problem, problemFormat);
     // SIMPLEX

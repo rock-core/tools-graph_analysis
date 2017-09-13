@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_SUITE(lp_solver)
 
 BOOST_AUTO_TEST_CASE(scip)
 {
-    LPSolver::Ptr scip = LPSolver::getInstance(SCIP_SOLVER);
+    LPSolver::Ptr scip = LPSolver::getInstance(LPSolver::SCIP_SOLVER);
     std::string problemFilename = getRootDir() + "test/data/lp_problems/p0.lp";
     LPSolver::Status status = scip->run(problemFilename);
 
@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE(scip)
 
 BOOST_AUTO_TEST_CASE(glpk)
 {
-    LPSolver::Ptr scip = LPSolver::getInstance(GLPK_SOLVER);
+    LPSolver::Ptr scip = LPSolver::getInstance(LPSolver::GLPK_SOLVER);
     std::string problemFilename = getRootDir() + "test/data/lp_problems/p0.lp";
     LPSolver::Status status = scip->run(problemFilename);
 

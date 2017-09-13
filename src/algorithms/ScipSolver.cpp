@@ -36,7 +36,7 @@ void ScipSolver::debugSolution(bool enable)
     }
 }
 
-void ScipSolver::loadProblem(const std::string& filename, LPProblemFormat format)
+void ScipSolver::loadProblem(const std::string& filename, LPSolver::ProblemFormat format)
 {
     switch(format)
     {
@@ -52,7 +52,7 @@ void ScipSolver::loadProblem(const std::string& filename, LPProblemFormat format
     }
 }
 
-void ScipSolver::saveProblem(const std::string& filename, LPProblemFormat format) const
+void ScipSolver::saveProblem(const std::string& filename, LPSolver::ProblemFormat format) const
 {
     switch(format)
     {
@@ -67,45 +67,50 @@ void ScipSolver::saveProblem(const std::string& filename, LPProblemFormat format
     }
 }
 
-void ScipSolver::loadSolution(const std::string& filename, LPSolutionType format)
+void ScipSolver::loadSolution(const std::string& filename, LPSolver::SolutionType format)
 {
     switch(format)
     {
         case BASIC_SOLUTION:
-            break;
         case IPT_SOLUTION:
-            break;
         case MIP_SOLUTION:
-            break;
         default:
+            if(SCIP_OKAY != SCIPreadSol(mpScip, filename.c_str()))
+            {
+                throw std::runtime_error("graph_analysis::algorithms::ScipSolver: failed to read solution from '" + filename + "'");
+            }
             break;
     }
 }
 
-void ScipSolver::saveSolution(const std::string& filename, LPSolutionType format) const
+void ScipSolver::saveSolution(const std::string& filename, LPSolver::SolutionType format) const
 {
     switch(format)
     {
         case BASIC_SOLUTION:
-            break;
         case IPT_SOLUTION:
-            break;
         case MIP_SOLUTION:
-            break;
         default:
             LOG_INFO_S << "Saving solution: " << filename;
-            SCIP_SOL* solution = 0;
-            SCIPcreateCurrentSol(mpScip, &solution, NULL);
+            // Use null for current LP/pseudo solution
+            SCIP_SOL* solution = NULL;
+            //SCIPcreateCurrentSol(mpScip, &solution, NULL);
             SCIP_Bool printzero = 1;
             FILE* solutionFile = fopen(filename.c_str(),"w");
-            SCIPprintSol(mpScip, solution, solutionFile, printzero);
-            fclose(solutionFile);
+            if(SCIP_OKAY != SCIPprintSol(mpScip, solution, solutionFile, printzero))
+            {
+                fclose(solutionFile);
+                throw std::runtime_error("graph_analysis::algorithms::ScipSolver: failed to write solution to '" + filename + "'");
+            } else {
+                fclose(solutionFile);
+            }
             break;
     }
 }
 
 double ScipSolver::getObjectiveValue() const
 {
+    // https://stackoverflow.com/questions/24770707/get-the-objective-function-value-in-scip
     return SCIPgetPrimalbound(mpScip);
 }
 
@@ -131,15 +136,29 @@ LPSolver::Status ScipSolver::getStatus() const
 LPSolver::Status ScipSolver::run()
 {
     SCIPsolve(mpScip);
+
+    // http://scip.zib.de/doc/html/FAQ.php#scipgetvarsol
+    //SCIPgetSolVal(mpScip, SCIPgetBestSol(mpScip),
     return getStatus();
 }
 
-LPSolver::Status ScipSolver::run(const std::string& problem, LPProblemFormat problemFormat)
+LPSolver::Status ScipSolver::run(const std::string& problem, LPSolver::ProblemFormat problemFormat)
 {
     loadProblem(problem, problemFormat);
     return run();
 }
 
+double ScipSolver::getVariableValue(const std::string& varName) const
+{
+    SCIP_VAR* var = SCIPfindVar(mpScip, varName.c_str());
+    return SCIPgetSolVal(mpScip, SCIPgetBestSol(mpScip), var);
+}
+
+double ScipSolver::getVariableValueByColumnIdx(uint32_t idx) const
+{
+    std::string columnName = getVariableNameByColumnIdx(idx);
+    return getVariableValue(columnName);
+}
 
 } // end namespace algorithm
 } // end namespace graph_analysis

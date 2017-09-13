@@ -17,23 +17,27 @@ public:
 
     void debugSolution(bool enable);
 
-    LPSolverType getSolverType() const override { return SCIP_SOLVER; }
+    LPSolver::Type getSolverType() const override { return SCIP_SOLVER; }
 
-    void loadProblem(const std::string& filename, LPProblemFormat format = CPLEX) override;
+    void loadProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) override;
 
-    void saveProblem(const std::string& filename, LPProblemFormat format = CPLEX) const override;
+    void saveProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) const override;
 
-    void loadSolution(const std::string& filename, LPSolutionType format = BASIC_SOLUTION);
+    void loadSolution(const std::string& filename, LPSolver::SolutionType format = BASIC_SOLUTION);
 
-    void saveSolution(const std::string& filename, LPSolutionType format = BASIC_SOLUTION) const override;
+    void saveSolution(const std::string& filename, LPSolver::SolutionType format = BASIC_SOLUTION) const override;
 
     double getObjectiveValue() const override;
+
+    double getVariableValue(const std::string& varName) const;
+
+    double getVariableValueByColumnIdx(uint32_t idx) const override;
 
     Status run() override;
 
     Status getStatus() const;
 
-    Status run(const std::string& problem, LPProblemFormat problemFormat = CPLEX) override;
+    Status run(const std::string& problem, LPSolver::ProblemFormat problemFormat = CPLEX) override;
 
 private:
     SCIP* mpScip;

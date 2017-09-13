@@ -174,7 +174,9 @@ public:
     /**
      * Create a MultiCommodityMinCostFlow problem by loading (problem graph) from file
      */
-    static MultiCommodityMinCostFlow fromFile(const std::string& filename, representation::Type format = representation::UNKNOWN);
+    static MultiCommodityMinCostFlow fromFile(const std::string& filename,
+            representation::Type format = representation::UNKNOWN,
+            LPSolver::Type solverType = GLPK_SOLVER);
 
     /**
      * Save the MultiCommodityMinCostFlow problem to a file
@@ -187,7 +189,9 @@ public:
      * \param commodities number of commodities that need to be accounted for,
      * if 0 is given then information is extracted from the edges
      */
-    MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph, uint32_t commodities = 0);
+    MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph,
+            uint32_t commodities = 0,
+            LPSolver::Type solverType = GLPK_SOLVER);
 
     virtual ~MultiCommodityMinCostFlow() {}
 
@@ -195,17 +199,16 @@ public:
      * Creates the problem instance and return the temporary file in which the
      * problem is saved
      */
-    std::string createProblem(LPProblemFormat format = CPLEX);
+    std::string createProblem(LPSolver::ProblemFormat format = CPLEX);
 
     /**
      * Solve the multicommodity problem with the given LP solver
      * save the solution to the given filename (or a temporary file),
      * and store the flow status into the base graph with with which the problem
      * has been initalized
-     * \param solver The LP solver type
      * \param solutionFile the filename to save the solution
      */
-    LPSolver::Status solve(const LPSolverType& solver = GLPK_SOLVER, const std::string& solutionFile = "");
+    LPSolver::Status solve(const std::string& solutionFile = "");
 
     /**
      * Save the solution to a given file and format
@@ -213,14 +216,13 @@ public:
      * \param lp_solution_file filename of the solution file
      * \param format format of the solution
      */
-    void storeResult(const std::string& lp_problem_file,
-            const std::string& lp_solution_file,
-            LPProblemFormat problemFormat = CPLEX,
-            LPSolutionType format = BASIC_SOLUTION);
+    void storeResult();
 
     // Validate the result and return the number of violated inflow constraints
     std::vector<ConstraintViolation> validateInflow() const;
 private:
+    LPSolver::Ptr mpSolver;
+
     /// Number of commodities -- in order to identify the flow of a each
     /// individual commodity instance, the vector of commodities has
     /// as length the number of instances of goods
