@@ -150,6 +150,7 @@ LPSolver::Status ScipSolver::run(const std::string& problem, LPSolver::ProblemFo
 
 double ScipSolver::getVariableValue(const std::string& varName) const
 {
+    // http://scip.zib.de/doc/html/FAQ.php#scipgetvarsol
     SCIP_VAR* var = SCIPfindVar(mpScip, varName.c_str());
     return SCIPgetSolVal(mpScip, SCIPgetBestSol(mpScip), var);
 }

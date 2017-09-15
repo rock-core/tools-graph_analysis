@@ -85,8 +85,8 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
 
         {
             MultiCommodityMinCostFlow minCostFlow = MultiCommodityMinCostFlow::fromFile(savedProblem, representation::UNKNOWN, solverType);
-            uint32_t cost = minCostFlow.solve();
-            BOOST_TEST_MESSAGE("Cost after reloading are: " << cost);
+            LPSolver::Status status = minCostFlow.solve();
+            BOOST_TEST_MESSAGE("Cost after reloading are: " << minCostFlow.getCost());
         }
     }
 }
@@ -137,8 +137,8 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_1)
 
         std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_1");
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost =  minCostFlow.solve(prefixPath);
-        BOOST_TEST_MESSAGE("Cost are: " << cost);
+        minCostFlow.solve(prefixPath);
+        BOOST_TEST_MESSAGE("Cost are: " << minCostFlow.getCost());
 
         minCostFlow.save(prefixPath, representation::GRAPHVIZ);
 
@@ -221,8 +221,8 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_2)
         std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_2");
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost = minCostFlow.solve(prefixPath);
-        BOOST_TEST_MESSAGE("Cost are: " << cost);
+        minCostFlow.solve(prefixPath);
+        BOOST_TEST_MESSAGE("Cost are: " << minCostFlow.getCost());
 
         minCostFlow.save(prefixPath, representation::GRAPHVIZ);
 
@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_2)
                 BOOST_TEST_MESSAGE(ss.str());
             }
         }
-        BOOST_TEST_MESSAGE("Final objective value: " << minCostFlow.getObjectiveValue());
+        BOOST_TEST_MESSAGE("Final objective value: " << minCostFlow.getCost());
 
         std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
         BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should have no flaws, but has " << ConstraintViolation::toString(flaws) );
@@ -301,7 +301,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
                 for(size_t i = 0; i < commodities; ++i)
                 {
                     e0->setCommodityCapacityUpperBound(i,1000);
-                    e0->setCommodityCost(i,0);
+                    e0->setCommodityCost(i,1);
                 }
             }
         }
@@ -342,8 +342,8 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
 
             std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_3");
             MultiCommodityMinCostFlow minCostFlow(graph, commodities, solverType);
-            uint32_t cost = minCostFlow.solve(prefixPath);
-            BOOST_TEST_MESSAGE("Cost are: " << cost);
+            minCostFlow.solve(prefixPath);
+            BOOST_TEST_MESSAGE("Cost are: " << minCostFlow.getCost());
 
             minCostFlow.save(prefixPath, representation::GRAPHVIZ);
 
@@ -363,7 +363,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
                     BOOST_TEST_MESSAGE(ss.str());
                 }
             }
-            BOOST_TEST_MESSAGE("Final objective value: " << minCostFlow.getObjectiveValue());
+            BOOST_TEST_MESSAGE("Final objective value: " << minCostFlow.getCost());
 
             std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
             BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should have no flaws, but has " << ConstraintViolation::toString(flaws) << " solver type: " << LPSolver::TypeTxt[solverType] );
@@ -374,8 +374,8 @@ BOOST_AUTO_TEST_CASE(problem_from_file_0)
 {
     std::string filename = getRootDir() + "/test/data/multicommodity-min-cost-flow.gexf";
     MultiCommodityMinCostFlow minCostFlow = MultiCommodityMinCostFlow::fromFile(filename);
-    uint32_t cost = minCostFlow.solve();
-    BOOST_TEST_MESSAGE("Resulting cost are: " << cost);
+    minCostFlow.solve();
+    BOOST_TEST_MESSAGE("Resulting cost are: " << minCostFlow.getCost());
 
     std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
     BOOST_REQUIRE_MESSAGE(!flaws.empty(), "Solution will have flaws, but has " << ConstraintViolation::toString(flaws) );

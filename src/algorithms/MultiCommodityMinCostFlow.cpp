@@ -107,6 +107,11 @@ LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix)
     return status;
 }
 
+double MultiCommodityMinCostFlow::getCost() const
+{
+    return mpSolver->getObjectiveValue();
+}
+
 std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat format)
 {
     DirectedGraphInterface::Ptr diGraph = dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);

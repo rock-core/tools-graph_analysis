@@ -211,6 +211,11 @@ public:
     LPSolver::Status solve(const std::string& solutionFile = "");
 
     /**
+     * Get the cost of the min cost flow
+     */
+    double getCost() const;
+
+    /**
      * Save the solution to a given file and format
      * \param lp_problem_file problem file
      * \param lp_solution_file filename of the solution file
