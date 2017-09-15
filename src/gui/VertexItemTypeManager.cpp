@@ -55,7 +55,7 @@ VertexItemBase* VertexItemTypeManager::graphicsItemByType(const vertex::Type& ty
         return mClassVisualizationMap["default"];
     }
 
-    LOG_DEBUG_S << "type '" + type + "' registered.";
+    LOG_DEBUG_S << "GraphicsItem (Vertex) of type '" + type + "' created.";
     return it->second;
 }
 
