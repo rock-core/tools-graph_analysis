@@ -2,6 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_EDGEITEMBASE_HPP
 
 #include <QGraphicsItem>
+#include <QGraphicsPathItem>
 #include <graph_analysis/Edge.hpp>
 
 #include "GraphicsItemTypes.hpp"
@@ -47,6 +48,25 @@ public:
     virtual void adjustEdgePositioning();
 
     /**
+     * Calling this function in adjustEdgePositioning in a subclass
+     * will render straight paths between vertices
+     */
+    void drawStraightEdge();
+
+    /**
+     * Calling this function in adjustEdgePositioning in a subclass
+     * will render bezier curves between vertices
+     */
+    void drawBezierEdge();
+
+    /**
+     * Calling this function in adjustEdgePositioning in a subclass
+     * will render an arrow head at the tip
+     * needs to be called after(!) drawStraightEdge or drawBezierEdge
+     */
+    void drawArrowHead(size_t arrowSize);
+
+    /**
      * two points of the source and target, where this edge should attach
      *
      * this can be as simple as two points which shall be connected by a
@@ -70,12 +90,33 @@ public:
         return mpGraphWidget;
     }
 
+    /**
+     * Compute the shape of the edge (based on the edge path and the arrowhead)
+     */
+    virtual QPainterPath shape() const;
+
+    /**
+     * Get the edge path, e.g., to allow setting the brush
+     */
+    QGraphicsPathItem* getEdgePath() const { return mpEdgePath; }
+
+    /**
+     * Get the arrow head, e.g., to allow setting the brush
+     */
+    QGraphicsPolygonItem* getArrowHead() const { return mpArrowHead; }
+
 protected:
     /** underlying graph edge pointer */
     graph_analysis::Edge::Ptr mpEdge;
 
     /** parent managing graph widget */
     GraphWidget* mpGraphWidget;
+
+    /** path for rendering an edge **/
+    QGraphicsPathItem* mpEdgePath;
+    /** render an arrow head **/
+    QGraphicsPolygonItem* mpArrowHead;
+
 
     /** provide mouse-over status updates of the currently selected Edge */
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);

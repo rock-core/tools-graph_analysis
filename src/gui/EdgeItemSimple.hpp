@@ -35,8 +35,6 @@ protected:
 
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;
-    QGraphicsPolygonItem* mpMultiLine;
-    QGraphicsPolygonItem* mpArrowHead;
     int mArrowSize;
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
