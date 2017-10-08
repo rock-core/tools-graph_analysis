@@ -145,7 +145,7 @@ GraphWidget::VertexItemCoordinateCache GraphWidget::applyLayout(const VertexItem
         else
         {
             // invalid entry in the coordinate cache. clean it.
-            LOG_ERROR_S << "deleting invalid entry '" << it->first->toString()
+            LOG_DEBUG_S << "deleting invalid entry '" << it->first->toString()
                         << "' from cache";
             coordinates.erase(it);
         }
