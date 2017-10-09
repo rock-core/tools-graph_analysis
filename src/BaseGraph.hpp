@@ -339,6 +339,16 @@ public:
      */
     virtual EdgeIterator::Ptr getInEdgeIterator(const Vertex::Ptr& vertex) const { return getEdgeIterator(vertex); }
 
+    /**
+     * Get all in edges of a vertex as list
+     */
+    std::vector<Edge::Ptr> getInEdges(const Vertex::Ptr& vertex) const;
+
+    /**
+     * Get all out edges of a vertex as list
+     */
+    std::vector<Edge::Ptr> getOutEdges(const Vertex::Ptr& vertex) const;
+
     SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr> inEdges(const Vertex::Ptr& vertex) const;
     SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr> outEdges(const Vertex::Ptr& vertex) const;
 

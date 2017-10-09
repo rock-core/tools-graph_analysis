@@ -401,6 +401,29 @@ bool BaseGraph::empty() const
     return !vertexIt->next();
 }
 
+std::vector<Edge::Ptr> BaseGraph::getInEdges(const Vertex::Ptr& vertex) const
+{
+    std::vector<Edge::Ptr> edges;
+    EdgeIterator::Ptr edgeIt = getInEdgeIterator(vertex);
+    while(edgeIt->next())
+    {
+        edges.push_back(edgeIt->current());
+    }
+    return edges;
+}
+
+std::vector<Edge::Ptr> BaseGraph::getOutEdges(const Vertex::Ptr& vertex) const
+{
+    std::vector<Edge::Ptr> edges;
+    EdgeIterator::Ptr edgeIt = getOutEdgeIterator(vertex);
+    while(edgeIt->next())
+    {
+        edges.push_back(edgeIt->current());
+    }
+    return edges;
+}
+
+
 SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr> BaseGraph::inEdges(const Vertex::Ptr& vertex) const
 {
     return SpecializedIterable<EdgeIterator::Ptr, BaseGraph, Edge::Ptr,Vertex::Ptr>(this, vertex, &BaseGraph::getInEdgeIterator);
