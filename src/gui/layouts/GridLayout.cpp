@@ -1,5 +1,6 @@
 #include "GridLayout.hpp"
 #include <base-logging/Logging.hpp>
+#include <iostream>
 
 namespace graph_analysis {
 namespace gui {
@@ -10,8 +11,8 @@ GridLayout::GridLayout(GetLabelFunction getColumnLabelFunction,
     : GraphLayout()
     , mColumnLabelFunction(getColumnLabelFunction)
     , mRowLabelFunction(getRowLabelFunction)
-    , mColumnScalingFactor(100)
-    , mRowScalingFactor(100)
+    , mColumnScalingFactor(1.0)
+    , mRowScalingFactor(1.0)
     , mpGridLayout(NULL)
 {
 }
@@ -21,15 +22,6 @@ GridLayout::~GridLayout()
 
 GraphWidget::VertexItemCoordinateCache GridLayout::getCoordinates(const BaseGraph::Ptr& graph) const
 {
-    //GraphWidget::VertexItemCoordinateCache coordinates;
-    //VertexIterator::Ptr vertexIt = graph->getVertexIterator();
-    //while(vertexIt->next())
-    //{
-    //    Vertex::Ptr vertex = vertexIt->current();
-    //    coordinates[vertex] = getPosition(vertex);
-
-    //}
-    //return coordinates;
     return mCoordinates;
 }
 
@@ -104,8 +96,8 @@ void GridLayout::update(const BaseGraph::Ptr& graph,
     mColumnLabels.clear();
     mRowLabels.clear();
 
+    // Collect all available row and column labels
     VertexIterator::Ptr vertexIt = graph->getVertexIterator();
-    int i = 0;
     while(vertexIt->next())
     {
         Vertex::Ptr vertex = vertexIt->current();
@@ -114,19 +106,38 @@ void GridLayout::update(const BaseGraph::Ptr& graph,
         {
             mColumnLabels.push_back(columnLabel);
         }
-
         RowLabel rowLabel = getRowLabel(vertex);
         if(std::find(mRowLabels.begin(), mRowLabels.end(), rowLabel) == mRowLabels.end() )
         {
             mRowLabels.push_back(rowLabel);
         }
+    }
+
+    // Sort columns and row according to external requirements if needed
+    if(mSortColumnLabelFunction)
+    {
+        mSortColumnLabelFunction(graph, mColumnLabels);
+    }
+
+    if(mSortRowLabelFunction)
+    {
+        mSortRowLabelFunction(graph, mRowLabels);
+    }
+
+    // Add the graph items
+    vertexIt = graph->getVertexIterator();
+    while(vertexIt->next())
+    {
+        Vertex::Ptr vertex = vertexIt->current();
+        ColumnLabel columnLabel = getColumnLabel(vertex);
+        RowLabel rowLabel = getRowLabel(vertex);
 
         GraphWidget::VertexItemMap::iterator vit = vertexItemMap.find(vertex);
         if(vit == vertexItemMap.end())
         {
             LOG_WARN_S << "graph_analysis::gui::layouts::GridLayout: failed to find vertex that corresponds to vertex: " << vertex->toString();
         } else {
-            mpGridLayout->addItem(vit->second , getColumnIndex(columnLabel), getRowIndex(rowLabel));
+            mpGridLayout->addItem(vit->second , getColumnIndex(columnLabel)*mColumnScalingFactor, getRowIndex(rowLabel)*mRowScalingFactor);
         }
     }
 
@@ -145,7 +156,10 @@ void GridLayout::update(const BaseGraph::Ptr& graph,
             {
             LOG_WARN_S << "graph_analysis::gui::layouts::GridLayout: failed to find vertex that corresponds to vertex: " << vertex->toString();
             } else {
-                mCoordinates[vertex] = vertexItemMap[ vertex ]->pos();
+                QPointF position = vertexItemMap[ vertex ]->pos();
+                position.setX( position.x()*mColumnScalingFactor );
+                position.setY(position.y()*mRowScalingFactor );
+                mCoordinates[vertex] = position;
             }
         }
     }

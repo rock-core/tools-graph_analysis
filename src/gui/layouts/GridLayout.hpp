@@ -11,12 +11,21 @@ namespace gui {
 namespace layouts {
 
 typedef boost::function1<std::string, const graph_analysis::Vertex::Ptr&> GetLabelFunction;
+typedef boost::function2<void,const graph_analysis::BaseGraph::Ptr&, std::vector<std::string>& > SortLabelFunction;
 
+/**
+ * General grid layouter which uses row and columns
+ * It requires two functions inorder to associate a vertex
+ * to a row / a column
+ */
 class GridLayout : public GraphLayout
 {
 public:
+    typedef shared_ptr<GridLayout> Ptr;
     typedef std::string ColumnLabel;
     typedef std::string RowLabel;
+    typedef std::vector<ColumnLabel> ColumnLabels;
+    typedef std::vector<RowLabel> RowLabels;
 
     GridLayout(GetLabelFunction getColumnLabelFunction = GetLabelFunction(),
             GetLabelFunction getRowLabelFunction = GetLabelFunction());
@@ -30,8 +39,8 @@ public:
     //virtual int rowSpan() const = 0;
     //virtual int columnSpan() const = 0;
 
-    std::vector<ColumnLabel> getColumns() const  { return mColumnLabels; }
-    virtual std::vector<RowLabel> getRows() const { return mRowLabels; }
+    ColumnLabels getColumns() const  { return mColumnLabels; }
+    virtual RowLabels getRows() const { return mRowLabels; }
 
     size_t getColumnIndex(const ColumnLabel&) const;
     size_t getRowIndex(const RowLabel&) const;
@@ -46,6 +55,12 @@ public:
             GraphWidget::VertexItemMap& map,
             QGraphicsScene* scene);
 
+    void setColumnLabelFunction(GetLabelFunction f) { mColumnLabelFunction = f; }
+    void setRowLabelFunction(GetLabelFunction f) { mRowLabelFunction = f; }
+
+    void setSortColumnLabelFunction(SortLabelFunction f) { mSortColumnLabelFunction = f; }
+    void setSortRowLabelFunction(SortLabelFunction f) { mSortRowLabelFunction = f; }
+
     void setColumnScalingFactor(double f) { mColumnScalingFactor = f; }
     void setRowScalingFactor(double f) { mRowScalingFactor = f; }
 
@@ -55,11 +70,14 @@ private:
     GetLabelFunction mColumnLabelFunction;
     GetLabelFunction mRowLabelFunction;
 
+    SortLabelFunction mSortColumnLabelFunction;
+    SortLabelFunction mSortRowLabelFunction;
+
     double mColumnScalingFactor;
     double mRowScalingFactor;
 
-    std::vector<ColumnLabel> mColumnLabels;
-    std::vector<RowLabel> mRowLabels;
+    ColumnLabels mColumnLabels;
+    RowLabels mRowLabels;
 
     QGraphicsGridLayout* mpGridLayout;
     GraphWidget::VertexItemCoordinateCache mCoordinates;
