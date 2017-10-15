@@ -6,7 +6,10 @@ namespace algorithms {
 
 std::map<ConstraintViolation::Type, std::string> ConstraintViolation::TypeTxt = InitMap<ConstraintViolation::Type, std::string>
     (MinFlow, "MinFlow")
-    (TransFlow, "TransFlow");
+    (TransFlow, "TransFlow")
+    (TotalMinFlow, "TotalMinFlow")
+    (TotalTransFlow, "TotalTransFlow")
+    ;
 
 ConstraintViolation::ConstraintViolation(const MultiCommodityVertex::Ptr& v, uint32_t commodity, int32_t delta, Type type)
     : mpVertex(v)

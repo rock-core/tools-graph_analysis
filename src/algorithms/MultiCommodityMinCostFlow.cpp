@@ -464,26 +464,46 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
                 }
             }
         }
+
+        int32_t deltaTransflow = 0;
+        int32_t deltaInflow = 0;
         for(uint32_t k = 0; k < mCommodities; ++k)
         {
-            int32_t supply = vertex->getCommoditySupply(k);
-            if(supply < 0) // edge demand
+            int32_t supplyDemand = vertex->getCommoditySupply(k);
+            if(supplyDemand < 0) // edge demand
             {
-                 int32_t delta = supply + inFlow[k];
-                 if(delta != 0)
-                 {
-                     constraintViolations.push_back( ConstraintViolation(vertex, k, delta) );
-                 }
+                int32_t delta = supplyDemand + inFlow[k];
+                if(delta < 0)
+                {
+                    constraintViolations.push_back( ConstraintViolation(vertex, k, delta, ConstraintViolation::MinFlow) );
+                    deltaInflow += delta;
+                } else if(delta > 0)
+                {
+                    // supply is higher than demand
+                } else {
+                    // demand is perfectly matched
+                }
             }
 
             uint32_t minTransflow = vertex->getCommodityMinTransFlow(k);
             if(minTransflow == 0)
             {
                 continue;
-            } else if(outFlow[k] < minTransflow)
+            } else if(inFlow[k] < minTransflow || outFlow[k] < minTransflow)
             {
-                constraintViolations.push_back( ConstraintViolation(vertex, k, outFlow[k] - minTransflow, ConstraintViolation::TransFlow) );
+                int32_t delta = std::min(outFlow[k],inFlow[k]) - minTransflow;
+                constraintViolations.push_back( ConstraintViolation(vertex, k, delta, ConstraintViolation::TransFlow) );
+                deltaTransflow += delta;
             }
+        }
+
+        if(deltaInflow != 0)
+        {
+            constraintViolations.push_back(ConstraintViolation(vertex, std::numeric_limits<uint32_t>::max(), deltaInflow, ConstraintViolation::TotalMinFlow));
+        }
+        if(deltaTransflow != 0)
+        {
+            constraintViolations.push_back(ConstraintViolation(vertex, std::numeric_limits<uint32_t>::max(), deltaTransflow, ConstraintViolation::TotalTransFlow));
         }
     }
     return constraintViolations;
