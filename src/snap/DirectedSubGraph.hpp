@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_SNAP_DIRECTED_SUB_GRAPH_HPP
 #define GRAPH_ANALYSIS_SNAP_DIRECTED_SUB_GRAPH_HPP
 
-#include <graph_analysis/SubGraph.hpp>
+#include "../SubGraph.hpp"
 
 namespace graph_analysis {
 

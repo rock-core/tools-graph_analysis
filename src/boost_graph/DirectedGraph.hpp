@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_BOOST_GRAPH_DIRECTED_GRAPH_HPP
 #define GRAPH_ANALYSIS_BOOST_GRAPH_DIRECTED_GRAPH_HPP
 
-#include <graph_analysis/Graph.hpp>
-#include <graph_analysis/SubGraphImpl.hpp>
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/boost_graph/ArcIterator.hpp>
+#include "../Graph.hpp"
+#include "../SubGraphImpl.hpp"
+#include "../BaseGraph.hpp"
+#include "../boost_graph/ArcIterator.hpp"
 #include <boost/graph/adjacency_list.hpp>
 #include <base-logging/Logging.hpp>
 

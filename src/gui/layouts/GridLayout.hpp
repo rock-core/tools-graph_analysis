@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_LAYOUTS_GRID_LAYOUT_HPP
 #define GRAPH_ANALYSIS_GUI_LAYOUTS_GRID_LAYOUT_HPP
 
-#include <graph_analysis/gui/GraphLayout.hpp>
+#include "../GraphLayout.hpp"
 #include <QPointF>
 #include <QGraphicsGridLayout>
 #include <boost/function.hpp>

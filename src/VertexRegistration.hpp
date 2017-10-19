@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_REGISTRATION_HPP
 #define GRAPH_ANALYSIS_VERTEX_REGISTRATION_HPP
 
-#include <graph_analysis/VertexTypeManager.hpp>
+#include "VertexTypeManager.hpp"
 
 namespace graph_analysis {
 

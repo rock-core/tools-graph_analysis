@@ -1,17 +1,16 @@
 #ifndef GRAPH_ANALYSIS_BASE_GRAPH_HPP
 #define GRAPH_ANALYSIS_BASE_GRAPH_HPP
 
-#include <graph_analysis/SharedPtr.hpp>
-#include <graph_analysis/EdgeIterator.hpp>
-#include <graph_analysis/VertexIterator.hpp>
-#include <graph_analysis/Filter.hpp>
-#include <graph_analysis/SubGraph.hpp>
-#include <graph_analysis/Algorithms.hpp>
-#include <graph_analysis/BaseIterable.hpp>
-#include <graph_analysis/BaseGraphObserver.hpp>
-#include <graph_analysis/HyperEdge.hpp>
-
 #include <set>
+#include "SharedPtr.hpp"
+#include "EdgeIterator.hpp"
+#include "VertexIterator.hpp"
+#include "Filter.hpp"
+#include "SubGraph.hpp"
+#include "Algorithms.hpp"
+#include "BaseIterable.hpp"
+#include "BaseGraphObserver.hpp"
+#include "HyperEdge.hpp"
 
 /**
  * The main namespace of this library

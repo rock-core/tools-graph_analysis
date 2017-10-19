@@ -5,8 +5,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/xpressive/xpressive.hpp>
 #include <base-logging/Logging.hpp>
-#include <graph_analysis/VertexTypeManager.hpp>
-#include <graph_analysis/EdgeTypeManager.hpp>
+#include "../VertexTypeManager.hpp"
+#include "../EdgeTypeManager.hpp"
 
 namespace graph_analysis {
 namespace io {
@@ -24,13 +24,13 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     libgexf::DirectedGraph& digraph = gexf.getDirectedGraph();
     libgexf::Data& data = gexf.getData();
 
-    std::string classAttr = CLASS; // see <graph_analysis/GraphIO.hpp>
+    std::string classAttr = CLASS; // see "GraphIO.hpp"
     data.addNodeAttributeColumn(classAttr, "class", "STRING");
     //data.setNodeAttributeDefault(classAttr,"")
     data.addEdgeAttributeColumn(classAttr, "class", "STRING");
     //data.setEdgeAttributeDefault(classAttr,"")
 
-    std::string labelAttr = LABEL; // see <graph_analysis/GraphIO.hpp>
+    std::string labelAttr = LABEL; // see "GraphIO.hpp"
     data.addNodeAttributeColumn(labelAttr, "label", "STRING");
     data.addEdgeAttributeColumn(labelAttr, "label", "STRING");
 

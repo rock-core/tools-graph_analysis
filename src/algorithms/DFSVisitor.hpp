@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_DFS_VISITOR_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_DFS_VISITOR_HPP
 
-#include <graph_analysis/algorithms/Visitor.hpp>
+#include "Visitor.hpp"
 #include <base-logging/Logging.hpp>
 
 namespace graph_analysis {

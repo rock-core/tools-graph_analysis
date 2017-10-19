@@ -1,9 +1,9 @@
 #ifndef GRAPH_ANALYSIS_PERCOLATION_STRATEGY_HPP
 #define GRAPH_ANALYSIS_PERCOLATION_STRATEGY_HPP
 
-#include <graph_analysis/SharedPtr.hpp>
-#include <graph_analysis/SubGraph.hpp>
-#include <graph_analysis/percolation/Event.hpp>
+#include "../SharedPtr.hpp"
+#include "../SubGraph.hpp"
+#include "Event.hpp"
 
 namespace graph_analysis {
 namespace percolation {

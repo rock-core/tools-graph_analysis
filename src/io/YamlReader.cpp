@@ -1,6 +1,6 @@
 #include "YamlReader.hpp"
 #include <base-logging/Logging.hpp>
-#include <graph_analysis/VertexTypeManager.hpp>
+#include "../VertexTypeManager.hpp"
 
 namespace graph_analysis {
 namespace io {

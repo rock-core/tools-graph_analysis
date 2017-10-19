@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_EDGE_ITERABLE_HPP
 #define GRAPH_ANALYSIS_EDGE_ITERABLE_HPP
 
-#include <graph_analysis/EdgeIterator.hpp>
+#include "EdgeIterator.hpp"
 
 namespace graph_analysis {
 

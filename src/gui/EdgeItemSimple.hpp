@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_EDGEITEMSIMPLE_HPP
 #define GRAPH_ANALYSIS_GUI_EDGEITEMSIMPLE_HPP
 
-#include <graph_analysis/gui/EdgeItemBase.hpp>
+#include "EdgeItemBase.hpp"
 
 namespace graph_analysis {
 namespace gui {

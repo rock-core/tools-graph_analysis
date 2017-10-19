@@ -3,7 +3,7 @@
 
 #include <map>
 #include <vector>
-#include <graph_analysis/algorithms/MultiCommodityVertex.hpp>
+#include "MultiCommodityVertex.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

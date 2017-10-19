@@ -5,11 +5,12 @@
 #include <stdexcept>
 #include <vector>
 #include <iomanip>
-#include <graph_analysis/SharedPtr.hpp>
 
 #include <boost/serialization/vector.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+
+#include "SharedPtr.hpp"
 
 namespace graph_analysis {
 

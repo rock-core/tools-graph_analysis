@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <base-logging/Logging.hpp>
-#include <graph_analysis/percolation/RandomNumberGenerator.hpp>
+#include "../RandomNumberGenerator.hpp"
 
 namespace graph_analysis {
 namespace percolation {

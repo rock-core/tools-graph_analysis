@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_HPP
 
-#include <graph_analysis/SharedPtr.hpp>
+#include "SharedPtr.hpp"
 
 namespace graph_analysis {
 

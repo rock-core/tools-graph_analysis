@@ -2,7 +2,7 @@
 #include <sstream>
 #include <boost/regex.hpp>
 #include <boost/filesystem.hpp>
-#include <graph_analysis/MapInitializer.hpp>
+#include "MapInitializer.hpp"
 
 #include "io/GexfWriter.hpp"
 #include "io/GexfReader.hpp"

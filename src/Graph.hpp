@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GRAPH_HPP
 #define GRAPH_ANALYSIS_GRAPH_HPP
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/TypedGraph.hpp>
+#include "BaseGraph.hpp"
+#include "TypedGraph.hpp"
 
 #endif // GRAPH_ANALYSIS_GRAPH_HPP

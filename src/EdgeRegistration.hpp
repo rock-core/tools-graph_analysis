@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_EDGE_REGISTRATION_HPP
 #define GRAPH_ANALYSIS_EDGE_REGISTRATION_HPP
 
-#include <graph_analysis/EdgeTypeManager.hpp>
+#include "EdgeTypeManager.hpp"
 
 namespace graph_analysis {
 

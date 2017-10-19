@@ -1,11 +1,11 @@
 #include "VertexItemSimple.hpp"
-#include <graph_analysis/gui/GraphWidget.hpp>
+#include "GraphWidget.hpp"
 #include <QGraphicsSceneMouseEvent>
 #include <QDrag>
 
-#include <graph_analysis/gui/EdgeMimeData.hpp>
-#include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
-#include <graph_analysis/EdgeTypeManager.hpp>
+#include "EdgeMimeData.hpp"
+#include "BaseGraphView/AddEdgeDialog.hpp"
+#include "../EdgeTypeManager.hpp"
 
 #include <base-logging/Logging.hpp>
 

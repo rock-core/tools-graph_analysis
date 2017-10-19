@@ -1,5 +1,5 @@
 #include "EdgeItemSimple.hpp"
-#include <graph_analysis/gui/GraphWidget.hpp>
+#include "GraphWidget.hpp"
 #include <base-logging/Logging.hpp>
 #include <cmath>
 

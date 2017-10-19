@@ -5,7 +5,7 @@
 #include <QGraphicsItemGroup>
 #include <QPainter>
 #include <math.h>
-#include <graph_analysis/Edge.hpp>
+#include "../Edge.hpp"
 
 #include "GraphicsItemTypes.hpp"
 

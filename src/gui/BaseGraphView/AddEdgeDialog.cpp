@@ -2,7 +2,7 @@
 
 #include "ui_AddEdgeDialog.h"
 
-#include <graph_analysis/EdgeTypeManager.hpp>
+#include "../../EdgeTypeManager.hpp"
 
 namespace graph_analysis
 {

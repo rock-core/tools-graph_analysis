@@ -2,8 +2,8 @@
 #define GRAPH_ANALYSIS_GUI_QBASEGRAPH_H
 
 #include <QObject>
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/BaseGraphObserver.hpp>
+#include "../BaseGraph.hpp"
+#include "../BaseGraphObserver.hpp"
 
 namespace graph_analysis
 {

@@ -2,14 +2,13 @@
 
 #include <base-logging/Logging.hpp>
 
-#include <graph_analysis/VertexTypeManager.hpp>
-#include <graph_analysis/EdgeTypeManager.hpp>
+#include "../VertexTypeManager.hpp"
+#include "../EdgeTypeManager.hpp"
 
-#include <graph_analysis/gui/EdgeMimeData.hpp>
-
-#include <graph_analysis/gui/BaseGraphView/AddVertexDialog.hpp>
-#include <graph_analysis/gui/BaseGraphView/AddEdgeDialog.hpp>
-#include <graph_analysis/io/GVGraph.hpp>
+#include "EdgeMimeData.hpp"
+#include "BaseGraphView/AddVertexDialog.hpp"
+#include "BaseGraphView/AddEdgeDialog.hpp"
+#include "../io/GVGraph.hpp"
 
 #include <QFileDialog>
 #include <QMessageBox>

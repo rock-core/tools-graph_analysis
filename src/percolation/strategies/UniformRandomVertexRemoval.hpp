@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_PERCOLATION_STRATEGIES_UNIFORM_RANDOM_VERTEX_REMOVAL
 #define GRAPH_ANALYSIS_PERCOLATION_STRATEGIES_UNIFORM_RANDOM_VERTEX_REMOVAL
 
-#include <graph_analysis/percolation/Strategy.hpp>
+#include "../Strategy.hpp"
 
 namespace graph_analysis {
 namespace percolation {

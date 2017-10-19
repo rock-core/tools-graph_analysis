@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPHLAYOUT_HPP
 #define GRAPH_ANALYSIS_GUI_GRAPHLAYOUT_HPP
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/gui/GraphWidget.hpp>
+#include "../BaseGraph.hpp"
+#include "GraphWidget.hpp"
 
 namespace graph_analysis {
 namespace gui {

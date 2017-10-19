@@ -6,9 +6,9 @@
 #include <fstream>
 #include <sstream>
 #include <exception>
-#include <graph_analysis/GraphIO.hpp>
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/Edge.hpp>
+#include "../GraphIO.hpp"
+#include "../Vertex.hpp"
+#include "../Edge.hpp"
 
 namespace graph_analysis {
 namespace io {

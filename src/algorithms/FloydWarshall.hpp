@@ -1,11 +1,9 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_FLOYD_WARHSHALL_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_FLOYD_WARHSHALL_HPP
 
-#include <graph_analysis/Edge.hpp>
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/algorithms/DistanceMatrix.hpp>
-#include <graph_analysis/SharedPtr.hpp>
-
+#include "../Edge.hpp"
+#include "../BaseGraph.hpp"
+#include "DistanceMatrix.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_SUB_GRAPH_HPP
 #define GRAPH_ANALYSIS_SUB_GRAPH_HPP
 
-#include <graph_analysis/SharedPtr.hpp>
-#include <graph_analysis/VertexIterable.hpp>
-#include <graph_analysis/EdgeIterable.hpp>
-#include <graph_analysis/Filter.hpp>
+#include "SharedPtr.hpp"
+#include "VertexIterable.hpp"
+#include "EdgeIterable.hpp"
+#include "Filter.hpp"
 
 namespace graph_analysis {
 

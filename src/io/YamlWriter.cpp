@@ -1,7 +1,7 @@
 #include "YamlWriter.hpp"
 #include <base-logging/Logging.hpp>
 #include <boost/lexical_cast.hpp>
-#include <graph_analysis/GraphElement.hpp>
+#include "../GraphElement.hpp"
 
 namespace graph_analysis {
 namespace io {

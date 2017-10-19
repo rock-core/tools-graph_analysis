@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_EDGE_ITEM_TYPE_MANAGER_HPP
 
 #include <base-logging/Singleton.hpp>
-#include <graph_analysis/Edge.hpp>
+#include "../Edge.hpp"
 #include <QStringList>
 #include <map>
 

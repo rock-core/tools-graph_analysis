@@ -7,7 +7,7 @@
 #include <graphviz/cgraph.h>
 #define WITH_CGRAPH
 #include <graphviz/gvc.h>
-#include <graph_analysis/BaseGraph.hpp>
+#include "../BaseGraph.hpp"
 
 // http://graphviz.org/doc/libguide/libguide.pdf
 // The agopen method for opening a graph

@@ -3,8 +3,8 @@
 #include <libgexf/nodeiter.h>
 #include <libgexf/edgeiter.h>
 #include <libgexf/filereader.h>
-#include <graph_analysis/VertexTypeManager.hpp>
-#include <graph_analysis/EdgeTypeManager.hpp>
+#include "../VertexTypeManager.hpp"
+#include "../EdgeTypeManager.hpp"
 
 namespace graph_analysis {
 namespace io {

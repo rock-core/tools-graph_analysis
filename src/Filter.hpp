@@ -4,14 +4,14 @@
 #include <map>
 #include <vector>
 #include <stdexcept>
-#include <graph_analysis/Edge.hpp>
 #include <assert.h>
-#include <graph_analysis/SharedPtr.hpp>
+#include "Edge.hpp"
+#include "SharedPtr.hpp"
 
 namespace graph_analysis {
 namespace filters {
 
-/// Operator 
+/// Operator
 enum Operator { AND = 0, OR };
 /// Filters can operator on content or class information
 enum Type { CONTENT = 0, CLASS };

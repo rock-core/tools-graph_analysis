@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_IO_GRAPHVIZWRITER_HPP
 #define GRAPH_ANALYSIS_IO_GRAPHVIZWRITER_HPP
 
-#include <graph_analysis/GraphIO.hpp>
-#include <graph_analysis/io/GraphvizStyle.hpp>
+#include "../GraphIO.hpp"
+#include "GraphvizStyle.hpp"
 
 namespace graph_analysis {
 namespace io {
@@ -18,7 +18,7 @@ namespace io {
  * In order to apply a certain style to the graph output, the GraphvizWriter
  * provides a GraphvizStyle to implement some hooks
  \verbatim
-    #include <graph_analysis/io/GVGraph.hpp>
+    #include "io/GVGraph.hpp"
 
     using namespace graph_analysis;
 

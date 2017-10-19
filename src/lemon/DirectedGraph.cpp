@@ -1,7 +1,7 @@
 #include "DirectedGraph.hpp"
-#include <base-logging/Logging.hpp>
-#include <graph_analysis/filters/CommonFilters.hpp>
 #include <boost/make_shared.hpp>
+#include <base-logging/Logging.hpp>
+#include "../filters/CommonFilters.hpp"
 
 namespace graph_analysis {
 namespace lemon {

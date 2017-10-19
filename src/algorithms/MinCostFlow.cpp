@@ -2,7 +2,7 @@
 
 #include <lemon/network_simplex.h>
 #include <lemon/cycle_canceling.h>
-#include <graph_analysis/lemon/DirectedGraph.hpp>
+#include "../lemon/DirectedGraph.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

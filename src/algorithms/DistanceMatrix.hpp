@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_DISTANCE_MATRIX_HPP
 
 #include <map>
-#include <graph_analysis/Vertex.hpp>
+#include "../Vertex.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_ITERABLE_HPP
 #define GRAPH_ANALYSIS_VERTEX_ITERABLE_HPP
 
-#include <graph_analysis/VertexIterator.hpp>
+#include "VertexIterator.hpp"
 
 namespace graph_analysis {
 

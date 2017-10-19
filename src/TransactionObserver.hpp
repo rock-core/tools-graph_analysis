@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_TRANSACTION_OBSERVER_HPP__
 #define GRAPH_ANALYSIS_TRANSACTION_OBSERVER_HPP__
 
-#include <graph_analysis/BaseGraphObserver.hpp>
+#include "BaseGraphObserver.hpp"
 #include <boost/pointer_cast.hpp>
 #include <boost/shared_ptr.hpp>
 

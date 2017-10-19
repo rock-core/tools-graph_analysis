@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_BASE_GRAPH_OBSERVER_HPP
 #define GRAPH_ANALYSIS_BASE_GRAPH_OBSERVER_HPP
 
-#include <graph_analysis/Edge.hpp>
-#include <graph_analysis/Vertex.hpp>
+#include "Edge.hpp"
+#include "Vertex.hpp"
 
 namespace graph_analysis
 {
@@ -19,7 +19,7 @@ enum EventType
 };
 
 /**
- * @brief Transaction events 
+ * @brief Transaction events
  * These events are triggers for the notification system to allow transactions
  * to be framed. E.g. perform rollbacks of entire transactions, or store
  * transaction events and flush them once a transaction is completed.

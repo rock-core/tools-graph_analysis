@@ -1,6 +1,6 @@
 #include "WidgetManager.hpp"
 #include "GraphWidgetManager.hpp"
-#include <graph_analysis/gui/dialogs/PropertyDialog.hpp>
+#include "dialogs/PropertyDialog.hpp"
 
 #include <exception>
 #include <base-logging/Logging.hpp>

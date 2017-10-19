@@ -14,12 +14,12 @@
 #include <QToolBar>
 #include <base-logging/Logging.hpp>
 
-#include <graph_analysis/GraphIO.hpp>
-#include <graph_analysis/io/YamlWriter.hpp>
-#include <graph_analysis/io/GexfWriter.hpp>
-#include <graph_analysis/io/GexfReader.hpp>
-#include <graph_analysis/io/YamlReader.hpp>
-#include <graph_analysis/io/GraphvizWriter.hpp>
+#include "../GraphIO.hpp"
+#include "../io/YamlWriter.hpp"
+#include "../io/GexfWriter.hpp"
+#include "../io/GexfReader.hpp"
+#include "../io/YamlReader.hpp"
+#include "../io/GraphvizWriter.hpp"
 #include "GraphWidget.hpp"
 #include "dialogs/IODialog.hpp"
 

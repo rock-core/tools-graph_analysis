@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_GVLAYOUT_HPP
 #define GRAPH_ANALYSIS_GUI_GVLAYOUT_HPP
 
-#include <graph_analysis/gui/GraphLayout.hpp>
+#include "../GraphLayout.hpp"
 
 namespace graph_analysis {
 namespace io {

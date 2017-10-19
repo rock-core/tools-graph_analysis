@@ -2,8 +2,8 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_BFS_HPP
 
 #include <queue>
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/algorithms/BFSVisitor.hpp>
+#include "../BaseGraph.hpp"
+#include "BFSVisitor.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

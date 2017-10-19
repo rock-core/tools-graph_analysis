@@ -7,9 +7,9 @@
  *        disappear from the graph
  */
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/SubGraph.hpp>
-#include <graph_analysis/percolation/Strategy.hpp>
+#include "BaseGraph.hpp"
+#include "SubGraph.hpp"
+#include "percolation/Strategy.hpp"
 
 namespace graph_analysis {
 namespace percolation {

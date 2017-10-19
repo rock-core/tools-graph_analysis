@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_EDGEMIMEDATA_H
 #define GRAPH_ANALYSIS_EDGEMIMEDATA_H
 
-#include <graph_analysis/Vertex.hpp>
+#include "../Vertex.hpp"
 #include <QMimeData>
 
 namespace graph_analysis

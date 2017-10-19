@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_LEMON_ARC_ITERATOR_HPP
 #define GRAPH_ANALYSIS_LEMON_ARC_ITERATOR_HPP
 
-#include <graph_analysis/EdgeIterator.hpp>
-#include <graph_analysis/Vertex.hpp>
+#include "../EdgeIterator.hpp"
+#include "../Vertex.hpp"
 
 namespace graph_analysis {
 namespace lemon {

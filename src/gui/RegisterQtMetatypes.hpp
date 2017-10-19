@@ -3,9 +3,9 @@
 
 #include <QMetaType>
 
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/Edge.hpp>
-#include <graph_analysis/BaseGraph.hpp>
+#include "../Vertex.hpp"
+#include "../Edge.hpp"
+#include "../BaseGraph.hpp"
 
 /**
  * doing so allows us to use the shared pointer inside "QVariant"

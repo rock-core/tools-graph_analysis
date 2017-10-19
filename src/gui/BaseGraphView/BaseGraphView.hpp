@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_GUI_BASEGRAPHVIEW_HPP
 #define GRAPH_ANALYSIS_GUI_BASEGRAPHVIEW_HPP
 
-#include <graph_analysis/gui/GraphWidget.hpp>
+#include "../GraphWidget.hpp"
 
-#include <graph_analysis/gui/VertexItemBase.hpp>
-#include <graph_analysis/gui/EdgeItemBase.hpp>
+#include "../VertexItemBase.hpp"
+#include "../EdgeItemBase.hpp"
 
 namespace graph_analysis
 {

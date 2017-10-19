@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYISIS_BIPARTITE_GRAPH_HPP
 #define GRAPH_ANALYISIS_BIPARTITE_GRAPH_HPP
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/SubGraph.hpp>
+#include "BaseGraph.hpp"
+#include "SubGraph.hpp"
 
 namespace graph_analysis {
 

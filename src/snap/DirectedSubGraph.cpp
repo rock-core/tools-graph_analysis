@@ -1,7 +1,5 @@
 #include "DirectedSubGraph.hpp"
-#include <graph_analysis/BaseGraph.hpp>
-
-#include <graph_analysis/SharedPtr.hpp>
+#include "../BaseGraph.hpp"
 
 namespace graph_analysis {
 namespace snap {

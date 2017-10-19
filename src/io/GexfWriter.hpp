@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_IO_GEXF_WRITER_HPP
 #define GRAPH_ANALYSIS_IO_GEXF_WRITER_HPP
 
-#include <graph_analysis/GraphIO.hpp>
+#include "../GraphIO.hpp"
 
 namespace graph_analysis {
 namespace io {

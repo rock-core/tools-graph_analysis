@@ -5,8 +5,8 @@
 #include <base/Time.hpp>
 #include <numeric/Stats.hpp>
 
-#include <graph_analysis/lemon/Graph.hpp>
-#include <graph_analysis/snap/Graph.hpp>
+#include "lemon/Graph.hpp"
+#include "snap/Graph.hpp"
 
 struct Benchmark
 {

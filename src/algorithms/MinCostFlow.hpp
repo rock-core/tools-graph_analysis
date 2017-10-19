@@ -1,9 +1,9 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_MIN_COST_FLOW_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_MIN_COST_FLOW_HPP
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/WeightedEdge.hpp>
-#include <graph_analysis/WeightedVertex.hpp>
+#include "../BaseGraph.hpp"
+#include "../WeightedEdge.hpp"
+#include "../WeightedVertex.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_FILTERS_EDGE_CONTEXT_FILTER_HPP
 #define GRAPH_ANALYSIS_FILTERS_EDGE_CONTEXT_FILTER_HPP
 
-#include <graph_analysis/Filter.hpp>
+#include "../Filter.hpp"
 
 namespace graph_analysis {
 namespace filters {

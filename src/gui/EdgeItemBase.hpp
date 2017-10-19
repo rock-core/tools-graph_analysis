@@ -3,7 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsPathItem>
-#include <graph_analysis/Edge.hpp>
+#include "../Edge.hpp"
 
 #include "GraphicsItemTypes.hpp"
 

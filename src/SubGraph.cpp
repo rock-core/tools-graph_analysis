@@ -1,9 +1,9 @@
 #include "SubGraph.hpp"
 
 #include <boost/bind.hpp>
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
-#include <graph_analysis/filters/CommonFilters.hpp>
+#include "BaseGraph.hpp"
+#include "filters/EdgeContextFilter.hpp"
+#include "filters/CommonFilters.hpp"
 
 namespace graph_analysis {
 

@@ -1,8 +1,8 @@
 #include "PropertyDialog.hpp"
 
-#include <graph_analysis/gui/IconManager.hpp>
-#include <graph_analysis/gui/GraphWidgetManager.hpp>
-#include <graph_analysis/gui/WidgetManager.hpp>
+#include "gui/IconManager.hpp"
+#include "gui/GraphWidgetManager.hpp"
+#include "gui/WidgetManager.hpp"
 
 #include <QScrollBar>
 

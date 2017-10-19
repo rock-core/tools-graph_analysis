@@ -1,6 +1,6 @@
 #include "EdgeMimeData.hpp"
 
-#include <graph_analysis/Vertex.hpp>
+#include "../Vertex.hpp"
 #include <QMimeData>
 
 namespace graph_analysis

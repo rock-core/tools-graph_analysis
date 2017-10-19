@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_VERTEX_ITERATOR_HPP
 #define GRAPH_ANALYSIS_VERTEX_ITERATOR_HPP
 
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/SharedPtr.hpp>
+#include "Vertex.hpp"
+#include "SharedPtr.hpp"
 
 
 namespace graph_analysis {

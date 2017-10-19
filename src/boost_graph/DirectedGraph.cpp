@@ -1,5 +1,5 @@
 #include "DirectedGraph.hpp"
-#include <graph_analysis/BaseGraph.hpp>
+#include "../BaseGraph.hpp"
 #include <sstream>
 
 #include "ArcIterator.hpp"
@@ -44,7 +44,7 @@ GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
 
     GraphElementId newVertexId = msNewVertexId[getId()]++;
     // Set the internal index property (This probably shouldn't be done.)
-    //::boost::put( boost::vertex_index_t(), mGraph, vertexDescriptor, newVertexId); 
+    //::boost::put( boost::vertex_index_t(), mGraph, vertexDescriptor, newVertexId);
 
     // Insert to ID-Vertex map and memorize last added vertex
     mVertexMap.insert(VertexMap::value_type(newVertexId, vertexDescriptor));

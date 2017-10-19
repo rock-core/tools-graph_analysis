@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_HPP
 
 #include <QMainWindow>
-#include <graph_analysis/gui/QBaseGraph.hpp>
+#include "QBaseGraph.hpp"
 
 namespace Ui
 {

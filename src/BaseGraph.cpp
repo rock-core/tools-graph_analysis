@@ -1,10 +1,10 @@
 #include "BaseGraph.hpp"
-#include <graph_analysis/boost_graph/DirectedGraph.hpp>
-#include <graph_analysis/lemon/Graph.hpp>
-#include <graph_analysis/snap/DirectedGraph.hpp>
-#include <graph_analysis/MapInitializer.hpp>
 #include <base-logging/Logging.hpp>
 #include <sstream>
+#include "boost_graph/DirectedGraph.hpp"
+#include "lemon/Graph.hpp"
+#include "snap/DirectedGraph.hpp"
+#include "MapInitializer.hpp"
 
 namespace graph_analysis {
 

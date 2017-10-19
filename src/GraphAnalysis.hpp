@@ -39,8 +39,8 @@
 *
  * \section Examples
  \verbatim
- #include <graph_analysis/GraphAnalysis.hpp>
- #include <graph_analysis/lemon/Graph.hpp>
+ #include "GraphAnalysis.hpp"
+ #include "lemon/Graph.hpp"
  ...
  using namespace graph_analysis;
 
@@ -113,6 +113,6 @@
  * \namespace algorithms
  * \brief Algorithms implementations that rely on the (wrapper) interface of this library
  */
-#include <graph_analysis/Graph.hpp>
+#include "Graph.hpp"
 
 #endif // GRAPH_ANALYSIS_GRAPH_ANALYSIS_HPP

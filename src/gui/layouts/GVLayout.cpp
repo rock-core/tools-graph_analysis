@@ -1,5 +1,5 @@
 #include "GVLayout.hpp"
-#include <graph_analysis/io/GVGraph.hpp>
+#include "../../io/GVGraph.hpp"
 #include <sstream>
 
 #include <base-logging/Logging.hpp>

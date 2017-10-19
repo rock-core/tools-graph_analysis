@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_VISITOR_HPP
 
 #include <map>
-#include <graph_analysis/Edge.hpp>
+#include "../Edge.hpp"
 
 #define GA_ALGO_NI(X) throw std::runtime_error("graph_analysis::algorithms::Visitor: " X " not implemented");
 

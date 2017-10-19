@@ -23,12 +23,10 @@
 #include <base/Time.hpp>
 #include <base-logging/Logging.hpp>
 
-#include <graph_analysis/io/GVGraph.hpp>
-
-#include <graph_analysis/gui/VertexItemTypeManager.hpp>
-#include <graph_analysis/gui/EdgeItemTypeManager.hpp>
-
-#include <graph_analysis/gui/GraphLayoutManager.hpp>
+#include "../../io/GVGraph.hpp"
+#include "../VertexItemTypeManager.hpp"
+#include "../EdgeItemTypeManager.hpp"
+#include "../GraphLayoutManager.hpp"
 
 using namespace graph_analysis;
 

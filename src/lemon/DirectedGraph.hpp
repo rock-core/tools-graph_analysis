@@ -1,13 +1,12 @@
 #ifndef GRAPH_ANALYSIS_LEMON_DIRECTED_GRAPH_HPP
 #define GRAPH_ANALYSIS_LEMON_DIRECTED_GRAPH_HPP
 
-
 #include <lemon/adaptors.h>
 #include <lemon/lgf_writer.h>
 #include <lemon/connectivity.h>
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/lemon/DirectedSubGraph.hpp>
+#include "../BaseGraph.hpp"
+#include "DirectedSubGraph.hpp"
 
 namespace graph_analysis {
 namespace lemon {

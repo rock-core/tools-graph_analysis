@@ -9,8 +9,8 @@
 #ifndef PROPERTYDIALOG_H
 #define PROPERTYDIALOG_H
 
-#include <graph_analysis/gui/dialogs/CustomDialog.hpp>
-#include <graph_analysis/gui/FilterManager.hpp>
+#include "CustomDialog.hpp"
+#include "../FilterManager.hpp"
 
 #include <vector>
 #include <QLabel>

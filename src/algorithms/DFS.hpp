@@ -2,8 +2,8 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_DFS_HPP
 
 #include <vector>
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/algorithms/DFSVisitor.hpp>
+#include "../BaseGraph.hpp"
+#include "DFSVisitor.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

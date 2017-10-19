@@ -5,9 +5,9 @@
 #include <glpk.h>
 #include <numeric/Combinatorics.hpp>
 #include <base-logging/Logging.hpp>
-#include <graph_analysis/EdgeIterator.hpp>
-#include <graph_analysis/Graph.hpp>
-#include <graph_analysis/SharedPtr.hpp>
+#include "../EdgeIterator.hpp"
+#include "../Graph.hpp"
+#include "../SharedPtr.hpp"
 
 
 namespace graph_analysis {

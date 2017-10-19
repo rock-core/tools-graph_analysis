@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_COMMON_FILTERS_HPP
 #define GRAPH_ANALYSIS_COMMON_FILTERS_HPP
 
-#include <graph_analysis/Filter.hpp>
-#include <graph_analysis/filters/EdgeContextFilter.hpp>
+#include "../Filter.hpp"
+#include "EdgeContextFilter.hpp"
 
 namespace graph_analysis {
 namespace filters {

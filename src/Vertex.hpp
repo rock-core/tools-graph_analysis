@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <set>
-#include <graph_analysis/GraphElement.hpp>
+#include "GraphElement.hpp"
 
 namespace graph_analysis
 {

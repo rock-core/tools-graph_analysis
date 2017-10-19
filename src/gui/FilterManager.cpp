@@ -1,10 +1,10 @@
 #include "FilterManager.hpp"
-#include <graph_analysis/gui/IconManager.hpp>
-#include <graph_analysis/gui/WidgetManager.hpp>
-#include <graph_analysis/gui/ActionCommander.hpp>
-#include <graph_analysis/gui/dialogs/AddFilterDialog.hpp>
-#include <graph_analysis/gui/dialogs/SwapFiltersDialog.hpp>
-#include <graph_analysis/gui/dialogs/RenameFilterDialog.hpp>
+#include "IconManager.hpp"
+#include "WidgetManager.hpp"
+#include "ActionCommander.hpp"
+#include "dialogs/AddFilterDialog.hpp"
+#include "dialogs/SwapFiltersDialog.hpp"
+#include "dialogs/RenameFilterDialog.hpp"
 
 #include <QRectF>
 #include <QMenu>

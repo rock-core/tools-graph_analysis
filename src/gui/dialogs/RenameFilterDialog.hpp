@@ -9,7 +9,7 @@
 #ifndef RENAMEFILTERDIALOG_H
 #define RENAMEFILTERDIALOG_H
 
-#include <graph_analysis/gui/FilterManager.hpp>
+#include "../FilterManager.hpp"
 
 #include <set>
 #include <string>

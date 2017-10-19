@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_VERTEXITEMSIMPLE_HPP
 #define GRAPH_ANALYSIS_GUI_VERTEXITEMSIMPLE_HPP
 
-#include <graph_analysis/gui/VertexItemBase.hpp>
+#include "VertexItemBase.hpp"
 
 namespace graph_analysis {
 namespace gui {

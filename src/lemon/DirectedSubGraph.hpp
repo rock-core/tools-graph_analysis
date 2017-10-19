@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_LEMON_DIRECTED_SUB_GRAPH_HPP
 #define GRAPH_ANALYSIS_LEMON_DIRECTED_SUB_GRAPH_HPP
 
-#include <graph_analysis/SubGraphImpl.hpp>
-#include <graph_analysis/Graph.hpp>
-#include <graph_analysis/lemon/NodeIterator.hpp>
-#include <graph_analysis/lemon/ArcIterator.hpp>
+#include "../SubGraphImpl.hpp"
+#include "../Graph.hpp"
+#include "NodeIterator.hpp"
+#include "ArcIterator.hpp"
 
 #include <lemon/adaptors.h>
 #include <lemon/list_graph.h>

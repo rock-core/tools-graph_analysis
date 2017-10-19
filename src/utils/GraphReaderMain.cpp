@@ -1,6 +1,6 @@
 #include <iostream>
-#include <graph_analysis/VertexTypeManager.hpp>
-#include <graph_analysis/GraphIO.hpp>
+#include "../VertexTypeManager.hpp"
+#include "../GraphIO.hpp"
 
 using namespace graph_analysis;
 

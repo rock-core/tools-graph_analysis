@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_BOOST_GRAPH_ARC_ITERATOR_HPP
 #define GRAPH_ANALYSIS_BOOST_GRAPH_ARC_ITERATOR_HPP
 
-#include <graph_analysis/EdgeIterator.hpp>
-#include <graph_analysis/Vertex.hpp>
+#include "../EdgeIterator.hpp"
+#include "../Vertex.hpp"
 #include <boost/graph/adjacency_list.hpp>
 
 namespace graph_analysis {

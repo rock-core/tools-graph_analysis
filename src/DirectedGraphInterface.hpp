@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_DIRECTED_GRAPH_INTERFACE_HPP
 #define GRAPH_ANALYSIS_DIRECTED_GRAPH_INTERFACE_HPP
 
-#include <graph_analysis/BaseGraph.hpp>
-#include <graph_analysis/EdgeIterator.hpp>
+#include "BaseGraph.hpp"
+#include "EdgeIterator.hpp"
 
 namespace graph_analysis
 {

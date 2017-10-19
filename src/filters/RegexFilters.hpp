@@ -2,9 +2,9 @@
 #define GRAPH_ANALYSIS_FILTERS_REGEX_FILTER_HPP
 
 #include <boost/regex.hpp>
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/Edge.hpp>
-#include <graph_analysis/filters/CommonFilters.hpp>
+#include "../Vertex.hpp"
+#include "../Edge.hpp"
+#include "CommonFilters.hpp"
 #include <base-logging/Logging.hpp>
 
 namespace graph_analysis {

@@ -2,7 +2,7 @@
 
 #include "ui_AddVertexDialog.h"
 
-#include <graph_analysis/VertexTypeManager.hpp>
+#include "../../VertexTypeManager.hpp"
 
 namespace graph_analysis
 {

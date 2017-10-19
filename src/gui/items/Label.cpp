@@ -4,8 +4,8 @@
 #include <exception>
 #include <base-logging/Logging.hpp>
 #include <boost/lexical_cast.hpp>
-#include <graph_analysis/gui/GraphWidget.hpp>
-#include <graph_analysis/gui/ActionCommander.hpp>
+#include "../GraphWidget.hpp"
+#include "../ActionCommander.hpp"
 
 namespace graph_analysis {
 namespace gui {

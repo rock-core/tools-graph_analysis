@@ -2,8 +2,8 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_VERTEX_HPP
 
 #include <sstream>
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/VertexRegistration.hpp>
+#include "../Vertex.hpp"
+#include "../VertexRegistration.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

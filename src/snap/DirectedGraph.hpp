@@ -1,18 +1,18 @@
 #ifndef GRAPH_ANALYSIS_SNAP_DIRECTED_GRAPH_HPP
 #define GRAPH_ANALYSIS_SNAP_DIRECTED_GRAPH_HPP
 
-#include <graph_analysis/VertexIterator.hpp>
-#include <graph_analysis/EdgeIterator.hpp>
-#include <graph_analysis/TypedGraph.hpp>
+#include "../VertexIterator.hpp"
+#include "../EdgeIterator.hpp"
+#include "../TypedGraph.hpp"
 
 // FIXME: when not including "sstream" here, the snap header will fail due to
 // some "min"/"max" defines. this looks like a bug in their headers?
 #include <sstream>
 
 #include <snap/snap-core/Snap.h>
-#include <graph_analysis/snap/DirectedSubGraph.hpp>
-#include <graph_analysis/snap/NodeIterator.hpp>
-#include <graph_analysis/snap/EdgeIterator.hpp>
+#include "DirectedSubGraph.hpp"
+#include "NodeIterator.hpp"
+#include "EdgeIterator.hpp"
 
 namespace graph_analysis {
 namespace snap {
@@ -41,7 +41,7 @@ typedef TNodeEdgeNet< Serializable<Vertex::Ptr>, Serializable<Edge::Ptr> > SnapD
 /**
  * \class DirectedGraph
  * \brief Directed graph implementation based on SNAP library
- * \see 
+ * \see
  */
 class DirectedGraph : public graph_analysis::TypedGraph<SnapDigraph, BaseGraph>
 {

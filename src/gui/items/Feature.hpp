@@ -1,6 +1,7 @@
 #ifndef GRAPH_ANALYSIS_GUI_ITEMS_FEATURE_HPP
 #define GRAPH_ANALYSIS_GUI_ITEMS_FEATURE_HPP
 
+#include <iostream>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsTextItem>
 #include <QTextCursor>
@@ -8,9 +9,8 @@
 #include <QMimeData>
 #include <QDrag>
 
-#include <graph_analysis/Vertex.hpp>
-#include <graph_analysis/Edge.hpp>
-#include <iostream>
+#include "../../Vertex.hpp"
+#include "../../Edge.hpp"
 
 #include "../GraphicsItemTypes.hpp"
 

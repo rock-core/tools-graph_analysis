@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_GRAPH_LAYOUT_MANAGER_HPP
 
 #include <base-logging/Singleton.hpp>
-#include <graph_analysis/gui/GraphLayout.hpp>
+#include "GraphLayout.hpp"
 
 namespace graph_analysis {
 namespace gui {

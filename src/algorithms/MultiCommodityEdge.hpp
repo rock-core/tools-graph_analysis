@@ -1,8 +1,8 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_EDGE_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_MULTI_COMMODITY_EDGE_HPP
 
-#include <graph_analysis/Edge.hpp>
-#include <graph_analysis/EdgeRegistration.hpp>
+#include "../Edge.hpp"
+#include "../EdgeRegistration.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

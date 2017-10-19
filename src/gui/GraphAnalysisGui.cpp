@@ -2,8 +2,8 @@
 
 #include "ui_GraphAnalysisGui.h"
 
-#include <graph_analysis/gui/BaseGraphView/BaseGraphView.hpp>
-#include <graph_analysis/VertexTypeManager.hpp>
+#include "BaseGraphView/BaseGraphView.hpp"
+#include "../VertexTypeManager.hpp"
 
 #include <QDebug>
 #include <QMenu>
@@ -15,8 +15,8 @@
 
 #include <base-logging/Logging.hpp>
 
-#include <graph_analysis/gui/GraphWidget.hpp>
-#include <graph_analysis/gui/ActionCommander.hpp>
+#include "GraphWidget.hpp"
+#include "ActionCommander.hpp"
 #include "dialogs/IODialog.hpp"
 
 namespace graph_analysis

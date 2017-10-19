@@ -8,7 +8,7 @@
 #include <QMimeData>
 #include <QDrag>
 
-#include <graph_analysis/Vertex.hpp>
+#include "../../Vertex.hpp"
 #include <iostream>
 
 namespace graph_analysis {

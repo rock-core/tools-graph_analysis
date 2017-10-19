@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_GUI_VERTEXITEMBASE_HPP
 
 #include <QGraphicsWidget>
-#include <graph_analysis/Vertex.hpp>
+#include "../Vertex.hpp"
 #include "GraphicsItemTypes.hpp"
 
 class QGraphicsSceneMouseEvent;

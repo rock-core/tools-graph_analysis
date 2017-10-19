@@ -1,10 +1,10 @@
 #ifndef GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 #define GRAPH_ANALYSIS_GUI_GRAPHWIDGET_H
 
-#include <graph_analysis/Graph.hpp>
+#include "../Graph.hpp"
 
-#include <graph_analysis/gui/VertexItemBase.hpp>
-#include <graph_analysis/gui/EdgeItemBase.hpp>
+#include "VertexItemBase.hpp"
+#include "EdgeItemBase.hpp"
 
 #include <QGraphicsView>
 

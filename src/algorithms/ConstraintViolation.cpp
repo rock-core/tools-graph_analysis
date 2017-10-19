@@ -1,5 +1,5 @@
 #include "ConstraintViolation.hpp"
-#include <graph_analysis/MapInitializer.hpp>
+#include "../MapInitializer.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_IO_GRAPHVIZ_STYLE_HPP
 #define GRAPH_ANALYSIS_IO_GRAPHVIZ_STYLE_HPP
 
-#include <graph_analysis/BaseGraph.hpp>
+#include "../BaseGraph.hpp"
 
 namespace graph_analysis {
 namespace io {

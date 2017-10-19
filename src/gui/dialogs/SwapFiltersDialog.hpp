@@ -9,7 +9,7 @@
 #ifndef SWAPFILTERSDIALOG_H
 #define SWAPFILTERSDIALOG_H
 
-#include <graph_analysis/gui/FilterManager.hpp>
+#include "../FilterManager.hpp"
 
 #include <set>
 #include <string>

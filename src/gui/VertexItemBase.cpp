@@ -7,7 +7,7 @@
 #include <QDebug>
 
 #include <base-logging/Logging.hpp>
-#include <graph_analysis/gui/GraphWidget.hpp>
+#include "GraphWidget.hpp"
 
 namespace graph_analysis {
 namespace gui {

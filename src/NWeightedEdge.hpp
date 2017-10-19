@@ -2,8 +2,8 @@
 #define GRAPH_ANALYSIS_NWEIGHTED_EDGE_HPP
 
 #include <iostream>
-#include <graph_analysis/NWeighted.hpp>
-#include <graph_analysis/Edge.hpp>
+#include "NWeighted.hpp"
+#include "Edge.hpp"
 
 namespace graph_analysis {
 

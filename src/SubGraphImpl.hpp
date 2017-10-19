@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_SUB_GRAPH_IMPL_HPP
 
 #include <assert.h>
-#include <graph_analysis/SubGraph.hpp>
+#include "SubGraph.hpp"
 
 namespace graph_analysis {
 

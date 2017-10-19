@@ -2,8 +2,8 @@
 #define GRAPH_ANALYSIS_NWEIGHTED_VERTEX_HPP
 
 #include <iostream>
-#include <graph_analysis/NWeighted.hpp>
-#include <graph_analysis/Vertex.hpp>
+#include "NWeighted.hpp"
+#include "Vertex.hpp"
 
 namespace graph_analysis {
 

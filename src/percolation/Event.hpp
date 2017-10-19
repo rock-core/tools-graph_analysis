@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_PERCOLATION_EVENT_HPP
 
 #include <vector>
-#include <graph_analysis/GraphElement.hpp>
+#include "../GraphElement.hpp"
 
 namespace graph_analysis {
 namespace percolation {

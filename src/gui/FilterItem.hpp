@@ -1,9 +1,9 @@
 #ifndef FILTERITEM_HPP
 #define FILTERITEM_HPP
 
+#include <string>
 #include <QPen>
 #include <QObject>
-#include <string>
 #include <QGraphicsItem>
 #include <QGraphicsItemGroup>
 

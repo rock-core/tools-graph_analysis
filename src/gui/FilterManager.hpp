@@ -6,7 +6,7 @@
 #include <QCheckBox>
 #include <QGraphicsView>
 
-#include <graph_analysis/gui/FilterItem.hpp>
+#include "FilterItem.hpp"
 
 namespace graph_analysis {
 namespace gui {

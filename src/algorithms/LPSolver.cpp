@@ -1,8 +1,8 @@
 #include "LPSolver.hpp"
 #include <boost/filesystem.hpp>
 #include <sstream>
-#include "../MapInitializer.hpp"
 #include <base-logging/Logging.hpp>
+#include "../MapInitializer.hpp"
 
 #ifdef WITH_GLPK
 #warning Using GLPK solver

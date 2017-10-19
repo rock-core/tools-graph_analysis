@@ -3,7 +3,7 @@
 
 #include <map>
 #include <base-logging/Singleton.hpp>
-#include <graph_analysis/Vertex.hpp>
+#include "../Vertex.hpp"
 
 #include <QPainter>
 #include <QPainterPath>

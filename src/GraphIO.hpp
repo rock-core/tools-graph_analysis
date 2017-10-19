@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_IO_HPP
 
 #include <stdexcept>
-#include <graph_analysis/Graph.hpp>
+#include "Graph.hpp"
 
 namespace graph_analysis {
 
@@ -74,7 +74,7 @@ public:
  *
  * Example:
  \verbatim
- #include<graph_analysis/GraphIO.hpp>
+ #include"GraphIO.hpp"
  ...
  BaseGraph::Ptr graph = BaseGraph::getInstance();
  ...

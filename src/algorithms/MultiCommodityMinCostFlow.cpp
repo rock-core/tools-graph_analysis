@@ -3,8 +3,8 @@
 #include <iterator>
 #include <math.h>
 #include <boost/filesystem.hpp>
-#include <graph_analysis/DirectedGraphInterface.hpp>
 #include <base-logging/Logging.hpp>
+#include "../DirectedGraphInterface.hpp"
 
 namespace graph_analysis {
 namespace algorithms {

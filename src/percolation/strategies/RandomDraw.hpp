@@ -3,7 +3,7 @@
 
 #include <map>
 #include <stdint.h>
-#include <graph_analysis/GraphElement.hpp>
+#include "../../GraphElement.hpp"
 
 namespace graph_analysis {
 namespace percolation {

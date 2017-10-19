@@ -6,7 +6,7 @@
 #include <QStyleOption>
 #include <QGraphicsScene>
 #include <QGraphicsSceneDragDropEvent>
-#include <graph_analysis/gui/items/Label.hpp>
+#include "items/Label.hpp"
 
 #include <base-logging/Logging.hpp>
 
