@@ -17,18 +17,43 @@ public:
 
     ConstraintViolation(const MultiCommodityVertex::Ptr& v, uint32_t commodity, int32_t delta, Type type = MinFlow);
 
-    uint32_t getCommodity() const { return mCommodity; }
+    /**
+     * Construct a constraint violation with a set of commodities that are
+     * affected by the constraint violation
+     */
+    ConstraintViolation(const MultiCommodityVertex::Ptr& v, const std::set<uint32_t>& commodities, int32_t delta, Type type = MinFlow);
+
+    uint32_t getCommodity() const;
+
+    /**
+     * The set of commodities that are affected by this violation
+     */
+    const std::set<uint32_t>& getCommodities() const { return mCommodities; }
+
+    /**
+     * Get the vertex that this constraint violation is related to
+     */
     const Vertex::Ptr& getVertex() const { return mpVertex; }
+
+    /**
+     * Quantification of the constraint violation, regarding the missing flow
+     */
     int32_t getDelta() const { return mDelta; }
+
+    /**
+     * Get the constraint violation type
+     */
     Type getType() const { return mType; }
 
     std::string toString(size_t indent = 0) const;
 
     static std::string toString(const std::vector<ConstraintViolation>& flaws, size_t indent = 0);
 
+    static std::string toString(const std::set<uint32_t>& commodities);
+
 private:
     Vertex::Ptr mpVertex;
-    uint32_t mCommodity;
+    std::set<uint32_t> mCommodities;
     int32_t mDelta;
     Type mType;
 };

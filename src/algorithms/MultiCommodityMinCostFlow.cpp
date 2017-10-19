@@ -467,6 +467,8 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
 
         int32_t deltaTransflow = 0;
         int32_t deltaInflow = 0;
+        std::set<uint32_t> affectedCommoditiesTransFlow;
+        std::set<uint32_t> affectedCommoditiesMinFlow;
         for(uint32_t k = 0; k < mCommodities; ++k)
         {
             int32_t supplyDemand = vertex->getCommoditySupply(k);
@@ -477,6 +479,7 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
                 {
                     constraintViolations.push_back( ConstraintViolation(vertex, k, delta, ConstraintViolation::MinFlow) );
                     deltaInflow += delta;
+                    affectedCommoditiesMinFlow.insert(k);
                 } else if(delta > 0)
                 {
                     // supply is higher than demand
@@ -494,16 +497,17 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
                 int32_t delta = std::min(outFlow[k],inFlow[k]) - minTransflow;
                 constraintViolations.push_back( ConstraintViolation(vertex, k, delta, ConstraintViolation::TransFlow) );
                 deltaTransflow += delta;
+                affectedCommoditiesTransFlow.insert(k);
             }
         }
 
         if(deltaInflow != 0)
         {
-            constraintViolations.push_back(ConstraintViolation(vertex, std::numeric_limits<uint32_t>::max(), deltaInflow, ConstraintViolation::TotalMinFlow));
+            constraintViolations.push_back(ConstraintViolation(vertex, affectedCommoditiesMinFlow, deltaInflow, ConstraintViolation::TotalMinFlow));
         }
         if(deltaTransflow != 0)
         {
-            constraintViolations.push_back(ConstraintViolation(vertex, std::numeric_limits<uint32_t>::max(), deltaTransflow, ConstraintViolation::TotalTransFlow));
+            constraintViolations.push_back(ConstraintViolation(vertex, affectedCommoditiesTransFlow, deltaTransflow, ConstraintViolation::TotalTransFlow));
         }
     }
     return constraintViolations;
