@@ -207,8 +207,9 @@ public:
      * and store the flow status into the base graph with with which the problem
      * has been initalized
      * \param solutionFile the filename to save the solution
+     * \param useCaching True to tell the underlying LPSolver shall cache results, False otherwise
      */
-    LPSolver::Status solve(const std::string& solutionFile = "");
+    LPSolver::Status solve(const std::string& solutionFile = "", bool useCaching = true);
 
     /**
      * Get the cost of the min cost flow

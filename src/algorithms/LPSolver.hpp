@@ -23,6 +23,8 @@ public:
         NO_SOLUTION_FOUND,
         SOLUTION_FOUND };
 
+    static std::map<Status, std::string> StatusTxt;
+
     enum Type { UNKNOWN_LP_SOLVER, GLPK_SOLVER, SCIP_SOLVER, LP_SOLVER_TYPE_END };
 
     static std::map<Type, std::string> TypeTxt;
@@ -31,6 +33,22 @@ public:
 
     /// Solution types: basic, IPT = interior point, MIP = mixed integer
     enum SolutionType { UNKNOWN_SOLUTION_TYPE = 0, BASIC_SOLUTION, IPT_SOLUTION, MIP_SOLUTION, LP_SOLUTION_TYPE_END };
+
+    struct KnownSolution
+    {
+        std::string filename;
+        Status status;
+        SolutionType type;
+
+        KnownSolution()
+        {}
+
+        KnownSolution(const std::string& filename, Status status, SolutionType type)
+            : filename(filename)
+            , status(status)
+            , type(type)
+        {}
+    };
 
     virtual ~LPSolver();
 
@@ -44,8 +62,10 @@ public:
      * Load a problem based
      * \param filename filename of the problem file
      * \param format format of the problem
+     * \param check whether this problem is a known problem
+     * \return if the problem is already known
      */
-    virtual void loadProblem(const std::string& filename, ProblemFormat format = CPLEX) = 0;
+    bool loadProblem(const std::string& filename, ProblemFormat format = CPLEX);
 
     /**
      * Save the problem to file
@@ -116,7 +136,7 @@ public:
      * \param problemFilename filename of the problem to solve
      * \param problemFormat format of the problem to solver
      */
-    virtual Status run(const std::string& problemFilename, LPSolver::ProblemFormat problemFormat = CPLEX) = 0;
+    virtual Status run(const std::string& problemFilename, LPSolver::ProblemFormat problemFormat = CPLEX, bool useCaching = false) = 0;
 
     const std::string& getProblemFile() const { return mProblemFile; }
     LPSolver::ProblemFormat getProblemFileFormat() const { return mProblemFileFormat; }
@@ -134,6 +154,21 @@ protected:
     /// after loadSolution has been called
     mutable std::string mSolutionFile;
     mutable LPSolver::SolutionType mSolutionFileFormat;
+
+    typedef std::map<std::string, KnownSolution> KnownSolutions;
+    static KnownSolutions msKnownSolutions;
+
+    virtual void doLoadProblem(const std::string& filename, ProblemFormat format = CPLEX) = 0;
+
+    Status loadKnownSolution(const std::string& problemFilename);
+
+    void registerSolution(const std::string& problemFilename,
+        const std::string& solutionFilename,
+        Status status,
+        SolutionType type
+        );
+
+    const LPSolver::KnownSolutions::mapped_type& getRegisteredSolution(const std::string& problemFilename) const;
 };
 
 

@@ -19,7 +19,7 @@ public:
 
     LPSolver::Type getSolverType() const override { return SCIP_SOLVER; }
 
-    void loadProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) override;
+    void doLoadProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) override;
 
     void saveProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) const override;
 
@@ -37,7 +37,7 @@ public:
 
     Status getStatus() const;
 
-    Status run(const std::string& problem, LPSolver::ProblemFormat problemFormat = CPLEX) override;
+    Status run(const std::string& problem, LPSolver::ProblemFormat problemFormat = CPLEX, bool useCaching = false) override;
 
 private:
     SCIP* mpScip;

@@ -3,6 +3,7 @@
 #include <sstream>
 #include <base-logging/Logging.hpp>
 #include "../MapInitializer.hpp"
+#include "../utils/MD5.hpp"
 
 #ifdef WITH_GLPK
 #warning Using GLPK solver
@@ -16,6 +17,19 @@
 
 namespace graph_analysis {
 namespace algorithms {
+
+LPSolver::KnownSolutions LPSolver::msKnownSolutions;
+
+std::map<LPSolver::Status, std::string> LPSolver::StatusTxt =
+    InitMap<LPSolver::Status, std::string>
+    (LPSolver::STATUS_UNKNOWN, "STATUS_UNKNOWN")
+    (LPSolver::STATUS_OPTIMAL, "STATUS_OPTIMAL")
+    (LPSolver::STATUS_INFEASIBLE,"STATUS_INFEASIBLE")
+    (LPSolver::STATUS_UNBOUNDED, "STATUS_UNBOUNDED")
+    (LPSolver::INVALID_PROBLEM_DEFINITION, "INVALID_PROBLEM_DEFINITION")
+    (LPSolver::NO_SOLUTION_FOUND, "NO_SOLUTION_FOUND")
+    (LPSolver::SOLUTION_FOUND, "SOLUTION_FOUND")
+    ;
 
 std::map<LPSolver::Type, std::string> LPSolver::TypeTxt =
     InitMap<LPSolver::Type, std::string>
@@ -83,6 +97,41 @@ std::string LPSolver::saveSolutionToTempfile(LPSolver::SolutionType format) cons
     saveSolution(mSolutionFile, mSolutionFileFormat);
     return mSolutionFile;
 }
+
+bool LPSolver::loadProblem(const std::string& filename, ProblemFormat format)
+{
+    std::string md5 = utils::MD5Digest::md5Sum(filename);
+    bool solutionIsKnown = (msKnownSolutions.count(md5) != 0);
+    doLoadProblem(filename, format);
+    return solutionIsKnown;
+
+}
+
+void LPSolver::registerSolution(const std::string& problemFilename,
+        const std::string& solutionFilename, Status status, SolutionType type)
+{
+    std::string md5 = utils::MD5Digest::md5Sum(problemFilename);
+    msKnownSolutions[md5] = KnownSolution(solutionFilename, status, type);
+}
+
+const LPSolver::KnownSolutions::mapped_type& LPSolver::getRegisteredSolution(const std::string& problemFilename) const
+{
+    std::string md5 = utils::MD5Digest::md5Sum(problemFilename);
+    KnownSolutions::const_iterator cit = msKnownSolutions.find(md5);
+    if(cit != msKnownSolutions.end())
+    {
+        return cit->second;
+    }
+    throw std::invalid_argument("graph_analysis::algorithms::LPSolver::getRegisteredSolution: could not find a registered solution for problem '" + problemFilename + "'");
+}
+
+LPSolver::Status LPSolver::loadKnownSolution(const std::string& problemFilename)
+{
+    KnownSolution p = getRegisteredSolution(problemFilename);
+    loadSolution(p.filename, p.type);
+    return p.status;
+}
+
 
 } // end namespace algorithms
 } // end graph_analysis

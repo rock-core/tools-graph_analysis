@@ -7,9 +7,13 @@
 
 # set(Scip_DEBUG false)
 find_library(Scip NAMES scip
-    DOC "SCIP Core Library")
+    DOC "SCIP Core Library"
+    PATH_SUFFIXES .so
+    )
 find_library(ScipOpt NAMES scipopt
-    DOC "SCIP Optimization Suite: Scipopt")
+    DOC "SCIP Optimization Suite: Scipopt"
+    PATH_SUFFIXES .so
+    )
 
 foreach(path ${CMAKE_PREFIX_PATH})
     find_path(SCIP_INCLUDE_DIRS NAMES scip/scip.h

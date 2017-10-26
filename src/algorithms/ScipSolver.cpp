@@ -36,7 +36,7 @@ void ScipSolver::debugSolution(bool enable)
     }
 }
 
-void ScipSolver::loadProblem(const std::string& filename, LPSolver::ProblemFormat format)
+void ScipSolver::doLoadProblem(const std::string& filename, LPSolver::ProblemFormat format)
 {
     switch(format)
     {
@@ -142,7 +142,7 @@ LPSolver::Status ScipSolver::run()
     return getStatus();
 }
 
-LPSolver::Status ScipSolver::run(const std::string& problem, LPSolver::ProblemFormat problemFormat)
+LPSolver::Status ScipSolver::run(const std::string& problem, LPSolver::ProblemFormat problemFormat, bool useCaching)
 {
     loadProblem(problem, problemFormat);
     return run();

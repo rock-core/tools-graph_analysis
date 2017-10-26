@@ -68,7 +68,7 @@ void MultiCommodityMinCostFlow::save(const std::string& filename, representation
     io::GraphIO::write(filename, mpGraph, format);
 }
 
-LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix)
+LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix, bool useCaching)
 {
 
     LPSolver::Status status;
@@ -77,13 +77,13 @@ LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix)
         case GLPK_SOLVER:
             {
                 std::string problemFile = createProblem(GLPK);
-                status = mpSolver->run(problemFile, GLPK);
+                status = mpSolver->run(problemFile, GLPK, useCaching);
             }
             break;
         case SCIP_SOLVER:
             {
                 std::string problemFile = createProblem(CPLEX);
-                status = mpSolver->run(problemFile, CPLEX);
+                status = mpSolver->run(problemFile, CPLEX, useCaching);
             }
             break;
         default:

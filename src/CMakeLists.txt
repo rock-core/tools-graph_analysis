@@ -92,6 +92,7 @@ rock_library(graph_analysis
         percolation/strategies/UniformRandomVertexRemoval.cpp
         snap/DirectedGraph.cpp
         snap/DirectedSubGraph.cpp
+        utils/MD5.cpp
         ${EXTRA_CPP}
     HEADERS
         AttributeManager.hpp
@@ -205,9 +206,11 @@ rock_library(graph_analysis
         snap/EdgeIterator.hpp
         snap/Graph.hpp
         snap/NodeIterator.hpp
+        utils/MD5.hpp
         ${EXTRA_HPP}
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric gsl libgvc utilmm yaml-cpp
+        openssl
     DEPS_PLAIN
         Boost_REGEX
         Boost_SERIALIZATION

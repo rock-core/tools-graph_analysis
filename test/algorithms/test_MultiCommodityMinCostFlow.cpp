@@ -7,7 +7,7 @@
 using namespace graph_analysis::algorithms;
 using namespace graph_analysis;
 
-BOOST_AUTO_TEST_SUITE(algorithms)
+BOOST_AUTO_TEST_SUITE(algorithms_min_cost_flow)
 
 /**
  * v0  -- e0 --> v1 -- e1 --> v2

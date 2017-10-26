@@ -24,7 +24,7 @@ public:
 
     std::string getProblemName() const { return std::string( glp_get_prob_name(mpProblem) ) ; }
 
-    void loadProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) override;
+    void doLoadProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) override;
 
     void saveProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) const override;
 
@@ -38,7 +38,7 @@ public:
 
     Status run() override { throw std::runtime_error("graph_analysis::algorithms::GLPKSolver::run not implemented"); }
 
-    Status run(const std::string& problem, LPSolver::ProblemFormat problemFormat = CPLEX) override;
+    Status run(const std::string& problem, LPSolver::ProblemFormat problemFormat = CPLEX, bool useCaching = false) override;
 
 protected:
     glp_prob* mpProblem;

@@ -25,7 +25,7 @@ GLPKSolver::~GLPKSolver()
     glp_delete_prob(mpProblem);
 }
 
-void GLPKSolver::loadProblem(const std::string& filename, LPSolver::ProblemFormat format)
+void GLPKSolver::doLoadProblem(const std::string& filename, LPSolver::ProblemFormat format)
 {
     int result = 1;
     switch(format)
@@ -220,12 +220,33 @@ double GLPKSolver::getVariableValueByColumnIdx(uint32_t idx) const
 }
 
 GLPKSolver::Status GLPKSolver::run(const std::string& problem,
-        LPSolver::ProblemFormat problemFormat)
+        LPSolver::ProblemFormat problemFormat, bool useCaching)
 {
-    loadProblem(problem, problemFormat);
-    // SIMPLEX
-    int result = glp_simplex(mpProblem, NULL);
-    return translateSimplexReturnCode(result);
+    GLPKSolver::Status status = GLPKSolver::STATUS_UNKNOWN;
+    bool knownProblem = loadProblem(problem, problemFormat);
+    try {
+        if(knownProblem && useCaching)
+        {
+            status = loadKnownSolution(problem);
+        }
+    } catch(const std::runtime_error& e)
+    {
+        LOG_WARN_S << "Error loading known solution";
+    }
+
+    if(status == GLPKSolver::STATUS_UNKNOWN)
+    {
+        // SIMPLEX
+        int result = glp_simplex(mpProblem, NULL);
+        status = translateSimplexReturnCode(result);
+        if(useCaching)
+        {
+            std::string solution = saveSolutionToTempfile(BASIC_SOLUTION);
+            registerSolution(problem, solution, status, BASIC_SOLUTION);
+        }
+    }
+
+    return status;
 }
 
 } // end namespace algorithms

@@ -9,6 +9,7 @@ rock_testsuite(test_graph suite.cpp
     test_GVGraph.cpp
     test_LemonGraph.cpp
     test_Iterators.cpp
+    algorithms/test_Algorithms.cpp
     algorithms/test_CorrelationClustering.cpp
     algorithms/test_BFS.cpp
     algorithms/test_DFS.cpp
