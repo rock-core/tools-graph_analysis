@@ -467,6 +467,8 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
 
         int32_t deltaTransflow = 0;
         int32_t deltaInflow = 0;
+        uint32_t totalInFlow = 0;
+        uint32_t totalOutFlow = 0;
         std::set<uint32_t> affectedCommoditiesTransFlow;
         std::set<uint32_t> affectedCommoditiesMinFlow;
         for(uint32_t k = 0; k < mCommodities; ++k)
@@ -477,7 +479,7 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
                 int32_t delta = supplyDemand + inFlow[k];
                 if(delta < 0)
                 {
-                    constraintViolations.push_back( ConstraintViolation(vertex, k, delta, ConstraintViolation::MinFlow) );
+                    constraintViolations.push_back( ConstraintViolation(vertex, k, delta, inFlow[k], outFlow[k], ConstraintViolation::MinFlow) );
                     deltaInflow += delta;
                     affectedCommoditiesMinFlow.insert(k);
                 } else if(delta > 0)
@@ -495,19 +497,22 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
             } else if(inFlow[k] < minTransflow || outFlow[k] < minTransflow)
             {
                 int32_t delta = std::min(outFlow[k],inFlow[k]) - minTransflow;
-                constraintViolations.push_back( ConstraintViolation(vertex, k, delta, ConstraintViolation::TransFlow) );
+                constraintViolations.push_back( ConstraintViolation(vertex, k, delta, inFlow[k], outFlow[k], ConstraintViolation::TransFlow) );
                 deltaTransflow += delta;
                 affectedCommoditiesTransFlow.insert(k);
             }
+
+            totalInFlow += inFlow[k];
+            totalOutFlow += outFlow[k];
         }
 
         if(deltaInflow != 0)
         {
-            constraintViolations.push_back(ConstraintViolation(vertex, affectedCommoditiesMinFlow, deltaInflow, ConstraintViolation::TotalMinFlow));
+            constraintViolations.push_back(ConstraintViolation(vertex, affectedCommoditiesMinFlow, deltaInflow, totalInFlow, totalOutFlow, ConstraintViolation::TotalMinFlow));
         }
         if(deltaTransflow != 0)
         {
-            constraintViolations.push_back(ConstraintViolation(vertex, affectedCommoditiesTransFlow, deltaTransflow, ConstraintViolation::TotalTransFlow));
+            constraintViolations.push_back(ConstraintViolation(vertex, affectedCommoditiesTransFlow, deltaTransflow, totalInFlow, totalOutFlow, ConstraintViolation::TotalTransFlow));
         }
     }
     return constraintViolations;

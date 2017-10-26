@@ -15,15 +15,18 @@ public:
 
     static std::map<Type, std::string> TypeTxt;
 
-    ConstraintViolation(const MultiCommodityVertex::Ptr& v, uint32_t commodity, int32_t delta, Type type = MinFlow);
+    ConstraintViolation(const MultiCommodityVertex::Ptr& v, uint32_t commodity, int32_t delta, uint32_t inFlow, uint32_t outFlow, Type type = MinFlow);
 
     /**
      * Construct a constraint violation with a set of commodities that are
      * affected by the constraint violation
      */
-    ConstraintViolation(const MultiCommodityVertex::Ptr& v, const std::set<uint32_t>& commodities, int32_t delta, Type type = MinFlow);
+    ConstraintViolation(const MultiCommodityVertex::Ptr& v, const std::set<uint32_t>& commodities, int32_t delta, uint32_t inFlow, uint32_t outFlow, Type type = MinFlow);
 
     uint32_t getCommodity() const;
+
+    uint32_t getInFlow() const { return mInFlow; }
+    uint32_t getOutFlow() const { return mOutFlow; }
 
     /**
      * The set of commodities that are affected by this violation
@@ -55,6 +58,8 @@ private:
     Vertex::Ptr mpVertex;
     std::set<uint32_t> mCommodities;
     int32_t mDelta;
+    uint32_t mInFlow;
+    uint32_t mOutFlow;
     Type mType;
 };
 

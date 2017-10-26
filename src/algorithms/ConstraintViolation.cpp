@@ -11,19 +11,23 @@ std::map<ConstraintViolation::Type, std::string> ConstraintViolation::TypeTxt = 
     (TotalTransFlow, "TotalTransFlow")
     ;
 
-ConstraintViolation::ConstraintViolation(const MultiCommodityVertex::Ptr& v, uint32_t commodity, int32_t delta, Type type)
+ConstraintViolation::ConstraintViolation(const MultiCommodityVertex::Ptr& v, uint32_t commodity, int32_t delta, uint32_t inFlow, uint32_t outFlow, Type type)
     : mpVertex(v)
     , mDelta(delta)
+    , mInFlow(inFlow)
+    , mOutFlow(outFlow)
     , mType(type)
 {
 
     mCommodities.insert(commodity);
 }
 
-ConstraintViolation::ConstraintViolation(const MultiCommodityVertex::Ptr& v, const std::set<uint32_t>& commodities, int32_t delta, Type type)
+ConstraintViolation::ConstraintViolation(const MultiCommodityVertex::Ptr& v, const std::set<uint32_t>& commodities, int32_t delta, uint32_t inFlow, uint32_t outFlow, Type type)
     : mpVertex(v)
     , mCommodities(commodities)
     , mDelta(delta)
+    , mInFlow(inFlow)
+    , mOutFlow(outFlow)
     , mType(type)
 {}
 
@@ -36,6 +40,8 @@ std::string ConstraintViolation::toString(size_t indent) const
     ss << mpVertex->toString(indent + 4)  << std::endl;
     ss << hspace << "    commodities: " << toString(mCommodities) << std::endl;
     ss << hspace << "    delta: " << mDelta << std::endl;
+    ss << hspace << "    inFlow: " << mInFlow << std::endl;
+    ss << hspace << "    outFlow: " << mOutFlow << std::endl;
     return ss.str();
 }
 
