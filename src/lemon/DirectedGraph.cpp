@@ -262,6 +262,11 @@ SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& b
     return subgraph;
 }
 
+bool DirectedGraph::isConnected() const
+{
+    return ::lemon::connected(raw());
+}
+
 SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
     const DirectedGraph::Ptr& directedGraph = dynamic_pointer_cast<DirectedGraph>(baseGraph);

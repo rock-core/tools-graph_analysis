@@ -111,6 +111,11 @@ public:
      */
     SubGraph::Ptr identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const;
 
+    /**
+     * Check if the graph is connected
+     */
+    bool isConnected() const override;
+
 protected:
     /**
      * \brief Add a vertex

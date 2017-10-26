@@ -14,6 +14,8 @@ public:
     virtual ~Algorithms() {}
 
     virtual shared_ptr<SubGraph> identifyConnectedComponents(const shared_ptr<BaseGraph>& baseGraph) const { (void) baseGraph; throw std::runtime_error("graph_analysis::Algorithms::identifyConnectedComponents has not been implemented"); }
+
+    virtual bool isConnected() const { throw std::runtime_error("graph_analysis::Algorithms::isConnected has not been implemented"); }
 };
 
 } // end namespace graph_analysis
