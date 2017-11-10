@@ -230,7 +230,7 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
-    DEPS_PKGCONFIG QtGui
+    DEPS_PKGCONFIG QtGui QtSvg
     UI
         gui/GraphAnalysisGui.ui
         gui/BaseGraphView/AddVertexDialog.ui

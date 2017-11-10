@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QString>
+#include <QGraphicsScene>
 #include "../../GraphIO.hpp"
 #include "../../BaseGraph.hpp"
 
@@ -56,6 +57,29 @@ public:
      * and file format
      */
     static void exportGraph(const BaseGraph::Ptr& graph, QWidget* parent = NULL);
+
+    /**
+     * Opens a file dialog to save a graphics scene
+     * \param scene Scene to save
+     * \param parent Parent of the dialog to be opened
+     */
+    static void exportScene(QGraphicsScene* scene, QWidget* parent = NULL);
+
+    /**
+     * Export a graphics scene as Pdf, will open a printer dialog with
+     * preconfigure setting to save as pdf
+     * \param scene Scene to save
+     * \param filename Filename to use for saving
+     * \param parent Parent of the dialog to be opened
+     */
+    static void exportSceneAsPdf(QGraphicsScene* scene, QString filename, QWidget* parent = NULL);
+
+    /**
+     * Export a graphics scene as svg
+     * \param scene Scene to save
+     * \param filename Filename to use for saving
+     */
+    static void exportSceneAsSvg(QGraphicsScene* scene, QString filename);
 };
 
 } // end namespace dialogs

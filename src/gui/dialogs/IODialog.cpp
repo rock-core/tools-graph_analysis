@@ -1,11 +1,16 @@
 #include "IODialog.hpp"
 
 #include <QDir>
+#include <QCoreApplication>
 #include <QSettings>
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QTranslator>
 #include <QMessageBox>
+#include <QPainter>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QSvgGenerator>
 
 #include <sstream>
 #include "../../GraphIO.hpp"
@@ -241,6 +246,69 @@ void IODialog::exportGraph(const BaseGraph::Ptr& graph, QWidget* parent)
         }
     }
 }
+
+void IODialog::exportScene(QGraphicsScene* scene, QWidget* parent)
+{
+    QString filename = QFileDialog::getSaveFileName(parent, "Export scene", QCoreApplication::applicationDirPath(), "PDF Files (*.pdf);;SVG Files (*.svg)");
+    if(!filename.isNull())
+    {
+        QFileInfo fileinfo(filename);
+        QString suffix = fileinfo.completeSuffix();
+        if(suffix == "pdf")
+        {
+            exportSceneAsPdf(scene, filename, parent);
+        } else if(suffix == "svg")
+        {
+            exportSceneAsSvg(scene, filename);
+        } else {
+            std::string msg = "No exporter for " + suffix.toStdString() + " available.";
+            QMessageBox::warning(parent, QObject::tr("Scene export failed"), msg.c_str());
+        }
+    }
+}
+
+void IODialog::exportSceneAsPdf(QGraphicsScene* scene, QString filename, QWidget* parent)
+{
+    if(filename.isNull())
+    {
+        return;
+    }
+
+    QRectF rect = scene->itemsBoundingRect();
+
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setPaperSize(QPrinter::A4);
+    printer.setOrientation(QPrinter::Landscape);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(filename);
+
+    QPrintDialog printDialog(&printer, parent);
+    if(printDialog.exec() == QDialog::Accepted)
+    {
+        QPainter painter(&printer);
+        qreal scalingFactor = 20.0;
+        scene->render(&painter, QRectF(0,0,rect.width()*scalingFactor, rect.height()*scalingFactor));
+    }
+}
+
+void IODialog::exportSceneAsSvg(QGraphicsScene* scene, QString filename)
+{
+    if(filename.isNull())
+    {
+        return;
+    }
+
+    QRectF rect = scene->itemsBoundingRect();
+    QSvgGenerator svgGen;
+    svgGen.setFileName(filename);
+    qreal scalingFactor = 0.2;
+    svgGen.setSize(QSize(rect.width()*scalingFactor, rect.height()*scalingFactor));
+    svgGen.setTitle("Graph Analysis SVG");
+    svgGen.setDescription("SVG Drawing");
+    QPainter svgPainter(&svgGen);
+    scene->render(&svgPainter, rect);
+}
+
 
 } // end namespace dialogs
 } // end namespace gui
