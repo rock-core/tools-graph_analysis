@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
     graph->addEdge(e0);
     graph->addEdge(e1);
 
-    for(int i = LPSolver::GLPK_SOLVER; i != (int) LPSolver::LP_SOLVER_TYPE_END; ++i)
+    for(int i = LPSolver::GLPK_SOLVER; i != (int) LPSolver::SOPLEX_SOLVER; ++i)
     {
         LPSolver::Type solverType = (LPSolver::Type) i;
         {
@@ -336,7 +336,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_3)
         e3->setCommodityCost(i, 10);
     }
 
-    for(int i = LPSolver::GLPK_SOLVER; i != (int) LPSolver::LP_SOLVER_TYPE_END; ++i)
+    for(int i = LPSolver::GLPK_SOLVER; i != (int) LPSolver::SOPLEX_SOLVER; ++i)
     {
             LPSolver::Type solverType = (LPSolver::Type) i;
 
@@ -380,5 +380,171 @@ BOOST_AUTO_TEST_CASE(problem_from_file_0)
     std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
     BOOST_REQUIRE_MESSAGE(!flaws.empty(), "Solution will have flaws, but has " << ConstraintViolation::toString(flaws) );
 
+}
+
+/**
+ * v0  -- e0 --> v1 -- e1 --> v2
+ * 10  -->                --> -10
+ * Route a number of commodities across this single line but with subcapacity
+ * constraints
+ *
+ */
+BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_4)
+{
+    std::string savedProblem;
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+    uint32_t commodities = 3;
+    uint32_t edgeCapacityUpperBound = 30;
+
+    MultiCommodityMinCostFlow::vertex_t::Ptr v0( new MultiCommodityMinCostFlow::vertex_t(commodities));
+    MultiCommodityMinCostFlow::vertex_t::Ptr v1( new MultiCommodityMinCostFlow::vertex_t(commodities));
+    MultiCommodityMinCostFlow::vertex_t::Ptr v2( new MultiCommodityMinCostFlow::vertex_t(commodities));
+
+    for(size_t i = 0; i < commodities; ++i)
+    {
+        // Source node
+        v0->setCommoditySupply(i, 10);
+        BOOST_REQUIRE_MESSAGE(v0->getCommoditySupply(i) == 10, "Source node: supply set to 10");
+        // Target node
+        v2->setCommoditySupply(i, -10);
+        BOOST_REQUIRE_MESSAGE(v2->getCommoditySupply(i) == -10, "Target node: supply set to -10 (negative values meaning demand)");
+    }
+
+    graph->addVertex(v0);
+    graph->addVertex(v1);
+    graph->addVertex(v2);
+
+
+    MultiCommodityMinCostFlow::edge_t::Ptr e0(new MultiCommodityMinCostFlow::edge_t(commodities));
+    e0->setSourceVertex(v0);
+    e0->setTargetVertex(v1);
+
+    MultiCommodityMinCostFlow::edge_t::Ptr e1(new MultiCommodityMinCostFlow::edge_t(commodities));
+    e1->setSourceVertex(v1);
+    e1->setTargetVertex(v2);
+
+    e0->setCapacityUpperBound(edgeCapacityUpperBound);
+    {
+        MultiCommodityEdge::CommoditySet commoditiesGroup;
+        commoditiesGroup.insert(0);
+        commoditiesGroup.insert(1);
+        e0->setSubCapacityUpperBound(commoditiesGroup, 1);
+    }
+    e1->setCapacityUpperBound(edgeCapacityUpperBound);
+
+    for(size_t i = 0; i < commodities; ++i)
+    {
+        e0->setCommodityCapacityUpperBound(i, 10);
+        BOOST_REQUIRE_MESSAGE(e0->getCommodityCapacityUpperBound(i) == 10, "First edge capacity upper bound is set to 10");
+        e1->setCommodityCapacityUpperBound(i, 10);
+        BOOST_REQUIRE_MESSAGE(e1->getCommodityCapacityUpperBound(i) == 10, "Second edge capacity upper bound is set to 10");
+    }
+
+    graph->addEdge(e0);
+    graph->addEdge(e1);
+
+    for(int i = LPSolver::GLPK_SOLVER; i != (int) LPSolver::SOPLEX_SOLVER; ++i)
+    {
+        LPSolver::Type solverType = (LPSolver::Type) i;
+        {
+            std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_4");
+            MultiCommodityMinCostFlow minCostFlow(graph, commodities, solverType);
+            uint32_t cost =  minCostFlow.solve(prefixPath);
+            BOOST_TEST_MESSAGE("Cost are: " << cost);
+
+            minCostFlow.save(prefixPath, representation::GRAPHVIZ);
+
+            std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+            BOOST_REQUIRE_MESSAGE(!flaws.empty(), "Solution should have flaws, but has " << ConstraintViolation::toString(flaws) );
+
+            io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_4.dot", graph);
+
+            savedProblem = "/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_4-problem-export.gexf";
+            minCostFlow.save(savedProblem);
+        }
+    }
+}
+
+/**
+ * v0  -- e0 --> v1 -- e1 --> v2
+ * 10  -->                --> -10
+ * Route a number of commodities across this single line but with subcapacity
+ * constraints
+ *
+ */
+BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_5)
+{
+    std::string savedProblem;
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+    uint32_t commodities = 3;
+    uint32_t edgeCapacityUpperBound = 30;
+
+    MultiCommodityMinCostFlow::vertex_t::Ptr v0( new MultiCommodityMinCostFlow::vertex_t(commodities));
+    MultiCommodityMinCostFlow::vertex_t::Ptr v1( new MultiCommodityMinCostFlow::vertex_t(commodities));
+    MultiCommodityMinCostFlow::vertex_t::Ptr v2( new MultiCommodityMinCostFlow::vertex_t(commodities));
+
+    for(size_t i = 0; i < commodities; ++i)
+    {
+        // Source node
+        v0->setCommoditySupply(i, 5);
+        BOOST_REQUIRE_MESSAGE(v0->getCommoditySupply(i) == 5, "Source node: supply set to 5");
+        // Target node
+        v2->setCommoditySupply(i, -5);
+        BOOST_REQUIRE_MESSAGE(v2->getCommoditySupply(i) == -5, "Target node: supply set to -5 (negative values meaning demand)");
+    }
+
+    graph->addVertex(v0);
+    graph->addVertex(v1);
+    graph->addVertex(v2);
+
+
+    MultiCommodityMinCostFlow::edge_t::Ptr e0(new MultiCommodityMinCostFlow::edge_t(commodities));
+    e0->setSourceVertex(v0);
+    e0->setTargetVertex(v1);
+
+    MultiCommodityMinCostFlow::edge_t::Ptr e1(new MultiCommodityMinCostFlow::edge_t(commodities));
+    e1->setSourceVertex(v1);
+    e1->setTargetVertex(v2);
+
+    e0->setCapacityUpperBound(edgeCapacityUpperBound);
+    {
+        MultiCommodityEdge::CommoditySet commoditiesGroup;
+        commoditiesGroup.insert(0);
+        commoditiesGroup.insert(1);
+        e0->setSubCapacityUpperBound(commoditiesGroup, 10);
+    }
+    e1->setCapacityUpperBound(edgeCapacityUpperBound);
+
+    for(size_t i = 0; i < commodities; ++i)
+    {
+        e0->setCommodityCapacityUpperBound(i, 10);
+        BOOST_REQUIRE_MESSAGE(e0->getCommodityCapacityUpperBound(i) == 10, "First edge capacity upper bound is set to 10");
+        e1->setCommodityCapacityUpperBound(i, 10);
+        BOOST_REQUIRE_MESSAGE(e1->getCommodityCapacityUpperBound(i) == 10, "Second edge capacity upper bound is set to 10");
+    }
+
+    graph->addEdge(e0);
+    graph->addEdge(e1);
+
+    for(int i = LPSolver::GLPK_SOLVER; i != (int) LPSolver::SOPLEX_SOLVER; ++i)
+    {
+        LPSolver::Type solverType = (LPSolver::Type) i;
+        {
+            std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_5");
+            MultiCommodityMinCostFlow minCostFlow(graph, commodities, solverType);
+            uint32_t cost =  minCostFlow.solve(prefixPath);
+            BOOST_TEST_MESSAGE("Cost are: " << cost);
+
+            minCostFlow.save(prefixPath, representation::GRAPHVIZ);
+
+            std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+            BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should not have flaws, but has " << ConstraintViolation::toString(flaws) );
+
+            io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_5.dot", graph);
+
+            savedProblem = "/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_5-problem-export.gexf";
+            minCostFlow.save(savedProblem);
+        }
+    }
 }
 BOOST_AUTO_TEST_SUITE_END();

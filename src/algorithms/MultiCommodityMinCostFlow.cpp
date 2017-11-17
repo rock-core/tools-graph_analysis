@@ -139,7 +139,8 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
     size_t sizeOfGraph = mpGraph->size();
 
     // This is an upper bound for the number of indices
-    size_t numberOfIndices = sizeOfGraph*mCommodities + 3*orderOfGraph*sqrt(sizeOfGraph)*mCommodities;
+    // (last term serves to allow for subcapacity constraints
+    size_t numberOfIndices = sizeOfGraph*mCommodities + 3*orderOfGraph*sqrt(sizeOfGraph)*mCommodities + 2*sizeOfGraph*mCommodities;
     LOG_DEBUG_S << "Order of graph: " << orderOfGraph << ", sizeOfGraph " << sizeOfGraph << ", commodities: " << mCommodities << " --> NumberOfIndices (upper bound): " << numberOfIndices;
     if(numberOfIndices > 5E06)
     {
@@ -164,6 +165,7 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
     //
     // e.g.,
     // describing the first rows coefficients
+    // ia[] describes the index of the row, ja[] the column and ar[] the value
     //  ia[1]=1, ja[1]=1, ar[1] = 1.0
     //  ia[2]=1, ja[2]=2, ar[2] = 1.0
     //  ia[3]=1, ja[3]=3, ar[3] = 1.0
@@ -258,6 +260,33 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
                     << "ij["<< index << "] = " << row << std::endl
                     << "ja["<< index << "] = " << col << std::endl
                     << "ar["<< index << "] = 1.0";
+        }
+
+        // Bounds on combined commodity capacities
+        for(const MultiCommodityEdge::SubCapacityUpperBounds::value_type& sub : edge->getSubCapacityBounds())
+        {
+            glp_add_rows(mpProblem, 1);
+            std::stringstream rs;
+            rs << "y" << ++row;
+            glp_set_row_name(mpProblem, row, rs.str().c_str());
+            uint32_t capacityUpperBound = sub.second;
+            // set right hand site bound
+            glp_set_row_bnds(mpProblem, row, GLP_DB, 0.0, capacityUpperBound);
+            // define left hand site sum of column value
+            for(uint32_t commodity : sub.first)
+            {
+                // define the index as row/getColumnIndex(edge,commodity)
+                ia[index] = row;
+                ja[index] = getColumnIndex(edge, commodity);
+                // 'activate' the variable
+                ar[index] = 1.0;
+
+                LOG_DEBUG_S << "Add subflow capacity constraint <= " << capacityUpperBound << std::endl
+                        << "ij["<< index << "] = " << row << std::endl
+                        << "ja["<< index << "] = " << col << std::endl
+                        << "ar["<< index << "] = 1.0";
+                ++index;
+            }
         }
         ++row;
     }

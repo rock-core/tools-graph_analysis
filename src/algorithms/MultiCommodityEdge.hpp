@@ -15,6 +15,10 @@ class MultiCommodityEdge : public Edge
 {
 public:
     typedef shared_ptr<MultiCommodityEdge> Ptr;
+    typedef std::set<uint32_t> CommoditySet;
+    /// Flow limit for a number of commodities, e.g. to restrict transport of
+    /// particular sets of commodites
+    typedef std::map<CommoditySet, uint32_t> SubCapacityUpperBounds;
 
     /**
      * Default constructor to support serialization
@@ -89,6 +93,16 @@ public:
     void setCommodityFlow(uint32_t commodity, uint32_t flow) { mCommodityFlow.at(commodity) = flow; }
 
     /**
+     * Set the commodity sub flow limit, i.e.
+     */
+    void setSubCapacityUpperBound(const CommoditySet& commodities, uint32_t flow) { mSubCapacityUpperBounds[commodities] = flow; }
+
+    /**
+     * Get the existing flow limits
+     */
+    const SubCapacityUpperBounds& getSubCapacityBounds() const { return mSubCapacityUpperBounds; }
+
+    /**
      * Get the assigned commodity flow
      * \return flow assigned to the commodity with the given index
      */
@@ -109,6 +123,10 @@ private:
     uint32_t mCapacityUpperBound;
     /// Upper bound on individual capacities (per commodity)
     std::vector<uint32_t> mCommodityCapacityUpperBound;
+
+    /// General option to add flow limits for groups of commodities
+    SubCapacityUpperBounds mSubCapacityUpperBounds;
+
     /// Costs of commodities
     std::vector<double> mCommodityCost;
 
