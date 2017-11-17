@@ -312,6 +312,7 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
             glp_add_rows(mpProblem, 1);
             std::stringstream rs;
             rs << "y" << row;
+            mRowToVertexCommodity.push_back(std::pair<Vertex::Ptr,size_t>(vertex, k) );
             glp_set_row_name(mpProblem, row, rs.str().c_str());
             // inflow + demand = 0
             // supply - outflow = 0
@@ -383,6 +384,7 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
                 {
                     std::stringstream rs;
                     rs << "y" << row;
+                    mRowToVertexCommodity.push_back(std::pair<Vertex::Ptr,size_t>(vertex, k) );
                     glp_set_row_name(mpProblem, row, rs.str().c_str());
                     uint32_t minTransFlow = vertex->getCommodityMinTransFlow(k);
                     glp_set_row_bnds(mpProblem, row, GLP_LO, minTransFlow, 0.0);
@@ -456,11 +458,58 @@ void MultiCommodityMinCostFlow::storeResult()
         {
             uint32_t col = getColumnIndex(edge, k);
             double flow = mpSolver->getVariableValueByColumnIdx(col);
-
-
             edge->setCommodityFlow(k, ceil(flow) );
         }
     }
+}
+
+MultiCommodityMinCostFlow::VertexCommoditySet MultiCommodityMinCostFlow::vertexConstraints() const
+{
+    return vertexConstraints( mpSolver->infeasibleConstraints() );
+}
+
+MultiCommodityMinCostFlow::VertexCommoditySet MultiCommodityMinCostFlow::vertexConstraints(const std::vector<size_t>& constraintIds) const
+{
+    VertexCommoditySet vertices;
+    size_t edgeConstraints = mColumnToEdge.size();
+    for(size_t idx : constraintIds)
+    {
+        if(idx >= edgeConstraints)
+        {
+            size_t constraintIdx = idx - edgeConstraints;
+            try {
+                vertices.insert( mRowToVertexCommodity.at(constraintIdx) );
+            } catch(...)
+            {
+                throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow::vertexConstraints: vertex idx exceeds number of existing constraints");
+            }
+        }
+    }
+    return vertices;
+}
+
+std::set<Edge::Ptr> MultiCommodityMinCostFlow::edgeConstraints() const
+{
+    return edgeConstraints( mpSolver->infeasibleConstraints() );
+}
+
+std::set<Edge::Ptr> MultiCommodityMinCostFlow::edgeConstraints(const std::vector<size_t>& constraintIds) const
+{
+    std::set<Edge::Ptr> edges;
+    size_t edgeConstraints = mColumnToEdge.size();
+    for(size_t idx : constraintIds)
+    {
+        if(idx < edgeConstraints)
+        {
+            try {
+                edges.insert(mColumnToEdge.at(idx));
+            } catch(...)
+            {
+                throw std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow::edgeConstraints: edge idx exceeds number of existing constraints");
+            }
+        }
+    }
+    return edges;
 }
 
 std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() const

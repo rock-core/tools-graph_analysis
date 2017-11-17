@@ -171,6 +171,10 @@ public:
     typedef MultiCommodityEdge edge_t;
     typedef MultiCommodityVertex vertex_t;
 
+    typedef std::pair<Vertex::Ptr, size_t> VertexCommodity;
+    typedef std::set<VertexCommodity> VertexCommoditySet;
+    typedef std::vector<VertexCommodity> VertexCommodityList;
+
     /**
      * Create a MultiCommodityMinCostFlow problem by loading (problem graph) from file
      */
@@ -224,7 +228,13 @@ public:
      */
     void storeResult();
 
-    // Validate the result and return the number of violated inflow constraints
+    VertexCommoditySet vertexConstraints() const;
+    std::set<Edge::Ptr> edgeConstraints() const;
+
+    /**
+     * Validate the result and return the number of violated inflow constraints
+     * \return identified constraint violation of a provided solution
+     */
     std::vector<ConstraintViolation> validateInflow() const;
 private:
     LPSolver::Ptr mpSolver;
@@ -237,6 +247,8 @@ private:
     BaseGraph::Ptr mpGraph;
     /// Map a column to a particular edge
     std::vector<Edge::Ptr> mColumnToEdge;
+    /// Map row to vertex
+    VertexCommodityList mRowToVertexCommodity;
 
     /// The total number of columns of the linear problem
     uint32_t mTotalNumberOfColumns;
@@ -247,6 +259,22 @@ private:
      * Get the column index of a given edge and for a particular commodity
      */
     int getColumnIndex(const Edge::Ptr& e, uint32_t commodity = 0);
+
+    /**
+     * Given a list of constraint indices map them back to
+     * vertices which are defining these, e.g., this intends to allow to
+     * interprete results of a farkas proof in order to identify relevant
+     * constraints for the infeasibility of a solution
+     */
+    VertexCommoditySet vertexConstraints(const std::vector<size_t>& constraintIndices) const;
+
+    /**
+     * Given a list of constraint indices map them back to the edges
+     * which are defining these, e.g., this intends to allow to
+     * interprete results of a farkas proof in order to identify relevant
+     * constraints for the infeasibility of a solution
+     */
+    std::set<Edge::Ptr> edgeConstraints(const std::vector<size_t>& constraintIndices) const;
 
 };
 
