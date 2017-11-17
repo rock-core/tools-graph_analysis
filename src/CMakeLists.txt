@@ -3,8 +3,15 @@ find_package(SCIP)
 
 add_definitions(-DWITH_GLPK)
 if(SCIP_FOUND)
-    list(APPEND EXTRA_HPP algorithms/ScipSolver.hpp)
-    list(APPEND EXTRA_CPP algorithms/ScipSolver.cpp)
+    list(APPEND EXTRA_HPP
+            algorithms/ScipSolver.hpp
+            algorithms/SoplexSolver.hpp
+    )
+    list(APPEND EXTRA_CPP
+        algorithms/ScipSolver.cpp
+        algorithms/SoplexSolver.cpp
+    )
+
     add_definitions(-DWITH_SCIP)
 endif()
 

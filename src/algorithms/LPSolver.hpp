@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "../SharedPtr.hpp"
 
 namespace graph_analysis {
@@ -25,7 +26,7 @@ public:
 
     static std::map<Status, std::string> StatusTxt;
 
-    enum Type { UNKNOWN_LP_SOLVER, GLPK_SOLVER, SCIP_SOLVER, LP_SOLVER_TYPE_END };
+    enum Type { UNKNOWN_LP_SOLVER, GLPK_SOLVER, SCIP_SOLVER, SOPLEX_SOLVER, LP_SOLVER_TYPE_END };
 
     static std::map<Type, std::string> TypeTxt;
 
@@ -143,6 +144,12 @@ public:
 
     const std::string& getSolutionFile() const { return mSolutionFile; }
     LPSolver::SolutionType getSolutionFileFormat() const { return mSolutionFileFormat; }
+
+    /**
+     * Allow to return the set of infeasible constraint by a list of indices in
+     * the final solution
+     */
+    virtual std::vector<size_t> infeasibleConstraints() const { throw std::runtime_error("graph_analysis::algorithms::LPSolver::infeasibleCconstraints: not implemented"); }
 
 protected:
     /// Provide the current problem file and format

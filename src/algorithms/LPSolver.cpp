@@ -13,6 +13,7 @@
 #ifdef WITH_SCIP
 #warning Using SCIP solver
 #include "ScipSolver.hpp"
+#include "SoplexSolver.hpp"
 #endif
 
 namespace graph_analysis {
@@ -36,6 +37,7 @@ std::map<LPSolver::Type, std::string> LPSolver::TypeTxt =
     (LPSolver::UNKNOWN_LP_SOLVER, "UNKNOWN_LP_SOLVER")
     (LPSolver::GLPK_SOLVER, "GLPK_SOLVER")
     (LPSolver::SCIP_SOLVER, "SCIP_SOLVER")
+    (LPSolver::SOPLEX_SOLVER, "SOPLEX_SOLVER")
     (LPSolver::LP_SOLVER_TYPE_END, "LP_SOLVER_TYPE_END")
     ;
 
@@ -51,6 +53,8 @@ LPSolver::Ptr LPSolver::getInstance(LPSolver::Type solverType)
 #ifdef WITH_SCIP
         case SCIP_SOLVER:
             return dynamic_pointer_cast<LPSolver>( make_shared<ScipSolver>() );
+        case SOPLEX_SOLVER:
+            return dynamic_pointer_cast<LPSolver>( make_shared<SoplexSolver>() );
 #endif
         default:
             throw std::invalid_argument("graph_analysis::algorithms::LPSolver::getInstance: unknown solver type provided");

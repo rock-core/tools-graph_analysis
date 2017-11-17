@@ -81,6 +81,7 @@ LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix, boo
             }
             break;
         case SCIP_SOLVER:
+        case SOPLEX_SOLVER:
             {
                 std::string problemFile = createProblem(CPLEX);
                 status = mpSolver->run(problemFile, CPLEX, useCaching);
