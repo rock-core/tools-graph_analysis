@@ -44,12 +44,12 @@ public:
     /**
      * Get the vertices
      */
-    const Vertex::PtrList& getVertices() const { return mVertices; }
+    virtual const Vertex::PtrList& getVertices() const { return mVertices; }
 
     /**
-     * Set the source vertex
+     * Set the vertices of this (undirected) hyper edge
      */
-    void setVertices(const Vertex::PtrList& vertices) { mVertices = vertices; }
+    virtual void setVertices(const Vertex::PtrList& vertices) { mVertices = vertices; }
 
     /**
      * Get all involved vertices for two edges
@@ -69,7 +69,6 @@ protected:
      */
     virtual Vertex* getClone() const { return new HyperEdge(*this); }
 
-private:
     Vertex::PtrList mVertices;
 };
 

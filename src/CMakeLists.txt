@@ -20,6 +20,7 @@ rock_library(graph_analysis
         AttributeManager.cpp
         BaseGraph.cpp
         BipartiteGraph.cpp
+        DirectedHyperEdge.cpp
         Edge.cpp
         EdgeIterable.cpp
         EdgeIterator.cpp
@@ -110,6 +111,7 @@ rock_library(graph_analysis
         BaseIterable.hpp
         BipartiteGraph.hpp
         DirectedGraphInterface.hpp
+        DirectedHyperEdge.hpp
         Edge.hpp
         EdgeIterable.hpp
         EdgeIterator.hpp
