@@ -1,7 +1,6 @@
 #ifndef GRAPH_ANALYSIS_GUI_PLAYER_HPP
 #define GRAPH_ANALYSIS_GUI_PLAYER_HPP
 
-#include <thread>
 #include "../algorithms/BFSVisitor.hpp"
 #include "EdgeItemBase.hpp"
 #include "VertexItemBase.hpp"

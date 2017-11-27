@@ -5,7 +5,7 @@
 #include <set>
 #include <algorithm>
 #include <chrono>
-#include <iostream>
+#include <thread>
 
 namespace graph_analysis {
 namespace gui {
