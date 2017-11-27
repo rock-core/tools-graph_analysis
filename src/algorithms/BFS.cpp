@@ -3,7 +3,7 @@
 namespace graph_analysis {
 namespace algorithms {
 
-BFS::BFS(const BaseGraph::Ptr& graph, const BFSVisitor::Ptr& visitor, Skipper skipper)
+BFS::BFS(const BaseGraph::Ptr& graph, const Visitor::Ptr& visitor, Skipper skipper)
     : mpGraph(graph)
     , mpVisitor(visitor)
     , mSkipper(skipper)

@@ -13,7 +13,7 @@ typedef function1<bool,Edge::Ptr> Skipper;
 class BFS
 {
 public:
-    BFS(const BaseGraph::Ptr& graph, const BFSVisitor::Ptr& visitor, Skipper skipper = Skipper());
+    BFS(const BaseGraph::Ptr& graph, const Visitor::Ptr& visitor, Skipper skipper = Skipper());
 
     void run(const Vertex::Ptr& startVertex = Vertex::Ptr());
 
