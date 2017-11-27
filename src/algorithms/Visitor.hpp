@@ -31,10 +31,13 @@ public:
     virtual void initializeVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("initializeVertex") }
     virtual void startVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("startVertex") }
     virtual void discoverVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("discoverVertex") }
-    virtual void finishVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("finishVertex - la") }
+    virtual void finishVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("finishVertex") }
     virtual void leafVertex(Vertex::Ptr& vertex) { GA_ALGO_NI("leafVertex") }
 
     virtual void examineEdge(Edge::Ptr& edge) { GA_ALGO_NI("examineEdge") }
+    /**
+     * Called when an edge leads to a previously unknown vertex
+     */
     virtual void treeEdge(Edge::Ptr& edge) { GA_ALGO_NI("treeEdge") }
     virtual void cycleEdge(Edge::Ptr& edge) { GA_ALGO_NI("cycleEdge") }
     virtual void forwardOrCrossEdge(Edge::Ptr& edge) { GA_ALGO_NI("forwardOrCrossEdge") }
