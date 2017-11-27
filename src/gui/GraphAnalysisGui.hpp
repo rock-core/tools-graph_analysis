@@ -46,6 +46,7 @@ public slots:
     void selectLayout();
 
     void playGraph();
+    void reversePlayGraph();
 
 private slots:
     /*Connected to QBaseGraph*/

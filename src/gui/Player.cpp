@@ -23,7 +23,15 @@ void PlayerThread::run()
     size_t delayInMs = mConfiguration.getItemShowtimeDelayInMs();
 
     setVisibility(mPlaylist, !showItem, 0);
-    setVisibility(mPlaylist, showItem, delayInMs);
+
+    if(!showItem)
+    {
+        std::vector<GraphElement::Ptr> playlist = mPlaylist;
+        std::reverse(playlist.begin(), playlist.end());
+        setVisibility(playlist, showItem, delayInMs);
+    } else {
+        setVisibility(mPlaylist, showItem, delayInMs);
+    }
 }
 
 void PlayerThread::setVisibility(const std::vector<GraphElement::Ptr>& elements, bool showItem, size_t delayInMs)
@@ -68,7 +76,7 @@ void Player::identifyPlaylist()
     // Start BFS for every root node
     for(const Vertex::Ptr& v : mRootVertices)
     {
-        mPlayList.push_back(v);
+        appendUnique(mPlayList, v);
         BFSVisitor::Ptr visitor(this, boost::null_deleter());
         algorithms::BFS bfs(mpGraphWidget->mpGraph, visitor);
         bfs.run(v);
@@ -92,12 +100,12 @@ void Player::identifyPlaylist()
         } else if(v.size() == 1)
         {
             mIdentifiedVertices.insert(v.front());
-            mPlayList.push_back(v.front());
+            appendUnique(mPlayList, v.front());
         } else {
             // so pick random vertex and try to continue
             Vertex::Ptr startVertex = v.front();
 
-            mPlayList.push_back(startVertex);
+            appendUnique(mPlayList, startVertex);
             BFSVisitor::Ptr visitor(this, boost::null_deleter());
             algorithms::BFS bfs(mpGraphWidget->mpGraph, visitor);
             bfs.run(startVertex);
@@ -125,7 +133,7 @@ void Player::identifyPlaylist()
                 playlist.insert(playlist.end(), edges.begin(), edges.end());
             }
         }
-        playlist.push_back(currentVertex);
+        appendUnique(playlist, currentVertex);
 
         // add out edges /including self edges
         for(const GraphElement::Ptr& otherElement : playlist)
@@ -144,7 +152,7 @@ void Player::identifyPlaylist()
 void Player::discoverVertex(Vertex::Ptr& vertex)
 {
     mIdentifiedVertices.insert(vertex);
-    mPlayList.push_back(vertex);
+    appendUnique(mPlayList, vertex);
 }
 
 
@@ -171,6 +179,14 @@ void Player::start(PlayerConfiguration configuration)
     connect(mPlayerThread, SIGNAL(setEdgeVisible(int,bool)), mpGraphWidget, SLOT(setEdgeVisible(int,bool))) ;
     connect(mPlayerThread, SIGNAL(finished()), mPlayerThread, SLOT(deleteLater()));
     mPlayerThread->start();
+}
+
+void Player::appendUnique(GraphElement::PtrList& list, const GraphElement::Ptr& ge)
+{
+    if(std::find(list.begin(), list.end(), ge) == list.end())
+    {
+        list.push_back(ge);
+    }
 }
 
 } // end namespace gui

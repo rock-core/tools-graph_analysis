@@ -71,6 +71,11 @@ private:
 
     PlayerThread* mPlayerThread;
 
+    /**
+     * Append to playlist if not already part of the playlist
+     */
+    void appendUnique(std::vector<GraphElement::Ptr>& list, const GraphElement::Ptr& ge);
+
 };
 
 } // end namespace gui

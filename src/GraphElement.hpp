@@ -24,6 +24,7 @@ public:
     virtual ~GraphElement() {};
 
     typedef shared_ptr< GraphElement > Ptr;
+    typedef std::vector<Ptr> PtrList;
 
     /**
      * Set a label

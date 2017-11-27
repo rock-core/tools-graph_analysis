@@ -71,7 +71,9 @@ void GraphAnalysisGui::init()
 
     QMenu *viewMenu = new QMenu(QObject::tr("&View"));
     QAction *playGraph = comm.addAction("Play", SLOT(playGraph()), style->standardIcon(QStyle::SP_FileDialogListView), QKeySequence( Qt::ControlModifier & Qt::Key_P), tr("Play a graph"));
+    QAction *reversePlayGraph = comm.addAction("Reverse Play", SLOT(reversePlayGraph()), style->standardIcon(QStyle::SP_FileDialogListView), QKeySequence( Qt::ControlModifier & Qt::Key_P), tr("Reverse play a graph"));
     viewMenu->addAction(playGraph);
+    viewMenu->addAction(reversePlayGraph);
 
     QMenuBar* bar = menuBar();
     bar->addMenu(fileMenu);
@@ -128,6 +130,17 @@ void GraphAnalysisGui::selectLayout()
         }
     }
     updateVisualization();
+}
+
+void GraphAnalysisGui::reversePlayGraph()
+{
+    if(mpUi->tabWidget->currentWidget() == mpBaseGraphView)
+    {
+        PlayerConfiguration configuration;
+        configuration.setShowItem(false);
+
+        mpBaseGraphView->play(configuration);
+    }
 }
 
 void GraphAnalysisGui::playGraph()
