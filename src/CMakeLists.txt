@@ -68,6 +68,8 @@ rock_library(graph_analysis
         gui/GraphWidgetManager.cpp
         gui/IconManager.cpp
         gui/VertexItemTypeManager.cpp
+        gui/Player.cpp
+        gui/PlayerConfiguration.cpp
         gui/QBaseGraph.cpp
         gui/QFatRact.cpp
         gui/VertexItemBase.cpp
@@ -174,6 +176,8 @@ rock_library(graph_analysis
         gui/GraphicsItemTypes.hpp
         gui/IconManager.hpp
         gui/VertexItemTypeManager.hpp
+        gui/Player.hpp
+        gui/PlayerConfiguration.hpp
         gui/QBaseGraph.hpp
         gui/QFatRact.hpp
         gui/RegisterQtMetatypes.hpp
@@ -239,6 +243,7 @@ rock_library(graph_analysis
         gui/BaseGraphView/BaseGraphView.hpp
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
+        gui/Player.hpp
     DEPS_PKGCONFIG QtGui QtSvg
     UI
         gui/GraphAnalysisGui.ui

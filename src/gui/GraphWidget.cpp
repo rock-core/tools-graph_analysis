@@ -9,6 +9,7 @@
 #include "BaseGraphView/AddVertexDialog.hpp"
 #include "BaseGraphView/AddEdgeDialog.hpp"
 #include "../io/GVGraph.hpp"
+#include "Player.hpp"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -19,6 +20,7 @@
 #include <QDebug>
 
 #include <math.h>
+#include <iostream>
 
 using namespace graph_analysis;
 
@@ -77,6 +79,12 @@ void GraphWidget::updateStatus(const std::string& message, int timeout)
     emit currentStatus(QString(message.c_str()), timeout);
 }
 
+void GraphWidget::play(const PlayerConfiguration& configuration)
+{
+    Player player(this);
+    player.start(configuration);
+}
+
 void GraphWidget::clearVisualization()
 {
     // calling "clear()" on the scene correctly disposes of all the
@@ -89,8 +97,29 @@ void GraphWidget::clearVisualization()
 
 void GraphWidget::update()
 {
+    // trigger a recreation of the vertex and edge items
     applyCachedLayout();
     QWidget::update();
+}
+
+void GraphWidget::setVertexVisible(int id, bool visible)
+{
+    Vertex::Ptr v = mpGraph->getVertex(id);
+    VertexItemMap::iterator it = mVertexItemMap.find(v);
+    if(it != mVertexItemMap.end())
+    {
+        it->second->setVisible(visible);
+    }
+}
+
+void GraphWidget::setEdgeVisible(int id, bool visible)
+{
+    Edge::Ptr v = mpGraph->getEdge(id);
+    EdgeItemMap::iterator it = mEdgeItemMap.find(v);
+    if(it != mEdgeItemMap.end())
+    {
+        it->second->setVisible(visible);
+    }
 }
 
 GraphWidget::VertexItemCoordinateCache GraphWidget::getCurrentLayout() const

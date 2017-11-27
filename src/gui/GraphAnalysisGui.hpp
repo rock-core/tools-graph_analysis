@@ -45,6 +45,8 @@ public slots:
     void exportGraph();
     void selectLayout();
 
+    void playGraph();
+
 private slots:
     /*Connected to QBaseGraph*/
     void updateVisualization();

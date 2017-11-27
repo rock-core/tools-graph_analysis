@@ -11,6 +11,9 @@
 namespace graph_analysis {
 namespace gui {
 
+class Player;
+class PlayerConfiguration;
+
 /**
  * @brief Base-class for visual representations of a "Graph" in this framework
  *
@@ -23,6 +26,7 @@ namespace gui {
 class GraphWidget : public QGraphicsView
 {
     Q_OBJECT
+    friend class Player;
 
 public:
 
@@ -149,14 +153,25 @@ public:
      */
     virtual void clearVisualization();
 
-    // \param msg Message in the statusbar
-    /// \param time Number of milliseconds the message will be held on screen
+    /**
+     * Display a message status in the status bar
+     * \param msg Message in the statusbar
+     */
     virtual void updateStatus(const std::string& msg, int timeInMS = 10);
+
+    /**
+     * Play the incremental build up / or deconstruction of a graph
+     * \param conf PlayerConfiguration
+     */
+    void play(const PlayerConfiguration& conf);
 
 public slots:
     virtual void shuffle();
     virtual void refresh(bool all = true);
     virtual void updateVisualization();
+
+    void setVertexVisible(int id, bool show);
+    void setEdgeVisible(int id, bool show);
 
 signals:
     void currentStatus(QString, int);

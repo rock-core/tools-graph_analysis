@@ -18,6 +18,7 @@
 #include "GraphWidget.hpp"
 #include "ActionCommander.hpp"
 #include "dialogs/IODialog.hpp"
+#include "Player.hpp"
 
 namespace graph_analysis
 {
@@ -63,11 +64,18 @@ void GraphAnalysisGui::init()
     QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), style->standardIcon(QStyle::SP_FileIcon)        , QKeySequence( QKeySequence::Open ), tr("Import graph from file"));
     QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), style->standardIcon(QStyle::SP_DialogSaveButton), QKeySequence( QKeySequence::SaveAs), tr("Export graph to file"));
     QAction *selectLayout = comm.addAction("Layout", SLOT(selectLayout()), style->standardIcon(QStyle::SP_FileDialogListView), QKeySequence( Qt::ControlModifier & Qt::Key_L), tr("Export graph to file"));
-
     fileMenu->addAction(actionImport);
     fileMenu->addAction(actionExport);
     fileMenu->addAction(selectLayout);
     fileMenu->addSeparator();
+
+    QMenu *viewMenu = new QMenu(QObject::tr("&View"));
+    QAction *playGraph = comm.addAction("Play", SLOT(playGraph()), style->standardIcon(QStyle::SP_FileDialogListView), QKeySequence( Qt::ControlModifier & Qt::Key_P), tr("Play a graph"));
+    viewMenu->addAction(playGraph);
+
+    QMenuBar* bar = menuBar();
+    bar->addMenu(fileMenu);
+    bar->addMenu(viewMenu);
 
     QToolBar* toolBar = new QToolBar("Toolbar");
     toolBar->addAction(actionImport);
@@ -120,6 +128,14 @@ void GraphAnalysisGui::selectLayout()
         }
     }
     updateVisualization();
+}
+
+void GraphAnalysisGui::playGraph()
+{
+    if(mpUi->tabWidget->currentWidget() == mpBaseGraphView)
+    {
+        mpBaseGraphView->play( PlayerConfiguration() );
+    }
 }
 
 void GraphAnalysisGui::on_tabWidget_currentChanged(int index)
