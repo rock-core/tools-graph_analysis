@@ -12,6 +12,7 @@
 #include <QCommonStyle>
 #include <QToolBar>
 #include <QInputDialog>
+#include <QFileInfo>
 
 #include <base-logging/Logging.hpp>
 
@@ -61,17 +62,37 @@ void GraphAnalysisGui::init()
     ActionCommander comm(this);
     QMenu *fileMenu = new QMenu(QObject::tr("&File"));
     QStyle* style = new QCommonStyle();
+    // https://joekuan.wordpress.com/2015/09/23/list-of-qt-icons/
     QAction *actionImport = comm.addAction("Import", SLOT(importGraph()), style->standardIcon(QStyle::SP_FileIcon)        , QKeySequence( QKeySequence::Open ), tr("Import graph from file"));
     QAction *actionExport = comm.addAction("Export", SLOT(exportGraph()), style->standardIcon(QStyle::SP_DialogSaveButton), QKeySequence( QKeySequence::SaveAs), tr("Export graph to file"));
     QAction *selectLayout = comm.addAction("Layout", SLOT(selectLayout()), style->standardIcon(QStyle::SP_FileDialogListView), QKeySequence( Qt::ControlModifier & Qt::Key_L), tr("Export graph to file"));
+    QAction *saveScene = comm.addAction("Save Scene", SLOT(saveScene()), style->standardIcon(QStyle::SP_DialogSaveButton), QKeySequence(Qt::ControlModifier & Qt::Key_E), tr("Save scene"));
     fileMenu->addAction(actionImport);
     fileMenu->addAction(actionExport);
     fileMenu->addAction(selectLayout);
+    fileMenu->addAction(saveScene);
+    fileMenu->addSeparator();
+
+    // Populate the recent files list
+    for(int i = 0; i < MaxRecentFiles; ++i)
+    {
+        QAction* action = new QAction(this);
+        action->setVisible(false);
+        mpRecentFileActions.push_back(action);
+        connect(action, SIGNAL(triggered()), this, SLOT(importRecentFile()));
+    }
+
+    // account only for the existing files
+    int existingRecentFiles = qMin(mpRecentFileActions.size(), (int) MaxRecentFiles);
+    for(int i = 0; i < existingRecentFiles; ++i)
+    {
+        fileMenu->addAction(mpRecentFileActions[i]);
+    }
     fileMenu->addSeparator();
 
     QMenu *viewMenu = new QMenu(QObject::tr("&View"));
-    QAction *playGraph = comm.addAction("Play", SLOT(playGraph()), style->standardIcon(QStyle::SP_FileDialogListView), QKeySequence( Qt::ControlModifier & Qt::Key_P), tr("Play a graph"));
-    QAction *reversePlayGraph = comm.addAction("Reverse Play", SLOT(reversePlayGraph()), style->standardIcon(QStyle::SP_FileDialogListView), QKeySequence( Qt::ControlModifier & Qt::Key_P), tr("Reverse play a graph"));
+    QAction *playGraph = comm.addAction("Play", SLOT(playGraph()), style->standardIcon(QStyle::SP_MediaSeekForward), QKeySequence( Qt::ControlModifier & Qt::Key_P), tr("Play a graph"));
+    QAction *reversePlayGraph = comm.addAction("Reverse Play", SLOT(reversePlayGraph()), style->standardIcon(QStyle::SP_MediaSeekBackward), QKeySequence( Qt::ControlModifier & Qt::Key_P), tr("Reverse play a graph"));
     viewMenu->addAction(playGraph);
     viewMenu->addAction(reversePlayGraph);
 
@@ -94,21 +115,10 @@ GraphAnalysisGui::~GraphAnalysisGui()
 
 void GraphAnalysisGui::importGraph()
 {
-    BaseGraph::Ptr graph = dialogs::IODialog::importGraph(this);
-    if(!graph)
-    {
-        return;
-    }
+    graph_analysis::BaseGraph::Ptr graph = graph_analysis::gui::dialogs::IODialog::importGraph(this);
+    activateGraph(graph);
 
-    mpBaseGraph = graph;
-
-    delete mpQBaseGraph;
-    mpQBaseGraph = new QBaseGraph(mpBaseGraph);
-
-    mpBaseGraphView->setGraph(mpBaseGraph);
-    mpBaseGraphView->clearVisualization();
-    mpBaseGraphView->refresh();
-    mpBaseGraphView->updateVisualization();
+    updateRecentFileActions();
 }
 
 void GraphAnalysisGui::exportGraph()
@@ -151,6 +161,14 @@ void GraphAnalysisGui::playGraph()
     }
 }
 
+void GraphAnalysisGui::saveScene()
+{
+    if(mpUi->tabWidget->currentWidget() == mpBaseGraphView)
+    {
+        mpBaseGraphView->saveScene();
+    }
+}
+
 void GraphAnalysisGui::on_tabWidget_currentChanged(int index)
 {
     // When the tab changed, we want to update the widget
@@ -164,6 +182,59 @@ void GraphAnalysisGui::updateVisualization()
     {
         mpBaseGraphView->updateVisualization();
     }
+}
+
+void GraphAnalysisGui::updateRecentFileActions()
+{
+    QSettings settings;
+    QStringList files = settings.value("recentImportFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int) MaxRecentFiles);
+    for(int i = 0; i < numRecentFiles; ++i)
+    {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        mpRecentFileActions[i]->setText(text);
+        mpRecentFileActions[i]->setData(files[i]);
+        mpRecentFileActions[i]->setVisible(true);
+    }
+    for(int j = numRecentFiles; j < MaxRecentFiles; ++j)
+    {
+        mpRecentFileActions[j]->setVisible(false);
+    }
+}
+
+void GraphAnalysisGui::importRecentFile()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if(action)
+    {
+        qDebug() << "Importing file from: " << action->data().toString();
+        graph_analysis::BaseGraph::Ptr graph = graph_analysis::gui::dialogs::IODialog::importGraph(this, action->data().toString());
+
+        activateGraph(graph);
+    }
+}
+
+void GraphAnalysisGui::activateGraph(graph_analysis::BaseGraph::Ptr& graph)
+{
+    if(graph)
+    {
+        mpBaseGraphView->clearVisualization();
+        mpBaseGraph = graph;
+
+        delete mpQBaseGraph;
+        mpQBaseGraph = new QBaseGraph(mpBaseGraph);
+        mpBaseGraphView->setGraph(mpBaseGraph);
+        mpBaseGraphView->refresh();
+        mpBaseGraphView->updateVisualization();
+        mpBaseGraphView->applyLayout("dot");
+        mpBaseGraphView->updateVisualization();
+    }
+}
+
+QString GraphAnalysisGui::strippedName(const QString& fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
 }
 
 } // end namespace gui

@@ -165,6 +165,11 @@ public:
      */
     void play(const PlayerConfiguration& conf);
 
+    /**
+     * Call a dialog to save the current scene
+     */
+    void saveScene();
+
 public slots:
     virtual void shuffle();
     virtual void refresh(bool all = true);

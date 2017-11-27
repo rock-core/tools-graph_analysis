@@ -10,6 +10,7 @@
 #include "BaseGraphView/AddEdgeDialog.hpp"
 #include "../io/GVGraph.hpp"
 #include "Player.hpp"
+#include "dialogs/IODialog.hpp"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -83,6 +84,11 @@ void GraphWidget::play(const PlayerConfiguration& configuration)
 {
     Player player(this);
     player.start(configuration);
+}
+
+void GraphWidget::saveScene()
+{
+    graph_analysis::gui::dialogs::IODialog::exportScene(scene(), this);
 }
 
 void GraphWidget::clearVisualization()

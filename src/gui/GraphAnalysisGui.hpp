@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "QBaseGraph.hpp"
+#include <QSettings>
 
 namespace Ui
 {
@@ -26,8 +27,6 @@ public:
     ~GraphAnalysisGui();
 
 private:
-    void init();
-
     // gui elements
     Ui::GraphAnalysisGui* mpUi;
 
@@ -38,20 +37,38 @@ private:
     // the subwigets, present in this window
     BaseGraphView* mpBaseGraphView;
 
+    QList<QAction*> mpRecentFileActions;
+    enum { MaxRecentFiles = 5 };
+
+    void init();
+
     void notifyAll();
+
+    /**
+     * Store a recent import file list in the setting
+     * 'recentImportFileList'
+     */
+    void updateRecentFileActions();
+
+    QString strippedName(const QString& fullFileName);
+
+    void activateGraph(graph_analysis::BaseGraph::Ptr& graph);
 
 public slots:
     void importGraph();
     void exportGraph();
     void selectLayout();
+    void saveScene();
 
     void playGraph();
     void reversePlayGraph();
+    void importRecentFile();
 
 private slots:
     /*Connected to QBaseGraph*/
     void updateVisualization();
     void on_tabWidget_currentChanged(int index);
+
 };
 
 } // end namespace gui
