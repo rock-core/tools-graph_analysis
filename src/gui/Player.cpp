@@ -105,6 +105,7 @@ void Player::identifyPlaylist()
             // so pick random vertex and try to continue
             Vertex::Ptr startVertex = v.front();
 
+            mIdentifiedVertices.insert(startVertex);
             appendUnique(mPlayList, startVertex);
             BFSVisitor::Ptr visitor(this, boost::null_deleter());
             algorithms::BFS bfs(mpGraphWidget->mpGraph, visitor);
