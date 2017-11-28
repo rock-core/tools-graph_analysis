@@ -106,6 +106,8 @@ void GraphAnalysisGui::init()
     toolBar->addAction(selectLayout);
     toolBar->setFloatable(true);
     addToolBar(toolBar);
+
+    updateRecentFileActions();
 }
 
 GraphAnalysisGui::~GraphAnalysisGui()
@@ -186,7 +188,7 @@ void GraphAnalysisGui::updateVisualization()
 
 void GraphAnalysisGui::updateRecentFileActions()
 {
-    QSettings settings;
+    QSettings settings(QCoreApplication::organizationName(), "IO");
     QStringList files = settings.value("recentImportFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int) MaxRecentFiles);

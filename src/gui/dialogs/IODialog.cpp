@@ -89,7 +89,7 @@ QString IODialog::getGraphWriterSuffixFilter()
 
 QString IODialog::getImportGraphFilename(QWidget* parent)
 {
-    QSettings settings;
+    QSettings settings(QCoreApplication::organizationName(),"IO");
     QString dir = QDir::currentPath();
     if(settings.contains("recentImportDir"))
     {

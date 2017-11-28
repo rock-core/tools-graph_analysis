@@ -12,6 +12,7 @@ int main(int argc, char **argv)
 {
     // setting up qt application
     QApplication app(argc, argv);
+    QCoreApplication::setOrganizationName("GraphAnalysis");
 
     // provide seed for force-based layouting in the LayerViewWidget and
     // ComponentEditorWidget
