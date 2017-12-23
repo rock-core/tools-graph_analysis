@@ -44,7 +44,6 @@ EdgeItemBase::EdgeItemBase(GraphWidget* graphWidget,
 
     mpEdgePath = new QGraphicsPathItem(QPainterPath(), this);
     mpArrowHead = new QGraphicsPolygonItem(this);
-    mpArrowHead->setBrush(QBrush(Qt::black));
 }
 
 EdgeItemBase::~EdgeItemBase()
@@ -115,9 +114,11 @@ void EdgeItemBase::drawBezierEdge()
     }
 }
 
-void EdgeItemBase::drawArrowHead(size_t arrowSize)
+void EdgeItemBase::drawArrowHead(size_t arrowSize, QBrush brush, QPen pen)
 {
     assert(mpEdgePath);
+    mpArrowHead->setBrush(brush);
+    mpArrowHead->setPen(pen);
 
     QPointF referencePoint = mpEdgePath->path().pointAtPercent(0.9);
     QPointF lastPoint = mpEdgePath->path().pointAtPercent(1.0);

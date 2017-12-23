@@ -3,6 +3,8 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsPathItem>
+#include <QBrush>
+#include <QPen>
 #include "../Edge.hpp"
 
 #include "GraphicsItemTypes.hpp"
@@ -63,8 +65,14 @@ public:
      * Calling this function in adjustEdgePositioning in a subclass
      * will render an arrow head at the tip
      * needs to be called after(!) drawStraightEdge or drawBezierEdge
+     * \param arrowSize Size of the arrow
+     * \param brush Control the fill style
+     * \param pen Control the line style
      */
-    void drawArrowHead(size_t arrowSize);
+    void drawArrowHead(size_t arrowSize,
+            QBrush brush = QBrush(Qt::black),
+            QPen pen = QPen(Qt::black));
+
 
     /**
      * two points of the source and target, where this edge should attach
@@ -106,15 +114,18 @@ public:
     QGraphicsPolygonItem* getArrowHead() const { return mpArrowHead; }
 
 protected:
-    /** underlying graph edge pointer */
+    /// underlying graph edge pointer
     graph_analysis::Edge::Ptr mpEdge;
 
-    /** parent managing graph widget */
+    /// parent managing graph widget
     GraphWidget* mpGraphWidget;
 
-    /** path for rendering an edge **/
+    /// path for rendering an edge, adapt
+    /// style using setPen or setBrush
+    /// Pen: draw lines and outlines of shapes
+    /// Brush: fill pattern of shapes
     QGraphicsPathItem* mpEdgePath;
-    /** render an arrow head **/
+    /// render an arrow head
     QGraphicsPolygonItem* mpArrowHead;
 
 
