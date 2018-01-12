@@ -64,6 +64,19 @@ public:
     void setColumnScalingFactor(double f) { mColumnScalingFactor = f; }
     void setRowScalingFactor(double f) { mRowScalingFactor = f; }
 
+    void setColumnOffset(double o) { mColumnOffset = o; }
+    void setRowOffset(double o) { mRowOffset = o; }
+
+    /**
+     * Get the x position for a given column
+     */
+    double getXPosition(const ColumnLabel& columnLabel) const;
+
+    /**
+     * Get the y position for a given row
+     */
+    double getYPosition(const RowLabel& rowLabel) const;
+
     std::set<std::string> getSupportedLayouts() const;
 
 private:
@@ -75,6 +88,11 @@ private:
 
     double mColumnScalingFactor;
     double mRowScalingFactor;
+
+    /// Offset on the column (x-position)
+    double mColumnOffset;
+    /// Offset on the row (y-position)
+    double mRowOffset;
 
     ColumnLabels mColumnLabels;
     RowLabels mRowLabels;

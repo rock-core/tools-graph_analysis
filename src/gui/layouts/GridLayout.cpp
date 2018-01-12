@@ -13,6 +13,8 @@ GridLayout::GridLayout(GetLabelFunction getColumnLabelFunction,
     , mRowLabelFunction(getRowLabelFunction)
     , mColumnScalingFactor(1.0)
     , mRowScalingFactor(1.0)
+    , mColumnOffset(0.0)
+    , mRowOffset(0.0)
     , mpGridLayout(NULL)
 {
 }
@@ -51,12 +53,18 @@ QPointF GridLayout::getPosition(const Vertex::Ptr& vertex) const
     ColumnLabel columnLabel = getColumnLabel(vertex);
     RowLabel rowLabel = getRowLabel(vertex);
 
-    float xPosition = getColumnIndex(columnLabel)*mColumnScalingFactor;
-    float yPosition = getRowIndex(rowLabel)* mRowScalingFactor;
-
-    return QPointF(xPosition, yPosition);
+    return QPointF( getXPosition(columnLabel), getYPosition(rowLabel));
 }
 
+double GridLayout::getXPosition(const ColumnLabel& columnLabel) const
+{
+    return getColumnIndex(columnLabel)*mColumnScalingFactor + mColumnOffset;
+}
+
+double GridLayout::getYPosition(const RowLabel& rowLabel) const
+{
+    return getRowIndex(rowLabel)* mRowScalingFactor + mRowOffset;
+}
 
 GridLayout::ColumnLabel GridLayout::getColumnLabel(const Vertex::Ptr& vertex) const
 {
