@@ -58,12 +58,12 @@ QPointF GridLayout::getPosition(const Vertex::Ptr& vertex) const
 
 double GridLayout::getXPosition(const ColumnLabel& columnLabel) const
 {
-    return getColumnIndex(columnLabel)*mColumnScalingFactor + mColumnOffset;
+    return (getColumnIndex(columnLabel) + mColumnOffset) *mColumnScalingFactor;
 }
 
 double GridLayout::getYPosition(const RowLabel& rowLabel) const
 {
-    return getRowIndex(rowLabel)* mRowScalingFactor + mRowOffset;
+    return (getRowIndex(rowLabel) + mRowOffset)* mRowScalingFactor;
 }
 
 GridLayout::ColumnLabel GridLayout::getColumnLabel(const Vertex::Ptr& vertex) const
@@ -145,10 +145,12 @@ void GridLayout::update(const BaseGraph::Ptr& graph,
         {
             LOG_WARN_S << "graph_analysis::gui::layouts::GridLayout: failed to find vertex that corresponds to vertex: " << vertex->toString();
         } else {
-            mpGridLayout->addItem(vit->second , getColumnIndex(columnLabel)*mColumnScalingFactor, getRowIndex(rowLabel)*mRowScalingFactor);
+            mpGridLayout->addItem(vit->second, getXPosition(columnLabel), getYPosition(rowLabel));
         }
     }
 
+    // The true handling of the positin is eventually done by the grid layout
+    // engine
     QGraphicsWidget* widget = new QGraphicsWidget;
     widget->setLayout(mpGridLayout);
     scene->addItem(widget);
@@ -168,6 +170,9 @@ void GridLayout::update(const BaseGraph::Ptr& graph,
                 position.setX( position.x()*mColumnScalingFactor );
                 position.setY(position.y()*mRowScalingFactor );
                 mCoordinates[vertex] = position;
+
+                mXPositionInScene[getRowLabel(vertex)] = position.x();
+                mYPositionInScene[getColumnLabel(vertex)] = position.y();
             }
         }
     }

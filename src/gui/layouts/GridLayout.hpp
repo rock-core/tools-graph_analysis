@@ -64,8 +64,14 @@ public:
     void setColumnScalingFactor(double f) { mColumnScalingFactor = f; }
     void setRowScalingFactor(double f) { mRowScalingFactor = f; }
 
+    double getColumnScalingFactor() const { return mColumnScalingFactor; }
+    double getRowScalingFactor() const { return mRowScalingFactor; }
+
     void setColumnOffset(double o) { mColumnOffset = o; }
     void setRowOffset(double o) { mRowOffset = o; }
+
+    double getColumnOffset() const { return mColumnOffset; }
+    double getRowOffset() const { return mRowOffset; }
 
     /**
      * Get the x position for a given column
@@ -78,6 +84,13 @@ public:
     double getYPosition(const RowLabel& rowLabel) const;
 
     std::set<std::string> getSupportedLayouts() const;
+
+    /**
+     * Get the effective x position in the scene
+     */
+    float currentXPositionInScene(const ColumnLabel& columnLabel) const { return mXPositionInScene.at(columnLabel); }
+    float currentYPositionInScene(const ColumnLabel& columnLabel) const { return mYPositionInScene.at(columnLabel); }
+
 
 private:
     GetLabelFunction mColumnLabelFunction;
@@ -99,6 +112,9 @@ private:
 
     QGraphicsGridLayout* mpGridLayout;
     GraphWidget::VertexItemCoordinateCache mCoordinates;
+
+    std::map<ColumnLabel, float> mXPositionInScene;
+    std::map<RowLabel, float> mYPositionInScene;
 };
 
 } // end namespace layouts

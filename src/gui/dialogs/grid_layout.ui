@@ -6,18 +6,103 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>418</width>
+    <height>315</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>GridLayout</string>
   </property>
+  <widget class="QGroupBox" name="groupBoxScalingFactor">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>431</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Scaling Factor</string>
+   </property>
+   <widget class="QLabel" name="columnScalingLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>50</y>
+      <width>141</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Column</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="columnScalingSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>281</x>
+      <y>50</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>150.000000000000000</double>
+    </property>
+    <property name="value">
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLabel" name="rowScalingLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>89</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Row</string>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::LinksAccessibleByMouse</set>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="rowScalingSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>90</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <double>1.000000000000000</double>
+    </property>
+    <property name="maximum">
+     <double>250.000000000000000</double>
+    </property>
+    <property name="value">
+     <double>10.000000000000000</double>
+    </property>
+   </widget>
+   <zorder>columnScalingLabel</zorder>
+   <zorder>columnScalingSpinBox</zorder>
+   <zorder>rowScalingLabel</zorder>
+   <zorder>rowScalingSpinBox</zorder>
+   <zorder>groupBoxOffset</zorder>
+  </widget>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>240</y>
+     <x>-80</x>
+     <y>280</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -29,130 +114,83 @@
     <set>QDialogButtonBox::Close</set>
    </property>
   </widget>
-  <widget class="QLabel" name="columnScalingLabel">
+  <widget class="QGroupBox" name="groupBoxOffset">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>20</y>
-     <width>141</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>ColumnScalingFactor</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="rowScalingLabel">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>139</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>RowScalingFactor</string>
-   </property>
-   <property name="textInteractionFlags">
-    <set>Qt::LinksAccessibleByMouse</set>
-   </property>
-  </widget>
-  <widget class="QSlider" name="columnScalingSlider">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>70</y>
-     <width>351</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>1</number>
-   </property>
-   <property name="maximum">
-    <number>10000</number>
-   </property>
-   <property name="sliderPosition">
-    <number>100</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="rowScalingSlider">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>190</y>
-     <width>351</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>1</number>
-   </property>
-   <property name="maximum">
-    <number>10000</number>
-   </property>
-   <property name="sliderPosition">
-    <number>100</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="tickPosition">
-    <enum>QSlider::NoTicks</enum>
-   </property>
-   <property name="tickInterval">
-    <number>0</number>
-   </property>
-  </widget>
-  <widget class="QTextEdit" name="rowScalingText">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
+     <x>20</x>
      <y>140</y>
-     <width>101</width>
-     <height>31</height>
+     <width>431</width>
+     <height>111</height>
     </rect>
    </property>
-   <property name="readOnly">
-    <bool>true</bool>
+   <property name="title">
+    <string>Offset</string>
    </property>
-  </widget>
-  <widget class="QTextEdit" name="columnScalingText">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>20</y>
-     <width>101</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
+   <widget class="QLabel" name="columnOffsetLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>40</y>
+      <width>141</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Column</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="rowOffsetLabel">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>80</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Row</string>
+    </property>
+    <property name="textInteractionFlags">
+     <set>Qt::LinksAccessibleByMouse</set>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="columnOffsetSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>40</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>1000</number>
+    </property>
+    <property name="value">
+     <number>50</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="rowOffsetSpinBox">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>81</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="maximum">
+     <number>1000</number>
+    </property>
+    <property name="value">
+     <number>50</number>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
@@ -165,6 +203,22 @@
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
      <y>274</y>
     </hint>
    </hints>

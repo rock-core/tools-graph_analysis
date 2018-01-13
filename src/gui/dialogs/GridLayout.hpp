@@ -27,8 +27,11 @@ private:
     Ui::Dialog* mUi;
 
 public slots:
-    void updateColumnScalingFromSlider(int value);
-    void updateRowScalingFromSlider(int value);
+    void updateColumnScaling(double value);
+    void updateRowScaling(double value);
+
+    void updateColumnOffset(int value);
+    void updateRowOffset(int value);
 
     layouts::GridLayout::Ptr getGridLayout() const;
 
