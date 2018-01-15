@@ -227,7 +227,15 @@ protected:
     VertexItemMap mVertexItemMap;
     VertexItemCoordinateCache mItemCoordinateCache;
 
+    /**
+     * Compute the horizontal scaling factor, typically same as the vertical
+     * scaling factor for this widget
+     */
     qreal horizonalScalingFactor() const { return transform().m11(); }
+    /**
+     * Compute the vertical scaling factor, typically same as the horizontal
+     * scaling factor for this widget
+     */
     qreal verticalScalingFactor() const { return transform().m22(); }
 
     /**
