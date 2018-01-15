@@ -178,6 +178,12 @@ public slots:
     void setVertexVisible(int id, bool show);
     void setEdgeVisible(int id, bool show);
 
+    void activateViewportMargins(int areaFlag);
+    void setTopMarginHeight(int width);
+    void setBottomMarginHeight(int width);
+    void setLeftMarginWidth(int width);
+    void setRightMarginWidth(int width);
+
 signals:
     void currentStatus(QString, int);
 
@@ -200,6 +206,17 @@ protected:
      */
     graph_analysis::GraphElement::Ptr mpFocusedElement;
 
+    // Flag
+    int mWithViewportMargins;
+    int mLeftMarginWidth;
+    int mRightMarginWidth;
+    int mTopMarginHeight;
+    int mBottomMarginHeight;
+    QWidget* mpLeftMarginArea;
+    QWidget* mpRightMarginArea;
+    QWidget* mpTopMarginArea;
+    QWidget* mpBottomMarginArea;
+
     void keyPressEvent(QKeyEvent *);
 
     void mousePressEvent(QMouseEvent*);
@@ -209,6 +226,14 @@ protected:
     EdgeItemMap mEdgeItemMap;
     VertexItemMap mVertexItemMap;
     VertexItemCoordinateCache mItemCoordinateCache;
+
+    qreal horizonalScalingFactor() const { return transform().m11(); }
+    qreal verticalScalingFactor() const { return transform().m22(); }
+
+    /**
+     * Allow to compute the margins if needed
+     */
+    virtual void resizeEvent(QResizeEvent* event);
 
 };
 

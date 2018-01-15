@@ -11,6 +11,7 @@
 #include "../io/GVGraph.hpp"
 #include "Player.hpp"
 #include "dialogs/IODialog.hpp"
+#include "MarginArea.hpp"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -32,12 +33,22 @@ GraphWidget::GraphWidget(const graph_analysis::BaseGraph::Ptr& graph, QWidget* p
     : QGraphicsView(parent)
     , mpScene(new QGraphicsScene(this))
     , mpGraph(graph)
+    , mWithViewportMargins(MarginArea::None)
+    , mLeftMarginWidth(50)
+    , mRightMarginWidth(50)
+    , mTopMarginHeight(50)
+    , mBottomMarginHeight(50)
+    , mpLeftMarginArea(new MarginArea(this, MarginArea::Left))
+    , mpRightMarginArea(new MarginArea(this, MarginArea::Right))
+    , mpTopMarginArea(new MarginArea(this, MarginArea::Top))
+    , mpBottomMarginArea(new MarginArea(this, MarginArea::Bottom))
 {
     mpScene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(mpScene);
     setAcceptDrops(true);
     setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing |
                    QPainter::SmoothPixmapTransform);
+    setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 GraphWidget::~GraphWidget()
@@ -126,6 +137,56 @@ void GraphWidget::setEdgeVisible(int id, bool visible)
     {
         it->second->setVisible(visible);
     }
+}
+
+void GraphWidget::activateViewportMargins(int enable)
+{
+    int left = 0;
+    int top = 0;
+    int right = 0;
+    int bottom = 0;
+    if(enable & MarginArea::Left)
+    {
+        left = mLeftMarginWidth;
+    }
+    if(enable & MarginArea::Top)
+    {
+        top = mTopMarginHeight;
+    }
+    if(enable & MarginArea::Right)
+    {
+        right = mRightMarginWidth;
+    }
+    if(enable & MarginArea::Bottom)
+    {
+        bottom = mBottomMarginHeight;
+    }
+    mWithViewportMargins = enable;
+    setViewportMargins(left,top,right,bottom);
+}
+
+void GraphWidget::setTopMarginHeight(int value)
+{
+    mTopMarginHeight = value;
+    activateViewportMargins(mWithViewportMargins);
+}
+
+void GraphWidget::setBottomMarginHeight(int value)
+{
+    mBottomMarginHeight = value;
+    activateViewportMargins(mWithViewportMargins);
+}
+
+void GraphWidget::setLeftMarginWidth(int value)
+{
+    mLeftMarginWidth = value;
+    activateViewportMargins(mWithViewportMargins);
+}
+
+void GraphWidget::setRightMarginWidth(int value)
+{
+    mRightMarginWidth = value;
+    activateViewportMargins(mWithViewportMargins);
 }
 
 GraphWidget::VertexItemCoordinateCache GraphWidget::getCurrentLayout() const
@@ -461,6 +522,27 @@ void GraphWidget::cacheVertexItemPosition(const graph_analysis::Vertex::Ptr v,
     {
         LOG_ERROR_S << "unmovable item in coordinate map: '" << v->toString()
                     << "'";
+    }
+}
+
+void GraphWidget::resizeEvent(QResizeEvent* event)
+{
+    QRect cr = contentsRect();
+    if(mWithViewportMargins & MarginArea::Left)
+    {
+        mpLeftMarginArea->setGeometry(QRect(cr.left(), cr.top()+50,50,cr.height()-100));
+    }
+    if(mWithViewportMargins & MarginArea::Top)
+    {
+        mpTopMarginArea->setGeometry(QRect(cr.left(), cr.top(),cr.width(),50));
+    }
+    if(mWithViewportMargins & MarginArea::Right)
+    {
+        mpRightMarginArea->setGeometry(QRect(cr.right()-50, cr.top()+50,50,cr.height()-100));
+    }
+    if(mWithViewportMargins & MarginArea::Bottom)
+    {
+        mpBottomMarginArea->setGeometry(QRect(cr.left(), cr.bottom()-50,cr.width(),50));
     }
 }
 
