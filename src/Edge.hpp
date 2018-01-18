@@ -19,6 +19,7 @@ class Edge : public GraphElement
 {
 public:
     typedef shared_ptr< Edge > Ptr;
+    typedef shared_ptr< const Edge > ConstPtr;
     typedef std::vector< Ptr > PtrList;
     typedef std::set< Ptr > PtrSet;
 
@@ -83,6 +84,7 @@ public:
     static bool areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1);
 
     /**
+     * Deprecated function
      * in order for child-classes to iterate the graph, a way to obtain the
      * shared pointer actually respresenting this edge on a particular graph is
      * needed.
@@ -91,6 +93,17 @@ public:
      * \return shared pointer of this edge belonging to the given graph
      */
     Edge::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const;
+
+    /**
+     * Get the shared pointer for this object
+     */
+    Edge::Ptr getPtr();
+
+    /**
+     * Get the shared pointer for this object -- do not use on stack allocated
+     * objects
+     */
+    Edge::ConstPtr getPtr() const;
 
     /**
      * Hook to register attributes of this vertex, in order to properly

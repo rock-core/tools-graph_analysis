@@ -17,7 +17,17 @@ Vertex::Ptr Vertex::clone() const
 
 Vertex::Ptr Vertex::getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const
 {
-    return pGraph->getVertex(getId(pGraph->getId()));
+    return const_pointer_cast<Vertex>( getPtr() );
+}
+
+Vertex::Ptr Vertex::getPtr()
+{
+    return dynamic_pointer_cast<Vertex>(shared_from_this());
+}
+
+Vertex::ConstPtr Vertex::getPtr() const
+{
+    return dynamic_pointer_cast<const Vertex>(shared_from_this());
 }
 
 std::string Vertex::toString() const

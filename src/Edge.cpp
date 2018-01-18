@@ -75,6 +75,16 @@ bool Edge::areMeeting(const Edge::Ptr& e0, const Edge::Ptr& e1)
 
 Edge::Ptr Edge::getSharedPointerFromGraph(const shared_ptr<BaseGraph> &pGraph) const
 {
-    return pGraph->getEdge(getId(pGraph->getId()));
+    return const_pointer_cast<Edge>( getPtr() );
+}
+
+Edge::Ptr Edge::getPtr()
+{
+    return dynamic_pointer_cast<Edge>(shared_from_this());
+}
+
+Edge::ConstPtr Edge::getPtr() const
+{
+    return dynamic_pointer_cast<const Edge>(shared_from_this());
 }
 }
