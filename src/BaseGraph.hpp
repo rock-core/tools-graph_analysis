@@ -24,7 +24,7 @@ namespace graph_analysis
  * We assume that all graph implementations will rely and allow access to vertices and edges via
  * integers
  */
-class BaseGraph : public VertexIterable, public EdgeIterable, public Algorithms
+class BaseGraph : public enable_shared_from_this<BaseGraph>, public VertexIterable, public EdgeIterable, public Algorithms
 {
 
 public:
