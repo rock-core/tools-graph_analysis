@@ -11,6 +11,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QSvgGenerator>
+#include <QDebug>
 
 #include <sstream>
 #include "../../GraphIO.hpp"
@@ -89,7 +90,7 @@ QString IODialog::getGraphWriterSuffixFilter()
 
 QString IODialog::getImportGraphFilename(QWidget* parent)
 {
-    QSettings settings(QCoreApplication::organizationName(),"IO");
+    QSettings settings(QCoreApplication::organizationName(), "IO");
     QString dir = QDir::currentPath();
     if(settings.contains("recentImportDir"))
     {
@@ -124,7 +125,7 @@ QString IODialog::getImportGraphFilename(QWidget* parent)
 
 QString IODialog::getExportGraphFilename(QWidget* parent)
 {
-    QSettings settings;
+    QSettings settings(QCoreApplication::organizationName(), "IO");
     QString dir = QDir::currentPath();
     if(settings.contains("recentExportDir"))
     {
