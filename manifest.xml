@@ -1,24 +1,40 @@
 <package>
-  <description brief="A graph library for modeling and analysis">
-  This library allows wrapping and extension of existing graph library for modeling and analyis
-  </description>
-  <author>Thomas Roehr/thomas.roehr@dfki.de</author>
-  <license></license>
-  <url>http://www.rock-robotics.org</url>
-  <logo>http://</logo>
-  <depend package="base/cmake" />
-  <depend package="base/types" />
-  <depend package="base/numeric" />
-  <depend package="utilmm" />
-  <depend package="boost" />
-  <depend package="external/lemon" />
-  <depend package="external/snap" />
-  <depend package="external/gexf" />
-  <depend package="graphviz" />
-  <depend package="glpk" />
-  <depend package="gsl" />
-  <depend package="qt4" />
-  <depend package="libxml2-utils" optional="1"/>
-  <depend package="yaml-cpp"/>
-  <tags>needs_opt</tags>
+    <description brief="A graph library for modeling and analysis">
+        This library allows wrapping and extension of existing graph libraries for modeling and analysis.
+        It provides a unified interface for boost_graph, LEMON and SNAP and comes with a graphical interface to
+        create graph based GUIs.
+        Additionally it contains algorithms for multi-commodity min-cost flow optimization.
+    </description>
+    <author>Thomas Roehr/thomas.roehr@dfki.de</author>
+    <license></license>
+    <url>http://www.rock-robotics.org</url>
+    <logo>http://</logo>
+    <depend package="base/cmake" />
+    <depend package="base/types" />
+    <depend package="base/numeric" />
+    <depend package="utilmm" />
+    <depend package="boost" />
+    <depend package="external/lemon" />
+    <depend package="external/snap" />
+    <depend package="external/gexf" />
+    <depend package="graphviz" />
+    <depend package="glpk" />
+    <depend package="gsl" />
+    <depend package="qt4" />
+    <depend package="libxml2-utils" optional="1"/>
+    <depend package="yaml-cpp"/>
+    <tags>needs_opt</tags>
+    <keywords>
+        <keyword>utilities</keyword>
+        <keyword>graph</keyword>
+        <keyword>optimization</keyword>
+    </keywords>
+    <stage>0</stage>
+    <activity>active</activity>
+    <classifiers>
+        <classifier>gui</classifier>
+        <classifier>algorithms</classifier>
+        <classifier>c++</classifier>
+        <classifier>rock</classifier>
+    </classifiers>
 </package>
