@@ -20,7 +20,6 @@ class Vertex : public GraphElement
 {
 public:
     typedef shared_ptr< Vertex > Ptr;
-    typedef shared_ptr< const Vertex > ConstPtr;
     typedef std::vector< Ptr > PtrList;
     typedef std::set< Ptr > PtrSet;
 
@@ -51,27 +50,14 @@ public:
     virtual std::string toString(uint32_t indentation) const;
 
     /**
-     * Deprecated function in order for child-classes to iterate the graph, a way to obtain the
+     * in order for child-classes to iterate the graph, a way to obtain the
      * shared pointer actually respresenting this vertex on a particular graph is
      * needed.
      *
      * \param pGraph shared pointer to the graph where this vertex is contained
      * \return shared pointer of this vertex belonging to the given graph
-     * \deprecated Please use functionality of std::enable_shared_from_this and thus getSharedPtr
      */
     Vertex::Ptr getSharedPointerFromGraph(const shared_ptr<BaseGraph>& pGraph) const;
-
-    /**
-     * Get the shared pointer for this object -- do not use on stack allocated
-     * objects
-     */
-    Vertex::Ptr getPtr();
-
-    /**
-     * Get the shared pointer for this object -- do not use on stack allocated
-     * objects
-     */
-    Vertex::ConstPtr getPtr() const;
 
     /**
      * Hook to register attributes of this vertex, in order to properly
