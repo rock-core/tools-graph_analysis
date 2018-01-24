@@ -2,6 +2,8 @@
 # executed from 'project/build' with 'cmake ../'.
 cmake_minimum_required(VERSION 2.6)
 find_package(Rock)
+# Currently requires RelWithDebInfo at minimum to build with lemon
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
 # Required for graphviz
 add_definitions(-DHAVE_STRING_H)
 add_definitions(-Wall -g)
