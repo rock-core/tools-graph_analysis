@@ -8,7 +8,7 @@
     <author>Thomas Roehr/thomas.roehr@dfki.de</author>
     <maintainer>Thomas Roehr/thomas.roehr@dfki.de</maintainer>
     <license></license>
-    <url>http://www.rock-robotics.org</url>
+    <url>https://git.hb.dfki.de/dfki-libraries/graph_analysis</url>
     <logo>http://</logo>
     <depend package="base/cmake" />
     <depend package="base/types" />
