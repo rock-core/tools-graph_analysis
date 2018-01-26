@@ -6,6 +6,7 @@
         Additionally it contains algorithms for multi-commodity min-cost flow optimization.
     </description>
     <author>Thomas Roehr/thomas.roehr@dfki.de</author>
+    <maintainer>Thomas Roehr/thomas.roehr@dfki.de</maintainer>
     <license></license>
     <url>http://www.rock-robotics.org</url>
     <logo>http://</logo>
