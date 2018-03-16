@@ -40,6 +40,11 @@ public:
 
     Status run(const std::string& problem, LPSolver::ProblemFormat problemFormat = CPLEX, bool useCaching = false) override;
 
+    /**
+     * Hook function to redirect the output of glpk to the logger
+     */
+    static int printHook(void* info, const char* s);
+
 protected:
     glp_prob* mpProblem;
 

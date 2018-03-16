@@ -1,6 +1,7 @@
 #include "GLPKSolver.hpp"
 #include <sstream>
 #include <base-logging/Logging.hpp>
+#include <boost/algorithm/string.hpp>
 
 namespace graph_analysis {
 namespace algorithms {
@@ -10,6 +11,7 @@ GLPKSolver::GLPKSolver()
 {
     mpProblem = glp_create_prob();
     glp_set_prob_name(mpProblem, "glpk-default-problem");
+    glp_term_hook(GLPKSolver::printHook, NULL);
 }
 
 GLPKSolver::GLPKSolver(const std::string& problemName)
@@ -18,6 +20,7 @@ GLPKSolver::GLPKSolver(const std::string& problemName)
     // define the integer program
     mpProblem = glp_create_prob();
     glp_set_prob_name(mpProblem, problemName.c_str());
+    glp_term_hook(GLPKSolver::printHook, NULL);
 }
 
 GLPKSolver::~GLPKSolver()
@@ -247,6 +250,14 @@ GLPKSolver::Status GLPKSolver::run(const std::string& problem,
     }
 
     return status;
+}
+
+int GLPKSolver::printHook(void* info, const char* s)
+{
+    std::string message(s);
+    boost::trim(message);
+    LOG_INFO_S << message;
+    return 1;
 }
 
 } // end namespace algorithms
