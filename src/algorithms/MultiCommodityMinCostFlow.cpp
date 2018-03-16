@@ -221,7 +221,9 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
         {
             throw
                 std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::run:"
-                        " trying to add edge with CapacityUpperBound = 0");
+                        " trying to add edge with CapacityUpperBound = 0 :"
+                        + edge->toString()
+                        );
         } else {
             glp_set_row_bnds(mpProblem, row, GLP_DB, 0.0, capacityUpperBound);
         }

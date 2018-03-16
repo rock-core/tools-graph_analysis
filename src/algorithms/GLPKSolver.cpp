@@ -134,7 +134,7 @@ GLPKSolver::Status GLPKSolver::translateSimplexReturnCode(int code)
     switch(code)
     {
         case 0:
-            LOG_WARN_S << "The LP problem instance has been successfully solved. "
+            LOG_INFO_S << "The LP problem instance has been successfully solved. "
                 << "This does not necessarily mean that the solver has found an optimal solution."
                 << "It only means that the solution process was successful";
             return SOLUTION_FOUND;
