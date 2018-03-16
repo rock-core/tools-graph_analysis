@@ -188,7 +188,7 @@ void GraphAnalysisGui::updateVisualization()
 
 void GraphAnalysisGui::updateRecentFileActions()
 {
-    QSettings settings(QCoreApplication::organizationName(), "IO");
+    QSettings settings(QCoreApplication::organizationName(), dialogs::IODialog::DefaultSettingsLabel);
     QStringList files = settings.value("recentImportFileList").toStringList();
 
     int numRecentFiles = qMin(files.size(), (int) MaxRecentFiles);
@@ -211,7 +211,7 @@ void GraphAnalysisGui::importRecentFile()
     if(action)
     {
         qDebug() << "Importing file from: " << action->data().toString();
-        graph_analysis::BaseGraph::Ptr graph = graph_analysis::gui::dialogs::IODialog::importGraph(this, action->data().toString());
+        graph_analysis::BaseGraph::Ptr graph = dialogs::IODialog::importGraph(this, action->data().toString());
 
         activateGraph(graph);
     }

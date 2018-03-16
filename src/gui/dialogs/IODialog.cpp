@@ -20,6 +20,8 @@ namespace graph_analysis {
 namespace gui {
 namespace dialogs {
 
+QString IODialog::DefaultSettingsLabel = "IO";
+
 QString IODialog::getGraphReaderSuffixFilter()
 {
     // Constructing the writer suffix filter
@@ -88,9 +90,10 @@ QString IODialog::getGraphWriterSuffixFilter()
     return QString(ss.str().c_str());
 }
 
-QString IODialog::getImportGraphFilename(QWidget* parent)
+QString IODialog::getImportGraphFilename(QWidget* parent,
+        const QString& settingsLabel)
 {
-    QSettings settings(QCoreApplication::organizationName(), "IO");
+    QSettings settings(QCoreApplication::organizationName(), settingsLabel);
     QString dir = QDir::currentPath();
     if(settings.contains("recentImportDir"))
     {
@@ -119,13 +122,15 @@ QString IODialog::getImportGraphFilename(QWidget* parent)
         files.removeLast();
     }
     settings.setValue("recentImportFileList", files);
+    settings.setValue("recentImportFile", filename);
 
     return filename;
 }
 
-QString IODialog::getExportGraphFilename(QWidget* parent)
+QString IODialog::getExportGraphFilename(QWidget* parent,
+        const QString& settingsLabel)
 {
-    QSettings settings(QCoreApplication::organizationName(), "IO");
+    QSettings settings(QCoreApplication::organizationName(), settingsLabel);
     QString dir = QDir::currentPath();
     if(settings.contains("recentExportDir"))
     {
@@ -186,6 +191,7 @@ QString IODialog::getExportGraphFilename(QWidget* parent)
         files.removeLast();
     }
     settings.setValue("recentExportFileList", files);
+    settings.setValue("recentExportFile", filename);
 
     return filename;
 }
@@ -204,13 +210,15 @@ graph_analysis::representation::Type IODialog::getTypeNameFromFilter(QString fil
     return representation::UNKNOWN;
 }
 
-BaseGraph::Ptr IODialog::importGraph(QWidget* parent, const QString& file)
+BaseGraph::Ptr IODialog::importGraph(QWidget* parent,
+        const QString& file,
+        const QString& settingsLabel)
 {
     BaseGraph::Ptr graph = BaseGraph::getInstance();
     QString filename;
     if(file.isEmpty())
     {
-        filename = getImportGraphFilename(parent);
+        filename = getImportGraphFilename(parent, settingsLabel);
     } else {
         filename = file;
     }
@@ -232,9 +240,11 @@ BaseGraph::Ptr IODialog::importGraph(QWidget* parent, const QString& file)
 
 }
 
-void IODialog::exportGraph(const BaseGraph::Ptr& graph, QWidget* parent)
+void IODialog::exportGraph(const BaseGraph::Ptr& graph,
+        QWidget* parent,
+        const QString& settingsLabel)
 {
-    QString filename = getExportGraphFilename();
+    QString filename = getExportGraphFilename(parent, settingsLabel);
     if(!filename.isEmpty())
     {
         try {

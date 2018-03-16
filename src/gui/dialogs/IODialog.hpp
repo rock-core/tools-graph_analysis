@@ -14,6 +14,7 @@ namespace dialogs {
 class IODialog
 {
 public:
+    static QString DefaultSettingsLabel;
     /**
      * Get the suffix filter for all supported graph format that can be imported
      * \return The string filter that can be passed to a QFileDialog
@@ -30,13 +31,15 @@ public:
      * Get the filename for importing a graph
      * \return filename or empty string on failure
      */
-    static QString getImportGraphFilename(QWidget* parent = NULL);
+    static QString getImportGraphFilename(QWidget* parent = NULL,
+            const QString& settingsLabel = DefaultSettingsLabel);
 
     /**
      * Get the filename for exportingg a graph
      * \return filename or empty string on failure
      */
-    static QString getExportGraphFilename(QWidget* parent = NULL);
+    static QString getExportGraphFilename(QWidget* parent = NULL,
+            const QString& settingsLabel = DefaultSettingsLabel);
 
     /**
      * Get the representation type from a given filter selection
@@ -48,22 +51,32 @@ public:
      * supported import types)
      * \param parent Parent of this dialog
      * \param filename of the file to be loaded (to skip showing the menu)
+     * \param label for the QSetting for creating multiple recent filelists
      * \return the imported graph, or empty shared pointer, on failure
      */
-    static BaseGraph::Ptr importGraph(QWidget* parent = NULL, const QString& filename = QString());
+    static BaseGraph::Ptr importGraph(QWidget* parent = NULL,
+            const QString& filename = QString(),
+            const QString& settingsLabel = DefaultSettingsLabel);
 
     /**
      * Export a given graph, i.e. opens a file dialog for selecting the target
      * and file format
+     * \param graph Graph to export
+     * \param parent Parent widget point
+     * \param settingsLabel Label for the QSettings to create disjoint lists for
+     *    recentExportDir, recentExportFileList, recentExportFile
      */
-    static void exportGraph(const BaseGraph::Ptr& graph, QWidget* parent = NULL);
+    static void exportGraph(const BaseGraph::Ptr& graph,
+            QWidget* parent = NULL,
+            const QString& settingsLabel = DefaultSettingsLabel);
 
     /**
      * Opens a file dialog to save a graphics scene
      * \param scene Scene to save
      * \param parent Parent of the dialog to be opened
      */
-    static void exportScene(QGraphicsScene* scene, QWidget* parent = NULL);
+    static void exportScene(QGraphicsScene* scene,
+            QWidget* parent = NULL);
 
     /**
      * Export a graphics scene as Pdf, will open a printer dialog with
@@ -72,14 +85,17 @@ public:
      * \param filename Filename to use for saving
      * \param parent Parent of the dialog to be opened
      */
-    static void exportSceneAsPdf(QGraphicsScene* scene, QString filename, QWidget* parent = NULL);
+    static void exportSceneAsPdf(QGraphicsScene* scene,
+            QString filename,
+            QWidget* parent = NULL);
 
     /**
      * Export a graphics scene as svg
      * \param scene Scene to save
      * \param filename Filename to use for saving
      */
-    static void exportSceneAsSvg(QGraphicsScene* scene, QString filename);
+    static void exportSceneAsSvg(QGraphicsScene* scene,
+            QString filename);
 };
 
 } // end namespace dialogs
