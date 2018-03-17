@@ -12,6 +12,8 @@
 #include <QPrintDialog>
 #include <QSvgGenerator>
 #include <QDebug>
+#include <QGraphicsItem>
+#include <QGraphicsSvgItem>
 
 #include <sstream>
 #include "../../GraphIO.hpp"
@@ -317,7 +319,24 @@ void IODialog::exportSceneAsSvg(QGraphicsScene* scene, QString filename)
     svgGen.setTitle("Graph Analysis SVG");
     svgGen.setDescription("SVG Drawing");
     QPainter svgPainter(&svgGen);
+    for(QGraphicsItem* item : scene->items())
+    {
+        QGraphicsSvgItem* svgItem = dynamic_cast<QGraphicsSvgItem*>(item);
+        if(svgItem)
+        {
+            svgItem->setCacheMode(QGraphicsItem::NoCache);
+        }
+    }
+    // https://bugreports.qt.io/browse/QTBUG-49935
     scene->render(&svgPainter, rect);
+    for(QGraphicsItem* item : scene->items())
+    {
+        QGraphicsSvgItem* svgItem = dynamic_cast<QGraphicsSvgItem*>(item);
+        if(svgItem)
+        {
+            svgItem->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+        }
+    }
 }
 
 
