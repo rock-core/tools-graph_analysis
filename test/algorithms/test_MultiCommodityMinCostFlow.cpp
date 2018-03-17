@@ -547,4 +547,79 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_5)
         }
     }
 }
+
+BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_6)
+{
+    std::string savedProblem;
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+    uint32_t commodities = 3;
+    uint32_t edgeCapacityUpperBound = 30;
+
+    MultiCommodityMinCostFlow::vertex_t::Ptr v0( new MultiCommodityMinCostFlow::vertex_t(commodities));
+    MultiCommodityMinCostFlow::vertex_t::Ptr v1( new MultiCommodityMinCostFlow::vertex_t(commodities));
+    MultiCommodityMinCostFlow::vertex_t::Ptr v2( new MultiCommodityMinCostFlow::vertex_t(commodities));
+
+    for(size_t i = 0; i < commodities; ++i)
+    {
+        // Source node
+        v0->setCommoditySupply(i, 5);
+        BOOST_REQUIRE_MESSAGE(v0->getCommoditySupply(i) == 5, "Source node: supply set to 5");
+        // Target node
+        v2->setCommoditySupply(i, -5);
+        BOOST_REQUIRE_MESSAGE(v2->getCommoditySupply(i) == -5, "Target node: supply set to -5 (negative values meaning demand)");
+
+        // Set commodity min transflow
+        v1->setCommodityMinTransFlow(i,5);
+    }
+
+    graph->addVertex(v0);
+    graph->addVertex(v1);
+    graph->addVertex(v2);
+
+
+    MultiCommodityMinCostFlow::edge_t::Ptr e0(new MultiCommodityMinCostFlow::edge_t(commodities));
+    e0->setSourceVertex(v0);
+    e0->setTargetVertex(v1);
+
+    MultiCommodityMinCostFlow::edge_t::Ptr e1(new MultiCommodityMinCostFlow::edge_t(commodities));
+    e1->setSourceVertex(v1);
+    e1->setTargetVertex(v2);
+
+    e0->setCapacityUpperBound(edgeCapacityUpperBound);
+    e1->setCapacityUpperBound(edgeCapacityUpperBound);
+
+    for(size_t i = 0; i < commodities; ++i)
+    {
+        e0->setCommodityCapacityUpperBound(i, 10);
+        e1->setCommodityCapacityUpperBound(i, 10);
+    }
+
+    graph->addEdge(e0);
+    graph->addEdge(e1);
+
+    for(int i = LPSolver::GLPK_SOLVER; i != (int) LPSolver::SOPLEX_SOLVER; ++i)
+    {
+        LPSolver::Type solverType = (LPSolver::Type) i;
+        {
+            std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_5");
+            MultiCommodityMinCostFlow minCostFlow(graph, commodities, solverType);
+            LPSolver::Status status =  minCostFlow.solve(prefixPath);
+
+            BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_OPTIMAL || status == LPSolver::SOLUTION_FOUND, "Solver status should be: optimal was " << LPSolver::StatusTxt[status]);
+
+            double cost = minCostFlow.getCost();
+            BOOST_TEST_MESSAGE("Cost are: " << cost);
+
+            minCostFlow.save(prefixPath, representation::GRAPHVIZ);
+
+            std::vector<ConstraintViolation> flaws = minCostFlow.validateInflow();
+            BOOST_REQUIRE_MESSAGE(flaws.empty(), "Solution should not have flaws, but has " << ConstraintViolation::toString(flaws) );
+
+            io::GraphIO::write("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_6.dot", graph);
+
+            savedProblem = "/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_6-problem-export.gexf";
+            minCostFlow.save(savedProblem);
+        }
+    }
+}
 BOOST_AUTO_TEST_SUITE_END();

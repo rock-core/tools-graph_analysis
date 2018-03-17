@@ -391,7 +391,7 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
                     uint32_t minTransFlow = vertex->getCommodityMinTransFlow(k);
                     glp_set_row_bnds(mpProblem, row, GLP_LO, minTransFlow, 0.0);
 
-                    LOG_DEBUG_S << "Adding row '" << rs.str() << "' for vertex '" << mpGraph->getVertexId(vertex) << "' and commodity '" << k << "' with min trans flow: " << minTransFlow;
+                    LOG_DEBUG_S << "Adding row '" << rs.str() << "' for vertex '" << mpGraph->getVertexId(vertex) << "' and commodity '" << k << "' with min trans flow (in): " << minTransFlow;
                 }
 
 
@@ -404,12 +404,26 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
                     ia[index] = row;
                     ja[index] = commodityCol;
                     // inflow (thus multiply by -1.0)
-                    ar[index] = -1.0;
+                    ar[index] = 1.0;
                     LOG_DEBUG_S << "Add inflow to consider transflow (incoming edge: " << mpGraph->getEdgeId(edge) << ")" << std::endl
                             << "ij["<< index << "] = " << row - mCommodities + k << std::endl
                             << "ja["<< index << "] = " << commodityCol << std::endl
-                            << "ar["<< index << "] = -1.0";
+                            << "ar["<< index << "] = 1.0";
                     ++index;
+                }
+
+                ++row;
+
+                glp_add_rows(mpProblem, 1);
+                {
+                    std::stringstream rs;
+                    rs << "y" << row;
+                    mRowToVertexCommodity.push_back(std::pair<Vertex::Ptr,size_t>(vertex, k) );
+                    glp_set_row_name(mpProblem, row, rs.str().c_str());
+                    uint32_t minTransFlow = vertex->getCommodityMinTransFlow(k);
+                    glp_set_row_bnds(mpProblem, row, GLP_LO, minTransFlow, 0.0);
+
+                    LOG_DEBUG_S << "Adding row '" << rs.str() << "' for vertex '" << mpGraph->getVertexId(vertex) << "' and commodity '" << k << "' with min trans flow (out): " << minTransFlow;
                 }
 
                 EdgeIterator::Ptr outEdgeIt = diGraph->getOutEdgeIterator(vertex);
