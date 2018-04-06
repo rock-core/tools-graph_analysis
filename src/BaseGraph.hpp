@@ -88,7 +88,7 @@ public:
     BaseGraph::Ptr clone() const;
 
     /**
-     * Copy the vertices but clone the edges of the graph
+     * Copy the vertices, but clone the edges of the graph
      */
     BaseGraph::Ptr cloneEdges() const;
 

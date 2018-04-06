@@ -150,6 +150,8 @@ BaseGraph::Ptr BaseGraph::cloneEdges() const
     {
         Edge::Ptr e = edgeIterator->current();
         Edge::Ptr e_clone = e->clone();
+        e_clone->setSourceVertex(e->getSourceVertex());
+        e_clone->setTargetVertex(e->getTargetVertex());
         g_clone->addEdge(e_clone);
     }
 
