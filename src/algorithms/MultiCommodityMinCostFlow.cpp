@@ -72,18 +72,19 @@ LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix, boo
 {
 
     LPSolver::Status status;
+    std::string problemFile;
     switch(mpSolver->getSolverType())
     {
         case GLPK_SOLVER:
             {
-                std::string problemFile = createProblem(GLPK);
+                problemFile = createProblem(GLPK);
                 status = mpSolver->run(problemFile, GLPK, useCaching);
             }
             break;
         case SCIP_SOLVER:
         case SOPLEX_SOLVER:
             {
-                std::string problemFile = createProblem(CPLEX);
+                problemFile = createProblem(CPLEX);
                 status = mpSolver->run(problemFile, CPLEX, useCaching);
             }
             break;
@@ -92,13 +93,21 @@ LPSolver::Status MultiCommodityMinCostFlow::solve(const std::string& prefix, boo
             break;
     }
 
+    if(problemFile.empty())
+    {
+        throw std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::solve: problem file not available");
+    }
+
     std::string filename;
     if(prefix.empty())
     {
         filename = mpSolver->saveSolutionToTempfile(BASIC_SOLUTION);
     } else {
         filename = prefix + ".problem";
-        mpSolver->saveProblem(filename);
+        if(!boost::filesystem::exists(filename))
+        {
+            boost::filesystem::copy_file(problemFile, filename);
+        }
 
         filename = prefix + ".solution";
         mpSolver->saveSolution(filename, BASIC_SOLUTION);
