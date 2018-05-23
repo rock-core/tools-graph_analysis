@@ -385,20 +385,12 @@ void GraphWidget::clearFocus() { updateStatus("", 2500);mpFocusedElement = Graph
 void GraphWidget::registerEdgeItem(const graph_analysis::Edge::Ptr& e,
                                    EdgeItemBase* i)
 {
-    if(mEdgeItemMap.count(e) > 0)
-    {
-        LOG_INFO_S << "re-registering existing edge item! " << e->toString();
-    }
     mEdgeItemMap[e] = i;
 }
 
 void GraphWidget::registerVertexItem(const graph_analysis::Vertex::Ptr& v,
                                      VertexItemBase* i)
 {
-    if(mVertexItemMap.count(v) > 0)
-    {
-        LOG_INFO_S << "re-registering existing vertex item! " << v->toString();
-    }
     mVertexItemMap[v] = i;
 }
 
@@ -408,8 +400,6 @@ void GraphWidget::deregisterEdgeItem(const graph_analysis::Edge::Ptr& e,
     if(mEdgeItemMap.count(e) > 0)
     {
         mEdgeItemMap.erase(e);
-    } else {
-        LOG_INFO_S << "cannot deregister edge " << e->toString() << " -- edge has never been registered";
     }
 }
 
@@ -419,8 +409,6 @@ void GraphWidget::deregisterVertexItem(const graph_analysis::Vertex::Ptr& v,
     if(mVertexItemMap.count(v) > 0)
     {
         mVertexItemMap.erase(v);
-    } else {
-        LOG_INFO_S << "cannot deregister vertex " << v->toString() << " -- vertex has never been registered";
     }
 }
 
