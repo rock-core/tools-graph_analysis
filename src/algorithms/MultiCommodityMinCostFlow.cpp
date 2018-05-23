@@ -389,9 +389,15 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
                     mRowToVertexCommodity.push_back(std::pair<Vertex::Ptr,size_t>(vertex, k) );
                     glp_set_row_name(mpProblem, row, rs.str().c_str());
                     uint32_t minTransFlow = vertex->getCommodityMinTransFlow(k);
-                    glp_set_row_bnds(mpProblem, row, GLP_LO, minTransFlow, 0.0);
+                    uint32_t maxTransFlow = vertex->getCommodityMaxTransFlow(k);
+                    if(maxTransFlow != std::numeric_limits<uint32_t>::max())
+                    {
+                        glp_set_row_bnds(mpProblem, row, GLP_DB, minTransFlow, maxTransFlow);
+                    } else {
+                        glp_set_row_bnds(mpProblem, row, GLP_LO, minTransFlow, 0.0);
+                    }
 
-                    LOG_DEBUG_S << "Adding row '" << rs.str() << "' for vertex '" << mpGraph->getVertexId(vertex) << "' and commodity '" << k << "' with min trans flow (in): " << minTransFlow;
+                    LOG_DEBUG_S << "Adding row '" << rs.str() << "' for vertex '" << mpGraph->getVertexId(vertex) << "' and commodity '" << k << "' with trans flow (in): " << minTransFlow << " <= flow <= " << maxTransFlow;
                 }
 
 

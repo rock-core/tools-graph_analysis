@@ -47,11 +47,25 @@ public:
     void setCommodityMinTransFlow(uint32_t commodity, uint32_t flow) { mCommodityMinTransFlow.at(commodity) = flow; }
 
     /**
+     * Request a maximum trans-flow through this vertex for a given commodity
+     * \param commodity Index of the commodity
+     * \param (Integral) flow of the commodity
+     */
+    void setCommodityMaxTransFlow(uint32_t commodity, uint32_t flow) { mCommodityMaxTransFlow.at(commodity) = flow; }
+
+    /**
      * Retrieve the set trans-flow through this vertex for a given commodity
      * \param commodity Index of the commodity
      * \return minimum trans-flow for the given commodity through this vertex
      */
     uint32_t getCommodityMinTransFlow(uint32_t commodity) const { return mCommodityMinTransFlow.at(commodity); }
+
+    /**
+     * Retrieve the set max trans-flow through this vertex for a given commodity
+     * \param commodity Index of the commodity
+     * \return minimum trans-flow for the given commodity through this vertex
+     */
+    uint32_t getCommodityMaxTransFlow(uint32_t commodity) const { return mCommodityMaxTransFlow.at(commodity); }
 
     virtual std::string getClassName() const override { return "MultiCommodityVertex"; }
     virtual std::string toString() const override;
@@ -64,6 +78,7 @@ public:
 private:
     std::vector<int32_t> mCommoditySupply;
     std::vector<uint32_t> mCommodityMinTransFlow;
+    std::vector<uint32_t> mCommodityMaxTransFlow;
 
     static const VertexRegistration<MultiCommodityVertex> msRegistration;
 

@@ -16,6 +16,7 @@ MultiCommodityVertex::MultiCommodityVertex()
 MultiCommodityVertex::MultiCommodityVertex(uint32_t commodities)
     : mCommoditySupply(commodities,0)
     , mCommodityMinTransFlow(commodities, 0)
+    , mCommodityMaxTransFlow(commodities, std::numeric_limits<uint32_t>::max())
 {}
 
 MultiCommodityVertex::~MultiCommodityVertex() {}
@@ -43,6 +44,19 @@ std::string MultiCommodityVertex::toString() const
         {
             ss << *cit;
             if(++cit != mCommodityMinTransFlow.end())
+            {
+                ss << ",";
+            }
+        }
+        ss << "]";
+    }
+    {
+        ss << "         max-trans-flow: [";
+        std::vector<uint32_t>::const_iterator cit = mCommodityMaxTransFlow.begin();
+        for(; cit != mCommodityMaxTransFlow.end();)
+        {
+            ss << *cit;
+            if(++cit != mCommodityMaxTransFlow.end())
             {
                 ss << ",";
             }
