@@ -31,13 +31,47 @@ ConstraintViolation::ConstraintViolation(const MultiCommodityVertex::Ptr& v, con
     , mType(type)
 {}
 
+ConstraintViolation::ConstraintViolation(const MultiCommodityEdge::Ptr& e,
+        uint32_t commodity, int32_t delta, uint32_t inFlow,
+        uint32_t outFlow, Type type)
+    : mpVertex()
+    , mpEdge(e)
+    , mDelta(delta)
+    , mInFlow(inFlow)
+    , mOutFlow(outFlow)
+    , mType(type)
+{
+
+    mCommodities.insert(commodity);
+}
+
+ConstraintViolation::ConstraintViolation(const MultiCommodityEdge::Ptr& e, const std::set<uint32_t>& commodities,
+        int32_t delta, uint32_t inFlow,
+        uint32_t outFlow, Type type)
+    : mpVertex()
+    , mpEdge(e)
+    , mCommodities(commodities)
+    , mDelta(delta)
+    , mInFlow(inFlow)
+    , mOutFlow(outFlow)
+    , mType(type)
+{}
+
 std::string ConstraintViolation::toString(size_t indent) const
 {
     std::string hspace(indent,' ');
 
     std::stringstream ss;
     ss << hspace << "ConstraintViolation of " << TypeTxt[mType] << ":" << std::endl;
-    ss << mpVertex->toString(indent + 4)  << std::endl;
+    if(mpVertex)
+    {
+        ss << mpVertex->toString(indent + 4)  << std::endl;
+    } else if(mpEdge)
+    {
+        ss << mpEdge->toString(indent + 4)  << std::endl;
+    } else {
+        ss << hspace << "no edge or vertex set" << std::endl;
+    }
     ss << hspace << "    commodities: " << toString(mCommodities) << std::endl;
     ss << hspace << "    delta: " << mDelta << std::endl;
     ss << hspace << "    inFlow: " << mInFlow << std::endl;
