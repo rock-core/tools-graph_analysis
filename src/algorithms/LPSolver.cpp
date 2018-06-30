@@ -41,6 +41,14 @@ std::map<LPSolver::Type, std::string> LPSolver::TypeTxt =
     (LPSolver::LP_SOLVER_TYPE_END, "LP_SOLVER_TYPE_END")
     ;
 
+std::map<LPSolver::ProblemFormat, std::string> LPSolver::ProblemFormatTxt =
+    InitMap<LPSolver::ProblemFormat, std::string>
+    (LPSolver::UNKNOWN_PROBLEM_FORMAT, "unknown problem format")
+    (LPSolver::CPLEX, "CPLEX")
+    (LPSolver::GLPK, "GLPK")
+    (LPSolver::MPS, "MPS");
+
+
 LPSolver::~LPSolver()
 {}
 
@@ -106,7 +114,13 @@ bool LPSolver::loadProblem(const std::string& filename, ProblemFormat format)
 {
     std::string md5 = utils::MD5Digest::md5Sum(filename);
     bool solutionIsKnown = (msKnownSolutions.count(md5) != 0);
-    doLoadProblem(filename, format);
+    try {
+        doLoadProblem(filename, format);
+    } catch(const std::exception& e)
+    {
+        throw std::runtime_error("graph_analysis::algorithms::LPSolver::loadProblem: "
+                "failed to load problem file '" + filename + "' with format '" + ProblemFormatTxt[format] + " : " + e.what());
+    }
     return solutionIsKnown;
 
 }

@@ -17,4 +17,5 @@ rock_testsuite(test_graph suite.cpp
     algorithms/test_MinCostFlow.cpp
     algorithms/test_MultiCommodityMinCostFlow.cpp
     algorithms/test_LPSolver.cpp
+    algorithms/test_LPProblem.cpp
     DEPS graph_analysis)

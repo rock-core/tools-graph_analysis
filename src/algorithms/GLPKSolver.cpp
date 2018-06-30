@@ -232,9 +232,9 @@ GLPKSolver::Status GLPKSolver::run(const std::string& problem,
         {
             status = loadKnownSolution(problem);
         }
-    } catch(const std::runtime_error& e)
+    } catch(const std::exception& e)
     {
-        LOG_WARN_S << "Error loading known solution";
+        LOG_WARN_S << "Error loading problem file: " << e.what();
     }
 
     if(status == GLPKSolver::STATUS_UNKNOWN)

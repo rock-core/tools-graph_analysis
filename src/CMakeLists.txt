@@ -41,6 +41,7 @@ rock_library(graph_analysis
         algorithms/CorrelationClustering.cpp
         algorithms/DFS.cpp
         algorithms/FloydWarshall.cpp
+        algorithms/lp/Problem.cpp
         algorithms/LPSolver.cpp
         algorithms/GLPKSolver.cpp
         algorithms/MinCostFlow.cpp
@@ -147,6 +148,7 @@ rock_library(graph_analysis
         algorithms/DFS.hpp
         algorithms/DFSVisitor.hpp
         algorithms/FloydWarshall.hpp
+        algorithms/lp/Problem.hpp
         algorithms/LPSolver.hpp
         algorithms/GLPKSolver.hpp
         algorithms/MinCostFlow.hpp

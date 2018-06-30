@@ -27,10 +27,10 @@ public:
     static std::map<Status, std::string> StatusTxt;
 
     enum Type { UNKNOWN_LP_SOLVER, GLPK_SOLVER, SCIP_SOLVER, SOPLEX_SOLVER, LP_SOLVER_TYPE_END };
-
     static std::map<Type, std::string> TypeTxt;
 
     enum ProblemFormat { UNKNOWN_PROBLEM_FORMAT = 0, CPLEX, GLPK, MPS, LP_PROBLEM_FORMAT_END};
+    static std::map<ProblemFormat, std::string> ProblemFormatTxt;
 
     /// Solution types: basic, IPT = interior point, MIP = mixed integer
     enum SolutionType { UNKNOWN_SOLUTION_TYPE = 0, BASIC_SOLUTION, IPT_SOLUTION, MIP_SOLUTION, LP_SOLUTION_TYPE_END };

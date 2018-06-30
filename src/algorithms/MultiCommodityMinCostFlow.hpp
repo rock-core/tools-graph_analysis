@@ -140,7 +140,8 @@ namespace algorithms {
 
 
         MultiCommodityMinCostFlow minCostFlow(graph, commodities);
-        uint32_t cost = minCostFlow.run();
+        LPSolver::Status status = minCostFlow.solve();
+        double cost = minCostFlow.getCost();
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-2.");
         minCostFlow.saveProblem(file + "problem");
@@ -204,6 +205,18 @@ public:
      * problem is saved
      */
     std::string createProblem(LPSolver::ProblemFormat format = CPLEX);
+
+    /**
+     * Create the problem in CPLEX format
+     */
+    std::string createProblemCPLEX();
+
+#ifdef WITH_GLPK
+    /**
+     * Allow to use GLPK to generate problem
+     */
+    std::string createProblemWithGLPK(LPSolver::ProblemFormat format = CPLEX);
+#endif
 
     /**
      * Solve the multicommodity problem with the given LP solver
