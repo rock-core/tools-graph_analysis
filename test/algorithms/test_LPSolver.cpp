@@ -24,7 +24,8 @@ BOOST_AUTO_TEST_CASE(solvers)
                 BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_INFEASIBLE, "Solution status for '" + LPSolver::TypeTxt[type] + "' should be 'infeasible'");
                 break;
             case LPSolver::SOPLEX_SOLVER:
-                BOOST_REQUIRE_MESSAGE(status == LPSolver::SOLUTION_FOUND, "Solution status for '" + LPSolver::TypeTxt[type] + "' should be 'infeasible'");
+                BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_INFEASIBLE,
+                        "Solution status for '" + LPSolver::TypeTxt[type] + "' should be 'infeasible' was " << LPSolver::StatusTxt[status]);
                 break;
             default:
                 break;

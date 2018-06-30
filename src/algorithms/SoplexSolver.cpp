@@ -144,7 +144,7 @@ LPSolver::Status SoplexSolver::run(const std::string& problem, LPSolver::Problem
                         std::cout << "No farkas proof available" << std::endl;
                     }
                 }
-                break;
+                return LPSolver::STATUS_INFEASIBLE;
             default:
                 break;
         }
