@@ -858,7 +858,10 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
         for(uint32_t k = 0; k < mCommodities; ++k)
         {
             int32_t supplyDemand = vertex->getCommoditySupply(k);
-            if(supplyDemand < 0) // edge demand
+            totalInFlow += inFlow[k];
+            totalOutFlow += outFlow[k];
+
+            if(supplyDemand < 0) // demand
             {
                 int32_t delta = supplyDemand + inFlow[k];
                 if(delta < 0)
@@ -874,6 +877,23 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
                 }
             }
 
+            // out = totalInFlow + supply
+            int32_t balance = outFlow[k] - inFlow[k] - supplyDemand;
+            if(balance != 0)
+            {
+                constraintViolations.push_back(ConstraintViolation(vertex, k,
+                            balance, inFlow[k], outFlow[k],
+                            ConstraintViolation::FlowBalance) );
+            }
+
+            LOG_INFO_S << "Flow : " << std::endl
+                << "    commodity: " << k << std::endl
+                << "    in: " << inFlow[k] << std::endl
+                << "    out:" << outFlow[k] << std::endl
+                << "    supplyDemand: " << supplyDemand << std::endl
+                << "    balance: " << balance << std::endl
+                << "    vertex: " << vertex->toString() << std::endl;
+
             uint32_t minTransflow = vertex->getCommodityMinTransFlow(k);
             if(minTransflow == 0)
             {
@@ -886,8 +906,6 @@ std::vector<ConstraintViolation> MultiCommodityMinCostFlow::validateInflow() con
                 affectedCommoditiesTransFlow.insert(k);
             }
 
-            totalInFlow += inFlow[k];
-            totalOutFlow += outFlow[k];
         }
 
         if(deltaInflow != 0)

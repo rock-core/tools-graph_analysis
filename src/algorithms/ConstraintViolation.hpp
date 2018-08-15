@@ -12,7 +12,7 @@ namespace algorithms {
 class ConstraintViolation
 {
 public:
-    enum Type { MinFlow, TransFlow, TotalMinFlow, TotalTransFlow };
+    enum Type { FlowBalance, MinFlow, TransFlow, TotalMinFlow, TotalTransFlow };
 
     static std::map<Type, std::string> TypeTxt;
 
