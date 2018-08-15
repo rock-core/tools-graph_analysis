@@ -18,6 +18,8 @@ class MultiCommodityVertex : public Vertex
 {
 public:
     typedef shared_ptr<MultiCommodityVertex> Ptr;
+    typedef std::set<uint32_t> CommoditySet;
+    typedef std::map<CommoditySet, std::pair<uint32_t, uint32_t> > CombinedFlowBounds;
 
     MultiCommodityVertex(const std::string& label = "");
 
@@ -38,6 +40,36 @@ public:
      * \param commodity Index of the commodity
      */
     int32_t getCommoditySupply(uint32_t commodity) const { return mCommoditySupply.at(commodity); }
+
+    /**
+     * Set the inflow bounds (minimum/maximum) for a set of commodities, e.g.,
+     * commodities of the same type
+     * \param commodities Set of commodities
+     * \param minMaxFlow Pair of lower and upper bound
+     */
+    void setCommoditiesInFlowBounds(const CommoditySet& commodities, std::pair<uint32_t,uint32_t> minMaxFlow) { mCombinedCommoditiesInFlowBounds[commodities] = minMaxFlow; }
+
+    /**
+     * Set the upper bound for the inflow of a set of commodities, e.g.,
+     * commodities of the same type
+     * \param commodities Set of commodities
+     * \param maxFlow Maximum total inflow allowed for this set of commodities
+     */
+    void setCommoditiesMaxInFlow(const CommoditySet& commodities, uint32_t
+            maxFlow);
+    /**
+     * Set the lower bound for the inflow of a set of commodities, e.g.,
+     * commodities of the same type
+     * \param commodities Set of commodities
+     * \param minFlow Minimum total inflow required for this set of commodities
+     */
+    void setCommoditiesMinInFlow(const CommoditySet& commodities, uint32_t
+            minFlow);
+
+    /**
+     * Get the combined maximum inflows for a set of commodities
+     */
+    const CombinedFlowBounds& getCommoditiesInFlowBounds() const { return mCombinedCommoditiesInFlowBounds; }
 
     /**
      * Request a trans-flow through this vertex for a given commodity
@@ -79,6 +111,8 @@ private:
     std::vector<int32_t> mCommoditySupply;
     std::vector<uint32_t> mCommodityMinTransFlow;
     std::vector<uint32_t> mCommodityMaxTransFlow;
+    /// General option to add inflow limits for groups of commodities
+    CombinedFlowBounds mCombinedCommoditiesInFlowBounds;
 
     static const VertexRegistration<MultiCommodityVertex> msRegistration;
 

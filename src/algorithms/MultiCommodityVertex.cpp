@@ -2,6 +2,8 @@
 #include "../VertexTypeManager.hpp"
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/set.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
@@ -20,6 +22,7 @@ MultiCommodityVertex::MultiCommodityVertex(uint32_t commodities,
     , mCommoditySupply(commodities,0)
     , mCommodityMinTransFlow(commodities, 0)
     , mCommodityMaxTransFlow(commodities, std::numeric_limits<uint32_t>::max())
+    , mCombinedCommoditiesInFlowBounds()
 {}
 
 MultiCommodityVertex::~MultiCommodityVertex() {}
@@ -84,6 +87,8 @@ std::string MultiCommodityVertex::serializeAttributes() const
 
     oarch << mCommoditySupply;
     oarch << mCommodityMinTransFlow;
+    oarch << mCommodityMaxTransFlow;
+    oarch << mCombinedCommoditiesInFlowBounds;
 
     return ss.str();
 }
@@ -95,6 +100,37 @@ void MultiCommodityVertex::deserializeAttributes(const std::string& data)
 
     iarch >> mCommoditySupply;
     iarch >> mCommodityMinTransFlow;
+    iarch >> mCommodityMaxTransFlow;
+    iarch >> mCombinedCommoditiesInFlowBounds;
+}
+
+void MultiCommodityVertex::setCommoditiesMaxInFlow(const CommoditySet& commodities,
+        uint32_t maxFlow)
+{
+    CombinedFlowBounds::iterator it = mCombinedCommoditiesInFlowBounds.find(commodities);
+    if(it == mCombinedCommoditiesInFlowBounds.end())
+    {
+        mCombinedCommoditiesInFlowBounds.insert(
+                CombinedFlowBounds::value_type(commodities,
+                    std::pair<uint32_t,uint32_t>(0, maxFlow)));
+    } else {
+        it->second.second = maxFlow;
+    }
+}
+
+void MultiCommodityVertex::setCommoditiesMinInFlow(const CommoditySet& commodities,
+        uint32_t minFlow)
+{
+    CombinedFlowBounds::iterator it = mCombinedCommoditiesInFlowBounds.find(commodities);
+    if(it == mCombinedCommoditiesInFlowBounds.end())
+    {
+        mCombinedCommoditiesInFlowBounds.insert(
+                CombinedFlowBounds::value_type(commodities,
+                    std::pair<uint32_t,uint32_t>(minFlow,
+                        std::numeric_limits<uint32_t>::max())));
+    } else {
+        it->second.first = minFlow;
+    }
 }
 
 } // end namespace algorithms
