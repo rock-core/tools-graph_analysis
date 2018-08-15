@@ -386,6 +386,10 @@ std::string MultiCommodityMinCostFlow::createProblem(LPSolver::ProblemFormat for
     {
         case CPLEX:
             return createProblemCPLEX();
+#ifdef WITH_GLPK
+        case GLPK:
+            return createProblemWithGLPK();
+#endif
         default:
             throw
                 std::invalid_argument("graph_analysis::algorithms::MultiCommodityMinCostFlow:"
