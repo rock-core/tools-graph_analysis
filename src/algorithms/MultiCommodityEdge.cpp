@@ -13,11 +13,14 @@ namespace algorithms {
 
 const EdgeRegistration<MultiCommodityEdge> MultiCommodityEdge::msRegistration;
 
-MultiCommodityEdge::MultiCommodityEdge()
+MultiCommodityEdge::MultiCommodityEdge(const std::string& label)
+    : Edge(label)
+    , mCapacityUpperBound(0)
 {}
 
-MultiCommodityEdge::MultiCommodityEdge(uint32_t commodities)
-    : mCapacityUpperBound(0)
+MultiCommodityEdge::MultiCommodityEdge(uint32_t commodities, const std::string& label)
+    : Edge(label)
+    , mCapacityUpperBound(0)
     , mCommodityCapacityUpperBound(commodities,0)
     , mCommodityCost(commodities,1)
     , mCommodityFlow(commodities,0)

@@ -10,11 +10,14 @@ namespace algorithms {
 
 const VertexRegistration<MultiCommodityVertex> MultiCommodityVertex::msRegistration;
 
-MultiCommodityVertex::MultiCommodityVertex()
+MultiCommodityVertex::MultiCommodityVertex(const std::string& label)
+    : Vertex(label)
 {}
 
-MultiCommodityVertex::MultiCommodityVertex(uint32_t commodities)
-    : mCommoditySupply(commodities,0)
+MultiCommodityVertex::MultiCommodityVertex(uint32_t commodities,
+        const std::string& label)
+    : Vertex(label)
+    , mCommoditySupply(commodities,0)
     , mCommodityMinTransFlow(commodities, 0)
     , mCommodityMaxTransFlow(commodities, std::numeric_limits<uint32_t>::max())
 {}

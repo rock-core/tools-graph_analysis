@@ -23,13 +23,13 @@ public:
     /**
      * Default constructor to support serialization
      */
-    MultiCommodityEdge();
+    MultiCommodityEdge(const std::string& label ="");
 
     /**
      * Construct edge with a given number of commodities which can go through
      * this edge
      */
-    MultiCommodityEdge(uint32_t commodities);
+    MultiCommodityEdge(uint32_t commodities, const std::string& label = "");
 
     /**
      * Deconstructor

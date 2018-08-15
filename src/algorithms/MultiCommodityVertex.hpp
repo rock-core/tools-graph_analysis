@@ -19,9 +19,9 @@ class MultiCommodityVertex : public Vertex
 public:
     typedef shared_ptr<MultiCommodityVertex> Ptr;
 
-    MultiCommodityVertex();
+    MultiCommodityVertex(const std::string& label = "");
 
-    MultiCommodityVertex(uint32_t commodities);
+    MultiCommodityVertex(uint32_t commodities, const std::string& label = "");
 
     virtual ~MultiCommodityVertex();
 
