@@ -34,6 +34,8 @@ public:
 
     double getObjectiveValue() const override { return glp_get_obj_val(mpProblem); };
 
+    double getVariableValue(const std::string& varName) const;
+
     double getVariableValueByColumnIdx(uint32_t idx) const override;
 
     Status run() override { throw std::runtime_error("graph_analysis::algorithms::GLPKSolver::run not implemented"); }

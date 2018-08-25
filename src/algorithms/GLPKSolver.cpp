@@ -50,6 +50,8 @@ void GLPKSolver::doLoadProblem(const std::string& filename, LPSolver::ProblemFor
     {
         throw std::runtime_error("GLPKSolver: " + getProblemName() + " failed to load problem from '" + filename + "'");
     }
+
+    glp_create_index(mpProblem);
 }
 
 void GLPKSolver::saveProblem(const std::string& filename, LPSolver::ProblemFormat format) const
@@ -217,9 +219,21 @@ GLPKSolver::Status GLPKSolver::translateIntoptReturnCode(int code)
     }
 }
 
+double GLPKSolver::getVariableValue(const std::string& varName) const
+{
+    int idx = glp_find_col(mpProblem, varName.c_str());
+    if(idx != 0)
+    {
+        return glp_get_col_prim(mpProblem, idx);
+    }
+    throw std::invalid_argument("graph_analysis::algorithms::GLPKSolver::getVariableValue"
+            "failed to identify column with name '" + varName + "'");
+}
+
 double GLPKSolver::getVariableValueByColumnIdx(uint32_t idx) const
 {
-    return glp_get_col_prim(mpProblem, static_cast<int>(idx) );
+    std::string columnName = LPSolver::getVariableNameByColumnIdx(idx);
+    return getVariableValue(columnName);
 }
 
 GLPKSolver::Status GLPKSolver::run(const std::string& problem,
@@ -248,7 +262,6 @@ GLPKSolver::Status GLPKSolver::run(const std::string& problem,
             registerSolution(problem, solution, status, BASIC_SOLUTION);
         }
     }
-
     return status;
 }
 

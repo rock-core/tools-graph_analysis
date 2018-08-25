@@ -56,8 +56,10 @@ LPSolver::Ptr LPSolver::getInstance(LPSolver::Type solverType)
 {
     switch(solverType)
     {
+#ifdef WITH_GLPK
         case GLPK_SOLVER:
             return dynamic_pointer_cast<LPSolver>( make_shared<GLPKSolver>() );
+#endif
 #ifdef WITH_SCIP
         case SCIP_SOLVER:
             return dynamic_pointer_cast<LPSolver>( make_shared<ScipSolver>() );
