@@ -3,7 +3,7 @@
 
 #include "../BaseGraph.hpp"
 #include "../GraphIO.hpp"
-#include "GLPKSolver.hpp"
+#include "LPSolver.hpp"
 #include "MultiCommodityEdge.hpp"
 #include "MultiCommodityVertex.hpp"
 #include "ConstraintViolation.hpp"
@@ -144,8 +144,6 @@ namespace algorithms {
         double cost = minCostFlow.getCost();
 
         std::string file("/tmp/algorithm-multicommodity-mincostflow-2.");
-        minCostFlow.saveProblem(file + "problem");
-        minCostFlow.saveSolution(file + "solution");
 
         minCostFlow.storeResult();
         EdgeIterator::Ptr edgeIt = graph->getEdgeIterator();
@@ -166,7 +164,7 @@ namespace algorithms {
  \endverbatim
  *
  */
-class MultiCommodityMinCostFlow : public GLPKSolver
+class MultiCommodityMinCostFlow
 {
 public:
     typedef MultiCommodityEdge edge_t;
@@ -181,7 +179,7 @@ public:
      */
     static MultiCommodityMinCostFlow fromFile(const std::string& filename,
             representation::Type format = representation::UNKNOWN,
-            LPSolver::Type solverType = GLPK_SOLVER);
+            LPSolver::Type solverType = LPSolver::GLPK_SOLVER);
 
     /**
      * Save the MultiCommodityMinCostFlow problem to a file
@@ -196,7 +194,7 @@ public:
      */
     MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph,
             uint32_t commodities = 0,
-            LPSolver::Type solverType = GLPK_SOLVER);
+            LPSolver::Type solverType = LPSolver::GLPK_SOLVER);
 
     virtual ~MultiCommodityMinCostFlow() {}
 
@@ -204,19 +202,12 @@ public:
      * Creates the problem instance and return the temporary file in which the
      * problem is saved
      */
-    std::string createProblem(LPSolver::ProblemFormat format = CPLEX);
+    std::string createProblem(LPSolver::ProblemFormat format = LPSolver::CPLEX);
 
     /**
      * Create the problem in CPLEX format
      */
     std::string createProblemCPLEX();
-
-#ifdef WITH_GLPK
-    /**
-     * Allow to use GLPK to generate problem
-     */
-    std::string createProblemWithGLPK(LPSolver::ProblemFormat format = CPLEX);
-#endif
 
     /**
      * Solve the multicommodity problem with the given LP solver
