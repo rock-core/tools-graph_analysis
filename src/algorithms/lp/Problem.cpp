@@ -293,6 +293,7 @@ std::string Problem::toString(size_t indent) const
     }
     ss << std::endl;
     ss << "End";
+    ss << std::endl;
 
     return ss.str();
 }
