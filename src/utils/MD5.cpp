@@ -1,34 +1,34 @@
 #include "MD5.hpp"
-#include <openssl/md5.h>
+#include <cstdio>
 #include <sstream>
 #include <fstream>
 #include <iomanip>
+#include <string>
 
 namespace graph_analysis {
 namespace utils {
 
 std::string MD5Digest::md5Sum(const std::string& filename)
 {
-    MD5_CTX context;
-    MD5_Init(&context);
-
-    std::ifstream input(filename, std::ios::binary);
     char fileBuffer[4096];
-    while(input.read(fileBuffer, sizeof(fileBuffer)) || input.gcount())
+    std::string result;
+    // use printf to not print a newline
+    std::string cmd = "/usr/bin/md5sum " + filename + "| awk '{ printf $1 }'";
+    FILE* pipe = popen(cmd.c_str(), "r");
+    if(!pipe)
     {
-        MD5_Update(&context, fileBuffer, input.gcount());
+        throw std::runtime_error("graph_analysis::utils::MD5Digest::md5sum:"
+                " failed to retrieve md5sum for " + filename);
     }
-
-    unsigned char digest[MD5_DIGEST_LENGTH] = {};
-    MD5_Final(digest, &context);
-    char outputBuffer[MD5_DIGEST_LENGTH*2 + 1];
-    size_t i = 0;
-    for(i = 0; i < MD5_DIGEST_LENGTH; ++i)
+    while(!feof(pipe))
     {
-        sprintf(outputBuffer + (i*2), "%02x", digest[i]);
+        if(fgets(fileBuffer, 4096, pipe) != NULL)
+        {
+            result += fileBuffer;
+        }
     }
-    outputBuffer[i*2] = 0;
-    return std::string(outputBuffer);
+    pclose(pipe);
+    return fileBuffer;
 }
 
 } // end namespace utils

@@ -24,7 +24,6 @@
     <depend package="qt4" />
     <depend package="libxml2-utils" optional="1"/>
     <depend package="yaml-cpp"/>
-    <depend package="openssl" />
     <tags>needs_opt</tags>
     <keywords>
         <keyword>utilities</keyword>
