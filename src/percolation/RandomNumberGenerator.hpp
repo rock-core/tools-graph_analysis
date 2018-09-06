@@ -2,7 +2,7 @@
 #define GRAPH_ANALYSIS_PERCOLATION_RANDOM_NUMBER_GENERATOR_HPP
 
 #include <stdint.h>
-#include <gsl/gsl_rng.h>
+#include <random>
 
 namespace graph_analysis {
 namespace percolation {
@@ -10,19 +10,16 @@ namespace percolation {
 /**
  * \class RandomNumberGenerator
  * \details
- * You can use the environoment variable GSL_RNG_SEED to set the seed, and 
- * GSL_RNG_TYPE to set the random generator, e.g., ranlxs0, cmrg, mrg or taus
- * \see https://www.gnu.org/software/gsl/manual/html_node/Random-number-generator-algorithms.html#Random-number-generator-algorithms
  */
 class RandomNumberGenerator
 {
     uint32_t mSeed;
-    gsl_rng* mRandomNumberGenerator;
+    mutable std::mt19937 mRandomNumberGenerator;
 
 public:
-    RandomNumberGenerator(uint32_t seed = 0);
+    RandomNumberGenerator();
 
-    ~RandomNumberGenerator();
+    RandomNumberGenerator(uint32_t seed);
 
     /**
      * Get a random number in the range (0,1) excluding both 0.0 and 1.0

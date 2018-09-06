@@ -224,7 +224,7 @@ rock_library(graph_analysis
         utils/MD5.hpp
         ${EXTRA_HPP}
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf numeric gsl libgvc utilmm yaml-cpp
+        lemon snap base-lib gexf numeric libgvc utilmm yaml-cpp
     DEPS_PLAIN
         Boost_REGEX
         Boost_SERIALIZATION
