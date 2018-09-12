@@ -1,3 +1,9 @@
+if(EMBED_GLPK)
+    list(APPEND EXTRA_TEST_CPP
+        algorithms/test_CorrelationClustering.cpp
+    )
+endif()
+
 rock_testsuite(test_graph suite.cpp
     test_EdgesVertices.cpp
     test_Observer.cpp
@@ -11,7 +17,6 @@ rock_testsuite(test_graph suite.cpp
     test_Iterators.cpp
     test_Utils.cpp
     algorithms/test_Algorithms.cpp
-    algorithms/test_CorrelationClustering.cpp
     algorithms/test_BFS.cpp
     algorithms/test_DFS.cpp
     algorithms/test_FloydWarshall.cpp
@@ -19,4 +24,5 @@ rock_testsuite(test_graph suite.cpp
     algorithms/test_MultiCommodityMinCostFlow.cpp
     algorithms/test_LPSolver.cpp
     algorithms/test_LPProblem.cpp
+    ${EXTRA_TEST_CPP}
     DEPS graph_analysis)

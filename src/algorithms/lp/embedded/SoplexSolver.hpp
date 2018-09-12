@@ -2,10 +2,12 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_SOPLEX_SOLVER_HPP
 
 #include <soplex.h>
-#include "LPSolver.hpp"
+#include "../../LPSolver.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
+namespace lp {
+namespace embedded {
 
 class SoplexSolver : public LPSolver
 {
@@ -49,10 +51,12 @@ protected:
     soplex::NameSet mRowNames;
     soplex::NameSet mColumnNames;
     std::vector<size_t> mInfeasibleConstraints;
-    virtual void doLoadProblem(const std::string& filename, ProblemFormat format = CPLEX);
+    virtual void doLoadProblem(const std::string& filename, ProblemFormat format = CPLEX) override;
 
 };
 
+} // end namespace embedded
+} // end namespace lp
 } // end namespace algorithms
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_ALGORITHMS_SOPLEX_SOLVER_HPP

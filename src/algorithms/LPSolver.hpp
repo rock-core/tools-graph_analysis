@@ -11,7 +11,6 @@ namespace algorithms {
 
 /**
  * General interface to call linear problem solvers
- * currently GLPK and SCIP
  */
 class LPSolver
 {
@@ -26,11 +25,14 @@ public:
 
     static std::map<Status, std::string> StatusTxt;
 
-    enum Type { UNKNOWN_LP_SOLVER, GLPK_SOLVER, SCIP_SOLVER, SOPLEX_SOLVER, LP_SOLVER_TYPE_END };
+    enum Type { UNKNOWN_LP_SOLVER, CBC_SOLVER, GLPK_SOLVER, SCIP_SOLVER, SOPLEX_SOLVER,
+        GLPK_SOLVER_EMBEDDED, SCIP_SOLVER_EMBEDDED, SOPLEX_SOLVER_EMBEDDED,
+        LP_SOLVER_TYPE_END };
     static std::map<Type, std::string> TypeTxt;
 
     enum ProblemFormat { UNKNOWN_PROBLEM_FORMAT = 0, CPLEX, GLPK, MPS, LP_PROBLEM_FORMAT_END};
     static std::map<ProblemFormat, std::string> ProblemFormatTxt;
+    static std::map<LPSolver::ProblemFormat, std::vector<std::string> > ProblemFormatExtensions;
 
     /// Solution types: basic, IPT = interior point, MIP = mixed integer
     enum SolutionType { UNKNOWN_SOLUTION_TYPE = 0, BASIC_SOLUTION, IPT_SOLUTION, MIP_SOLUTION, LP_SOLUTION_TYPE_END };
@@ -51,11 +53,18 @@ public:
         {}
     };
 
+    LPSolver();
+
     virtual ~LPSolver();
 
     typedef shared_ptr<LPSolver> Ptr;
 
     static LPSolver::Ptr getInstance(LPSolver::Type solverType);
+
+    /**
+     * Get the problem format from an extension
+     */
+    static ProblemFormat getProblemFormatFromFileExtension(const std::string& extension);
 
     virtual LPSolver::Type getSolverType() const = 0;
 
@@ -81,6 +90,12 @@ public:
      * \param format format of the solution
      */
     virtual void loadSolution(const std::string& filename, SolutionType format = BASIC_SOLUTION) = 0;
+
+    /**
+     * Get a temporary filename
+     * \return temporary filename
+     */
+    static std::string getTempFilename(const std::string& suffix = ".lp");
 
     /**
      * Save the problem in a temporary file
@@ -111,7 +126,7 @@ public:
      * \param idx column index
      * \return the variable value
      */
-    virtual double getVariableValueByColumnIdx(uint32_t idx) const = 0;
+    virtual double getVariableValueByColumnIdx(uint32_t idx) const;
 
     /**
      * Get the canonized variable name for the given column index
@@ -151,6 +166,14 @@ public:
      */
     virtual std::vector<size_t> infeasibleConstraints() const { throw std::runtime_error("graph_analysis::algorithms::LPSolver::infeasibleCconstraints: not implemented"); }
 
+    /**
+      * Set the maximum size of the solution cache
+      * The cache will be cleared -- if the size exceeds this cache size
+      */
+    void setSolutionCacheSize(size_t size) { mSolutionCacheSize = size; }
+    size_t getSolutionCacheSize() const { return mSolutionCacheSize; }
+    void resetSolutionCache() { msKnownSolutions.clear(); }
+
 protected:
     /// Provide the current problem file and format
     /// after loadProblem has been called
@@ -164,6 +187,7 @@ protected:
 
     typedef std::map<std::string, KnownSolution> KnownSolutions;
     static KnownSolutions msKnownSolutions;
+    size_t mSolutionCacheSize;
 
     virtual void doLoadProblem(const std::string& filename, ProblemFormat format = CPLEX) = 0;
 

@@ -4,10 +4,12 @@
 #include <glpk.h>
 #include <string>
 #include <stdexcept>
-#include "LPSolver.hpp"
+#include "../../LPSolver.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
+namespace lp {
+namespace embedded {
 
 /**
  * General class to interface with the Gnu Linear Programming Kit
@@ -54,6 +56,8 @@ protected:
     Status translateIntoptReturnCode(int code);
 };
 
+} // end namespace embedded
+} // end namespace lp
 } // end namespace algorithms
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_ALGORITHMS_GLPK_SOLVER_HPP

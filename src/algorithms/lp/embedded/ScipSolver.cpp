@@ -4,6 +4,8 @@
 
 namespace graph_analysis {
 namespace algorithms {
+namespace lp {
+namespace embedded {
 
 ScipSolver::ScipSolver()
     : mpScip(NULL)
@@ -161,5 +163,7 @@ double ScipSolver::getVariableValueByColumnIdx(uint32_t idx) const
     return getVariableValue(columnName);
 }
 
+} // end namespace embedded
+} // end namespace lp
 } // end namespace algorithm
 } // end namespace graph_analysis

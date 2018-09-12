@@ -1,19 +1,34 @@
 find_package(Boost REQUIRED regex filesystem system serialization)
 find_package(SCIP)
 
-add_definitions(-DWITH_GLPK)
-if(SCIP_FOUND)
+if(EMBED_GLPK)
+    add_definitions(-DEMBED_GLPK)
     list(APPEND EXTRA_HPP
-            algorithms/ScipSolver.hpp
-            algorithms/SoplexSolver.hpp
+            algorithms/lp/embedded/GLPKSolver.hpp
+            algorithms/CorrelationClustering.hpp
     )
     list(APPEND EXTRA_CPP
-        algorithms/ScipSolver.cpp
-        algorithms/SoplexSolver.cpp
+        algorithms/lp/embedded/GLPKSolver.cpp
+        algorithms/CorrelationClustering.cpp
+    )
+endif()
+
+if(EMBED_SCIP)
+if(SCIP_FOUND)
+    list(APPEND EXTRA_HPP
+            algorithms/lp/embedded/ScipSolver.hpp
+            algorithms/lp/embedded/SoplexSolver.hpp
+    )
+    list(APPEND EXTRA_CPP
+        algorithms/lp/embedded/ScipSolver.cpp
+        algorithms/lp/embedded/SoplexSolver.cpp
     )
 
     add_definitions(-DWITH_SCIP)
-endif()
+else(SCIP_FOUND)
+    message(STATUS "Embedding SCIP requested, but library is not installed")
+endif(SCIP_FOUND)
+endif(EMBED_SCIP)
 
 rock_library(graph_analysis
     SOURCES
@@ -38,12 +53,15 @@ rock_library(graph_analysis
         TransactionObserver.cpp
         algorithms/BFS.cpp
         algorithms/ConstraintViolation.cpp
-        algorithms/CorrelationClustering.cpp
         algorithms/DFS.cpp
         algorithms/FloydWarshall.cpp
         algorithms/lp/Problem.cpp
+        algorithms/lp/Solution.cpp
         algorithms/LPSolver.cpp
-        algorithms/GLPKSolver.cpp
+        algorithms/lp/CBCSolver.cpp
+        algorithms/lp/CommandlineSolver.cpp
+        algorithms/lp/GLPKSolver.cpp
+        algorithms/lp/ScipSolver.cpp
         algorithms/MinCostFlow.cpp
         algorithms/MultiCommodityEdge.cpp
         algorithms/MultiCommodityMinCostFlow.cpp
@@ -143,14 +161,17 @@ rock_library(graph_analysis
         algorithms/BFS.hpp
         algorithms/BFSVisitor.hpp
         algorithms/ConstraintViolation.hpp
-        algorithms/CorrelationClustering.hpp
         algorithms/DistanceMatrix.hpp
         algorithms/DFS.hpp
         algorithms/DFSVisitor.hpp
         algorithms/FloydWarshall.hpp
         algorithms/lp/Problem.hpp
+        algorithms/lp/Solution.hpp
         algorithms/LPSolver.hpp
-        algorithms/GLPKSolver.hpp
+        algorithms/lp/CBCSolver.hpp
+        algorithms/lp/CommandlineSolver.hpp
+        algorithms/lp/GLPKSolver.hpp
+        algorithms/lp/ScipSolver.hpp
         algorithms/MinCostFlow.hpp
         algorithms/MultiCommodityEdge.hpp
         algorithms/MultiCommodityMinCostFlow.hpp
@@ -257,10 +278,17 @@ rock_library(graph_analysis
         gui/dialogs/property_dialog_gui.ui
         gui/dialogs/swap_filters_dialog_gui.ui
 )
-target_link_libraries(graph_analysis glpk cgraph)
+target_link_libraries(graph_analysis cgraph)
+
+if(EMBED_GLPK)
+    target_link_libraries(graph_analysis glpk)
+endif(EMBED_GLPK)
+
+if(EMBED_SCIP)
 if(SCIP_FOUND)
     message(STATUS "Linking SCIP Library: ${SCIP_LIBRARIES}")
     target_link_libraries(graph_analysis ${SCIP_LIBRARIES})
+endif()
 endif()
 
 get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)

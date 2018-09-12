@@ -2,6 +2,8 @@
 
 namespace graph_analysis {
 namespace algorithms {
+namespace lp {
+namespace embedded {
 
 SoplexSolver::SoplexSolver()
     : LPSolver()
@@ -164,5 +166,7 @@ void SoplexSolver::doLoadProblem(const std::string& filename, ProblemFormat form
     }
 }
 
+} // end namespace embedded
+} // end namespace lp
 } // end namespace algorithms
 } // end namespace graph_analysis

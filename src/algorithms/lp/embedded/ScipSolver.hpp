@@ -2,10 +2,12 @@
 #define GRAPH_ANALYSIS_ALGORITHMS_SCIP_SOLVER_HPP
 
 #include <scip/scip.h>
-#include "LPSolver.hpp"
+#include "../../LPSolver.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
+namespace lp {
+namespace embedded {
 
 class ScipSolver : public LPSolver
 {
@@ -23,7 +25,7 @@ public:
 
     void saveProblem(const std::string& filename, LPSolver::ProblemFormat format = CPLEX) const override;
 
-    void loadSolution(const std::string& filename, LPSolver::SolutionType format = BASIC_SOLUTION);
+    void loadSolution(const std::string& filename, LPSolver::SolutionType format = BASIC_SOLUTION) override;
 
     void saveSolution(const std::string& filename, LPSolver::SolutionType format = BASIC_SOLUTION) const override;
 
@@ -45,6 +47,8 @@ private:
 
 };
 
+} // end namespace embedded
+} // end namespace lp
 } // end namespace algorithms
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_ALGORITHMS_SCIP_SOLVER_HPP

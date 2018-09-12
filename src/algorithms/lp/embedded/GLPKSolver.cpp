@@ -5,9 +5,11 @@
 
 namespace graph_analysis {
 namespace algorithms {
+namespace lp {
+namespace embedded {
 
 GLPKSolver::GLPKSolver()
-    : mpProblem()
+    : mpProblem(NULL)
 {
     mpProblem = glp_create_prob();
     glp_set_prob_name(mpProblem, "glpk-default-problem");
@@ -273,5 +275,7 @@ int GLPKSolver::printHook(void* info, const char* s)
     return 1;
 }
 
+} // end namespace embedded
+} // end namespace lp
 } // end namespace algorithms
 } // end namespace graph_analysis

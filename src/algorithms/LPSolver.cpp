@@ -5,15 +5,16 @@
 #include "../MapInitializer.hpp"
 #include "../utils/MD5.hpp"
 
-#ifdef WITH_GLPK
-#warning Using GLPK solver
-#include "GLPKSolver.hpp"
-#endif
+#include "lp/CBCSolver.hpp"
+#include "lp/GLPKSolver.hpp"
+#include "lp/ScipSolver.hpp"
 
-#ifdef WITH_SCIP
-#warning Using SCIP solver
-#include "ScipSolver.hpp"
-#include "SoplexSolver.hpp"
+#ifdef EMBED_GLPK
+#include "lp/embedded/GLPKSolver.hpp"
+#endif
+#ifdef EMBED_SCIP
+#include "lp/embedded/ScipSolver.hpp"
+#include "lp/embedded/SoplexSolver.hpp"
 #endif
 
 namespace graph_analysis {
@@ -35,9 +36,13 @@ std::map<LPSolver::Status, std::string> LPSolver::StatusTxt =
 std::map<LPSolver::Type, std::string> LPSolver::TypeTxt =
     InitMap<LPSolver::Type, std::string>
     (LPSolver::UNKNOWN_LP_SOLVER, "UNKNOWN_LP_SOLVER")
+    (LPSolver::CBC_SOLVER, "CBC_SOLVER")
     (LPSolver::GLPK_SOLVER, "GLPK_SOLVER")
     (LPSolver::SCIP_SOLVER, "SCIP_SOLVER")
     (LPSolver::SOPLEX_SOLVER, "SOPLEX_SOLVER")
+    (LPSolver::GLPK_SOLVER_EMBEDDED, "GLPK_SOLVER_EMBEDDED")
+    (LPSolver::SCIP_SOLVER_EMBEDDED, "SCIP_SOLVER_EMBEDDED")
+    (LPSolver::SOPLEX_SOLVER_EMBEDDED, "SOPLEX_SOLVER_EMBEDDED")
     (LPSolver::LP_SOLVER_TYPE_END, "LP_SOLVER_TYPE_END")
     ;
 
@@ -48,6 +53,16 @@ std::map<LPSolver::ProblemFormat, std::string> LPSolver::ProblemFormatTxt =
     (LPSolver::GLPK, "GLPK")
     (LPSolver::MPS, "MPS");
 
+std::map<LPSolver::ProblemFormat, std::vector<std::string> > LPSolver::ProblemFormatExtensions =
+    InitMap<LPSolver::ProblemFormat, std::vector<std::string> >
+    (LPSolver::UNKNOWN_PROBLEM_FORMAT, {})
+    (LPSolver::CPLEX, {".lp"})
+    (LPSolver::GLPK, {".glpk"})
+    (LPSolver::MPS, {".mps"} );
+
+LPSolver::LPSolver()
+    : mSolutionCacheSize(100)
+{}
 
 LPSolver::~LPSolver()
 {}
@@ -56,21 +71,69 @@ LPSolver::Ptr LPSolver::getInstance(LPSolver::Type solverType)
 {
     switch(solverType)
     {
-#ifdef WITH_GLPK
+        case CBC_SOLVER:
+            return dynamic_pointer_cast<LPSolver>( make_shared<lp::CBCSolver>() );
         case GLPK_SOLVER:
-            return dynamic_pointer_cast<LPSolver>( make_shared<GLPKSolver>() );
-#endif
-#ifdef WITH_SCIP
+            return dynamic_pointer_cast<LPSolver>( make_shared<lp::GLPKSolver>() );
         case SCIP_SOLVER:
-            return dynamic_pointer_cast<LPSolver>( make_shared<ScipSolver>() );
-        case SOPLEX_SOLVER:
-            return dynamic_pointer_cast<LPSolver>( make_shared<SoplexSolver>() );
+            return dynamic_pointer_cast<LPSolver>( make_shared<lp::ScipSolver>() );
+        //case SOPLEX_SOLVER:
+        //    return dynamic_pointer_cast<LPSolver>( make_shared<SoplexSolver>() );
+        case GLPK_SOLVER_EMBEDDED:
+#ifdef EMBED_GLPK
+            return dynamic_pointer_cast<LPSolver>( make_shared<lp::embedded::GLPKSolver>() );
+#else
+            throw
+                std::invalid_argument("graph_analysis::algorithms::LPSolver::getInstance:"
+                        " requested GLPK embedded solver, but support has not"
+                        "compiled into the library. Recompile with"
+                        "EMBED_GLPK=1");
+#endif
+        case SCIP_SOLVER_EMBEDDED:
+#ifdef EMBED_SCIP
+            return dynamic_pointer_cast<LPSolver>( make_shared<lp::embedded::ScipSolver>() );
+#else
+            throw
+                std::invalid_argument("graph_analysis::algorithms::LPSolver::getInstance:"
+                        " requested SCIP embedded solver, but support has not"
+                        "compiled into the library. Recompile with"
+                        "EMBED_SCIP=1");
+#endif
+        case SOPLEX_SOLVER_EMBEDDED:
+#ifdef EMBED_SCIP
+            return dynamic_pointer_cast<LPSolver>( make_shared<lp::embedded:SoplexSolver>() );
+#else
+            throw
+                std::invalid_argument("graph_analysis::algorithms::LPSolver::getInstance:"
+                        " requested SOPLEX embedded solver, but support has not"
+                        "compiled into the library. Recompile with"
+                        "EMBED_SCIP=1");
 #endif
         default:
             throw std::invalid_argument("graph_analysis::algorithms::LPSolver::getInstance: unknown solver type provided");
 
     }
 }
+
+LPSolver::ProblemFormat getProblemFormatFromFileExtension(const std::string& extension)
+{
+    for(const std::pair<LPSolver::ProblemFormat, std::vector<std::string> >& p : LPSolver::ProblemFormatExtensions)
+    {
+        if(p.second.end() != std::find(p.second.begin(), p.second.end(), extension))
+        {
+            return p.first;
+        }
+    }
+    throw std::invalid_argument("graph_analysis::algorithms::LPSolver::getProblemFormatFromFileExtension:"
+            " could not find format for extension: '" + extension + "'");
+}
+
+double LPSolver::getVariableValueByColumnIdx(uint32_t idx) const
+{
+    throw std::runtime_error("graph_analysis::algorithms::LPSolver::getVariableValueByColumnIdx"
+            "not implemented");
+}
+
 
 std::string LPSolver::getVariableNameByColumnIdx(uint32_t idx) const
 {
@@ -88,11 +151,16 @@ uint32_t LPSolver::getColumnIdxByVariableName(const std::string& varName) const
     return index;
 }
 
-std::string LPSolver::saveProblemToTempfile(LPSolver::ProblemFormat format) const
+std::string LPSolver::getTempFilename(const std::string& suffix)
 {
     boost::filesystem::path tempDir = boost::filesystem::temp_directory_path();
     boost::filesystem::path temp = tempDir / boost::filesystem::unique_path();
-    mProblemFile = temp.native() + "-problem.lp";
+    return temp.native() + suffix;
+}
+
+std::string LPSolver::saveProblemToTempfile(LPSolver::ProblemFormat format) const
+{
+    mProblemFile = getTempFilename("-problem.lp");
     mProblemFileFormat = format;
 
     LOG_INFO_S << "Saving problem to: " << mProblemFile;
@@ -102,9 +170,7 @@ std::string LPSolver::saveProblemToTempfile(LPSolver::ProblemFormat format) cons
 
 std::string LPSolver::saveSolutionToTempfile(LPSolver::SolutionType format) const
 {
-    boost::filesystem::path tempDir = boost::filesystem::temp_directory_path();
-    boost::filesystem::path temp = tempDir / boost::filesystem::unique_path();
-    mSolutionFile = temp.native() + ".lp";
+    mSolutionFile = getTempFilename("-solution.lp");
     mSolutionFileFormat = format;
 
     LOG_INFO_S << "Saving solution to: " << mSolutionFile;
@@ -130,6 +196,11 @@ bool LPSolver::loadProblem(const std::string& filename, ProblemFormat format)
 void LPSolver::registerSolution(const std::string& problemFilename,
         const std::string& solutionFilename, Status status, SolutionType type)
 {
+    if(msKnownSolutions.size() > mSolutionCacheSize)
+    {
+        resetSolutionCache();
+    }
+
     std::string md5 = utils::MD5Digest::md5Sum(problemFilename);
     msKnownSolutions[md5] = KnownSolution(solutionFilename, status, type);
 }
