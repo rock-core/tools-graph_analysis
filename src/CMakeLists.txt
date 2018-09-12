@@ -122,6 +122,7 @@ rock_library(graph_analysis
         snap/DirectedGraph.cpp
         snap/DirectedSubGraph.cpp
         utils/MD5.cpp
+        utils/Filesystem.cpp
         ${EXTRA_CPP}
     HEADERS
         AttributeManager.hpp
@@ -243,6 +244,7 @@ rock_library(graph_analysis
         snap/Graph.hpp
         snap/NodeIterator.hpp
         utils/MD5.hpp
+        utils/Filesystem.hpp
         ${EXTRA_HPP}
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric libgvc utilmm yaml-cpp

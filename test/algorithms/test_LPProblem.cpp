@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(problem)
     std::string filename = problem.saveProblemToTempfile();
     LPSolver::Ptr solver = LPSolver::getInstance(LPSolver::GLPK_SOLVER);
     LPSolver::Status status = solver->run(filename);
-    BOOST_REQUIRE_MESSAGE(status == LPSolver::SOLUTION_FOUND, "Optimal status"
+    BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_OPTIMAL, "Optimal status"
             "expected was " << LPSolver::StatusTxt[status]);
 }
 
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(mmcf)
 
     MultiCommodityMinCostFlow minCostFlow(graph, commodities, LPSolver::GLPK_SOLVER);
     LPSolver::Status status = minCostFlow.solve();
-    BOOST_REQUIRE_MESSAGE(status == LPSolver::SOLUTION_FOUND, "Optimal status"
+    BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_OPTIMAL, "Optimal status"
             "expected was " << LPSolver::StatusTxt[status]);
 }
 

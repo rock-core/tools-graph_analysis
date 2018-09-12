@@ -13,21 +13,25 @@ BOOST_AUTO_TEST_CASE(solvers)
     for(int i = (int) LPSolver::UNKNOWN_LP_SOLVER + 1; i < (int) LPSolver::LP_SOLVER_TYPE_END; ++i)
     {
         LPSolver::Type type = (LPSolver::Type) i;
-        LPSolver::Ptr scip = LPSolver::getInstance(type);
-        std::string problemFilename = getRootDir() + "test/data/lp_problems/p0.lp";
-        LPSolver::Status status = scip->run(problemFilename);
+        try {
+            LPSolver::Ptr scip = LPSolver::getInstance(type);
+            std::string problemFilename = getRootDir() + "test/data/lp_problems/p0.lp";
+            LPSolver::Status status = scip->run(problemFilename);
 
-        switch(type)
+            switch(type)
+            {
+                case LPSolver::CBC_SOLVER:
+                case LPSolver::GLPK_SOLVER:
+                case LPSolver::SCIP_SOLVER:
+                    BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_INFEASIBLE,
+                            "Solution status for '" + LPSolver::TypeTxt[type] + "' should be 'infeasible' was " << LPSolver::StatusTxt[status]);
+                    break;
+                default:
+                    break;
+            }
+        } catch(const std::invalid_argument& e)
         {
-            case LPSolver::CBC_SOLVER:
-            case LPSolver::GLPK_SOLVER:
-            case LPSolver::SCIP_SOLVER:
-            case LPSolver::SOPLEX_SOLVER:
-                BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_INFEASIBLE,
-                        "Solution status for '" + LPSolver::TypeTxt[type] + "' should be 'infeasible' was " << LPSolver::StatusTxt[status]);
-                break;
-            default:
-                break;
+            BOOST_TEST_MESSAGE("Solver not implemented? -- " << e.what());
         }
     }
 }
@@ -75,18 +79,20 @@ BOOST_AUTO_TEST_CASE(scip)
 BOOST_AUTO_TEST_CASE(glpk_with_caching)
 {
     bool useCaching = true;
-    LPSolver::Ptr scip = LPSolver::getInstance(LPSolver::GLPK_SOLVER);
-    std::string problemFilename = getRootDir() + "test/data/lp_problems/p0.lp";
+    LPSolver::Ptr solver = LPSolver::getInstance(LPSolver::GLPK_SOLVER);
+    std::string problemFilename = getRootDir() + "test/data/lp_problems/feasible-problem.lp";
 
     {
-        LPSolver::Status status = scip->run(problemFilename, LPSolver::CPLEX, useCaching);
-        BOOST_REQUIRE_MESSAGE(status == LPSolver::SOLUTION_FOUND, "Solution status should be solution found");
+        LPSolver::Status status = solver->run(problemFilename, LPSolver::CPLEX, useCaching);
+        BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_OPTIMAL, "Solution "
+                "status should be 'optimal', was " << LPSolver::StatusTxt[status]);
     }
 
     for(int i = 0; i < 5; ++i)
     {
-        LPSolver::Status status = scip->run(problemFilename, LPSolver::CPLEX, useCaching);
-        BOOST_REQUIRE_MESSAGE(status == LPSolver::SOLUTION_FOUND, "Solution status should be solution found");
+        LPSolver::Status status = solver->run(problemFilename, LPSolver::CPLEX, useCaching);
+        BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_OPTIMAL, "Solution "
+                "status should be 'optimal', was " << LPSolver::StatusTxt[status]);
     }
 }
 

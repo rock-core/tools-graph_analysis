@@ -31,7 +31,7 @@ std::string Bounds::minBound(double min)
     std::stringstream ssMin;
     if(min < std::numeric_limits<int>::min())
     {
-        ssMin << "- infinity ";
+        ssMin << "- inf ";
 
     } else {
         ssMin << static_cast<int>(min);
@@ -46,7 +46,7 @@ std::string Bounds::maxBound(double max)
     std::stringstream ssMax;
     if(max > std::numeric_limits<int>::max())
     {
-        ssMax << "+ infinity ";
+        ssMax << "+ inf ";
 
     } else {
         ssMax << static_cast<int>(max);

@@ -4,12 +4,17 @@
     <attributes class="node" mode="static">
       <attribute id="0" title="class" type="string"/>
       <attribute id="1" title="label" type="string"/>
+      <attribute id="DerivedVertex-attribute-0" title="m0" type="string"/>
+      <attribute id="DerivedVertex-attribute-1" title="m1" type="string"/>
       <attribute id="MultiCommodityVertex-attribute-0" title="vertex_attributes" type="string"/>
     </attributes>
     <attributes class="edge" mode="static">
       <attribute id="0" title="class" type="string"/>
       <attribute id="1" title="label" type="string"/>
+      <attribute id="DerivedEdge-attribute-0" title="a0" type="string"/>
+      <attribute id="DerivedEdge-attribute-1" title="a1" type="string"/>
       <attribute id="MultiCommodityEdge-attribute-0" title="edge_attributes" type="string"/>
+      <attribute id="graph_analysis::NWeightedEdge-attribute-0" title="weights" type="string"/>
     </attributes>
     <nodes>
       <node id="0" label="">

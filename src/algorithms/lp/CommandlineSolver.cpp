@@ -6,6 +6,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
+#include "../../utils/Filesystem.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
@@ -33,22 +34,13 @@ void CommandlineSolver::saveProblem(const std::string& filename, LPSolver::Probl
                 ", but can only be saved as '" + LPSolver::ProblemFormatTxt[mProblemFileFormat] + "'");
     }
 
-    std::string cmd = "cp " + mProblemFile + " " + filename;
-    if( -1 == system(cmd.c_str()) )
-    {
-        throw std::runtime_error("graph_analysis::algorithms::saveProblem:"
-                " saving (copying) problem with command '" + cmd + "' failed");
-    }
+    utils::Filesystem::copy(mProblemFile, filename);
+
 }
 
 void CommandlineSolver::saveSolution(const std::string& filename, LPSolver::SolutionType format) const
 {
-    std::string cmd = "cp " + mSolutionFile + " " + filename;
-    if( -1 == system(cmd.c_str()) )
-    {
-        throw std::runtime_error("graph_analysis::algorithms::saveSolution:"
-                " saving (copying) solution with command '" + cmd + "' failed");
-    }
+    utils::Filesystem::copy(mSolutionFile, filename);
 }
 
 void CommandlineSolver::loadSolution(const std::string& filename, LPSolver::SolutionType format)
