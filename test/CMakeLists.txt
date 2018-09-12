@@ -4,7 +4,8 @@ if(EMBED_GLPK)
     )
 endif()
 
-rock_testsuite(test_graph suite.cpp
+rock_testsuite(test_graph
+    suite.cpp
     test_EdgesVertices.cpp
     test_Observer.cpp
     test_Filters.cpp
@@ -13,7 +14,6 @@ rock_testsuite(test_graph suite.cpp
     test_Percolation.cpp
     test_GraphIO.cpp
     test_GVGraph.cpp
-    test_LemonGraph.cpp
     test_Iterators.cpp
     test_Utils.cpp
     algorithms/test_Algorithms.cpp

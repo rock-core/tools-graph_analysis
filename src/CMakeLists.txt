@@ -59,6 +59,7 @@ rock_library(graph_analysis
         algorithms/lp/Solution.cpp
         algorithms/LPSolver.cpp
         algorithms/lp/CBCSolver.cpp
+        algorithms/lp/CLPSolver.cpp
         algorithms/lp/CommandlineSolver.cpp
         algorithms/lp/GLPKSolver.cpp
         algorithms/lp/ScipSolver.cpp
@@ -170,6 +171,7 @@ rock_library(graph_analysis
         algorithms/lp/Solution.hpp
         algorithms/LPSolver.hpp
         algorithms/lp/CBCSolver.hpp
+        algorithms/lp/CLPSolver.hpp
         algorithms/lp/CommandlineSolver.hpp
         algorithms/lp/GLPKSolver.hpp
         algorithms/lp/ScipSolver.hpp

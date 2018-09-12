@@ -25,7 +25,7 @@ public:
 
     static std::map<Status, std::string> StatusTxt;
 
-    enum Type { UNKNOWN_LP_SOLVER, CBC_SOLVER, GLPK_SOLVER, SCIP_SOLVER, SOPLEX_SOLVER,
+    enum Type { UNKNOWN_LP_SOLVER, CBC_SOLVER, CLP_SOLVER, GLPK_SOLVER, SCIP_SOLVER, SOPLEX_SOLVER,
         GLPK_SOLVER_EMBEDDED, SCIP_SOLVER_EMBEDDED, SOPLEX_SOLVER_EMBEDDED,
         LP_SOLVER_TYPE_END };
     static std::map<Type, std::string> TypeTxt;

@@ -3,6 +3,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <base-logging/Logging.hpp>
+#include "../../utils/Filesystem.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
@@ -10,8 +11,7 @@ namespace lp {
 
 std::string ScipSolver::createSolverCommand() const
 {
-    std::string cmd;
-    cmd += "scip";
+    std::string cmd = utils::Filesystem::validateProgramAvailability("scip");
     cmd += " -f " + mProblemFile;
     cmd += " -l " + mSolutionFile;
     cmd += " > /dev/null";

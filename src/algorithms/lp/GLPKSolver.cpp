@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <base-logging/Logging.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
+#include "../../utils/Filesystem.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
@@ -21,8 +21,7 @@ GLPKSolver::~GLPKSolver()
 
 std::string GLPKSolver::createSolverCommand() const
 {
-    std::string cmd;
-    cmd += "glpsol";
+    std::string cmd = utils::Filesystem::validateProgramAvailability("glpsol");
     cmd += " --lp " + mProblemFile;
     cmd += " -o " + mSolutionFile;
     cmd += " > /dev/null";

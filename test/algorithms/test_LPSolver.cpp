@@ -71,8 +71,62 @@ BOOST_AUTO_TEST_CASE(scip)
         };
         for(const std::pair<std::string, double>& p : solutionValues)
         {
-            BOOST_REQUIRE(p.second == solution.getColumnValue(p.first));
+            double columnValue = solution.getColumnValue(p.first);
+            BOOST_REQUIRE_MESSAGE(p.second == columnValue,
+                    "Column " << p.first << ": " << columnValue <<
+                    ", expected: " << p.second);
         }
+
+        BOOST_REQUIRE_MESSAGE(solution.getObjectiveValue() == 6.0, "Objective"
+                "value was " << solution.getObjectiveValue() << ", expected " <<
+                solution.getObjectiveValue());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(clp)
+{
+    using namespace graph_analysis;
+    LPSolver::Ptr solver = LPSolver::getInstance(LPSolver::CLP_SOLVER);
+    shared_ptr<lp::CommandlineSolver> solverCmd =
+        dynamic_pointer_cast<lp::CommandlineSolver>(solver);
+
+    {
+        std::string problemFilename = getRootDir() + "test/data/lp_problems/clp-infeasible-solution.lp";
+        lp::Solution solution = solverCmd->readBasicSolution(problemFilename);
+        LPSolver::Status status = solution.getStatus();
+
+        BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_INFEASIBLE,
+                        "Solution status for CLP solver should be 'infeasible', was " << LPSolver::StatusTxt[status]);
+    }
+
+    {
+        std::string problemFilename = getRootDir() + "test/data/lp_problems/clp-feasible-solution.lp";
+        lp::Solution solution = solverCmd->readBasicSolution(problemFilename);
+        LPSolver::Status status = solution.getStatus();
+
+        BOOST_REQUIRE_MESSAGE(status == LPSolver::STATUS_OPTIMAL,
+                        "Solution status for CLP solver should be 'optimal', was " << LPSolver::StatusTxt[status]);
+        std::map<std::string, double> solutionValues =
+        {
+            {"x1",1.0}
+            , {"x2",1.0}
+            , {"x4",1.0}
+            , {"x9",1.0}
+            , {"x11",1.0}
+            , {"x19",1.0}
+            , {"x22",1.0}
+        };
+        for(const std::pair<std::string, double>& p : solutionValues)
+        {
+            double columnValue = solution.getColumnValue(p.first);
+            BOOST_REQUIRE_MESSAGE(p.second == columnValue,
+                    "Column " << p.first << ": " << columnValue <<
+                    ", expected: " << p.second);
+        }
+
+        BOOST_REQUIRE_MESSAGE(solution.getObjectiveValue() == 6.0, "Objective"
+                "value was " << solution.getObjectiveValue() << ", expected " <<
+                solution.getObjectiveValue());
     }
 }
 

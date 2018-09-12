@@ -6,6 +6,7 @@
 #include "../utils/MD5.hpp"
 
 #include "lp/CBCSolver.hpp"
+#include "lp/CLPSolver.hpp"
 #include "lp/GLPKSolver.hpp"
 #include "lp/ScipSolver.hpp"
 
@@ -37,6 +38,7 @@ std::map<LPSolver::Type, std::string> LPSolver::TypeTxt =
     InitMap<LPSolver::Type, std::string>
     (LPSolver::UNKNOWN_LP_SOLVER, "UNKNOWN_LP_SOLVER")
     (LPSolver::CBC_SOLVER, "CBC_SOLVER")
+    (LPSolver::CLP_SOLVER, "CLP_SOLVER")
     (LPSolver::GLPK_SOLVER, "GLPK_SOLVER")
     (LPSolver::SCIP_SOLVER, "SCIP_SOLVER")
     (LPSolver::SOPLEX_SOLVER, "SOPLEX_SOLVER")
@@ -73,6 +75,8 @@ LPSolver::Ptr LPSolver::getInstance(LPSolver::Type solverType)
     {
         case CBC_SOLVER:
             return dynamic_pointer_cast<LPSolver>( make_shared<lp::CBCSolver>() );
+        case CLP_SOLVER:
+            return dynamic_pointer_cast<LPSolver>( make_shared<lp::CLPSolver>() );
         case GLPK_SOLVER:
             return dynamic_pointer_cast<LPSolver>( make_shared<lp::GLPKSolver>() );
         case SCIP_SOLVER:

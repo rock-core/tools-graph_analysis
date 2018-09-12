@@ -11,6 +11,18 @@ namespace utils {
 class Filesystem
 {
 public:
+
+    /**
+     * Validates if a program exists, and throws otherwise
+     * \return programName, if path to programName has been found
+     */
+    static std::string validateProgramAvailability(const std::string& programName);
+
+    /**
+     * Test if a program exists using `which <program>`
+     */
+    static bool programExists(const std::string& programName);
+
     static void copy(const std::string& from,
             const std::string& to);
 };
