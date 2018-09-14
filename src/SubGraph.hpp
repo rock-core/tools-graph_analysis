@@ -1,6 +1,7 @@
 #ifndef GRAPH_ANALYSIS_SUB_GRAPH_HPP
 #define GRAPH_ANALYSIS_SUB_GRAPH_HPP
 
+#include <set>
 #include "SharedPtr.hpp"
 #include "VertexIterable.hpp"
 #include "EdgeIterable.hpp"
@@ -30,8 +31,12 @@ class BaseGraph;
  */
 class SubGraph : public VertexIterable, public EdgeIterable
 {
+protected:
     /// Ptr which refers to the original (super) graph
     shared_ptr<BaseGraph> mpBaseGraph;
+
+    std::set<GraphElementId> mDisabledVertices;
+    std::set<GraphElementId> mDisabledEdges;
 
 public:
     /**
@@ -51,40 +56,40 @@ public:
      * \param vertex Vertex that is part of the underlying main graph and should
      * also be part of the subgraph
      */
-    virtual void enable(const Vertex::Ptr& vertex) { (void)vertex; throw std::runtime_error("graph_analysis::SubGraph::enable(Vertex::Ptr) not implemented"); }
+    virtual void enable(const Vertex::Ptr& vertex);
 
     /**
      * Disable the given vertex
      * \param vertex Vertex that is part of the underlying main graph and should
      * not(!) be part of the subgraph
      */
-    virtual void disable(const Vertex::Ptr& vertex) { (void)vertex; throw std::runtime_error("graph_analysis::SubGraph::disable(Vertex::Ptr) not implemented"); }
+    virtual void disable(const Vertex::Ptr& vertex);
 
     /**
      * Enable the given edge
      * \param edge Edge that is part of the underlying main graph and should
      * be part of the subgraph
      */
-    virtual void enable(const Edge::Ptr& edge) { (void)edge; throw std::runtime_error("graph_analysis::SubGraph::enable(Edge::Ptr) not implemented"); }
+    virtual void enable(const Edge::Ptr& edge);
 
     /**
      * Disable the given edge
      * \param edge Edge that is part of the underlying main graph and should
      * not be part of the subgraph
      */
-    virtual void disable(const Edge::Ptr& edge) { (void)edge; throw std::runtime_error("graph_analysis::SubGraph::disable(Edge::Ptr) not implemented"); }
+    virtual void disable(const Edge::Ptr& edge);
 
     /**
      * Test if a vertex is enabled
      * \return True if vertex is enabled, false otherwise
      */
-    virtual bool enabled(const Vertex::Ptr& vertex) const { (void) vertex; throw std::runtime_error("graph_analysis::SubGraph::enabled(Vertex::Ptr) not implemented"); }
+    virtual bool enabled(const Vertex::Ptr& vertex) const;
 
     /**
      * Test if an edge is enabled
      * \return True if edge is enabled, false otherwise
      */
-    virtual bool enabled(const Edge::Ptr& edge) const { (void) edge; throw std::runtime_error("graph_analysis::SubGraph::enabled(Edge::Ptr) not implemented"); }
+    virtual bool enabled(const Edge::Ptr& edge) const;
 
     /**
      * Test if a vertex is disabled

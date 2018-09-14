@@ -19,9 +19,10 @@ typedef ::lemon::SubDigraph< ::lemon::ListDigraph, ::lemon::ListDigraph::NodeMap
 /**
  * A subgraph that provides a subset of an existing graph
  */
-class DirectedSubGraph : public SubGraphImpl< SubGraphLemon, ::lemon::ListDigraph::NodeMap<bool>, ::lemon::ListDigraph::ArcMap<bool> >
+class DirectedSubGraph : public SubGraphImpl< SubGraphLemon >
 {
     shared_ptr<DirectedGraph> mpDirectedGraph;
+
 public:
     DirectedSubGraph(const shared_ptr<DirectedGraph>& graph);
 
@@ -33,6 +34,9 @@ public:
 
     bool enabled(const Vertex::Ptr& vertex) const;
     bool enabled(const Edge::Ptr& vertex) const;
+
+    ::lemon::ListDigraph::NodeMap<bool> mNodeMap;
+    ::lemon::ListDigraph::ArcMap<bool> mArcMap;
 };
 
 } // end namespace lemon

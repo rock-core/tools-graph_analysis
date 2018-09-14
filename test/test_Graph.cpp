@@ -253,12 +253,6 @@ BOOST_AUTO_TEST_CASE(subgraph)
             BOOST_REQUIRE_MESSAGE( edge0->toString() != "", "Edge: " << edge0->toString() );
         }
 
-        if(i == BaseGraph::BOOST_DIRECTED_GRAPH)
-        {
-            BOOST_TEST_MESSAGE("Subgraph is not implemented for boost_graph");
-            return;
-        }
-
         {
             BaseGraph::Ptr baseGraph = graph->newInstance();
             baseGraph->addEdge(e0);
@@ -268,13 +262,16 @@ BOOST_AUTO_TEST_CASE(subgraph)
             //graph_analysis::Filter< Edge::Ptr >::Ptr edgeFilter(new graph_analysis::filters::PermitAll< Edge::Ptr >() );
             //subgraph->applyFilters(vertexFilter, edgeFilter);
 
-            if( i != BaseGraph::BOOST_DIRECTED_GRAPH)
-            {
+            try {
                 graph_analysis::SubGraph::Ptr subgraph = baseGraph->identifyConnectedComponents(baseGraph);
 
                 int componentNumber = subgraph->getVertexCount();
                 BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' vertices representing components, while base graph has '" << baseGraph->getVertexCount() << "' vertices overall" );
+            } catch(const std::runtime_error& e)
+            {
+                BOOST_TEST_MESSAGE(e.what() << " -- for " << baseGraph->getImplementationTypeName());
             }
+
         }
         {
             BaseGraph::Ptr baseGraph = graph->newInstance();
@@ -290,10 +287,16 @@ BOOST_AUTO_TEST_CASE(subgraph)
             BaseGraph::Ptr baseGraphCopy = subgraph->toBaseGraph();
 
 
-            subgraph = baseGraphCopy->identifyConnectedComponents(baseGraphCopy);
+            try {
+                subgraph = baseGraphCopy->identifyConnectedComponents(baseGraphCopy);
 
-            int componentNumber = subgraph->getVertexCount();
-            BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' vertices representing components, while base graph has '" << baseGraphCopy->getVertexCount() << "' vertices overall" );
+                int componentNumber = subgraph->getVertexCount();
+                BOOST_REQUIRE_MESSAGE( componentNumber == 2, "Subgraph with '" << componentNumber << "' vertices representing components, while base graph has '" << baseGraphCopy->getVertexCount() << "' vertices overall" );
+            } catch(const std::runtime_error& e)
+            {
+                BOOST_TEST_MESSAGE(e.what() << " -- for " << baseGraph->getImplementationTypeName());
+            }
+
         }
     }
 }

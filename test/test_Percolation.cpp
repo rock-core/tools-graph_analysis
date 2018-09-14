@@ -91,11 +91,6 @@ BOOST_AUTO_TEST_CASE(random_uniform_edge_removal)
     {
         BaseGraph::Ptr graph = BaseGraph::getInstance(static_cast<BaseGraph::ImplementationType>(i));
         BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
-        if(i == BaseGraph::BOOST_DIRECTED_GRAPH)
-        {
-            BOOST_TEST_MESSAGE("Subgraph is not implemented for boost_graph");
-            continue;
-        }
 
         uint32_t numberOfEdges = 1000;
 

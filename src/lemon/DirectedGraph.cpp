@@ -275,7 +275,7 @@ SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) con
         throw std::invalid_argument("graph_analysis::lemon::DirectedGraph::createSubGraph: base graph could not be cast to DirectedGraph");
     }
 
-    SubGraph::Ptr subgraph(new DirectedSubGraph(directedGraph));
+    SubGraph::Ptr subgraph = make_shared<DirectedSubGraph>(directedGraph);
     // Enable all nodes and edges by default
     Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::PermitAll< Vertex::Ptr >() );
     Filter< Edge::Ptr >::Ptr edgeFilter(new filters::PermitAll< Edge::Ptr >() );

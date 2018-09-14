@@ -121,8 +121,16 @@ graph_analysis::EdgeIterator::Ptr DirectedGraph::getInEdgeIterator(const Vertex:
 
 SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
+    DirectedGraph::Ptr diGraph = dynamic_pointer_cast<DirectedGraph>(baseGraph);
+    if(!diGraph)
+    {
+        throw
+            std::invalid_argument("graph_analysis::snap::DirectedGraph::createSubGraph:"
+                    " can only create a subgraph for a directed graph, but"
+                    "casting of argument failed");
+    }
     // Enable all nodes and edges
-    return SubGraph::Ptr(new DirectedSubGraph(baseGraph));
+    return make_shared<DirectedSubGraph>(diGraph);
 }
 
 } // end namespace snap

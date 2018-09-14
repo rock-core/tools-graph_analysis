@@ -5,12 +5,14 @@ namespace graph_analysis {
 namespace lemon {
 
 DirectedSubGraph::DirectedSubGraph(const DirectedGraph::Ptr& graph)
-    : SubGraphImpl(graph, new vertex_filter_t(graph->raw()), new edge_filter_t(graph->raw()))
+    : SubGraphImpl(graph)
     , mpDirectedGraph(graph)
+    , mNodeMap(graph->raw())
+    , mArcMap(graph->raw())
 {
     // graph_t refers to the given subgraph
-    // needs to be explicetly set
-    setSubgraph( new graph_t(mpDirectedGraph->raw(), getVertexFilter(), getEdgeFilter()) );
+    // needs to be explicitly set
+    setSubgraph( new graph_t(mpDirectedGraph->raw(), mNodeMap, mArcMap) );
 }
 
 void DirectedSubGraph::enable(const Vertex::Ptr& vertex)

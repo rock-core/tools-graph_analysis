@@ -4,32 +4,18 @@
 #include "../SubGraph.hpp"
 
 namespace graph_analysis {
-
-// Forward declaration
-class BaseGraph;
-
 namespace snap {
+
+class DirectedGraph;
 
 /**
  * Since SNAP does not natively provide a subgraph implementation
- * we have to maintain the subgraph explicitely
+ * we have to maintain the subgraph explicitly
  */
 class DirectedSubGraph : public SubGraph
 {
-    /// Maintain the subgraph structure in here
-    shared_ptr<BaseGraph> mDirectedGraph;
-
 public:
-    DirectedSubGraph(const shared_ptr<BaseGraph>& graph);
-
-    void enable(const Vertex::Ptr& vertex);
-    void disable(const Vertex::Ptr& vertex);
-
-    void enable(const Edge::Ptr& edge);
-    void disable(const Edge::Ptr& edge);
-
-    bool enabled(const Vertex::Ptr& vertex) const;
-    bool enabled(const Edge::Ptr& edge) const;
+    DirectedSubGraph(const shared_ptr<DirectedGraph>& graph);
 };
 
 } // end namespace snap

@@ -69,6 +69,7 @@ rock_library(graph_analysis
         algorithms/MultiCommodityVertex.cpp
         algorithms/Visitor.cpp
         boost_graph/DirectedGraph.cpp
+        boost_graph/DirectedSubGraph.cpp
         filters/EdgeContextFilter.cpp
         filters/RegexFilters.cpp
         gui/ActionCommander.cpp
@@ -181,6 +182,7 @@ rock_library(graph_analysis
         algorithms/MultiCommodityVertex.hpp
         algorithms/Visitor.hpp
         boost_graph/DirectedGraph.hpp
+        boost_graph/DirectedSubGraph.hpp
         filters/CommonFilters.hpp
         filters/EdgeContextFilter.hpp
         filters/RegexFilters.hpp

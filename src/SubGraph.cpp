@@ -94,6 +94,55 @@ BaseGraph::Ptr SubGraph::getBaseGraph() const
     return mpBaseGraph;
 }
 
+
+void SubGraph::enable(const Vertex::Ptr& vertex)
+{
+    std::set<GraphElementId>::iterator it =
+        mDisabledVertices.find(vertex->getId(mpBaseGraph->getId()));
+
+    if(it != mDisabledVertices.end())
+    {
+        mDisabledVertices.erase(it);
+    }
+}
+
+void SubGraph::disable(const Vertex::Ptr& vertex)
+{
+    mDisabledVertices.insert(vertex->getId(mpBaseGraph->getId()));
+}
+
+void SubGraph::enable(const Edge::Ptr& edge)
+{
+    std::set<GraphElementId>::iterator it =
+        mDisabledEdges.find(edge->getId(mpBaseGraph->getId()));
+
+    if(it != mDisabledEdges.end())
+    {
+        mDisabledEdges.erase(it);
+    }
+}
+
+void SubGraph::disable(const Edge::Ptr& edge)
+{
+    mDisabledEdges.insert(edge->getId(mpBaseGraph->getId()));
+}
+
+bool SubGraph::enabled(const Vertex::Ptr& vertex) const
+{
+    std::set<GraphElementId>::iterator it =
+        mDisabledVertices.find(vertex->getId(mpBaseGraph->getId()));
+
+    return it == mDisabledVertices.end();
+}
+
+bool SubGraph::enabled(const Edge::Ptr& edge) const
+{
+    std::set<GraphElementId>::iterator it =
+        mDisabledEdges.find(edge->getId(mpBaseGraph->getId()));
+
+    return it == mDisabledEdges.end();
+}
+
 void SubGraph::enableAllVertices()
 {
     Filter<Vertex::Ptr>::Ptr vertexFilter(new filters::PermitAll< Vertex::Ptr >() );

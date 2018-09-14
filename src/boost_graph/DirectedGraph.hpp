@@ -2,7 +2,6 @@
 #define GRAPH_ANALYSIS_BOOST_GRAPH_DIRECTED_GRAPH_HPP
 
 #include "../Graph.hpp"
-#include "../SubGraphImpl.hpp"
 #include "../BaseGraph.hpp"
 #include "../boost_graph/ArcIterator.hpp"
 #include <boost/graph/adjacency_list.hpp>
@@ -20,15 +19,18 @@ namespace boost_graph {
 //typedef boost::directedS GType;
 typedef boost::bidirectionalS GType;
 
-typedef boost::property< boost::vertex_index_t, std::size_t, Vertex::Ptr> VProp;
 typedef boost::listS VRep;
-typedef boost::listS ERep;
+typedef boost::vecS ERep;
+// https://www.boost.org/doc/libs/1_60_0/libs/graph/doc/property.html
 typedef boost::property< boost::vertex_index_t, std::size_t, Vertex::Ptr> VProp;
 typedef boost::property< boost::edge_index_t, std::size_t, Edge::Ptr> EProp;
+
+typedef boost::adjacency_list<VRep, ERep, boost::undirectedS, VProp, EProp> UndirectedGraph;
 typedef boost::adjacency_list<VRep, ERep, GType, VProp, EProp> BidirectionalGraph;
 
 typedef boost::graph_traits<BidirectionalGraph>::vertex_descriptor VertexDescriptor;
 typedef boost::graph_traits<BidirectionalGraph>::vertex_iterator VertexIteratorImpl;
+typedef boost::graph_traits<BidirectionalGraph>::vertices_size_type VertexIndex;
 typedef std::pair<VertexIterator, VertexIterator> VertexRange;
 
 typedef boost::graph_traits<BidirectionalGraph>::edge_descriptor EdgeDescriptor;
@@ -49,6 +51,7 @@ public:
     BaseGraph::Ptr copy() const;
     BaseGraph::Ptr newInstance() const;
 
+    typedef shared_ptr<DirectedGraph> Ptr;
     typedef boost::unordered_map<GraphElementId, VertexDescriptor> VertexMap;
     typedef boost::unordered_map<GraphElementId, EdgeDescriptor> EdgeMap;
 
@@ -96,7 +99,7 @@ public:
     /**
      * Identifies the connected components
      */
-    //SubGraph::Ptr identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const;
+    SubGraph::Ptr identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const;
 
     /**
      * Get the subgraph -- by default all vertices and edges of the
@@ -114,6 +117,9 @@ public:
     std::vector<Edge::Ptr> getEdges(const Vertex::Ptr& source, const Vertex::Ptr& target) const;
 
 protected:
+
+    DirectedGraph::Ptr validateType(const BaseGraph::Ptr& baseGraph) const;
+
     /**
      * \brief Add a vertex
      * \return the id of the created vertex

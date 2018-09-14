@@ -1,9 +1,15 @@
+#include <sstream>
+#include "DirectedSubGraph.hpp"
 #include "DirectedGraph.hpp"
 #include "../BaseGraph.hpp"
-#include <sstream>
 
 #include "ArcIterator.hpp"
 #include "NodeIterator.hpp"
+#include "../filters/CommonFilters.hpp"
+
+#include <boost/graph/incremental_components.hpp>
+#include <boost/pending/disjoint_sets.hpp>
+#include <boost/foreach.hpp>
 
 namespace graph_analysis {
 namespace boost_graph {
@@ -36,6 +42,17 @@ DirectedGraph::~DirectedGraph()
 {
 }
 
+DirectedGraph::Ptr DirectedGraph::validateType(const BaseGraph::Ptr& baseGraph) const
+{
+    const DirectedGraph::Ptr& directedGraph =
+        dynamic_pointer_cast<boost_graph::DirectedGraph>(baseGraph);
+    if(!directedGraph)
+    {
+        throw std::invalid_argument("graph_analysis::boost_graph::DirectedGraph::validateType: base graph could not be cast to DirectedGraph");
+    }
+    return directedGraph;
+}
+
 GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
 {
     // Add a new vertex to the Graph
@@ -43,8 +60,9 @@ GraphElementId DirectedGraph::addVertexInternal(const Vertex::Ptr& vertex)
     mGraph[vertexDescriptor] = vertex;
 
     GraphElementId newVertexId = msNewVertexId[getId()]++;
+
     // Set the internal index property (This probably shouldn't be done.)
-    //::boost::put( boost::vertex_index_t(), mGraph, vertexDescriptor, newVertexId);
+    //::boost::put( index, vertexDescriptor, newVertexId);
 
     // Insert to ID-Vertex map and memorize last added vertex
     mVertexMap.insert(VertexMap::value_type(newVertexId, vertexDescriptor));
@@ -153,9 +171,38 @@ EdgeIterator::Ptr DirectedGraph::getEdgeIterator(const Vertex::Ptr& vertex) cons
     return EdgeIterator::Ptr(it);
 }
 
+SubGraph::Ptr DirectedGraph::identifyConnectedComponents(const BaseGraph::Ptr& baseGraph) const
+{
+    DirectedGraph::Ptr directedGraph = validateType(baseGraph);
+    SubGraph::Ptr subgraph = make_shared<SubGraph>(directedGraph);
+    subgraph->disableAllVertices();
+
+    size_t numberOfVertices = boost::num_vertices(directedGraph->raw());
+    std::vector<VertexIndex> rank(numberOfVertices);
+    std::vector<VertexDescriptor> parent(numberOfVertices);
+
+
+    boost::disjoint_sets< VertexIndex*, VertexDescriptor* > ds(&rank[0], &parent[0]);
+    boost::initialize_incremental_components(mGraph, ds);
+    boost::incremental_components(mGraph, ds);
+
+    std::vector<VertexDescriptor>::const_iterator cit = parent.begin();
+    for(; cit != parent.end(); ++cit)
+    {
+        Vertex::Ptr v = mGraph[*cit];
+        subgraph->enable(v);
+    }
+    return subgraph;
+}
+
 SubGraph::Ptr DirectedGraph::createSubGraph(const BaseGraph::Ptr& baseGraph) const
 {
-    throw std::runtime_error("graph_analysis::boost_graph::DirectedGraph::createSubGraph not implemented");
+    DirectedGraph::Ptr directedGraph = validateType(baseGraph);
+    SubGraph::Ptr subgraph = make_shared<boost_graph::DirectedSubGraph>(directedGraph);
+    Filter< Vertex::Ptr >::Ptr vertexFilter(new filters::PermitAll< Vertex::Ptr >() );
+    Filter< Edge::Ptr >::Ptr edgeFilter(new filters::PermitAll< Edge::Ptr >() );
+    subgraph->applyFilters(vertexFilter, edgeFilter);
+    return subgraph;
 }
 
 graph_analysis::EdgeIterator::Ptr DirectedGraph::getOutEdgeIterator(const Vertex::Ptr& vertex) const
@@ -196,6 +243,8 @@ std::vector<Edge::Ptr> DirectedGraph::getEdges(const Vertex::Ptr& source, const 
 
     return getEdges(sourceVertexDescriptor, targetVertexDescriptor);
 }
+
+
 
 } // end namespace boost_graph
 } // endn namespace graph_analysis
