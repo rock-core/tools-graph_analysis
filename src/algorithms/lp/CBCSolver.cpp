@@ -27,8 +27,6 @@ Solution CBCSolver::readBasicSolution(const std::string& filename)
 
     std::string line;
     bool parseHeader = true;
-    bool parseRows = false;
-    bool parseColumns = false;
     while(std::getline(solutionFile, line))
     {
         std::vector<std::string> splitLine;

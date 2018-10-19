@@ -109,8 +109,6 @@ double MultiCommodityMinCostFlow::getCost() const
 std::string MultiCommodityMinCostFlow::createProblemCPLEX()
 {
     DirectedGraphInterface::Ptr diGraph = dynamic_pointer_cast<DirectedGraphInterface>(mpGraph);
-    size_t orderOfGraph = mpGraph->order();
-    size_t sizeOfGraph = mpGraph->size();
 
     std::string problemName = "multicommodity_min_cost_flow-" +
         base::Time::now().toString();
