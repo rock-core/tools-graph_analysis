@@ -19,7 +19,9 @@
     <depend package="external/snap" />
     <depend package="external/gexf" />
     <depend package="graphviz" />
-    <depend package="glpk" />
+    <depend package="glpk" optional="1" />
+    <depend package="libcbc" optional="1" />
+    <depend package="libclp" optional="1" />
     <depend package="qt4" />
     <depend package="libxml2-utils" optional="1"/>
     <depend package="yaml-cpp"/>
