@@ -4,10 +4,14 @@
 #include <stdint.h>
 #include <vector>
 #include <map>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #include "SharedPtr.hpp"
 
 namespace graph_analysis {
 
+typedef boost::uuids::uuid GraphElementUuid;
 typedef uint32_t GraphElementId;
 typedef uint32_t GraphId;
 typedef std::map<GraphId, GraphElementId> GraphElementMap;
@@ -29,9 +33,10 @@ public:
      */
     GraphElement(const std::string& label = std::string());
 
-    virtual ~GraphElement() {};
+    virtual ~GraphElement();
 
     typedef shared_ptr< GraphElement > Ptr;
+    typedef weak_ptr< GraphElement > WeakPtr;
     typedef std::vector<Ptr> PtrList;
 
     /**
@@ -82,9 +87,22 @@ public:
     GraphElementId getId(GraphId graph) const;
 
     /**
-     * Get a unique id of this vertex
+     * Get a universally unique id of this GraphElement
+     * \deprecated use getUuid instead
      */
-    GraphElementId getUid() const { return mUid; }
+    GraphElementUuid getUid() const { return mUuid; }
+
+    /**
+     * Get a universally unique id of this GraphElement
+     * \return uuid
+     */
+    GraphElementUuid getUuid() const { return mUuid; }
+
+    /**
+      * Get pointer to existing GraphElement from Uuid
+      * \return pointer to GraphElement
+      */
+    static GraphElement::Ptr fromUuid(const GraphElementUuid& uuid);
 
     /**
      * Get list of graph associations this element has
@@ -97,12 +115,18 @@ public:
     std::string toPrefixedString(GraphId graph) const;
 
 protected:
+    /**
+     * Add local method to shared from this to allow using bind
+     * \return pointer to existing GraphElement
+     */
+    GraphElement::Ptr getSharedFromThis() { return shared_from_this(); }
+
     void disassociateFromAll() { mGraphElementMap.clear(); }
     GraphElementMap mGraphElementMap;
 
-    GraphElementId mUid;
-    static GraphElementId msUid;
-
+    GraphElementUuid mUuid;
+    static boost::uuids::random_generator msUuidGenerator;
+    static std::map<GraphElementUuid, function<GraphElement::Ptr()> > msGraphElements;
     std::string mLabel;
 };
 

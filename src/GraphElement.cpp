@@ -4,16 +4,19 @@
 
 namespace graph_analysis {
 
-GraphElementId GraphElement::msUid = 0;
+boost::uuids::random_generator GraphElement::msUuidGenerator;
+std::map<GraphElementUuid, function<GraphElement::Ptr()> > GraphElement::msGraphElements;
 
 GraphElement::GraphElement(const std::string& label)
-    : mUid(msUid++)
+    : mUuid(msUuidGenerator())
     , mLabel(label)
 {
-    if(msUid == std::numeric_limits<GraphElementId>::max() )
-    {
-        throw std::runtime_error("GraphElement: maximum of GraphElements reached");
-    }
+    msGraphElements[mUuid] = bind(&GraphElement::getSharedFromThis,this);
+}
+
+GraphElement::~GraphElement()
+{
+    msGraphElements.erase(mUuid);
 }
 
 /**
@@ -30,6 +33,21 @@ GraphElementId GraphElement::getId(GraphId graphId) const
     std::stringstream ss;
     ss << "GraphElement: this graph element '" << toString() << "' is not part of the given graph (id:" << graphId << ")";
     throw std::runtime_error(ss.str());
+}
+
+
+GraphElement::Ptr GraphElement::fromUuid(const GraphElementUuid& uuid)
+{
+    std::map<GraphElementUuid, function<GraphElement::Ptr()> >::iterator it = msGraphElements.find(uuid);
+    if(it != msGraphElements.end())
+    {
+        return it->second();
+    } else {
+        std::stringstream ss;
+        ss << uuid;
+        throw std::invalid_argument("graph_analysis::GraphElement::fromUuid:"
+                " could not find graph element with uuid: '" + ss.str() + "'");
+    }
 }
 
 GraphIdList GraphElement::getGraphAssociations() const

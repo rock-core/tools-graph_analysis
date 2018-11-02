@@ -10,6 +10,7 @@ rock_testsuite(test_graph
     test_Observer.cpp
     test_Filters.cpp
     test_Graph.cpp
+    test_GraphElement.cpp
     test_SubGraph.cpp
     test_Percolation.cpp
     test_GraphIO.cpp
