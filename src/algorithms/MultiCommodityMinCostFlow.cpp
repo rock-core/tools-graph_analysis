@@ -144,14 +144,12 @@ std::string MultiCommodityMinCostFlow::createProblemCPLEX()
         uint32_t capacityUpperBound = edge->getCapacityUpperBound();
         if(capacityUpperBound == 0)
         {
-            throw
-                std::runtime_error("graph_analysis::algorithms::MultiCommodityMinCostFlow::run:"
-                        " trying to add edge with CapacityUpperBound = 0 :"
-                        + edge->toString()
-                        );
-        } else {
-            lpRow.bounds = lp::Bounds(0.0, capacityUpperBound, lp::LowerUpper);
+            LOG_INFO_S
+                << "graph_analysis::algorithms::MultiCommodityMinCostFlow::run:"
+                << " trying to add edge with CapacityUpperBound = 0 : "
+                << edge->toString();
         }
+        lpRow.bounds = lp::Bounds(0.0, capacityUpperBound, lp::LowerUpper);
 
         size_t columnBaseLine = 0;
         // Bounds on individual commodity capacities
