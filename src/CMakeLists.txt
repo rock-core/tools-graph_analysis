@@ -92,7 +92,6 @@ rock_library(graph_analysis
         gui/Player.cpp
         gui/PlayerConfiguration.cpp
         gui/QBaseGraph.cpp
-        gui/QFatRact.cpp
         gui/VertexItemBase.cpp
         gui/VertexItemSimple.cpp
         gui/WidgetManager.cpp
@@ -207,7 +206,6 @@ rock_library(graph_analysis
         gui/Player.hpp
         gui/PlayerConfiguration.hpp
         gui/QBaseGraph.hpp
-        gui/QFatRact.hpp
         gui/RegisterQtMetatypes.hpp
         gui/VertexItemBase.hpp
         gui/VertexItemSimple.hpp
@@ -259,7 +257,6 @@ rock_library(graph_analysis
     MOC
         gui/GraphAnalysisGui.hpp
         gui/QBaseGraph.hpp
-        gui/QFatRact.hpp
         gui/FilterManager.hpp
         gui/GraphWidget.hpp
         gui/GraphWidgetManager.hpp
