@@ -1,9 +1,8 @@
-
-This library intendes to provide a wrapper for existing graph libraries in order
+This library intends to provide a wrapper for existing graph libraries in order
 to facilitate their complementary application.
 This library comprises of two parts. The core functionality and -gui library for
 graphical interface based on the Qt framework.
-The implementation of the -gui part of graph_analysis have been based on the the Qt
+The implementation of the -gui part of graph_analysis have been based on the Qt
 Toolkit and examples thereof.
 The files can be found in the subfolder gui/ and subfolders thereof
 
