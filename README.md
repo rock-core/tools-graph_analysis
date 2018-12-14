@@ -93,7 +93,81 @@ while(edgeIt->next())
 Please refer to the detailed description of graph_analysis::io::GraphIO which is part of the doxygen
 documentation.
 
-## Installation
+## Installation from GitLab (internal)
+
+Create a new Rock-based installation in a development folder, here called dev.
+You can use the default values for the configuration questions.
+
+```
+    mkdir dev
+    cd dev
+    wget http://www.rock-robotics.org/master/autoproj_bootstrap
+    ruby autoproj_bootstrap
+```
+
+
+Add the following to autoproj/init.rb:
+```
+  Autoproj.gitorious_server_configuration('DFKIGIT', 'git.hb.dfki.de', :fallback_to_http => false, :default => 'ssh,ssh')
+```
+
+
+In autoproj/manifest add the respective manifest and add the package to the
+layout section:
+```
+    package_set:
+        - dfkigit: rock-dfki/package_set
+
+    layout:
+        - tools/graph_analysis
+```
+
+In order to speed up the installation process you can opt to add the existing
+Debian packages for Rock. To do that, just add the following to the
+autoproj/manifest.
+
+```
+    package_set:
+        - github: rock-core/rock-osdeps-package_set
+
+```
+
+Then you can trigger the installation:
+```
+$>source env.sh
+$>autoproj update
+$>autoproj osdeps
+$>amake tools/graph_analysis
+```
+
+## Installation from GitHub
+
+Create a new Rock-based installation in a development folder, here called dev:
+```
+    mkdir dev
+    cd dev
+    wget http://www.rock-robotics.org/master/autoproj_bootstrap
+    ruby autoproj_bootstrap
+```
+
+In autoproj/manifest add the respective manifest and add the package to the
+layout section:
+```
+    package_set:
+        - github: rock-core/rock-package_set
+
+    layout:
+        - tools/graph_analysis
+```
+
+```
+$>source env.sh
+$>autoproj update
+$>autoproj osdeps
+$>amake tools/graph_analysis
+```
+
+### Generate the documentation
 
 To see the documentation of this project please do the following after
 checkout to generate the doxygen-base documentation:
