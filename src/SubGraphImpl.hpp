@@ -55,7 +55,7 @@ protected:
     /**
      * Set the subgraph
      * Method to allow application of implementation specific subgraph constructors
-     * \param pointer to subgraph
+     * \param subgraph pointer to subgraph
      */
     void setSubgraph(graph_t* subgraph)
     {

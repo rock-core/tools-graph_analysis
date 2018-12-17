@@ -7,6 +7,10 @@
 namespace graph_analysis {
 namespace algorithms {
 
+/**
+ * \class BFSVisitor
+ * \brief Special visitor for the BFS implementing the default functions
+ */
 class BFSVisitor : public Visitor
 {
 public:

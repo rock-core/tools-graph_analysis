@@ -51,7 +51,7 @@ public:
      * supported import types)
      * \param parent Parent of this dialog
      * \param filename of the file to be loaded (to skip showing the menu)
-     * \param label for the QSetting for creating multiple recent filelists
+     * \param settingsLabel for the QSetting for creating multiple recent filelists
      * \return the imported graph, or empty shared pointer, on failure
      */
     static BaseGraph::Ptr importGraph(QWidget* parent = NULL,

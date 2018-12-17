@@ -33,8 +33,7 @@ public:
     /**
      * \brief constructor
      * \param label text to be displayed
-     * \param parent
-     * \param graphWidget managing widget
+     * \param parent Parent of this item
      */
     Label(const std::string& label, QGraphicsItem* parent);
     /**

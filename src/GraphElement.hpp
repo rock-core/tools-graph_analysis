@@ -18,9 +18,9 @@ typedef std::map<GraphId, GraphElementId> GraphElementMap;
 typedef std::vector<GraphId> GraphIdList;
 
 /**
- * GraphElement is the base class for all element in a graph, i.e. for
+ * \brief GraphElement is the base class for all element in a graph, i.e. for
  * edges and vertices
- *
+ * \details
  * It provides labeling functionality as well as the handling of ids
  * One GraphElement can be associated in multiple graphs
  *

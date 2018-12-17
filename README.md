@@ -182,6 +182,20 @@ Open the doxygen documentation with a browser: build/doc/index.html
 The doxygen documentation contains all information on how to start
 using the library along with the general API documentation.
 
+### Testing
+
+Running test in Rock is control via the Flag ROCK_TEST_ENABLED.
+So activate the tests let autoproj set this cmake build flag:
+```
+$> autoproj test enable tools/graph_analysis
+$> amake tools/graph_analysis
+```
+
+Then you can run the tests, which are implemented with Boost Testing Framework with:
+```
+$> ./build/test/test_graph --log_level=all
+```
+
 ## Merge Request and Issue Tracking
 
 Gitlab is used for pull request and issue tracking: https://git.hb.dfki.de/dfki-libraries/graph_analysis/issues

@@ -38,9 +38,9 @@ private:
 public:
     /**
      * \brief constructor
-     * \param label text to be displayed
-     * \param item parent NodeItem implementing instance
-     * \param graphWidget managing widget
+     * \param element GraphElement that a feature should be attributed to
+     * \param graphWidget The graph widget
+     * \param parent The parent of this item
      */
     Feature(GraphElement::Ptr element, GraphWidget *graphWidget, QGraphicsItem* parent);
 

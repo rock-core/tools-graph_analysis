@@ -70,11 +70,13 @@ DirectedGraph::graph_t::Arc DirectedGraph::getArc(const Edge::Ptr& edge) const
     return mGraph.arcFromId(edge->getId(this->getId()));
 }
 
+/// \relates graph_analysis::lemon::DirectedGraph
 Vertex::Ptr DirectedGraph::getVertex(DirectedGraph::graph_t::Node node) const
 {
     return getVertex( mGraph.id(node) );
 }
 
+/// \relates graph_analysis::lemon::DirectedGraph
 Edge::Ptr DirectedGraph::getEdge(DirectedGraph::graph_t::Arc arc) const
 {
     return getEdge( mGraph.id(arc) );

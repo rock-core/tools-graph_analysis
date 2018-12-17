@@ -11,31 +11,26 @@ namespace algorithms {
 typedef function1<bool,const Edge::Ptr&> Skipper;
 
 /**
- *
- * \verbatim
- class PathConstructor : public graph_analysis::algorithm::DFSVisitor
- {
-    bool invalidTransition(graph_analysis::Edge::Ptr& edge) { // check if it a valid transition and return true or false ... }
-    void discoverVertex(graph_analysis::Vertex::Ptr& vertex) { // collect vertices ... }
- };
-
- BaseGraph::Ptr graph = BaseGraph::getInstance();
- ...
- graph->addVertex(rootVertex);
- ...
-
- PathConstructor::Ptr pathConstructor(new PathConstructor());
- boost::function1<bool, graph_analysis::Edge::Ptr> skipper = boost::bind(&PathConstructor::invalidTransition, pathConstructor,_1);
- DFS dfs(graph, pathConstructor, skipper);
- dfs.run(rootVertex);
-
- \endverbatim
- */
+  * \class DFS
+  * \brief Implementation of Depth-First-Search
+  *¸\details This implements the depth-first search algorithm, it is
+  * based on the existing implementation of the algorithm in Boost
+  */
 class DFS
 {
 public:
+    /**
+      * \param graph Graph to search
+      * \param visitor Visitor object, which will be called, when BFS visits a
+      * vertex or edge
+      * \param skipper Skipper object to defined, when an edge does not need to * be followed
+      */
     DFS(const BaseGraph::Ptr& graph, const DFSVisitor::Ptr& visitor, Skipper skipper = Skipper());
 
+    /**
+      * Start the algorithm beginning at the specified vertex
+      * \param startVertex Start vertex of the search
+      */
     void run(const Vertex::Ptr& startVertex = Vertex::Ptr());
 
 private:

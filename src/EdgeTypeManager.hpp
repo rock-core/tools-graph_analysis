@@ -76,7 +76,7 @@ public:
      * \brief clones a new edge of a specified type
      * \param type the requested edge type
      * \param label the requested edge label
-     * \param throw when edge type is missing
+     * \param throwOnMissing throw when edge type is missing
      * \return smart pointer to the newly created edge instance
      */
     Edge::Ptr createEdge(const edge::Type& type, const std::string& label = "", bool throwOnMissing = false);

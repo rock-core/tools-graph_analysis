@@ -52,6 +52,7 @@ public:
      * \brief clones a new graphical vertex of a specified type
      * \param graphWidget the managing graph widget to assume parenthood of the to-be-created item
      * \param vertex underlying conceptual graph vertex
+     * \param parent Parent of this item
      * \param type optional preferred type
      * \return smart pointer to the newly created graphical vertex instance
      */

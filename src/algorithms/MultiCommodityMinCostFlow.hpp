@@ -176,6 +176,10 @@ public:
 
     /**
      * Create a MultiCommodityMinCostFlow problem by loading (problem graph) from file
+     * \param filename The filename from which the problem should be read
+     * \param format The format of the problem
+     * \param solverType The type of LP solver to use
+     * \return min cost flow object
      */
     static MultiCommodityMinCostFlow fromFile(const std::string& filename,
             representation::Type format = representation::UNKNOWN,
@@ -191,11 +195,15 @@ public:
      * MultiCommodityEdges (!)
      * \param commodities number of commodities that need to be accounted for,
      * if 0 is given then information is extracted from the edges
+     * \param solverType The type of LP solver to use
      */
     MultiCommodityMinCostFlow(const BaseGraph::Ptr& graph,
             uint32_t commodities = 0,
             LPSolver::Type solverType = LPSolver::GLPK_SOLVER);
 
+    /**
+      * Default deconstructor
+      */
     virtual ~MultiCommodityMinCostFlow() {}
 
     /**
@@ -226,9 +234,6 @@ public:
 
     /**
      * Save the solution to a given file and format
-     * \param lp_problem_file problem file
-     * \param lp_solution_file filename of the solution file
-     * \param format format of the solution
      */
     void storeResult();
 

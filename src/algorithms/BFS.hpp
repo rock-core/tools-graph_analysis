@@ -8,13 +8,29 @@
 namespace graph_analysis {
 namespace algorithms {
 
+/**
+  * \class BFS
+  * \brief Implementation of Breadth-First-Search
+  *¸\details This implements the breadth-first search algorithm, it is
+  * based on the existing implementation of the algorithm in Boost
+  */
 typedef function1<bool,Edge::Ptr> Skipper;
 
 class BFS
 {
 public:
+    /**
+      * \param graph Graph to search
+      * \param visitor Visitor object, which will be called, when BFS visits a
+      * vertex or edge
+      * \param skipper Skipper object to defined, when an edge does not need to * be followed
+      */
     BFS(const BaseGraph::Ptr& graph, const Visitor::Ptr& visitor, Skipper skipper = Skipper());
 
+    /**
+      * Start the algorithm beginning at the specified vertex
+      * \param startVertex Start vertex of the search
+      */
     void run(const Vertex::Ptr& startVertex = Vertex::Ptr());
 
 private:

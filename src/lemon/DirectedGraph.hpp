@@ -63,7 +63,16 @@ public:
     graph_t::Node getNode(const Vertex::Ptr& vertex) const;
     graph_t::Arc getArc(const Edge::Ptr& edge) const;
 
+    /**
+     * Get the vertex from a given lemon node
+     * \return vertex
+     */
     Vertex::Ptr getVertex(graph_t::Node node) const;
+
+    /**
+     * Get the edge from a given lemon edge
+     * \return edge
+     */
     Edge::Ptr getEdge(graph_t::Arc arc) const;
 
     Vertex::Ptr getVertex(GraphElementId id) const;

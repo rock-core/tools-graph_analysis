@@ -72,7 +72,6 @@ public:
      * Load a problem based
      * \param filename filename of the problem file
      * \param format format of the problem
-     * \param check whether this problem is a known problem
      * \return if the problem is already known
      */
     bool loadProblem(const std::string& filename, ProblemFormat format = CPLEX);
@@ -151,6 +150,8 @@ public:
      * Run the solver with a given problem file
      * \param problemFilename filename of the problem to solve
      * \param problemFormat format of the problem to solver
+     * \param useCaching To use caching of problem and respective solutions set
+     * to True, otherwise False
      */
     virtual Status run(const std::string& problemFilename, LPSolver::ProblemFormat problemFormat = CPLEX, bool useCaching = false) = 0;
 

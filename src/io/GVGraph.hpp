@@ -126,6 +126,7 @@ public:
 
     /*!
      * \brief Construct a Graphviz graph object
+     * \param baseGraph Pointer to the base graph to visualize
      * \param name The name of the graph, must be unique in the application
      * \param node_size The size in pixels of each node
      */

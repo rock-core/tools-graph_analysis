@@ -156,6 +156,7 @@ public:
     /**
      * Display a message status in the status bar
      * \param msg Message in the statusbar
+     * \param timeInMS Time in milliseconds
      */
     virtual void updateStatus(const std::string& msg, int timeInMS = 10);
 

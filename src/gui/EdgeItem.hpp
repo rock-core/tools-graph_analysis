@@ -34,8 +34,8 @@ public:
     /**
      * \brief constructor
      * \param graphWidget the parent and managing graph widget
-     * \param sourceNode the edge source endpoint vertex
-     * \param destNode the edge target endpoint vertex
+     * \param source the edge source endpoint vertex
+     * \param target the edge target endpoint vertex
      * \param edge the internal conceptual edge
      */
     EdgeItem(GraphWidget* graphWidget, QGraphicsItem* source, QGraphicsItem* target, graph_analysis::Edge::Ptr edge);

@@ -5,6 +5,10 @@
 
 namespace graph_analysis {
 
+/**
+  * \brief Manage object (vertex/edge) attributes and allow them to be
+  * serialized, e.g., using GEXF
+  */
 class AttributeManager
 {
 public:

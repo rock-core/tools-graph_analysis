@@ -47,6 +47,7 @@ public:
     /**
      * \brief constructor
      * \param graph underlying base graph
+     * \param parent Parent widget (if there is one)
      */
     BaseGraphView(graph_analysis::BaseGraph::Ptr graph, QWidget *parent = NULL);
 

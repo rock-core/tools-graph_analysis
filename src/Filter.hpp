@@ -21,7 +21,8 @@ extern std::map<std::string, Type> TxtType;
 } // end namespace filters
 
 /**
- * Allow definition of a filter per object type.
+ * \brief Filter for a graph
+ * \details Allow definition of a filter per object type.
  * Object type should inherit from Vertex or Edge
  *
  * This filter class allows bagging of multiple individual filters into a single

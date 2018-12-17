@@ -15,6 +15,9 @@ namespace algorithms {
 
 typedef function1<double, Edge::Ptr> EdgeWeightFunction;
 
+/**
+ * \brief A Ball representation for the CorrelationClustering
+ */
 struct Ball
 {
     Ball()
@@ -29,6 +32,8 @@ struct Ball
 };
 
 /**
+ * \brief Implementation of "Correlation Clustering in General Weighted Graphs" (Demaine et al., 2005) and
+ * "Correlation Clustering with partial information" (Demaine et al., 2004)
  * \details
  * This is an implementation of the correlation clustering as described in:
  * "Correlation Clustering in General Weighted Graphs" (Demaine et al., 2005) and
@@ -95,9 +100,10 @@ public:
 
    /**
     * \details
-    * "A ball B(u,r) of radius r around node u consists of all nodes v such that
-    * x_uv <=r, the subgraph induced by these nodes, and the fraction
-    * (r-x_uv)/x_vw of edges (v,w) with only edpoint v \in B(u,r)"
+    * "A ball \f$B(u,r)\f$ of radius r around node u consists of all nodes v such that
+    * \f$x_uv <=r \f$, the subgraph induced by these nodes, and the fraction
+    * \f$\frac{r-x_{uv}}{x_{vw}}\f$ of edges \f$(v,w)\f$ with only edpoint \f$v \in B(u,r)\f$"
+    * \return ball
     */
     Ball createBall(Vertex::Ptr vertex, double radius);
 };

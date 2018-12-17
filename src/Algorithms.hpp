@@ -8,6 +8,9 @@ namespace graph_analysis {
 class SubGraph;
 class BaseGraph;
 
+/**
+  * \brief Interface definition for a collection of standard algorithms
+  */
 class Algorithms
 {
 public:
