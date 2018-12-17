@@ -167,7 +167,7 @@ $>autoproj osdeps
 $>amake tools/graph_analysis
 ```
 
-### Generate the documentation
+## Generate the documentation
 
 To see the documentation of this project please do the following after
 checkout to generate the doxygen-base documentation:
@@ -182,7 +182,7 @@ Open the doxygen documentation with a browser: build/doc/index.html
 The doxygen documentation contains all information on how to start
 using the library along with the general API documentation.
 
-### Testing
+## Testing
 
 Running test in Rock is control via the Flag ROCK_TEST_ENABLED.
 So activate the tests let autoproj set this cmake build flag:
@@ -203,6 +203,9 @@ Gitlab is used for pull request and issue tracking: https://git.hb.dfki.de/dfki-
 ## License
 
 This project is licensed under the LGPL-2.1 or newer.
+
+Be aware however that functionality of the library can be optionally activated, since it requires GLPK.
+Hence, activation and embeding GLPK via the CMake build flag WITH_GLPK will change the license or the resulting work / binaries to GPL.
 
 ## Copyright
 
