@@ -29,6 +29,7 @@ void BFS::run(const Vertex::Ptr& startVertex)
     mStack.push(mStartVertex);
     mpVisitor->setStatus(mStartVertex, Visitor::REGISTERED);
     mpVisitor->initializeVertex(mStartVertex);
+    mpVisitor->startVertex(mStartVertex);
 
     Vertex::Ptr vertex;
 

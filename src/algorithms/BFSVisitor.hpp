@@ -16,6 +16,7 @@ class BFSVisitor : public Visitor
 public:
     typedef shared_ptr<BFSVisitor> Ptr;
 
+    virtual void startVertex(Vertex::Ptr& vertex) { LOG_DEBUG_S << "startVertex" << vertex->toString(); }
     virtual void initializeVertex(Vertex::Ptr& vertex) { LOG_DEBUG_S << "initializeVertex" << vertex->toString(); }
     virtual void leafVertex(Vertex::Ptr& vertex) { LOG_DEBUG_S << "leafVertex" << vertex->toString(); }
     /**
