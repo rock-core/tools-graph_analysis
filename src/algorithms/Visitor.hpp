@@ -1,7 +1,7 @@
 #ifndef GRAPH_ANALYSIS_ALGORITHMS_VISITOR_HPP
 #define GRAPH_ANALYSIS_ALGORITHMS_VISITOR_HPP
 
-#include <map>
+#include <unordered_map>
 #include "../Edge.hpp"
 
 #define GA_ALGO_NI(X) throw std::runtime_error("graph_analysis::algorithms::Visitor: " X " not implemented");
@@ -89,8 +89,8 @@ public:
 
 
 private:
-    std::map<Vertex::Ptr, Status> mVertexStatus;
-    std::map<Edge::Ptr, Status> mEdgeStatus;
+    std::unordered_map<Vertex::Ptr, Status> mVertexStatus;
+    std::unordered_map<Edge::Ptr, Status> mEdgeStatus;
 };
 
 } // end namespace algorithms

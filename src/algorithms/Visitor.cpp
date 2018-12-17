@@ -5,7 +5,7 @@ namespace algorithms {
 
 Visitor::Status Visitor::getStatus(const Vertex::Ptr& edge) const
 {
-    std::map<Vertex::Ptr, Status>::const_iterator cit = mVertexStatus.find(edge);
+    std::unordered_map<Vertex::Ptr, Status>::const_iterator cit = mVertexStatus.find(edge);
     if(cit != mVertexStatus.end())
     {
         return cit->second;
@@ -15,7 +15,7 @@ Visitor::Status Visitor::getStatus(const Vertex::Ptr& edge) const
 
 Visitor::Status Visitor::getStatus(const Edge::Ptr& edge) const
 {
-    std::map<Edge::Ptr, Status>::const_iterator cit = mEdgeStatus.find(edge);
+    std::unordered_map<Edge::Ptr, Status>::const_iterator cit = mEdgeStatus.find(edge);
     if(cit != mEdgeStatus.end())
     {
         return cit->second;
