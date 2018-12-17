@@ -179,6 +179,7 @@ rock_library(graph_analysis
         algorithms/MultiCommodityEdge.hpp
         algorithms/MultiCommodityMinCostFlow.hpp
         algorithms/MultiCommodityVertex.hpp
+        algorithms/Skipper.hpp
         algorithms/Visitor.hpp
         boost_graph/DirectedGraph.hpp
         boost_graph/DirectedSubGraph.hpp

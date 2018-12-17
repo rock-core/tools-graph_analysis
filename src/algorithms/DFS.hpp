@@ -3,12 +3,11 @@
 
 #include <vector>
 #include "../BaseGraph.hpp"
+#include "Skipper.hpp"
 #include "DFSVisitor.hpp"
 
 namespace graph_analysis {
 namespace algorithms {
-
-typedef function1<bool,const Edge::Ptr&> Skipper;
 
 /**
   * \class DFS

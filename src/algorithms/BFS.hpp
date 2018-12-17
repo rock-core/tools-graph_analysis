@@ -3,6 +3,7 @@
 
 #include <queue>
 #include "../BaseGraph.hpp"
+#include "Skipper.hpp"
 #include "BFSVisitor.hpp"
 
 namespace graph_analysis {
@@ -14,8 +15,6 @@ namespace algorithms {
   *¸\details This implements the breadth-first search algorithm, it is
   * based on the existing implementation of the algorithm in Boost
   */
-typedef function1<bool,Edge::Ptr> Skipper;
-
 class BFS
 {
 public:
