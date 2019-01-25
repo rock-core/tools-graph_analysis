@@ -1,5 +1,5 @@
 <package>
-    <description brief="A graph library for modeling and analysis">
+    <description brief="A graph library (frontend) for modeling and analysis">
         This library allows wrapping and extension of existing graph libraries for modeling and analysis.
         It provides a unified interface for boost_graph, LEMON and SNAP and comes with a graphical interface to
         create graph based GUIs.

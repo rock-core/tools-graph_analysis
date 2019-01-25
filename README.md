@@ -2,6 +2,7 @@
 
 This library provides functionality for analyzing graphs and networks.
 Its core functionality will come from other graph libraries such as:
+
  - boost graph: http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
    - header only
    - C++, template-based API
@@ -12,6 +13,7 @@ Its core functionality will come from other graph libraries such as:
    - support of parallel arcs in digraphs, see also: http://lemon.cs.elte.hu/pub/tutorial/a00011.html#sec_digraphs
 
 Further libraries are available, but have not been integrated:
+
  - igraph: http://igraph.sourceforge.net/
    - C API
  - graph-tool: http://graph-tool.skewed.de/
@@ -20,19 +22,20 @@ Further libraries are available, but have not been integrated:
  - odgf: http://ogdf.net/doku.php
    - layout algorithms
 
-Further resources:
- * http://stackoverflow.com/questions/2751826/which-c-graph-library-should-i-use
- * http://stackoverflow.com/questions/3010805/scalable-parallel-large-graph-analysis-library
-
 ## Motivation
-A number of different graph libraries does exist - as listed above - though they cannot always be compared in a one to one fashion.
+A number of different graph libraries exists - as listed above - though they cannot always be compared in a one to one fashion.
 This library tries to provide a standard interface while maintaining access to
-the particular feature of one library.
-This allows to benefit from complementary graph algorithm implementations.
-The goal of this library is to maintain a consistent and capable high-level interface abstraction in order to allow graph modeling and analysis.
+the particular features of each library.
+The initial intention of implementing this graph library frontend was to benefit
+from complementary graph algorithm implementations and add complementary
+functionality.
+Here, multi-commodity min-cost flow optimisation algorithms as well as, graph
+filtering and percolation.
+The goal of this library is to maintain a consistent and capable high-level
+interface abstraction to facilitate graph modelling and analysis.
 
-Hence, the graph analysis library comes with a small framework to design
-graph-based UI in QT.
+In addition, the graph analysis library comes with a small framework to design
+graph-based UI in QT (see below).
 
 ## Examples
 
@@ -93,52 +96,28 @@ while(edgeIt->next())
 Please refer to the detailed description of graph_analysis::io::GraphIO which is part of the doxygen
 documentation.
 
-## Installation from GitLab (internal)
+### Graph GUI
 
-Create a new Rock-based installation in a development folder, here called dev.
-You can use the default values for the configuration questions.
+This library provides a UI that permmits developing other Qt-based interfaces that are based on graphs.
+This UI intends to provide a mini-framework and basis for other projects to build on, by
+reusing the GraphWidget class.
 
-```
-    mkdir dev
-    cd dev
-    wget http://www.rock-robotics.org/master/autoproj_bootstrap
-    ruby autoproj_bootstrap
-```
+The UI supports:
 
+ - import/export from/to gexf
+ - save as pdf or svg
+ - layouting of the graph using graphviz layout engine
 
-Add the following to autoproj/init.rb:
-```
-  Autoproj.gitorious_server_configuration('DFKIGIT', 'git.hb.dfki.de', :fallback_to_http => false, :default => 'ssh,ssh')
-```
-
-
-In autoproj/manifest add the respective manifest and add the package to the
-layout section:
-```
-    package_set:
-        - dfkigit: rock-dfki/package_set
-
-    layout:
-        - tools/graph_analysis
-```
-
-In order to speed up the installation process you can opt to add the existing
-Debian packages for Rock. To do that, just add the following to the
-autoproj/manifest.
+After installation you can start the UI by calling:
 
 ```
-    package_set:
-        - github: rock-core/rock-osdeps-package_set
-
+    graph_analysis-gui
 ```
 
-Then you can trigger the installation:
-```
-$>source env.sh
-$>autoproj update
-$>autoproj osdeps
-$>amake tools/graph_analysis
-```
+<p align="left">
+  <img src="./resources/examples/graph_analysis-gui.png" height="250" title="Graph Analysis GUI">
+</p>
+
 
 ## Installation from GitHub
 
@@ -198,15 +177,23 @@ $> ./build/test/test_graph --log_level=all
 
 ## Merge Request and Issue Tracking
 
-Gitlab is used for pull request and issue tracking: https://git.hb.dfki.de/dfki-libraries/graph_analysis/issues
+GitHub is used for pull request and issue tracking: https://github.com/rock-core/tools-graph_analysis/issues
 
 ## License
 
-This project is licensed under the LGPL-2.1 or newer.
+This software is licensed under the LGPL-2.1 or newer.
+
+GLPK for solving linear problems can be optionally embedded using the build flag
+WITH_GLPK.
+Activation and embedding GLPK via the CMake build flag WITH_GLPK will change the
+license of the resulting work / binaries to GPL 3.0 (see COPYING file).
+
+When you have [SCIP](https://scip.zib.de) installed, you can activate the use of [SCIP](https://scip.zib.de) with the buildflag WITH_SCIP.
+Make sure you comply to SCIP's license requirements for non-commercial and commercial use.
 
 Be aware however that functionality of the library can be optionally activated, since it requires GLPK.
 Hence, activation and embeding GLPK via the CMake build flag WITH_GLPK will change the license or the resulting work / binaries to GPL.
 
 ## Copyright
 
-Copyright (c) 2013-2018 Thomas M. Roehr, DFKI GmbH Robotics Innovation Center
+Copyright (c) 2013-2018 Thomas M. Roehr and contributors, DFKI GmbH Robotics Innovation Center
