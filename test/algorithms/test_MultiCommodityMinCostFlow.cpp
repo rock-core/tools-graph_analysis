@@ -880,9 +880,25 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_8)
         graph->addEdge(e);
     }
 
-    for(int i = LPSolver::SCIP_SOLVER; i != (int) LPSolver::SOPLEX_SOLVER; ++i)
+    for(int i = (int) LPSolver::UNKNOWN_LP_SOLVER + 1; i < (int) LPSolver::LP_SOLVER_TYPE_END; ++i)
     {
         LPSolver::Type solverType = (LPSolver::Type) i;
+#ifndef WITH_SCIP
+            if(solverType == LPSolver::SCIP_SOLVER || solverType == LPSolver::SOPLEX_SOLVER
+                    || solverType == LPSolver::SOPLEX_SOLVER_EMBEDDED
+                    || solverType == LPSolver::SCIP_SOLVER_EMBEDDED)
+            {
+                continue;
+            }
+#endif
+#ifndef WITH_GLPK
+            if(solverType == LPSolver::GLPK_SOLVER || solverType ==
+                    LPSolver::GLPK_SOLVER_EMBEDDED)
+            {
+                continue;
+            }
+#endif
+
         {
             std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_8");
             MultiCommodityMinCostFlow minCostFlow(graph, commodities, solverType);

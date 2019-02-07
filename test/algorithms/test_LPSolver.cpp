@@ -14,9 +14,24 @@ BOOST_AUTO_TEST_CASE(solvers)
     {
         LPSolver::Type type = (LPSolver::Type) i;
         try {
-            LPSolver::Ptr scip = LPSolver::getInstance(type);
+#ifndef WITH_SCIP
+            if(type == LPSolver::SCIP_SOLVER || type == LPSolver::SOPLEX_SOLVER
+                    || type == LPSolver::SOPLEX_SOLVER_EMBEDDED
+                    || type == LPSolver::SCIP_SOLVER_EMBEDDED)
+            {
+                continue;
+            }
+#endif
+#ifndef WITH_GLPK
+            if(type == LPSolver::GLPK_SOLVER || type ==
+                    LPSolver::GLPK_SOLVER_EMBEDDED)
+            {
+                continue;
+            }
+#endif
+            LPSolver::Ptr solver = LPSolver::getInstance(type);
             std::string problemFilename = getRootDir() + "test/data/lp_problems/p0.lp";
-            LPSolver::Status status = scip->run(problemFilename);
+            LPSolver::Status status = solver->run(problemFilename);
 
             switch(type)
             {
@@ -36,6 +51,7 @@ BOOST_AUTO_TEST_CASE(solvers)
     }
 }
 
+#ifdef WITH_SCIP
 BOOST_AUTO_TEST_CASE(scip)
 {
     using namespace graph_analysis;
@@ -82,6 +98,7 @@ BOOST_AUTO_TEST_CASE(scip)
                 solution.getObjectiveValue());
     }
 }
+#endif // WITH_SCIP
 
 BOOST_AUTO_TEST_CASE(clp)
 {
@@ -130,6 +147,7 @@ BOOST_AUTO_TEST_CASE(clp)
     }
 }
 
+#ifdef WITH_GLPK
 BOOST_AUTO_TEST_CASE(glpk_with_caching)
 {
     bool useCaching = true;
@@ -149,6 +167,6 @@ BOOST_AUTO_TEST_CASE(glpk_with_caching)
                 "status should be 'optimal', was " << LPSolver::StatusTxt[status]);
     }
 }
-
+#endif // WITH_GPLK
 
 BOOST_AUTO_TEST_SUITE_END()
