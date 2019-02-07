@@ -9,6 +9,7 @@
 
 #include <graph_analysis/io/GVGraph.hpp>
 #include <graph_analysis/io/GraphvizGridStyle.hpp>
+#include "test_utils.hpp"
 
 using namespace graph_analysis;
 
@@ -389,7 +390,7 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
 BOOST_AUTO_TEST_CASE(gexf_viz)
 {
     BaseGraph::Ptr read_graph = BaseGraph::getInstance();
-    std::string filename = "/opt/workspace/2maz/dev/external/gexf/yeast.gexf";
+    std::string filename = getRootDir() + "test/data/yeast.gexf";
     io::GraphIO::read(filename, read_graph, representation::GEXF);
 }
 
