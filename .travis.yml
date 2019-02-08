@@ -1,0 +1,15 @@
+    sudo: required
+    services:
+      - docker
+
+    matrix:
+        allow_failures:
+
+    cache: bundler
+
+    install:
+        - docker build -t rock/graph_analysis .
+
+    # overwrite the default build command
+    script:
+        - docker run rock/graph_analysis /bin/bash -c "source /home/docker/rock_test/env.sh; make -C tools/graph_analysis/build test"
