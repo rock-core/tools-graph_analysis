@@ -115,7 +115,8 @@ std::string MultiCommodityMinCostFlow::createProblemCPLEX()
 
     lp::Problem problem(problemName, lp::OPTIMIZE_MIN );
 
-    size_t col = 1;
+    size_t columnBaseLine = 1;
+    size_t col = columnBaseLine;
     size_t row = 1;
 
     // columns: e0-k1 e0-k2 e0-k2 e0-k3 ... e1-k1 e1-k2 e1-k3 ...
@@ -151,7 +152,6 @@ std::string MultiCommodityMinCostFlow::createProblemCPLEX()
         }
         lpRow.bounds = lp::Bounds(0.0, capacityUpperBound, lp::LowerUpper);
 
-        size_t columnBaseLine = 0;
         // Bounds on individual commodity capacities
         for(size_t k = 0; k < mCommodities; ++k,++col)
         {

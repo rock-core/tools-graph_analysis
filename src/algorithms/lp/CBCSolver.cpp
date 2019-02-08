@@ -71,8 +71,23 @@ Solution CBCSolver::readBasicSolution(const std::string& filename)
         {
             if(splitLine.size() > 3)
             {
-                // Use the activity field to set the column value
-                solution.setColumnValue(splitLine[1], boost::lexical_cast<size_t>(splitLine[2]));
+                size_t offset = 1;
+                if(splitLine[0] == "**")
+                {
+                    ++offset;
+                }
+
+                try {
+                    // Use the activity field to set the column value
+                    solution.setColumnValue(splitLine[offset],
+                            boost::lexical_cast<size_t>(splitLine[offset + 1]));
+                } catch(const std::bad_cast& e)
+                {
+                    LOG_WARN_S << "Failed to extract column value from '" +
+                        filename + "' line: '"
+                        + splitLine[offset] + ": " + splitLine[offset + 1 ] + "'";
+                    throw;
+                }
             }
         }
     }
