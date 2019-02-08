@@ -1,32 +1,22 @@
 # Graph Analysis
+[![Build
+Status](https://travis-ci.org/rock-core/tools-graph_analysis.svg?branch=master)](https:///travis-ci.org/rock-core/tools-graph_analysis)
+
 
 This library provides functionality for analyzing graphs and networks.
-Its core functionality will come from other graph libraries such as:
-
- - boost graph: http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html
-   - header only
-   - C++, template-based API
- - snap: http://snap.stanford.edu/snap/
-   - autotools based build
- - lemon: http://lemon.cs.elte.hu/trac/lemon
-   - cmake based build
-   - support of parallel arcs in digraphs, see also: http://lemon.cs.elte.hu/pub/tutorial/a00011.html#sec_digraphs
-
-Further libraries are available, but have not been integrated:
-
- - igraph: http://igraph.sourceforge.net/
-   - C API
- - graph-tool: http://graph-tool.skewed.de/
-   - boost graph based, with Python integration
-   - autotools based build, very high compilation requirements
- - odgf: http://ogdf.net/doku.php
-   - layout algorithms
+Its core functionality will come from other graph libraries such as [boost
+graph](http://www.boost.org/doc/libs/1_55_0/libs/graph/doc/index.html),
+[SNAP](http://snap.stanford.edu/snap/),
+[LEMON](http://lemon.cs.elte.hu/trac/lemon).
+Further graph libraries are available, but have not been integrated
+[igraph](http://igraph.sourceforge.net), [graph-tool](http://graph-tool.skewed.de/),
+[ogdf](http://ogdf.net/doku.php).
 
 ## Motivation
 A number of different graph libraries exists - as listed above - though they cannot always be compared in a one to one fashion.
 This library tries to provide a standard interface while maintaining access to
 the particular features of each library.
-The initial intention of implementing this graph library frontend was to benefit
+The initial intention of implementing this graph library front-end was to benefit
 from complementary graph algorithm implementations and add complementary
 functionality.
 Here, multi-commodity min-cost flow optimisation algorithms as well as, graph
@@ -64,10 +54,10 @@ private:
 };
 
 BaseGraph::Ptr graph = BaseGraph::getInstance(BaseGraph::LEMON_DIRECTED_GRAPH);
-Vertex::Ptr v0(new MyVertex());
-Vertex::Ptr v1(new MyVertex());
+Vertex::Ptr v0 = make_shared<MyVertex>();
+Vertex::Ptr v1 = make_shared<MyVertex>();
 
-Edge::Ptr e0(new Edge());
+Edge::Ptr e0 = make_shared<Edge>();
 e0->setSourceVertex(v0);
 e0->setTargetVertex(v1);
 
@@ -98,7 +88,7 @@ documentation.
 
 ### Graph GUI
 
-This library provides a UI that permmits developing other Qt-based interfaces that are based on graphs.
+This library provides a UI that permits developing other Qt-based interfaces that are based on graphs.
 This UI intends to provide a mini-framework and basis for other projects to build on, by
 reusing the GraphWidget class.
 
