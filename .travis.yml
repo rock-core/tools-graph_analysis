@@ -8,7 +8,10 @@
     cache: bundler
 
     install:
-        - docker build -t rock/graph_analysis .
+        - docker build -t rock/graph_analysis . 
+                --build-arg PKG_NAME="tools/graph_analysis"
+                --build-arg PKG_BRANCH="${TRAVIS_BRANCH}" 
+                --build-arg PKG_PULL_REQUEST="${TRAVIS_PULL_REQUEST}" 
 
     # overwrite the default build command
     script:
