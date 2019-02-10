@@ -181,9 +181,6 @@ license of the resulting work / binaries to GPL 3.0 (see COPYING file).
 When you have [SCIP](https://scip.zib.de) installed, you can activate the use of [SCIP](https://scip.zib.de) with the buildflag WITH_SCIP.
 Make sure you comply to SCIP's license requirements for non-commercial and commercial use.
 
-Be aware however that functionality of the library can be optionally activated, since it requires GLPK.
-Hence, activation and embeding GLPK via the CMake build flag WITH_GLPK will change the license or the resulting work / binaries to GPL.
-
 ## Copyright
 
 Copyright (c) 2013-2018 Thomas M. Roehr and contributors, DFKI GmbH Robotics Innovation Center
