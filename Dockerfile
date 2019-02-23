@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER 2maz "https://github.com/2maz"
 
@@ -21,7 +21,7 @@ ENV PKG_PULL_REQUEST=${PKG_PULL_REQUEST}
 
 RUN apt update
 RUN apt upgrade -y
-RUN apt install -y ruby ruby-dev wget tzdata locales g++ autotools-dev make cmake sudo git
+RUN export DEBIAN_FRONTEND=noninteractive; apt install -y ruby ruby-dev wget tzdata locales g++ autotools-dev make cmake sudo git
 RUN echo "Europe/Berlin" > /etc/timezone; dpkg-reconfigure -f noninteractive tzdata
 RUN export LANGUAGE=de_DE.UTF-8; export LANG=de_DE.UTF-8; export LC_ALL=de_DE.UTF-8; locale-gen de_DE.UTF-8; DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
 
@@ -44,9 +44,9 @@ RUN wget https://raw.githubusercontent.com/rock-core/autoproj/master/bin/autopro
 RUN mkdir -p /home/docker/rock_test
 WORKDIR /home/docker/rock_test
 # Use the existing seed configuration
-COPY --chown=docker test/ci/autoproj-config.yml seed-config.yml
+COPY --chown=docker .ci/autoproj-config.yml seed-config.yml
 ENV AUTOPROJ_BOOTSTRAP_IGNORE_NONEMPTY_DIR 1
-RUN ruby /home/docker/autoproj_bootstrap git https://github.com/rock-core/buildconf.git branch=master --seed-config=seed-config.yml
+RUN export AUTOPROJ_NONINTERACTIVE=1; ruby /home/docker/autoproj_bootstrap git https://github.com/rock-core/buildconf.git branch=master --seed-config=seed-config.yml
 RUN sed -i "s#rock\.core#${PKG_NAME}#g" autoproj/manifest
 RUN if [ "$PKG_PULL_REQUEST" = "false" ]; then \
         echo "Using branch: ${PKG_BRANCH}"; \

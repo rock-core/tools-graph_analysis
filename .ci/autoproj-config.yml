@@ -13,3 +13,4 @@ cxx11: true
 ldgold: true
 osdeps_mode: all
 USE_OCL: false
+apt_dpkg_update: true
