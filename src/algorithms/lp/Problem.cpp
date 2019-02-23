@@ -1,4 +1,5 @@
 #include "Problem.hpp"
+#include <cmath>
 #include <algorithm>
 #include <sstream>
 #include <fstream>
@@ -219,7 +220,7 @@ std::string Problem::toString(size_t indent) const
 
             if( entry.coefficient != 1.0)
             {
-                ss << static_cast<size_t>(fabs(entry.coefficient));
+                ss << static_cast<size_t>(std::fabs(entry.coefficient));
             }
 
             ss << " " << entry.name;
