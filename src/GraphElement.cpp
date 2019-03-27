@@ -1,6 +1,7 @@
 #include "GraphElement.hpp"
 #include <limits>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
 
 namespace graph_analysis {
 
@@ -69,6 +70,11 @@ std::string GraphElement::toPrefixedString(GraphId graph) const
     ss << ": ";
     ss << toString();
     return ss.str();
+}
+
+void GraphElement::setUuid(const std::string& uuid)
+{
+    mUuid = boost::lexical_cast<GraphElementUuid>(uuid);
 }
 
 }

@@ -34,17 +34,20 @@ std::vector<std::string> AttributeManager::getAttributes(const std::string& vert
     return attributes;
 }
 
-io::AttributeSerializationCallbacks AttributeManager::getAttributeSerializationCallbacks(const std::string& typeName, const std::string& memberName)
+io::AttributeSerializationCallbacks AttributeManager::getAttributeSerializationCallbacks(const std::string& typeName, const std::string& memberName) const
 {
-    if(mRegisteredCallbacks.find(typeName) == mRegisteredCallbacks.end())
+    std::map<std::string, AttributeSerializationCallbackMap>::const_iterator cit = mRegisteredCallbacks.find(typeName);
+    if( cit == mRegisteredCallbacks.end())
     {
         throw std::invalid_argument("graph_analysis::AttributeManager: cannot get callbacks for unknown type '" + typeName + "'");
     }
-    if(mRegisteredCallbacks[typeName].find(memberName) == mRegisteredCallbacks[typeName].end())
+    const AttributeSerializationCallbackMap& callbackMap = cit->second;
+    AttributeSerializationCallbackMap::const_iterator callbackIt = callbackMap.find(memberName);
+    if( callbackIt == callbackMap.end())
     {
         throw std::invalid_argument("graph_analysis::AttributeManager cannot get callbacks for unknown member '" + memberName + "' of type '" + typeName + "'");
     }
-    return mRegisteredCallbacks[typeName][memberName];
+    return callbackIt->second;
 }
 
 } // end namespace graph_analysis

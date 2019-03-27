@@ -484,5 +484,55 @@ BOOST_AUTO_TEST_CASE(nweight_serialization)
     io::GraphIO::write("/tmp/graph_analysis-test-graph_io-nweight-serialization.gexf", graph, representation::GEXF);
 }
 
+BOOST_AUTO_TEST_CASE(graphml)
+{
+    WeightedEdge::Ptr edge(new WeightedEdge(10));
+    BOOST_TEST_MESSAGE("NAME: " << edge->getClassName());
+
+    std::string s = edge->serializeWeights();
+
+    BOOST_TEST_MESSAGE("Serialized weight is: '" << s << "'");
+
+    WeightedEdge::Ptr deserializedEdge(new WeightedEdge());
+    deserializedEdge->deserializeWeights(s);
+
+    BOOST_REQUIRE_MESSAGE(edge->getWeight() == deserializedEdge->getWeight(), "Expected weight " << edge->getWeight() << " got " << deserializedEdge->getWeight());
+
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+    Vertex::Ptr v0(new Vertex("v0"));
+    Vertex::Ptr v1(new Vertex("v1"));
+
+    edge->setSourceVertex(v0);
+    edge->setTargetVertex(v1);
+    graph->addEdge(edge);
+
+    std::vector<representation::Type> testTypes = { representation::GEXF,
+        representation::GRAPHML };
+
+    for(representation::Type type : testTypes)
+    {
+        BOOST_TEST_MESSAGE("Testing representation: " <<
+                representation::TypeTxt[ (representation::Type) type ] );
+        std::string filename = "/tmp/graph_analysis-test-graph_io";
+        filename = io::GraphIO::write(filename, graph, (representation::Type) type);
+
+        BaseGraph::Ptr readGraph = BaseGraph::getInstance();
+        io::GraphIO::read(filename, readGraph);
+
+        EdgeIterator::Ptr edgeIt = readGraph->getEdgeIterator();
+        BOOST_REQUIRE_EQUAL(readGraph->size(),1);
+        BOOST_REQUIRE_EQUAL(readGraph->order(),2);
+
+        while(edgeIt->next())
+        {
+            Edge::Ptr currentEdge = edgeIt->current();
+            WeightedEdge::Ptr weightedEdge =
+                dynamic_pointer_cast<WeightedEdge>(currentEdge);
+            BOOST_REQUIRE_MESSAGE(weightedEdge->getWeight(0) == edge->getWeight(0),
+                    "Expected weight " << edge->getWeight(0));
+        }
+    }
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()

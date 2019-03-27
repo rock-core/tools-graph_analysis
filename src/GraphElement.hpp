@@ -10,6 +10,12 @@
 #include "SharedPtr.hpp"
 
 namespace graph_analysis {
+namespace io {
+    class Reader;
+} // end namespace io
+} // end namespace graph_analysis
+
+namespace graph_analysis {
 
 typedef boost::uuids::uuid GraphElementUuid;
 typedef uint32_t GraphElementId;
@@ -27,6 +33,8 @@ typedef std::vector<GraphId> GraphIdList;
  */
 class GraphElement : public enable_shared_from_this<GraphElement>
 {
+    friend class graph_analysis::io::Reader;
+
 public:
     /**
      * \brief Default constructor
@@ -122,6 +130,15 @@ protected:
     GraphElement::Ptr getSharedFromThis() { return shared_from_this(); }
 
     void disassociateFromAll() { mGraphElementMap.clear(); }
+
+    /**
+     * Set the uuid from a given one, e.g.,
+     * when deserialising elements
+     */
+    void setUuid(const GraphElementUuid& uuid) { mUuid = uuid; }
+
+    void setUuid(const std::string& uuid);
+
     GraphElementMap mGraphElementMap;
 
     GraphElementUuid mUuid;

@@ -85,7 +85,15 @@ public:
             , const std::string& label = ""
             , bool throwOnMissing = false);
     /// lists the registered types
-    std::set<std::string> getSupportedTypes();
+    std::set<std::string> getSupportedTypes() const;
+
+    std::vector<Attribute> getKnownAttributes(const std::set<std::string>& classnames = std::set<std::string>()) const;
+
+    /**
+     * Get the value assignments for the attributes of an edge
+     */
+    std::vector< std::pair<Attribute::Id, std::string> >
+        getAttributeValues(const Edge::Ptr& edge) const;
 };
 
 } // end namespace graph_analysis

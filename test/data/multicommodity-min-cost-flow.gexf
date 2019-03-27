@@ -14,28 +14,28 @@
       <attribute id="DerivedEdge-attribute-0" title="a0" type="string"/>
       <attribute id="DerivedEdge-attribute-1" title="a1" type="string"/>
       <attribute id="MultiCommodityEdge-attribute-0" title="edge_attributes" type="string"/>
-      <attribute id="graph_analysis::NWeightedEdge-attribute-0" title="weights" type="string"/>
+      <attribute id="graph_analysis::NWeightedEdge_d_1-attribute-0" title="weights" type="string"/>
     </attributes>
     <nodes>
       <node id="0" label="">
         <attvalues>
           <attvalue for="0" value="MultiCommodityVertex"/>
           <attvalue for="1" value=""/>
-          <attvalue for="MultiCommodityVertex-attribute-0" value="22 serialization::archive 12 3 0 10 10 10 3 0 0 0 0 3 0 4294967295 4294967295 4294967295 0 0 0 0"/>
+          <attvalue for="MultiCommodityVertex-attribute-0" value="22 serialization::archive 15 3 0 10 10 10 3 0 0 0 0 3 0 4294967295 4294967295 4294967295 0 0 0 0"/>
         </attvalues>
       </node>
       <node id="1" label="">
         <attvalues>
           <attvalue for="0" value="MultiCommodityVertex"/>
           <attvalue for="1" value=""/>
-          <attvalue for="MultiCommodityVertex-attribute-0" value="22 serialization::archive 12 3 0 0 0 0 3 0 0 0 0 3 0 4294967295 4294967295 4294967295 0 0 0 0"/>
+          <attvalue for="MultiCommodityVertex-attribute-0" value="22 serialization::archive 15 3 0 0 0 0 3 0 0 0 0 3 0 4294967295 4294967295 4294967295 0 0 0 0"/>
         </attvalues>
       </node>
       <node id="2" label="">
         <attvalues>
           <attvalue for="0" value="MultiCommodityVertex"/>
           <attvalue for="1" value=""/>
-          <attvalue for="MultiCommodityVertex-attribute-0" value="22 serialization::archive 12 3 0 -10 -10 -10 3 0 0 0 0 3 0 4294967295 4294967295 4294967295 0 0 0 0"/>
+          <attvalue for="MultiCommodityVertex-attribute-0" value="22 serialization::archive 15 3 0 -10 -10 -10 3 0 0 0 0 3 0 4294967295 4294967295 4294967295 0 0 0 0"/>
         </attvalues>
       </node>
     </nodes>
@@ -44,14 +44,14 @@
         <attvalues>
           <attvalue for="0" value="MultiCommodityEdge"/>
           <attvalue for="1" value=""/>
-          <attvalue for="MultiCommodityEdge-attribute-0" value="22 serialization::archive 12 30 3 0 10 10 10 3 0 1.00000000000000000e+00 1.00000000000000000e+00 1.00000000000000000e+00 3 0 0 0 0"/>
+          <attvalue for="MultiCommodityEdge-attribute-0" value="22 serialization::archive 15 30 3 0 10 10 10 3 0 1.00000000000000000e+00 1.00000000000000000e+00 1.00000000000000000e+00 3 0 0 0 0"/>
         </attvalues>
       </edge>
       <edge id="1" source="1" target="2">
         <attvalues>
           <attvalue for="0" value="MultiCommodityEdge"/>
           <attvalue for="1" value=""/>
-          <attvalue for="MultiCommodityEdge-attribute-0" value="22 serialization::archive 12 30 3 0 10 10 10 3 0 1.00000000000000000e+00 1.00000000000000000e+00 1.00000000000000000e+00 3 0 0 0 0"/>
+          <attvalue for="MultiCommodityEdge-attribute-0" value="22 serialization::archive 15 30 3 0 10 10 10 3 0 1.00000000000000000e+00 1.00000000000000000e+00 1.00000000000000000e+00 3 0 0 0 0"/>
         </attvalues>
       </edge>
     </edges>

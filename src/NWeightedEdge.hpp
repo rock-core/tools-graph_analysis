@@ -2,8 +2,11 @@
 #define GRAPH_ANALYSIS_NWEIGHTED_EDGE_HPP
 
 #include <iostream>
+#include <base-logging/Logging.hpp>
+
 #include "NWeighted.hpp"
 #include "Edge.hpp"
+#include "EdgeRegistration.hpp"
 
 namespace graph_analysis {
 
@@ -39,15 +42,27 @@ public:
         Edge::setTargetVertex(target);
     }
 
-    virtual ~NWeightedEdge() {}
+    virtual ~NWeightedEdge() {
+        if(!msRegistration.isRegistered())
+        {
+            LOG_WARN_S << "Registration of NWeightedEdge never happened";
+        }
+    }
 
     // Get class name
     // \return class name
-    virtual std::string getClassName() const { return "graph_analysis::NWeightedEdge"; }
+    virtual std::string getClassName() const { return
+        "graph_analysis::NWeightedEdge_" + std::string(typeid(T).name()) + "_" + std::to_string(Dim); }
 
 protected:
     virtual Edge* getClone() const { return new NWeightedEdge<T,Dim>(*this); }
+
+    static const EdgeRegistration< NWeightedEdge<T,Dim> > msRegistration;
 };
+
+template<typename T, size_t Dim>
+const EdgeRegistration< NWeightedEdge<T,Dim> >
+NWeightedEdge<T,Dim>::msRegistration;// = EdgeRegistration< NWeightedEdge<T,Dim> >();
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_NWEIGHTED_EDGE_HPP

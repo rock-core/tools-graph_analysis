@@ -8,7 +8,7 @@ namespace graph_analysis {
 
 namespace representation {
 
-enum Type { UNKNOWN = 0, GEXF, LEMON, YAML, GRAPHVIZ, OROGEN_MODEL, END_MARKER };
+enum Type { UNKNOWN = 0, GEXF, GRAPHML, LEMON, YAML, GRAPHVIZ, OROGEN_MODEL, END_MARKER };
 
 typedef std::string Suffix;
 
@@ -63,6 +63,11 @@ public:
     void read(const std::string& filename, BaseGraph& graph);
 
     virtual void read(const std::string& filename, BaseGraph::Ptr graph) { (void) filename; (void) graph; throw std::runtime_error("Reader: reader not implemented"); }
+
+    /**
+     * Set a uuid of a graph element
+     */
+    void setUuid(const GraphElement::Ptr& element, const std::string& uuid) const { element->setUuid(uuid); }
 };
 
 /**
@@ -234,8 +239,8 @@ public:
     typedef std::map<representation::Type, Reader::Ptr> ReaderMap;
     typedef std::map<representation::Suffix, representation::Type> SuffixMap;
 
-    static void write(const std::string& filename, const BaseGraph::Ptr& graph, representation::Type format = representation::UNKNOWN);
-    static void write(const std::string& filename, const BaseGraph& graph, representation::Type format = representation::UNKNOWN);
+    static std::string write(const std::string& filename, const BaseGraph::Ptr& graph, representation::Type format = representation::UNKNOWN);
+    static std::string write(const std::string& filename, const BaseGraph& graph, representation::Type format = representation::UNKNOWN);
 
     static void read(const std::string& filename, BaseGraph::Ptr graph, representation::Type format = representation::UNKNOWN);
     static void read(const std::string& filename, BaseGraph& graph, representation::Type format = representation::UNKNOWN);

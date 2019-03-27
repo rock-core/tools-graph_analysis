@@ -98,9 +98,60 @@ Vertex::Ptr VertexTypeManager::createVertex(const vertex::Type& type, const std:
     return clonedVertex;
 }
 
-std::set<std::string> VertexTypeManager::getSupportedTypes()
+std::set<std::string> VertexTypeManager::getSupportedTypes() const
 {
     return mRegisteredTypes;
+}
+
+std::vector<Attribute> VertexTypeManager::getKnownAttributes(const std::set<std::string>& classnames) const
+{
+    std::vector<Attribute> allAttributes;
+
+    std::set<std::string> types = getSupportedTypes();
+    for(std::set<std::string>::const_iterator type_it = types.begin(); type_it != types.end(); type_it++)
+    {
+        std::string classname = *type_it;
+        if(!classnames.empty())
+        {
+            if( classnames.count(classname) == 0)
+            {
+                continue;
+            }
+        }
+        uint32_t memberCount = 0;
+        std::vector<std::string> attributes = AttributeManager::getAttributes(classname);
+        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
+        for(; attributesIt != attributes.end(); attributesIt++)
+        {
+            std::stringstream attrId;
+            attrId << *type_it << "-attribute-" << memberCount++;
+            LOG_DEBUG_S << "Adding custom node attribute: id: " << attrId.str() << ", title: " << *attributesIt << ", type: STRING";
+            allAttributes.push_back(Attribute(attrId.str(), *attributesIt, "STRING"));
+        }
+    }
+    return allAttributes;
+}
+
+std::vector< std::pair<Attribute::Id, std::string> > VertexTypeManager::getAttributeValues(const Vertex::Ptr& vertex) const
+{
+    std::vector< std::pair<Attribute::Id, std::string> > attributeAssignments;
+
+    std::vector<std::string> attributes = AttributeManager::getAttributes(vertex->getClassName());
+    uint32_t memberCount = 0;
+    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
+    for(; attributesIt != attributes.end(); ++attributesIt)
+    {
+        std::stringstream attrId;
+        attrId << vertex->getClassName() << "-attribute-" << memberCount++;
+        io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
+        std::string data = (vertex.get()->*callbacks.serializeFunction)();
+
+        if(!data.empty())
+        {
+            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attrId.str(), data));
+        }
+    }
+    return attributeAssignments;
 }
 
 } // end namespace graph_analysis

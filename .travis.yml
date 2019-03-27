@@ -1,18 +1,18 @@
-    sudo: required
-    services:
-      - docker
+sudo: required
+services:
+  - docker
 
-    matrix:
-        allow_failures:
+matrix:
+    allow_failures:
 
-    cache: bundler
+cache: bundler
 
-    install:
-        - docker build -t rock/graph_analysis . 
-                --build-arg PKG_NAME="tools/graph_analysis"
-                --build-arg PKG_BRANCH="${TRAVIS_BRANCH}" 
-                --build-arg PKG_PULL_REQUEST="${TRAVIS_PULL_REQUEST}" 
+install:
+    - docker build -t rock/graph_analysis . 
+            --build-arg PKG_NAME="tools/graph_analysis"
+            --build-arg PKG_BRANCH="${TRAVIS_BRANCH}" 
+            --build-arg PKG_PULL_REQUEST="${TRAVIS_PULL_REQUEST}" 
 
-    # overwrite the default build command
-    script:
-        - docker run rock/graph_analysis /bin/bash -c "source /home/docker/rock_test/env.sh; make -C tools/graph_analysis/build test"
+# overwrite the default build command
+script:
+    - docker run rock/graph_analysis /bin/bash -c "source /home/docker/rock_test/env.sh; make -C tools/graph_analysis/build test"

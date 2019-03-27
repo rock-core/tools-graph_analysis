@@ -93,9 +93,61 @@ Edge::Ptr EdgeTypeManager::createEdge(const edge::Type& type, const Vertex::Ptr&
     return clonedEdge;
 }
 
-std::set<std::string> EdgeTypeManager::getSupportedTypes()
+std::set<std::string> EdgeTypeManager::getSupportedTypes() const
 {
     return mRegisteredTypes;
+}
+
+std::vector<Attribute> EdgeTypeManager::getKnownAttributes(const std::set<std::string>& classnames) const
+{
+    std::vector<Attribute> allAttributes;
+
+    std::set<std::string> types = getSupportedTypes();
+    for(std::set<std::string>::const_iterator type_it = types.begin(); type_it != types.end(); type_it++)
+    {
+        std::string classname = *type_it;
+        if(!classnames.empty())
+        {
+            if( classnames.count(classname) == 0)
+            {
+                continue;
+            }
+        }
+
+        uint32_t memberCount = 0;
+        std::vector<std::string> attributes = AttributeManager::getAttributes(classname);
+        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
+        for(; attributesIt != attributes.end(); attributesIt++)
+        {
+            std::stringstream attrId;
+            attrId << *type_it << "-attribute-" << memberCount++;
+            LOG_DEBUG_S << "Adding custom edge attribute: id: " << attrId.str() << ", title: " << *attributesIt << ", type: STRING";
+            allAttributes.push_back(Attribute(attrId.str(), *attributesIt, "STRING"));
+        }
+    }
+    return allAttributes;
+}
+
+std::vector< std::pair<Attribute::Id, std::string> > EdgeTypeManager::getAttributeValues(const Edge::Ptr& edge) const
+{
+    std::vector< std::pair<Attribute::Id, std::string> > attributeAssignments;
+
+    std::vector<std::string> attributes = AttributeManager::getAttributes(edge->getClassName());
+    uint32_t memberCount = 0;
+    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
+    for(; attributesIt != attributes.end(); ++attributesIt)
+    {
+        std::stringstream attrId;
+        attrId << edge->getClassName() << "-attribute-" << memberCount++;
+        io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(edge->getClassName(),*attributesIt);
+        std::string data = (edge.get()->*callbacks.serializeFunction)();
+
+        if(!data.empty())
+        {
+            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attrId.str(), data));
+        }
+    }
+    return attributeAssignments;
 }
 
 } // end namespace graph_analysis

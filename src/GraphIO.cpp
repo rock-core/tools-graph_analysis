@@ -6,6 +6,8 @@
 
 #include "io/GexfWriter.hpp"
 #include "io/GexfReader.hpp"
+#include "io/GraphMLWriter.hpp"
+#include "io/GraphMLReader.hpp"
 #include "io/YamlWriter.hpp"
 #include "io/YamlReader.hpp"
 #include "io/GraphvizWriter.hpp"
@@ -18,6 +20,7 @@ namespace representation {
 std::map<Type, std::string> TypeTxt = InitMap<Type, std::string>
     (UNKNOWN, "UNKNOWN")
     (GEXF, "GEXF")
+    (GRAPHML, "GRAPHML")
     (LEMON, "LEMON")
     (GRAPHVIZ, "GRAPHVIZ")
     (YAML, "YAML")
@@ -52,12 +55,14 @@ void Reader::read(const std::string& filename, BaseGraph& graph)
 
 GraphIO::WriterMap GraphIO::msWriters = InitMap<representation::Type, Writer::Ptr>
     (representation::GEXF, Writer::Ptr( new GexfWriter()))
+    (representation::GRAPHML, Writer::Ptr( new GraphMLWriter()))
     (representation::GRAPHVIZ, Writer::Ptr( new GraphvizWriter()))
     (representation::YAML, Writer::Ptr(new YamlWriter()))
     ;
 
 GraphIO::ReaderMap GraphIO::msReaders = InitMap<representation::Type, Reader::Ptr>
     (representation::GEXF, Reader::Ptr( new GexfReader()))
+    (representation::GRAPHML, Reader::Ptr( new GraphMLReader()))
     (representation::YAML, Reader::Ptr( new YamlReader()))
     ;
 
@@ -66,13 +71,14 @@ std::map<representation::Suffix, representation::Type> GraphIO::msSuffixes = Ini
     ("yaml", representation::YAML)
     //("yml", representation::YAML)
     ("gexf", representation::GEXF)
+    ("graphml", representation::GRAPHML)
     ("xml", representation::GEXF)
     ("lemon", representation::LEMON)
     ("dot", representation::GRAPHVIZ)
     ;
 
 
-void GraphIO::write(const std::string& filename, const BaseGraph& graph, representation::Type format)
+std::string GraphIO::write(const std::string& filename, const BaseGraph& graph, representation::Type format)
 {
     if(graph.empty())
     {
@@ -97,6 +103,7 @@ void GraphIO::write(const std::string& filename, const BaseGraph& graph, represe
 
         Writer::Ptr writer = cit->second;
         writer->write(filenameWithSuffix, graph);
+        return filenameWithSuffix;
     } else {
         std::stringstream ss;
         ss << "GraphIO: writing format ";
@@ -107,7 +114,7 @@ void GraphIO::write(const std::string& filename, const BaseGraph& graph, represe
     }
 }
 
-void GraphIO::write(const std::string& filename, const BaseGraph::Ptr& graph, representation::Type format)
+std::string GraphIO::write(const std::string& filename, const BaseGraph::Ptr& graph, representation::Type format)
 {
     if(!graph)
     {
@@ -115,7 +122,7 @@ void GraphIO::write(const std::string& filename, const BaseGraph::Ptr& graph, re
                 " null pointer given as graph to write to '" + filename + "'");
     }
 
-    write(filename, *graph.get(), format);
+    return write(filename, *graph.get(), format);
 }
 
 void GraphIO::read(const std::string& filename, BaseGraph& graph, representation::Type format)

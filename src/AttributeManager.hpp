@@ -2,12 +2,13 @@
 #define GRAPH_ANALYSIS_ATTRIBUTE_MANAGER_HPP
 
 #include "io/Serialization.hpp"
+#include "Attribute.hpp"
 
 namespace graph_analysis {
 
 /**
   * \brief Manage object (vertex/edge) attributes and allow them to be
-  * serialized, e.g., using GEXF
+  * serialized, e.g., using GEXF or GraphML
   */
 class AttributeManager
 {
@@ -42,7 +43,7 @@ public:
      *  \param attributeName arbitrary unique name for the attribute that should be rerieved
      *  \return the struct with all required callback functions
      */
-    io::AttributeSerializationCallbacks getAttributeSerializationCallbacks(const std::string& typeName, const std::string& attributeName);
+    io::AttributeSerializationCallbacks getAttributeSerializationCallbacks(const std::string& typeName, const std::string& attributeName) const;
 
 private:
     std::map<std::string, AttributeSerializationCallbackMap > mRegisteredCallbacks;

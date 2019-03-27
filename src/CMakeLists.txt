@@ -32,6 +32,7 @@ endif(EMBED_SCIP)
 
 rock_library(graph_analysis
     SOURCES
+        Attribute.cpp
         AttributeManager.cpp
         BaseGraph.cpp
         BipartiteGraph.cpp
@@ -109,6 +110,8 @@ rock_library(graph_analysis
         io/GVGraph.cpp
         io/GexfReader.cpp
         io/GexfWriter.cpp
+        io/GraphMLReader.cpp
+        io/GraphMLWriter.cpp
         io/GraphvizGridStyle.cpp
         io/GraphvizWriter.cpp
         io/YamlReader.cpp
@@ -126,6 +129,7 @@ rock_library(graph_analysis
         utils/Filesystem.cpp
         ${EXTRA_CPP}
     HEADERS
+        Attribute.hpp
         AttributeManager.hpp
         Algorithms.hpp
         BaseGraph.hpp
@@ -225,6 +229,8 @@ rock_library(graph_analysis
         io/GVGraph.hpp
         io/GexfReader.hpp
         io/GexfWriter.hpp
+        io/GraphMLReader.hpp
+        io/GraphMLWriter.hpp
         io/GraphvizStyle.hpp
         io/GraphvizGridStyle.hpp
         io/GraphvizWriter.hpp

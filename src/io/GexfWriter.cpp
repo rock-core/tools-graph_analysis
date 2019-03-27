@@ -34,22 +34,13 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     data.addNodeAttributeColumn(labelAttr, "label", "STRING");
     data.addEdgeAttributeColumn(labelAttr, "label", "STRING");
 
-    // Add custom atttribute serialization for vertex types that have been
+    // Add custom attribute serialization for vertex types that have been
     // registered in the vertex type manager
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
-    std::set<std::string> types = vManager->getSupportedTypes();
-    for(std::set<std::string>::const_iterator type_it = types.begin(); type_it != types.end(); type_it++)
+    for(const Attribute& attribute : vManager->getKnownAttributes())
     {
-        uint32_t memberCount = 0;
-        std::vector<std::string> attributes = vManager->getAttributes(*type_it);
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); attributesIt++)
-        {
-            std::stringstream attrId;
-            attrId << *type_it << "-attribute-" << memberCount++;
-            LOG_DEBUG_S << "Adding custom node attribute: id: " << attrId.str() << ", title: " << *attributesIt << ", type: STRING";
-            data.addNodeAttributeColumn(attrId.str(), *attributesIt, "STRING");
-        }
+        LOG_DEBUG_S << "Adding custom node attribute: " << attribute.toString();
+        data.addNodeAttributeColumn(attribute.getId(), attribute.getName(), "STRING");
     }
 
     // loading the nodes and their attributes to the gexf components
@@ -64,34 +55,19 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         data.setNodeValue(nodeIdString, classAttr, vertex->getClassName());
         data.setNodeValue(nodeIdString, labelAttr, vertex->getLabel());
 
-        std::vector<std::string> attributes = vManager->getAttributes(vertex->getClassName());
-        uint32_t memberCount = 0;
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); ++attributesIt)
+        std::vector< std::pair<Attribute::Id, std::string> > attributeAssignments= vManager->getAttributeValues(vertex);
+        for(const std::pair<Attribute::Id, std::string>& assignment : attributeAssignments)
         {
-            std::stringstream attrId;
-            attrId << vertex->getClassName() << "-attribute-" << memberCount++;
-            io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
-            data.setNodeValue(nodeIdString, attrId.str(), (vertex.get()->*callbacks.serializeFunction)());
+            data.setNodeValue(nodeIdString, assignment.first, assignment.second);
         }
     }
 
     // Add custom atttribute serialization for vertex types that have been
     // registered in the vertex type manager
     EdgeTypeManager *eManager = EdgeTypeManager::getInstance();
-    std::set<std::string> edgeTypes = eManager->getSupportedTypes();
-    for(std::set<std::string>::const_iterator type_it = edgeTypes.begin(); type_it != edgeTypes.end(); type_it++)
+    for(const Attribute& attribute : eManager->getKnownAttributes())
     {
-        uint32_t memberCount = 0;
-        std::vector<std::string> attributes = eManager->getAttributes(*type_it);
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); attributesIt++)
-        {
-            std::stringstream attrId;
-            attrId << *type_it << "-attribute-" << memberCount++;
-            LOG_DEBUG_S << "Adding custom edge attribute: id: " << attrId.str() << ", title: " << *attributesIt << ", type: STRING";
-            data.addEdgeAttributeColumn(attrId.str(), *attributesIt, "STRING");
-        }
+        data.addEdgeAttributeColumn(attribute.getId(), attribute.getName(), "STRING");
     }
 
     // loading the edges and their attributes to the gexf components
@@ -109,15 +85,10 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         data.setEdgeValue(edgeId, labelAttr, edge->getLabel());
 
 
-        std::vector<std::string> attributes = eManager->getAttributes(edge->getClassName());
-        uint32_t memberCount = 0;
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); ++attributesIt)
+        std::vector< std::pair<Attribute::Id, std::string> > attributes = eManager->getAttributeValues(edge);
+        for(const std::pair<Attribute::Id, std::string>& attribute : attributes)
         {
-            std::stringstream attrId;
-            attrId << edge->getClassName() << "-attribute-" << memberCount++;
-            io::AttributeSerializationCallbacks callbacks = eManager->getAttributeSerializationCallbacks(edge->getClassName(),*attributesIt);
-            data.setEdgeValue(edgeId, attrId.str(), (edge.get()->*callbacks.serializeFunction)());
+            data.setEdgeValue(edgeId, attribute.first, attribute.second);
         }
     }
 

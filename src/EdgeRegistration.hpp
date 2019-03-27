@@ -8,16 +8,21 @@ namespace graph_analysis {
 template<typename T>
 class EdgeRegistration
 {
+    bool mIsRegistered;
+
 public:
     EdgeRegistration()
+        : mIsRegistered(false)
     {
         using namespace graph_analysis;
         EdgeTypeManager* eManager = EdgeTypeManager::getInstance();
-
         Edge::Ptr edge(new T());
         eManager->registerType(edge->getClassName(), edge, true);
         edge->registerAttributes(eManager);
+        mIsRegistered = true;
     }
+
+    bool isRegistered() const { return mIsRegistered; }
 };
 
 } // end namespace graph_analysis

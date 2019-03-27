@@ -83,7 +83,23 @@ public:
      * Lists the registered types
      * \return list of registered types
      */
-    std::set<std::string> getSupportedTypes();
+    std::set<std::string> getSupportedTypes() const;
+
+    /**
+     * Get all attributes that are associated with the registered types
+     * \param classnames generate the known attributes only for the given
+     * classnames
+     * \see AttributeManager::getAttributes to retrieve information for an
+     * individual attribute
+     */
+    std::vector<Attribute> getKnownAttributes(const std::set<std::string>& classnames = std::set<std::string>()) const;
+
+    /**
+     * Retrieve the attribute data for a particular vertex
+     * \return value assignments for the attributes of a vertex
+     */
+    std::vector< std::pair<Attribute::Id, std::string> >
+        getAttributeValues(const Vertex::Ptr& vertex) const;
 };
 
 } // end namespace graph_analysis
