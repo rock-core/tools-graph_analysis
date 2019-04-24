@@ -4,6 +4,7 @@
 #include <fstream>
 #include <boost/filesystem.hpp>
 #include <base-logging/Logging.hpp>
+#include <math.h>
 
 namespace graph_analysis {
 namespace algorithms {
