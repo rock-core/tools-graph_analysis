@@ -287,7 +287,7 @@ rock_library(graph_analysis
         gui/dialogs/property_dialog_gui.ui
         gui/dialogs/swap_filters_dialog_gui.ui
 )
-target_link_libraries(graph_analysis cgraph)
+target_link_libraries(graph_analysis cgraph gomp)
 
 if(EMBED_GLPK)
     target_link_libraries(graph_analysis glpk)

@@ -8,10 +8,15 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 add_definitions(-DHAVE_STRING_H)
 add_definitions(-Wall -g)
 add_definitions(-DNUMERIC_DEPRECATE=1)
-rock_activate_cxx11()
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 rock_init(graph_analysis 0.2)
 rock_standard_layout()
+
+add_subdirectory(bindings/python)
 
 install(DIRECTORY resources/icons
         DESTINATION share/graph_analysis/)
