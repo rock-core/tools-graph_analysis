@@ -36,6 +36,11 @@ public:
      */
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
+    /**
+     * Set whether the diplay should show the item position or not
+     */
+    void setDebug(bool debug) { mDebug = debug; }
+
 protected:
     /**
      * all items by default accept drag-n-drop events. override this function
@@ -55,6 +60,8 @@ protected:
                 QGraphicsItem* parent) const;
 
 private:
+    bool mDebug;
+
     QGraphicsTextItem* mpLabel;
     QGraphicsTextItem* mpClassName;
     QGraphicsTextItem* mpCoordinate;

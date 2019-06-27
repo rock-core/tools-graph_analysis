@@ -14,6 +14,7 @@ namespace gui {
 
 VertexItemSimple::VertexItemSimple()
     : VertexItemBase()
+    , mDebug(false)
     , mpLabel(NULL)
     , mpClassName(NULL)
     , mpCoordinate(NULL)
@@ -29,6 +30,7 @@ VertexItemSimple::VertexItemSimple(GraphWidget* graphWidget,
                                    const graph_analysis::Vertex::Ptr& vertex,
                                    QGraphicsItem* parent)
     : VertexItemBase(graphWidget, vertex, parent)
+    , mDebug(false)
     , mpLabel(NULL)
     , mpClassName(NULL)
     , mpCoordinate(NULL)
@@ -44,14 +46,18 @@ VertexItemSimple::VertexItemSimple(GraphWidget* graphWidget,
     font.setBold(true);
     mpLabel->setFont(font);
 
-    mpClassName =
-        new QGraphicsTextItem(QString(vertex->getClassName().c_str()), this);
+    mpClassName = new QGraphicsTextItem("", this);
     mpClassName->setPos(mpLabel->pos() +
                         QPoint(0, mpLabel->boundingRect().height()));
     mpClassName->setDefaultTextColor(Qt::gray);
+
     // we wanna show the current qt-coordinate on the canvas
     mpCoordinate = new QGraphicsTextItem(getScenePosAsString(), this);
     mpCoordinate->setDefaultTextColor(Qt::darkGreen);
+    if(!mDebug)
+    {
+        mpCoordinate->setPlainText("");
+    }
 
     // now that all the children are there, we use their bounding-rect to
     // enlarge the background-rect. note that we never modify the boundingRect
@@ -197,8 +203,11 @@ QVariant VertexItemSimple::itemChange(GraphicsItemChange change,
     {
         // notify the graph widget about our new position. there, relevant
         // caching and updating of connected items is performed.
-        mpCoordinate->setPlainText(getScenePosAsString());
-        // and also move the whole label a bit to stay aligned with the rect
+        if(mDebug)
+        {
+            mpCoordinate->setPlainText(getScenePosAsString());
+            // and also move the whole label a bit to stay aligned with the rect
+        }
         mpCoordinate->setPos(mpRect->rect().topRight()-
                              QPointF(mpCoordinate->boundingRect().width(), 0));
         break;
@@ -213,14 +222,12 @@ QVariant VertexItemSimple::itemChange(GraphicsItemChange change,
 
 void VertexItemSimple::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
-    mpClassName->setPlainText("");
-    mpLabel->setPlainText(getVertex()->toString().c_str());
+    mpClassName->setPlainText(getVertex()->getClassName().c_str());
 }
 
 void VertexItemSimple::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
-    mpClassName->setPlainText(getVertex()->getClassName().c_str());
-    mpLabel->setPlainText("");
+    mpClassName->setPlainText("");
 }
 
 VertexItemBase* VertexItemSimple::createNewItem(GraphWidget* graphWidget,

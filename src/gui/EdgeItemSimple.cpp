@@ -23,8 +23,7 @@ EdgeItemSimple::EdgeItemSimple(GraphWidget* graphWidget,
     , mArrowSize(10)
 {
     mpLabel = new QGraphicsTextItem(QString(edge->getLabel().c_str()), this);
-    mpClassName =
-        new QGraphicsTextItem(QString(edge->getClassName().c_str()), this);
+    mpClassName = new QGraphicsTextItem("", this);
     mpClassName->setDefaultTextColor(Qt::gray);
 
     setFlag(ItemIsMovable, false);
@@ -77,14 +76,12 @@ QPainterPath EdgeItemSimple::shape() const
 
 void EdgeItemSimple::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
-    mpClassName->setPlainText("");
-    mpLabel->setPlainText(getEdge()->toString().c_str());
+    mpClassName->setPlainText(getEdge()->getClassName().c_str());
 }
 
 void EdgeItemSimple::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 {
-    mpClassName->setPlainText(getEdge()->getClassName().c_str());
-    mpLabel->setPlainText("");
+    mpClassName->setPlainText("");
 }
 
 
