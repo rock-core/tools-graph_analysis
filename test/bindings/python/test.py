@@ -10,6 +10,7 @@ def test_init_vertex():
     vFrom = graph_analysis.Vertex(vFromLabel)
     assert vFrom.getLabel() == vFromLabel
     assert vFrom.toString() == vFromLabel
+    assert vFrom == vFrom
 
 def test_init_edge():
     vFrom = graph_analysis.Vertex("from")
@@ -23,6 +24,25 @@ def test_init_edge():
     assert edge.toString() == "connection"
     assert edge.getSourceVertex() == vFrom
     assert edge.getTargetVertex() == vTo
+
+def test_comparison():
+    vFrom = graph_analysis.Vertex("from")
+    vTo = graph_analysis.Vertex("to")
+    assert vFrom == vFrom
+    assert vFrom != vTo
+
+    eA = graph_analysis.Edge("a")
+    eB = graph_analysis.Edge("b")
+    assert eA == eA
+    assert eB != eA
+
+    assert eA != vFrom
+
+    try:
+        eA > True
+        assert False
+    except Exception as e:
+        assert True
 
 def test_graph():
     graph = graph_analysis.BaseGraph()

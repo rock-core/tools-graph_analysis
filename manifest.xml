@@ -27,6 +27,7 @@
     <!-- For python extension -->
     <depend package="python3" optional="1"/>
     <depend package="cython3" optional="1"/>
+    <depend package="python3-nose" optional="1" />
     <tags>needs_opt</tags>
     <keywords>
         <keyword>utilities</keyword>

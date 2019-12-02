@@ -2,6 +2,7 @@
 # cython: language_level=2
 
 from cython.operator cimport dereference as deref
+from cpython.object cimport Py_NE, Py_EQ, Py_GT, Py_GE, Py_LE, Py_LT
 from libcpp.memory cimport shared_ptr
 from libcpp.string cimport string
 from _graph_analysis cimport Vertex as _Vertex
@@ -31,11 +32,27 @@ cdef class Vertex:
     def toString(self, indent = 0):
         return self.__vertex().toString(indent).decode("utf-8")
 
-    def __eq__(self, Vertex other):
+    def isEqual(self, Vertex other):
         return self.thisptr == other.thisptr
 
-    def __ne__(self, Vertex other):
-        return not self.__eq__(other)
+    def isNotEqual(self, Vertex other):
+        return self.thisptr != other.thisptr
+
+    def __richcmp__(self, other, op):
+        if op == Py_NE:
+            if isinstance(other, Vertex):
+                return self.isNotEqual(other)
+            else:
+                return True
+        elif op == Py_EQ:
+            if isinstance(other, Vertex):
+                return self.isEqual(other)
+            else:
+                return False
+        else:
+            op_txt = ["<", "<=", "==", "!=", ">", ">=" ]
+            raise NotImplementedError("graph_analysis: comparison operator '{}' between {} and" \
+                " {} not implemented".format(op_txt[op], self.__class__, other.__class__))
 
 cdef class Edge:
     cdef shared_ptr[_Edge] thisptr
@@ -74,11 +91,27 @@ cdef class Edge:
         v.thisptr = self.__getTargetVertex()
         return v
 
-    def __eq__(self, Edge other):
+    def isEqual(self, Edge other):
         return self.thisptr == other.thisptr
 
-    def __ne__(self, Edge other):
-        return not self.__eq__(other)
+    def isNotEqual(self, Edge other):
+        return self.thisptr != other.thisptr
+
+    def __richcmp__(self, other, op):
+        if op == Py_NE:
+            if isinstance(other, Edge):
+                return self.isNotEqual(other)
+            else:
+                return True
+        elif op == Py_EQ:
+            if isinstance(other, Edge):
+                return self.isEqual(other)
+            else:
+                return False
+        else:
+            op_txt = ["<", "<=", "==", "!=", ">", ">=" ]
+            raise NotImplementedError("graph_analysis: comparison operator '{}' between {} and" \
+                " {} not implemented".format(op_txt[op] , self.__class__, other.__class__))
 
 cdef class BaseGraph:
     cdef shared_ptr[_BaseGraph] thisptr

@@ -61,11 +61,16 @@ if(CYTHON)
         )
 
         # nose is the python unit testing program it will run all python unit tests
-        add_test(
-          NAME nosetests
-          COMMAND nosetests3 ${CMAKE_SOURCE_DIR}/test/bindings/python/test.py
-          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/bindings/python
-        )
+        find_program(NOSETEST NAMES nosetests3)
+        if(NOSETEST)
+            add_test(
+              NAME nosetests
+              COMMAND nosetests3 ${CMAKE_SOURCE_DIR}/test/bindings/python/test.py
+              WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/bindings/python
+            )
+        else()
+            message(STATUS "Nosetests could not be found - python tests not available")
+        endif()
     elseif(PYTHON_SUPPORT)
         message(FATAL_ERROR "Python extension will not be built: python not found")
     endif()
