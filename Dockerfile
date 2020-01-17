@@ -67,4 +67,4 @@ RUN if [ "$PKG_PULL_REQUEST" != "false" ]; then \
         cd -; \
         /bin/bash -c "source env.sh; autoproj osdeps;"; \
     fi
-RUN /bin/bash -c "source env.sh; amake"
+RUN /bin/bash -c "source env.sh; autoproj osdeps; amake"

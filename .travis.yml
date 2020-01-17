@@ -15,4 +15,4 @@ install:
 
 # overwrite the default build command
 script:
-    - docker run rock/graph_analysis /bin/bash -c "source /home/docker/rock_test/env.sh; make -C tools/graph_analysis/build test"
+    - docker run rock/graph_analysis /bin/bash -c "source /home/docker/rock_test/env.sh; export PYTHONPATH=/home/docker/rock_test/install/lib/python3.6/site-packages; make -C tools/graph_analysis/build test"
