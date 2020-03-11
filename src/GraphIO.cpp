@@ -1,6 +1,6 @@
 #include "GraphIO.hpp"
 #include <sstream>
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/filesystem.hpp>
 #include "MapInitializer.hpp"
 
@@ -175,10 +175,10 @@ representation::Type GraphIO::getTypeFromSuffix(representation::Suffix suffix)
 
 representation::Type GraphIO::getTypeFromFilename(const std::string& filename)
 {
-    boost::regex expression(".*\\.([a-z]+$)");
+    std::regex expression(".*\\.([a-z]+$)");
 
-    boost::cmatch what;
-    if(boost::regex_match(filename.c_str(), what, expression))
+    std::cmatch what;
+    if(std::regex_match(filename.c_str(), what, expression))
     {
         std::string suffix(what[1].first, what[1].second);
         LOG_DEBUG_S << "Found suffix of filename '" << filename << "' : " << suffix;

@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED regex filesystem system serialization)
+find_package(Boost REQUIRED filesystem system serialization)
 find_package(SCIP)
 
 if(EMBED_GLPK)
@@ -258,7 +258,6 @@ rock_library(graph_analysis
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric libgvc utilmm yaml-cpp
     DEPS_PLAIN
-        Boost_REGEX
         Boost_SERIALIZATION
         Boost_FILESYSTEM
     MOC

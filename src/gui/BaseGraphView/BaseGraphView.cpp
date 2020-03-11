@@ -5,6 +5,7 @@
 #include <math.h>
 #include <string>
 #include <sstream>
+#include <regex>
 
 #include <QDir>
 #include <QTime>
@@ -17,8 +18,6 @@
 #include <QInputDialog>
 #include <QSignalMapper>
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <base/Time.hpp>
 #include <base-logging/Logging.hpp>
@@ -89,7 +88,7 @@ QStringList BaseGraphView::getSupportedLayouts() const
 
     GraphLayoutManager* layoutManager = GraphLayoutManager::getInstance();
     std::set<std::string> supportedLayouts = layoutManager->getSupportedLayouts();
-    foreach(std::string supportedLayout, supportedLayouts)
+    for(const std::string& supportedLayout : supportedLayouts)
     {
         options << tr(supportedLayout.c_str());
     }

@@ -1,11 +1,11 @@
 #ifndef GRAPH_ANALYSIS_FILTERS_REGEX_FILTER_HPP
 #define GRAPH_ANALYSIS_FILTERS_REGEX_FILTER_HPP
 
-#include <boost/regex.hpp>
 #include "../Vertex.hpp"
 #include "../Edge.hpp"
 #include "CommonFilters.hpp"
 #include <base-logging/Logging.hpp>
+#include <regex>
 
 namespace graph_analysis {
 namespace filters {
@@ -18,13 +18,15 @@ template<typename T>
 class RegexFilter : public graph_analysis::Filter<T>
 {
 protected:
-    boost::regex mRegex;
+    std::string mRegexStr;
+    std::regex mRegex;
     Type mType;
     bool mInverted;
 
 public:
     RegexFilter(const std::string& regex, Type type, bool invert)
-        : mRegex(regex)
+        : mRegexStr(regex)
+        , mRegex(regex)
         , mType(type)
         , mInverted(invert)
     {}
@@ -33,7 +35,7 @@ public:
 
     virtual std::string toString() const
     {
-        std::string txt = mRegex.str() + "/" + TypeTxt[mType] + "/";
+        std::string txt = mRegexStr + "/" + TypeTxt[mType] + "/";
         if(mInverted)
         {
             txt += "inverted";
