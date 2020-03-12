@@ -1,6 +1,6 @@
 # CMakeLists.txt has to be located in the project folder and cmake has to be
 # executed from 'project/build' with 'cmake ../'.
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1)
 find_package(Rock)
 # Currently requires RelWithDebInfo at minimum to build with lemon
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
