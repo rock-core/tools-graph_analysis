@@ -5,20 +5,22 @@
 
 namespace graph_analysis {
 
-template<typename T>
+/**
+ * Enable autoregistration of an edge where the edge must
+ * @tparam T Type of the class that shall be registered
+ * @tparam P Type of the parent class (has to be already registered)
+ */
+template<typename T, typename P = graph_analysis::Edge>
 class EdgeRegistration
 {
     bool mIsRegistered;
-
 public:
     EdgeRegistration()
         : mIsRegistered(false)
     {
         using namespace graph_analysis;
         EdgeTypeManager* eManager = EdgeTypeManager::getInstance();
-        Edge::Ptr edge(new T());
-        eManager->registerType(edge->getClassName(), edge, true);
-        edge->registerAttributes(eManager);
+        eManager->registerType<T,P>(true);
         mIsRegistered = true;
     }
 

@@ -40,7 +40,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     for(const Attribute& attribute : vManager->getKnownAttributes())
     {
         LOG_DEBUG_S << "Adding custom node attribute: " << attribute.toString();
-        data.addNodeAttributeColumn(attribute.getId(), attribute.getName(), "STRING");
+        data.addNodeAttributeColumn(attribute.getId(), attribute.getMemberName(), "STRING");
     }
 
     // loading the nodes and their attributes to the gexf components
@@ -55,7 +55,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
         data.setNodeValue(nodeIdString, classAttr, vertex->getClassName());
         data.setNodeValue(nodeIdString, labelAttr, vertex->getLabel());
 
-        std::vector< std::pair<Attribute::Id, std::string> > attributeAssignments= vManager->getAttributeValues(vertex);
+        std::vector< std::pair<Attribute::Id, std::string> > attributeAssignments = vManager->getAttributeValues(vertex);
         for(const std::pair<Attribute::Id, std::string>& assignment : attributeAssignments)
         {
             data.setNodeValue(nodeIdString, assignment.first, assignment.second);
@@ -67,7 +67,7 @@ void GexfWriter::write(const std::string& filename, const BaseGraph::Ptr& graph)
     EdgeTypeManager *eManager = EdgeTypeManager::getInstance();
     for(const Attribute& attribute : eManager->getKnownAttributes())
     {
-        data.addEdgeAttributeColumn(attribute.getId(), attribute.getName(), "STRING");
+        data.addEdgeAttributeColumn(attribute.getId(), attribute.getMemberName(), "STRING");
     }
 
     // loading the edges and their attributes to the gexf components

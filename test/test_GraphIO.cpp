@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_SUITE(graph_io)
 class DerivedVertex : public graph_analysis::Vertex
 {
 public:
-    DerivedVertex(std::string name)
+    DerivedVertex(std::string name = "")
         : graph_analysis::Vertex(name)
     {}
 
@@ -65,7 +65,7 @@ protected:
 class DerivedEdge : public graph_analysis::Edge
 {
 public:
-    DerivedEdge(std::string name)
+    DerivedEdge(std::string name = "")
         : graph_analysis::Edge(name)
     {}
 
@@ -113,6 +113,84 @@ public:
 protected:
     virtual graph_analysis::Vertex* getClone() const { return new RowColumnVertex(getLabel(), row, column); }
 
+};
+
+class DerivedVertexA : public graph_analysis::Vertex
+{
+public:
+    DerivedVertexA(const std::string& name = "")
+        : graph_analysis::Vertex(name)
+    {}
+
+    virtual std::string serializeMember0() { return mMember0; }
+    virtual std::string serializeMember1() { return mMember1; }
+
+    virtual void deserializeMember0(const std::string& s) { mMember0 = s; }
+    virtual void deserializeMember1(const std::string& s) { mMember1 = s; }
+
+    virtual std::string getClassName() const{ return "DerivedVertexA"; }
+
+    std::string mMember0;
+    std::string mMember1;
+protected:
+    virtual graph_analysis::Vertex* getClone() const { return new DerivedVertexA("CLONE"); }
+
+};
+
+class DerivedVertexB : public DerivedVertexA
+{
+public:
+    DerivedVertexB(const std::string& name = "")
+        : DerivedVertexA(name)
+    {}
+
+    std::string serializeMember2() { return mMember2; }
+    void deserializeMember2(const std::string& s) { mMember2 = s; }
+
+    virtual std::string getClassName() const{ return "DerivedVertexB"; }
+
+    std::string mMember2;
+protected:
+    virtual graph_analysis::Vertex* getClone() const { return new DerivedVertexB("CLONE"); }
+
+};
+
+class DerivedEdgeA : public graph_analysis::Edge
+{
+public:
+    DerivedEdgeA(const std::string& name = "")
+        : graph_analysis::Edge(name)
+    {}
+
+    virtual std::string serializeMember0() { return mMember0; }
+    virtual std::string serializeMember1() { return mMember1; }
+
+    virtual void deserializeMember0(const std::string& s) { mMember0 = s; }
+    virtual void deserializeMember1(const std::string& s) { mMember1 = s; }
+
+    virtual std::string getClassName() const{ return "DerivedEdgeA"; }
+
+    std::string mMember0;
+    std::string mMember1;
+protected:
+    virtual graph_analysis::Edge* getClone() const { return new DerivedEdgeA("CLONE"); }
+};
+
+class DerivedEdgeB : public DerivedEdgeA
+{
+public:
+    DerivedEdgeB(const std::string& name = "")
+        : DerivedEdgeA(name)
+    {}
+
+    virtual std::string serializeMember2() { return mMember2; }
+    virtual void deserializeMember2(const std::string& s) { mMember2 = s; }
+
+    virtual std::string getClassName() const{ return "DerivedEdgeB"; }
+
+    std::string mMember2;
+protected:
+    virtual graph_analysis::Edge* getClone() const { return new DerivedEdgeB("CLONE"); }
 };
 
 BOOST_AUTO_TEST_CASE(dot)
@@ -275,10 +353,13 @@ BOOST_AUTO_TEST_CASE(dot_with_derived_types)
 
         BOOST_REQUIRE_MESSAGE(true, "constructing test graph");
         BOOST_REQUIRE_MESSAGE(true, "    constructing 4 vertices");
-        WeightedVertex::Ptr v0(new WeightedVertex(10.0));
-        WeightedVertex::Ptr v1(new WeightedVertex(15.0));
-        WeightedEdge::Ptr e0(new WeightedEdge(v0, v1, 20.0));
+        WeightedVertex::Ptr v0 = make_shared<WeightedVertex>(10.0);
+        WeightedVertex::Ptr v1 = make_shared<WeightedVertex>(15.0);
 
+        //BOOST_REQUIRE_MESSAGE( WeightedVertex::msRegistration.isRegistered(),
+                //"weighted edge is reqistered");
+
+        WeightedEdge::Ptr e0 = make_shared<WeightedEdge>(v0, v1, 20.0);
         graph->addEdge(e0);
 
         std::string filename = "/tmp/test-" + graph->getImplementationTypeName() + "-graphviz-with-derived-types.dot";
@@ -296,7 +377,7 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     BaseGraph::Ptr graph = BaseGraph::getInstance(BaseGraph::LEMON_DIRECTED_GRAPH);
     BOOST_TEST_MESSAGE("BaseGraph implementation: " << graph->getImplementationTypeName());
 
-    Vertex::Ptr empty( new DerivedVertex("empty"));
+    Vertex::Ptr empty = make_shared<DerivedVertex>("empty");
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
 
     vManager->registerType(empty);
@@ -310,8 +391,8 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
             (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertex::deserializeMember1,
             (io::AttributeSerializationCallbacks::print_func_t) &DerivedVertex::serializeMember1);
 
-    Vertex::Ptr v0( new DerivedVertex("v1"));
-    Vertex::Ptr v1( new DerivedVertex("v2"));
+    Vertex::Ptr v0 = make_shared<DerivedVertex>("v1");
+    Vertex::Ptr v1 = make_shared<DerivedVertex>("v2");
     DerivedVertex *orginalSource = dynamic_cast<DerivedVertex*>(v0.get());
     DerivedVertex *orginalTarget= dynamic_cast<DerivedVertex*>(v1.get());
 
@@ -324,7 +405,7 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
     graph->addVertex(v1);
 
 
-    Edge::Ptr e0(new DerivedEdge("derived-edge"));
+    Edge::Ptr e0 = make_shared<DerivedEdge>("derived-edge");
     EdgeTypeManager* eManager = EdgeTypeManager::getInstance();
     eManager->registerType(e0);
     eManager->registerAttribute(e0->getClassName(), "a0",
@@ -378,13 +459,169 @@ BOOST_AUTO_TEST_CASE(gexf_derived_type_and_members)
         BOOST_REQUIRE_MESSAGE(importedSource, "Imported type of source is incorrect" );
         BOOST_REQUIRE_MESSAGE(importedTarget, "Imported type of target is incorrect" );
 
-        BOOST_REQUIRE_MESSAGE( importedSource->mMember0 == orginalSource->mMember0, "Member0 was imported wrongly" );
+        BOOST_REQUIRE_MESSAGE( importedSource->mMember0 == orginalSource->mMember0, "Member0 was imported wrongly: "
+                << importedSource->mMember0 << " vs. " << orginalSource->mMember0);
         BOOST_REQUIRE_MESSAGE( importedSource->mMember1 == orginalSource->mMember1, "Member1 was imported wrongly" );
         BOOST_REQUIRE_MESSAGE( importedTarget->mMember0 == orginalTarget->mMember0, "Member0 was imported wrongly" );
         BOOST_REQUIRE_MESSAGE( importedTarget->mMember1 == orginalTarget->mMember1, "Member1 was imported wrongly" );
 
     }
     BOOST_REQUIRE_MESSAGE( count == 1, "Iterator in graph failed");
+}
+
+BOOST_AUTO_TEST_CASE(derived_types)
+{
+    using namespace graph_analysis;
+
+    BaseGraph::Ptr graph = BaseGraph::getInstance();
+    VertexTypeManager *vManager = VertexTypeManager::getInstance();
+    {
+        Vertex::Ptr empty = make_shared<DerivedVertexA>("empty");
+
+
+        vManager->registerType<DerivedVertexA>();
+        vManager->registerAttribute(empty->getClassName(), "m0",
+                (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertexA::serializeMember0,
+                (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertexA::deserializeMember0,
+                (io::AttributeSerializationCallbacks::print_func_t)&DerivedVertexA::serializeMember0);
+
+        vManager->registerAttribute(empty->getClassName(), "m1",
+                (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertexA::serializeMember1,
+                (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertexA::deserializeMember1,
+                (io::AttributeSerializationCallbacks::print_func_t) &DerivedVertexA::serializeMember1);
+    }
+    {
+        Vertex::Ptr empty = make_shared<DerivedVertexB>("empty");
+
+        vManager->registerType<DerivedVertexB, DerivedVertexA>();
+        vManager->registerAttribute(empty->getClassName(), "m2",
+                (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertexB::serializeMember2,
+                (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertexB::deserializeMember2,
+                (io::AttributeSerializationCallbacks::print_func_t) &DerivedVertexB::serializeMember2);
+    }
+
+    shared_ptr<DerivedVertexA> v0 = make_shared<DerivedVertexA>("v0");
+    shared_ptr<DerivedVertexB> v1 = make_shared<DerivedVertexB>("v1");
+    DerivedVertexA *orginalSource = dynamic_cast<DerivedVertexA*>(v0.get());
+    DerivedVertexB *orginalTarget= dynamic_cast<DerivedVertexB*>(v1.get());
+
+    orginalSource->mMember0="v0-m0";
+    orginalSource->mMember1="v0-m1";
+
+    orginalTarget->mMember0="v1-m0";
+    orginalTarget->mMember1="v1-m1";
+    orginalTarget->mMember2="v1-m2";
+
+    graph->addVertex(v0);
+    graph->addVertex(v1);
+
+    EdgeTypeManager *eManager = EdgeTypeManager::getInstance();
+    {
+        Edge::Ptr empty = make_shared<DerivedEdgeA>("emptyEdgeA");
+        eManager->registerType<DerivedEdgeA>();
+        eManager->registerAttribute(empty->getClassName(), "m0",
+                (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedEdgeA::serializeMember0,
+                (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdgeA::deserializeMember0,
+                (io::AttributeSerializationCallbacks::print_func_t)&DerivedEdgeA::serializeMember0);
+
+        eManager->registerAttribute(empty->getClassName(), "m1",
+                (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedEdgeA::serializeMember1,
+                (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdgeA::deserializeMember1,
+                (io::AttributeSerializationCallbacks::print_func_t) &DerivedEdgeA::serializeMember1);
+    }
+    {
+        Edge::Ptr empty = make_shared<DerivedEdgeB>("emptyEdgeB");
+        eManager->registerType<DerivedEdgeB, DerivedEdgeA>();
+        eManager->registerAttribute(empty->getClassName(), "m2",
+                (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedEdgeB::serializeMember2,
+                (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdgeB::deserializeMember2,
+                (io::AttributeSerializationCallbacks::print_func_t) &DerivedEdgeB::serializeMember2);
+    }
+
+    shared_ptr<DerivedEdgeA> edgeA = make_shared<DerivedEdgeA>("e_A");
+    shared_ptr<DerivedEdgeB> edgeB = make_shared<DerivedEdgeB>("e_B");
+
+    edgeA->mMember0 = "e_A-m0";
+    edgeA->mMember1 = "e_A-m1";
+    edgeA->setTargetVertex(v0),
+    edgeA->setSourceVertex(v1),
+
+    edgeB->mMember0 = "e_B-m0";
+    edgeB->mMember1 = "e_B-m1";
+    edgeB->mMember2 = "e_B-m2";
+    edgeB->setTargetVertex(v1),
+    edgeB->setSourceVertex(v0),
+
+    graph->addEdge(edgeA);
+    graph->addEdge(edgeB);
+
+    std::string filename = "/tmp/test-io-derived.gexf";
+    io::GraphIO::write(filename, graph, representation::GEXF);
+
+    BaseGraph::Ptr read_graph = BaseGraph::getInstance();
+    io::GraphIO::read(filename, read_graph, representation::GEXF);
+
+    VertexIterator::Ptr vertexIt = read_graph->getVertexIterator();
+    while(vertexIt->next())
+    {
+        Vertex::Ptr vertex = vertexIt->current();
+        if(vertex->getLabel() ==  "v0")
+        {
+            DerivedVertexA* v = dynamic_cast<DerivedVertexA*>(vertex.get());
+            BOOST_REQUIRE_MESSAGE(v->mMember0 == v0->mMember0,
+                    "Vertex 0 member 0 has been set correctly");
+            BOOST_REQUIRE_MESSAGE(v->mMember1 == v0->mMember1,
+                    "Vertex 0 member 1 has been set correctly");
+        }
+        if(vertex->getLabel() ==  "v1")
+        {
+            DerivedVertexB* v = dynamic_cast<DerivedVertexB*>(vertex.get());
+            BOOST_REQUIRE_MESSAGE(v->mMember2 == v1->mMember2,
+                    "Vertex 1 member 2 has been set correctly "
+                    << v->mMember0 << " vs. " << v1->mMember2
+                    );
+
+            BOOST_REQUIRE_MESSAGE(v->mMember0 == v1->mMember0,
+                    "Vertex 1 inherited member 0 has been set correctly "
+                    << v->mMember0 << " vs. " << v1->mMember0
+                    );
+
+            BOOST_REQUIRE_MESSAGE(v->mMember1 == v1->mMember1,
+                    "Vertex 1 inherited member 1 has been set correctly");
+        }
+    }
+
+
+    EdgeIterator::Ptr edgeIt = read_graph->getEdgeIterator();
+    while(edgeIt->next())
+    {
+        Edge::Ptr edge = edgeIt->current();
+        if(edge->getLabel() == "e_A")
+        {
+            DerivedEdgeA* e = dynamic_cast<DerivedEdgeA*>(edge.get());
+
+            BOOST_REQUIRE_MESSAGE(e->mMember0 == edgeA->mMember0,
+                    "Edge A member 0 has been set correctly");
+            BOOST_REQUIRE_MESSAGE(e->mMember1 == edgeA->mMember1,
+                    "Edge A member 1 has been set correctly");
+        }
+
+        if(edge->getLabel() == "e_B")
+        {
+            DerivedEdgeB* e = dynamic_cast<DerivedEdgeB*>(edge.get());
+
+            BOOST_REQUIRE_MESSAGE(e->mMember2 == edgeB->mMember2,
+                    "Edge B member 2 has been set correctly");
+
+
+            BOOST_REQUIRE_MESSAGE(e->mMember0 == edgeB->mMember0,
+                    "Edge B inherited member 0 has been set correctly");
+
+            BOOST_REQUIRE_MESSAGE(e->mMember1 == edgeB->mMember1,
+                    "Edge B inherited member 1 has been set correctly");
+        }
+
+    }
 }
 
 BOOST_AUTO_TEST_CASE(gexf_viz)

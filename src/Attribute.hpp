@@ -12,18 +12,21 @@ public:
     Attribute();
 
     Attribute(const Id& id,
-            const std::string name,
+            const std::string membername,
+            const std::string classname,
             const std::string& type = "STRING");
 
     Id getId() const { return mId; }
-    std::string getName() const { return mName; }
+    std::string getMemberName() const { return mMemberName; }
+    std::string getClassName() const { return mClassName; }
     std::string getType() const { return mType; }
 
     std::string toString() const;
 
 private:
     Id mId;
-    std::string mName;
+    std::string mMemberName;
+    std::string mClassName;
     std::string mType;
 };
 

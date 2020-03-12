@@ -62,16 +62,11 @@ GraphMLReader::GraphMLNode GraphMLReader::getNode(xmlNodePtr node, xmlXPathConte
     }
 
     // Handle the local attributes
-    std::vector<std::string> attributes = vManager->getAttributes(nodeClass);
-    uint32_t memberCount = 0;
-    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-    for(; attributesIt != attributes.end(); ++attributesIt)
+    bool includeLegacySupport = true;
+    for(const Attribute& attribute : vManager->getAttributes(nodeClass, includeLegacySupport))
     {
-        std::stringstream attrId;
-        attrId << nodeClass << "-attribute-" << memberCount++;
-
         std::string attributeData;
-        std::string query = "g:data[attribute::key=\"" + attrId.str() + "\"]";
+        std::string query = "g:data[attribute::key=\"" + attribute.getId() + "\"]";
         xmlChar* xpath = (xmlChar*) query.c_str();
         xmlXPathObjectPtr result = xmlXPathEvalExpression(xpath, context);
         if(result)
@@ -83,7 +78,7 @@ GraphMLReader::GraphMLNode GraphMLReader::getNode(xmlNodePtr node, xmlXPathConte
 
         if(!attributeData.empty())
         {
-            io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
+            io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(attribute);
             // deserialize data into the vertex
             (vertex.get()->*callbacks.deserializeFunction)(attributeData);
         }
@@ -153,16 +148,11 @@ GraphMLReader::GraphMLEdge GraphMLReader::getEdge(xmlNodePtr node, xmlXPathConte
     }
 
 
-    std::vector<std::string> attributes = eManager->getAttributes(edge->getClassName());
-    uint32_t memberCount = 0;
-    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-    for(; attributesIt != attributes.end(); ++attributesIt)
+    bool includeLegacySupport = true;
+    for(const Attribute& attribute : eManager->getAttributes(edge->getClassName(), includeLegacySupport))
     {
-        std::stringstream attrId;
-        attrId << edge->getClassName() << "-attribute-" << memberCount++;
-
         std::string attributeData;
-        std::string query = "g:data[attribute::key=\"" + attrId.str() + "\"]";
+        std::string query = "g:data[attribute::key=\"" + attribute.getId() + "\"]";
         xmlChar* xpath = (xmlChar*) query.c_str();
         xmlXPathObjectPtr result = xmlXPathEvalExpression(xpath, context);
         if(result)
@@ -174,7 +164,8 @@ GraphMLReader::GraphMLEdge GraphMLReader::getEdge(xmlNodePtr node, xmlXPathConte
 
         if(!attributeData.empty())
         {
-            io::AttributeSerializationCallbacks callbacks = eManager->getAttributeSerializationCallbacks(edge->getClassName(),*attributesIt);
+            io::AttributeSerializationCallbacks callbacks =
+                eManager->getAttributeSerializationCallbacks(attribute);
             (edge.get()->*callbacks.deserializeFunction)(attributeData);
         }
     }

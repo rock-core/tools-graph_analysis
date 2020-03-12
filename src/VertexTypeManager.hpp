@@ -4,6 +4,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <typeinfo>
 #include <base-logging/Singleton.hpp>
 
 #include "Vertex.hpp"
@@ -36,6 +37,9 @@ private:
     TypeMap mTypeMap;
     /// registration list - maintains a complete list of all registered types
     std::set<std::string> mRegisteredTypes;
+    /// the type hierarchy mapping type to parent(s)
+    std::map<std::string, std::set<std::string> > mTypeHierarchy;
+    /// The default vertex type
     std::string mDefaultVertexType;
 
     /**
@@ -62,11 +66,49 @@ public:
      */
     const std::string& getDefaultType() const { return mDefaultVertexType; }
 
-    // Register vertex class
-    void registerType(const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered = false);
+    template<typename T, typename P = graph_analysis::Vertex>
+    void registerType(bool throwOnAlreadyRegistered = false)
+    {
+        Vertex::Ptr vertex = make_shared<T>();
+        Vertex::PtrList parents;
+        if( std::is_base_of<P,T>::value )
+        {
+            if(!std::is_same<graph_analysis::Vertex, P>::value)
+            {
+                parents.push_back( make_shared<P>() );
+            }
+        } else {
+            throw
+                std::invalid_argument("graph_analysis::VertexTypeManager::registerType:"
+                        " invalid registration since '" + std::string(typeid(T).name()) + "' "
+                        "is not derived from '" + std::string(typeid(P).name()) + "'");
+        }
+        registerType(vertex, parents, throwOnAlreadyRegistered );
+        vertex->registerAttributes(this);
+    }
 
-    // Register vertex class
-    void registerType(const vertex::Type& type, const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered = false);
+    /**
+     * Register vertex class
+     * \param vertex Instance of the registered type
+     * \param parents Instances of the parent types
+     * \param throwOnAlreadyRegistered If true, then this function will throw
+     *      std::runtime_error upon double registration
+     */
+    void registerType(const Vertex::Ptr& vertex,
+            const Vertex::PtrList& parents = Vertex::PtrList(),
+            bool throwOnAlreadyRegistered = false);
+
+    /* Register vertex class
+     * \param type Type name -- GraphElement::getClassName() of the vertex which shall be registered
+     * \param vertex Instance of the registered type
+     * \param parents Instances of the parent types
+     * \param throwOnAlreadyRegistered If true, then this function will throw
+     * \param throwOnAlreadyRegistered If true, then this function will throw
+     *      std::runtime_error upon double registration
+     */
+    void registerType(const vertex::Type& type, const Vertex::Ptr& vertex,
+            const Vertex::PtrList& parents = Vertex::PtrList(),
+            bool throwOnAlreadyRegistered = false);
 
     /**
      * \brief clones a new vertex of a specified type
@@ -86,6 +128,14 @@ public:
     std::set<std::string> getSupportedTypes() const;
 
     /**
+     * Compute the class hierarchy for a given vertex type, note that the
+     * type itself will also be part of the returned list
+     * \param type Vertex type for which the hierarchy should be retrieved
+     * \return class hierarchy
+     */
+    std::vector<std::string> getTypeHierarchy(const vertex::Type& type) const;
+
+    /**
      * Get all attributes that are associated with the registered types
      * \param classnames generate the known attributes only for the given
      * classnames
@@ -93,6 +143,16 @@ public:
      * individual attribute
      */
     std::vector<Attribute> getKnownAttributes(const std::set<std::string>& classnames = std::set<std::string>()) const;
+
+    /**
+     * Get all attributes that are associated with a registered type
+     * \param classname retrieve attributes only for the given
+     * classname
+     * \see AttributeManager::getAttributeName to retrieve information for an
+     * individual attribute
+     */
+    std::vector<Attribute> getAttributes(const vertex::Type& classname,
+            bool includeLegacySupport = false) const;
 
     /**
      * Retrieve the attribute data for a particular vertex

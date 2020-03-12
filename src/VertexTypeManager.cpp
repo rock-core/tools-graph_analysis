@@ -9,21 +9,32 @@ VertexTypeManager::VertexTypeManager()
     : base::Singleton<VertexTypeManager>()
     , AttributeManager()
 {
-    Vertex::Ptr vertex(new Vertex());
+    Vertex::Ptr vertex = make_shared<Vertex>();
     registerType(vertex);
     setDefaultType( vertex->getClassName() );
 
 }
 
-void VertexTypeManager::registerType(const Vertex::Ptr& vertex, bool throwOnAlreadyRegistered)
+void VertexTypeManager::registerType(const Vertex::Ptr& vertex,
+        const Vertex::PtrList& parents,
+        bool throwOnAlreadyRegistered)
 {
     //Create a empty structure for this type to make sure getAttributes raise if a unregistered vertex type is queried
-    registerType(vertex->getClassName(), vertex, throwOnAlreadyRegistered);
+    registerType(vertex->getClassName(), vertex, parents, throwOnAlreadyRegistered);
 }
 
-void VertexTypeManager::registerType(const vertex::Type& type, const Vertex::Ptr& node, bool throwOnAlreadyRegistered)
+void VertexTypeManager::registerType(const vertex::Type& type,
+        const Vertex::Ptr& node,
+        const Vertex::PtrList& parents,
+        bool throwOnAlreadyRegistered)
 {
     assert(node);
+
+    for(const Vertex::Ptr& sub : parents)
+    {
+        LOG_WARN_S << "Subclass of: " << sub->getClassName();
+    }
+
 
     if(node->getClassName() != type)
     {
@@ -41,7 +52,11 @@ void VertexTypeManager::registerType(const vertex::Type& type, const Vertex::Ptr
         LOG_INFO_S << "VertexType '" + type + "' is newly registered";
         mTypeMap[type] = node;
         mRegisteredTypes.insert(type);
-
+        mTypeHierarchy[type] = {};
+        for(const Vertex::Ptr& v : parents)
+        {
+            mTypeHierarchy[type].insert(v->getClassName());
+        }
         activateAttributedType(type);
         return;
     }
@@ -103,14 +118,81 @@ std::set<std::string> VertexTypeManager::getSupportedTypes() const
     return mRegisteredTypes;
 }
 
+std::vector<std::string> VertexTypeManager::getTypeHierarchy(const vertex::Type& type) const
+{
+    std::set<std::string> types;
+    types.insert(type);
+
+    const std::map<std::string, std::set<std::string> >::const_iterator cit = mTypeHierarchy.find(type);
+    if(cit == mTypeHierarchy.end())
+    {
+        std::stringstream ss;
+        for(const std::string& type : getSupportedTypes())
+        {
+            ss << type;
+            ss << ", ";
+        }
+        throw
+            std::runtime_error("graph_analysis::VertexTypeManager::getTypeHierarchy: "
+                    "type '" + type + "' is not known. Registered types are: " +
+                    ss.str());
+    }
+
+    const std::set<std::string>& ancestors = cit->second;
+    for(const std::string& ancestor : ancestors)
+    {
+        std::vector<std::string> parents = getTypeHierarchy(ancestor);
+        types.insert(parents.begin(), parents.end());
+    }
+    return std::vector<std::string>(types.begin(), types.end());
+}
+
+std::vector<Attribute> VertexTypeManager::getAttributes(const vertex::Type& type,
+        bool includeLegacySupport) const
+{
+    std::vector<Attribute> allAttributes;
+    try {
+        uint32_t memberCount = 0;
+        for(const std::string& classname : getTypeHierarchy(type))
+        {
+            for(const std::string& memberName : AttributeManager::getAttributeNames(classname) )
+            {
+                std::stringstream attrId;
+                attrId << classname << "-attribute-" << memberCount;
+                Attribute attribute(attrId.str(), memberName, classname, "STRING");
+                LOG_DEBUG_S << "Adding custom vertex attribute: " << attribute.toString();
+                allAttributes.push_back(attribute);
+
+                // Serialization of vertices in early versions, did not support
+                // class hierarchies
+                // To allow still to read this kind of files the legacy support
+                // is added
+                if(includeLegacySupport && classname != type)
+                {
+                    std::stringstream attrId;
+                    attrId << type << "-attribute-" << memberCount;
+                    Attribute attribute(attrId.str(), memberName, classname, "STRING");
+                    LOG_DEBUG_S << "Adding legacy support vertex attribute: " << attribute.toString();
+                    allAttributes.push_back(attribute);
+                }
+
+                ++memberCount;
+            }
+        }
+    } catch(const std::exception& e)
+    {
+        LOG_WARN_S << "No extra attributes can be serialized for this vertex type: '"
+            << type << "': " << e.what();
+    }
+    return allAttributes;
+}
+
 std::vector<Attribute> VertexTypeManager::getKnownAttributes(const std::set<std::string>& classnames) const
 {
     std::vector<Attribute> allAttributes;
 
-    std::set<std::string> types = getSupportedTypes();
-    for(std::set<std::string>::const_iterator type_it = types.begin(); type_it != types.end(); type_it++)
+    for(const std::string& classname : getSupportedTypes())
     {
-        std::string classname = *type_it;
         if(!classnames.empty())
         {
             if( classnames.count(classname) == 0)
@@ -118,16 +200,8 @@ std::vector<Attribute> VertexTypeManager::getKnownAttributes(const std::set<std:
                 continue;
             }
         }
-        uint32_t memberCount = 0;
-        std::vector<std::string> attributes = AttributeManager::getAttributes(classname);
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); attributesIt++)
-        {
-            std::stringstream attrId;
-            attrId << *type_it << "-attribute-" << memberCount++;
-            LOG_DEBUG_S << "Adding custom node attribute: id: " << attrId.str() << ", title: " << *attributesIt << ", type: STRING";
-            allAttributes.push_back(Attribute(attrId.str(), *attributesIt, "STRING"));
-        }
+        std::vector<Attribute> attributes = getAttributes(classname);
+        allAttributes.insert(allAttributes.end(), attributes.begin(), attributes.end());
     }
     return allAttributes;
 }
@@ -136,21 +210,17 @@ std::vector< std::pair<Attribute::Id, std::string> > VertexTypeManager::getAttri
 {
     std::vector< std::pair<Attribute::Id, std::string> > attributeAssignments;
 
-    std::vector<std::string> attributes = AttributeManager::getAttributes(vertex->getClassName());
-    uint32_t memberCount = 0;
-    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-    for(; attributesIt != attributes.end(); ++attributesIt)
+    for(const Attribute& attribute : getAttributes(vertex->getClassName()))
     {
-        std::stringstream attrId;
-        attrId << vertex->getClassName() << "-attribute-" << memberCount++;
-        io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
+        io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(attribute);
         std::string data = (vertex.get()->*callbacks.serializeFunction)();
 
         if(!data.empty())
         {
-            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attrId.str(), data));
+            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attribute.getId(), data));
         }
     }
+
     return attributeAssignments;
 }
 

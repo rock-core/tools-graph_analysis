@@ -525,14 +525,12 @@ std::string GVGraph::getUniqueName(const Vertex::Ptr& vertex) const
     ss << vertex->toString() << " (v:" << mpBaseGraph->getVertexId(vertex) << ")";
     VertexTypeManager *vManager = VertexTypeManager::getInstance();
 
-    std::vector<std::string> attributes = vManager->getAttributes(vertex->getClassName());
-    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-    for(; attributesIt != attributes.end(); ++attributesIt)
+    for(const Attribute& attribute : vManager->getAttributes(vertex->getClassName()) )
     {
-        io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
+        io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(attribute);
         if(callbacks.printFunction)
         {
-            ss << std::endl << *attributesIt << " " << (vertex.get()->*callbacks.printFunction)();
+            ss << std::endl << attribute.getMemberName() << " " << (vertex.get()->*callbacks.printFunction)();
         }
     }
     return ss.str();

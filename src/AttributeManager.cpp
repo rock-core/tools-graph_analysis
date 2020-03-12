@@ -15,7 +15,7 @@ void AttributeManager::registerAttribute(const std::string& typeName, const std:
     mRegisteredCallbacks[typeName][attributeName] = mc;
 }
 
-std::vector<std::string> AttributeManager::getAttributes(const std::string& vertexTypeName) const
+std::vector<std::string> AttributeManager::getAttributeNames(const std::string& vertexTypeName) const
 {
     std::vector<std::string> attributes;
     std::map<std::string, AttributeSerializationCallbackMap>::const_iterator cit = mRegisteredCallbacks.find(vertexTypeName);
@@ -34,8 +34,11 @@ std::vector<std::string> AttributeManager::getAttributes(const std::string& vert
     return attributes;
 }
 
-io::AttributeSerializationCallbacks AttributeManager::getAttributeSerializationCallbacks(const std::string& typeName, const std::string& memberName) const
+io::AttributeSerializationCallbacks AttributeManager::getAttributeSerializationCallbacks(const Attribute& attribute) const
 {
+    const std::string& typeName = attribute.getClassName();
+    const std::string& memberName = attribute.getMemberName();
+
     std::map<std::string, AttributeSerializationCallbackMap>::const_iterator cit = mRegisteredCallbacks.find(typeName);
     if( cit == mRegisteredCallbacks.end())
     {

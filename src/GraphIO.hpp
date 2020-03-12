@@ -102,6 +102,15 @@ public:
     virtual Vertex* getClone() { return new MyVertex(*this); }
  };
 
+ class MyDerivedVertex : MyVertex
+ {
+ public:
+    virtual std::string getClassName() const { return "MyDerivedVertex"; }
+
+ protected:
+    virtual Vertex* getClone() { return new MyVertex(*this); }
+ };
+
  class MyEdge : Edge
  {
  public:
@@ -121,10 +130,14 @@ public:
  \verbatim
  try {
      VertexTypeManager* vertexTypeManager = VertexTypeManager::getInstance();
-     vertexTypeManager->registerType("MyVertex", Vertex::Ptr(new MyVertex()), true);
+     vertexTypeManager->registerType("MyVertex", make_shared<MyVertex>(), true);
+
+     VertexTypeManager* vertexTypeManager = VertexTypeManager::getInstance();
+     vertexTypeManager->registerType("MyVertex", make_shared<MyVertex>(),
+        { make_shared<MyDerivedVertex>() }, true);
 
      EdgeTypeManager* edgeTypeManager = EdgeTypeManager::getInstance();
-     edgeTypeManager->registerType("MyEdge", Edge::Ptr(new MyEdge()), true);
+     edgeTypeManager->registerType("MyEdge", make_shared<MyEdge>(), true);
  } catch(...)
  {
      // already registered
@@ -219,8 +232,6 @@ protected:
             (io::AttributeSerializationCallbacks::serialize_func_t) &DerivedEdge::serializeMember1,
             (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedEdge::deserializeMember1,
             (io::AttributeSerializationCallbacks::print_func_t)&DerivedEdge::serializeMember1);
-
-
 ...
 
     io::GraphIO::write(filename, graph, representation::GEXF);

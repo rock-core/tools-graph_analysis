@@ -89,13 +89,13 @@ std::string GraphMLWriter::generateKeyList(const std::set<std::string>& vertexTy
     // Custom attributes
     for(const Attribute& attribute : vManager->getKnownAttributes(vertexTypes))
     {
-        keys << hspace << "<key id=\"" << attribute.getId() << "\" for=\"node\" attr.name=\"" << attribute.getName() << "\" attr.type=\"string\">" << std::endl;
+        keys << hspace << "<key id=\"" << attribute.getId() << "\" for=\"node\" attr.name=\"" << attribute.getMemberName() << "\" attr.type=\"string\">" << std::endl;
         keys << hspace << "  <default></default>" << std::endl;
         keys << hspace << "</key>" << std::endl;
     }
     for(const Attribute& attribute : eManager->getKnownAttributes(edgeTypes))
     {
-        keys << hspace << "<key id=\"" << attribute.getId() << "\" for=\"edge\" attr.name=\"" << attribute.getName() << "\" attr.type=\"string\">" << std::endl;
+        keys << hspace << "<key id=\"" << attribute.getId() << "\" for=\"edge\" attr.name=\"" << attribute.getMemberName() << "\" attr.type=\"string\">" << std::endl;
         keys << hspace << "  <default></default>" << std::endl;
         keys << hspace << "</key>" << std::endl;
     }

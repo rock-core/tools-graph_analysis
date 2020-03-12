@@ -43,6 +43,8 @@ public:
     }
 
     virtual ~NWeightedEdge() {
+        // Required so that this is not optimized out
+        // by compiler
         if(!msRegistration.isRegistered())
         {
             LOG_WARN_S << "Registration of NWeightedEdge never happened";
@@ -62,7 +64,7 @@ protected:
 
 template<typename T, size_t Dim>
 const EdgeRegistration< NWeightedEdge<T,Dim> >
-NWeightedEdge<T,Dim>::msRegistration;// = EdgeRegistration< NWeightedEdge<T,Dim> >();
+NWeightedEdge<T,Dim>::msRegistration;
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_NWEIGHTED_EDGE_HPP

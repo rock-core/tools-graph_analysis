@@ -111,23 +111,20 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         } catch(const std::exception& e)
         {
             LOG_WARN_S << "Unsupported vertex type: '" << nodeClass << "' -- will use a placeholder node: " << e.what();
-            vertex = Vertex::Ptr(new Vertex("Instance of unsupported vertex type: " + nodeClass + ": " + nodeLabel));
+            vertex = make_shared<Vertex>("Instance of unsupported vertex type: " + nodeClass + ": " + nodeLabel);
         }
         graph->addVertex(vertex);
 
-        std::vector<std::string> attributes = vManager->getAttributes(vertex->getClassName());
-
-        uint32_t memberCount = 0;
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); ++attributesIt)
+        bool includeLegacySupport = true;
+        for(const Attribute& attribute : vManager->getAttributes(vertex->getClassName(), includeLegacySupport) )
         {
-            std::stringstream attrId;
-            attrId << vertex->getClassName() << "-attribute-" << memberCount++;
             /// Retrieve GEXF data
-            std::string attributeData = data.getNodeAttribute(current, attrId.str());
-
-            io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(vertex->getClassName(),*attributesIt);
-            (vertex.get()->*callbacks.deserializeFunction)(attributeData);
+            std::string attributeData = data.getNodeAttribute(current, attribute.getId());
+            if(!attributeData.empty())
+            {
+                io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(attribute);
+                (vertex.get()->*callbacks.deserializeFunction)(attributeData);
+            }
         }
 
         vertexMap[current] = vertex;
@@ -175,21 +172,14 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
         }
         graph->addEdge(edge);
 
-
-        std::vector<std::string> attributes = eManager->getAttributes(edge->getClassName());
-
-        uint32_t memberCount = 0;
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); ++attributesIt)
+        bool includeLegacySupport = true;
+        for(const Attribute& attribute : eManager->getAttributes(edge->getClassName(), includeLegacySupport) )
         {
-            std::stringstream attrId;
-            attrId << edge->getClassName() << "-attribute-" << memberCount++;
             /// Retrieve GEXF data
-            std::string attributeData = data.getEdgeAttribute(current, attrId.str());
-
+            std::string attributeData = data.getEdgeAttribute(current, attribute.getId());
             if(!attributeData.empty())
             {
-                io::AttributeSerializationCallbacks callbacks = eManager->getAttributeSerializationCallbacks(edge->getClassName(),*attributesIt);
+                io::AttributeSerializationCallbacks callbacks = eManager->getAttributeSerializationCallbacks(attribute);
                 (edge.get()->*callbacks.deserializeFunction)(attributeData);
             }
         }

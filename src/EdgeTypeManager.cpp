@@ -6,18 +6,23 @@ namespace graph_analysis {
 
 EdgeTypeManager::EdgeTypeManager()
 {
-    Edge::Ptr edge(new Edge());
+    Edge::Ptr edge = make_shared<Edge>();
     registerType(edge);
     setDefaultType(edge->getClassName());
 }
 
-void EdgeTypeManager::registerType(const Edge::Ptr& edge, bool throwOnAlreadyRegistered)
+void EdgeTypeManager::registerType(const Edge::Ptr& edge,
+        const Edge::PtrList& parents,
+        bool throwOnAlreadyRegistered)
 {
     //Create a empty structure for this type to make sure getMembers raise if a unregistered edge type is queried
-    registerType(edge->getClassName(), edge, throwOnAlreadyRegistered);
+    registerType(edge->getClassName(), edge, parents, throwOnAlreadyRegistered);
 }
 
-void EdgeTypeManager::registerType(const edge::Type& type, const Edge::Ptr& edge, bool throwOnAlreadyRegistered)
+void EdgeTypeManager::registerType(const edge::Type& type,
+        const Edge::Ptr& edge,
+        const Edge::PtrList& parents,
+        bool throwOnAlreadyRegistered)
 {
     assert(edge);
 
@@ -37,6 +42,11 @@ void EdgeTypeManager::registerType(const edge::Type& type, const Edge::Ptr& edge
         LOG_INFO_S << "EdgeType '" + type + "' is newly registered.";
         mTypeMap[type] = edge;
         mRegisteredTypes.insert(type);
+        mTypeHierarchy[type] = {};
+        for(const Edge::Ptr& e : parents)
+        {
+            mTypeHierarchy[type].insert(e->getClassName());
+        }
 
         activateAttributedType(type);
         return;
@@ -98,6 +108,68 @@ std::set<std::string> EdgeTypeManager::getSupportedTypes() const
     return mRegisteredTypes;
 }
 
+std::vector<std::string> EdgeTypeManager::getTypeHierarchy(const edge::Type& type) const
+{
+    std::set<std::string> types;
+    types.insert(type);
+
+    const std::map<std::string, std::set<std::string> >::const_iterator cit = mTypeHierarchy.find(type);
+    if(cit == mTypeHierarchy.end())
+    {
+        throw
+            std::runtime_error("graph_analysis::EdgeTypeManager::getTypeHierarchy: "
+                    "type '" + type + "' is not known. Did you register it?");
+    }
+
+    const std::set<std::string>& ancestors = cit->second;
+    for(const std::string& ancestor : ancestors)
+    {
+        std::vector<std::string> parents = getTypeHierarchy(ancestor);
+        types.insert(parents.begin(), parents.end());
+    }
+    return std::vector<std::string>(types.begin(), types.end());
+}
+
+std::vector<Attribute> EdgeTypeManager::getAttributes(const edge::Type& type,
+        bool includeLegacySupport) const
+{
+    std::vector<Attribute> allAttributes;
+    try {
+        uint32_t memberCount = 0;
+        for(const std::string& classname : getTypeHierarchy(type))
+        {
+            for(const std::string& memberName : AttributeManager::getAttributeNames(classname) )
+            {
+                std::stringstream attrId;
+                attrId << classname << "-attribute-" << memberCount;
+                Attribute attribute(attrId.str(), memberName, classname, "STRING");
+                LOG_DEBUG_S << "Adding custom edge attribute: " << attribute.toString();
+                allAttributes.push_back(attribute);
+
+                // Serialization of edges in early versions, did not support
+                // class hierarchies
+                // To allow still to read this kind of files the legacy support
+                // is added
+                if(includeLegacySupport && classname != type)
+                {
+                    std::stringstream attrId;
+                    attrId << type << "-attribute-" << memberCount;
+                    Attribute attribute(attrId.str(), memberName, classname, "STRING");
+                    LOG_DEBUG_S << "Adding legacy support edge attribute: " << attribute.toString();
+                    allAttributes.push_back(attribute);
+                }
+
+                ++memberCount;
+            }
+        }
+    } catch(const std::exception& e)
+    {
+        LOG_WARN_S << "No extra attributes can be serialized for this edge type: '"
+            << type << "': " << e.what();
+    }
+    return allAttributes;
+}
+
 std::vector<Attribute> EdgeTypeManager::getKnownAttributes(const std::set<std::string>& classnames) const
 {
     std::vector<Attribute> allAttributes;
@@ -114,16 +186,8 @@ std::vector<Attribute> EdgeTypeManager::getKnownAttributes(const std::set<std::s
             }
         }
 
-        uint32_t memberCount = 0;
-        std::vector<std::string> attributes = AttributeManager::getAttributes(classname);
-        std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-        for(; attributesIt != attributes.end(); attributesIt++)
-        {
-            std::stringstream attrId;
-            attrId << *type_it << "-attribute-" << memberCount++;
-            LOG_DEBUG_S << "Adding custom edge attribute: id: " << attrId.str() << ", title: " << *attributesIt << ", type: STRING";
-            allAttributes.push_back(Attribute(attrId.str(), *attributesIt, "STRING"));
-        }
+        std::vector<Attribute> attributes = getAttributes(classname);
+        allAttributes.insert(allAttributes.end(), attributes.begin(), attributes.end());
     }
     return allAttributes;
 }
@@ -132,19 +196,14 @@ std::vector< std::pair<Attribute::Id, std::string> > EdgeTypeManager::getAttribu
 {
     std::vector< std::pair<Attribute::Id, std::string> > attributeAssignments;
 
-    std::vector<std::string> attributes = AttributeManager::getAttributes(edge->getClassName());
-    uint32_t memberCount = 0;
-    std::vector<std::string>::const_iterator attributesIt = attributes.begin();
-    for(; attributesIt != attributes.end(); ++attributesIt)
+    for(const Attribute& attribute : getAttributes(edge->getClassName()))
     {
-        std::stringstream attrId;
-        attrId << edge->getClassName() << "-attribute-" << memberCount++;
-        io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(edge->getClassName(),*attributesIt);
+        io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(attribute);
         std::string data = (edge.get()->*callbacks.serializeFunction)();
 
         if(!data.empty())
         {
-            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attrId.str(), data));
+            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attribute.getId(), data));
         }
     }
     return attributeAssignments;

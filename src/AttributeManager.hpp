@@ -36,14 +36,15 @@ public:
      *  \param vertexTypeName the class Name (normally equals Vertex::getClassName()
      *  \return a list of members that are registered
      */
-    std::vector<std::string> getAttributes(const std::string &vertexTypeName) const;
+    std::vector<std::string> getAttributeNames(const std::string& vertexTypeName) const;
 
     /**
      *  \param typeName the class Name (normally equals Vertex::getClassName()
      *  \param attributeName arbitrary unique name for the attribute that should be rerieved
      *  \return the struct with all required callback functions
+     *  \throws std::invalid_argument if type or callback is not known
      */
-    io::AttributeSerializationCallbacks getAttributeSerializationCallbacks(const std::string& typeName, const std::string& attributeName) const;
+    io::AttributeSerializationCallbacks getAttributeSerializationCallbacks(const Attribute& attribute) const;
 
 private:
     std::map<std::string, AttributeSerializationCallbackMap > mRegisteredCallbacks;

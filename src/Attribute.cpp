@@ -7,17 +7,22 @@ Attribute::Attribute()
 {}
 
 Attribute::Attribute(const std::string& id,
-         const std::string name,
+         const std::string memberName,
+         const std::string className,
          const std::string& type)
      : mId(id)
-     , mName(name)
+     , mMemberName(memberName)
+     , mClassName(className)
      , mType(type)
  {}
 
 std::string Attribute::toString() const
 {
     std::stringstream ss;
-    ss << "id: " << mId << ", name: " << mName << ", type: " << mType;
+    ss << "id: " << mId
+        << ", member name: " << mMemberName
+        << ", class name: " << mClassName
+        << ", type: " << mType;
     return ss.str();
 }
 
