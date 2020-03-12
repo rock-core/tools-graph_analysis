@@ -85,7 +85,7 @@ public:
 
      class DerivedVertex : Vertex
      {
-        static const VertexRegistration<DerivedVertex> msRegistration;
+        static const VertexRegistration<DerivedVertex> __attribute__((used)) msRegistration;
      }
      \endverbatim
      * in the source file, e.g. DerivedVertex.cpp add

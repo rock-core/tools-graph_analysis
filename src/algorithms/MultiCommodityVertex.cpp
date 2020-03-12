@@ -10,7 +10,7 @@
 namespace graph_analysis {
 namespace algorithms {
 
-const VertexRegistration<MultiCommodityVertex> MultiCommodityVertex::msRegistration;
+const VertexRegistration<MultiCommodityVertex> msRegistration;
 
 MultiCommodityVertex::MultiCommodityVertex(const std::string& label)
     : Vertex(label)

@@ -114,7 +114,7 @@ private:
     /// General option to add inflow limits for groups of commodities
     CombinedFlowBounds mCombinedCommoditiesInFlowBounds;
 
-    static const VertexRegistration<MultiCommodityVertex> msRegistration;
+    static const VertexRegistration<MultiCommodityVertex>  __attribute__((used)) msRegistration;
 
     virtual Vertex* getClone() const  { return new MultiCommodityVertex(*this); }
 

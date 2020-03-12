@@ -134,7 +134,7 @@ private:
     std::vector<uint32_t> mCommodityFlow;
 
     /// Perform registration for serialization
-    static const EdgeRegistration<MultiCommodityEdge> msRegistration;
+    static const EdgeRegistration<MultiCommodityEdge>  __attribute__((used)) msRegistration;
 
     virtual Edge* getClone() const  { return new MultiCommodityEdge(*this); }
 

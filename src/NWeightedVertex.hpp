@@ -5,7 +5,6 @@
 #include "NWeighted.hpp"
 #include "Vertex.hpp"
 #include "VertexRegistration.hpp"
-#include <base-logging/Logging.hpp>
 
 namespace graph_analysis {
 
@@ -23,15 +22,7 @@ public:
         : NWeighted<T,Dim,Vertex>(weight)
     {}
 
-    virtual ~NWeightedVertex()
-    {
-        // Required so that this is not optimized out
-        // by compiler
-        if(!msRegistration.isRegistered())
-        {
-            LOG_WARN_S << "Registration of NWeightedVertex never happened";
-        }
-    }
+    virtual ~NWeightedVertex() {}
 
     // Get class name
     // \return class name
@@ -41,13 +32,8 @@ public:
 protected:
     virtual Vertex* getClone() const { return new NWeightedVertex<T,Dim>(*this); }
 
-    static const VertexRegistration< NWeightedVertex<T,Dim> > msRegistration;
-
+    static const VertexRegistration< NWeightedVertex<T,Dim> >  __attribute__((used)) msRegistration;
 };
-
-template<typename T, size_t Dim>
-const VertexRegistration< NWeightedVertex<T,Dim> >
-NWeightedVertex<T,Dim>::msRegistration;
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_NWEIGHTED_VERTEX_HPP

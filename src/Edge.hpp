@@ -117,7 +117,7 @@ public:
 
      class DerivedEdge : Edge
      {
-        static const EdgeRegistration<DerivedEdge> msRegistration;
+        static const EdgeRegistration<DerivedEdge> __attribute__((used)) msRegistration;
      }
      \endverbatim
      * in the source file, e.g. DerivedEdge.cpp add
