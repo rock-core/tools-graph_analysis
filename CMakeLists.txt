@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-rock_init(graph_analysis 0.2)
+rock_init(graph_analysis 0.3)
 rock_standard_layout()
 
 if(NOT TARGET graph_analysis_py)
