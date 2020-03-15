@@ -106,7 +106,8 @@ public:
      * \param throwOnAlreadyRegistered If true, then this function will throw
      *      std::runtime_error upon double registration
      */
-    void registerType(const vertex::Type& type, const Vertex::Ptr& vertex,
+    void registerType(const vertex::Type& type,
+            const Vertex::Ptr& vertex,
             const Vertex::PtrList& parents = Vertex::PtrList(),
             bool throwOnAlreadyRegistered = false);
 

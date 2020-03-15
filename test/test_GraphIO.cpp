@@ -122,11 +122,11 @@ public:
         : graph_analysis::Vertex(name)
     {}
 
-    virtual std::string serializeMember0() { return mMember0; }
-    virtual std::string serializeMember1() { return mMember1; }
+    std::string serializeMember0() { return mMember0; }
+    void deserializeMember0(const std::string& s) { mMember0 = s; }
 
-    virtual void deserializeMember0(const std::string& s) { mMember0 = s; }
-    virtual void deserializeMember1(const std::string& s) { mMember1 = s; }
+    std::string serializeMember1() { return mMember1; }
+    void deserializeMember1(const std::string& s) { mMember1 =s; }
 
     virtual std::string getClassName() const{ return "DerivedVertexA"; }
 
@@ -137,15 +137,31 @@ protected:
 
 };
 
-class DerivedVertexB : public DerivedVertexA
+class VertexParent
+{
+public:
+    VertexParent() {}
+    virtual ~VertexParent() {}
+
+    std::string serializeMember() { return mParentMember; }
+    void deserializeMember(const std::string& s) { mParentMember = s; }
+
+    std::string mParentMember;
+};
+
+class DerivedVertexB : public DerivedVertexA, public VertexParent
 {
 public:
     DerivedVertexB(const std::string& name = "")
         : DerivedVertexA(name)
+        , VertexParent()
     {}
 
     std::string serializeMember2() { return mMember2; }
     void deserializeMember2(const std::string& s) { mMember2 = s; }
+
+    std::string serializeMember() { return VertexParent::serializeMember(); }
+    void deserializeMember(const std::string& s) { VertexParent::deserializeMember(s); }
 
     virtual std::string getClassName() const{ return "DerivedVertexB"; }
 
@@ -162,8 +178,8 @@ public:
         : graph_analysis::Edge(name)
     {}
 
-    virtual std::string serializeMember0() { return mMember0; }
-    virtual std::string serializeMember1() { return mMember1; }
+    std::string serializeMember0() { return mMember0; }
+    std::string serializeMember1() { return mMember1; }
 
     virtual void deserializeMember0(const std::string& s) { mMember0 = s; }
     virtual void deserializeMember1(const std::string& s) { mMember1 = s; }
@@ -183,7 +199,7 @@ public:
         : DerivedEdgeA(name)
     {}
 
-    virtual std::string serializeMember2() { return mMember2; }
+    std::string serializeMember2() { return mMember2; }
     virtual void deserializeMember2(const std::string& s) { mMember2 = s; }
 
     virtual std::string getClassName() const{ return "DerivedEdgeB"; }
@@ -498,6 +514,11 @@ BOOST_AUTO_TEST_CASE(derived_types)
                 (io::AttributeSerializationCallbacks::serialize_func_t)&DerivedVertexB::serializeMember2,
                 (io::AttributeSerializationCallbacks::deserialize_func_t)&DerivedVertexB::deserializeMember2,
                 (io::AttributeSerializationCallbacks::print_func_t) &DerivedVertexB::serializeMember2);
+
+        vManager->registerAttribute(empty->getClassName(), "parentMember",
+                (io::AttributeSerializationCallbacks::serialize_func_t)   &DerivedVertexB::serializeMember,
+                (io::AttributeSerializationCallbacks::deserialize_func_t) &DerivedVertexB::deserializeMember,
+                (io::AttributeSerializationCallbacks::print_func_t) &DerivedVertexB::serializeMember);
     }
 
     shared_ptr<DerivedVertexA> v0 = make_shared<DerivedVertexA>("v0");
@@ -511,6 +532,15 @@ BOOST_AUTO_TEST_CASE(derived_types)
     orginalTarget->mMember0="v1-m0";
     orginalTarget->mMember1="v1-m1";
     orginalTarget->mMember2="v1-m2";
+    orginalTarget->mParentMember = "v1-parentMember";
+
+    auto test = std::mem_fn(&DerivedVertexB::serializeMember);
+    BOOST_TEST_MESSAGE( test(v1) );
+    Attribute attribute("test", "parentMember", v1->getClassName());
+    io::AttributeSerializationCallbacks asc = vManager->getAttributeSerializationCallbacks(attribute);
+    v1->serializeMember();
+    asc.serializeFunction(v1);
+
 
     graph->addVertex(v0);
     graph->addVertex(v1);
@@ -588,6 +618,9 @@ BOOST_AUTO_TEST_CASE(derived_types)
 
             BOOST_REQUIRE_MESSAGE(v->mMember1 == v1->mMember1,
                     "Vertex 1 inherited member 1 has been set correctly");
+
+            BOOST_REQUIRE_MESSAGE(v->mParentMember == v1->mParentMember,
+                    "Vertex 1 inherited parent member has been set correctly");
         }
     }
 

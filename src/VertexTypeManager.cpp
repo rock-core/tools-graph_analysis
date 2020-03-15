@@ -213,12 +213,8 @@ std::vector< std::pair<Attribute::Id, std::string> > VertexTypeManager::getAttri
     for(const Attribute& attribute : getAttributes(vertex->getClassName()))
     {
         io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(attribute);
-        std::string data = (vertex.get()->*callbacks.serializeFunction)();
-
-        if(!data.empty())
-        {
-            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attribute.getId(), data));
-        }
+        std::string data = callbacks.serializeFunction(vertex);
+        attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attribute.getId(),data));
     }
 
     return attributeAssignments;

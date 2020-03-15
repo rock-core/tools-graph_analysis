@@ -199,12 +199,8 @@ std::vector< std::pair<Attribute::Id, std::string> > EdgeTypeManager::getAttribu
     for(const Attribute& attribute : getAttributes(edge->getClassName()))
     {
         io::AttributeSerializationCallbacks callbacks = getAttributeSerializationCallbacks(attribute);
-        std::string data = (edge.get()->*callbacks.serializeFunction)();
-
-        if(!data.empty())
-        {
-            attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attribute.getId(), data));
-        }
+        std::string data = callbacks.serializeFunction(edge);
+        attributeAssignments.push_back(std::pair<Attribute::Id,std::string>(attribute.getId(), data));
     }
     return attributeAssignments;
 }

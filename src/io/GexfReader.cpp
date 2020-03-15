@@ -123,7 +123,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
             if(!attributeData.empty())
             {
                 io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(attribute);
-                (vertex.get()->*callbacks.deserializeFunction)(attributeData);
+                callbacks.deserializeFunction(vertex, attributeData);
             }
         }
 
@@ -180,7 +180,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
             if(!attributeData.empty())
             {
                 io::AttributeSerializationCallbacks callbacks = eManager->getAttributeSerializationCallbacks(attribute);
-                (edge.get()->*callbacks.deserializeFunction)(attributeData);
+                callbacks.deserializeFunction(edge, attributeData);
             }
         }
     }
