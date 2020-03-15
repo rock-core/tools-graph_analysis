@@ -19,9 +19,6 @@ void GraphMLWriter::write(const std::string& filename, const BaseGraph::Ptr& gra
     outfile.open(filename);
 
     size_t graphId = graph->getId();
-    VertexTypeManager* vManager = VertexTypeManager::getInstance();
-    EdgeTypeManager* eManager = EdgeTypeManager::getInstance();
-
     outfile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
     outfile << "<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\" ";
     outfile << " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" << std::endl;

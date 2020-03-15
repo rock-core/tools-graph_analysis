@@ -168,7 +168,7 @@ void GexfReader::read(const std::string& filename, BaseGraph::Ptr graph)
                 ss << *cit << ",";
             }
             LOG_WARN_S << "Supported types are: " << ss.str();
-            edge = Edge::Ptr(new Edge(sourceVertex, targetVertex, "Instance of unsupported edge type: " + edgeClass + ": " + edgeLabel));
+            edge = make_shared<Edge>(sourceVertex, targetVertex, "Instance of unsupported edge type: " + edgeClass + ": " + edgeLabel);
         }
         graph->addEdge(edge);
 
