@@ -528,9 +528,13 @@ std::string GVGraph::getUniqueName(const Vertex::Ptr& vertex) const
     for(const Attribute& attribute : vManager->getAttributes(vertex->getClassName()) )
     {
         io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(attribute);
-        if(callbacks.printFunction)
+        try {
+            ss << std::endl << attribute.getMemberName() << " " << callbacks.printFunction(vertex);
+        } catch(...)
         {
-            ss << std::endl << attribute.getMemberName() << " " << (vertex.get()->*callbacks.printFunction)();
+            LOG_WARN_S << "No print function registered for vertex type '" << vertex->getClassName() << "'"
+                << " falling back to Vertex::toString()";
+            ss << std::endl << attribute.getMemberName() << " " << vertex->toString();
         }
     }
     return ss.str();

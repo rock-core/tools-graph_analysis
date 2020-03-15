@@ -80,7 +80,7 @@ GraphMLReader::GraphMLNode GraphMLReader::getNode(xmlNodePtr node, xmlXPathConte
         {
             io::AttributeSerializationCallbacks callbacks = vManager->getAttributeSerializationCallbacks(attribute);
             // deserialize data into the vertex
-            (vertex.get()->*callbacks.deserializeFunction)(attributeData);
+            callbacks.deserializeFunction(vertex, attributeData);
         }
     }
 
@@ -166,7 +166,7 @@ GraphMLReader::GraphMLEdge GraphMLReader::getEdge(xmlNodePtr node, xmlXPathConte
         {
             io::AttributeSerializationCallbacks callbacks =
                 eManager->getAttributeSerializationCallbacks(attribute);
-            (edge.get()->*callbacks.deserializeFunction)(attributeData);
+            callbacks.deserializeFunction(edge, attributeData);
         }
     }
 

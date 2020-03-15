@@ -11,7 +11,9 @@ void AttributeManager::registerAttribute(const std::string& typeName, const std:
     {
         throw std::invalid_argument("graph_analysis::AttributeManager::registerAttribute: cannot register attribute for unknown type: " + typeName);
     }
-    io::AttributeSerializationCallbacks mc = {sF,dsF,pF};
+
+    io::AttributeSerializationCallbacks mc(sF, dsF, pF);
+
     mRegisteredCallbacks[typeName][attributeName] = mc;
 }
 
