@@ -3,9 +3,6 @@
 #include <fstream>
 #include <cstdlib>
 #include <base-logging/Logging.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 #include "../../utils/Filesystem.hpp"
 
 namespace graph_analysis {

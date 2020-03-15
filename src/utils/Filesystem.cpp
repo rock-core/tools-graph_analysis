@@ -1,4 +1,6 @@
 #include "Filesystem.hpp"
+#include <stdexcept>
+#include <cstdlib>
 
 namespace graph_analysis {
 namespace utils {
