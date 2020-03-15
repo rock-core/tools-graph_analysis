@@ -45,7 +45,7 @@ if(CYTHON)
         message(STATUS "Building python extension with setup.py: ${SETUP_PY}")
 
         add_custom_target(graph_analysis_py ALL DEPENDS graph_analysis graph_analysis_py-prepare
-            COMMAND ${Python_EXECUTABLE} ${SETUP_PY} build_ext -i
+            COMMAND ${Python_EXECUTABLE} ${SETUP_PY} build
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             )
 
