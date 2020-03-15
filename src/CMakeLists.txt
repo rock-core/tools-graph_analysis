@@ -152,6 +152,7 @@ rock_library(graph_analysis
         HyperEdge.hpp
         NWeighted.hpp
         NWeightedEdge.hpp
+        NWeightedVertex.hpp
         Percolation.hpp
         SharedPtr.hpp
         SubGraph.hpp
