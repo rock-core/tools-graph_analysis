@@ -1,4 +1,7 @@
-if("$ENV{PYTHON}" STREQUAL "")
+if(PYTHON_EXECUTABLE)
+    message(STATUS "Defined python executable is: ${PYTHON_EXECUTABLE}")
+    set(Python_EXECUTABLE ${PYTHON_EXECUTABLE})
+elseif("$ENV{PYTHON}" STREQUAL "")
     # https://cmake.org/cmake/help/v3.12/module/FindPython.html
     find_package(Python COMPONENTS Interpreter)
 else()
@@ -8,7 +11,7 @@ endif()
 
 if("$ENV{CYTHON}" STREQUAL "")
     find_program(CYTHON
-        NAMES cython cython3
+        NAMES cython3 cython
     )
 else()
     set(CYTHON $ENV{CYTHON})
@@ -22,7 +25,6 @@ set(EXT_FILES
 
 if(CYTHON)
     message(STATUS "Using python: ${Python_EXECUTABLE}")
-    message(STATUS "Detected python version: ${Python_VERSION}")
     message(STATUS "Using cython: ${CYTHON}")
 
     configure_file(
