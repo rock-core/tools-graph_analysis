@@ -771,5 +771,20 @@ BOOST_AUTO_TEST_CASE(graphml)
     }
 }
 
+BOOST_AUTO_TEST_CASE(identify_file_type)
+{
+    std::vector<std::string> suffixes = { "dot", "gexf", "graphml" };
+    for(const std::string& suffix : suffixes)
+    {
+        representation::Type representationType = io::GraphIO::getTypeFromSuffix(suffix);
+        BOOST_REQUIRE_MESSAGE( io::GraphIO::getTypeFromFilename("test." + suffix) == representationType, suffix << " suffixed file correctly identify identified as " << representationType);
+    }
+
+    BaseGraph::Ptr baseGraph = BaseGraph::getInstance();
+    Vertex::Ptr v = make_shared<Vertex>("test");
+    baseGraph->addVertex(v);
+    graph_analysis::io::GraphIO::write("/tmp/organization-model-connectivity-test-payload-10.dot", baseGraph);
+
+}
 
 BOOST_AUTO_TEST_SUITE_END()

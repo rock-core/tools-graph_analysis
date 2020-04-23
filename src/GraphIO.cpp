@@ -54,22 +54,20 @@ void Reader::read(const std::string& filename, BaseGraph& graph)
 
 
 GraphIO::WriterMap GraphIO::msWriters = InitMap<representation::Type, Writer::Ptr>
-    (representation::GEXF, Writer::Ptr( new GexfWriter()))
-    (representation::GRAPHML, Writer::Ptr( new GraphMLWriter()))
-    (representation::GRAPHVIZ, Writer::Ptr( new GraphvizWriter()))
-    (representation::YAML, Writer::Ptr(new YamlWriter()))
+    (representation::GEXF,     make_shared<GexfWriter>())
+    (representation::GRAPHML,  make_shared<GraphMLWriter>())
+    (representation::GRAPHVIZ, make_shared<GraphvizWriter>())
+    (representation::YAML,     make_shared<YamlWriter>())
     ;
 
 GraphIO::ReaderMap GraphIO::msReaders = InitMap<representation::Type, Reader::Ptr>
-    (representation::GEXF, Reader::Ptr( new GexfReader()))
-    (representation::GRAPHML, Reader::Ptr( new GraphMLReader()))
-    (representation::YAML, Reader::Ptr( new YamlReader()))
+    (representation::GEXF,    make_shared<GexfReader>())
+    (representation::GRAPHML, make_shared<GraphMLReader>())
+    (representation::YAML,    make_shared<YamlReader>())
     ;
 
 std::map<representation::Suffix, representation::Type> GraphIO::msSuffixes = InitMap<representation::Suffix, representation::Type>
-// FIXME: is it desireable to have identical suffixes for different formats?
     ("yaml", representation::YAML)
-    //("yml", representation::YAML)
     ("gexf", representation::GEXF)
     ("graphml", representation::GRAPHML)
     ("xml", representation::GEXF)
@@ -175,7 +173,7 @@ representation::Type GraphIO::getTypeFromSuffix(representation::Suffix suffix)
 
 representation::Type GraphIO::getTypeFromFilename(const std::string& filename)
 {
-    std::regex expression(".*\\.([a-z]+$)");
+    static const std::regex expression(".*\\.([a-z]+$)");
 
     std::cmatch what;
     if(std::regex_match(filename.c_str(), what, expression))
