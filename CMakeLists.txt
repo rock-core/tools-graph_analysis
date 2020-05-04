@@ -16,7 +16,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 rock_init(graph_analysis 0.2)
 rock_standard_layout()
 
-add_subdirectory(bindings/python)
+if(NOT TARGET graph_analysis_py)
+    add_subdirectory(bindings/python)
+endif()
 
 install(DIRECTORY resources/icons
         DESTINATION share/graph_analysis/)
