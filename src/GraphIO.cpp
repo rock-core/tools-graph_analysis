@@ -175,8 +175,8 @@ representation::Type GraphIO::getTypeFromFilename(const std::string& filename)
 {
     static const std::regex expression(".*\\.([a-z]+$)");
 
-    std::cmatch what;
-    if(std::regex_match(filename.c_str(), what, expression))
+    std::smatch what;
+    if(std::regex_match(filename, what, expression))
     {
         std::string suffix(what[1].first, what[1].second);
         LOG_DEBUG_S << "Found suffix of filename '" << filename << "' : " << suffix;
