@@ -34,8 +34,9 @@ if(CYTHON)
     add_custom_target(graph_analysis_py-prepare)
     foreach(file ${EXT_FILES})
         add_custom_command(TARGET graph_analysis_py-prepare PRE_BUILD
-            COMMAND ${CMAKE_COMMAND} -E
-                copy ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${CMAKE_CURRENT_BINARY_DIR}
+            # Preserve the timestamp with -p so that setup.py only rebuilds
+            # when files have changed
+            COMMAND cp -p ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${CMAKE_CURRENT_BINARY_DIR}
         )
     endforeach()
 
@@ -47,6 +48,7 @@ if(CYTHON)
         message(STATUS "Building python extension with setup.py: ${SETUP_PY}")
 
         add_custom_target(graph_analysis_py ALL DEPENDS graph_analysis graph_analysis_py-prepare
+            COMMAND echo "Building extensions"
             COMMAND ${Python_EXECUTABLE} ${SETUP_PY} build
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             )
