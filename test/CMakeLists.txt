@@ -4,7 +4,7 @@ if(EMBED_GLPK)
     )
 endif()
 
-rock_testsuite(test_graph
+rock_testsuite(graph_analysis-test
     suite.cpp
     test_EdgesVertices.cpp
     test_Observer.cpp
