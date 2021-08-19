@@ -360,6 +360,29 @@ BOOST_AUTO_TEST_CASE(gexf_multiedge)
     }
 }
 
+BOOST_AUTO_TEST_CASE(serialization_weighted)
+{
+    {
+        WeightedVertex v(10.0);
+        std::string serialized = v.serializeWeights();
+
+        WeightedVertex vOut;
+        vOut.deserializeWeights(serialized);
+
+        BOOST_REQUIRE_MESSAGE(v.getWeight(0) == 10.0, "Weight is as expected");
+    }
+
+    {
+        WeightedEdge v(10.0);
+        std::string serialized = v.serializeWeights();
+
+        WeightedEdge vOut;
+        vOut.deserializeWeights(serialized);
+
+        BOOST_REQUIRE_MESSAGE(v.getWeight(0) == 10.0, "Weight is as expected");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(dot_with_derived_types)
 {
     for(int i = BaseGraph::BOOST_DIRECTED_GRAPH; i < BaseGraph::IMPLEMENTATION_TYPE_END; ++i)

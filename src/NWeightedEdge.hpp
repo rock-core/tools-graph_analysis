@@ -41,6 +41,14 @@ public:
         Edge::setTargetVertex(target);
     }
 
+    void registerAttributes(EdgeTypeManager* eManager) const override
+    {
+        eManager->registerAttribute(getClassName(), "weights",
+           (io::AttributeSerializationCallbacks::serialize_func_t)&NWeightedEdge::serializeWeights,
+           (io::AttributeSerializationCallbacks::deserialize_func_t)&NWeightedEdge::deserializeWeights,
+           (io::AttributeSerializationCallbacks::print_func_t)&NWeightedEdge::stringifyWeights);
+    }
+
     virtual ~NWeightedEdge() {}
 
     // Get class name
@@ -53,6 +61,9 @@ protected:
 
     static const EdgeRegistration< NWeightedEdge<T,Dim> >  __attribute__((used)) msRegistration;
 };
+
+template<typename T, size_t Dim>
+const EdgeRegistration< NWeightedEdge<T,Dim> > NWeightedEdge<T,Dim>::msRegistration;
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_NWEIGHTED_EDGE_HPP

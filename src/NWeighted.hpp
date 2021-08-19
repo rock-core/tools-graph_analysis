@@ -139,6 +139,25 @@ public:
         iarch >> mWeights;
     }
 
+    std::string stringifyWeights() const
+    {
+        std::stringstream ss;
+        ss << "[";
+        bool first = true;
+        for(const T& w : mWeights)
+        {
+            if(first)
+            {
+                first = false;
+            } else {
+                ss << ",";
+            }
+            ss << w;
+        }
+        ss << "]";
+        return ss.str();
+    }
+
 protected:
 
     void validateDimensions(const std::vector<T>& weights) const

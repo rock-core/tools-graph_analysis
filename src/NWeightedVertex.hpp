@@ -24,6 +24,14 @@ public:
 
     virtual ~NWeightedVertex() {}
 
+    void registerAttributes(VertexTypeManager* vManager) const override
+    {
+        vManager->registerAttribute(getClassName(), "weights",
+           (io::AttributeSerializationCallbacks::serialize_func_t)&NWeightedVertex::serializeWeights,
+           (io::AttributeSerializationCallbacks::deserialize_func_t)&NWeightedVertex::deserializeWeights,
+           (io::AttributeSerializationCallbacks::print_func_t)&NWeightedVertex::stringifyWeights);
+    }
+
     // Get class name
     // \return class name
     virtual std::string getClassName() const { return
@@ -34,6 +42,9 @@ protected:
 
     static const VertexRegistration< NWeightedVertex<T,Dim> >  __attribute__((used)) msRegistration;
 };
+
+template<typename T, size_t Dim>
+const VertexRegistration< NWeightedVertex<T,Dim> > NWeightedVertex<T,Dim>::msRegistration;
 
 } // end namespace graph_analysis
 #endif // GRAPH_ANALYSIS_NWEIGHTED_VERTEX_HPP
