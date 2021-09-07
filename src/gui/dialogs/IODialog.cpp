@@ -287,9 +287,7 @@ void IODialog::exportSceneAsPdf(QGraphicsScene* scene, QString filename, QWidget
         return;
     }
 
-    QRectF rect = scene->itemsBoundingRect();
-
-    QPrinter printer(QPrinter::HighResolution);
+    QPrinter printer(QPrinter::HighResolution); // 1200 dpi
     printer.setPaperSize(QPrinter::A4);
     printer.setOrientation(QPrinter::Landscape);
     printer.setOutputFormat(QPrinter::PdfFormat);
@@ -299,8 +297,7 @@ void IODialog::exportSceneAsPdf(QGraphicsScene* scene, QString filename, QWidget
     if(printDialog.exec() == QDialog::Accepted)
     {
         QPainter painter(&printer);
-        qreal scalingFactor = 20.0;
-        scene->render(&painter, QRectF(0,0,rect.width()*scalingFactor, rect.height()*scalingFactor));
+        scene->render(&painter);
     }
 }
 
@@ -314,8 +311,7 @@ void IODialog::exportSceneAsSvg(QGraphicsScene* scene, QString filename)
     QRectF rect = scene->itemsBoundingRect();
     QSvgGenerator svgGen;
     svgGen.setFileName(filename);
-    qreal scalingFactor = 0.2;
-    svgGen.setSize(QSize(rect.width()*scalingFactor, rect.height()*scalingFactor));
+    svgGen.setSize(QSize(rect.width(), rect.height()));
     svgGen.setTitle("Graph Analysis SVG");
     svgGen.setDescription("SVG Drawing");
     QPainter svgPainter(&svgGen);
