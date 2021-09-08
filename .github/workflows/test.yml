@@ -1,0 +1,19 @@
+name: test
+on: [push]
+jobs:
+  unittests:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: current_branch
+
+      - name: Build 18.04
+        run: docker build -t 2maz/graph_analysis -f Dockerfile . --build-arg PKG_BRANCH=${{ steps.current_branch.outputs.branch }}
+
+      - name: Test-on-ubuntu:18.04
+        run: docker run 2maz/graph_analysis /bin/sh -c "cd /home/docker/rock_test/tools/graph_analysis; ./build/test/graph_analysis-test --log_level=all"

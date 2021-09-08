@@ -14,3 +14,4 @@ ldgold: true
 osdeps_mode: all
 USE_OCL: false
 apt_dpkg_update: true
+USE_PYTHON: true

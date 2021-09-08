@@ -7,7 +7,7 @@ MAINTAINER 2maz "https://github.com/2maz"
 # passed via --build-arg
 
 # Mandatory arguments
-ARG PKG_NAME=
+ARG PKG_NAME="tools/graph_analysis"
 RUN test -n "$PKG_NAME"
 ENV PKG_NAME=${PKG_NAME}
 
@@ -21,7 +21,7 @@ ENV PKG_PULL_REQUEST=${PKG_PULL_REQUEST}
 
 RUN apt update
 RUN apt upgrade -y
-RUN export DEBIAN_FRONTEND=noninteractive; apt install -y ruby ruby-dev wget tzdata locales g++ autotools-dev make cmake sudo git
+RUN export DEBIAN_FRONTEND=noninteractive; apt install -y ruby ruby-dev wget tzdata locales g++ autotools-dev make cmake sudo git python3
 RUN echo "Europe/Berlin" > /etc/timezone; dpkg-reconfigure -f noninteractive tzdata
 RUN export LANGUAGE=de_DE.UTF-8; export LANG=de_DE.UTF-8; export LC_ALL=de_DE.UTF-8; locale-gen de_DE.UTF-8; DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
 
@@ -49,22 +49,12 @@ ENV AUTOPROJ_BOOTSTRAP_IGNORE_NONEMPTY_DIR 1
 ENV AUTOPROJ_NONINTERACTIVE 1
 RUN ruby /home/docker/autoproj_bootstrap git https://github.com/rock-core/buildconf.git branch=master --seed-config=seed-config.yml
 RUN sed -i "s#rock\.core#${PKG_NAME}#g" autoproj/manifest
-RUN if [ "$PKG_PULL_REQUEST" = "false" ]; then \
-        echo "Using branch: ${PKG_BRANCH}"; \
-        echo "overrides:\n  - ${PKG_NAME}:\n    branch: ${PKG_BRANCH}" > autoproj/overrides.yml; \
-    fi
+
+COPY --chown=docker .ci/prepare-package.sh prepare-package.sh
+RUN /bin/bash prepare-package.sh /home/docker/rock_test/tools/graph_analysis
+
 # Activate testing
 RUN /bin/bash -c "source env.sh; autoproj test enable ${PKG_NAME}"
 ## Update
 RUN /bin/bash -c "source env.sh; autoproj update; autoproj osdeps"
-## Check if this a pull request and change to pull request
-## accordingly
-RUN if [ "$PKG_PULL_REQUEST" != "false" ]; then \
-        echo "Using pull request: ${PKG_PULL_REQUEST}"; \
-        cd "${PKG_NAME}"; \
-        git fetch autobuild pull/${PKG_PULL_REQUEST}/head:docker_test_pr; \
-        git checkout docker_test_pr; \
-        cd -; \
-        /bin/bash -c "source env.sh; autoproj osdeps;"; \
-    fi
 RUN /bin/bash -c "source env.sh; autoproj osdeps; amake"
