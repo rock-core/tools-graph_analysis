@@ -1,6 +1,5 @@
 # Graph Analysis
-[![Build
-Status](https://travis-ci.org/rock-core/tools-graph_analysis.svg?branch=master)](https:///travis-ci.org/rock-core/tools-graph_analysis)
+[![Build Status](https://github.com/rock-core/tools-graph_analysis/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/rock-core/tools-graph_analysis/actions/workflows/test.yml)
 
 
 This library provides functionality for analyzing graphs and networks.
@@ -183,4 +182,4 @@ Make sure you comply to SCIP's license requirements for non-commercial and comme
 
 ## Copyright
 
-Copyright (c) 2013-2018 Thomas M. Roehr and contributors, DFKI GmbH Robotics Innovation Center
+Copyright (c) 2013-2021 Thomas M. Roehr and contributors, DFKI GmbH Robotics Innovation Center
