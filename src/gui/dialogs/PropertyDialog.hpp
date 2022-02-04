@@ -20,19 +20,19 @@
 #include <QCloseEvent>
 #include <QScrollArea>
 #include <QMainWindow>
-#include <QtGui/QAction>
-#include <QtGui/QDialog>
-#include <QtGui/QWidget>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QWidget>
 #include <QtCore/QVariant>
-#include <QtGui/QTabWidget>
-#include <QtGui/QHeaderView>
-#include <QtGui/QPushButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QStackedWidget>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QStackedWidget>
 
 // constant panel raw width
 #define WIDTH 306

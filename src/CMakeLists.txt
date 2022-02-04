@@ -1,6 +1,8 @@
 find_package(Boost REQUIRED filesystem system serialization)
 find_package(SCIP)
 
+rock_find_qt5(Gui Svg Widgets PrintSupport)
+
 if(EMBED_GLPK)
     add_definitions(-DEMBED_GLPK)
     list(APPEND EXTRA_HPP
@@ -276,7 +278,7 @@ rock_library(graph_analysis
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
         gui/Player.hpp
-    DEPS_PKGCONFIG QtGui QtSvg
+    LIBS Qt::Gui Qt::Svg Qt::Widgets Qt::PrintSupport
     UI
         gui/GraphAnalysisGui.ui
         gui/BaseGraphView/AddVertexDialog.ui

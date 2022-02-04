@@ -57,9 +57,9 @@ void RenameFilterDialog::setupUi(QDialog *Dialog)
 
 void RenameFilterDialog::retranslateUi(QDialog *Dialog)
 {
-    Dialog->setWindowTitle(QApplication::translate("Dialog", "Rename Filter", 0, QApplication::UnicodeUTF8));
-    mpNewRegexp->setText(QApplication::translate("Dialog", "New regexp:", 0, QApplication::UnicodeUTF8));
-    mpFilterLabel->setText(QApplication::translate("Dialog", "Filter:", 0, QApplication::UnicodeUTF8));
+    Dialog->setWindowTitle(QApplication::translate("Dialog", "Rename Filter"));
+    mpNewRegexp->setText(QApplication::translate("Dialog", "New regexp:"));
+    mpFilterLabel->setText(QApplication::translate("Dialog", "Filter:"));
 } // retranslateUi
 
 void RenameFilterDialog::renameAccept()
