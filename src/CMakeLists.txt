@@ -278,7 +278,7 @@ rock_library(graph_analysis
         gui/BaseGraphView/AddVertexDialog.hpp
         gui/BaseGraphView/AddEdgeDialog.hpp
         gui/Player.hpp
-    LIBS Qt::Gui Qt::Svg Qt::Widgets Qt::PrintSupport
+    LIBS Qt5::Gui Qt5::Svg Qt5::Widgets Qt5::PrintSupport
     UI
         gui/GraphAnalysisGui.ui
         gui/BaseGraphView/AddVertexDialog.ui
