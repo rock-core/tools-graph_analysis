@@ -22,6 +22,7 @@
     <depend package="glpk" optional="1" />
     <depend package="coinor" optional="1" />
     <depend package="qt5" />
+    <depend package="qt5-svg" />
     <depend package="libxml2-utils" optional="1"/>
     <depend package="yaml-cpp"/>
     <!-- For python extension -->
