@@ -259,7 +259,9 @@ rock_library(graph_analysis
         utils/Filesystem.hpp
         ${EXTRA_HPP}
     DEPS_PKGCONFIG
-        lemon snap base-lib gexf numeric libgvc utilmm yaml-cpp
+        snap base-lib gexf numeric libgvc utilmm yaml-cpp
+    DEPS_CMAKE
+        lemon
     DEPS_PLAIN
         Boost_SERIALIZATION
         Boost_FILESYSTEM
