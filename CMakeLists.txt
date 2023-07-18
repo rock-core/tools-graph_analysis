@@ -16,6 +16,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 rock_init()
+rock_feature(NOCURDIR)
 rock_standard_layout()
 
 if(NOT TARGET graph_analysis_py)
