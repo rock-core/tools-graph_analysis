@@ -20,10 +20,11 @@
 #include <QCloseEvent>
 #include <QScrollArea>
 #include <QMainWindow>
+#include <QtCore/QVariant>
+#if QT_VERSION < 0x050000
 #include <QtGui/QAction>
 #include <QtGui/QDialog>
 #include <QtGui/QWidget>
-#include <QtCore/QVariant>
 #include <QtGui/QTabWidget>
 #include <QtGui/QHeaderView>
 #include <QtGui/QPushButton>
@@ -33,6 +34,20 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QStackedWidget>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QStackedWidget>
+#endif
 
 // constant panel raw width
 #define WIDTH 306

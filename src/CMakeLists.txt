@@ -1,6 +1,8 @@
 find_package(Boost REQUIRED filesystem system serialization)
 find_package(SCIP)
 
+rock_find_qt5(OPTIONAL Gui Svg Widgets PrintSupport)
+
 if(EMBED_GLPK)
     add_definitions(-DEMBED_GLPK)
     list(APPEND EXTRA_HPP
@@ -213,6 +215,7 @@ else()
 endif()
 set_target_properties(graph_analysis-core PROPERTIES LINK_FLAGS ${graph_analysis-core-linker_flags})
 
+if(ROCK_QT_VERSION_4)
 rock_library(graph_analysis
     SOURCES
         gui/ActionCommander.cpp
@@ -314,6 +317,111 @@ rock_library(graph_analysis
         gui/dialogs/property_dialog_gui.ui
         gui/dialogs/swap_filters_dialog_gui.ui
 )
+endif(ROCK_QT_VERSION_4)
+
+if(ROCK_QT_VERSION_5)
+rock_library(graph_analysis
+    SOURCES
+        gui/ActionCommander.cpp
+        gui/BaseGraphView/AddEdgeDialog.cpp
+        gui/BaseGraphView/AddVertexDialog.cpp
+        gui/BaseGraphView/BaseGraphView.cpp
+        gui/EdgeItemBase.cpp
+        gui/EdgeItemSimple.cpp
+        gui/EdgeItemTypeManager.cpp
+        gui/EdgeMimeData.cpp
+        gui/FilterItem.cpp
+        gui/FilterManager.cpp
+        gui/GraphAnalysisGui.cpp
+        gui/GraphLayout.cpp
+        gui/GraphLayoutManager.cpp
+        gui/GraphWidget.cpp
+        gui/GraphWidgetManager.cpp
+        gui/IconManager.cpp
+        gui/VertexItemTypeManager.cpp
+        gui/Player.cpp
+        gui/PlayerConfiguration.cpp
+        gui/QBaseGraph.cpp
+        gui/VertexItemBase.cpp
+        gui/VertexItemSimple.cpp
+        gui/WidgetManager.cpp
+        gui/dialogs/AddFilterDialog.cpp
+        gui/dialogs/AddGraphElement.cpp
+        gui/dialogs/CustomDialog.cpp
+        gui/dialogs/GridLayout.cpp
+        gui/dialogs/IODialog.cpp
+        gui/dialogs/RenameFilterDialog.cpp
+        gui/dialogs/SwapFiltersDialog.cpp
+        gui/items/Feature.cpp
+        gui/items/Label.cpp
+        gui/layouts/GVLayout.cpp
+        gui/layouts/GridLayout.cpp
+    HEADERS
+        gui/ActionCommander.hpp
+        gui/BaseGraphView/AddEdgeDialog.hpp
+        gui/BaseGraphView/AddVertexDialog.hpp
+        gui/BaseGraphView/BaseGraphView.hpp
+        gui/EdgeItemBase.hpp
+        gui/EdgeItemSimple.hpp
+        gui/EdgeItemTypeManager.hpp
+        gui/EdgeMimeData.hpp
+        gui/FilterItem.hpp
+        gui/FilterManager.hpp
+        gui/GraphAnalysisGui.hpp
+        gui/GraphLayout.hpp
+        gui/GraphLayoutManager.hpp
+        gui/GraphWidget.hpp
+        gui/GraphWidgetManager.hpp
+        gui/GraphicsItemTypes.hpp
+        gui/IconManager.hpp
+        gui/VertexItemTypeManager.hpp
+        gui/Player.hpp
+        gui/PlayerConfiguration.hpp
+        gui/QBaseGraph.hpp
+        gui/RegisterQtMetatypes.hpp
+        gui/VertexItemBase.hpp
+        gui/VertexItemSimple.hpp
+        gui/WidgetManager.hpp
+        gui/dialogs/AddFilterDialog.hpp
+        gui/dialogs/AddGraphElement.hpp
+        gui/dialogs/CustomDialog.hpp
+        gui/dialogs/GridLayout.hpp
+        gui/dialogs/IODialog.hpp
+        gui/dialogs/RenameFilterDialog.hpp
+        gui/dialogs/SwapFiltersDialog.hpp
+        gui/items/Feature.hpp
+        gui/items/Label.hpp
+        gui/layouts/GVLayout.hpp
+        gui/layouts/GridLayout.hpp
+    MOC
+        gui/GraphAnalysisGui.hpp
+        gui/QBaseGraph.hpp
+        gui/FilterManager.hpp
+        gui/GraphWidget.hpp
+        gui/GraphWidgetManager.hpp
+        gui/dialogs/AddFilterDialog.hpp
+        gui/dialogs/AddGraphElement.hpp
+        gui/dialogs/GridLayout.hpp
+        gui/dialogs/RenameFilterDialog.hpp
+        gui/dialogs/SwapFiltersDialog.hpp
+        gui/BaseGraphView/BaseGraphView.hpp
+        gui/BaseGraphView/AddVertexDialog.hpp
+        gui/BaseGraphView/AddEdgeDialog.hpp
+        gui/Player.hpp
+    DEPS graph_analysis-core
+    LIBS Qt5::Gui Qt5::Svg Qt5::Widgets Qt5::PrintSupport
+    UI
+        gui/GraphAnalysisGui.ui
+        gui/BaseGraphView/AddVertexDialog.ui
+        gui/BaseGraphView/AddEdgeDialog.ui
+        gui/dialogs/add_filter_dialog_gui.ui
+        gui/dialogs/add_graph_element.ui
+        gui/dialogs/graph_analysis_gui.ui
+        gui/dialogs/grid_layout.ui
+        gui/dialogs/property_dialog_gui.ui
+        gui/dialogs/swap_filters_dialog_gui.ui
+)
+endif(ROCK_QT_VERSION_5)
 
 rock_executable(graph_analysis-bm Benchmark.cpp
     DEPS graph_analysis

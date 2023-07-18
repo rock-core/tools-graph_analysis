@@ -60,9 +60,15 @@ void SwapFiltersDialog::setupUi(QDialog *Dialog)
 
 void SwapFiltersDialog::retranslateUi(QDialog *Dialog)
 {
+#if QT_VERSION < 0x050000
     Dialog -> setWindowTitle(QApplication::translate("Dialog", "Swap Regexp Filters", 0, QApplication::UnicodeUTF8));
     mpFilter1Label    ->   setText(QApplication::translate("Dialog", "Filter Index:", 0, QApplication::UnicodeUTF8));
     mpFilter2Label    ->   setText(QApplication::translate("Dialog", "Filter Index:", 0, QApplication::UnicodeUTF8));
+#else
+    Dialog -> setWindowTitle(QApplication::translate("Dialog", "Swap Regexp Filters"));
+    mpFilter1Label    ->   setText(QApplication::translate("Dialog", "Filter Index:"));
+    mpFilter2Label    ->   setText(QApplication::translate("Dialog", "Filter Index:"));
+#endif
 } // retranslateUi
 
 void SwapFiltersDialog::swapAccept()
