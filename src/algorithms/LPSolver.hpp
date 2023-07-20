@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <stdexcept>
 #include "../SharedPtr.hpp"
 
 namespace graph_analysis {

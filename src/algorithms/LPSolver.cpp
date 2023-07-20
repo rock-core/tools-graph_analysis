@@ -1,6 +1,7 @@
 #include "LPSolver.hpp"
 #include <boost/filesystem.hpp>
 #include <sstream>
+#include <algorithm>
 #include <base-logging/Logging.hpp>
 #include "../MapInitializer.hpp"
 #include "../utils/MD5.hpp"
