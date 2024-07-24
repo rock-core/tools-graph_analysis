@@ -107,6 +107,7 @@ BOOST_AUTO_TEST_CASE(multi_commodity_min_cost_flow_0)
         LPSolver::Status status;
         double cost = 0.0;
         {
+            BOOST_TEST_MESSAGE("SolverType: "<< LPSolver::TypeTxt[solverType]);
             std::string prefixPath("/tmp/graph_analysis-test-algorithms-multi_commodity_min_cost_flow_0");
             MultiCommodityMinCostFlow minCostFlow(graph, commodities, solverType);
             checkSolverResult(status = minCostFlow.solve(prefixPath),

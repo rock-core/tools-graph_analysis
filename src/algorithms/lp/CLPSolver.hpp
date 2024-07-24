@@ -19,7 +19,12 @@ public:
     LPSolver::Type getSolverType() const override { return CLP_SOLVER; }
 
     std::string createSolverCommand() const override;
+
     Solution readBasicSolution(const std::string& filename) override;
+
+    Solution readBasicSolution_v1(const std::string& filename);
+
+    Solution readBasicSolution_v2(const std::string& filename);
 };
 
 } // end namespace lp
