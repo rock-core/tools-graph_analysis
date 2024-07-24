@@ -19,9 +19,5 @@ rock_init()
 rock_feature(NOCURDIR)
 rock_standard_layout()
 
-if(NOT TARGET graph_analysis_py)
-    add_subdirectory(bindings/python)
-endif()
-
 install(DIRECTORY resources/icons
         DESTINATION share/graph_analysis/)
