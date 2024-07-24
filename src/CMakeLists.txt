@@ -33,7 +33,7 @@ else(SCIP_FOUND)
 endif(SCIP_FOUND)
 endif(EMBED_SCIP)
 
-rock_library(graph_analysis-core
+rock_library(graph_analysis
     SOURCES
         Attribute.cpp
         AttributeManager.cpp
@@ -195,26 +195,26 @@ rock_library(graph_analysis-core
         Boost_SERIALIZATION
         Boost_FILESYSTEM
 )
-target_link_libraries(graph_analysis-core cgraph gomp)
+target_link_libraries(graph_analysis cgraph gomp)
 
 if(EMBED_GLPK)
-    target_link_libraries(graph_analysis-core glpk)
+    target_link_libraries(graph_analysis glpk)
 endif(EMBED_GLPK)
 
 if(EMBED_SCIP)
 if(SCIP_FOUND)
     message(STATUS "Linking SCIP Library: ${SCIP_LIBRARIES}")
-    target_link_libraries(graph_analysis-core ${SCIP_LIBRARIES})
+    target_link_libraries(graph_analysis ${SCIP_LIBRARIES})
 endif()
 endif()
 
-get_target_property(graph_analysis-core-linker_flags graph_analysis-core LINK_FLAGS)
-if(graph_analysis-core-linker_flags)
-    set(graph_analysis-core-linker_flags "${graph_analysis-core-linker_flags} -Wl,--exclude-libs=libsnap.a" )
+get_target_property(graph_analysis-linker_flags graph_analysis LINK_FLAGS)
+if(graph_analysis-linker_flags)
+    set(graph_analysis-linker_flags "${graph_analysis-linker_flags} -Wl,--exclude-libs=libsnap.a" )
 else()
-    set(graph_analysis-core-linker_flags "-Wl,--exclude-libs=libsnap.a" )
+    set(graph_analysis-linker_flags "-Wl,--exclude-libs=libsnap.a" )
 endif()
-set_target_properties(graph_analysis-core PROPERTIES LINK_FLAGS ${graph_analysis-core-linker_flags})
+set_target_properties(graph_analysis PROPERTIES LINK_FLAGS ${graph_analysis-linker_flags})
 
 set(GUI_SOURCES
         gui/ActionCommander.cpp
@@ -322,7 +322,7 @@ set(GUI_UI
     )
 
 if(ROCK_QT_VERSION_4)
-    rock_library(graph_analysis
+    rock_library(graph_analysis-qt4
         SOURCES
             ${GUI_SOURCES}
         HEADERS
@@ -331,8 +331,13 @@ if(ROCK_QT_VERSION_4)
             ${GUI_MOC}
         UI
             ${GUI_UI}
-        DEPS graph_analysis-core
-        LIBS Qt4::QtGui Qt4::QtSvg
+        DEPS graph_analysis
+        LIBS
+            Qt4::QtGui
+            Qt4::QtSvg
+    )
+    rock_executable(graph_analysis-gui-qt4 gui/main.cpp
+        DEPS graph_analysis-qt4
     )
 endif(ROCK_QT_VERSION_4)
 
@@ -346,47 +351,25 @@ if(ROCK_QT_VERSION_5)
             ${GUI_MOC}
         UI5
             ${GUI_UI}
-        DEPS graph_analysis-core
-        LIBS Qt5::Gui Qt5::Svg Qt5::Widgets Qt5::PrintSupport
+        DEPS graph_analysis
+        LIBS
+            Qt5::Gui
+            Qt5::Svg
+            Qt5::Widgets
+            Qt5::PrintSupport
+    )
+    rock_executable(graph_analysis-gui-qt5 gui/main.cpp
+        DEPS graph_analysis-qt5
     )
 endif(ROCK_QT_VERSION_5)
 
-if(ROCK_QT_VERSION_4)
-    rock_executable(graph_analysis-bm Benchmark.cpp
-        DEPS graph_analysis
-        DEPS_PLAIN rt
-            Boost_FILESYSTEM
-            Boost_SYSTEM
-        NOINSTALL)
-
-    rock_executable(graph_analysis-gui gui/main.cpp
-        DEPS graph_analysis
-        )
-    if(ROCK_QT_VERSION_5)
-        rock_executable(graph_analysis-bm-qt5 Benchmark.cpp
-            DEPS graph_analysis-qt5
-            DEPS_PLAIN rt
-                Boost_FILESYSTEM
-                Boost_SYSTEM
-            NOINSTALL)
-
-        rock_executable(graph_analysis-gui-qt5 gui/main.cpp
-            DEPS graph_analysis-qt5
-            )
-    endif()
-elseif(ROCK_QT_VERSION_5)
-    rock_executable(graph_analysis-bm Benchmark.cpp
-        DEPS graph_analysis-qt5
-        DEPS_PLAIN rt
-            Boost_FILESYSTEM
-            Boost_SYSTEM
-        NOINSTALL)
-
-    rock_executable(graph_analysis-gui gui/main.cpp
-        DEPS graph_analysis-qt5
-        )
-endif()
+rock_executable(graph_analysis-bm Benchmark.cpp
+    DEPS graph_analysis
+    DEPS_PLAIN rt
+        Boost_FILESYSTEM
+        Boost_SYSTEM
+    NOINSTALL)
 
 rock_executable(graph_analysis-reader utils/GraphReaderMain.cpp
-    DEPS graph_analysis-core
-    )
+    DEPS graph_analysis
+)
