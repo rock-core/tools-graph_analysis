@@ -191,9 +191,9 @@ rock_library(graph_analysis
         ${EXTRA_HPP}
     DEPS_PKGCONFIG
         lemon snap base-lib gexf numeric libgvc utilmm yaml-cpp
-    DEPS_PLAIN
-        Boost_SERIALIZATION
-        Boost_FILESYSTEM
+    DEPS
+        Boost::serialization
+        Boost::filesystem
 )
 target_link_libraries(graph_analysis cgraph gomp)
 
