@@ -4,6 +4,8 @@ find_package(SCIP)
 rock_find_qt4(OPTIONAL QtGui QtSvg)
 rock_find_qt5(OPTIONAL Gui Svg Widgets PrintSupport)
 
+include(RockQt)
+
 if(EMBED_GLPK)
     add_definitions(-DEMBED_GLPK)
     list(APPEND EXTRA_HPP
@@ -321,47 +323,33 @@ set(GUI_UI
         gui/dialogs/swap_filters_dialog_gui.ui
     )
 
-if(ROCK_QT_VERSION_4)
-    rock_library(graph_analysis-qt4
-        SOURCES
-            ${GUI_SOURCES}
-        HEADERS
-            ${GUI_HEADERS}
-        MOC
-            ${GUI_MOC}
-        UI
-            ${GUI_UI}
-        DEPS graph_analysis
-        LIBS
-            Qt4::QtGui
-            Qt4::QtSvg
-    )
-    rock_executable(graph_analysis-gui-qt4 gui/main.cpp
-        DEPS graph_analysis-qt4
-    )
-endif(ROCK_QT_VERSION_4)
-
-if(ROCK_QT_VERSION_5)
-    rock_library(graph_analysis-qt5
-        SOURCES
-            ${GUI_SOURCES}
-        HEADERS
-            ${GUI_HEADERS}
-        MOC5
-            ${GUI_MOC}
-        UI5
-            ${GUI_UI}
-        DEPS graph_analysis
-        LIBS
-            Qt5::Gui
-            Qt5::Svg
-            Qt5::Widgets
-            Qt5::PrintSupport
-    )
-    rock_executable(graph_analysis-gui-qt5 gui/main.cpp
-        DEPS graph_analysis-qt5
-    )
-endif(ROCK_QT_VERSION_5)
+rock_qt_library(
+    TARGETPREFIX graph_analysis
+    MISSINGQTDEPS_NOBUILD
+    SOURCES
+        ${GUI_SOURCES}
+    HEADERS
+        ${GUI_HEADERS}
+    MOC
+        ${GUI_MOC}
+    UI
+        ${GUI_UI}
+    DEPS graph_analysis
+    LIBS_QT4
+        Qt4::QtGui
+        Qt4::QtSvg
+    LIBS_QT5
+        Qt5::Gui
+        Qt5::Svg
+        Qt5::Widgets
+        Qt5::PrintSupport
+)
+rock_qt_executable(
+    TARGETPREFIX graph_analysis-gui
+    MISSINGQTDEPS_NOBUILD
+    SOURCES gui/main.cpp
+    DEPS_QT graph_analysis
+)
 
 rock_executable(graph_analysis-bm Benchmark.cpp
     DEPS graph_analysis
